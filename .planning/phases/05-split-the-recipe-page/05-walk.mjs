@@ -93,11 +93,6 @@ async function newScenarioContext(browser) {
 async function snapshot(page) {
   const raw = await page.evaluate(() => {
     const textOf = (el) => (el ? el.textContent : null);
-    const labelOf = (el) =>
-      el.getAttribute('aria-label') ||
-      el.id ||
-      el.getAttribute('name') ||
-      `${el.tagName.toLowerCase()}:${(el.textContent ?? '').trim().slice(0, 40)}`;
     // A field's name: its aria-label, else its wrapping label's words, else its type.
     const fieldLabel = (el) =>
       el.getAttribute('aria-label') ||
@@ -121,7 +116,7 @@ async function snapshot(page) {
       formStatus: [...document.querySelectorAll('.form-status')].map(textOf),
       tastingStatus: status('.tasting-status'),
       recordStatus: status('.save-ceremony__status'),
-      invalid: [...document.querySelectorAll('[aria-invalid="true"]')].map(labelOf),
+      invalid: [...document.querySelectorAll('[aria-invalid="true"]')].map(fieldLabel),
       focus: active
         ? {
             tag: active.tagName.toLowerCase(),
@@ -308,6 +303,485 @@ SCENARIOS.push([
     await walk.afterDebounce();
     const cancelled = await walk.step('cancelled', { stores: true });
     walk.expect(cancelled.stores.drafts.length === 0, `the drafts store is empty after Cancel (${cancelled.stores.drafts.length})`);
+  },
+]);
+
+// ---------------------------------------------------------------------------
+// The scenarios that follow reuse the fields a maker meets by label.
+// ---------------------------------------------------------------------------
+const VERSION_BLOCKED = 'Check the version. Your changes have been kept.';
+const MEASURED_INVALID = 'Check the marked measurements. Your entries have been kept.';
+const CHURN_DATE_STATUS = 'Check the churn date. Your entries have been kept.';
+const CHURN_DATE_SENTENCE = 'Enter the date you churned.';
+
+const PEN = '.batch-margin--pen';
+const CHURN_DATE = `${PEN} .field-row__label--date input`;
+const OUT_OF_MACHINE = `${PEN} input[aria-label^="Out of machine"]`;
+const CHURN_DURATION = `${PEN} input[aria-label^="Churn duration"]`;
+const TEMPERING = `${PEN} input[aria-label^="Tempering"]`;
+const TASTING_NOTE = `${PEN} textarea[aria-label="How did it turn out?"]`;
+const SUCROSE_FIELD = 'input[aria-label="Sucrose, grams, portion 1"]';
+const SHEET_TITLE = 'textarea[aria-label="Sheet title"]';
+const WHY_FIELD = 'textarea[aria-label="Why"]';
+const BEFORE_NOTE = 'textarea[aria-label="beforeYouStart note 1"]';
+
+// A button is found by the words on it. The first record ceremony in the DOM
+// is the pen foot's (Add tasting, Cancel, Save batch); the end-of-record one,
+// with the status region and the restore slot, follows inside the pen.
+const ceremony = (page) => page.locator('.save-ceremony').first();
+const button = (scope, name) => scope.getByRole('button', { name, exact: true }).first();
+
+async function openRecordPen(page) {
+  await clickUntil(page, () => page.locator('.batch-row__record').first(), PEN, 'open the record pen');
+}
+
+async function openCorrectPen(page) {
+  await clickUntil(page, () => page.locator('.batch-row__correct').first(), PEN, 'open the Correct pen');
+}
+
+async function addTasting(page) {
+  await button(ceremony(page), 'Add tasting').click();
+  await page.waitForSelector('.tasting-head');
+}
+
+async function markAxis(page, axisName, stop) {
+  const axis = page.locator('.axis-mark', { has: page.locator('.axis-mark__name', { hasText: new RegExp(`^${axisName}$`) }) });
+  const label = axis.locator('label.axis-mark__stop', { has: page.locator(`input[value="${stop}"]`) });
+  for (let i = 0; i < 3; i += 1) {
+    await label.click();
+    await page.waitForTimeout(100);
+    if (await axis.locator(`input[value="${stop}"]`).isChecked()) return;
+  }
+  throw new Error(`could not mark ${axisName} ${stop}`);
+}
+
+async function cancelRecordPen(page) {
+  await button(ceremony(page), 'Cancel').click();
+  await page.waitForSelector(PEN, { state: 'detached' });
+}
+
+async function cancelVersionPen(page) {
+  await button(page.locator(VERSION_PEN), 'Cancel').click();
+  await page.waitForSelector(VERSION_PEN, { state: 'detached' });
+}
+
+const pageHas = (page, words) => page.evaluate((text) => (document.querySelector('.notebook')?.innerText ?? '').includes(text), words);
+const hasButton = (snap, words) => snap.buttons.some((text) => text === words);
+const fieldValue = (snap, prefix) => snap.fields.find(([name]) => name.startsWith(prefix))?.[1];
+const focusedOn = (snap, label) => snap.focus?.ariaLabel === label;
+
+// D-13 (a), (b), (f): a blocked version save, the second block on the same
+// field, every kind of pen edit after a block, and Cancel with a block showing.
+SCENARIOS.push([
+  'version-pen-blocked',
+  async (walk) => {
+    const { page } = walk;
+    const save = () => button(page.locator(VERSION_PEN), 'Save as a new version').click();
+    await walk.open(VERSION_ROUTE);
+    await openNextVersionPen(page);
+    await walk.step('pen-opened');
+
+    await save();
+    const blocked = await walk.step('blocked-blank-name');
+    walk.expect(await pageHas(page, 'Enter a version.'), 'a blocked save says "Enter a version."');
+    walk.expect(blocked.snapshot.formStatus.includes(VERSION_BLOCKED), 'a blocked save puts the version words in the form status');
+    walk.expect(blocked.snapshot.invalid.includes('Version name'), 'the blocked Version name is marked');
+    walk.expect(focusedOn(blocked.snapshot, 'Version name'), 'the blocked Version name has focus');
+
+    await page.focus(MILK_FIELD);
+    await save();
+    const again = await walk.step('blocked-again-same-field');
+    walk.expect(focusedOn(again.snapshot, 'Version name'), 'a second blocked save moves focus back to Version name');
+
+    await page.fill(MILK_FIELD, '90');
+    const grams = await walk.step('grams-edited-after-block');
+    walk.expect(grams.snapshot.invalid.length === 0, 'a grams edit clears the mark');
+    walk.expect(!(await pageHas(page, 'Enter a version.')), 'a grams edit clears the message');
+    walk.expect(grams.snapshot.formStatus.includes(VERSION_BLOCKED), 'a grams edit leaves the form status (D-05)');
+
+    await save();
+    await walk.step('blocked-again-after-grams');
+    await page.fill(NAME_FIELD, 'less milk');
+    const named = await walk.step('version-line-edited-after-block');
+    walk.expect(named.snapshot.invalid.length === 0, 'a version line edit clears the mark');
+    walk.expect(named.snapshot.formStatus.every((text) => text === ''), 'a version line edit clears the form status');
+    walk.expect(named.snapshot.pageStatus === '', 'a version line edit leaves the page status empty');
+
+    // A blocked grams line: the row is marked and takes focus.
+    await page.fill(MILK_FIELD, '');
+    await save();
+    const row = await walk.step('blocked-grams-line');
+    walk.expect(row.snapshot.invalid.length > 0, 'a blank grams line is marked');
+    walk.expect(focusedOn(row.snapshot, 'Whole milk, grams, portion 1'), 'the blocked grams line has focus');
+
+    await page.fill(MILK_FIELD, '90');
+    const rowFixed = await walk.step('blocked-grams-line-fixed');
+    walk.expect(rowFixed.snapshot.invalid.length === 0, 'editing the blocked grams line clears its mark');
+
+    // Each kind of pen edit after a block on the version line: which clear the
+    // form status (the announcer) and which leave it (D-05).
+    const edits = [
+      ['why', () => page.fill(WHY_FIELD, 'less milk is cooler')],
+      ['sheet-title', () => page.fill(SHEET_TITLE, 'Olive Oil Ice Cream, cooler')],
+      ['before-note', () => page.fill(BEFORE_NOTE, 'Chill the base overnight.')],
+      ['other-grams', () => page.fill(SUCROSE_FIELD, '70')],
+    ];
+    for (const [id, edit] of edits) {
+      await page.fill(NAME_FIELD, '');
+      await save();
+      const reblocked = await walk.step(`blocked-before-${id}-edit`);
+      walk.expect(reblocked.snapshot.invalid.includes('Version name'), `the version line is blocked before the ${id} edit`);
+      await edit();
+      const edited = await walk.step(`${id}-edited-after-block`);
+      walk.expect(edited.snapshot.invalid.length === 0, `a ${id} edit clears the mark`);
+    }
+
+    await page.fill(NAME_FIELD, '');
+    await save();
+    const last = await walk.step('blocked-before-cancel');
+    walk.expect(last.snapshot.invalid.length > 0, 'the pen is blocked before Cancel');
+    await cancelVersionPen(page);
+    await walk.afterDebounce();
+    const cancelled = await walk.step('cancelled', { stores: true });
+    walk.expect(cancelled.stores.drafts.length === 0, `Cancel discards the draft (${cancelled.stores.drafts.length})`);
+    walk.expect(cancelled.snapshot.pens.version === 0, 'Cancel closes the pen');
+  },
+]);
+
+// D-13 (b), the page status half: with the kept-draft notice on screen, which
+// pen edits clear it and which leave it (D-05). Each edit starts from a fresh
+// reload of the kept draft, so the notice is showing.
+SCENARIOS.push([
+  'version-pen-notice-edits',
+  async (walk) => {
+    const { page } = walk;
+    await walk.open(VERSION_ROUTE);
+    await openNextVersionPen(page);
+    await page.fill(NAME_FIELD, 'less milk, more cream');
+    await page.fill(MILK_FIELD, '100');
+    const edits = [
+      ['grams', () => page.fill(MILK_FIELD, '80')],
+      ['version-line', () => page.fill(NAME_FIELD, 'less milk')],
+      ['why', () => page.fill(WHY_FIELD, 'less milk is cooler')],
+      ['sheet-title', () => page.fill(SHEET_TITLE, 'Olive Oil Ice Cream, cooler')],
+      ['before-note', () => page.fill(BEFORE_NOTE, 'Chill the base overnight.')],
+      ['other-grams', () => page.fill(SUCROSE_FIELD, '70')],
+    ];
+    for (const [id, edit] of edits) {
+      await walk.afterDebounce();
+      await reload(page);
+      walk.expect(await waitForNotice(page), `the notice shows before the ${id} edit`);
+      await walk.step(`notice-shown-before-${id}-edit`);
+      await edit();
+      await walk.step(`${id}-edited-with-notice`);
+    }
+    await cancelVersionPen(page);
+    await walk.afterDebounce();
+    const cancelled = await walk.step('cancelled', { stores: true });
+    walk.expect(cancelled.stores.drafts.length === 0, `Cancel discards the draft (${cancelled.stores.drafts.length})`);
+  },
+]);
+
+// The record pen's edit handlers, one after another, each after a blocked
+// churn date: which clear the date sentence, the form status and the marks,
+// and what the clear controls announce. Fixes the per-handler differences
+// the record hook must keep (D-06, WR-03).
+SCENARIOS.push([
+  'record-pen-edit-handlers',
+  async (walk) => {
+    const { page } = walk;
+    const save = () => button(ceremony(page), 'Save batch').click();
+    const option = (group, value) =>
+      page.locator('label.segmented__option', { has: page.locator(`input[name="${group}"][value="${value}"]`) }).click();
+    await walk.open(VERSION_ROUTE);
+    await openRecordPen(page);
+    await addTasting(page);
+    // The controls a Clear needs something to clear. A mark-one pick (At draw)
+    // is offered only while its group holds no other mark (the axes and the
+    // churn segments), so those are cleared before it.
+    await markAxis(page, 'Hardness', 3);
+    await option('segment-exit-consistency', 'Wet, soupy');
+    await walk.step('set-up');
+
+    const edits = [
+      ['churn-field', () => page.fill(CHURN_DURATION, '30')],
+      ['tasting-field', () => page.fill(TASTING_NOTE, 'Soft.')],
+      ['segment', () => option('segment-airiness-estimated-', 'Medium, standard')],
+      ['axis-mark', () => markAxis(page, 'Sweetness', 3)],
+      ['axis-clear', () => page.getByRole('button', { name: 'Clear Hardness', exact: true }).click()],
+      ['axis-clear-last', () => page.getByRole('button', { name: 'Clear Sweetness', exact: true }).click()],
+      ['segment-clear', () => page.getByRole('button', { name: 'Clear Exit consistency', exact: true }).click()],
+      ['segment-clear-last', () => page.getByRole('button', { name: 'Clear Airiness (estimated)', exact: true }).click()],
+      ['mark-one', () => option('mo-atdraw', 'Nothing to note')],
+      ['mark-one-clear', () => page.getByRole('button', { name: 'Clear At draw', exact: true }).click()],
+      ['defect', () => page.locator('.chip-toggle', { hasText: /^Coarse, icy$/ }).click()],
+      ['declared-defect', () => page.locator('.chip-toggle', { hasText: /^Bitter$/ }).click()],
+      ['step-change', () => page.locator('label.method-step__strike-control', { has: page.locator('input[aria-label="Step 1, skipped"]') }).click()],
+      ['as-made', () => page.fill('input[aria-label="Whole milk, as made, grams, portion 1"]', '100')],
+    ];
+    for (const [id, edit] of edits) {
+      await save();
+      const blocked = await walk.step(`blocked-before-${id}`);
+      walk.expect(await pageHas(page, CHURN_DATE_SENTENCE), `the churn date is blocked before the ${id} edit`);
+      walk.expect(blocked.snapshot.formStatus.includes(CHURN_DATE_STATUS), `the form status reads the churn date words before the ${id} edit`);
+      await edit();
+      await walk.step(`${id}-after-block`);
+    }
+
+    await cancelRecordPen(page);
+    await walk.afterDebounce();
+    const cancelled = await walk.step('cancelled', { stores: true });
+    walk.expect(cancelled.stores.drafts.length === 0, `Cancel discards the draft (${cancelled.stores.drafts.length})`);
+  },
+]);
+
+// A version saved as a new version, then saved over.
+SCENARIOS.push([
+  'version-pen-save',
+  async (walk) => {
+    const { page } = walk;
+    await walk.open(VERSION_ROUTE);
+    const before = await dumpStores(page);
+    await openNextVersionPen(page);
+    await page.fill(NAME_FIELD, 'walk child');
+    await page.fill(MILK_FIELD, '95');
+    await button(page.locator(VERSION_PEN), 'Save as a new version').click();
+    await page.waitForFunction(() => location.pathname.endsWith('00000000-0000-4000-8000-000000000001'), null, { timeout: 5000 });
+    await page.waitForSelector('.notebook');
+    const saved = await walk.step('saved-as-new', { stores: true });
+    walk.expect(saved.snapshot.pageStatus === 'Version saved.', `the page status reads "Version saved." (${saved.snapshot.pageStatus})`);
+    walk.expect(saved.stores.versions.length === before.versions.length + 1, 'the versions store gains one record');
+    walk.expect(saved.snapshot.url !== VERSION_ROUTE, 'the URL becomes the child version');
+    walk.expect(saved.stores.drafts.length === 0, 'no draft is kept after the save');
+
+    await openNextVersionPen(page);
+    await page.fill(NAME_FIELD, 'walk child');
+    await page.fill(MILK_FIELD, '92');
+    await button(page.locator(VERSION_PEN), 'Save over this version').click();
+    await page.waitForSelector(VERSION_PEN, { state: 'detached' });
+    const over = await walk.step('saved-over', { stores: true });
+    const child = over.stores.versions.find((v) => v.id === '00000000-0000-4000-8000-000000000001');
+    walk.expect(Boolean(child) && JSON.stringify(child.rows).includes('"grams":92'), 'the child record carries 92 after the save over');
+    walk.expect(over.stores.versions.length === saved.stores.versions.length, 'a save over adds no record');
+    walk.expect(over.snapshot.pageStatus === 'Version saved.', `the page status reads "Version saved." after the save over (${over.snapshot.pageStatus})`);
+  },
+]);
+
+// D-13 (c), (d), (f): the record pen blocked on two measurements, then one
+// fixed, then the churn date.
+SCENARIOS.push([
+  'record-pen-blocked',
+  async (walk) => {
+    const { page } = walk;
+    const save = () => button(ceremony(page), 'Save batch').click();
+    await walk.open(VERSION_ROUTE);
+    await openRecordPen(page);
+    await walk.step('pen-opened');
+
+    await addTasting(page);
+    await page.fill(CHURN_DURATION, '-3');
+    await page.fill(TEMPERING, '-2');
+    await walk.step('measurements-typed');
+
+    await save();
+    const blocked = await walk.step('blocked-two-measurements');
+    walk.expect(blocked.snapshot.invalid.length === 2, `two measurements are marked (${blocked.snapshot.invalid.length})`);
+    walk.expect(blocked.snapshot.formStatus.includes(MEASURED_INVALID), 'the form status reads the marked measurements words');
+    walk.expect(
+      blocked.snapshot.focus?.ariaLabel === blocked.snapshot.invalid[0],
+      `the first marked measurement has focus (${blocked.snapshot.focus?.ariaLabel})`,
+    );
+
+    await page.fill(CHURN_DURATION, '30');
+    const fixed = await walk.step('one-measurement-fixed');
+    walk.expect(fixed.snapshot.invalid.length === 1, `exactly one mark remains (${fixed.snapshot.invalid.length})`);
+    walk.expect(fixed.snapshot.invalid[0]?.startsWith('Tempering'), 'the mark that remains is Tempering');
+
+    await page.fill(TEMPERING, '');
+    await save();
+    const dateBlocked = await walk.step('blocked-churn-date');
+    walk.expect(await pageHas(page, CHURN_DATE_SENTENCE), 'a blocked churn date says "Enter the date you churned."');
+    walk.expect(dateBlocked.snapshot.formStatus.includes(CHURN_DATE_STATUS), 'the form status reads the churn date words');
+
+    await page.locator(CHURN_DATE).first().fill('2026-10-09');
+    await walk.step('churn-date-typed');
+    walk.expect(!(await pageHas(page, CHURN_DATE_SENTENCE)), 'typing a date clears the date sentence');
+
+    await cancelRecordPen(page);
+    await walk.afterDebounce();
+    const cancelled = await walk.step('cancelled', { stores: true });
+    walk.expect(cancelled.stores.drafts.length === 0, `Cancel discards the draft (${cancelled.stores.drafts.length})`);
+    walk.expect(cancelled.snapshot.pens.record === 0, 'Cancel closes the pen');
+  },
+]);
+
+// A batch recorded with a tasting.
+SCENARIOS.push([
+  'record-pen-save',
+  async (walk) => {
+    const { page } = walk;
+    await walk.open(VERSION_ROUTE);
+    const before = await dumpStores(page);
+    await openRecordPen(page);
+    await page.locator(CHURN_DATE).first().fill('2026-10-09');
+    await page.fill(OUT_OF_MACHINE, '-6');
+    await page.fill(CHURN_DURATION, '30');
+    await addTasting(page);
+    await markAxis(page, 'Hardness', 3);
+    await page.fill(TASTING_NOTE, 'Soft, not greasy.');
+    await walk.step('filled');
+
+    await button(ceremony(page), 'Save batch').click();
+    await page.waitForFunction(() => location.pathname.endsWith('/batch/00000000-0000-4000-8000-000000000001'), null, { timeout: 5000 });
+    await page.waitForSelector('.notebook');
+    const saved = await walk.step('saved', { stores: true });
+    walk.expect(saved.stores.batches.length === before.batches.length + 1, 'the batches store gains one record');
+    walk.expect(saved.stores.drafts.length === 0, 'no draft is kept after the save');
+    walk.expect(saved.snapshot.pens.record === 0, 'the pen closes after the save');
+  },
+]);
+
+// D-13 (f): the record pen's kept draft through a reload, then Cancel.
+SCENARIOS.push([
+  'record-pen-kept-draft',
+  async (walk) => {
+    const { page } = walk;
+    await walk.open(VERSION_ROUTE);
+    await openRecordPen(page);
+    await page.locator(CHURN_DATE).first().fill('2026-10-09');
+    await page.fill(OUT_OF_MACHINE, '-6');
+    await addTasting(page);
+    await markAxis(page, 'Hardness', 3);
+    await walk.afterDebounce();
+    const typed = await walk.step('typed', { stores: true });
+    walk.expect(typed.stores.drafts.length === 1, `the drafts store holds one record (${typed.stores.drafts.length})`);
+
+    await reload(page);
+    walk.expect(await waitForNotice(page), `the notice reads "${KEPT}" after the reload`);
+    const reloaded = await walk.step('reloaded', { stores: true });
+    walk.expect(reloaded.snapshot.pens.record === 1, 'the record pen is open after the reload');
+    walk.expect(fieldValue(reloaded.snapshot, 'Churn date') === '2026-10-09', 'the churn date is in its field after the reload');
+    walk.expect(fieldValue(reloaded.snapshot, 'Out of machine') === '-6', 'Out of machine is in its field after the reload');
+
+    await cancelRecordPen(page);
+    await walk.afterDebounce();
+    const cancelled = await walk.step('cancelled', { stores: true });
+    walk.expect(cancelled.stores.drafts.length === 0, `Cancel discards the draft (${cancelled.stores.drafts.length})`);
+    walk.expect(cancelled.snapshot.pens.record === 0, 'Cancel closes the pen');
+  },
+]);
+
+// A correction of the seeded batch, saved.
+SCENARIOS.push([
+  'correct-save',
+  async (walk) => {
+    const { page } = walk;
+    await walk.open(BATCH_ROUTE);
+    await openCorrectPen(page);
+    await walk.step('pen-opened');
+    await page.fill(CHURN_DURATION, '31');
+    await walk.step('duration-edited');
+    await button(ceremony(page), 'Save batch').click();
+    await page.waitForSelector(PEN, { state: 'detached' });
+    const saved = await walk.step('saved', { stores: true });
+    const batch = saved.stores.batches.find((b) => b.id === BATCH_ID);
+    walk.expect(Boolean(batch) && batch.churn.churnDurationMinutes === 31, 'the seeded batch carries 31 after the correction');
+    walk.expect(Boolean(batch?.changed), 'the corrected batch carries a changed stamp');
+    walk.expect((saved.snapshot.pageStatus ?? '').startsWith('changed '), `the page status starts with "changed " (${saved.snapshot.pageStatus})`);
+  },
+]);
+
+// D-13 (f): the Correct pen's kept draft through a reload, then Cancel.
+SCENARIOS.push([
+  'correct-kept-draft',
+  async (walk) => {
+    const { page } = walk;
+    await walk.open(BATCH_ROUTE);
+    await openCorrectPen(page);
+    await page.fill(CHURN_DURATION, '31');
+    await walk.afterDebounce();
+    const typed = await walk.step('typed', { stores: true });
+    walk.expect(typed.stores.drafts.length === 1, `the drafts store holds one record (${typed.stores.drafts.length})`);
+
+    await reload(page);
+    walk.expect(await waitForNotice(page), `the notice reads "${KEPT}" after the reload`);
+    const reloaded = await walk.step('reloaded', { stores: true });
+    walk.expect(reloaded.snapshot.pens.record === 1, 'the Correct pen is open after the reload');
+    walk.expect(fieldValue(reloaded.snapshot, 'Churn duration') === '31', 'the edited duration is in its field after the reload');
+
+    await cancelRecordPen(page);
+    await walk.afterDebounce();
+    const cancelled = await walk.step('cancelled', { stores: true });
+    walk.expect(cancelled.stores.drafts.length === 0, `Cancel discards the draft (${cancelled.stores.drafts.length})`);
+    walk.expect(cancelled.snapshot.pens.record === 0, 'Cancel closes the pen');
+  },
+]);
+
+// D-13 (e): removing a tasting, restoring it, and what keeps the restore.
+SCENARIOS.push([
+  'tasting-remove-restore',
+  async (walk) => {
+    const { page } = walk;
+    await walk.open(BATCH_ROUTE);
+    await openCorrectPen(page);
+    const opened = await walk.step('pen-opened');
+    const seeded = fieldValue(opened.snapshot, 'Tasting temperature');
+    walk.expect(Boolean(seeded), `the seeded tasting temperature shows in the pen (${seeded})`);
+
+    await page.locator('.tasting-head__remove').click();
+    const removed = await walk.step('tasting-removed');
+    walk.expect(removed.snapshot.recordStatus === 'Tasting removed. You can restore it.', `the record status reads the removal words (${removed.snapshot.recordStatus})`);
+    walk.expect(hasButton(removed.snapshot, 'Restore tasting'), 'a Restore tasting button is present');
+
+    // Only the end-of-record ceremony carries the restore slot; the foot's does not.
+    await button(page, 'Restore tasting').click();
+    const restored = await walk.step('tasting-restored');
+    walk.expect(restored.snapshot.tastingStatus === 'Tasting restored.', `the tasting status reads the restore words (${restored.snapshot.tastingStatus})`);
+    walk.expect(fieldValue(restored.snapshot, 'Tasting temperature') === seeded, 'the tasting temperature holds its seeded value again');
+
+    await page.locator('.tasting-head__remove').click();
+    await walk.step('tasting-removed-again');
+    await page.fill(CHURN_DURATION, '33');
+    const churnEdited = await walk.step('churn-field-edited-after-removal');
+    walk.expect(hasButton(churnEdited.snapshot, 'Restore tasting'), 'a churn field edit keeps the Restore tasting button');
+    // A tasting-body edit while an undo is pending has no click path: Add
+    // tasting is not offered while a restore is pending, and the tasting body
+    // is collapsed. The walk records what the maker can see here instead.
+    walk.expect(!hasButton(churnEdited.snapshot, 'Add tasting'), 'Add tasting is not offered while a restore is pending');
+
+    await cancelRecordPen(page);
+    await walk.afterDebounce();
+    const cancelled = await walk.step('cancelled', { stores: true });
+    walk.expect(cancelled.stores.drafts.length === 0, `Cancel discards the draft (${cancelled.stores.drafts.length})`);
+  },
+]);
+
+// A tasting added to a batch recorded without one.
+SCENARIOS.push([
+  'tasting-save',
+  async (walk) => {
+    const { page } = walk;
+    await walk.open(VERSION_ROUTE);
+    await openRecordPen(page);
+    await page.locator(CHURN_DATE).first().fill('2026-10-09');
+    await button(ceremony(page), 'Save batch').click();
+    await page.waitForFunction(() => location.pathname.endsWith('/batch/00000000-0000-4000-8000-000000000001'), null, { timeout: 5000 });
+    await page.waitForSelector('.notebook');
+    const recorded = await walk.step('recorded', { stores: true });
+    const first = recorded.stores.batches.find((b) => b.id === '00000000-0000-4000-8000-000000000001');
+    walk.expect(Boolean(first) && !first.tasting, 'the new batch has no tasting');
+
+    await openCorrectPen(page);
+    await addTasting(page);
+    await markAxis(page, 'Hardness', 3);
+    await page.fill(TASTING_NOTE, 'Soft, not greasy.');
+    await walk.step('tasting-filled');
+    await button(ceremony(page), 'Save batch').click();
+    await page.waitForSelector(PEN, { state: 'detached' });
+    const saved = await walk.step('saved', { stores: true });
+    const batch = saved.stores.batches.find((b) => b.id === '00000000-0000-4000-8000-000000000001');
+    walk.expect(Boolean(batch?.tasting), 'the batch carries a tasting after the save');
+    walk.expect(JSON.stringify(batch?.tasting ?? {}).includes('Soft, not greasy.'), 'the stored tasting holds the note');
   },
 ]);
 

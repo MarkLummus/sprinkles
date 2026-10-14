@@ -10,6 +10,17 @@ Product truth lives in `product-requirements/` (read `README.md` first). This fi
 
 Make something you like, understand how it turned out, and know what to keep or change next time. If everything else fails, a maker must still be able to develop a recipe, make it from a printed sheet, and get back a record of what happened that the next version can cite.
 
+## Current Milestone: v1.1 Groundwork for creation
+
+**Goal:** The code is ready for recipe creation, which is the next milestone (v2). No creation UI ships here.
+
+**Target features:**
+- Refactor `RecipePage.jsx` so recording/tasting and the pen are separate, with pure helpers moved into `domain/` and the pen's state as pure operations behind a `usePenDraft` hook (decided 2026-10-14, `pure-ops`)
+- Framework-free creation primitives: create a recipe with a root version, a never-reused step-key allocator, a row-from-ingredient builder
+- The ingredient library as a store behind the repository seam, rows still copying their coefficients
+
+**Not in this milestone (Mark, 2026-10-14):** Phase 5's add, remove and reorder of steps and ingredients, the creation UI, custom scales and problems for a new recipe (SEED-261001-iq4 stays dormant), the storage upgrade path, import hardening. The database reset on a version bump stays until a recipe can be created from scratch (v2).
+
 ## Requirements
 
 ### Validated
@@ -25,11 +36,18 @@ Make something you like, understand how it turned out, and know what to keep or 
 
 ### Active
 
-Milestone 1 (accepted D14) shipped 2026-10-13. The next milestone is not defined yet (`/gsd-new-milestone`). Inputs so far, worked out with Mark on 2026-10-14 and held on Mark's List (row run-new-milestone-2):
+Milestone 1 (accepted D14) shipped 2026-10-13. Milestone v1.1 is the groundwork for recipe creation; creation itself is the next milestone (v2).
 
-- [ ] Groundwork for recipe creation: refactor `RecipePage.jsx` so creating and editing share one editor; framework-free creation primitives (create a recipe with a root version, a never-reused step-key allocator, a row-from-ingredient builder); the ingredient library as a store behind the repository seam, rows still copying their coefficients (ING-01)
-- [ ] Recipe creation in the Notebook: Phase 5's add, remove and reorder of steps and ingredients, Before you start, custom scales and problems for a new recipe, and Show changes for dropped steps
-- [ ] The database reset on a version bump stays until a recipe can be created from scratch; the upgrade path comes after
+v1.1 (this milestone):
+
+- [ ] Refactor `RecipePage.jsx` so creating and editing can share one editor: pure helpers into `domain/`, the pen's state as pure operations behind `usePenDraft`, the recording workflow extracted the same way, `RecipePage` left as the route shell
+- [ ] Framework-free creation primitives: create a recipe with a root version, a never-reused step-key allocator, a row-from-ingredient builder
+- [ ] The ingredient library as a store behind the repository seam, rows still copying their coefficients (groundwork for ING-01)
+
+Next milestone (v2), not scoped yet:
+
+- Recipe creation in the Notebook: Phase 5's add, remove and reorder of steps and ingredients, Before you start, custom scales and problems for a new recipe (SEED-261001-iq4), and Show changes for dropped steps
+- The database reset on a version bump stays until a recipe can be created from scratch; the upgrade path comes after
 
 ### Out of Scope
 
@@ -154,4 +172,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-14 after the v1 milestone*
+*Last updated: 2026-10-14 after starting milestone v1.1*

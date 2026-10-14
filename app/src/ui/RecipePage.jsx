@@ -19,9 +19,17 @@ import {
   derivePenState,
   isPenDraftDirty,
   penDraftVersion,
+  removePenNote,
   restoreStepFromVersion,
   setPenField,
-  toggleDraftRowLines,
+  setPenGrams,
+  setPenNoteText,
+  setPenStepField,
+  setPenStepTarget,
+  togglePenLine,
+  togglePenRowLines,
+  togglePenStepRemoved,
+  togglePenStepUses,
   usesListsDiffer,
 } from '../domain/penDraft.js';
 import { stepsWithStaleAmounts } from '../domain/uses.js';
@@ -663,7 +671,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // The plan's own pen draft, its blocked-save message and the field that
   // message names (usePenDraft owns all three).
   const versionPen = usePenDraft();
-  const { penDraft, blockedMessage, blockedTarget, setPenDraft, setBlockedMessage, setBlockedTarget } = versionPen;
+  const { penDraft, blockedMessage, blockedTarget } = versionPen;
   const [versionSaveAction, setVersionSaveAction] = useState(null);
   const versionSaveLockRef = useRef(false);
   // The History rail's draft node (03.5-05 Task 2, D-13): the day the
@@ -1891,20 +1899,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // portion and the removed flag untouched — the pen's amounts edit, the
   // split does not (CONTEXT.md phase boundary).
   function handleChangePenGrams(rowId, portionIndex, value) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
-    setPenDraft((prev) => ({
-      ...prev,
-      rows: {
-        ...prev.rows,
-        [rowId]: {
-          ...prev.rows[rowId],
-          portions: prev.rows[rowId].portions.map((portion, i) =>
-            i === portionIndex ? { ...portion, grams: value } : portion,
-          ),
-        },
-      },
-    }));
+    versionPen.edit(setPenGrams, rowId, portionIndex, value);
   }
 
   // Serves the orphaned-row flag's "remove this row" control only: it acts
@@ -1912,12 +1907,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // any grams and does not touch any step (route-recipe-version.md § 3).
   // Removal never cascades, so this is always the maker's own tap.
   function handleTogglePenRowRemoved(rowId) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
-    setPenDraft((prev) => ({
-      ...prev,
-      rows: { ...prev.rows, [rowId]: toggleDraftRowLines(prev.rows[rowId]) },
-    }));
+    versionPen.edit(togglePenRowLines, rowId);
   }
 
   // Removing a line sets only that portion's removed flag — every other
@@ -1925,20 +1915,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // Step 3's (sketch 011 decision 51, Mark's answer 1). The same handler
   // restores; it is always the maker's own tap.
   function handleTogglePenLineRemoved(rowId, portionIndex) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
-    setPenDraft((prev) => ({
-      ...prev,
-      rows: {
-        ...prev.rows,
-        [rowId]: {
-          ...prev.rows[rowId],
-          portions: prev.rows[rowId].portions.map((portion, i) =>
-            i === portionIndex ? { ...portion, removed: !portion.removed } : portion,
-          ),
-        },
-      },
-    }));
+    versionPen.edit(togglePenLine, rowId, portionIndex);
   }
 
   // A step field setter for leadIn/instruction/purpose/aside (03-02):
@@ -1946,12 +1923,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // file's own call sites, never a maker-influenced key, so a computed
   // property name here carries no T-02-32 risk.
   function handleChangePenStepField(stepN, field, value) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
-    setPenDraft((prev) => ({
-      ...prev,
-      method: prev.method.map((step) => (step.n === stepN ? { ...step, [field]: value } : step)),
-    }));
+    versionPen.edit(setPenStepField, stepN, field, value);
   }
 
   // A target chip's label or value, matched by its index within the
@@ -1959,33 +1931,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // mid-edit, so matching by index avoids two chips momentarily colliding
   // on the same label while the maker types.
   function handleChangePenStepTarget(stepN, targetIndex, field, value) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
-    setPenDraft((prev) => ({
-      ...prev,
-      method: prev.method.map((step) => {
-        if (step.n !== stepN) return step;
-        const targets = step.targets.map((target, index) => (index === targetIndex ? { ...target, [field]: value } : target));
-        return { ...step, targets };
-      }),
-    }));
+    versionPen.edit(setPenStepTarget, stepN, targetIndex, field, value);
   }
 
   // The step's uses list, written through a filter and a concat
   // (route-recipe-version.md § 3), never a bare bracket write — a
   // different fact from the row's own step allocation, and both are kept.
   function handleTogglePenStepUses(stepN, rowId) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
-    setPenDraft((prev) => ({
-      ...prev,
-      method: prev.method.map((step) => {
-        if (step.n !== stepN) return step;
-        const uses = step.uses ?? [];
-        const nextUses = uses.includes(rowId) ? uses.filter((id) => id !== rowId) : uses.concat(rowId);
-        return { ...step, uses: nextUses };
-      }),
-    }));
+    versionPen.edit(togglePenStepUses, stepN, rowId);
   }
 
   // Removing sets only the draft step's removed flag — removal never
@@ -1993,12 +1946,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // step's own control or the removed-row cross-flag's "remove this step"
   // control.
   function handleTogglePenStepRemoved(stepN) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
-    setPenDraft((prev) => ({
-      ...prev,
-      method: prev.method.map((step) => (step.n === stepN ? { ...step, removed: !step.removed } : step)),
-    }));
+    versionPen.edit(togglePenStepRemoved, stepN);
   }
 
   // Cancel on an open step (sketch 011 decisions_recorded 5, decision 1;
@@ -2007,9 +1955,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // the same clear-blocked-state shape every other pen-step handler above
   // already follows.
   function handleRestorePenStep(stepN) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
-    setPenDraft((prev) => restoreStepFromVersion(prev, version, stepN));
+    versionPen.edit(restoreStepFromVersion, version, stepN);
   }
 
   // An authored note's text, and the inherited-from marker it carries
@@ -2019,29 +1965,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // reader (Authored.jsx included) can read `note.inheritedFrom` directly
   // rather than re-deriving it.
   function handleChangePenNoteText(listKey, index, value) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
-    setPenDraft((prev) => {
-      const originalNote = version.authored[listKey][index];
-      const notes = prev.authored[listKey].map((note, i) =>
-        i === index
-          ? { ...note, text: value, inheritedFrom: value === originalNote.text ? originalNote.inheritedFrom : null }
-          : note,
-      );
-      return { ...prev, authored: { ...prev.authored, [listKey]: notes } };
-    });
+    versionPen.edit(setPenNoteText, version, listKey, index, value);
   }
 
   // A note can be removed per note (route-recipe-version.md § 3) — an
   // outright removal from the list, not a struck-in-place flag: an
   // authored note carries no cross-flag concern the way a row or step does.
   function handleRemovePenNote(listKey, index) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
-    setPenDraft((prev) => ({
-      ...prev,
-      authored: { ...prev.authored, [listKey]: prev.authored[listKey].filter((_, i) => i !== index) },
-    }));
+    versionPen.edit(removePenNote, listKey, index);
   }
 
   // Shared by both save paths: the one message that blocks the save is

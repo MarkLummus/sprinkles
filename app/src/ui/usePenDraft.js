@@ -90,10 +90,5 @@ export function usePenDraft() {
     close,
     restore,
     checkSave,
-    // Raw setters stay on the return until the other pen handlers have
-    // moved onto edit().
-    setPenDraft,
-    setBlockedMessage,
-    setBlockedTarget,
   };
 }

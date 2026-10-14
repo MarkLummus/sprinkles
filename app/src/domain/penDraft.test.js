@@ -10,9 +10,18 @@ import {
   penDraftVersion,
   penFieldsFromDraft,
   penSaveBlock,
+  removePenNote,
   restoreStepFromVersion,
   setPenField,
+  setPenGrams,
+  setPenNoteText,
+  setPenStepField,
+  setPenStepTarget,
   toggleDraftRowLines,
+  togglePenLine,
+  togglePenRowLines,
+  togglePenStepRemoved,
+  togglePenStepUses,
 } from './penDraft.js';
 
 function clone() {
@@ -340,6 +349,140 @@ describe('penFieldsFromDraft', () => {
     expect(second).toEqual(first);
     expect(version).toEqual(versionBefore);
     expect(draft).toEqual(draftBefore);
+  });
+});
+
+// Every op returns a new draft, leaves its input as it was, and answers the
+// same twice on one input.
+function expectPure(op, draft, ...args) {
+  const before = structuredClone(draft);
+  const first = op(draft, ...args);
+  const second = op(draft, ...args);
+  expect(first).not.toBe(draft);
+  expect(second).toEqual(first);
+  expect(draft).toEqual(before);
+  return first;
+}
+
+describe('setPenGrams', () => {
+  it("writes one portion's raw string and leaves the other portions and every removed flag", () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    const split = version.rows[0];
+    expect(split.portions.length).toBe(2);
+    draft.rows[split.id].portions[1].removed = true;
+    const next = expectPure(setPenGrams, draft, split.id, 0, '12.');
+    expect(next.rows[split.id].portions[0].grams).toBe('12.');
+    expect(next.rows[split.id].portions[1]).toEqual(draft.rows[split.id].portions[1]);
+    expect(next.rows[version.rows[1].id]).toBe(draft.rows[version.rows[1].id]);
+  });
+});
+
+describe('togglePenRowLines', () => {
+  it('takes every line out, then puts every line back', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    const row = version.rows[0];
+    const out = expectPure(togglePenRowLines, draft, row.id);
+    expect(out.rows[row.id].portions.every((portion) => portion.removed === true)).toBe(true);
+    const back = expectPure(togglePenRowLines, out, row.id);
+    expect(back.rows[row.id].portions.every((portion) => portion.removed === false)).toBe(true);
+  });
+});
+
+describe('togglePenLine', () => {
+  it('flips one portion only', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    const row = version.rows[0];
+    const next = expectPure(togglePenLine, draft, row.id, 1);
+    expect(next.rows[row.id].portions[1].removed).toBe(true);
+    expect(next.rows[row.id].portions[0]).toEqual(draft.rows[row.id].portions[0]);
+    const back = togglePenLine(next, row.id, 1);
+    expect(back.rows[row.id].portions[1].removed).toBe(false);
+  });
+});
+
+describe('setPenStepField', () => {
+  it('changes one field of one step', () => {
+    const draft = cleanDraftFor(clone());
+    const next = expectPure(setPenStepField, draft, 2, 'leadIn', 'New lead-in');
+    expect(next.method.find((step) => step.n === 2).leadIn).toBe('New lead-in');
+    expect(next.method.find((step) => step.n === 1)).toBe(draft.method.find((step) => step.n === 1));
+    expect(next.method.find((step) => step.n === 3)).toBe(draft.method.find((step) => step.n === 3));
+  });
+});
+
+describe('setPenStepTarget', () => {
+  it('changes one target of one step, by index', () => {
+    const draft = cleanDraftFor(clone());
+    const next = expectPure(setPenStepTarget, draft, 2, 1, 'value', '3 min');
+    const step = next.method.find((candidate) => candidate.n === 2);
+    expect(step.targets[1]).toEqual({ label: 'hold', value: '3 min' });
+    expect(step.targets[0]).toEqual({ label: 'temp', value: '85 °C' });
+    expect(next.method.find((candidate) => candidate.n === 1)).toBe(draft.method.find((candidate) => candidate.n === 1));
+  });
+});
+
+describe('togglePenStepUses', () => {
+  it('adds a row id, then removes it', () => {
+    const draft = cleanDraftFor(clone());
+    const added = expectPure(togglePenStepUses, draft, 1, 'row-06');
+    expect(added.method.find((step) => step.n === 1).uses).toEqual(['row-09', 'row-03', 'row-06']);
+    const removed = expectPure(togglePenStepUses, added, 1, 'row-06');
+    expect(removed.method.find((step) => step.n === 1).uses).toEqual(['row-09', 'row-03']);
+  });
+
+  it('reads an absent uses list as empty', () => {
+    const draft = cleanDraftFor(clone());
+    delete draft.method[0].uses;
+    const next = togglePenStepUses(draft, 1, 'row-06');
+    expect(next.method[0].uses).toEqual(['row-06']);
+  });
+});
+
+describe('togglePenStepRemoved', () => {
+  it('flips one step', () => {
+    const draft = cleanDraftFor(clone());
+    const next = expectPure(togglePenStepRemoved, draft, 2);
+    expect(next.method.find((step) => step.n === 2).removed).toBe(true);
+    expect(next.method.find((step) => step.n === 1)).toBe(draft.method.find((step) => step.n === 1));
+    expect(togglePenStepRemoved(next, 2).method.find((step) => step.n === 2).removed).toBe(false);
+  });
+});
+
+describe('setPenNoteText', () => {
+  function inheritedVersion() {
+    const version = clone();
+    version.authored.beforeYouStart[0].inheritedFrom = 'v-earlier';
+    return version;
+  }
+
+  it('keeps inheritedFrom while the text equals the inherited note, and clears it once the text differs', () => {
+    const version = inheritedVersion();
+    const draft = cleanDraftFor(version);
+    const original = version.authored.beforeYouStart[0].text;
+    const edited = expectPure(setPenNoteText, draft, version, 'beforeYouStart', 0, 'Something else');
+    expect(edited.authored.beforeYouStart[0]).toEqual({ text: 'Something else', inheritedFrom: null });
+    const typedBack = setPenNoteText(edited, version, 'beforeYouStart', 0, original);
+    expect(typedBack.authored.beforeYouStart[0]).toEqual({ text: original, inheritedFrom: 'v-earlier' });
+    expect(edited.authored.beforeYouStart[1]).toBe(draft.authored.beforeYouStart[1]);
+  });
+
+  it('leaves the version as it was', () => {
+    const version = inheritedVersion();
+    const draft = cleanDraftFor(version);
+    const before = structuredClone(version);
+    setPenNoteText(draft, version, 'beforeYouStart', 0, 'Something else');
+    expect(version).toEqual(before);
+  });
+});
+
+describe('removePenNote', () => {
+  it('removes by index', () => {
+    const draft = cleanDraftFor(clone());
+    const next = expectPure(removePenNote, draft, 'beforeYouStart', 0);
+    expect(next.authored.beforeYouStart).toEqual([draft.authored.beforeYouStart[1]]);
   });
 });
 

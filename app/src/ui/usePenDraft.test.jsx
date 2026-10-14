@@ -168,4 +168,15 @@ describe('usePenDraft', () => {
       unmount();
     }
   });
+
+  it('returns the draft, the block, and the five methods, and no raw setter', () => {
+    const { state, unmount } = mount();
+    try {
+      expect(Object.keys(state.hook).sort()).toEqual(
+        ['penDraft', 'blockedMessage', 'blockedTarget', 'edit', 'open', 'close', 'restore', 'checkSave'].sort(),
+      );
+    } finally {
+      unmount();
+    }
+  });
 });

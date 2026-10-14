@@ -6,7 +6,7 @@
     {
       "number": "5",
       "name": "Split the recipe page",
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "number": "6",
@@ -21,8 +21,8 @@
   ],
   "next": {
     "command": "/gsd:progress --next",
-    "label": "Advance to the next step",
-    "reason": "Phase 05 of 3 · 0% · executing"
+    "label": "Advance to the next step (plan phase 06)",
+    "reason": "Phase 06 of 3 — needs a plan"
   },
-  "updated_at": "2026-10-14T05:28:38.605Z"
+  "updated_at": "2026-10-14T12:10:31.906Z"
 }

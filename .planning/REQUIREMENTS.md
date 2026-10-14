@@ -35,7 +35,7 @@ Recipe creation, the next milestone. Not scoped yet.
 
 ### Recipe creation
 
-- **REC-03**: Phase 5's add, remove and reorder of steps and ingredients, and Before you start, in the pen and for a new recipe.
+- **REC-03**: Version evolution (the former Phase 5): add, remove and reorder of steps and ingredients, and Before you start, in the pen and for a new recipe.
 - **REC-04**: Custom scales and problems for a new recipe (SEED-261001-iq4, G-03.5-2b).
 - **REC-05**: Show changes draws the steps and rows a version dropped, and marks an added step.
 
@@ -68,22 +68,22 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| EDIT-01 | TBD | Pending |
-| EDIT-02 | TBD | Pending |
-| EDIT-03 | TBD | Pending |
-| EDIT-04 | TBD | Pending |
-| MAKE-01 | TBD | Pending |
-| MAKE-02 | TBD | Pending |
-| MAKE-03 | TBD | Pending |
-| LIB-01 | TBD | Pending |
-| LIB-02 | TBD | Pending |
-| LIB-03 | TBD | Pending |
+| EDIT-01 | Phase 5 | Pending |
+| EDIT-02 | Phase 5 | Pending |
+| EDIT-03 | Phase 5 | Pending |
+| EDIT-04 | Phase 5 | Pending |
+| MAKE-01 | Phase 7 | Pending |
+| MAKE-02 | Phase 7 | Pending |
+| MAKE-03 | Phase 7 | Pending |
+| LIB-01 | Phase 6 | Pending |
+| LIB-02 | Phase 6 | Pending |
+| LIB-03 | Phase 6 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 10 total
-- Mapped to phases: 0
-- Unmapped: 10 ⚠️
+- Mapped to phases: 10
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-10-14*
-*Last updated: 2026-10-14 after defining milestone v1.1*
+*Last updated: 2026-10-14 after the v1.1 roadmap mapped every requirement to a phase*

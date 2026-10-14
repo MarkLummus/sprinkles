@@ -19,7 +19,7 @@ Make something you like, understand how it turned out, and know what to keep or 
 - Framework-free creation primitives: create a recipe with a root version, a never-reused step-key allocator, a row-from-ingredient builder
 - The ingredient library as a store behind the repository seam, rows still copying their coefficients
 
-**Not in this milestone (Mark, 2026-10-14):** Phase 5's add, remove and reorder of steps and ingredients, the creation UI, custom scales and problems for a new recipe (SEED-261001-iq4 stays dormant), the storage upgrade path, import hardening. The database reset on a version bump stays until a recipe can be created from scratch (v2).
+**Not in this milestone (Mark, 2026-10-14):** Version evolution (the former Phase 5): add, remove and reorder of steps and ingredients, the creation UI, custom scales and problems for a new recipe (SEED-261001-iq4 stays dormant), the storage upgrade path, import hardening. The database reset on a version bump stays until a recipe can be created from scratch (v2).
 
 ## Requirements
 
@@ -46,7 +46,7 @@ v1.1 (this milestone):
 
 Next milestone (v2), not scoped yet:
 
-- Recipe creation in the Notebook: Phase 5's add, remove and reorder of steps and ingredients, Before you start, custom scales and problems for a new recipe (SEED-261001-iq4), and Show changes for dropped steps
+- Recipe creation in the Notebook: Version evolution (the former Phase 5): add, remove and reorder of steps and ingredients, Before you start, custom scales and problems for a new recipe (SEED-261001-iq4), and Show changes for dropped steps
 - The database reset on a version bump stays until a recipe can be created from scratch; the upgrade path comes after
 
 ### Out of Scope

@@ -3,10 +3,10 @@ gsd_state_version: "1.0"
 milestone: v1.1
 milestone_name: Groundwork for creation
 status: planning
-last_updated: "2026-10-14T04:15:41.682Z"
+last_updated: "2026-10-14T04:26:55.000Z"
 last_activity: 2026-10-14
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,19 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-22)
+See: .planning/PROJECT.md (updated 2026-10-14)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 04 — Prepare the next version for making
+**Current focus:** Phase 5 — Split the recipe page (milestone v1.1 Groundwork for creation, Phases 5-7)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 5 (Split the recipe page)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-10-14 — Milestone v1.1 started
+Status: Ready to plan
+Last activity: 2026-10-14 — v1.1 roadmap created: Phases 5-7, 10 of 10 requirements mapped
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -313,6 +315,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 04]: 04-08: The Instructions follow the page row's tail wherever the row ends and open their own page only when both columns end on the formula page (Mark, option-a); rule lives in instructionsFollowRow
 - [Phase 04]: A date input draws its focus ring on :focus, because WebKit never matches :focus-visible on it
 - [Phase 04]: The keyboard walk starts at the page's first stop, not its first link: the fly-out Places button precedes it from 724 to 1589
+- [Roadmap v1.1, 2026-10-14]: Three phases: 5 Split the recipe page (EDIT-01 to EDIT-04), 6 The ingredient library in the store (LIB-01 to LIB-03), 7 Creation primitives (MAKE-01 to MAKE-03). Phase 7 follows Phase 6 because MAKE-03 builds rows from the library entry shape LIB-01 settles; Phase 6 does not need Phase 5. The former Phase 5 (Version evolution) is deferred to v2 (Mark, 2026-10-14) and listed under the roadmap's v2 candidates, to be numbered when v2 is defined.
 
 ### Pending Todos
 
@@ -346,6 +349,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
   - [Phase 4 carry, UX1-01] No live announcement when a rule marks its rows; PAC, POD, MSNF carry no plain-language gloss (D11).
 - [Impeccable 2026-09-08 -> new phase between 3 and 4] The code work for these confirmed revisions is to be planned as a phase inserted between Phase 3 and Phase 4, not as quick tasks: the imprint (front-matter band, every control out of the spread, the save pair repeated at the foot), the binder's control treatment and its new `--focus-outline-width` token, the pen's printed-paragraph prose fields with purpose and aside on demand and the uses line, native date inputs with the calendar icon hidden, and Escape closing only an untouched pen. Briefs: `.impeccable/surfaces/route-recipe.md` (§ 3 the imprint, § 6 the binder and § 8 Controls), `route-recipe-version.md`, `route-recipe-batch.md`; critique snapshot `.impeccable/critique/2026-09-08T12-33-31Z__app-src-ui-recipepage-jsx.md` (25/40, three P1s).
 - [Phase 03.5, Plan 14] Task 2's device human-check (iPad landscape 1366, iPad portrait 1024, iPhone 393, and a desktop board comparison) is deferred to end-of-phase UAT; must run before phase 03.5 UAT closes out. See 03.5-14-SUMMARY.md "Deferred Human Verification".
+- [v1.1 → Phase 6] The reset bound: `app/src/store/db.js` resets only profiles below 8 and says a later bump writes its own lift (04-04, "records Mark makes from now on are real"); `REQUIREMENTS.md` says the reset applies as usual on the library bump. Adding a store needs neither, so Phase 6 discussion settles it after checking for real stored records.
 
 ### Quick Tasks Completed
 
@@ -522,6 +526,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - Phase 03.6 inserted after Phase 3: Per-step shared ingredients (URGENT)
 - Phase 03.7 inserted after Phase 03.6: Before you start as its own Sheet section (URGENT)
 - Phase 03.7.1 inserted after Phase 03.7: Hide Time to draw temp. on every screen and rename the batch log and tasting log; the stored field stays for now (URGENT)
+- v1.1 roadmap created (2026-10-14): Phase 5 Split the recipe page, Phase 6 The ingredient library in the store, Phase 7 Creation primitives. The former Phase 5 (Version evolution) left the active phase list for the roadmap's v2 candidates (Mark, 2026-10-14)
 
 ## Deferred Items
 
@@ -536,10 +541,10 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-14T03:55:00.000Z
-Stopped at: Milestone v1 closed; next milestone not defined (inputs on Mark's List, row run-new-milestone-2)
+Last session: 2026-10-14T04:26:55.000Z
+Stopped at: v1.1 roadmap created (Phases 5-7); Phase 5 ready to discuss
 Resume file: None
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Discuss Phase 5 with /gsd-discuss-phase 5, then plan it with /gsd-plan-phase 5

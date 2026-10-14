@@ -24,11 +24,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { MALFORMED_NUMBER_ENTRY } from './BatchRow.jsx';
 import {
-  buildChurnFieldsFromDraft,
-  buildTastingFieldsFromDraft,
   CHURN_DATE_BLOCKED_STATUS,
   BATCH_SAVE_ERROR,
-  batchSavedStatus,
   VERSION_BLOCKED_STATUS,
   MEASURED_INVALID_STATUS,
   TASTING_REMOVED_EMPTY_STATUS,
@@ -39,6 +36,9 @@ import { isLineRemoved } from '../domain/rows.js';
 import { derivePenState, isPenDraftDirty, restoreStepFromVersion, toggleDraftRowLines } from '../domain/penDraft.js';
 import {
   CHURN_DATE_BLOCKED_MESSAGE,
+  batchSavedStatus,
+  buildChurnFieldsFromDraft,
+  buildTastingFieldsFromDraft,
   draftFromBatch,
   isDraftDirty,
   isTastingBodyField,

@@ -28,7 +28,7 @@ import { createBatch } from '../domain/batch.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { oliveOilRecipe } from '../data/olive-oil.js';
 import { exportStore, importStore } from '../store/transfer.js';
-import { buildChurnFieldsFromDraft, buildTastingFieldsFromDraft } from './RecipePage.jsx';
+import { buildChurnFieldsFromDraft, buildTastingFieldsFromDraft } from '../domain/recordDraft.js';
 
 const noop = () => {};
 

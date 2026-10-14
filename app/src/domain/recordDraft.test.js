@@ -4,10 +4,14 @@ import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { BATTERY_FIELDS } from './battery.js';
 import {
   CHURN_DATE_BLOCKED_MESSAGE,
+  batchSavedStatus,
   blankRecordDraft,
+  buildChurnFieldsFromDraft,
+  buildTastingFieldsFromDraft,
   draftFromBatch,
   isDraftDirty,
   isTastingBodyField,
+  parseAllMeasuredFields,
   removeTastingSection,
   restoreDraftFromUndo,
   tastingHasInk,
@@ -199,6 +203,68 @@ describe('removeTastingSection', () => {
     const first = removeTastingSection(draft);
     expect(draft).toEqual(before);
     expect(removeTastingSection(draft)).toEqual(first);
+  });
+});
+
+describe('buildChurnFieldsFromDraft and buildTastingFieldsFromDraft', () => {
+  function builtInputs() {
+    const draft = draftFromBatch(structuredClone(augustSecondBatch));
+    const { parsed } = parseAllMeasuredFields(draft);
+    return { draft, parsed };
+  }
+
+  it('leave the draft and parsed unchanged, and answer the same twice', () => {
+    const { draft, parsed } = builtInputs();
+    const draftBefore = structuredClone(draft);
+    const parsedBefore = structuredClone(parsed);
+    const churn = buildChurnFieldsFromDraft(draft, parsed);
+    const tasting = buildTastingFieldsFromDraft(draft, parsed);
+    expect(draft).toEqual(draftBefore);
+    expect(parsed).toEqual(parsedBefore);
+    expect(buildChurnFieldsFromDraft(draft, parsed)).toEqual(churn);
+    expect(buildTastingFieldsFromDraft(draft, parsed)).toEqual(tasting);
+  });
+
+  it('turn blank strings into null and parsed measurements into numbers', () => {
+    const { draft, parsed } = builtInputs();
+    const blank = { ...blankRecordDraft(), churnDate: '2026-08-09' };
+    const { parsed: blankParsed } = parseAllMeasuredFields(blank);
+    const churn = buildChurnFieldsFromDraft(blank, blankParsed);
+    expect(churn.churnDate).toBe('2026-08-09');
+    expect(churn.atDraw).toBe(null);
+    expect(churn.ingredientNotes).toBe(null);
+    expect(churn.outOfMachineTempC).toBe(null);
+    const tasting = buildTastingFieldsFromDraft(blank, blankParsed);
+    expect(tasting.note).toBe(null);
+    expect(tasting.defects).toBe(null);
+    expect(tasting.tastingTempC).toBe(null);
+    expect(buildTastingFieldsFromDraft(draft, parsed).tastingTempC).toBe(parsed.tastingTempC.value);
+  });
+
+  it('drops an as-made row whose every portion is blank, and keeps one with a number', () => {
+    const draft = { ...blankRecordDraft(), churnDate: '2026-08-09', asMade: { empty: ['', ''], some: ['12', ''] } };
+    const { parsed } = parseAllMeasuredFields(draft);
+    const churn = buildChurnFieldsFromDraft(draft, parsed);
+    expect(Object.keys(churn.asMade)).toEqual(['some']);
+    expect(churn.asMade.some).toEqual([12, null]);
+  });
+});
+
+describe('batchSavedStatus', () => {
+  it('says "changed" for a record that carries a changed date', () => {
+    const record = { ...structuredClone(augustSecondBatch), changed: '2026-08-12T00:00:00.000Z' };
+    const before = structuredClone(record);
+    const first = batchSavedStatus(record);
+    expect(first.startsWith('changed ')).toBe(true);
+    expect(record).toEqual(before);
+    expect(batchSavedStatus(record)).toBe(first);
+  });
+
+  it('says "recorded" for a record with no changed date', () => {
+    const record = { ...structuredClone(augustSecondBatch), changed: null };
+    const first = batchSavedStatus(record);
+    expect(first.startsWith('recorded ')).toBe(true);
+    expect(batchSavedStatus(record)).toBe(first);
   });
 });
 

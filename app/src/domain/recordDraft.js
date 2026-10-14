@@ -3,6 +3,8 @@
 // checked by pure functions, which RecipePage drives through useRecordDraft
 // (Phase 5, D-01).
 import { BATTERY_FIELDS, parseMeasuredDraft } from './battery.js';
+import { formatRecordDate } from './batch.js';
+import { parseGramsDraft } from './lineage.js';
 import { usesListsDiffer } from './penDraft.js';
 
 // The record pen's blocked-date sentence (D-05) — one constant, read from
@@ -357,4 +359,66 @@ export function restoreDraftFromUndo(draft, pendingUndo) {
 // calls this op instead.
 export function removeTastingSection(draft) {
   return { ...draft, tastingOpen: false, ...blankTastingFields() };
+}
+
+function toTextOrNull(raw) {
+  return raw === '' ? null : raw;
+}
+
+// buildChurnFieldsFromDraft(draft, parsed) -> the churnFields object
+// createBatch/completeRecord both take. `parsed` is
+// parseAllMeasuredFields' own per-field result — reused here so a save
+// never re-parses a field it has already validated. asMade parses through
+// parseGramsDraft exactly as
+// the plan pen's own as-made column already does (D-10): a value that
+// rule rejects, or a blank portion, becomes null, the same fact as a
+// portion never touched; a row whose every portion resolves to null drops
+// its key entirely.
+export function buildChurnFieldsFromDraft(draft, parsed) {
+  const asMade = {};
+  for (const [rowId, rawValues] of Object.entries(draft.asMade)) {
+    const parsedValues = rawValues.map((rawValue) => parseGramsDraft(rawValue));
+    if (parsedValues.some((value) => value !== null)) asMade[rowId] = parsedValues;
+  }
+  return {
+    churnDate: draft.churnDate === '' ? null : draft.churnDate,
+    asMade,
+    stepChanges: draft.stepChanges,
+    outOfMachineTempC: parsed.outOfMachineTempC.value,
+    churnDurationMinutes: parsed.churnDurationMinutes.value,
+    exitConsistency: draft.exitConsistency === '' ? null : draft.exitConsistency,
+    airiness: draft.airiness === '' ? null : draft.airiness,
+    atDraw: draft.atDraw === '' ? null : draft.atDraw,
+    atTheMachine: toTextOrNull(draft.atTheMachine),
+    ingredientNotes: toTextOrNull(draft.ingredientNotes),
+    nextTimeNote: toTextOrNull(draft.nextTimeNote),
+  };
+}
+
+// buildTastingFieldsFromDraft(draft, parsed) -> the tastingFields object
+// createBatch/completeRecord take when the tasting side holds ink
+// (tastingHasInk above decides whether this is even called).
+export function buildTastingFieldsFromDraft(draft, parsed) {
+  return {
+    tastedDate: draft.tastedDate === '' ? null : draft.tastedDate,
+    temperingMinutes: parsed.temperingMinutes.value,
+    tastingTempC: parsed.tastingTempC.value,
+    marks: draft.marks,
+    note: toTextOrNull(draft.note),
+    defects: draft.defects.length > 0 ? draft.defects : null,
+    declaredDefects: draft.declaredDefects.length > 0 ? draft.declaredDefects : null,
+    fromFreezer: draft.fromFreezer === '' ? null : draft.fromFreezer,
+    meltTestG: parsed.meltTestG.value,
+    meltStyle: draft.meltStyle === '' ? null : draft.meltStyle,
+  };
+}
+
+// An amendment (completeRecord stamps `changed`; createBatch writes null)
+// announces its own date in the read view's Changed vocabulary, not the
+// original recording date. The page already shows the version (Mark,
+// 2026-10-04), so neither sentence repeats it.
+export function batchSavedStatus(record) {
+  return record.changed
+    ? `changed ${formatRecordDate(record.changed)}`
+    : `recorded ${formatRecordDate(record.recordedAt)}`;
 }

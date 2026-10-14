@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "G-03-3 — In the pen, the removal cross-flags between rows and method steps misbehave in three ways: a step flagged by a removed row shows its live edit fields with a struck copy beneath; removing step 1 flags none of the two rows it uses; removing step 2 flags its rows but each flagged row's step selector then shows Step 1 as selected."
 created: 2026-09-07T00:00:00Z
 updated: 2026-09-07T00:00:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

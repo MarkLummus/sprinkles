@@ -1,0 +1,753 @@
+# Roadmap: Sprinkles
+
+## Overview
+
+Milestone 1 delivers one outcome (D14): Mark can develop and prepare the next version of the olive oil recipe inside Sprinkles. The roadmap follows that working case in the order the maker lives it — read the churned recipe and its figures, record what actually happened in the 2 Aug batch, develop version 2 against that evidence, then take a bench sheet to the kitchen. Each phase is a vertical slice through seed data, domain math, storage seam, and screen; none is a technical layer. Storage stays a provisional local store behind a repository seam (D16 open), the ingredient seed dataset is chosen during phase planning, and the React + Vite + JSX stack is provisional until Phase 1 ships on real code.
+
+## Phases
+
+**Phase Numbering:**
+
+- Integer phases (1, 2, 3): Planned milestone work
+- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+
+Decimal phases appear between their surrounding integers in numeric order.
+
+- [x] **Phase 1: Read the churned recipe** - The churned olive oil recipe and its balance figures are legible in the app instead of on paper (completed 2026-09-05)
+- [x] **Phase 2: Record the first batch** - The 2 Aug batch enters Sprinkles as what actually happened, snapshotted against the version it used (completed 2026-09-06)
+- [x] **Phase 3: Develop the next version** - Version 2 is created, adjusted, and compared against the churned version without disturbing it (completed 2026-09-08)
+- [x] **Phase 03.1: The imprint and the binder** (INSERTED) - The recipe page gains its front-matter band and every control leaves the printed spread; the pen reads as the page; the binder replaces browser chrome (completed 2026-09-09)
+- [x] **Phase 03.2: The portion and the reset** (INSERTED) - Portions become the authored amount and the total derives; `step`/`splitStep` retire; the store resets to the new shape and the seed is rewritten, rather than migrating (completed 2026-09-10)
+- [x] **Phase 03.3: The front-matter rows and the page in step order** (INSERTED) - The imprint and the tray retire into two front-matter rows; the table reads in step order; the pen's method opens read-only (completed 2026-09-10)
+- [x] **Phase 03.3.1: The full battery: the record pen rebuilt from sketch 007** (INSERTED) - The record pen carries the full tasting battery as sketch 007 draws it (completed 2026-09-13)
+- [x] **Phase 03.3.1.1: Record pen conformance polish** (INSERTED) - The 18 untriaged conformance gaps between the shipped record pen and the structural contract are closed (completed 2026-09-16)
+- [x] **Phase 03.4: The design layer in code** (INSERTED) - The App palette, Sheet-prefixed tokens, the hand and Home land in code (completed 2026-09-22)
+- [x] **Phase 03.5: Separate the recipe from the sheet** (INSERTED) - The recipe record and the version's Recipe Sheet are separate in the store, the routes and the page (completed 2026-10-02)
+- [x] **Phase 03.6: Per-step shared ingredients** (INSERTED) - A shared ingredient's lines and a step can be removed without touching the other steps (completed 2026-10-06)
+- [x] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable (completed 2026-10-13)
+- [ ] **Phase 5: Version evolution** - A batch records reordered and new Instructions steps, and a version can evolve its step structure
+
+## Phase Details
+
+### Phase 1: Read the churned recipe
+
+**Goal**: Maker can open the churned olive oil recipe in Sprinkles and read it whole — twelve ingredient rows, method, target bands, authored notes — with its balance figures and the basis they rest on
+**Mode:** mvp
+**Depends on**: Nothing (first phase)
+**Requirements**: REC1-01, FORM1-01, FORM1-02
+**Success Criteria** (what must be TRUE):
+
+  1. Maker opens the churned olive oil recipe (50 g oil, 800 g) from the seeded transcription and sees all twelve ingredient rows with grams, % of batch, and step allocation, alongside its method, its target bands, and its authored notes.
+  2. For that recipe the maker sees PAC, POD, total fat with milkfat and added fat separately, MSNF, sugar solids, and total solids per 100 g, each shown against its target band with the calculation basis stated.
+  3. A figure resting on estimated or unreviewed ingredient data is flagged where the figure is shown, not only in a separate note.
+  4. The figures on screen agree with the churned bench sheet's own figures for the same twelve rows, so the maker can work from the app instead of the printout.
+
+**Plans**: 4/4 plans executed
+
+Plans:
+**Wave 1**
+
+- [x] 01-01-PLAN.md — Walking skeleton: the churned recipe opens from IndexedDB through the repository seam and its twelve-row formula reads, with the printed-sheet fixture green
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 01-02-PLAN.md — The Impeccable direction contract, the token layer, and the sheet's method and authored notes on the spread
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 01-03-PLAN.md — Six balance figures against their authored bands, deviation in words, with the calculation basis stated
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [x] 01-04-PLAN.md — Estimated data flagged at the row and at the figure, contributor tracing, validated store export/import, and the landed structure recorded
+
+**UI hint**: yes
+**Prerequisite**: Impeccable brief approved for the recipe review surface (the first surface to shape; may be shaped together with the bench sheet)
+**Phase notes**: Establishes the app shell, the framework-free balance module, the seeded recipe content, and the provisional local store behind a repository seam. Ratifies the provisional React + Vite + JSX stack on real code. The ingredient seed dataset is chosen in this phase's planning, after the recipe data model is designed; whichever is chosen, coefficients must be snapshottable (D04, D09).
+
+### Phase 2: Record the first batch
+
+**Goal**: Maker can record the 2 Aug batch against the churned version — what was actually done, what was measured, and how it turned out in their own words — and reopen it later unchanged
+**Mode:** mvp
+**Depends on**: Phase 1
+**Requirements**: BATCH1-01, BATCH1-02, BATCH2-01, BATCH2-02, OBS1-01
+**Success Criteria** (what must be TRUE):
+
+  1. Maker records a batch against the churned version with its churn date, an as-made amount per row where it differed from the plan, and changed or skipped steps, all kept visibly separate from the recipe's planned values.
+  2. Maker records come-up time, draw temperature, overrun, and meltdown; a field left blank stays visibly unknown and is never filled in from the recipe.
+  3. Maker records how the batch turned out in their own words, optionally adding structured dimensions and a next-time note, and can save with nothing but the words.
+  4. Maker reopens the batch and sees it together with the recipe version it used, its measured values, and its result.
+  5. The batch holds the recipe rows and ingredient coefficients it was computed with; later edits to the recipe or to ingredient data do not change what the batch shows.
+
+**Plans**: 5/5 plans executed (02-04 and 02-05 close UAT gaps)
+
+Plans:
+**Wave 1**
+
+- [x] 02-01-PLAN.md — Tracer: the as-made column written, saved as a batch, and reopened by URL, with the snapshot proven not to move
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 02-02-PLAN.md — The pen on the method and in the margin: per-step strike and changed line, the churn section's measured values with unknown in words, and the store file carrying batches
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 02-03-PLAN.md — Tastings with words and marks, amendment, the margin's batch list, and the 2 Aug record seeded
+
+**Gap closure wave 1** *(from 02-UAT.md; runs after Wave 3)*
+
+- [x] 02-04-PLAN.md — The way in and the way out of the pen layer: record another batch when one exists, cancel a recording or amendment without writing (G-02-1, G-02-4)
+
+**Gap closure wave 2** *(blocked on gap closure wave 1)*
+
+- [x] 02-05-PLAN.md — Marks that can be read and taken back: the Skipped label clear of the strike, and a per-axis clear on a tasting mark (G-02-3, G-02-6)
+
+**UI hint**: yes
+**Prerequisite**: Impeccable brief approved for the batch record surface (BRIEF-02 seed is unapproved input, not authority)
+**Phase notes**: Criterion 5 is the known data hazard from PROJECT.md — coefficient drift silently corrupted historical batches before. No automated diagnosis: Mark interprets the notes (D14).
+
+### Phase 3: Develop the next version
+
+**Goal**: Maker can create version 2 from the churned version, adjust it, and see exactly what changed and what it did to the balance — with the churned version and its recorded batch untouched
+**Mode:** mvp
+**Depends on**: Phase 2
+**Requirements**: REC1-02, REC1-03, REC1-04, REC1-05, FORM1-03, FORM2-01, FORM2-02
+**Success Criteria** (what must be TRUE):
+
+  1. Maker creates a new version from the churned version; the new version records its parent, and the churned version and its recorded batch are unchanged afterwards.
+  2. Maker edits the new version's ingredient amounts, removes or restores any of its twelve rows, and edits method steps and their targets.
+  3. Maker records why the version changed as free text citing the batch that motivated it, and the saved version reopens with the same values after the app is reloaded.
+  4. Maker sees the new version beside the churned one: per-row change in grams and in % of batch, and the change in each balance figure.
+  5. Structural advisories show the basis they were computed from — sub-scale amounts with a master-blend multiple, ultra-pasteurised mass, gum hydration temperature versus the pasteurisation hold, estimated-data exposure — and a version outside a target band still saves; no figure predicts a sensory outcome or is labeled as guaranteeing success.
+
+**Plans**: 12/12 plans executed (10/12 executed; 03-06 to 03-12 close UAT gaps)
+
+Plans:
+**Wave 1**
+
+- [x] 03-01-PLAN.md — Tracer: the pen opens on the churned version, one changed gram saves as a child version at its own URL, and the store moves under it (database version 3, the shared lift, the store file, the seed's uses lists)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 03-02-PLAN.md — The pen in full: the comparison and the uses cross-flags as domain modules, then every row's amount, allocation and presence and every step's words, targets, uses and presence, with the inherited-note marker
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 03-03-PLAN.md — The ceremony in the headnote (version line, reason, citation, the two saves), the lineage line, the version strip, one row per recipe on the list, and the running head as the link home
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [x] 03-04-PLAN.md — Show changes: the addressable state, the live parent read, and the struck-beside grammar in the table, the rules with their hollow ticks, the method and the notes
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [x] 03-05-PLAN.md — The four derived structural advisories with their basis lines, in the margin's block between the batch record and the authored notes
+
+**Gap closure wave 1** *(from 03-UAT.md; runs after Wave 5)*
+
+- [x] 03-06-PLAN.md — The one pen: one derivation of whether a pen is open, every opener disabled against it with its reason in words, and a route-keyed page so the pen cannot follow the maker to another version (G-03-9)
+- [x] 03-09-PLAN.md — A step strikes what changed, marks removal without printing its own sentence twice, and says in words which step still covers its rows (G-03-3 S1, S2)
+
+**Gap closure wave 2** *(blocked on gap closure wave 1)*
+
+- [x] 03-07-PLAN.md — The version strip, the batch list and the lineage links state why they will not move while ink is wet, and both dirty checks tell the truth (G-03-9)
+- [x] 03-08-PLAN.md — Columns sized by which column they are, a step selector that fits its cell, and an As made column only where there is an as-made layer (G-03-1)
+
+**Gap closure wave 3** *(blocked on gap closure wave 2)*
+
+- [x] 03-10-PLAN.md — The derived step number: the method renumbers itself, a struck step keeps the number it had, and a flagged row's selector shows its own allocation (G-03-6, G-03-3 S3)
+
+**Gap closure wave 4** *(from the 03-UAT re-verification; blocked on gap closure wave 3)*
+
+- [x] 03-11-PLAN.md — Honest column widths: border-box cells, a tighter cell padding, tokens and rules for Data and Remove, the name column as the single unsized one, and a test that computes the budget (G-03-11)
+
+**Gap closure wave 5** *(blocked on gap closure wave 4)*
+
+- [x] 03-12-PLAN.md — A removed step's number: empty in the pen, struck in show-changes, absent from the selector and the orphan flag, with the union of margin numbers asserted duplicate-free (G-03-14)
+
+**UI hint**: yes
+**Prerequisite**: Impeccable brief approved for the version editing and comparison surface
+**Phase notes**: Balance is an assessment under assumptions, never a gate (D06). Batch size stays 800 g and ingredient handling stays within the recipe's existing twelve rows; scaling and library editing are later milestones.
+
+### Phase 03.1: The imprint and the binder (INSERTED)
+
+**Goal:** The recipe page gains its front-matter band and every control leaves the printed spread; the plan's pen reads as the page; the binder's control treatment replaces browser chrome; the pen's rules strike the parent figure; the table's columns hold in every state.
+**Depends on:** Phase 3
+**Requirements**: None new — builds the 2026-09-08 Impeccable revisions of the three surface briefs (`route-recipe.md` § 3 "The imprint" and § 6 "Controls, the binder"; `route-recipe-version.md` § 3 "The pen keeps the page", § 6 column arithmetic, and the three named build gaps; `route-recipe-batch.md` § 6 revision), confirmed by Mark 2026-09-08
+**UI hint**: yes
+**Prerequisite**: The three revised briefs are confirmed (2026-09-08); the whole-page critique snapshot `.impeccable/critique/2026-09-08T12-33-31Z__app-src-ui-recipepage-jsx.md` is the re-critique baseline
+**Phase notes**: Inserted between Phase 3 and Phase 4 per the 260908-eil decision. The imprint's running-head label ("Imprint" or "Versions and batches") is settled in phase discussion. The third-voice colour question (system words like "unknown") stays open; the built colour stands. The sub-1280 stack remains Phase 4's (UX1-01).
+**Plans:** 5/5 plans complete
+
+Plans:
+**Wave 1**
+
+- [x] 03.1-01-PLAN.md — Tracer: the front-matter band end to end — Develop opens the plan's pen in a new Versions region beside the recipe block, the pair repeats at the foot, and the running heads lose their book vocabulary
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 03.1-02-PLAN.md — Versions holds the version list, the labelled lineage, the batch list and all four ceremonies; the margin keeps the record's content and no control; focus returns to the opener and Escape closes only an untouched pen
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 03.1-03-PLAN.md — The binder: the control treatment as global element rules, the focus-versus-state outline split, the drawn chevron, square, spinners and calendar icon, and the stylesheet's own contract suite
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [x] 03.1-04-PLAN.md — The pen keeps the page: prose edits as the printed paragraph, purpose and aside on demand, the uses line behind one control, the batch pen's per-step line on demand, and the step in every accessible name
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [x] 03.1-05-PLAN.md — The three build gaps and the column arithmetic: the rules strike the parent figure and leave the tab path, a non-numeric grams field blocks the save, the total row prints its unit once, and both Two-Ink leaks read in ink
+
+### Phase 03.2: The portion and the reset (INSERTED)
+
+**Goal:** A row's portions become what the maker authors and its total derives as their sum; `step`/`splitStep` retire; and the store is reset to the new shape rather than migrated to it — the seed is rewritten, a returning profile reseeds clean, and the churned version and its 2 Aug batch reopen with every figure unmoved.
+**Depends on:** Phase 03.1
+**Requirements**: None new — builds `route-recipe.md` § 3 "The portion is the authored amount" and "Split-step prose carries no amounts", both confirmed by Mark 2026-09-09
+**UI hint**: no — the existing table renders from the new shape; the arrangement is Phase 03.3's
+**Prerequisite**: Settled with Mark 2026-09-09 — the seed's split amounts are authored, never inferred from the method prose. **Authored portions** (version 1): whole milk `120 + 250.4 = 370.4 g`; sucrose `12 + 64 = 76 g`. Both match their existing row totals exactly, so no balance figure moves. **As-made portions** (the 2 Aug batch): whole milk `120 + 263 = 383 g`, which is the sheet's own line and what `batch-2026-08-02.js:18` currently stores as a single 383; sucrose is not split in the record because it matched the plan. Note the trap this settles: `120 + 263` is the as-made, not the authored — writing it as the authored split would take whole milk to 383 g, batch mass to 812.6 g, and move every figure on the churned version.
+**Phase notes**: Re-scoped 2026-09-09, second pass. The phase was written as a migration; Mark confirmed there is no stored data worth keeping — his profile holds the seed and throwaway test records only — so the store resets instead. That is the cheaper half of a choice, not a shortcut: the seed lives in `data/olive-oil.js` and `data/batch-2026-08-02.js` as hand-authored source, and rewriting those two files to the new shape was already the bulk of this phase under either approach. What the reset drops is compatibility with records held outside source — an older browser profile, an older export file — and that is worth nothing while no such record exists. The `declaredAxes` P0 goes with it: it was a *missing lift entry*, not a source defect — the seed already declares its axes in the object shape and `createBatch` clones them into the snapshot, so with no ladder there is nothing left to fix. Shape still lands before arrangement, because everything Phase 03.3 renders reads the new shape; layout first would build the step-order table against `step`/`splitStep` and then rebuild it against `portions`. The portion count is fixed in milestone 1 — amounts edit, the split does not; splitting in the pen is milestone 2. The migration discipline is not abandoned, only deferred: it starts paying at the first record Mark actually cares about, and the next shape change after this one is expected to lift rather than reset.
+
+**Scope:**
+
+- `portions` on a row (`[{step, grams}, …]`), the total derived as their sum; an unsplit ingredient is a one-portion row, so one rule covers split and unsplit with no second case
+- `step` / `splitStep` retire; `stepNumbers.js` and `IngredientTable.jsx`'s references follow — 31 across four files
+- Split-step prose loses its amounts — the number lives in one place; amounts for unsplit ingredients stay in the prose as written
+- The store resets: `DB_VERSION` bumps and the upgrade drops and recreates both object stores, so a returning profile comes back empty and reseeds through the existing `seedIfEmpty` path. No cursor, no per-record rewrite
+- `versionLift.js`'s ladder retires. Its seed facts (`SEED_USES`, `SEED_CREATED_AT`) belong with the seed and move there; `VERSION_SCHEMA_VERSION` survives as a constant
+- `transfer.js` narrows to the new shape alone — export writes it, `validateStoreFile` accepts it and refuses 1, 2 and 3, and `importStore` loses its lift branch
+- The seed's split amounts, authored above. **No `declaredAxes` work**: source already carries the object shape (`data/olive-oil.js:73`), `createBatch` clones it into the snapshot, and the P0 only ever affected records stored under the old string shape — the ones the reset discards. The six-axes clause in Done-when is a regression guard, not new work
+- As-made recorded per portion, its total deriving the same way — the 2 Aug batch's lump `'row-01': 383` becomes `120 + 263`, matching the sheet line for line
+- Balance reads the derived total; the coefficient snapshot stays per ingredient, never per portion
+
+**Done when:** the churned olive oil version and its 2 Aug batch reopen with every figure unmoved — whole milk still 370.4 g, batch mass still 800 g; the batch's as-made whole milk reads `120 + 263` and still totals 383; the six tasting axes each take a mark independently; a profile carrying the old shape reseeds clean rather than throwing; and a store exported after the change imports after it.
+
+**Plans:** 5/5 plans complete
+
+Plans:
+**Wave 1**
+
+- [x] 03.2-01-PLAN.md — The portion, end to end: `portions` on every row, the derived total, the seed's authored split, the prose losing its amounts, and the store reset proven against a real IndexedDB
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 03.2-02-PLAN.md — The ladder retires and the store file narrows: `transfer.js` accepts one schema, `versionLift.js` is deleted, and the surviving round trip is proven
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 03.2-03-PLAN.md — The table and the pen read the portion: one amount field per portion, the step column joined, the show-changes state on the plural descriptors — the suite back to green
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [x] 03.2-04-PLAN.md — As made, per portion: the 2 Aug batch's `120 + 263`, and the phase's three regression guards
+
+**Wave 5** *(gap closure — blocked on Wave 4 completion)*
+
+- [x] 03.2-05-PLAN.md — The As-made reading, coherent for any recording pattern: both unfiltered joins fixed, and the test asserting the full rendered string
+
+### Phase 03.3: The front-matter rows and the page in step order (INSERTED)
+
+**Goal:** The imprint and the tray retire into two front-matter rows spanning the page; the margin retires as a region; the ingredient table reads in step order; the pen's method opens read-only; and a blank prose line is ruled.
+**Depends on:** Phase 03.2
+**Requirements**: None new — builds the 2026-09-09 Impeccable revision of `route-recipe.md` (sketch 003 variant B), confirmed by Mark 2026-09-09
+**UI hint**: yes
+**Prerequisite**: Phase 03.2's shape is landed — the table groups by step and reads portions. `.planning/sketches/003-front-matter-rows/` (variant B); re-critique baseline `.impeccable/critique/2026-09-10T00-26-25Z__app-src-ui-recipepage-jsx.md` (28/40)
+**Phase notes**: Supersedes Phase 03.1's front-matter layout — the imprint and the tray are both retired. Carries the three overrides accepted at 03.1's close and the further items recorded in `.planning/phases/03.1-the-imprint-and-the-binder/03.1-VERIFICATION.md` § Overrides Accepted. The sub-1280 stack remains Phase 4's (UX1-01).
+
+**Scope:**
+
+- Two front-matter rows across the page — the version row (name, version line, headnote prose; From version, Why, From batch; Next version, Show changes, the later-versions count) and the batch row (churn line, the maker's words; the measured cells at figure size; tasting marks; Record another, Add tasting, Correct, the later-batches count). No running head on either
+- The margin retires as a region: the record's content moves up into the batch row, Things to check and the carried-forward Notes move down under Balance. Column two becomes Balance, Things to check, Notes
+- The table groups by step with the step's lead-in as the group head; the Step column disappears; a split ingredient appears once per step with `120 g of 370.4 g · 46.3% in all` beneath its name. "Before you start" notes leave the headnote and head the Method
+- The pen's method opens read-only with one `edit this step` text control per step; per-step and per-row controls become text controls, not the binder's bordered buttons (03.1 Gap 1 override)
+- A blank prose line carries a hairline ink baseline and no label — closes the three invisible batch fields (03.1 Gap 2 override)
+- Save returns focus to its opener on every pen (03.1 Gap 3 override, D-27); the blocked-save focus effect fires on every press, not only the first (03.1 REVIEW.md WR-01)
+- The thirteen labels Mark settled 2026-09-09 13:31
+- Confirm the two behaviours 03.1 left unproven either way: the fork's landing focus, and the uses checklist's open/close with its scoped Escape
+- Open, not necessarily closed here: the fifth loose grams reader (open decision, `6af7a6e`); the Firefox calendar icon (no CSS hook); the parent's version line printing twice
+
+**Plans:** 7/7 plans complete
+
+Plans:
+**Wave 1**
+
+- [x] 03.3-01-PLAN.md — The tracer: `Versions.jsx` splits into `VersionRow.jsx` and `BatchRow.jsx`, `BatchMargin.jsx` retires, the front matter stacks into two full-width rows with no running head, column two becomes Balance → Things to check → Notes, "Before you start" heads the Method, the three blank prose fields rule a hairline baseline, focus-return relocates and WR-01's version-line half takes an attempt counter — the fork's landing focus deferred to human verify
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 03.3-02-PLAN.md — The table in step order: portions grouped under each step's lead-in across all three states, the Step column gone, a split ingredient's `120 g of 370.4 g · 46.3% in all` sub-line from `formatPortionLine` in `composition.js`, the pen's step select removed (LD-02, a recorded regression), the `--col-step` tokens dropped, WR-01's table half fixed
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 03.3-03-PLAN.md — The pen's method opens read-only: one `edit this step` text control per step on `useOnDemandField`, `.text-control` opts the named per-step and per-row controls out of the binder rule — the uses checklist's scoped Escape deferred to human verify
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [x] 03.3-04-PLAN.md — The thirteen labels verbatim across the rows, the advisories and the table head; `figures.js`'s label becomes a word + term pair rendered as two spans in `GraduatedRule.jsx`, with `figureLabelText` guarding its two hidden string consumers
+
+**Gap closure** *(after UAT 2026-09-10; run with `--gaps-only`)*
+
+**Gap wave 1**
+
+- [x] 03.3-05-PLAN.md — G-03.3-2: the uses checklist's Escape handler moves to a wrapper around the `change` control and the fieldset, gated on the checklist being open, so the first Escape closes only the checklist and the second reaches the pen
+- [x] 03.3-06-PLAN.md — G-03.3-1 + the version row of G-03.3-4: `descendantVersions` in `lineage.js`; the version row's right-hand stack (Version, Written, Why, From batch, Later) rebuilt against sketch 003 variant B; Record another moves into the version row; fork focus lands by a deterministic effect instead of `autoFocus`
+
+**Gap wave 2** *(blocked on 03.3-06)*
+
+- [x] 03.3-07-PLAN.md — G-03.3-3 + the batch row of G-03.3-4: `targetValueFor` in `rows.js`; one head line, measured cells with plain-word labels, units beside figures and a plan sub-line, "not measured"; tasting shows marked axes only; Correct and Add tasting become text controls at the foot; the duplicate "no batch yet" paragraph goes
+
+### Phase 03.3.1: The full battery: the record pen rebuilt from sketch 007 (INSERTED)
+
+**Goal:** The batch record pen rebuilds to the settled sketch 007 battery — the 5-point goldilocks axes with the core/declared split, the new churn-phase and tasting-phase fields, the standalone defects checklist, the note before texture, and decoupled churn/tasting saves — with the store shape extended to carry it and the batch row reading the new record.
+**Depends on:** Phase 03.3
+**Requirements**: None new — builds the settled design in `.planning/sketches/007-full-battery/` (winner A: note before texture), confirmed by Mark across eight rounds 2026-09-11/12; source of truth packaged in `.claude/skills/sketch-findings-sprinkles/references/batch-record-tasting-battery.md`
+**UI hint**: yes
+**Prerequisite**: Impeccable surface brief approved for the record pen, derived from the settled sketch (design authority is Impeccable's). The sketch's settled state is the input: variant A, 3-column axes, hidden-tasting default, neutral note prompt, named "Declared for this recipe" cue — all browser-verified 2026-09-12 (33/40, zero P1s)
+**Phase notes**: This lands before Phase 4 so the printed batch-log page (PRINT-02) is built against the full battery's field set, not the old record. The data model changes: batches gain churn-phase fields (duration, exit consistency, airiness, tempering time) and tasting-phase fields (melt style, melt test); tasting axes move to the 5-point goldilocks scale; the defects checklist and the recipe-declared flaw toggle are new records. Per the no-live-data rule, check whether any real stored records exist before planning — prefer reset over migration while Mark is the only user. Carried from the sketch for the phase plan: the two P3s (drop the underline on filled controls; name the two Cancels' scopes — in the real product Cancel discards the whole pen draft, D-24), the persistence contract for the two save scopes, the undo-retired-on-resize edge, the matchMedia-under-emulation caveat, and the read-view summary line ("Soft (2) · grainy · bitter") belongs to the batch read view, not the pen. The goldilocks-vs-descriptive-anchors question stays closed unless Mark reopens it; Scoopability's anchor wording rides that decision. UX1-01–UX1-03 remain build constraints on every surface this phase touches. The phase plan must cite the structural contract `.claude/skills/sketch-findings-sprinkles/references/batch-record-tasting-battery-structure.md` in every task — verbatim fragments by section name, never a pointer back to the sketch HTML — and verify the built record's conformance in the browser against that contract.
+
+**Scope:**
+
+- The record pen rebuilt to sketch 007 variant A: churn section (date, time to draw temp, out of machine, churn duration, exit consistency, airiness, tempering time) with its own Cancel | Save batch; tasting section hidden until added (Add tasting opens it, focuses the Tasted date), carrying tasted date, tasting temperature, the six axis rows, the note before Texture & flavor, "Any problems? select all that apply" with the four defect chips plus the declared "Bitter · declared" toggle, the melt block (melt style, melt test) at the foot, and the shared Next time field
+- Axes as numbered 5-point goldilocks stops (1–5 on the stop, inline state beside the name, per-axis Clear, click-again clears) on the 186px track; core group (Sweetness, Hardness, Smoothness, Scoopability) left, declared group (Density/body, Oil character) right of the vertical hairline, captioned "Declared for this recipe"; tab order follows the eye in the 3-column arrangement, grouped DOM when stacked
+- Decoupled saves with state-based labels: footer reads "Save batch" with the tasting section absent, "Save batch & tasting" with it present; Clear/Remove tasting → toast + scoped Undo (tasting edits only retire it); feedback lives where the action is
+- Blank stays visibly blank: no defaults on any stop or segmented option; malformed numbers stay in place with inline feedback; decimal point/comma both accepted
+- The store: batches carry the new fields; a marked axis stores its 1–5 value; defects and declared flaws are stored records; the existing seeded/old-shape records handled per the reset-over-migration call made in planning
+- The batch row's read side updates to the new battery: the measured cells for the new fields, the axis marks read as 1–5 goldilocks marks, the defects read, and absence labels per the Saying-absence rule
+- Print is Phase 4's, not this phase's — but the phase plan names which record fields Phase 4's batch-log page must print so PRINT's planning reads the final shape
+
+**Plans:** 7/7 plans complete
+
+Plans:
+**Wave 1**
+
+- [x] 03.3.1-01-PLAN.md — The record's stored shape: the battery's AXES table and 5-stop words in `axes.js`, `battery.js` with `parseMeasuredDraft` and the field config, the one-save assembly (`createBatch` + `completeRecord`) replacing the retired tasting/amendment functions, `DB_VERSION` 5 and the narrowed validator, and the D-07 seed rewrite — with Mark's review of the rewritten records as the phase's blocking checkpoint (D-08)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 03.3.1-02-PLAN.md — The record pen's churn section and the one save: the pen state machine folds the tasting pen away, one save handler (create/complete, D-02/D-03/D-04), two identical ceremonies (D-01), press-to-block on the churn date (D-05), stay-in-place measured validation, the churn half of the read view
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 03.3.1-03-PLAN.md — The tasting section: Add tasting opens it focusing the Tasted date, variant A order, the six goldilocks axes with both arrangements and the matchMedia crossing, the defects chips with the declared toggle, the melt block
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [x] 03.3.1-04-PLAN.md — Feedback and undo: the two live regions, the hidden-mode removal paths in the contract's words, the data-based undo that survives the axes re-render, scoped retirement, and the restore sequence
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [x] 03.3.1-05-PLAN.md — The record reads as the battery: goldilocks read words "Soft (2)", the summary line, defects with the declared helper, the churned/tasted/changed dates, and the "changed" small print
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [x] 03.3.1-06-PLAN.md — The responsive ladder as tokens and top-level @media blocks, the browser conformance pass against the structural contract at real widths, the P3 underline drop, and the print field list for Phase 4
+
+**Wave 7** *(gap closure, from 03.3.1-UAT.md)*
+
+- [x] 03.3.1-07-PLAN.md — Gap closure (G-03.3.1-4): drop the tasting read view's caption summary span, which duplicated the per-axis cell grid immediately below it
+
+### Phase 03.3.1.1: Record pen conformance polish (INSERTED)
+
+**Goal:** Close the 18 untriaged UI gaps Mark logged during 03.3.1's UAT (393px-width session) between the shipped record pen/batch row and the sketch 007 / structural contract, without reopening any already-settled decision (D-01–D-24) or the just-closed G-03.3.1-4 caption fix.
+**Requirements**: None new — every item below is a conformance gap against `.claude/skills/sketch-findings-sprinkles/references/batch-record-tasting-battery-structure.md`, logged verbatim in `.planning/phases/03.3.1-the-full-battery-the-record-pen-rebuilt-from-sketch-007/03.3.1-UAT.md`'s "Untriaged Notes" section
+**Depends on:** Phase 03.3.1
+**Phase notes**: Source list (verbatim from 03.3.1-UAT.md, captured at the achieved ~579px width — the true 393px floor is a separate known page-shell issue, not in scope here):
+
+- Version section is too narrow; should flow between recipe description and Batch section
+- In Batch section, "Time to draw temp., min" caption wraps
+- Field text boxes for Time to draw temp, Out of machine, Churn duration are too big for the values
+- Exit consistency and Airiness segment controls have a hairline border not present in the sketch/contract; selected value is styled bold + underline instead of solid fill
+- The Add tasting opener is missing from the top Save ceremony section
+- On Tasting section caption, the hint is styled the same as "Tasting" (superseded — G-03.3.1-4 already dropped the hint entirely; verify no residual styling artifact remains)
+- Tempering min edit control is full width instead of sharing a row with Tasted date
+- Tasting temperature edit control is full width instead of sharing a row with Tasted date
+- Tabbing from "How did it turn out?" does not show focus on the first select under Hardness
+- Selected axis value (e.g. 1) is bold underline, unlike sketch/contract
+- Flaws under "Any problems?" are styled unlike sketch/contract
+- Melt test edit control is full width and should share a row with Melt Style
+- Melt style also has the outline — segmented control style is not like sketch/contract
+- Caption for "Next time?" is missing
+- In Ingredients section, the Ingredient section caption and Ingredients table heading overlap
+- Column 2 (notes) should flow after the ingredients table because the ingredient name column is too narrow and wraps too much
+- Batch row, Record Batch mode: sketch says "CHURN DATE", actual reads "Churned"
+- Batch row, Record Batch mode: sketch has the Remove tasting opener right-aligned on the row with the TASTING section caption; actual has it below the Tasting section caption, left-aligned
+- Batch row, Record Batch mode: sketch has all captions upper case; actual is sentence case
+
+Mark noted "many other errors" beyond this list — the phase plan should include a fresh browser conformance pass against the structural contract, not just fix the enumerated items, so later-discovered gaps surface before this phase closes rather than spawning a 03.3.1.2.
+**Plans:** 6/6 plans complete
+
+Plans:
+**Wave 1**
+
+- [x] 03.3.1.1-01-PLAN.md — Page shell against sketch 003: the stack below 1100, the version row's collapse, the 393 overflow, Correct on the Batch head line, aria-controls, the recorded figure, text controls at the control size
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 03.3.1.1-02-PLAN.md — The pen's captions, field rows, widths and words against sketch 007: uppercase captions, the churn/tasting/melt rows, 128px/56px fields with the unit beside, the bare tasting head, Next time, placeholders, no "(optional)"
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 03.3.1.1-03-PLAN.md — The shared control rules: pen-blue fill when picked, 2px ring on the box, 2px hover, forced-colours fill, the defect as a square and a word, joined stops, the caption line that reserves Clear, and the radio rule
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [x] 03.3.1.1-04-PLAN.md — The segmented caption line with Clear on all three controls; the defects as two labelled groups inside the axes grid with the cue rows; the declared caption, helper and aria-label retired
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [x] 03.3.1.1-05-PLAN.md — Add tasting | Cancel | Save batch in both ceremonies, Restore tasting, the record-status live region and the sketch's focus landings
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [x] 03.3.1.1-06-PLAN.md — The orchestrator-run conformance pass (gating, autonomous: false): both tabs at the ten D-16 widths in the three states, written to 03.3.1.1-CONFORMANCE.md
+
+### Phase 03.4: The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)
+
+**Goal:** The approved design layer of 2026-09-21 lands in code: tokens.css carries the App palette and the Sheet tokens under the `sheet-` prefix (contract suites included), the five `app-*-text` companions, and the hand (Caveat, with forced-colours and print fallback); then Home is reworked per route.md "Active work first" using the App marks grammar in DESIGN.md.
+**Requirements**: none mapped — a design-delivery phase governed by CONTEXT.md's D-01..D-20; UX1-01 and UX1-03 apply as build constraints
+**Depends on:** Phase 03.3.1.1
+**Plans:** 15/15 plans complete
+
+Plans:
+**Wave 1**
+
+- [x] 03.4-01-PLAN.md — The two worlds in tokens.css: the `sheet-` rename, the shared sizes, the App palette and the hand's tokens (D-01, D-02, D-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 03.4-02-PLAN.md — The hand: Caveat vendored, declared once, with its forced-colours and print fallback (D-17)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [x] 03.4-03-PLAN.md — The shell: rail, tools row, placeholder pages and the bottom tab row (D-09, D-10, D-13, D-15, D-16)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [x] 03.4-04-PLAN.md — Home rebuilt on active work: recency, the lead block in the hand, and a next action on every row (D-05..D-08, D-11, D-12, D-14, D-18..D-20)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [x] 03.4-05-PLAN.md — The Sprinkles Jar retired: jar hues, recipe hues and recipe-colour.js removed last (D-04)
+
+**Wave 6 — gap closure** *(03.4-VERIFICATION.md: gaps_found, six failed truths)*
+
+- [x] 03.4-06-PLAN.md — The shell's own world: the App ground on every route, the Sheet visited rule de-specified, the unbuilt-place rules, and a tab row that fits 393 (gaps 1-4)
+
+**Wave 7 — gap closure** *(blocked on Wave 6 completion)*
+
+- [x] 03.4-07-PLAN.md — Home against the board: the row's column grammar with its standing word, and the lead block bordered, rodded, captioned and carrying its actions (gaps 5-6)
+
+**Wave 8 — gap closure** *(blocked on Waves 6 and 7)*
+
+- [x] 03.4-08-PLAN.md — The side-by-side conformance record at 1280 and 393 against boards 170 and 171, with every gap traced to a pin and every departure written down
+
+**Wave 9 — gap closure** *(03.4-UAT.md round two: eight diagnosed gaps, five debug sessions)*
+
+- [x] 03.4-09-PLAN.md — The App's own surfaces: the canvas per context so iOS overscroll is white on App routes, the rail's padding and hairline border, and a focus ring that paints on the iPad (G-03.4-9, G-03.4-7, G-03.4-4)
+- [x] 03.4-10-PLAN.md — Home on the ladder's 1099.98px step: the lead stacks with its rod hidden and its actions at natural width, the rows stop overflowing at 760px, and the lead's name wraps (G-03.4-6)
+- [x] 03.4-11-PLAN.md — More dismisses: the panel's open state moves into React, closing on item activation and on route change with focus back on its summary (G-03.4-3, half A only — import feedback deferred)
+
+**Wave 10 — gap closure** *(blocked on Waves 9's home.css and conformance-record work)*
+
+- [x] 03.4-12-PLAN.md — The phone row as board 171 draws it: no rod, no tally, one action, the lead untouched; the lead's meta line drops the mass figure; DESIGN.md's App marks rule records the exception (G-03.4-6b, G-03.4-6c)
+
+**Wave 11 — gap closure** *(blocked on Wave 10)*
+
+- [x] 03.4-13-PLAN.md — First paint off the store's path: device UAT served from the build as a standing rule, a boot line before IndexedDB opens, and a Home that says it is loading (G-03.4-1)
+
+**Wave 12 — gap closure** *(03.4-UAT.md round three: G-03.4-r3-3, root-caused from WebKit source; blocked on Wave 11)*
+
+- [x] 03.4-14-PLAN.md — Every shell stop keyboard-focusable on WebKit without a platform preference: an explicit tabindex on the nineteen stops, pinned on rendered markup; the falsified "focus lands without :focus-visible" premise corrected in shell.css and the 03.4-09 record; the UAT truth split at the Safari boundary (G-03.4-r3-3)
+
+**Wave 13 — gap closure** *(03.4-UAT.md round four: G-03.4-r4-1, S1 root-caused from WebKit source, S2 environmental; blocked on Wave 12)*
+
+- [x] 03.4-15-PLAN.md — Every link the app renders keyboard-focusable on WebKit: an explicit tabindex on the seventeen Link sites outside the shell, pinned on rendered markup per component (source text for the two the node harness cannot render) and recorded as a project convention; the UAT tap moved beside the wordmark, and the keyboard lock-up (S2) given an on-device procedure, not code (G-03.4-r4-1)
+
+### Phase 03.5: Separate the recipe from the sheet (INSERTED)
+
+**Goal:** The Notebook recipe route shows the recipe record apart from the version's Recipe Sheet, visually, in the store and in its routes, as D17, DESIGN.md's Context Boundary Rule and `.impeccable/surfaces/route-recipe.md` § "03.5 revision" define them. Recipe record (App context): Recipe name, Recipe description with rename, version identity and selection, History, provenance; the batch in view's batch and tasting log is App context too. Recipe Sheet in its Notebook form: Sheet title, Sheet description, ingredients, Instructions, and the batch in view's as-made grams and Instructions changes in pen blue. A recipe's name can change without rewriting a saved Sheet. Routes move to /notebook/:recipeId/:versionId[/batch/:batchId] with redirects from /recipe/…; /recipe-book/:recipeId is reserved, not built. The seed grows to several recipes, with olive oil and Mexican Chocolate v1–v4 (transcribed from Mark's binder, reviewed by Mark) in active development. The layout is chosen on a Claude Design canvas, desktop first, then 1366, 1024 and 393.
+**Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
+**Requirements**: TBD
+**Depends on:** Phase 03.4
+**Plans:** 31/31 plans complete
+
+Plans:
+
+**Wave 1**
+
+- [x] 03.5-01-PLAN.md — The recipe record in the store end to end (recipes store, DB 6, seam, seed, Home names from records); sheetTitle/sheetDescription replace the version's name and headnote; Carried forward removed; export schema 6 refuses older files (D-09, D-10, D-11)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [x] 03.5-02-PLAN.md — Notebook routes and permanent /recipe/… redirects, every in-app link moved, the running head removed with the notice re-anchored, and the Recipe Book principle recorded (D-14…D-18, folded todo)
+- [x] 03.5-03-PLAN.md — Seed transcription: Mexican Chocolate v1/v3/v4, Pineapple v1, Coconut v1→v2, new library entries, sidecar, and the side-by-side review for Mark; nothing wired (D-01…D-08)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [x] 03.5-04-PLAN.md — Layout C's frame and App band: Recipe name and Rename (D-12), the version column, and the pen's ceremony in the band with the Sheet's own fields in the Sheet
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [x] 03.5-05-PLAN.md — The History rail: dated, versions only, filled/hollow/ring, the draft node only while the pen is open (D-13)
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [x] 03.5-06-PLAN.md — The Sheet in Notebook form: table style 6 with the estimated chip and the 393 list; as-made grams and Instructions changes in the hand (D-19 code); one step open with Cancel and Done
+
+**Wave 6** *(blocked on Wave 5)*
+
+- [x] 03.5-07-PLAN.md — The batch log in App context beside/below the Sheet, the no-batch state, and the record pen's placement (checkpoint: Mark decides — the canvas drew the reading state only)
+
+**Wave 7** *(blocked on Wave 6)*
+
+- [x] 03.5-08-PLAN.md — Folds below desktop, the side-by-side conformance record against sketch 011 at 1600/1366/1024/393, and the /impeccable document hand-off for the Hand Rule bend (D-19)
+- [x] 03.5-09-PLAN.md — Mark's D-07 approval gate on the transcription, then the seed wired (DB 7) with coverage invariants (D-01, D-05, D-07)
+
+**Wave 8 — gap closure** *(the derived width ladder and table redesign Mark approved 2026-09-26, sketch 011 decisions 15–16; independent of 03.5-09)*
+
+- [x] 03.5-10-PLAN.md — The ladder's three derived cuts: side nav and two-column Sheet together at 984 (app-wide shell cut), log beside at 350 from 1366 with the 1482 cap centred from 1770, stacked band and 20 margin at 724; a no-Vite probe harness and the ladder probe
+
+**Wave 9** *(blocked on Wave 8)*
+
+- [x] 03.5-11-PLAN.md — Decision 15: amount and name as two content-sized columns under one head in all three render paths, the list form below 724, the pen and recording states measured
+- [x] 03.5-12-PLAN.md — History rail nodes above the line; where the desktop state begins (checkpoint: Mark chooses 1770, 1366 or a study), replacing the 1500 placeholder
+
+**Wave 10** *(blocked on 03.5-11 and 03.5-12)*
+
+- [x] 03.5-13-PLAN.md — Touch sizes by pointer only, reaching the record pen in the full-width log; the record pen's own cut (checkpoint: Mark keeps 760 per DESIGN.md or groups onto 724)
+
+**Wave 11 — gap closure** *(sketch 011 decisions 18 and 19, Mark 2026-09-27, with three of that day's todos; blocked on 03.5-12 and 03.5-13)*
+
+- [x] 03.5-15-PLAN.md — The folds' cut at 1366 and the full-row fold head: folds at every width, open by default from 1366 and closed below, with no stored state; the version details read Show details / Hide details; the band's rhythm moves to 1366; Show changes toggles to Hide changes
+
+**Wave 12** *(blocked on 03.5-15)*
+
+- [x] 03.5-16-PLAN.md — Balance and Watch for fold apart, each through its own full-row head inside its h2 ("Things to check" becomes Watch for, with no "derived" label); Tasting's date moves to the end of its fold row
+
+**Wave 13** *(blocked on 03.5-16)*
+
+- [x] 03.5-17-PLAN.md — Batches by count: no Batches control at 0 or 1 batch; from 2, the upright batch list above the batch in view (option D), folding like the other sections; the batch head aligned at 393 and 723; the old register retired
+
+**Wave 14** *(blocked on 03.5-17)*
+
+- [x] 03.5-18-PLAN.md — History by count: one line at one version; with more, it folds, horizontal from 1366 and upright below; "not churned"; tabindex 0 on every rail link; the band's Draft line (checkpoint: Mark decides, since D-13 keeps drafts in memory)
+
+**Wave 15** *(blocked on 03.5-15 to 03.5-18)*
+
+- [x] 03.5-14-PLAN.md — Conformance re-run against sketch 011 at 1920/1600/1366/1024/984/983/723/393 and the decision-19 count boards, drift fixed, Open for Mark, device UAT, and the /impeccable document hand-off
+
+**Wave 16 — gap closure** *(03.5-UAT.md, with Mark's decisions of 2026-09-29; G-03.5-2b deferred until Impeccable draws it)*
+
+- [x] 03.5-19-PLAN.md — Show changes no longer crashes on a version that adds a step its parent lacks. The new step reads plain, with no mark yet. Lineage sweep and a new changes probe (G-03.5-2a)
+- [x] 03.5-20-PLAN.md — Every board measured at its own drawn width and pointer, the regression re-run at matched widths, the method recorded (G-03.5-8c)
+- [x] 03.5-21-PLAN.md — The iPhone types a minus: the two °C fields take the text keyboard, contract line 187 and sketches 007/008 amended in place. Fold names pause at a comma, "Version, Show details" (G-03.5-5b, G-03.5-7)
+- [x] 03.5-22-PLAN.md — The as-made field holds 56px while typing and its column holds still. The foot band's ceremony keeps its labels whole at every width. Home's name links meet the 44px coarse floor. DESIGN.md first (G-03.5-8a, G-03.5-8b, G-03.5-4b)
+
+**Wave 17** *(blocked on 03.5-20 to 03.5-22)*
+
+- [x] 03.5-23-PLAN.md — Tasting its own section with an h2, drawn on the boards first. Every fold head fills its row at every width, measured against the row and the board (G-03.5-4, G-03.5-8d)
+
+**Wave 18** *(blocked on 03.5-23)*
+
+- [x] 03.5-24-PLAN.md — The rails' line connects nodes only: upright to upright-393.html's geometry, horizontal redrawn on the boards first, then trimmed in the app (G-03.5-5)
+
+**Wave 19** *(blocked on 03.5-24)*
+
+- [x] 03.5-25-PLAN.md — The log's measurements on the board's grid and rhythm (5 across 724-1365, 2x3 elsewhere), the wrongly accepted conformance rows corrected, the round's full regression (G-03.5-6)
+
+**Wave 20 — gap closure** *(03.5-UAT.md round 2, with Mark's decisions of 2026-09-30; G-03.5-R2-2 follows in Wave 22 now that Mark adopted variant A after his iPhone test, and G-03.5-2b stays deferred)*
+
+- [x] 03.5-26-PLAN.md — A later-recorded undated batch outranks an older dated one, so Mexican Chocolate reads Awaiting tasting; the CR-01 standings and the three Home standings hold, proved through the store and on the built Home (G-03.5-R2-5)
+- [x] 03.5-27-PLAN.md — Boards first: every fold-head count drawn bare, the boards' touch floor narrowed to the pointer, README decisions 22 and 23, and DESIGN.md's Counts sentence through Impeccable (checkpoint) (G-03.5-R2-1, G-03.5-R2-3)
+- [x] 03.5-28-PLAN.md — The Rename and Next version forms keep content width at 393 and 723 while the fold heads stay full row (G-03.5-R2-4)
+
+**Wave 21** *(blocked on 03.5-27 and 03.5-28)*
+
+- [x] 03.5-29-PLAN.md — The app's fold-head counts read bare, the orphaned overflow state removed, and tests and probes pin the bare count on the build and on the boards (G-03.5-R2-1)
+
+**Wave 22** *(blocked on 03.5-29)*
+
+- [x] 03.5-31-PLAN.md — Out of machine and Tasting temperature become number inputs that open the iPhone's numbers layer with a minus, an unreadable entry is flagged rather than saved blank, and the contract and sketches are amended first (G-03.5-R2-2; the layer is Mark's device check)
+
+**Wave 23** *(blocked on 03.5-26 to 03.5-29 and 03.5-31)*
+
+- [x] 03.5-30-PLAN.md — The round's conformance records corrected (counts, the 723 touch floor, the forms, Home's standing), the readings regenerated, and the full regression on the final build (G-03.5-R2-1, G-03.5-R2-2, G-03.5-R2-3, G-03.5-R2-4, G-03.5-R2-5)
+
+### Phase 03.6: Per-step shared ingredients (INSERTED)
+
+**Goal:** Shared ingredients act per step (sketch 011 README decision 51): each remove link removes its own line, a removed step takes its lines with it (struck, restored with the step), and the pen's portion line and Show changes' percentages follow the lines still in, the 86.3% fix included.
+**Requirements**: TBD
+**Depends on:** Phase 03.5
+**Plans:** 7/7 plans complete
+
+Plans:
+
+**Wave 1**
+
+- [x] 03.6-01-PLAN.md — One press on one line in the pen (tracer over Olive Oil v1): the line is the unit, a row is removed when every line is out, and the uses and diff readers follow (decision 51, Mark's answers 1 and 3)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [x] 03.6-02-PLAN.md — The pen's draft, dirty check, save and blocked-save check carry removal on the lines alone, and the pen's five states are pinned to decision 51's measured figures
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [x] 03.6-03-PLAN.md — A saved version keeps its lines out: the import validator accepts `portions[].removed`, the reading Sheet and recording skip them, and as-made values stay aligned by stored position
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [x] 03.6-04-PLAN.md — Show changes compares a split ingredient line by line, and a line that is out reads the parent's figures (the 86.3% fix)
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [x] 03.6-05-PLAN.md — Removing a step takes its lines with it, struck under a "Removed" head in the step's place and restored with the step (decision 51, Mark's answer 2)
+
+**Wave 6** *(blocked on Wave 5)*
+
+- [x] 03.6-06-PLAN.md — Show changes strikes a removed step's lines, and a line whose step is removed needs no amount to save (the diff and the blocked-save check read the step's removal, pinned end to end on Olive Oil v1)
+
+**Wave 7** *(blocked on Wave 6)*
+
+- [x] 03.6-07-PLAN.md — Conformance probe against the board on the real DOM (WebKit and Chromium, 1366 and 393), full regression, and the open items and device check worded for Mark's List
+
+### Phase 03.7: Before you start as its own Sheet section (INSERTED)
+
+**Goal:** "Before you start" is its own Sheet section, as sketch 011 decisions 36 and 45 draw it (Mark, 2026-10-04 and 2026-10-05): it stands above the Ingredients under the Sheet description (placement B) with its own region heading and no closing rule (H1), is drawn only when the version has notes and keeps its heading alone in the Next version pen (E2), and the Instructions section is drawn only when there are steps; in print it opens the formula page above the table (PC), and a table that does not fit breaks only between step groups (a one-step table between rows), its header repeating on the next page, the Total staying with the last group and the steps printing whole.
+**Requirements**: TBD
+**Depends on:** Phase 03.6
+**Plans:** 4/4 plans complete
+
+Plans:
+
+**Wave 1**
+
+- [x] 03.7-01-PLAN.md — Olive Oil v1's Before you start reads as its own section between the band and the Ingredients at every width, the reading states follow one rule each, and the pen keeps the heading alone with no notes (decision 36: B, H1, E2, answer 5)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [x] 03.7-02-PLAN.md — The ingredients table prints by step groups: one tbody per group, the header repeats, the Total prints once with the last group, a one-step table splits between rows, the steps print whole, proved in Chrome's print to PDF with the screen measured unchanged (decision 45, Mark's answers 1 to 3)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [x] 03.7-03-PLAN.md — Conformance against the decision 36 boards on the real DOM (WebKit and Chrome, 1366 and 393), the full regression with the print probe, and the device and Safari-print checks worded for Mark's List
+- [x] 03.7-04-PLAN.md — The documents follow: Phase 4's context amended (D-06, the break rule, a fresh print starting point), the todo closed, and the surface briefs and DESIGN.md revised through Impeccable (checkpoint)
+
+### Phase 03.7.1: Hide draw temperature (INSERTED)
+
+**Goal:** Time to draw temp. no longer shows on any screen (record pen, reading, print); the stored field stays until Phase 4's reseed removes it. The Batch log and Tasting log titles exist only on the printed pages and ride Phase 4's print (the pen's At the machine note keeps its name)
+**Requirements**: TBD
+**Depends on:** Phase 03.7
+**Plans:** 2/2 plans complete
+
+Plans:
+**Wave 1**
+- [x] 03.7.1-01-PLAN.md — The pen and the reading lose the field on the real built app (tracer, with the before numbers); the record draft stops carrying it while a correction keeps the stored value; the stored value pinned through IndexedDB, export and import; the orphaned helper retired
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [x] 03.7.1-02-PLAN.md — Side by side with sketch 010's pen and reading boards in WebKit and Chrome with before and after numbers; the plan line's CSS retired; regression and the rows for Mark's List
+
+### Phase 4: Prepare the next version for making
+
+**Status:** Paused 2026-09-23 until Phase 03.5 separates the recipe from the sheet. Context gathered (`04-CONTEXT.md`); its print decisions carry over, but the canvas starting point must be re-captured from the separated Sheet.
+**Goal**: Maker can print the new version as a bench sheet, carry it to the kitchen, and match the printed sheet back to its version — with the whole develop loop operable by keyboard and recoverable
+**Mode:** mvp
+**Depends on**: Phase 3, Phase 03.5
+**Requirements**: PRINT-01, PRINT-02, PRINT-03, PRINT-04, PRINT-05, UX1-01, UX1-02, UX1-03
+**Success Criteria** (what must be TRUE):
+
+  1. Maker prints the new version from the browser as a formula page showing each ingredient line under its step: a blank As made line first, the planned grams, then the ingredient, with Balance beside the table, and a unit on every printed value.
+  2. The printed sheet carries the Instructions with each step's typed targets (temperature, time, amount) in a tag row beside its prose, plus a blank batch log of two sides, the Batch log and the Tasting log (churn date, measured fields, result, dimensions, and next-time lines), one sheet front and back.
+  3. The sheet carries a human-readable short code for the printed version and the maker can use that code in the app to reach the same version; printing captures a saved version only, never unsaved edits, and never creates a batch record.
+  4. Reviewing a recipe, editing a version, recording a batch, and printing are each operable by keyboard with visible labels and visible focus, and text contrast meets WCAG 2.2 AA.
+  5. Entered data survives a recoverable failure such as a reload mid-edit, and uncertainty, estimated data, and errors are never conveyed by colour alone.
+
+**Plans:** 10/10 plans complete
+
+Plans:
+**Wave 1**
+- [x] 04-01-PLAN.md — Shared Button, Checkbox and Radio carry the tab stop; 43 buttons, 3 checkboxes and 2 radios migrated; the scan keeps raw controls inside them (D-19)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [x] 04-02-PLAN.md — The Sheet code: one pure derivation with a golden vector; Search's Sheet code field lands on the version; Home's Enter Sheet code link (D-08 to D-13) — checkpoint: the Search page's submit control
+- [x] 04-03-PLAN.md — The record's shape: declared scales and problems as lists of 0 to 2 shown only where declared; Time to draw temp. leaves the data; At draw and From freezer get their stored home (sketch 010 D6, D17, D25, D26)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [x] 04-04-PLAN.md — One store bump to 8: the drafts store behind the seam, a bounded reset, the import as one transaction with its storage failure in words (D-16)
+- [x] 04-05-PLAN.md — The record pen and its reading carry At draw and From freezer in the approved order (sketch 010 D6 to D14)
+- [x] 04-06-PLAN.md — The print route end to end with the blank Batch log and Tasting log, the Sheet code in each foot, at 1280 and 393 (PRINT-03, PRINT-05; D-05, D-07, D-07a)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [x] 04-07-PLAN.md — The Sheet's formula pages laid by measurement: the print table (As made first) and Balance in column 2, groups whole and the header row repeated in Safari and Chrome (D-06a, sketch 010 E1 to E8, D29)
+- [x] 04-09-PLAN.md — Drafts survive a reload for all three pens with the approved notice; Home and the band name a waiting draft; the leave warning retires (D-14 to D-18)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [x] 04-08-PLAN.md — The Instructions in the method treatment follow the table's tail, the closing foot, every seed version printed whole in both engines (PRINT-02, D18, D28, D29) — checkpoint: the Instructions' start when the table fits but Balance continues
+
+**Wave 6** *(blocked on Wave 5 completion)*
+- [x] 04-10-PLAN.md — Screen-reader close-out (D-20), the WebKit keyboard, focus, contrast and colour walk of the whole loop (D-21's automated half), PRINT-01/02 wording brought to the approved sheet
+
+**UI hint**: yes
+**Prerequisite**: Impeccable brief approved for the bench sheet (print) surface
+**Phase notes**: No QR codes — a human-readable short code only (PRINT-04), and no print-log "did you churn it?" nudge; both prior designs depend on the open storage decision. UX1-01–UX1-03 are verified end-to-end here because this is the first point where the whole loop exists, but they are build constraints in every phase: each phase's plans apply keyboard operation, visible labels and focus, AA contrast, non-colour-only signalling, and edit recovery to the surfaces it creates.
+
+### Phase 5: Version evolution
+
+**Goal:** A batch records reordered steps and new steps in the Instructions, and a version can evolve its step structure — adding, removing and reordering steps — so version development is not limited to amounts and step text.
+**Why added:** Deferred from Phase 03.5 by Mark, 2026-09-23: both are needed for version evolution, and are scoped as their own phase rather than folded into the record/Sheet separation.
+**Requirements**: TBD
+**Depends on:** Phase 4
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 5 to break down)
+
+---
+*Roadmap created: 2026-09-05*
+
+## Milestone Constraints
+
+These govern every phase and are not re-litigated during planning:
+
+- **Storage stays open (D16).** Milestone 1 uses a provisional local store behind a small repository seam. No storage or backend phase exists, and no provider is named.
+- **Design authority is Impeccable's.** Each UI-bearing phase requires its approved surface brief before execution. The seeds in `product-requirements/07-framework-handoffs.md` are unapproved input.
+- **Stack is provisional through Phase 1.** React + Vite + JSX per `CLAUDE.md`, ratified on Phase 1's real code. TypeScript is not adopted; the testing-framework choice is surfaced in phase discussion, not decided here.
+- **Ingredient seed dataset is chosen in Phase 1 planning**, after the recipe data model is designed. Three candidate datasets disagree on coefficients.
+- **Reference, not foundation.** The old-sprinkles transcribed olive oil data is approved for reuse as seed content; its code is not built on. Codebase mapping is deferred until real code lands here.
+- **Open labels stay open (D12).** Stars/ratings, Optimize, Scale, and Template labels are not fixed in code.
+
+## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1 → 3.3.1.1 → 3.4 → 3.5 → 3.6 → 4 → 5
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 1. Read the churned recipe | 4/4 | Complete    | 2026-09-05 |
+| 2. Record the first batch | 5/5 | Complete    | 2026-09-06 |
+| 3. Develop the next version | 12/12 | Complete    | 2026-09-08 |
+| 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
+| 3.2. The portion and the reset | 5/5 | Complete    | 2026-09-10 |
+| 3.3. The front-matter rows and the page in step order | 7/7 | Complete    | 2026-09-10 |
+| 3.3.1. The full battery: the record pen rebuilt from sketch 007 | 7/7 | Complete    | 2026-09-13 |
+| 3.3.1.1. Record pen conformance polish | 6/6 | Complete    | 2026-09-16 |
+| 3.4. The design layer in code | 15/15 | Complete    | 2026-09-22 |
+| 3.5. Separate the recipe from the sheet | 31/31 | Complete    | 2026-10-02 |
+| 3.6. Per-step shared ingredients | 7/7 | Complete    | 2026-10-06 |
+| 4. Prepare the next version for making | 10/10 | Complete    | 2026-10-13 |
+| 5. Version evolution | 0/TBD | Not started | - |
+
+## Coverage
+
+All 23 v1 requirements are mapped to exactly one phase.
+
+| Phase | Requirements | Count |
+|-------|--------------|-------|
+| 1 | REC1-01, FORM1-01, FORM1-02 | 3 |
+| 2 | BATCH1-01, BATCH1-02, BATCH2-01, BATCH2-02, OBS1-01 | 5 |
+| 3 | REC1-02, REC1-03, REC1-04, REC1-05, FORM1-03, FORM2-01, FORM2-02 | 7 |
+| 4 | PRINT-01, PRINT-02, PRINT-03, PRINT-04, PRINT-05, UX1-01, UX1-02, UX1-03 | 8 |
+| **Total** | | **23** |
+
+No orphaned requirements. No requirement appears in two phases.

@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "G-03-14 — In the pen, a removed method step keeps its number unstruck while the next live step is renumbered to the same number, so two steps both read \"1\" and the coverage cue's \"still used by step N\" reference becomes ambiguous."
 created: 2026-09-08T00:00:00Z
 updated: 2026-09-08T00:00:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

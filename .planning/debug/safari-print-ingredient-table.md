@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "Safari prints the ingredient table wrongly on the iPad (Mark's List row fix-safari-print-ingredient-table). Mark's note: 'Doesn't look right on iPad', answer: the table."
 created: 2026-10-06T12:45:00Z
 updated: 2026-10-06T15:15:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus
@@ -144,6 +148,7 @@ pitfalls:
   - "Keep the Total with the last group in the WebKit branch (tfoot break-before:avoid may be ignored outside the table model)."
   - "Keep the header row or the region heading with the first group (r2 left the header alone at a page foot): break-after:avoid in that branch."
   - "Engine sniffing is brittle: comment it with the WebKit bug numbers and how to remove it later."
+
 open_question: "Not yet tested: does the WebKit-only block-tbody branch keep groups whole while .recipe-page is still a grid in print? Cause (1) paginates grid items at their screen offset, so the branch may still cut rows until Phase 4 changes the grid."
 note_on_header: "No CSS gives WebKit a repeated header. Accept C on that point alone, and keep D (JS pagination) open for Phase 4."
 

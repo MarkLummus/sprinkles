@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "G-02-3 skipped-label-struck-through — On the batch page, a method step that was struck (step 1 of the seeded 2 Aug batch) shows a \"Skipped\" text label, but the label itself renders with the same strike-through as the step's prose. The label is meant to be a legible marker beside struck prose, not part of what is struck."
 created: 2026-09-07T00:05:00Z
 updated: 2026-09-07T00:25:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus
@@ -25,6 +29,7 @@ plan_provenance: "Plan-level gap in the verification gate, not a code deviation.
 bug_class: Bohrbug — fully deterministic. Every load of the seeded store renders step 1 struck; the strike propagation is spec-mandated in every browser, not environment-dependent.
 
 ## Symptoms
+
 <!-- Prefilled from UAT — IMMUTABLE -->
 
 expected: Step 1's prose reads struck with a visible "Skipped" text label (not a line alone); the label is itself legible, not rendered with the step's strike-through.

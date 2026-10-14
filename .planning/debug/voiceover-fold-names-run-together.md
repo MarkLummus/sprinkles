@@ -4,6 +4,10 @@ trigger: "G-03.5-7 — VoiceOver on the iPad: fold button names read with no pau
 created: 2026-09-29T00:00:00Z
 updated: 2026-09-29T00:00:00Z
 goal: find_root_cause_only
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus
@@ -15,6 +19,7 @@ candidate_causes:
   - code: space-joined aria-label at FoldRow.jsx:21 (confirmed)
   - data/build: stale bundle on the device (eliminated; bundle carries the fix)
   - environment: WebKit/VoiceOver reading the contents instead of aria-label (moot; audio is byte-identical either way)
+
 and_gate: no. One condition is enough: no punctuation in the spoken string.
 blind_spots: WebKit's own computed name was not read locally (no WebKit build with an AX snapshot here); iPad VoiceOver's voice is not the macOS `say` voice, though both are Apple TTS with the same comma prosody. Confirm on the iPad.
 next_action: return ROOT CAUSE FOUND to the orchestrator (find_root_cause_only).

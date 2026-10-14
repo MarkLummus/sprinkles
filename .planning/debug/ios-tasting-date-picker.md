@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "iPhone Record a tasting: Tasted date calendar appears then disappears; field untappable until another field is focused; the calendar's Reset does nothing"
 created: 2026-10-03
 updated: 2026-10-03
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Symptoms
@@ -15,6 +19,7 @@ Reported by Mark on 2026-10-03, device-checked on the build served at :4173 (iPh
 - Errors: none reported.
 - Timeline: new path. Quick 261002-wn0 (commits 0a44095, da87dce, e40e99a, 5fbe805, b403acc) made the band's Record a tasting open the amend pen on Add tasting and focus the Tasted date; it also added the app's first scrollIntoView in the band's focus-return effect. Not known whether the same symptom exists via Correct then Add tasting (old path) or the Churn date on Record another.
 - Reproduction: iPhone, Coconut v2, tap Record a tasting in the band.
+
 DATA_END
 
 ## Current Focus

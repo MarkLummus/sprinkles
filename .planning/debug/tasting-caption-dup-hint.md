@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "G-03.3.1-4 — The tasting read view's caption ('Tasting') carries a summary span that repeats every marked axis's word-and-number token (e.g. 'soft (2) · gummy (4) · smooth (4) · less (2) · thin (2) · strong (4)'), and the same tokens then render again immediately below as the per-axis cells in a better-looking layout. User wants the caption's duplicate hint dropped, the axes below kept as-is."
 created: 2026-09-13T00:00:00Z
 updated: 2026-09-13T00:00:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

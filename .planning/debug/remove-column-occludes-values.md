@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "G-03-11: While developing the next version (the plan's pen is open), the ingredient table's Remove column and its row-remove buttons occlude the numeric column values (Grams, As made, % of batch)."
 created: 2026-09-08T00:00:00Z
 updated: 2026-09-08T01:20:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

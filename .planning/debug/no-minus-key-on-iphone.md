@@ -4,6 +4,10 @@ trigger: "G-03.5-5b: Creating a tasting on iPhone, it's not possible to enter a 
 created: 2026-09-29T00:00:00Z
 updated: 2026-09-29T00:00:00Z
 goal: find_root_cause_only
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

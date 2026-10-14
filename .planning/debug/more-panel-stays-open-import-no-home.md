@@ -6,6 +6,10 @@ updated: 2026-09-22T00:00:00Z
 mode: find_root_cause_only
 gap_id: G-03.4-3
 bug_class: Bohrbug (deterministic; reproduces on every selection at narrow width)
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

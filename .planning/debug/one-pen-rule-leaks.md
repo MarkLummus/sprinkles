@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "G-03-9 — The rule that only one pen is open at a time leaks in three places: adding a tasting is not treated as a pen (its controls stay enabled while developing, and Develop, Amend and Record stay enabled while a tasting is being written); and while amending a batch, the version strip still navigates to another version."
 created: 2026-09-07T00:00:00Z
 updated: 2026-09-07T00:00:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

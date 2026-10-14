@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "G-03.4-r4-1: fail. rings on tabs, search and import/export, then into the page, and then I lose focus on everything. keyboard stops working utnil I recycle power."
 created: 2026-09-22T21:45:00Z
 updated: 2026-09-22T22:20:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

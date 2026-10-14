@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "G-02-1 record-a-batch-entry-missing — From the churned recipe page (/recipe/olive-oil-ice-cream-v1), once a batch already exists against the version (the seeded 2 Aug batch is always present after seeding), there is no visible way to start recording a new batch. The margin shows the existing batch with an \"Amend\" button but no \"Record a batch\" control."
 created: 2026-09-06T23:30:00Z
 updated: 2026-09-06T23:45:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus
@@ -25,6 +29,7 @@ rca_branching:
 plan_provenance: "Plan-level gap, not a deviation. 02-01-PLAN.md:237 enumerates exactly three margin states and gives `Record a batch` to the 'No batch yet, reading' state only. 02-03-PLAN.md:316 adds the batch list and closes with 'With one batch there is no list; with none, the line and the control 02-01 already built stand alone' — it never assigns a second-batch entry point a home. The implementation matches both plans literally. The requirement exists only in the plans' own verification prose (02-03-PLAN.md:348 'Record a second batch dated later') and in the surface brief's material states (route-recipe-batch.md:93 'a version with two batches'; :54 describes 'Record a batch' unconditionally as 'a control in the margin')."
 
 ## Symptoms
+
 <!-- Prefilled from UAT — IMMUTABLE -->
 
 expected: The maker can start recording a new batch from the churned recipe, including when a batch already exists against the version ("Record a batch" control visible). Test 8 of the UAT also expects "Record a second, later-dated batch: it appears in the margin's batch list, the version line moves to the newer churn date, and the older batch is unchanged when reopened by its own URL."

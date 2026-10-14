@@ -20,13 +20,16 @@ Make something you like, understand how it turned out, and know what to keep or 
 - ✓ Develop the next version from the churned one: the pen opens on any version (grams, allocation, remove/restore per row and step, step text and targets, headnote, notes), every change shows the old value struck beside the new, the six figures and four derived advisories answer live with their basis stated, a save lands on the child's own URL naming its parent and the batch that motivated it, the churned version and its batch are untouched, and show-changes lays the comparison back on the page — REC1-02, REC1-03, REC1-04, REC1-05, FORM1-03, FORM2-01, FORM2-02 — Phase 3
 - ✓ Explore adjustments with before/after balance figures, stated assumptions, and no promise of success — FORM-01, FORM-02 — Phase 3
 - ✓ Preserve the churned version and the new version as distinct, with lineage; editing the new one never rewrites the old batch — REC-01, BATCH-02 — Phase 3
+- ✓ Prepare the next version for making through a printed bench sheet: formula pages laid by measurement, blank two-sided batch and tasting logs, a short code that finds the same version again, kept drafts — PRINT-01 to PRINT-05 — Phase 4 (v1)
+- ✓ Critical flows usable and recoverable: keyboard access on the iPad, labels, entered data surviving a closed tab — UX1-01 to UX1-03 — Phase 4 (v1)
 
 ### Active
 
-Milestone 1 — **Develop the next olive oil recipe** (accepted D14). Requirement IDs are the packet's (`product-requirements/04-requirements.md`); their detailed acceptance criteria remain draft until reviewed in phase discussion.
+Milestone 1 (accepted D14) shipped 2026-10-13. The next milestone is not defined yet (`/gsd-new-milestone`). Inputs so far, worked out with Mark on 2026-10-14 and held on Mark's List (row run-new-milestone-2):
 
-- [ ] Prepare the next version for making through the review/print experience (bench sheet) — REC-01 (review/print capability)
-- [ ] Critical flows are usable and recoverable: keyboard access, labels, entered data survives recoverable failures — UX-01
+- [ ] Groundwork for recipe creation: refactor `RecipePage.jsx` so creating and editing share one editor; framework-free creation primitives (create a recipe with a root version, a never-reused step-key allocator, a row-from-ingredient builder); the ingredient library as a store behind the repository seam, rows still copying their coefficients (ING-01)
+- [ ] Recipe creation in the Notebook: Phase 5's add, remove and reorder of steps and ingredients, Before you start, custom scales and problems for a new recipe, and Show changes for dropped steps
+- [ ] The database reset on a version bump stays until a recipe can be created from scratch; the upgrade path comes after
 
 ### Out of Scope
 
@@ -151,4 +154,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-22 after Phase 03.4*
+*Last updated: 2026-10-14 after the v1 milestone*

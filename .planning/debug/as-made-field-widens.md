@@ -4,6 +4,10 @@ trigger: "G-03.5-8a: The recording state's as-made field keeps a fixed width whi
 created: 2026-09-29T00:00:00Z
 updated: 2026-09-29T00:00:00Z
 goal: find_root_cause_only
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

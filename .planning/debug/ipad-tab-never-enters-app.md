@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "fail. I see the focus move on the browser chrome only - focus never moves into the app"
 created: 2026-09-22T19:00:00Z
 updated: 2026-09-22T19:40:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

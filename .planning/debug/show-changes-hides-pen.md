@@ -4,6 +4,10 @@ trigger: "Show changes ON hides the record pen's per-step controls. On a new ver
 created: 2026-09-16T00:00:00Z
 updated: 2026-09-16T00:00:00Z
 bug_class: Bohrbug (deterministic — reproduces every time the two states are both on)
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: parked
 ---
 
 ## Current Focus

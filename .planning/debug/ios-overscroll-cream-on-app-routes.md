@@ -4,6 +4,10 @@ trigger: "On iOS Safari the elastic-overscroll (rubber-band) colour behind a non
 created: 2026-09-22T15:35:00Z
 updated: 2026-09-22T15:55:00Z
 mode: find_root_cause_only
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

@@ -4,6 +4,10 @@ trigger: "G-03.5-8b: Batch save ceremony buttons are wrapping starting at 984, b
 created: 2026-09-29T00:00:00Z
 updated: 2026-09-29T00:00:00Z
 goal: find_root_cause_only
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus
@@ -19,6 +23,7 @@ candidate_causes:
   - "data/state: Add tasting present (tastingOpen false, no pendingUndo) CONTRIBUTING (without it the pair fits)"
   - "environment/config: viewport width in 984-1150 or 1366-1532 (iPad 1024 and 1366 inside) TRIGGER"
   - "ceremony A in the log ELIMINATED (never shrinks; 640/350 wide against 245 content)"
+
 and_gate: "yes. Needs the two-column foot regime (vw >= 984), a Sheet narrow enough that its third is < 245px (984-1150, 1366-1532), and Add tasting in the ceremony."
 
 ## Symptoms

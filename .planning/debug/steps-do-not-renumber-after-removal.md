@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "G-03-6 — When a method step is removed in the pen, the step numbers of the remaining steps do not renumber; the same holds in the saved child's reading state and in show-changes."
 created: 2026-09-07T00:00:00Z
 updated: 2026-09-07T00:00:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

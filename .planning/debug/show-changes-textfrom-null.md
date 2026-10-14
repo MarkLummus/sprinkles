@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "G-03.5-2a: clicking Show changes throws `null is not an object (evaluating 't.textFrom.purpose')`"
 created: 2026-09-29T00:00:00Z
 updated: 2026-09-29T00:00:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

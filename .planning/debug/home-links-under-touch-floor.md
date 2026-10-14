@@ -5,6 +5,10 @@ created: 2026-09-29T00:00:00Z
 updated: 2026-09-29T00:00:00Z
 goal: find_root_cause_only
 bug_class: Bohrbug (deterministic; the CSS never applies a floor to these links)
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

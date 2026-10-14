@@ -3,6 +3,10 @@ status: diagnosed
 trigger: "G-02-4 pen-layer-no-cancel-save-hard-to-find — when Amending, no cancel button is visible and Save batch button is hard to find."
 created: 2026-09-06T23:30:00Z
 updated: 2026-09-06T23:55:00Z
+audit_acknowledged:
+  milestone: v1
+  at: 2026-10-13
+  status: diagnosed
 ---
 
 ## Current Focus

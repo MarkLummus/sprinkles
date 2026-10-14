@@ -24,8 +24,6 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { MALFORMED_NUMBER_ENTRY } from './BatchRow.jsx';
 import {
-  derivePenState,
-  isPenDraftDirty,
   isDraftDirty,
   draftFromBatch,
   tastingHasInk,
@@ -45,10 +43,9 @@ import {
   TASTING_REMOVED_EMPTY_STATUS,
   TASTING_REMOVED_DATA_STATUS,
   TASTING_RESTORED_STATUS,
-  restoreStepFromVersion,
-  toggleDraftRowLines,
 } from './RecipePage.jsx';
 import { isLineRemoved } from '../domain/rows.js';
+import { derivePenState, isPenDraftDirty, restoreStepFromVersion, toggleDraftRowLines } from '../domain/penDraft.js';
 import { VersionRow } from './VersionRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';

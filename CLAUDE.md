@@ -104,7 +104,8 @@ Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `item
   their status. If any come back, say in the first message of the session that N rows are waiting
   for `/marks-list`, naming their titles. Do not handle them yourself or run the skill unprompted.
   Load `ArtifactData` with ToolSearch if it is deferred.
-- When a task leaves Mark a decision, a device check or a board to look at, add a row: short slug
+- When a task leaves Mark a decision, a device check, a board to look at or a bug to triage, add a
+  row: short slug
   as doc id, `kind`, `title`, `where`, `addedBy: "claude"`, status `open`, ISO `createdAt` and
   `updatedAt`, and on decide rows `options` with one marked `recommended`. Set `owner` on every
   row: `"mark"` when it waits on Mark (with `needs: "answer"` when he only replies on the page,
@@ -123,8 +124,15 @@ Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `item
     The title says what he will see, with no "Check:" prefix.
   - `todo`: work to do. `owner: "mark"` with `needs: "hands"`, titled "Run:", for an interactive
     command he runs (never for `/gsd-fast`, `/gsd-quick` or `/gsd-quick-batch`, which Claude runs).
+  - `bug`: a defect Mark reported or a check turned up; he triages it. `owner: "mark"`,
+    `needs: "answer"`, with `severity` (`blocker`, `major`, `minor`, `cosmetic`), `detail` (what he
+    saw and how to repeat it), an optional `cause` worded as unverified, and `options` with the
+    unique ids `fix`, `defer` and `not-a-bug` (`recommended` on `fix` only when the cause is
+    clear). The row is the only record: no GSD todo file for a bug. Claude does not fix a bug
+    before he answers its row, unless he says in so many words to fix it. `/marks-list` acts on
+    his answer.
   - `note`: his own reminder. The skill never reacts to it.
-  The doc id starts with the kind word (`decide-`, `look-`, `check-`, `todo-`, `note-`) and a short
+  The doc id starts with the kind word (`decide-`, `look-`, `check-`, `bug-`, `todo-`, `note-`) and a short
   slug; Run rows may start `run-` instead. Put the phase in the `phase` field, not in the id. The
   lane comes from `owner` and `needs`, not from `kind`. Never rename an existing id: other rows
   refer to it.

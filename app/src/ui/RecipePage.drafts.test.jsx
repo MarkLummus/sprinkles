@@ -86,9 +86,8 @@ import {
   RecipePage,
   DRAFT_KEPT_STATUS,
   PAGE_LOAD_ERROR,
-  blankRecordDraft,
-  draftFromBatch,
 } from './RecipePage.jsx';
+import { blankRecordDraft, draftFromBatch } from '../domain/recordDraft.js';
 import { RECORD_DRAFT_KEYS, buildDraftRecord } from '../domain/draft.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';

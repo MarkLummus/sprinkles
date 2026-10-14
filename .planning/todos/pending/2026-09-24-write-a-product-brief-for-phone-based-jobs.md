@@ -4,7 +4,7 @@ title: Write a product brief for phone-based jobs
 area: design
 severity: minor
 files:
-  - .planning/todos/pending/2026-09-24-decide-whether-the-batch-and-tasting-log-is-entered-on-the-phone.md
+  - .planning/todos/completed/2026-09-24-decide-whether-the-batch-and-tasting-log-is-entered-on-the-phone.md
   - .impeccable/surfaces/route-recipe.md:69
   - .impeccable/surfaces/route-recipe-batch.md:34
 ---

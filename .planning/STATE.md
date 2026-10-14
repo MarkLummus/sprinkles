@@ -521,6 +521,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261014-e89 | Mark's List bug-record-pen-proto-row-id: a row id of the text "__proto__" (also "constructor", "prototype") must not los | 2026-10-14 | e91ca9b | .planning/quick/261014-e89-mark-s-list-bug-record-pen-proto-row-id |
 | 261014-e8a | Mark's List bug-pen-note-delete-then-edit-provenance: in app/src/domain/penDraft.js setPenNoteText and removePenNote, de | 2026-10-14 | b8e5b83 | .planning/quick/261014-e8a-mark-s-list-bug-pen-note-delete-then-edi |
 | 261014-e8b | Harden app/src/ui/RecipePage.shell.test.js stripComments so it no longer treats // inside a string as a comment (a sette | 2026-10-14 | 43c6871 | .planning/quick/261014-e8b-harden-app-src-ui-recipepage-shell-test |
+| 261014-e8c | Comments and docs only: Phase 5 review follow-ups (useRecordDraft header, RecipePage IN-02, shell test header, SC5 count, disposition rows) | 2026-10-14 | b9d8928 | .planning/quick/261014-e8c-comments-and-docs-only-correct-the-usere |
 
 ### Roadmap Evolution
 

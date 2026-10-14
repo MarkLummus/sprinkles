@@ -69,7 +69,7 @@
       "quick_id": "261014-e8c",
       "client_id": null,
       "description": "Comments and docs only: correct the useRecordDraft.js header claim that every draft change clears the date block (tasting methods deliberately preserve it); fix the stale comment at RecipePage.jsx ~622-624 (handleStartAmending also reads the recordPen hook; IN-02); fix the stale static-only claim in the RecipePage.shell.test.js header; change 05-VERIFICATION.md SC5 eleven scenarios to the true count of twelve; and update .planning/phases/05-split-the-recipe-page/05-REVIEW-DISPOSITION.md rows WR-01 and WR-02 to fixed (name this batch), leave IN-01 and IN-03 open with a one-line reason each (IN-03 is deferred to v2 creation as a design question).",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "261014-e8b",
         "261014-e89"
@@ -87,7 +87,7 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 1,
-      "commit": null,
+      "commit": "b9d8928",
       "failure_reason": null
     }
   ]

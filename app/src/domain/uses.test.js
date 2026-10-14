@@ -211,7 +211,18 @@ describe('stepsWithStaleAmounts', () => {
     findRow(current, 'row-04').portions[0].grams = 24;
     findStep(current, 3).removed = true;
 
-    expect(stepsWithStaleAmounts(current, baseline)).toEqual([]);
+    // Removing step 3 takes its lines out of rows step 2 also uses (Sucrose, Whole milk): WR-01's intended behaviour.
+    const entries = stepsWithStaleAmounts(current, baseline);
+    expect(entries.some((entry) => entry.n === 3)).toBe(false);
+    expect(entries).toEqual([
+      {
+        n: 2,
+        changes: [
+          { rowId: 'row-05', ingredientName: 'Sucrose', from: 76, to: 12 },
+          { rowId: 'row-01', ingredientName: 'Whole milk', from: 370.4, to: 120 },
+        ],
+      },
+    ]);
   });
 
   it("never raises a flag from a removed row's grams change", () => {
@@ -219,6 +230,30 @@ describe('stepsWithStaleAmounts', () => {
     const current = clone();
     findRow(current, 'row-04').portions[0].grams = 24;
     findRow(current, 'row-04').removed = true;
+
+    expect(stepsWithStaleAmounts(current, baseline)).toEqual([]);
+  });
+});
+
+describe('stepsWithStaleAmounts — a split row with a line out (WR-01)', () => {
+  it('flags the steps that use a split row when one of its lines is taken out', () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(current, 'row-01').portions[0].removed = true;
+
+    const change = { rowId: 'row-01', ingredientName: 'Whole milk', from: 370.4, to: 250.4 };
+    expect(stepsWithStaleAmounts(current, baseline)).toEqual([
+      { n: 2, changes: [change] },
+      { n: 3, changes: [change] },
+    ]);
+  });
+
+  it('raises no flag for an edit to a line that is out on both sides', () => {
+    const baseline = clone();
+    findRow(baseline, 'row-01').portions[0].removed = true;
+    const current = clone();
+    findRow(current, 'row-01').portions[0].removed = true;
+    findRow(current, 'row-01').portions[0].grams = 100;
 
     expect(stepsWithStaleAmounts(current, baseline)).toEqual([]);
   });

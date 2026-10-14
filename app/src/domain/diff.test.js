@@ -751,3 +751,79 @@ describe('buildDiff — a removed step takes its lines with it (03.6, decision 5
     expect(gum.lines[0].removedChanged).toBe(true);
   });
 });
+
+describe('buildDiff — row-level figures read the lines still in (WR-01)', () => {
+  it('gives a split row with one line taken out gramsChanged true, from the lines still in', () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(current, 'row-01').portions[0].removed = true;
+
+    const milk = buildDiff(current, baseline).rows.find((row) => row.id === 'row-01');
+    expect(milk.gramsFrom).toBe(370.4);
+    expect(milk.gramsTo).toBe(250.4);
+    expect(milk.gramsChanged).toBe(true);
+    expect(milk.shareFrom).toBe('46.3%');
+    expect(milk.shareTo).toBe('36.8%');
+    expect(milk.shareChanged).toBe(true);
+    expect(milk.removed).toBe(false);
+  });
+
+  it('reads each side through its own method when a step is removed', () => {
+    const baseline = clone();
+    const current = clone();
+    findStep(current, 2).removed = true;
+
+    const milk = buildDiff(current, baseline).rows.find((row) => row.id === 'row-01');
+    expect(milk.gramsFrom).toBe(370.4);
+    expect(milk.gramsTo).toBe(250.4);
+    expect(milk.gramsChanged).toBe(true);
+
+    const baselineOut = clone();
+    findStep(baselineOut, 2).removed = true;
+    const mirror = buildDiff(clone(), baselineOut).rows.find((row) => row.id === 'row-01');
+    expect(mirror.gramsFrom).toBe(250.4);
+    expect(mirror.gramsTo).toBe(370.4);
+    expect(mirror.gramsChanged).toBe(true);
+  });
+
+  it('moves nothing at the row level for an edit to a line that is out on both sides', () => {
+    const baseline = clone();
+    findRow(baseline, 'row-01').portions[0].removed = true;
+    const current = clone();
+    findRow(current, 'row-01').portions[0].removed = true;
+    findRow(current, 'row-01').portions[0].grams = 100;
+
+    const milk = buildDiff(current, baseline).rows.find((row) => row.id === 'row-01');
+    expect(milk.gramsFrom).toBe(250.4);
+    expect(milk.gramsTo).toBe(250.4);
+    expect(milk.gramsChanged).toBe(false);
+    expect(milk.shareChanged).toBe(false);
+  });
+
+  it('reports a row absent from the baseline over its lines still in, with the null-from shape', () => {
+    const baseline = clone();
+    baseline.rows = baseline.rows.filter((row) => row.id !== 'row-01');
+    const current = clone();
+    findRow(current, 'row-01').portions[0].removed = true;
+
+    const milk = buildDiff(current, baseline).rows.find((row) => row.id === 'row-01');
+    expect(milk.gramsFrom).toBeNull();
+    expect(milk.gramsTo).toBe(250.4);
+    expect(milk.shareFrom).toBeNull();
+    expect(milk.shareTo).toBe('36.8%');
+    expect(milk.gramsChanged).toBe(true);
+    expect(milk.shareChanged).toBe(true);
+  });
+
+  it('reads zero on the out side for a row taken out whole by the older row flag', () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(current, 'row-09').removed = true;
+
+    const lecithin = buildDiff(current, baseline).rows.find((row) => row.id === 'row-09');
+    expect(lecithin.gramsFrom).toBe(1.2);
+    expect(lecithin.gramsTo).toBe(0);
+    expect(lecithin.gramsChanged).toBe(true);
+    expect(lecithin.removed).toBe(true);
+  });
+});

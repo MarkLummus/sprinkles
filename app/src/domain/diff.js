@@ -9,7 +9,7 @@
 // order (already ascending n).
 import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue } from './composition.js';
 import { buildFigures } from './figures.js';
-import { activeRows, activeSteps, isLineRemoved, isRowRemoved, rowGrams } from './rows.js';
+import { activeRows, activeSteps, isLineRemoved, isRowRemoved } from './rows.js';
 
 function activeMass(version) {
   const balance = computeBalance(activeRows(version));
@@ -96,17 +96,26 @@ function buildLineDiffs(row, baseRow, currentMass, baselineMass, method, baseMet
   });
 }
 
+// A row's total over the lines still in on one side, a line being out as
+// isLineRemoved reads it against that side's own method — the same predicate
+// buildLineDiffs and activeRows use, so the row-level figures and the masses
+// their shares divide by cannot disagree.
+function activeRowGrams(row, method) {
+  return row.portions.reduce((total, portion) => (isLineRemoved(row, portion, method) ? total : total + portion.grams), 0);
+}
+
 function buildRowDiff(row, baseRow, currentMass, baselineMass, method, baseMethod) {
   const lines = buildLineDiffs(row, baseRow, currentMass, baselineMass, method, baseMethod);
   if (!baseRow) {
+    const rowTotal = activeRowGrams(row, method);
     return {
       id: row.id,
       ingredientName: row.ingredientName,
       gramsFrom: null,
-      gramsTo: rowGrams(row),
+      gramsTo: rowTotal,
       gramsChanged: true,
       shareFrom: null,
-      shareTo: formatShareOfBatch(rowGrams(row), currentMass),
+      shareTo: formatShareOfBatch(rowTotal, currentMass),
       shareChanged: true,
       stepsFrom: null,
       stepsTo: stepsOf(row),
@@ -116,8 +125,8 @@ function buildRowDiff(row, baseRow, currentMass, baselineMass, method, baseMetho
       lines,
     };
   }
-  const rowTotal = rowGrams(row);
-  const baseRowTotal = rowGrams(baseRow);
+  const rowTotal = activeRowGrams(row, method);
+  const baseRowTotal = activeRowGrams(baseRow, baseMethod);
   const shareFrom = formatShareOfBatch(baseRowTotal, baselineMass);
   const shareTo = formatShareOfBatch(rowTotal, currentMass);
   const removed = isRowRemoved(row, method);
@@ -217,7 +226,10 @@ function buildStepDiff(step, baseStep) {
  * string, figures compare value.toFixed(decimals). `rows` is one
  * descriptor per row of `current`, in `current.rows` order — a row absent
  * from `baseline` reports every `From` as null and every `Changed` as
- * true. `gramsFrom`/`gramsTo` are each row's derived total (rowGrams);
+ * true. `gramsFrom`/`gramsTo` are each row's total over the lines still in on
+ * that side, a line being out as isLineRemoved reads it against that side's
+ * own method (the reading `lines` and the active masses already use), and
+ * `shareFrom`/`shareTo` are that total over the matching active mass;
  * `stepsFrom`/`stepsTo` are each row's portions' step references, as
  * arrays in portion order, and `stepsChanged` is an order-sensitive
  * comparison of those two arrays — a reallocation between the same two

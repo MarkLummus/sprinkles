@@ -18,6 +18,7 @@ import {
 } from '../domain/lineage.js';
 import { buildDiff } from '../domain/diff.js';
 import { buildDraftRecord, draftMatchesVersion, newestDraft } from '../domain/draft.js';
+import { penDraftRow } from '../domain/penDraft.js';
 import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { notebookPath } from './notebookPaths.js';
@@ -306,7 +307,7 @@ export function isPenDraftDirty(mode, penDraft, version) {
   if (penDraft.sheetTitle !== version.sheetTitle) return true;
   if (penDraft.sheetDescription !== version.sheetDescription) return true;
   const rowsDirty = version.rows.some((row) => {
-    const draftRow = penDraft.rows[row.id];
+    const draftRow = penDraftRow(penDraft, row.id);
     return row.portions.some((portion, i) => {
       const draftPortion = draftRow.portions[i];
       return (
@@ -1367,7 +1368,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
       ? {
           ...version,
           rows: version.rows.map((row) => {
-            const draftRow = penDraft.rows[row.id];
+            const draftRow = penDraftRow(penDraft, row.id);
             return {
               ...row,
               portions: row.portions.map((portion, i) => {
@@ -2290,7 +2291,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
       return null;
     }
     const rows = version.rows.map((row) => {
-      const draftRow = penDraft.rows[row.id];
+      const draftRow = penDraftRow(penDraft, row.id);
       return {
         ...row,
         portions: row.portions.map((portion, i) => {

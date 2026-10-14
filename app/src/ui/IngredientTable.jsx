@@ -5,6 +5,7 @@ import { activeRows, isLineRemoved, isStepRemoved, rowGrams } from '../domain/ro
 import { orphanedRows } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
 import { parseGramsDraft } from '../domain/lineage.js';
+import { penDraftRow } from '../domain/penDraft.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { Button } from './Button.jsx';
 
@@ -142,7 +143,7 @@ function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputR
   if (mode !== 'developing') {
     return <span className="ingredient-table__plan-grams">{`${row.portions[portionIndex].grams} g`}</span>;
   }
-  const draftRow = penDraft.rows[row.id];
+  const draftRow = penDraftRow(penDraft, row.id);
   const portion = row.portions[portionIndex];
   const draftPortion = draftRow.portions[portionIndex];
   // Forced struck even when the number itself is unchanged once the line is
@@ -651,7 +652,7 @@ export function IngredientTable({
   }
 
   function renderDevelopingEntry(row, portion, portionIndex, displayNumber, stepRemoved) {
-    const draftRow = penDraft.rows[row.id];
+    const draftRow = penDraftRow(penDraft, row.id);
     const draftPortion = draftRow.portions[portionIndex];
     // This line is out when this portion's own draft flag is set or its step
     // is removed (sketch 011 decision 51); a sibling line is never affected by

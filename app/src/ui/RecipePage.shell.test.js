@@ -12,8 +12,11 @@ function raw(relative) {
   return readFileSync(fileURLToPath(new URL(relative, import.meta.url)), 'utf8');
 }
 
+// A string is matched before a comment, so a // or /* inside one stays code (WR-02).
+const STRING_OR_COMMENT = /('(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\[\s\S]|[^`\\])*`)|\/\*[\s\S]*?\*\/|\/\/[^\n]*/g;
+
 function stripComments(source) {
-  return source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  return source.replace(STRING_OR_COMMENT, (_match, literal) => literal ?? '');
 }
 
 function count(source, needle) {
@@ -59,6 +62,14 @@ describe('RecipePage.jsx holds no draft setter (D-12)', () => {
     expect(pattern.test('setBlockedTarget(null)')).toBe(true);
     expect(pattern.test('setDraftRestoreDone(true)')).toBe(false);
     expect(pattern.test('setDrafts(result)')).toBe(false);
+  });
+});
+
+describe('stripComments keeps what a string holds (WR-02)', () => {
+  it.each([
+    "const u = 'http://x'; setDraft(null);",
+  ])('a setter after a comment marker inside a string is still caught: %s', (line) => {
+    expect(stripComments(line)).toMatch(wholeWord(D12_SETTERS));
   });
 });
 

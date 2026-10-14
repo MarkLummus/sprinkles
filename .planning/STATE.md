@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-14T00:55:46.121Z"
+last_updated: "2026-10-14T01:01:16.660Z"
 last_activity: 2026-10-12
 last_activity_desc: Phase 04 execution started
-state_head: b6c10b4793f8d2c77b51a2ac9a51a358cdfad5ee
+state_head: 63dd447e08af84136b685e68bba9494227aac63e
 progress:
   total_phases: 15
   completed_phases: 11
@@ -505,6 +505,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 145 | Record 04-UAT.md test 3 as passed on the iPad | 2026-10-13 | 56381dd | — |
 | 146 | Record 04-UAT.md test 4 as passed, UAT complete 5 of 5 | 2026-10-13 | e817baf | — |
 | 147 | Add the bug row kind to the marks-list skill | 2026-10-13 | b6c10b4 | — |
+| 148 | Add the bug kind to Mark's List in CLAUDE.md | 2026-10-13 | 63dd447 | — |
 
 ### Roadmap Evolution
 

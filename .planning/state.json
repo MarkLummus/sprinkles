@@ -1,7 +1,7 @@
 {
   "contract": "1.0.0",
   "flavor": "core",
-  "milestone": null,
+  "milestone": "v1.1",
   "phases": [
     {
       "number": "1",
@@ -19,42 +19,42 @@
       "status": "complete"
     },
     {
-      "number": "3.1",
+      "number": "03.1",
       "name": "The imprint and the binder",
       "status": "complete"
     },
     {
-      "number": "3.2",
+      "number": "03.2",
       "name": "The portion and the reset",
       "status": "complete"
     },
     {
-      "number": "3.3",
+      "number": "03.3",
       "name": "The front-matter rows and the page in step order",
       "status": "complete"
     },
     {
-      "number": "3.3.1",
+      "number": "03.3.1",
       "name": "The full battery: the record pen rebuilt from sketch 007",
       "status": "complete"
     },
     {
-      "number": "3.3.1.1",
+      "number": "03.3.1.1",
       "name": "Record pen conformance polish",
       "status": "complete"
     },
     {
-      "number": "3.4",
+      "number": "03.4",
       "name": "The design layer in code",
       "status": "complete"
     },
     {
-      "number": "3.5",
+      "number": "03.5",
       "name": "Separate the recipe from the sheet",
       "status": "complete"
     },
     {
-      "number": "3.6",
+      "number": "03.6",
       "name": "Per-step shared ingredients",
       "status": "complete"
     },
@@ -70,9 +70,9 @@
     }
   ],
   "next": {
-    "command": "/gsd:progress",
-    "label": "Show progress",
-    "reason": "Unsure of state — showing progress"
+    "command": "/gsd:discuss-phase",
+    "label": "Discuss the first phase",
+    "reason": "Project initialized — plan your first phase"
   },
-  "updated_at": "2026-10-14T03:47:12.935Z"
+  "updated_at": "2026-10-14T04:15:41.684Z"
 }

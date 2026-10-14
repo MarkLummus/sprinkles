@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { buildDraftRecord, draftMatchesVersion } from './draft.js';
+import { createChildVersion } from './lineage.js';
 import { isLineRemoved } from './rows.js';
 import {
   derivePenState,
@@ -483,6 +485,98 @@ describe('removePenNote', () => {
     const draft = cleanDraftFor(clone());
     const next = expectPure(removePenNote, draft, 'beforeYouStart', 0);
     expect(next.authored.beforeYouStart).toEqual([draft.authored.beforeYouStart[1]]);
+  });
+});
+
+describe('a note removed before another is edited', () => {
+  function markedVersion() {
+    const version = clone();
+    version.authored.beforeYouStart[0].inheritedFrom = 'v-a';
+    version.authored.beforeYouStart[1].inheritedFrom = 'v-b';
+    return version;
+  }
+
+  // The composition the bug row names: remove note 0, edit the survivor
+  // away, then type it back to its own original text.
+  function removedEditedTypedBack(version, textB) {
+    const removed = removePenNote(penDraftFromVersion(version), 'beforeYouStart', 0);
+    const edited = setPenNoteText(removed, version, 'beforeYouStart', 0, 'Something else');
+    return { edited, typedBack: setPenNoteText(edited, version, 'beforeYouStart', 0, textB) };
+  }
+
+  it('keeps the survivor marker when its text is typed back to its own original', () => {
+    const version = markedVersion();
+    const textB = version.authored.beforeYouStart[1].text;
+    const { edited, typedBack } = removedEditedTypedBack(version, textB);
+    expect(edited.authored.beforeYouStart[0]).toEqual({ text: 'Something else', inheritedFrom: null });
+    expect(typedBack.authored.beforeYouStart[0]).toEqual({ text: textB, inheritedFrom: 'v-b' });
+  });
+
+  it('clears the survivor marker when its text equals the removed note, not its own original', () => {
+    const version = markedVersion();
+    const textA = version.authored.beforeYouStart[0].text;
+    const removed = removePenNote(penDraftFromVersion(version), 'beforeYouStart', 0);
+    const next = setPenNoteText(removed, version, 'beforeYouStart', 0, textA);
+    expect(next.authored.beforeYouStart[0]).toEqual({ text: textA, inheritedFrom: null });
+  });
+
+  it('after two removals, compares the last note with its own original', () => {
+    const version = markedVersion();
+    const textC = 'Chill the bowl in the freezer first.';
+    version.authored.beforeYouStart.push({ text: textC, inheritedFrom: 'v-c' });
+    let draft = penDraftFromVersion(version);
+    draft = removePenNote(draft, 'beforeYouStart', 0);
+    draft = removePenNote(draft, 'beforeYouStart', 0);
+    draft = setPenNoteText(draft, version, 'beforeYouStart', 0, 'Something else');
+    draft = setPenNoteText(draft, version, 'beforeYouStart', 0, textC);
+    expect(draft.authored.beforeYouStart).toEqual([{ text: textC, inheritedFrom: 'v-c' }]);
+  });
+
+  it('saves the survivor with its own original marker and only text and inheritedFrom', () => {
+    const version = markedVersion();
+    const textB = version.authored.beforeYouStart[1].text;
+    const { typedBack } = removedEditedTypedBack(version, textB);
+    const fields = penFieldsFromDraft(typedBack, version);
+    expect(fields.authored.beforeYouStart).toEqual([{ text: textB, inheritedFrom: 'v-b' }]);
+    expect(Object.keys(fields.authored.beforeYouStart[0]).sort()).toEqual(['inheritedFrom', 'text']);
+    expect(Object.prototype.hasOwnProperty.call(fields, 'noteOrigins')).toBe(false);
+    const child = createChildVersion(version, fields, {
+      id: 'olive-oil-ice-cream-v1-e8a-child',
+      now: '2026-10-14T12:00:00.000Z',
+    });
+    expect(child.authored).toEqual(fields.authored);
+    expect(Object.prototype.hasOwnProperty.call(child, 'noteOrigins')).toBe(false);
+  });
+
+  it('a draft with no removal carries no noteOrigins, before and after an edit', () => {
+    const version = markedVersion();
+    const textB = version.authored.beforeYouStart[1].text;
+    const draft = penDraftFromVersion(version);
+    expect(Object.prototype.hasOwnProperty.call(draft, 'noteOrigins')).toBe(false);
+    const edited = setPenNoteText(draft, version, 'beforeYouStart', 0, 'Something else');
+    expect(Object.prototype.hasOwnProperty.call(edited, 'noteOrigins')).toBe(false);
+    const away = setPenNoteText(draft, version, 'beforeYouStart', 1, 'Something else');
+    const back = setPenNoteText(away, version, 'beforeYouStart', 1, textB);
+    expect(back.authored.beforeYouStart[1].inheritedFrom).toBe('v-b');
+  });
+
+  it('a draft stored before noteOrigins existed restores, and its notes compare by position as before', () => {
+    const version = markedVersion();
+    const textA = version.authored.beforeYouStart[0].text;
+    const older = penDraftFromVersion(version);
+    older.authored.beforeYouStart = older.authored.beforeYouStart.slice(1);
+    const record = buildDraftRecord({
+      versionId: version.id,
+      kind: 'plan',
+      payload: older,
+      now: '2026-10-14T12:00:00.000Z',
+    });
+    expect(draftMatchesVersion(structuredClone(record), version, [])).toBe(true);
+    // An older draft cannot say which note it lost, so it keeps the by-position rule. It is not migrated (see the plan's kept-drafts decision).
+    expect(setPenNoteText(record.payload, version, 'beforeYouStart', 0, textA).authored.beforeYouStart[0]).toEqual({
+      text: textA,
+      inheritedFrom: 'v-a',
+    });
   });
 });
 

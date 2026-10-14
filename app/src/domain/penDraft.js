@@ -377,9 +377,13 @@ export function togglePenStepRemoved(draft, stepN) {
 // the edited text still equals the text this version inherited it with,
 // and clears the instant it differs — computed once, here, so every
 // reader (Authored.jsx included) can read `note.inheritedFrom` directly
-// rather than re-deriving it.
+// rather than re-deriving it. The note is compared with the version note it
+// was opened from: by noteOrigins after a removal, otherwise by its own index
+// (a kept draft from before noteOrigins compares by position, as it did).
+// Mark's List bug-pen-note-delete-then-edit-provenance.
 export function setPenNoteText(draft, version, listKey, index, value) {
-  const originalNote = version.authored[listKey][index];
+  const origin = draft.noteOrigins?.[listKey]?.[index] ?? index;
+  const originalNote = version.authored[listKey][origin];
   const notes = draft.authored[listKey].map((note, i) =>
     i === index
       ? { ...note, text: value, inheritedFrom: value === originalNote.text ? originalNote.inheritedFrom : null }
@@ -391,9 +395,16 @@ export function setPenNoteText(draft, version, listKey, index, value) {
 // A note can be removed per note (route-recipe-version.md § 3) — an
 // outright removal from the list, not a struck-in-place flag: an
 // authored note carries no cross-flag concern the way a row or step does.
+// It also records, per list, each surviving note's position in the version the
+// pen opened on (noteOrigins). That key is absent until the first removal, so
+// a draft with no removal (and every draft kept before this) keeps its exact
+// shape, which the drafts store and the 05 walk read. penFieldsFromDraft and
+// penDraftVersion pick their fields by name, so it never reaches a saved record.
 export function removePenNote(draft, listKey, index) {
+  const origins = draft.noteOrigins?.[listKey] ?? draft.authored[listKey].map((_, i) => i);
   return {
     ...draft,
     authored: { ...draft.authored, [listKey]: draft.authored[listKey].filter((_, i) => i !== index) },
+    noteOrigins: { ...draft.noteOrigins, [listKey]: origins.filter((_, i) => i !== index) },
   };
 }

@@ -246,19 +246,21 @@ export function blankRecordDraft() {
 // draftFromBatch(batch) -> the record draft handleStartAmending pre-fills
 // from ("Correct reopens the same pen with everything editable", D-03).
 // Every read is an own-property read off the batch's own churn/tasting
-// objects — never a computed-key write against a stored key (the T-03-10
-// adjacency rule this plan's threat model names) — the asMade copy below
-// mirrors buildChurn's own already-reviewed shallow-copy-by-own-keys
-// pattern (domain/batch.js). Exported so 03.3.1-02's Task 3 acceptance
+// objects. The asMade copy below is built with Object.fromEntries over the
+// batch's own entries, so a stored row id such as __proto__ becomes an own
+// key and never reaches the prototype (T-03-10, WR-01); it mirrors
+// buildChurn's own shallow-copy-by-own-keys pattern (domain/batch.js). Exported so 03.3.1-02's Task 3 acceptance
 // criteria (the seeded batch's exact pre-filled values) can be asserted
 // directly, the same way this file's other pure helpers already are.
 export function draftFromBatch(batch) {
   const churn = batch.churn;
   const tasting = batch.tasting;
-  const asMade = {};
-  for (const [rowId, values] of Object.entries(churn.asMade)) {
-    asMade[rowId] = values.map((value) => (value === null ? '' : String(value)));
-  }
+  const asMade = Object.fromEntries(
+    Object.entries(churn.asMade).map(([rowId, values]) => [
+      rowId,
+      values.map((value) => (value === null ? '' : String(value))),
+    ]),
+  );
   const toDraftString = (value) => (value == null ? '' : String(value));
   return {
     churnDate: churn.churnDate ?? '',
@@ -374,13 +376,14 @@ function toTextOrNull(raw) {
 // the plan pen's own as-made column already does (D-10): a value that
 // rule rejects, or a blank portion, becomes null, the same fact as a
 // portion never touched; a row whose every portion resolves to null drops
-// its key entirely.
+// its key entirely. The map is built with Object.fromEntries so a row id
+// such as __proto__ stays an own key (WR-01).
 export function buildChurnFieldsFromDraft(draft, parsed) {
-  const asMade = {};
-  for (const [rowId, rawValues] of Object.entries(draft.asMade)) {
-    const parsedValues = rawValues.map((rawValue) => parseGramsDraft(rawValue));
-    if (parsedValues.some((value) => value !== null)) asMade[rowId] = parsedValues;
-  }
+  const asMade = Object.fromEntries(
+    Object.entries(draft.asMade)
+      .map(([rowId, rawValues]) => [rowId, rawValues.map((rawValue) => parseGramsDraft(rawValue))])
+      .filter(([, parsedValues]) => parsedValues.some((value) => value !== null)),
+  );
   return {
     churnDate: draft.churnDate === '' ? null : draft.churnDate,
     asMade,
@@ -493,19 +496,25 @@ export function setStepChange(draft, stepNumber, patch) {
 // the same alignment contract asMadeForPortion reads. Once every
 // portion of a row is back to an empty string, the row's key is deleted
 // entirely — the existing "an empty field means nothing was written"
-// rule (D-13/BATCH1-01), applied at the row level as it is today.
+// rule (D-13/BATCH1-01), applied at the row level as it is today. The map
+// is rebuilt with Object.fromEntries rather than written through a stored
+// row id, so an id such as __proto__ stays an own key (WR-01, the
+// record-side twin of penDraftRow, T-05-04); key order is kept: a rewritten
+// row keeps its place and a new row goes last.
 export function setAsMadePortion(draft, version, rowId, portionIndex, rawValue) {
-  const asMade = { ...draft.asMade };
   const row = version.rows.find((candidate) => candidate.id === rowId);
-  const existing = Object.prototype.hasOwnProperty.call(asMade, rowId) ? asMade[rowId] : null;
+  const hadKey = Object.prototype.hasOwnProperty.call(draft.asMade, rowId);
+  const existing = hadKey ? draft.asMade[rowId] : null;
   const next = existing ? [...existing] : new Array(row.portions.length).fill('');
   next[portionIndex] = rawValue;
-  if (next.every((value) => value === '')) {
-    delete asMade[rowId];
-  } else {
-    asMade[rowId] = next;
+  const cleared = next.every((value) => value === '');
+  const entries = [];
+  for (const [key, values] of Object.entries(draft.asMade)) {
+    if (key !== rowId) entries.push([key, values]);
+    else if (!cleared) entries.push([rowId, next]);
   }
-  return { ...draft, asMade };
+  if (!hadKey && !cleared) entries.push([rowId, next]);
+  return { ...draft, asMade: Object.fromEntries(entries) };
 }
 
 // Add tasting's effect on the draft: the tasting section opens.

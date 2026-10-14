@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { oliveOilVersion } from '../data/olive-oil.js';
+import { asMadeForPortion, completeRecord, createBatch } from './batch.js';
 import { BATTERY_FIELDS } from './battery.js';
 import {
   CHURN_DATE_BLOCKED_MESSAGE,
@@ -27,6 +29,9 @@ import {
   toggleDefect,
   validateRecordDraft,
 } from './recordDraft.js';
+
+// The names the import key scan refuses as keys (WR-01 of the Phase 5 review).
+const RESERVED_ROW_IDS = ['__proto__', 'constructor', 'prototype'];
 
 // A draft holding only what the save gate reads: the churn date and the
 // battery's measured fields, all blank.
@@ -143,6 +148,21 @@ describe('draftFromBatch', () => {
     expect(draft.marks).toEqual({});
     expect(tastingHasInk(draft)).toBe(false);
   });
+
+  it.each(RESERVED_ROW_IDS)('reads a stored as-made row id %s back as an own key (WR-01)', (name) => {
+    const batch = structuredClone(augustSecondBatch);
+    batch.churn.asMade = Object.fromEntries([[name, [null, 12]]]);
+    const draft = draftFromBatch(batch);
+    expect(Object.prototype.hasOwnProperty.call(draft.asMade, name)).toBe(true);
+    expect(draft.asMade[name]).toEqual(['', '12']);
+    expect(Object.getPrototypeOf(draft.asMade)).toBe(Object.prototype);
+  });
+
+  it('keeps the key order of the stored as-made map', () => {
+    const draft = draftFromBatch(structuredClone(augustSecondBatch));
+    expect(Object.keys(draft.asMade)).toEqual(Object.keys(augustSecondBatch.churn.asMade));
+    expect(Object.keys(draft.asMade)).toEqual(['row-01', 'row-02', 'row-03', 'row-09']);
+  });
 });
 
 describe('tastingHasInk and tastingPayloadFromDraft', () => {
@@ -256,6 +276,65 @@ describe('buildChurnFieldsFromDraft and buildTastingFieldsFromDraft', () => {
     const churn = buildChurnFieldsFromDraft(draft, parsed);
     expect(Object.keys(churn.asMade)).toEqual(['some']);
     expect(churn.asMade.some).toEqual([12, null]);
+  });
+
+  it.each(RESERVED_ROW_IDS)('builds churn.asMade with an own key for the row id %s (WR-01)', (name) => {
+    const draft = {
+      ...blankRecordDraft(),
+      churnDate: '2026-08-09',
+      asMade: Object.fromEntries([[name, ['', '12']], ['empty', ['', '']]]),
+    };
+    const { parsed } = parseAllMeasuredFields(draft);
+    const churn = buildChurnFieldsFromDraft(draft, parsed);
+    expect(Object.prototype.hasOwnProperty.call(churn.asMade, name)).toBe(true);
+    expect(churn.asMade[name]).toEqual([null, 12]);
+    expect(Object.prototype.hasOwnProperty.call(churn.asMade, 'empty')).toBe(false);
+    expect(Object.getPrototypeOf(churn.asMade)).toBe(Object.prototype);
+  });
+
+  it('keeps the key order of the as-made map', () => {
+    const { draft, parsed } = builtInputs();
+    expect(Object.keys(buildChurnFieldsFromDraft(draft, parsed).asMade)).toEqual([
+      'row-01',
+      'row-02',
+      'row-03',
+      'row-09',
+    ]);
+  });
+});
+
+describe('a reserved row id through type, save, reload and reopen (WR-01)', () => {
+  const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+
+  it.each(RESERVED_ROW_IDS)('keeps the grams typed against the row id %s', (name) => {
+    const version = structuredClone(oliveOilVersion);
+    version.rows[0] = { ...version.rows[0], id: name };
+    const draft = setAsMadePortion({ ...blankRecordDraft(), churnDate: '2026-08-09' }, version, name, 1, '12');
+
+    const { churnFields } = recordFieldsFromDraft(draft, parseAllMeasuredFields(draft).parsed);
+    expect(hasOwn(churnFields.asMade, name)).toBe(true);
+    expect(churnFields.asMade[name]).toEqual([null, 12]);
+
+    const batch = createBatch(version, churnFields, null, { id: 'b-reserved', now: '2026-08-09T09:00:00.000Z' });
+    expect(hasOwn(batch.churn.asMade, name)).toBe(true);
+    expect(asMadeForPortion(batch, name, 1)).toBe(12);
+
+    const stored = structuredClone(batch);
+    const reopened = draftFromBatch(stored);
+    expect(hasOwn(reopened.asMade, name)).toBe(true);
+    expect(reopened.asMade[name]).toEqual(['', '12']);
+    expect(isDraftDirty('recording', reopened, draftFromBatch(stored))).toBe(false);
+
+    const edited = setAsMadePortion(reopened, version, name, 1, '13');
+    expect(isDraftDirty('recording', edited, draftFromBatch(stored))).toBe(true);
+
+    const corrected = completeRecord(
+      stored,
+      recordFieldsFromDraft(edited, parseAllMeasuredFields(edited).parsed).churnFields,
+      null,
+      { now: '2026-08-10T09:00:00.000Z' },
+    );
+    expect(asMadeForPortion(corrected, name, 1)).toBe(13);
   });
 });
 
@@ -384,6 +463,41 @@ describe('setAsMadePortion', () => {
     const first = setAsMadePortion(draft, version, 'cream', 1, '7');
     expect(draft).toEqual(before);
     expect(setAsMadePortion(draft, version, 'cream', 1, '7')).toEqual(first);
+  });
+
+  const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+  const reservedVersion = (name) => ({ rows: [{ id: name, portions: [1, 2] }] });
+
+  it.each(RESERVED_ROW_IDS)('keeps a typed value as an own key for the row id %s (WR-01)', (name) => {
+    const next = setAsMadePortion(blankRecordDraft(), reservedVersion(name), name, 1, '12');
+    expect(hasOwn(next.asMade, name)).toBe(true);
+    expect(next.asMade[name]).toEqual(['', '12']);
+    expect(Object.getPrototypeOf(next.asMade)).toBe(Object.prototype);
+  });
+
+  it.each(RESERVED_ROW_IDS)('keeps and then clears the row id %s as an own key (WR-01)', (name) => {
+    const version = reservedVersion(name);
+    const first = setAsMadePortion(blankRecordDraft(), version, name, 1, '12');
+    const second = setAsMadePortion(first, version, name, 0, '5');
+    expect(second.asMade[name]).toEqual(['5', '12']);
+    const half = setAsMadePortion(second, version, name, 0, '');
+    const cleared = setAsMadePortion(half, version, name, 1, '');
+    expect(Object.keys(cleared.asMade)).toEqual([]);
+    expect(hasOwn(cleared.asMade, name)).toBe(false);
+    expect(Object.getPrototypeOf(cleared.asMade)).toBe(Object.prototype);
+  });
+
+  it.each(RESERVED_ROW_IDS)('reads the pen as dirty after a value typed against the row id %s (WR-01)', (name) => {
+    const next = setAsMadePortion(blankRecordDraft(), reservedVersion(name), name, 1, '12');
+    expect(isDraftDirty('recording', next)).toBe(true);
+  });
+
+  it('keeps key order: a rewritten row keeps its place, a new row goes last, a cleared row leaves', () => {
+    const one = setAsMadePortion(blankRecordDraft(), version, 'cream', 0, '5');
+    const two = setAsMadePortion(one, version, 'sugar', 0, '3');
+    const three = setAsMadePortion(two, version, 'cream', 1, '12');
+    expect(Object.keys(three.asMade)).toEqual(['cream', 'sugar']);
+    expect(Object.keys(setAsMadePortion(three, version, 'sugar', 0, '').asMade)).toEqual(['cream']);
   });
 });
 

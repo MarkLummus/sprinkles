@@ -97,17 +97,15 @@ function markOneFor(pick, groupHasMark) {
  * note are the same fact for free text.
  */
 function buildChurn(churnFields) {
-  const asMade = {};
-  if (churnFields.asMade) {
-    // A shallow copy of each row's own array (D-10, carried from Phase 2),
-    // not a shared reference — the caller's own churnFields.asMade arrays
-    // must never be the same array the stored record holds, so a later
-    // mutation of the caller's object can never move an already-saved
-    // batch.
-    for (const rowId of Object.keys(churnFields.asMade)) {
-      asMade[rowId] = [...churnFields.asMade[rowId]];
-    }
-  }
+  // A shallow copy of each row's own array (D-10, carried from Phase 2),
+  // not a shared reference — the caller's own churnFields.asMade arrays
+  // must never be the same array the stored record holds, so a later
+  // mutation of the caller's object can never move an already-saved
+  // batch. The map is built with Object.fromEntries so a stored row id
+  // such as __proto__ stays an own key (WR-01).
+  const asMade = churnFields.asMade
+    ? Object.fromEntries(Object.keys(churnFields.asMade).map((rowId) => [rowId, [...churnFields.asMade[rowId]]]))
+    : {};
 
   const stepChanges = {};
   if (churnFields.stepChanges) {

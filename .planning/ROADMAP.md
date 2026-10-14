@@ -50,7 +50,7 @@ Full phase detail, plans and progress: `.planning/milestones/v1-ROADMAP.md`.
   4. `RecipePage.jsx` reads as the route shell: it reads the route, loads its records through the repository seam and composes the regions and the two hooks, holding no draft logic of its own; every existing test passes, and tests that imported moved helpers from `RecipePage.jsx` now import them from `domain/`, none deleted or weakened
   5. In the built app the maker sees no change: opening, editing, saving and cancelling the version pen, the record pen, a correction and a tasting give the same page, the same saved records and the same kept draft after a reload as before the split
 
-**Plans**: 5/6 plans executed
+**Plans**: 6/6 plans executed
 
 Plans:
 **Wave 1**
@@ -69,7 +69,7 @@ Plans:
 - [x] 05-05-PLAN.md — useRecordDraft: record, correct and tasting edits as pure ops, lifecycle and the save gate through one hook; the churn-date reset in one place (EDIT-03; D-06, D-07, D-08, D-09, D-10, D-12)
 
 **Wave 6** *(blocked on Wave 5 completion)*
-- [ ] 05-06-PLAN.md — The proof: the after walk compares MATCH with the before walk; a source test pins D-12, the one-place resets, domain purity and the route shell (EDIT-04; D-11, D-12, D-13)
+- [x] 05-06-PLAN.md — The proof: the after walk compares MATCH with the before walk; a source test pins D-12, the one-place resets, domain purity and the route shell (EDIT-04; D-11, D-12, D-13)
 
 **UI hint**: yes
 **Notes**: No screen changes, so no UI-SPEC is needed (`ui_phase` is off). Hook tests follow `app/src/ui/useFold.reset.test.jsx` (jsdom opted in per file, no hook-testing library adopted); adopting more test tooling is a structural choice to raise in discussion. The bare `penDraft.rows[row.id]` reads that T-03.6-02 tracks (low, open) move with this code.
@@ -108,7 +108,7 @@ Phases execute in numeric order: 5 → 6 → 7. Phase 6 does not need Phase 5 an
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 5. Split the recipe page | v1.1 | 5/6 | In Progress | - |
+| 5. Split the recipe page | v1.1 | 6/6 | In Progress | - |
 | 6. The ingredient library in the store | v1.1 | 0/TBD | Not started | - |
 | 7. Creation primitives | v1.1 | 0/TBD | Not started | - |
 

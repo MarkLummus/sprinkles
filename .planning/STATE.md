@@ -4,10 +4,10 @@ current_phase: 05
 current_phase_name: Version evolution
 status: planning
 stopped_at: Phase 04 complete, ready to plan Phase 05
-last_updated: "2026-10-14T03:11:17.402Z"
+last_updated: "2026-10-14T03:30:30.918Z"
 last_activity: 2026-10-13
 last_activity_desc: Phase 04 complete, transitioned to Phase 05
-state_head: 17738c3e85c26e0e4b1c21c4def3fa312edc1294
+state_head: 70e451f7e7cec13a3ee53465f92a2a04e39c686c
 progress:
   total_phases: 15
   completed_phases: 12
@@ -511,6 +511,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261013-w84 | WR-01 (03.6-REVIEW.md): in app/src/domain/diff.js buildRowDiff, make the row-level gramsFr | 2026-10-13 | 39ee7cb | /Users/mark/Documents/projects/sprinkles/.planning/quick/261013-w84-wr-01-03-6-review-md-in-app-src-domain-diff-js-buildrowdiff |
 | 261013-w85 | WR-02 (03.6-REVIEW.md): in app/src/ui/IngredientTable.jsx (~640-671) read baselineShare fr | 2026-10-13 | db060c6 | /Users/mark/Documents/projects/sprinkles/.planning/quick/261013-w85-wr-02-03-6-review-md-in-app-src-ui-ingredienttable-jsx-640-6 |
 | 261013-w86 | WR-03 (03.6-REVIEW.md): in app/src/ui/IngredientTable.jsx (~718 and ~598) print a portion | 2026-10-13 | fb06388 | /Users/mark/Documents/projects/sprinkles/.planning/quick/261013-w86-wr-03-03-6-review-md-in-app-src-ui-ingredienttable-jsx-718-a |
+| 156 | Retire the nine stale 03.5 probes, keep the shared harness | 2026-10-13 | 70e451f | — |
 
 ### Roadmap Evolution
 

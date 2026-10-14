@@ -22,7 +22,7 @@
     {"id": 9, "name": "04-UAT.md test 3: iPad Safari print of Olive Oil v1 and the whole loop on paper (row check-whole-loop-on-paper-after-phase-4)", "status": "done"},
     {"id": 10, "name": "04-UAT.md test 4: closed-tab draft recovery and the 393 look on the device", "status": "done"},
     {"id": 11, "name": "After Phase 4's checks pass: unpark todo-rebaseline-milestone-before-phase-5 and review milestone scope", "status": "not_started"},
-    {"id": 12, "name": "Mark's sequence for a bug kind: marks-list skill, artifact page, CLAUDE.md kind list, then move the Bitter bug (createChildVersion drops declaredFlaws, app/src/domain/lineage.js:123) from .planning/todos/pending/2026-10-13-carry-declared-defects-into-a-new-version.md to Mark's List and delete the todo; hold the bug until Mark triages it", "status": "not_started"}
+    {"id": 12, "name": "Mark's sequence for a bug kind: marks-list skill, artifact page, CLAUDE.md kind list, then move the Bitter bug (createChildVersion drops declaredFlaws, app/src/domain/lineage.js:123) from .planning/todos/pending/2026-10-13-carry-declared-defects-into-a-new-version.md to Mark's List and delete the todo; hold the bug until Mark triages it", "status": "done"}
   ],
   "blockers": [],
   "async_jobs": [],
@@ -34,6 +34,6 @@
     {"decision": "Search checks length first, then another symbol, then a U, then no match; an empty field reads length 0", "rationale": "Mark's call on 2026-10-12", "phase": "04"}
   ],
   "uncommitted_files": [" M .planning/state.json", "?? .planning/phases/03.6-per-step-shared-ingredients/.gitkeep"],
-  "next_action": "Phase 4 UAT is 5 of 5 (2026-10-13). Unpark todo-rebaseline-milestone-before-phase-5 and complete Phase 4, then Mark's bug-kind sequence (memory bug-kind-on-marks-list-sequence). Hold the Bitter bug until Mark triages it.",
+  "next_action": "Phase 4 UAT is 5 of 5. The bug kind is built (skill, page, CLAUDE.md) and the Bitter bug is row bug-new-version-loses-declared-defects on Mark's List, unfixed until Mark triages it. Next: unpark todo-rebaseline-milestone-before-phase-5 and complete Phase 4.",
   "context_notes": "Preview server runs on :4173 (PID 9759) and serves a fresh app/dist; device URL http://192.168.1.133:4173/. The two uncommitted files are intentional leftovers. Mark wants one step at a time in chat, not a checklist; recording results on the list and in 04-UAT.md is my job."
 }

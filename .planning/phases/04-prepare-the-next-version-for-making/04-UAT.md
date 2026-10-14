@@ -1,20 +1,16 @@
 ---
-status: testing
+status: complete
 phase: 04-prepare-the-next-version-for-making
 source: [04-VERIFICATION.md]
 started: 2026-10-11T11:26:19Z
-updated: 2026-10-11T11:26:19Z
+updated: 2026-10-13T00:00:00Z
 ---
 
 The pending device checks are tracked on Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC); results are recorded here once they pass.
 
 ## Current Test
 
-number: 4
-name: Closed-tab draft recovery and the 393 look on the device
-expected: |
-  A pen reopens with its ink and "Draft kept. Cancel discards it."; Home and the band name the waiting draft; the 393 print route and Search stack as drawn. Rows: p4-draft-ipad-uat, p4-05-ipad-mark-one, look-sheet-code-search-ipad.
-awaiting: user response
+[testing complete]
 
 ## Tests
 
@@ -32,7 +28,7 @@ result: pass (Mark, iPad, 2026-10-13, walked one step at a time in chat: Next ve
 
 ### 4. Closed-tab draft recovery and the 393 look on the device
 expected: A pen reopens with its ink and "Draft kept. Cancel discards it."; Home and the band name the waiting draft; the 393 print route and Search stack as drawn. Rows: p4-draft-ipad-uat, p4-05-ipad-mark-one, look-sheet-code-search-ipad.
-result: [pending]
+result: pass (Mark, iPad and iPhone, 2026-10-13, walked step by step in chat: closed-tab recovery, Home says "Draft open on this version · Go to draft" and the pen reopens with its ink and "Draft kept. Cancel discards it."; At draw Nothing to note and Clear, From freezer dashed with "Clear marks below to choose." and skipped by Tab (p4-05-ipad-mark-one); the 393 print route and Search stack as drawn on the iPhone and the Sheet code Find lands on the version.)
 
 ### 5. Mark's List rows from plan 04-10 exist
 expected: decide-three-pens-keep-drafts, look-aug-2-draw-temp-dropped, check-keyboard-walk-loop present and open; build-remove-draw-temp-data-element done.
@@ -41,9 +37,9 @@ result: pass (orchestrator read the list: all three open at version 1, the fourt
 ## Summary
 
 total: 5
-passed: 4
+passed: 5
 issues: 0
-pending: 1
+pending: 0
 skipped: 0
 blocked: 0
 

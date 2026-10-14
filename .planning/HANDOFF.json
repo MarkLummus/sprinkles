@@ -20,15 +20,13 @@
   ],
   "remaining_tasks": [
     {"id": 9, "name": "04-UAT.md test 3: iPad Safari print of Olive Oil v1 and the whole loop on paper (row check-whole-loop-on-paper-after-phase-4)", "status": "done"},
-    {"id": 10, "name": "04-UAT.md test 4: closed-tab draft recovery and the 393 look on the device", "status": "not_started"},
-    {"id": 11, "name": "After Phase 4's checks pass: unpark todo-rebaseline-milestone-before-phase-5 and review milestone scope", "status": "not_started"}
+    {"id": 10, "name": "04-UAT.md test 4: closed-tab draft recovery and the 393 look on the device", "status": "done"},
+    {"id": 11, "name": "After Phase 4's checks pass: unpark todo-rebaseline-milestone-before-phase-5 and review milestone scope", "status": "not_started"},
+    {"id": 12, "name": "Mark's sequence for a bug kind: marks-list skill, artifact page, CLAUDE.md kind list, then move the Bitter bug (createChildVersion drops declaredFlaws, app/src/domain/lineage.js:123) from .planning/todos/pending/2026-10-13-carry-declared-defects-into-a-new-version.md to Mark's List and delete the todo; hold the bug until Mark triages it", "status": "not_started"}
   ],
   "blockers": [],
   "async_jobs": [],
-  "human_actions_pending": [
-    {"action": "Run the whole loop once on the iPad and on paper, including a real printout (Mark's List row check-whole-loop-on-paper-after-phase-4, parked)", "context": "Covers 04-UAT.md test 3; Mark deferred it on 2026-10-12", "blocking": true},
-    {"action": "Closed-tab draft recovery and the 393 look on the device (04-UAT.md test 4; rows p4-draft-ipad-uat, p4-05-ipad-mark-one, look-sheet-code-search-ipad)", "context": "Pending device test; the rows are on or archived from Mark's List", "blocking": true}
-  ],
+  "human_actions_pending": [],
   "decisions": [
     {"decision": "Single tasks and device checks go in chat one at a time; Mark's List is only for several things at once", "rationale": "Mark: the list is his checklist for batches; the old UAT worked because it was sequential and singular", "phase": "04"},
     {"decision": "Archive a set of rows by saving them to .planning/archive/*.json, committing, then deleting them from the list", "rationale": "Keeps the list and its queries light; git keeps the history", "phase": "04"},
@@ -36,6 +34,6 @@
     {"decision": "Search checks length first, then another symbol, then a U, then no match; an empty field reads length 0", "rationale": "Mark's call on 2026-10-12", "phase": "04"}
   ],
   "uncommitted_files": [" M .planning/state.json", "?? .planning/phases/03.6-per-step-shared-ingredients/.gitkeep"],
-  "next_action": "Test 3 passed 2026-10-13. Walk test 4 (closed-tab draft recovery, 393 look) one step at a time in chat (verify each step in WebKit first), record results on the row and in 04-UAT.md. Do not change /marks-list or CLAUDE.md for the conversation-first flow unless Mark says so.",
+  "next_action": "Phase 4 UAT is 5 of 5 (2026-10-13). Unpark todo-rebaseline-milestone-before-phase-5 and complete Phase 4, then Mark's bug-kind sequence (memory bug-kind-on-marks-list-sequence). Hold the Bitter bug until Mark triages it.",
   "context_notes": "Preview server runs on :4173 (PID 9759) and serves a fresh app/dist; device URL http://192.168.1.133:4173/. The two uncommitted files are intentional leftovers. Mark wants one step at a time in chat, not a checklist; recording results on the list and in 04-UAT.md is my job."
 }

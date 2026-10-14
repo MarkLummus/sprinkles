@@ -6,10 +6,10 @@ current_phase: 06
 current_phase_name: The ingredient library in the store
 status: executing
 stopped_at: Phase 6 context gathered
-last_updated: "2026-10-14T11:53:42.894Z"
+last_updated: "2026-10-14T12:09:36.323Z"
 last_activity: 2026-10-14
 last_activity_desc: Phase 05 execution started
-state_head: 6fe52b421f32e23128c621a3dbcd09d60583599e
+state_head: d55ce45ae4db49223333c3b526072cfc9a33b0a1
 progress:
   total_phases: 3
   completed_phases: 0
@@ -516,6 +516,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261013-w85 | WR-02 (03.6-REVIEW.md): in app/src/ui/IngredientTable.jsx (~640-671) read baselineShare fr | 2026-10-13 | db060c6 | /Users/mark/Documents/projects/sprinkles/.planning/quick/261013-w85-wr-02-03-6-review-md-in-app-src-ui-ingredienttable-jsx-640-6 |
 | 261013-w86 | WR-03 (03.6-REVIEW.md): in app/src/ui/IngredientTable.jsx (~718 and ~598) print a portion | 2026-10-13 | fb06388 | /Users/mark/Documents/projects/sprinkles/.planning/quick/261013-w86-wr-03-03-6-review-md-in-app-src-ui-ingredienttable-jsx-718-a |
 | 156 | Retire the nine stale 03.5 probes, keep the shared harness | 2026-10-13 | 70e451f | — |
+| 261014-b25 | Add one jsdom test for RecipePage tasting-body vs churn-field undo retirement (closes Phase 5 behavior_unverified item) | 2026-10-14 | d55ce45 | [261014-b25-add-one-jsdom-test-for-recipepage-tastin](./quick/261014-b25-add-one-jsdom-test-for-recipepage-tastin/) |
 
 ### Roadmap Evolution
 

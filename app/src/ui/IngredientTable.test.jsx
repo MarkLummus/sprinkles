@@ -2426,6 +2426,24 @@ describe('IngredientTable — a pen opened on a version with a line already out 
 
     expect(markup).toContain('aria-label="Whole milk, was 250.4 g, now 260 g, was 36.8%, now 37.7%, estimated"');
   });
+
+  // 03.6-REVIEW.md WR-02: H1 to H6 take a line out with its own flag; H7 takes it out
+  // through the method, the way a second-generation version keeps a removal.
+  it('H7, a line out because its step is removed in the stored method: no row\'s name announces a change when nothing is touched', () => {
+    const markup = pen({
+      opened: (version) => {
+        version.method.find((step) => step.n === 2).removed = true;
+      },
+      parent: structuredClone(oliveOilVersion),
+    });
+    const labels = [...markup.matchAll(/aria-label="([^"]*)"/g)].map((match) => match[1]);
+
+    expect(labels.filter((label) => label.includes(', was ') || label.includes(', now '))).toEqual([]);
+    expect(markup).toContain('aria-label="Whole milk, 250.4 g, estimated"');
+    expect(markup).toContain('aria-label="Whole milk, 250.4 g, estimated, removed"');
+    expect(markup).toContain('aria-label="Sucrose, 64 g"');
+    expect(markup).toContain('aria-label="Sucrose, 64 g, removed"');
+  });
 });
 
 // Sketch 011 README decision 56, Mark's answer "A recommended" (2026-10-05): a split row

@@ -3,6 +3,7 @@
 // checked by pure functions, which RecipePage drives through useRecordDraft
 // (Phase 5, D-01).
 import { BATTERY_FIELDS, parseMeasuredDraft } from './battery.js';
+import { setMark } from './axes.js';
 import { formatRecordDate } from './batch.js';
 import { parseGramsDraft } from './lineage.js';
 import { usesListsDiffer } from './penDraft.js';
@@ -434,4 +435,80 @@ export function batchSavedStatus(record) {
 // buildTastingFieldsFromDraft).
 export function setRecordField(draft, field, value) {
   return { ...draft, [field]: value };
+}
+
+// An axis stop click or a Clear (contract "Axes spec"; 007 line 362): a joined
+// group is a radio — a stop always stores the clicked stop, and null clears the
+// axis. Every axis lives inside the tasting body.
+export function setRecordMark(draft, axisKey, stop) {
+  return { ...draft, marks: setMark(draft.marks, axisKey, stop) };
+}
+
+// A defect chip's own toggle (contract "Controls spec"): a picked chip
+// joins the draft's defects list, an unpicked one leaves it — no
+// default ever; a defect is an independent on/off (007 line 428), so a
+// second click on the same chip clears it, unlike a stop or segmented
+// option.
+export function toggleDefect(draft, defect) {
+  return {
+    ...draft,
+    defects: draft.defects.includes(defect)
+      ? draft.defects.filter((candidate) => candidate !== defect)
+      : [...draft.defects, defect],
+  };
+}
+
+// A declared problem's toggle (contract "Controls spec"; sketch 010 D26):
+// a recipe's own problem word is a presence toggle, not a goldilocks
+// axis — membership in the draft's declaredDefects list, flipped the way
+// toggleDefect flips a defect chip.
+export function toggleDeclaredDefect(draft, word) {
+  return {
+    ...draft,
+    declaredDefects: draft.declaredDefects.includes(word)
+      ? draft.declaredDefects.filter((candidate) => candidate !== word)
+      : [...draft.declaredDefects, word],
+  };
+}
+
+// Clearing both the strike and the line for a step removes that step's
+// key from the draft entirely (D-13/BATCH1-01): an untouched step must
+// never rest at { struck: false, line: null }, which would be
+// indistinguishable from a step the maker deliberately marked as
+// unchanged — a fact this record never states.
+export function setStepChange(draft, stepNumber, patch) {
+  const stepChanges = { ...draft.stepChanges };
+  const key = String(stepNumber);
+  if (!patch.struck && !patch.line) {
+    delete stepChanges[key];
+  } else {
+    stepChanges[key] = { struck: patch.struck, line: patch.line };
+  }
+  return { ...draft, stepChanges };
+}
+
+// Writes one portion's raw string (D-10). A row with no key yet is
+// seeded with an array of empty strings the length of that row's own
+// portions first, so the array is always aligned with row.portions —
+// the same alignment contract asMadeForPortion reads. Once every
+// portion of a row is back to an empty string, the row's key is deleted
+// entirely — the existing "an empty field means nothing was written"
+// rule (D-13/BATCH1-01), applied at the row level as it is today.
+export function setAsMadePortion(draft, version, rowId, portionIndex, rawValue) {
+  const asMade = { ...draft.asMade };
+  const row = version.rows.find((candidate) => candidate.id === rowId);
+  const existing = Object.prototype.hasOwnProperty.call(asMade, rowId) ? asMade[rowId] : null;
+  const next = existing ? [...existing] : new Array(row.portions.length).fill('');
+  next[portionIndex] = rawValue;
+  if (next.every((value) => value === '')) {
+    delete asMade[rowId];
+  } else {
+    asMade[rowId] = next;
+  }
+  return { ...draft, asMade };
+}
+
+// Add tasting's effect on the draft: the tasting section opens.
+export function openTastingSection(draft) {
+  return { ...draft, tastingOpen: true };
 }

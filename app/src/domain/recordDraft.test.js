@@ -14,9 +14,15 @@ import {
   parseAllMeasuredFields,
   removeTastingSection,
   restoreDraftFromUndo,
+  openTastingSection,
+  setAsMadePortion,
   setRecordField,
+  setRecordMark,
+  setStepChange,
   tastingHasInk,
   tastingPayloadFromDraft,
+  toggleDeclaredDefect,
+  toggleDefect,
   validateRecordDraft,
 } from './recordDraft.js';
 
@@ -284,6 +290,110 @@ describe('setRecordField', () => {
     const first = setRecordField(draft, 'note', 'smooth');
     expect(draft).toEqual(before);
     expect(setRecordField(draft, 'note', 'smooth')).toEqual(first);
+  });
+});
+
+describe('setRecordMark', () => {
+  it('sets an axis stop, then clears it with null', () => {
+    const draft = blankRecordDraft();
+    const marked = setRecordMark(draft, 'hardness', 2);
+    expect(marked.marks).toEqual({ hardness: 2 });
+    expect(setRecordMark(marked, 'hardness', null).marks).toEqual({});
+  });
+
+  it('leaves its input unchanged and answers the same twice', () => {
+    const draft = setRecordMark(blankRecordDraft(), 'sweetness', 3);
+    const before = structuredClone(draft);
+    const first = setRecordMark(draft, 'hardness', 1);
+    expect(draft).toEqual(before);
+    expect(setRecordMark(draft, 'hardness', 1)).toEqual(first);
+  });
+});
+
+describe('toggleDefect and toggleDeclaredDefect', () => {
+  it('toggleDefect adds a defect, then removes it on a second press', () => {
+    const added = toggleDefect(blankRecordDraft(), 'icy');
+    expect(added.defects).toEqual(['icy']);
+    expect(toggleDefect(added, 'icy').defects).toEqual([]);
+  });
+
+  it('toggleDeclaredDefect adds a word, then removes it on a second press', () => {
+    const added = toggleDeclaredDefect(blankRecordDraft(), 'greasy');
+    expect(added.declaredDefects).toEqual(['greasy']);
+    expect(toggleDeclaredDefect(added, 'greasy').declaredDefects).toEqual([]);
+  });
+
+  it('leave their input unchanged and answer the same twice', () => {
+    const draft = { ...blankRecordDraft(), defects: ['icy'], declaredDefects: ['greasy'] };
+    const before = structuredClone(draft);
+    const defect = toggleDefect(draft, 'sandy');
+    const declared = toggleDeclaredDefect(draft, 'oily');
+    expect(draft).toEqual(before);
+    expect(toggleDefect(draft, 'sandy')).toEqual(defect);
+    expect(toggleDeclaredDefect(draft, 'oily')).toEqual(declared);
+  });
+});
+
+describe('setStepChange', () => {
+  it('writes the step under its string key', () => {
+    const next = setStepChange(blankRecordDraft(), 2, { struck: true, line: null });
+    expect(next.stepChanges).toEqual({ 2: { struck: true, line: null } });
+  });
+
+  it('deletes the key when both struck and line are empty (BATCH1-01)', () => {
+    const written = setStepChange(blankRecordDraft(), 2, { struck: false, line: 'colder' });
+    expect(Object.keys(written.stepChanges)).toEqual(['2']);
+    const cleared = setStepChange(written, 2, { struck: false, line: '' });
+    expect(cleared.stepChanges).toEqual({});
+  });
+
+  it('leaves its input unchanged and answers the same twice', () => {
+    const draft = setStepChange(blankRecordDraft(), 1, { struck: true, line: null });
+    const before = structuredClone(draft);
+    const first = setStepChange(draft, 1, { struck: false, line: null });
+    expect(draft).toEqual(before);
+    expect(setStepChange(draft, 1, { struck: false, line: null })).toEqual(first);
+  });
+});
+
+describe('setAsMadePortion', () => {
+  const version = { rows: [{ id: 'cream', portions: [1, 2] }, { id: 'sugar', portions: [1] }] };
+
+  it('seeds a row with blanks the length of its portions and writes one index', () => {
+    const next = setAsMadePortion(blankRecordDraft(), version, 'cream', 1, '12');
+    expect(next.asMade).toEqual({ cream: ['', '12'] });
+  });
+
+  it('writes into an existing row and keeps its other values', () => {
+    const first = setAsMadePortion(blankRecordDraft(), version, 'cream', 0, '5');
+    const second = setAsMadePortion(first, version, 'cream', 1, '12');
+    expect(second.asMade).toEqual({ cream: ['5', '12'] });
+  });
+
+  it('drops the row\'s key when every value is blank again', () => {
+    const written = setAsMadePortion(blankRecordDraft(), version, 'sugar', 0, '3');
+    expect(Object.keys(written.asMade)).toEqual(['sugar']);
+    expect(setAsMadePortion(written, version, 'sugar', 0, '').asMade).toEqual({});
+  });
+
+  it('leaves its input unchanged and answers the same twice', () => {
+    const draft = setAsMadePortion(blankRecordDraft(), version, 'cream', 0, '5');
+    const before = structuredClone(draft);
+    const first = setAsMadePortion(draft, version, 'cream', 1, '7');
+    expect(draft).toEqual(before);
+    expect(setAsMadePortion(draft, version, 'cream', 1, '7')).toEqual(first);
+  });
+});
+
+describe('openTastingSection', () => {
+  it('sets tastingOpen and leaves the rest', () => {
+    const draft = { ...blankRecordDraft(), churnDate: '2026-10-09' };
+    const before = structuredClone(draft);
+    const next = openTastingSection(draft);
+    expect(next.tastingOpen).toBe(true);
+    expect(next.churnDate).toBe('2026-10-09');
+    expect(draft).toEqual(before);
+    expect(openTastingSection(draft)).toEqual(next);
   });
 });
 

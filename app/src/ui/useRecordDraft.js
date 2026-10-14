@@ -1,4 +1,11 @@
 import { useState } from 'react';
+import {
+  openTastingSection,
+  removeTastingSection,
+  restoreDraftFromUndo,
+  tastingHasInk,
+  tastingPayloadFromDraft,
+} from '../domain/recordDraft.js';
 
 // The record pen's draft (Phase 5, EDIT-03): recording a batch, correcting it
 // and writing its tasting.
@@ -75,6 +82,32 @@ export function useRecordDraft() {
     setPendingUndo(null);
   }
 
+  // Add tasting opens the section. It does not touch the churn-date block.
+  function addTasting() {
+    setDraft((prev) => openTastingSection(prev));
+  }
+
+  // Remove tasting (contract "Feedback and undo lifecycle"): a press with no
+  // ink (tastingHasInk false) collapses the section and blanks the tasting
+  // side with no undo; a press with ink does the same but captures the
+  // tasting's own values in pendingUndo first (tastingPayloadFromDraft).
+  // Returns whether there was ink, so the caller picks the sentence to
+  // announce. It does not touch the churn-date block.
+  function removeTasting() {
+    const hasInk = tastingHasInk(draft);
+    setPendingUndo(hasInk ? tastingPayloadFromDraft(draft) : null);
+    setDraft((prev) => removeTastingSection(prev));
+    return hasInk;
+  }
+
+  // The restore sequence: reopens the section and writes the payload back
+  // field-by-field (restoreDraftFromUndo, T-03.3.1-10), then clears
+  // pendingUndo. It does not touch the churn-date block.
+  function undoRemoveTasting() {
+    setDraft((prev) => restoreDraftFromUndo(prev, pendingUndo));
+    setPendingUndo(null);
+  }
+
   return {
     draft,
     amendingBatchId,
@@ -88,6 +121,9 @@ export function useRecordDraft() {
     edit,
     clearFieldError,
     retireUndo,
+    addTasting,
+    removeTasting,
+    undoRemoveTasting,
     setDraft,
     setAmendingBatchId,
     setAmendBaseline,

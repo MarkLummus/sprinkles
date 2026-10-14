@@ -4,10 +4,10 @@ current_phase: 05
 current_phase_name: Version evolution
 status: planning
 stopped_at: Phase 04 complete, ready to plan Phase 05
-last_updated: "2026-10-14T01:41:33.853Z"
+last_updated: "2026-10-14T03:11:17.402Z"
 last_activity: 2026-10-13
 last_activity_desc: Phase 04 complete, transitioned to Phase 05
-state_head: 35a8e894493939778e1076207b2af00f9607fbf6
+state_head: 17738c3e85c26e0e4b1c21c4def3fa312edc1294
 progress:
   total_phases: 15
   completed_phases: 12
@@ -507,6 +507,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 149 | Fix: a new version keeps the parent's declared problems (Bitter) | 2026-10-13 | 68ea742 | — |
 | 150 | Correct the three-pens decision line in 04-VERIFICATION.md | 2026-10-13 | 01ef3f8 | — |
 | 151 | Remove three stale continue-here handoffs | 2026-10-13 | 35a8e89 | — |
+| 152 | Fix the seed-recipes header; stepsUsingRow export and CONFORMANCE leftovers checked, no change | 2026-10-13 | 17738c3 | — |
 
 ### Roadmap Evolution
 

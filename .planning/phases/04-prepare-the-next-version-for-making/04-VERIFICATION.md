@@ -166,7 +166,7 @@ WR-04, 05, 06, 07, 08 and 09 are fixed (WR-06 and WR-07 re-read in the code abov
 ### Notes for the Orchestrator
 
 1. **MVP mode tag.** ROADMAP.md marks Phase 4 `mode: mvp`, but its goal is not in "As a ..., I want to ..., so that ..." form (`user-story.validate` returns `valid: false`). The MVP guard says to ask for `/gsd-mvp-phase` to set a proper goal. I did not refuse: the report asks only for a regeneration, and the previous report used the standard goal-backward method. I did the same, so there is no User Flow Coverage table. If the MVP tag matters, the goal wording needs fixing in the roadmap.
-2. **Open decision, not a verification item.** The build keeps drafts for three pens where CONTEXT D-14 said four (the tasting folded into the record pen). That is the open Mark's List row `decide-three-pens-keep-drafts` (UAT 5 confirmed it is present and open). It does not fail a success criterion.
+2. **Decided, not a verification item.** The build keeps drafts for three pens where CONTEXT D-14 first said four (the tasting folded into the record pen). Mark decided three on 2026-10-11 (Mark's List row `decide-three-pens-keep-drafts`, closed) and D-14 in `04-CONTEXT.md` is amended to three. It does not fail a success criterion.
 
 ### Gaps Summary
 

@@ -12,8 +12,11 @@ function raw(relative) {
   return readFileSync(fileURLToPath(new URL(relative, import.meta.url)), 'utf8');
 }
 
+// A string is matched before a comment, so a // or /* inside one stays code (WR-02).
+const STRING_OR_COMMENT = /('(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\[\s\S]|[^`\\])*`)|\/\*[\s\S]*?\*\/|\/\/[^\n]*/g;
+
 function stripComments(source) {
-  return source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  return source.replace(STRING_OR_COMMENT, (_match, literal) => literal ?? '');
 }
 
 function count(source, needle) {
@@ -59,6 +62,31 @@ describe('RecipePage.jsx holds no draft setter (D-12)', () => {
     expect(pattern.test('setBlockedTarget(null)')).toBe(true);
     expect(pattern.test('setDraftRestoreDone(true)')).toBe(false);
     expect(pattern.test('setDrafts(result)')).toBe(false);
+  });
+});
+
+describe('stripComments keeps what a string holds (WR-02)', () => {
+  it.each([
+    "const u = 'http://x'; setDraft(null);",
+    'const u = "a // b"; setDraft(null);',
+    'const u = `${base}//x`; setDraft(null);',
+    "const open = '/*'; setDraft(null); const close = '*/';",
+  ])('a setter after a comment marker inside a string is still caught: %s', (line) => {
+    expect(stripComments(line)).toMatch(wholeWord(D12_SETTERS));
+  });
+
+  it('a reset or markup after a URL string is still seen', () => {
+    expect(count(stripComments("const u = 'http://x'; setBlockedMessage(null);"), 'setBlockedMessage(null)')).toBe(1);
+    expect(stripComments("const u = 'http://x'; dangerouslySetInnerHTML")).toContain('dangerouslySetInnerHTML');
+  });
+
+  it('real comments are still stripped, a quote inside one included', () => {
+    const stripped = stripComments(
+      "// setDraft(null) can't run\nconst a = 'x'; /* setDraft(null) */ const b = \"y\"; // setDraft(null)\n",
+    );
+    expect(stripped).not.toMatch(wholeWord(D12_SETTERS));
+    expect(stripped).toContain("const a = 'x';");
+    expect(stripped).toContain('const b = "y";');
   });
 });
 

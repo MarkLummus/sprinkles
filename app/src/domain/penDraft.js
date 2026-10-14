@@ -2,6 +2,7 @@
 // The version pen's draft, read and changed by pure functions, which
 // RecipePage drives through usePenDraft (Phase 5, D-01).
 import { isLineRemoved } from './rows.js';
+import { blockedSaveMessage, blockedSaveRowId, blockedSaveLineIndex, parseGramsDraft } from './lineage.js';
 
 // A draft row, found by its row id (D-03; closes T-03.6-02). Row ids come
 // from stored versions, and an imported file can carry any string, so the
@@ -155,5 +156,244 @@ export function restoreStepFromVersion(penDraft, version, stepN) {
   return {
     ...penDraft,
     method: penDraft.method.map((step) => (step.n === stepN ? structuredClone(parentStep) : step)),
+  };
+}
+
+// A version-line or headnote field, written (handleChangePenField's
+// updater). `field` is always a literal name passed by the pen's own
+// components (VersionRow and Headnote), never a key the maker types; an
+// object-literal computed key creates an own property and never reaches the
+// __proto__ setter (T-05-04).
+export function setPenField(draft, field, value) {
+  return { ...draft, [field]: value };
+}
+
+// Seeds the draft from the version the pen opened on — a row's own
+// portions mapped to { step, grams, removed }, each grams a string
+// (Pitfall 5) and each removed read through isLineRemoved so a stored
+// older whole-row flag opens as every line out and never resurrects a
+// row the maker restored (plan 03.6-02 decision 1); the draft row holds
+// no flag of its own. Everything else the maker's own to write, never defaulted from the
+// parent (D-10: no default reason, citation, or version line).
+export function penDraftFromVersion(version) {
+  // Object.fromEntries, not a bracket write against a stored row id: an id
+  // such as __proto__ becomes an own key instead of reaching the prototype
+  // (T-03-10, T-04-23).
+  const rows = Object.fromEntries(
+    version.rows.map((row) => [
+      row.id,
+      {
+        portions: row.portions.map((portion) => ({
+          step: portion.step,
+          grams: String(portion.grams),
+          removed: isLineRemoved(row, portion),
+        })),
+      },
+    ]),
+  );
+  return {
+    versionLabel: '',
+    reason: '',
+    citedBatchId: null,
+    sheetTitle: version.sheetTitle,
+    sheetDescription: version.sheetDescription,
+    rows,
+    method: structuredClone(version.method),
+    authored: structuredClone(version.authored),
+  };
+}
+
+// The version's rows with the draft's portions applied. Each portion's grams
+// string goes through parseGramsDraft, falling back to that portion's own
+// stored amount when the string is blank or does not parse — never 0 or NaN,
+// applied per portion. Shared by the draft version (the pen's live figures)
+// and the fields a save hands the domain constructors.
+function penDraftRows(version, penDraft) {
+  return version.rows.map((row) => {
+    const draftRow = penDraftRow(penDraft, row.id);
+    return {
+      ...row,
+      portions: row.portions.map((portion, i) => {
+        const draftPortion = draftRow.portions[i];
+        return {
+          step: draftPortion.step,
+          grams: parseGramsDraft(draftPortion.grams) ?? portion.grams,
+          removed: Boolean(draftPortion.removed),
+        };
+      }),
+      removed: false,
+    };
+  });
+}
+
+// The draft version (route-recipe-version.md § 3, 03-02): built once,
+// from the version the pen opened on with the draft's values applied, so
+// the pen's own table, the cross-flags (uses.js) and buildDiff all read
+// the same object rather than each reassembling it. Unfiltered — a removed
+// row or step still appears here, struck, for the pen's own table; readers
+// that want the clean figures filter through activeRows/activeSteps first.
+export function penDraftVersion(version, penDraft) {
+  return {
+    ...version,
+    rows: penDraftRows(version, penDraft),
+    method: penDraft.method,
+    sheetTitle: penDraft.sheetTitle,
+    sheetDescription: penDraft.sheetDescription,
+    authored: penDraft.authored,
+  };
+}
+
+// The one message that blocks a save, computed by the tested lineage
+// functions (D-04) so the same sentence can never drift between the two save
+// controls, with the field it names (D-21): the same traversal that named the
+// message also names the row it blocked on, so the two can never disagree
+// (T-03.1-21). A row id marks and focuses that row's grams field; no row id
+// means the block is the version line's own. Null when nothing blocks.
+export function penSaveBlock(penDraft, version, scopedVersions) {
+  const message = blockedSaveMessage(penDraft, version, scopedVersions);
+  if (!message) return null;
+  const rowId = blockedSaveRowId(penDraft, version, scopedVersions);
+  if (!rowId) return { message, target: { kind: 'versionLine' } };
+  return { message, target: { kind: 'row', rowId, index: blockedSaveLineIndex(penDraft, version, scopedVersions) } };
+}
+
+// The pen's fields coerced for the domain constructor (createChildVersion,
+// saveOverVersion): rows' grams strings are parsed here, at save time, never
+// on keystroke (Pitfall 5). A reason of nothing but whitespace is treated as
+// blank and stored as null, exactly as an empty reason already was.
+export function penFieldsFromDraft(penDraft, version) {
+  return {
+    versionLabel: penDraft.versionLabel,
+    reason: penDraft.reason.trim() === '' ? null : penDraft.reason,
+    citedBatchId: penDraft.citedBatchId,
+    rows: penDraftRows(version, penDraft),
+    method: penDraft.method,
+    sheetTitle: penDraft.sheetTitle,
+    sheetDescription: penDraft.sheetDescription,
+    authored: penDraft.authored,
+  };
+}
+
+// Writes exactly one portion's raw typed string, leaving every other
+// portion and the removed flag untouched — the pen's amounts edit, the
+// split does not (CONTEXT.md phase boundary).
+export function setPenGrams(draft, rowId, portionIndex, value) {
+  const draftRow = penDraftRow(draft, rowId);
+  return {
+    ...draft,
+    rows: {
+      ...draft.rows,
+      [rowId]: {
+        ...draftRow,
+        portions: draftRow.portions.map((portion, i) => (i === portionIndex ? { ...portion, grams: value } : portion)),
+      },
+    },
+  };
+}
+
+// Serves the orphaned-row flag's "remove this row" control only: it acts
+// on every line of the row through toggleDraftRowLines, does not clear
+// any grams and does not touch any step (route-recipe-version.md § 3).
+// Removal never cascades, so this is always the maker's own tap.
+export function togglePenRowLines(draft, rowId) {
+  return {
+    ...draft,
+    rows: { ...draft.rows, [rowId]: toggleDraftRowLines(penDraftRow(draft, rowId)) },
+  };
+}
+
+// Removing a line sets only that portion's removed flag — every other
+// portion and the row-level flag stay as they are, so Step 3's milk is
+// Step 3's (sketch 011 decision 51, Mark's answer 1). The same op
+// restores; it is always the maker's own tap.
+export function togglePenLine(draft, rowId, portionIndex) {
+  const draftRow = penDraftRow(draft, rowId);
+  return {
+    ...draft,
+    rows: {
+      ...draft.rows,
+      [rowId]: {
+        ...draftRow,
+        portions: draftRow.portions.map((portion, i) => (i === portionIndex ? { ...portion, removed: !portion.removed } : portion)),
+      },
+    },
+  };
+}
+
+// A step field setter for leadIn/instruction/purpose/aside (03-02):
+// `field` is always one of these four literal strings supplied by the
+// page's own call sites, never a maker-influenced key, so a computed
+// property name here carries no T-02-32 risk.
+export function setPenStepField(draft, stepN, field, value) {
+  return {
+    ...draft,
+    method: draft.method.map((step) => (step.n === stepN ? { ...step, [field]: value } : step)),
+  };
+}
+
+// A target chip's label or value, matched by its index within the
+// step's own targets array rather than by label — a label can itself be
+// mid-edit, so matching by index avoids two chips momentarily colliding
+// on the same label while the maker types.
+export function setPenStepTarget(draft, stepN, targetIndex, field, value) {
+  return {
+    ...draft,
+    method: draft.method.map((step) => {
+      if (step.n !== stepN) return step;
+      const targets = step.targets.map((target, index) => (index === targetIndex ? { ...target, [field]: value } : target));
+      return { ...step, targets };
+    }),
+  };
+}
+
+// The step's uses list, written through a filter and a concat
+// (route-recipe-version.md § 3), never a bare bracket write — a
+// different fact from the row's own step allocation, and both are kept.
+export function togglePenStepUses(draft, stepN, rowId) {
+  return {
+    ...draft,
+    method: draft.method.map((step) => {
+      if (step.n !== stepN) return step;
+      const uses = step.uses ?? [];
+      const nextUses = uses.includes(rowId) ? uses.filter((id) => id !== rowId) : uses.concat(rowId);
+      return { ...step, uses: nextUses };
+    }),
+  };
+}
+
+// Removing sets only the draft step's removed flag — removal never
+// cascades, so this is always the maker's own tap, whether flipping a
+// step's own control or the removed-row cross-flag's "remove this step"
+// control.
+export function togglePenStepRemoved(draft, stepN) {
+  return {
+    ...draft,
+    method: draft.method.map((step) => (step.n === stepN ? { ...step, removed: !step.removed } : step)),
+  };
+}
+
+// An authored note's text, and the inherited-from marker it carries
+// (route-recipe-version.md, "Inherited notes"): the marker persists when
+// the edited text still equals the text this version inherited it with,
+// and clears the instant it differs — computed once, here, so every
+// reader (Authored.jsx included) can read `note.inheritedFrom` directly
+// rather than re-deriving it.
+export function setPenNoteText(draft, version, listKey, index, value) {
+  const originalNote = version.authored[listKey][index];
+  const notes = draft.authored[listKey].map((note, i) =>
+    i === index
+      ? { ...note, text: value, inheritedFrom: value === originalNote.text ? originalNote.inheritedFrom : null }
+      : note,
+  );
+  return { ...draft, authored: { ...draft.authored, [listKey]: notes } };
+}
+
+// A note can be removed per note (route-recipe-version.md § 3) — an
+// outright removal from the list, not a struck-in-place flag: an
+// authored note carries no cross-flag concern the way a row or step does.
+export function removePenNote(draft, listKey, index) {
+  return {
+    ...draft,
+    authored: { ...draft.authored, [listKey]: draft.authored[listKey].filter((_, i) => i !== index) },
   };
 }

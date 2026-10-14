@@ -5,9 +5,23 @@ import { isLineRemoved } from './rows.js';
 import {
   derivePenState,
   isPenDraftDirty,
+  penDraftFromVersion,
   penDraftRow,
+  penDraftVersion,
+  penFieldsFromDraft,
+  penSaveBlock,
+  removePenNote,
   restoreStepFromVersion,
+  setPenField,
+  setPenGrams,
+  setPenNoteText,
+  setPenStepField,
+  setPenStepTarget,
   toggleDraftRowLines,
+  togglePenLine,
+  togglePenRowLines,
+  togglePenStepRemoved,
+  togglePenStepUses,
 } from './penDraft.js';
 
 function clone() {
@@ -147,6 +161,328 @@ describe('restoreStepFromVersion identity', () => {
     for (let i = 1; i < restored.method.length; i += 1) {
       expect(restored.method[i]).toBe(penDraft.method[i]);
     }
+  });
+});
+
+describe('setPenField', () => {
+  it('writes the new value and leaves every other key', () => {
+    const draft = cleanDraftFor(clone());
+    const next = setPenField(draft, 'versionLabel', 'v2');
+    expect(next.versionLabel).toBe('v2');
+    expect(next.reason).toBe(draft.reason);
+    expect(next.rows).toBe(draft.rows);
+  });
+
+  it('returns a new draft and leaves its input as it was, and answers the same twice', () => {
+    const draft = cleanDraftFor(clone());
+    const before = structuredClone(draft);
+    const first = setPenField(draft, 'reason', 'Less sugar');
+    const second = setPenField(draft, 'reason', 'Less sugar');
+    expect(first).not.toBe(draft);
+    expect(second).toEqual(first);
+    expect(draft).toEqual(before);
+  });
+});
+
+describe('penDraftFromVersion', () => {
+  it('gives an own key for every row id, grams as strings, removed read through isLineRemoved', () => {
+    const version = clone();
+    const draft = penDraftFromVersion(version);
+    for (const row of version.rows) {
+      expect(Object.prototype.hasOwnProperty.call(draft.rows, row.id)).toBe(true);
+      row.portions.forEach((portion, i) => {
+        expect(draft.rows[row.id].portions[i]).toEqual({
+          step: portion.step,
+          grams: String(portion.grams),
+          removed: isLineRemoved(row, portion),
+        });
+      });
+    }
+    expect(draft.versionLabel).toBe('');
+    expect(draft.reason).toBe('');
+    expect(draft.citedBatchId).toBe(null);
+    expect(draft.sheetTitle).toBe(version.sheetTitle);
+    expect(draft.sheetDescription).toBe(version.sheetDescription);
+  });
+
+  it('turns a row id of __proto__ into an own key, not a prototype change', () => {
+    const version = clone();
+    version.rows[0] = { ...version.rows[0], id: '__proto__' };
+    const draft = penDraftFromVersion(version);
+    expect(Object.prototype.hasOwnProperty.call(draft.rows, '__proto__')).toBe(true);
+    expect(Object.getPrototypeOf(draft.rows)).toBe(Object.prototype);
+    expect(penDraftRow(draft, '__proto__').portions.length).toBe(version.rows[0].portions.length);
+  });
+
+  it("copies method and authored, so changing the draft's leaves the version untouched", () => {
+    const version = clone();
+    const before = structuredClone(version);
+    const draft = penDraftFromVersion(version);
+    draft.method[0].leadIn = 'A typed change';
+    draft.authored.beforeYouStart.push({ text: 'new', inheritedFrom: null });
+    expect(version).toEqual(before);
+  });
+
+  it('leaves its argument as it was and answers the same twice', () => {
+    const version = clone();
+    const before = structuredClone(version);
+    const first = penDraftFromVersion(version);
+    const second = penDraftFromVersion(version);
+    expect(second).toEqual(first);
+    expect(version).toEqual(before);
+  });
+});
+
+describe('penDraftVersion', () => {
+  it('parses typed grams and falls back to the stored amount for a blank or unparseable string', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    const [first, second] = version.rows;
+    draft.rows[first.id].portions[0].grams = '12.5';
+    draft.rows[second.id].portions[0].grams = '';
+    const result = penDraftVersion(version, draft);
+    expect(result.rows[0].portions[0].grams).toBe(12.5);
+    expect(result.rows[1].portions[0].grams).toBe(second.portions[0].grams);
+    draft.rows[second.id].portions[0].grams = 'abc';
+    expect(penDraftVersion(version, draft).rows[1].portions[0].grams).toBe(second.portions[0].grams);
+  });
+
+  it("takes the draft's method, titles and authored, and clears every row's own removed flag", () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    draft.sheetTitle = 'Another title';
+    const result = penDraftVersion(version, draft);
+    expect(result.sheetTitle).toBe('Another title');
+    expect(result.method).toBe(draft.method);
+    expect(result.authored).toBe(draft.authored);
+    expect(result.rows.every((row) => row.removed === false)).toBe(true);
+  });
+
+  it('leaves its arguments as they were and answers the same twice', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    const versionBefore = structuredClone(version);
+    const draftBefore = structuredClone(draft);
+    const first = penDraftVersion(version, draft);
+    const second = penDraftVersion(version, draft);
+    expect(second).toEqual(first);
+    expect(version).toEqual(versionBefore);
+    expect(draft).toEqual(draftBefore);
+  });
+});
+
+describe('penSaveBlock', () => {
+  it('names the version line when it is blank', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    expect(penSaveBlock(draft, version, [])).toEqual({
+      message: 'Enter a version.',
+      target: { kind: 'versionLine' },
+    });
+  });
+
+  it("names the row and line a blank amount blocks on", () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    const row = version.rows[1];
+    draft.rows[row.id].portions[0].grams = '';
+    const block = penSaveBlock(draft, version, []);
+    expect(block.target).toEqual({ kind: 'row', rowId: row.id, index: 0 });
+    expect(block.message).toBe(`${row.ingredientName} needs an amount, or remove it`);
+  });
+
+  it('is null for a clean draft', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    expect(penSaveBlock(draft, version, [])).toBe(null);
+  });
+
+  it('leaves its arguments as they were and answers the same twice', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    const scoped = [];
+    const versionBefore = structuredClone(version);
+    const draftBefore = structuredClone(draft);
+    const first = penSaveBlock(draft, version, scoped);
+    const second = penSaveBlock(draft, version, scoped);
+    expect(second).toEqual(first);
+    expect(version).toEqual(versionBefore);
+    expect(draft).toEqual(draftBefore);
+    expect(scoped).toEqual([]);
+  });
+});
+
+describe('penFieldsFromDraft', () => {
+  it('stores a reason of only whitespace as null, and keeps any other reason as typed', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    draft.reason = '   ';
+    expect(penFieldsFromDraft(draft, version).reason).toBe(null);
+    draft.reason = ' Less sugar ';
+    expect(penFieldsFromDraft(draft, version).reason).toBe(' Less sugar ');
+  });
+
+  it("carries the draft's own version line, citation, method, titles and authored", () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    draft.citedBatchId = 'batch-1';
+    const fields = penFieldsFromDraft(draft, version);
+    expect(fields.versionLabel).toBe('v-next');
+    expect(fields.citedBatchId).toBe('batch-1');
+    expect(fields.method).toBe(draft.method);
+    expect(fields.authored).toBe(draft.authored);
+    expect(fields.rows.length).toBe(version.rows.length);
+  });
+
+  it('leaves its arguments as they were and answers the same twice', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    const versionBefore = structuredClone(version);
+    const draftBefore = structuredClone(draft);
+    const first = penFieldsFromDraft(draft, version);
+    const second = penFieldsFromDraft(draft, version);
+    expect(second).toEqual(first);
+    expect(version).toEqual(versionBefore);
+    expect(draft).toEqual(draftBefore);
+  });
+});
+
+// Every op returns a new draft, leaves its input as it was, and answers the
+// same twice on one input.
+function expectPure(op, draft, ...args) {
+  const before = structuredClone(draft);
+  const first = op(draft, ...args);
+  const second = op(draft, ...args);
+  expect(first).not.toBe(draft);
+  expect(second).toEqual(first);
+  expect(draft).toEqual(before);
+  return first;
+}
+
+describe('setPenGrams', () => {
+  it("writes one portion's raw string and leaves the other portions and every removed flag", () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    const split = version.rows[0];
+    expect(split.portions.length).toBe(2);
+    draft.rows[split.id].portions[1].removed = true;
+    const next = expectPure(setPenGrams, draft, split.id, 0, '12.');
+    expect(next.rows[split.id].portions[0].grams).toBe('12.');
+    expect(next.rows[split.id].portions[1]).toEqual(draft.rows[split.id].portions[1]);
+    expect(next.rows[version.rows[1].id]).toBe(draft.rows[version.rows[1].id]);
+  });
+});
+
+describe('togglePenRowLines', () => {
+  it('takes every line out, then puts every line back', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    const row = version.rows[0];
+    const out = expectPure(togglePenRowLines, draft, row.id);
+    expect(out.rows[row.id].portions.every((portion) => portion.removed === true)).toBe(true);
+    const back = expectPure(togglePenRowLines, out, row.id);
+    expect(back.rows[row.id].portions.every((portion) => portion.removed === false)).toBe(true);
+  });
+});
+
+describe('togglePenLine', () => {
+  it('flips one portion only', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    const row = version.rows[0];
+    const next = expectPure(togglePenLine, draft, row.id, 1);
+    expect(next.rows[row.id].portions[1].removed).toBe(true);
+    expect(next.rows[row.id].portions[0]).toEqual(draft.rows[row.id].portions[0]);
+    const back = togglePenLine(next, row.id, 1);
+    expect(back.rows[row.id].portions[1].removed).toBe(false);
+  });
+});
+
+describe('setPenStepField', () => {
+  it('changes one field of one step', () => {
+    const draft = cleanDraftFor(clone());
+    const next = expectPure(setPenStepField, draft, 2, 'leadIn', 'New lead-in');
+    expect(next.method.find((step) => step.n === 2).leadIn).toBe('New lead-in');
+    expect(next.method.find((step) => step.n === 1)).toBe(draft.method.find((step) => step.n === 1));
+    expect(next.method.find((step) => step.n === 3)).toBe(draft.method.find((step) => step.n === 3));
+  });
+});
+
+describe('setPenStepTarget', () => {
+  it('changes one target of one step, by index', () => {
+    const draft = cleanDraftFor(clone());
+    const next = expectPure(setPenStepTarget, draft, 2, 1, 'value', '3 min');
+    const step = next.method.find((candidate) => candidate.n === 2);
+    expect(step.targets[1]).toEqual({ label: 'hold', value: '3 min' });
+    expect(step.targets[0]).toEqual({ label: 'temp', value: '85 °C' });
+    expect(next.method.find((candidate) => candidate.n === 1)).toBe(draft.method.find((candidate) => candidate.n === 1));
+  });
+});
+
+describe('togglePenStepUses', () => {
+  it('adds a row id, then removes it', () => {
+    const draft = cleanDraftFor(clone());
+    const added = expectPure(togglePenStepUses, draft, 1, 'row-06');
+    expect(added.method.find((step) => step.n === 1).uses).toEqual(['row-09', 'row-03', 'row-06']);
+    const removed = expectPure(togglePenStepUses, added, 1, 'row-06');
+    expect(removed.method.find((step) => step.n === 1).uses).toEqual(['row-09', 'row-03']);
+  });
+
+  it('reads an absent uses list as empty', () => {
+    const draft = cleanDraftFor(clone());
+    delete draft.method[0].uses;
+    const next = togglePenStepUses(draft, 1, 'row-06');
+    expect(next.method[0].uses).toEqual(['row-06']);
+  });
+});
+
+describe('togglePenStepRemoved', () => {
+  it('flips one step', () => {
+    const draft = cleanDraftFor(clone());
+    const next = expectPure(togglePenStepRemoved, draft, 2);
+    expect(next.method.find((step) => step.n === 2).removed).toBe(true);
+    expect(next.method.find((step) => step.n === 1)).toBe(draft.method.find((step) => step.n === 1));
+    expect(togglePenStepRemoved(next, 2).method.find((step) => step.n === 2).removed).toBe(false);
+  });
+});
+
+describe('setPenNoteText', () => {
+  function inheritedVersion() {
+    const version = clone();
+    version.authored.beforeYouStart[0].inheritedFrom = 'v-earlier';
+    return version;
+  }
+
+  it('keeps inheritedFrom while the text equals the inherited note, and clears it once the text differs', () => {
+    const version = inheritedVersion();
+    const draft = cleanDraftFor(version);
+    const original = version.authored.beforeYouStart[0].text;
+    const edited = expectPure(setPenNoteText, draft, version, 'beforeYouStart', 0, 'Something else');
+    expect(edited.authored.beforeYouStart[0]).toEqual({ text: 'Something else', inheritedFrom: null });
+    const typedBack = setPenNoteText(edited, version, 'beforeYouStart', 0, original);
+    expect(typedBack.authored.beforeYouStart[0]).toEqual({ text: original, inheritedFrom: 'v-earlier' });
+    expect(edited.authored.beforeYouStart[1]).toBe(draft.authored.beforeYouStart[1]);
+  });
+
+  it('leaves the version as it was', () => {
+    const version = inheritedVersion();
+    const draft = cleanDraftFor(version);
+    const before = structuredClone(version);
+    setPenNoteText(draft, version, 'beforeYouStart', 0, 'Something else');
+    expect(version).toEqual(before);
+  });
+});
+
+describe('removePenNote', () => {
+  it('removes by index', () => {
+    const draft = cleanDraftFor(clone());
+    const next = expectPure(removePenNote, draft, 'beforeYouStart', 0);
+    expect(next.authored.beforeYouStart).toEqual([draft.authored.beforeYouStart[1]]);
   });
 });
 

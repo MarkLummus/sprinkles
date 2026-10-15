@@ -5,6 +5,9 @@ area: ui
 severity: minor
 files:
   - .planning/phases/04-prepare-the-next-version-for-making/04-CONTEXT.md
+audit_acknowledged:
+  milestone: v1.1
+  at: 2026-10-15
 ---
 
 ## Problem

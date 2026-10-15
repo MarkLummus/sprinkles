@@ -7,6 +7,9 @@ files:
   - .planning/todos/completed/2026-09-24-decide-whether-the-batch-and-tasting-log-is-entered-on-the-phone.md
   - .impeccable/surfaces/route-recipe.md:69
   - .impeccable/surfaces/route-recipe-batch.md:34
+audit_acknowledged:
+  milestone: v1.1
+  at: 2026-10-15
 ---
 
 ## Problem

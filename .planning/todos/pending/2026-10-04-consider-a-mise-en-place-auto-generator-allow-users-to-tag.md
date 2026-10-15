@@ -2,6 +2,9 @@
 created: 2026-10-04T18:53:43.760Z
 title: Consider a "Mise en Place" Auto-Generator
 source: Mark's List
+audit_acknowledged:
+  milestone: v1.1
+  at: 2026-10-15
 ---
 
 ## Problem

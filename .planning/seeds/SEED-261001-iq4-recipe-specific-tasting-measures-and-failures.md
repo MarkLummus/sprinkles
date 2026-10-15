@@ -5,6 +5,10 @@ planted: 2026-10-01
 planted_during: "03.5 (Separate the recipe from the sheet), after UAT round 2 gap closure"
 trigger_when: "when the batch record or tasting pen is next opened for design or planning, or when a milestone touches recipe authoring, observations or the decision register's batch rows"
 scope: large
+audit_acknowledged:
+  milestone: v1.1
+  at: 2026-10-15
+  status: dormant
 ---
 
 # SEED-261001-iq4: Recipe-specific tasting measures and failures, defined per recipe in the recipe creator/editor

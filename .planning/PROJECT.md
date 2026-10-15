@@ -10,16 +10,13 @@ Product truth lives in `product-requirements/` (read `README.md` first). This fi
 
 Make something you like, understand how it turned out, and know what to keep or change next time. If everything else fails, a maker must still be able to develop a recipe, make it from a printed sheet, and get back a record of what happened that the next version can cite.
 
-## Current Milestone: v1.1 Groundwork for creation
+## Current State
 
-**Goal:** The code is ready for recipe creation, which is the next milestone (v2). No creation UI ships here.
+Shipped v1.1 Groundwork for creation (2026-10-15): the code is ready for recipe creation and no screen changed. `RecipePage` keeps its draft logic in pure `domain/` operations behind `usePenDraft` and `useRecordDraft`; the ingredient library is an object store (database version 9) behind the repository seam, carried by export and import; and framework-free `createRecipe`, `nextStepKey` and `rowFromLibraryRecord` exist with no UI calling them yet. Milestone audit: tech_debt, 10/10 requirements, 2932 tests green (`.planning/milestones/v1.1-MILESTONE-AUDIT.md`).
 
-**Target features:**
-- Refactor `RecipePage.jsx` so recording/tasting and the pen are separate, with pure helpers moved into `domain/` and the pen's state as pure operations behind a `usePenDraft` hook (decided 2026-10-14, `pure-ops`)
-- Framework-free creation primitives: create a recipe with a root version, a never-reused step-key allocator, a row-from-ingredient builder
-- The ingredient library as a store behind the repository seam, rows still copying their coefficients
+## Next Milestone Goals (v2, not scoped yet)
 
-**Not in this milestone (Mark, 2026-10-14):** Version evolution (the former Phase 5): add, remove and reorder of steps and ingredients, the creation UI, custom scales and problems for a new recipe (SEED-261001-iq4 stays dormant), the storage upgrade path, import hardening. The database reset on a version bump stays until a recipe can be created from scratch (v2).
+Recipe creation in the Notebook: wire the primitives to a creation screen. `RecipePage` still has no mode for a new recipe with no loaded version; extracting its loading effects into a hook is the likely first cut. Decide before library editing: `importAll` replaces a local library entry with the imported one without asking. Out of v1.1 and still waiting (Mark, 2026-10-14): version evolution (add, remove and reorder of steps and ingredients), custom scales and problems for a new recipe (SEED-261001-iq4 stays dormant), the storage upgrade path, import hardening. The database reset on a version bump stays until a recipe can be created from scratch.
 
 ## Requirements
 
@@ -34,17 +31,12 @@ Make something you like, understand how it turned out, and know what to keep or 
 - ✓ Prepare the next version for making through a printed bench sheet: formula pages laid by measurement, blank two-sided batch and tasting logs, a short code that finds the same version again, kept drafts — PRINT-01 to PRINT-05 — Phase 4 (v1)
 - ✓ Critical flows usable and recoverable: keyboard access on the iPad, labels, entered data surviving a closed tab — UX1-01 to UX1-03 — Phase 4 (v1)
 - ✓ The ingredient library as a store behind the repository seam (database version 9, seeded on an empty database, carried by export and import in one transaction each), rows still copying their coefficients — LIB-01 to LIB-03 — Phase 6 (v1.1)
+- ✓ `RecipePage.jsx` split so creating and editing can share one editor: pure helpers in `domain/`, the pen's changes as pure operations behind `usePenDraft`, recording and tasting behind `useRecordDraft`, `RecipePage` left as the route shell, the maker seeing no change (94-snapshot WebKit walk matches) — EDIT-01 to EDIT-04 — Phase 5 (v1.1)
+- ✓ Framework-free creation primitives: `createRecipe` (recipe plus root version, no store), `nextStepKey` (never reuses a key), `rowFromLibraryRecord` (embeds a `structuredClone` of the entry) — MAKE-01 to MAKE-03 — Phase 7 (v1.1)
 
 ### Active
 
-Milestone 1 (accepted D14) shipped 2026-10-13. Milestone v1.1 is the groundwork for recipe creation; creation itself is the next milestone (v2).
-
-v1.1 (this milestone):
-
-- [ ] Refactor `RecipePage.jsx` so creating and editing can share one editor: pure helpers into `domain/`, the pen's state as pure operations behind `usePenDraft`, the recording workflow extracted the same way, `RecipePage` left as the route shell
-- [ ] Framework-free creation primitives: create a recipe with a root version, a never-reused step-key allocator, a row-from-ingredient builder
-
-Next milestone (v2), not scoped yet:
+Milestones 1 (accepted D14) and v1.1 shipped. Creation itself is the next milestone (v2), not scoped yet:
 
 - Recipe creation in the Notebook: Version evolution (the former Phase 5): add, remove and reorder of steps and ingredients, Before you start, custom scales and problems for a new recipe (SEED-261001-iq4), and Show changes for dropped steps
 - The database reset on a version bump stays until a recipe can be created from scratch; the upgrade path comes after
@@ -153,6 +145,10 @@ Boundaries come from the accepted decisions; reasons are recorded so they are no
 | Every `<a>` the app renders carries an explicit `tabindex="0"`, pinned on rendered markup per component | WebKit's TabsToLinks gate skips links on Apple platforms and Full Keyboard Access does not widen it; confirmed on the iPad in UAT rounds four and five | ✓ Good — Phase 03.4 |
 | Full Keyboard Access stays off on the iPad; keyboard UAT is tap-then-Tab with it off | With it on the hardware keyboard locked until a power cycle, twice, with focus never in the page; the app has no code path that could cause it | ✓ Good — Mark, 2026-09-22 |
 | The same tabindex rule for every button, checkbox and radio (38 sites) is deferred to a shared Button component rather than a gap-closure plan | Mark, 2026-09-22: "defer this for now. I like the shared component idea the best, since we are using react"; the recipe page's controls are unreachable by Tab on iPadOS until it lands | ⚠️ Revisit — todo 2026-09-22-shared-button-component-carries-tabindex-for-webkit |
+| The draft logic is pure operations in `domain/` driven through hooks (`usePenDraft`, `useRecordDraft`), and the blocked-save and churn-date resets are each written in one place (`pure-ops`, Mark 2026-10-14) | Creating and editing need one editor, and the 32 and 16 repeated reset lines were the part most likely to drift | ✓ Good — Phase 5; a source test pins the shell shape |
+| The library store bump (8 to 9) only adds the store and resets no profile at 8; seeding the library is its own guard, independent of the recipes guard | Adding a store needs neither a reset nor a lift; a half-seeded profile must repair itself | ✓ Good — Phase 6, device-checked on the iPad |
+| `nextStepKey` is the highest key over every step, removed ones included, plus one, with no stored counter; `createRecipe` takes the caller's ids and clock | A removed step's key must never come back; the primitives stay pure and testable | ✓ Good — Phase 7 |
+| `importAll` replaces a local library entry with the imported one without asking | Stored versions embed clones so no figure moves; no library editing UI exists yet | ⚠️ Revisit — decide before v2 library editing |
 
 ## Evolution
 
@@ -172,4 +168,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-14 after Phase 6*
+*Last updated: 2026-10-15 after v1.1 milestone*

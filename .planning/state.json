@@ -16,13 +16,13 @@
     {
       "number": "7",
       "name": "Creation primitives",
-      "status": "pending"
+      "status": "complete"
     }
   ],
   "next": {
-    "command": "/gsd:progress --next",
-    "label": "Advance to the next step (plan phase 7)",
-    "reason": "Phase 7 of 3 — needs a plan"
+    "command": "/gsd:progress",
+    "label": "Show progress",
+    "reason": "Unsure of state — showing progress"
   },
-  "updated_at": "2026-10-15T01:19:56.702Z"
+  "updated_at": "2026-10-15T23:34:16.665Z"
 }

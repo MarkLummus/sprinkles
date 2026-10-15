@@ -6,8 +6,8 @@ tags: [conventions, language-policy, claude-md, gsd-managed-block]
 
 # Dependency graph
 requires:
-  - quick task 260913 (the orchestrator's decision record): the three surfaces (agent-facing prose, git commit messages, browser-test input values) and the predicate "are English", fixed verbatim by the task directive
-  - GSD's `response_language: "en"` config (commit 91d4807): pins workflow narration only — the gap this bullet pins over
+  - 'quick task 260913 (the orchestrator''s decision record): the three surfaces (agent-facing prose, git commit messages, browser-test input values) and the predicate "are English", fixed verbatim by the task directive'
+  - 'GSD''s `response_language: "en"` config (commit 91d4807): pins workflow narration only — the gap this bullet pins over'
 provides:
   - A fifth Conventions bullet in `.claude/CLAUDE.md`'s GSD-managed block pinning agent-facing prose, git commit messages, and browser-test input values to English — the file agents actually read, so the convention reaches every runtime (including GLM runs) regardless of what config keys cover
 affects: [every agent run in this repo: executor prose, commit messages, browser-verification sample values]
@@ -45,6 +45,10 @@ metrics:
   files_touched: 1
 
 status: complete
+audit_acknowledged:
+  milestone: v1.1
+  at: 2026-10-15
+  status: complete
 ---
 
 # Quick Task 260913-far: Pin agent prose, commit messages, and browser-test inputs to English

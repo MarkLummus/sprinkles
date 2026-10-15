@@ -1,5 +1,25 @@
 # Milestones
 
+## v1.1 Groundwork for creation (Shipped: 2026-10-15)
+
+**Phases completed:** 3 phases, 12 plans, 30 tasks
+
+**Key accomplishments:**
+- Deterministic WebKit walk of the built app (`record` and `compare`) with a committed 94-snapshot baseline of the version pen, record pen, correction and tasting, recorded from app/ at base commit 4f1f98f
+- Pen draft helpers (dirty check, row-lines toggle, pen-state derivation, one-step restore) moved from RecipePage.jsx into framework-free `domain/penDraft.js`, with every draft-row read by id going through an own-property accessor `penDraftRow` (closes T-03.6-02)
+- The version pen's draft goes through one hook, `usePenDraft`: eleven edits are pure ops in `domain/penDraft.js` applied by `edit(op, ...args)`, and the blocked-save reset is written once instead of sixteen times in RecipePage.jsx
+- The record pen's pure helpers (save gate, draft shape and dirtiness, tasting payload, save assembly, saved-status sentence) moved from RecipePage.jsx into framework-free `domain/recordDraft.js`, so RecipePage.jsx exports no pure function any more and Plan 05's hook can build on a domain module
+- Recording, correcting and tasting a batch now go through one hook, `useRecordDraft`, over pure record ops in `domain/recordDraft.js`; the churn-date block's reset is written once, and RecipePage.jsx holds no record draft setter
+- The final build's WebKit walk compares MATCH (94 snapshots) with the baseline recorded before any code moved, and a node source test pins RecipePage.jsx as a route shell with no draft setter, one-place resets and pure domain modules
+- Ingredient library as its own IndexedDB object store at DB_VERSION 9 (keyPath id, no index), with listLibrary, getLibraryEntry and an abort-safe putAllLibrary on the repository seam, and a genuine version-8 fixture proving no profile at 8 loses a record
+- seedLibraryIfEmpty counts and writes the library in one IndexedDB transaction, seedIfEmpty runs it first as a second independent guard, and real-IndexedDB tests prove a held seed cannot overwrite a changed record, a version-8 profile keeps its figures, and a library change moves no stored figure
+- Export reads and import writes recipes, versions, batches and the ingredient library in one transaction each; the store file moves to schema 8 with a wrapper validator for library records; a library change is proven to move no figure through a whole export and import.
+- `rowFromLibraryRecord` builds a seeded-shape version row from a library record, embedding `structuredClone(record.entry)`, with TypeError refusals for a bad id, amount or step.
+- `nextStepKey(method)` returns the highest step key over every step (removed ones included) plus one, with no stored counter, and throws RangeError outside the safe-integer range.
+- Pure `createRecipe` builds a recipe and a 17-key root version from library-record rows; the version passes the store file import check, computes six figures, and every reader (advisories, child, diff, batch, Sheet) handles its missing equipment, process, iceEd and targets blocks.
+
+---
+
 ## v1 Develop the next olive oil recipe (Shipped: 2026-10-13)
 
 **Phases completed:** 14 phases (1, 2, 3 and the inserted 03.1 to 03.7.1, plus 4), 120 plans, 253 tasks. Phase 5 (Version evolution) is unstarted and carries forward.

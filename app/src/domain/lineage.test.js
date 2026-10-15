@@ -19,6 +19,7 @@ import {
 } from './lineage.js';
 import { sortedBatches } from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { coconutV1 } from '../data/coconut.js';
 
 function makeVersion(overrides = {}) {
   return {
@@ -303,6 +304,24 @@ describe('createChildVersion', () => {
     parent.rows[0].ingredient.composition.fat = 999;
     expect(child.rows[0].portions[0].grams).not.toBe(999);
     expect(child.rows[0].ingredient.composition.fat).not.toBe(999);
+  });
+
+  it('copies coefficientSetName, targets, equipment, process and iceEd from a parent that owns them', () => {
+    const child = createChildVersion(oliveOilVersion, penFields, { id: 'v2', now: '2026-09-07T10:00:00.000Z' });
+    for (const key of ['coefficientSetName', 'targets', 'equipment', 'process', 'iceEd']) {
+      expect(Object.hasOwn(child, key)).toBe(true);
+      expect(child[key]).toBe(oliveOilVersion[key]);
+    }
+  });
+
+  it('leaves out a key the parent does not own, as for coconut-v1, which has no targets', () => {
+    expect(Object.hasOwn(coconutV1, 'targets')).toBe(false);
+    const child = createChildVersion(coconutV1, penFields, { id: 'v2', now: '2026-09-07T10:00:00.000Z' });
+    expect(Object.hasOwn(child, 'targets')).toBe(false);
+    for (const key of ['coefficientSetName', 'equipment', 'process', 'iceEd']) {
+      expect(Object.hasOwn(child, key)).toBe(true);
+      expect(child[key]).toBe(coconutV1[key]);
+    }
   });
 });
 

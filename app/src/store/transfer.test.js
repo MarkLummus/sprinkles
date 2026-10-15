@@ -1157,14 +1157,20 @@ describe('validateVersion, the fields', () => {
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
 
-  it.each([2, 0, 2.5, 2 ** 53, '1'])('the import check and nextStepKey agree on the step key %j (WR-04)', (n) => {
+  it.each([
+    [2, 3],
+    [0, 1],
+    [-3, 1],
+  ])('the import check accepts the step key %j and nextStepKey gives %j (WR-04)', (n, expected) => {
     const version = makeVersion({ method: [makeStep({ n })] });
-    const accepted = validateStoreFile(makeStoreFile([version])).ok;
-    if (accepted) {
-      expect(nextStepKey([makeStep({ n })])).toBe(n + 1);
-    } else {
-      expect(() => nextStepKey([makeStep({ n })])).toThrow(RangeError);
-    }
+    expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+    expect(nextStepKey([makeStep({ n })])).toBe(expected);
+  });
+
+  it.each([2.5, 2 ** 53, '1'])('the import check refuses the step key %j and nextStepKey throws a RangeError (WR-04)', (n) => {
+    const version = makeVersion({ method: [makeStep({ n })] });
+    expect(validateStoreFile(makeStoreFile([version])).ok).toBe(false);
+    expect(() => nextStepKey([makeStep({ n })])).toThrow(RangeError);
   });
 
   it('rejects a step whose leadIn is blank, naming the path', () => {
@@ -1513,5 +1519,30 @@ describe('reserved row ids: the domain builders and the import check agree (WR-0
       expect(Object.keys(draft)).toContain(name);
       expect(draftMatchesVersion(draft, oliveOilVersion, [])).toBe(false);
     });
+  });
+});
+
+describe('composition: the row builder and the import check agree (re-review WR-01)', () => {
+  it.each([
+    ['missing', undefined, false],
+    ['null', null, false],
+    ['an array', [], false],
+    ['a string', 'fat', false],
+    ['a NaN value', { fat: NaN }, false],
+    ['an Infinity value', { fat: Infinity }, false],
+    ['a numeric string', { fat: '1' }, false],
+    ['empty', {}, true],
+    ['finite numbers', { fat: 0.035, msnf: 0 }, true],
+  ])('%s composition %j: builder and import check both accept: %j', (_label, composition, accepted) => {
+    const base = makeVersion().rows[0];
+    const version = makeVersion({ rows: [{ ...base, ingredient: { composition } }] });
+    expect(validateStoreFile(makeStoreFile([version])).ok).toBe(accepted);
+
+    const build = () => rowFromLibraryRecord({ id: 'oil', entry: { name: 'Oil', composition } }, { id: 'row-1', grams: 10 });
+    if (accepted) {
+      expect(build).not.toThrow();
+    } else {
+      expect(build).toThrow(new TypeError('library record entry needs a composition of finite numbers'));
+    }
   });
 });

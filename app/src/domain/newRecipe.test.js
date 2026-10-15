@@ -91,7 +91,8 @@ describe('createRecipe — the root version (D-01 to D-04)', () => {
     expect(version.recipeId).toBe('same-id');
   });
 
-  it('keeps the version label as the maker wrote it', () => {
+  it('stores the version label trimmed at both ends, as it stores the name', () => {
+    expect(create({ versionLabel: '  50 g oil · 800 g  ' }).version.versionLabel).toBe('50 g oil · 800 g');
     expect(create().version.versionLabel).toBe('50 g oil · 800 g');
   });
 
@@ -162,9 +163,9 @@ describe('newRecipe.js stays pure (criterion 4)', () => {
     const source = readFileSync(new URL('./newRecipe.js', import.meta.url), 'utf8')
       .replace(/\/\*[\s\S]*?\*\//g, '')
       .replace(/\/\/.*$/gm, '');
-    const specifiers = [...source.matchAll(/from\s+'([^']+)'/g)].map((match) => match[1]);
+    const specifiers = [...source.matchAll(/from\s+(['"])([^'"]+)\1/g)].map((match) => match[2]);
     for (const specifier of specifiers) expect(specifier).toMatch(/^\.\/[\w.-]+\.js$/);
-    expect(source).not.toMatch(/\bimport\s*\(|^\s*import\s+'/m);
+    expect(source).not.toMatch(/\bimport\s*\(|^\s*import\s+['"]/m);
     expect(source).not.toMatch(/\bnew Date\b|\bDate\.now\b|\bcrypto\b|\bMath\.random\b/);
   });
 

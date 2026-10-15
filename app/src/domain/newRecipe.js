@@ -21,7 +21,7 @@ const VERSION_SCHEMA_VERSION = 6;
 /**
  * createRecipe({ name, versionLabel, rows }, { recipeId, versionId, now }) ->
  * { recipe, version }. The recipe is { id, name (trimmed), description: '' };
- * the version is its root: no parent, no reason, no cited batch, an empty
+ * the version is its root, with the label stored trimmed as the name is: no parent, no reason, no cited batch, an empty
  * method, and a copy of the starting rows (structuredClone). Refuses, with a
  * TypeError, a blank name, a blank label (on its trimmed value, as lineage.js
  * blockedSaveMessage does), no rows, two rows with the same id, a row id that
@@ -68,7 +68,7 @@ export function createRecipe({ name, versionLabel, rows }, { recipeId, versionId
     reason: null,
     citedBatchId: null,
     createdAt: now,
-    versionLabel,
+    versionLabel: versionLabel.trim(),
     coefficientSetId: '',
     sheetTitle: recipeName,
     sheetDescription: '',

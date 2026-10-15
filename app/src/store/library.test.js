@@ -217,18 +217,21 @@ describe('who reads data/library.js, and who imports idb (success criterion 1, D
     .map((p) => p.split(path.sep).join('/'))
     .filter((p) => (p.endsWith('.js') || p.endsWith('.jsx')) && !p.includes('.test.'))
     .sort();
+  // Either quote; a static, side-effect or dynamic import; idb subpaths too.
+  const IDB_IMPORT = /(?:from\s+|import\s*\(\s*|import\s+)['"]idb(?:\/[^'"]*)?['"]/;
+  const LIBRARY_IMPORT = /(?:from\s+|import\s*\(\s*|import\s+)['"][^'"]*\/library\.js['"]/;
   const importers = (pattern) =>
     labels.filter((label) => pattern.test(readFileSync(path.join(srcDir, label), 'utf8')));
 
   it('only store/seed.js and files directly under data/ import the library data; only store/db.js imports idb', () => {
-    const libraryImporters = importers(/from\s+'[^']*\/library\.js'/);
+    const libraryImporters = importers(LIBRARY_IMPORT);
     for (const label of libraryImporters) {
       expect(label === 'store/seed.js' || /^data\/[^/]+\.js$/.test(label), label).toBe(true);
     }
     expect(libraryImporters).toEqual(expect.arrayContaining(['store/seed.js', 'data/olive-oil.js']));
     expect(libraryImporters).not.toContain('store/db.js');
 
-    expect(importers(/from\s+'idb'/)).toEqual(['store/db.js']);
+    expect(importers(IDB_IMPORT)).toEqual(['store/db.js']);
   });
 });
 

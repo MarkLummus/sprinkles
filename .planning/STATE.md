@@ -5,16 +5,16 @@ milestone_name: Groundwork for creation
 current_phase: 06
 current_phase_name: The ingredient library in the store
 status: executing
-stopped_at: Phase 05 complete, ready to plan Phase 06
-last_updated: "2026-10-14T23:20:04.918Z"
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-10-15T00:43:37.624Z"
 last_activity: 2026-10-14
-last_activity_desc: Phase 05 complete, transitioned to Phase 06
-state_head: a3947c17cd9af0aa2481003661f9cece3395459b
+last_activity_desc: Phase 06 execution started
+state_head: 0fe1141a2a6db15cb6856c755dd1eeb8a6a5af94
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 9
-  completed_plans: 6
+  completed_plans: 7
   percent: 33
 ---
 
@@ -25,14 +25,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-14)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 05 — Split the recipe page
+**Current focus:** Phase 06 — The ingredient library in the store
 
 ## Current Position
 
-Phase: 06 (The ingredient library in the store) — READY TO EXECUTE
-Plan: Not started
+Phase: 06 (The ingredient library in the store) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-10-14 — Phase 05 complete, transitioned to Phase 06
+Last activity: 2026-10-14 — Phase 06 execution started
 
 Progress: [███░░░░░░░] 33%
 
@@ -156,6 +156,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 04 P09 | 17 min | 3 tasks | 18 files |
 | Phase 04 P08 | 1h40m | 3 tasks | 10 files |
 | Phase 04 P10 | 14 min | 3 tasks | 12 files |
+| Phase 06 P01 | 2 min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -322,6 +323,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 04]: A date input draws its focus ring on :focus, because WebKit never matches :focus-visible on it
 - [Phase 04]: The keyboard walk starts at the page's first stop, not its first link: the fly-out Places button precedes it from 724 to 1589
 - [Roadmap v1.1, 2026-10-14]: Three phases: 5 Split the recipe page (EDIT-01 to EDIT-04), 6 The ingredient library in the store (LIB-01 to LIB-03), 7 Creation primitives (MAKE-01 to MAKE-03). Phase 7 follows Phase 6 because MAKE-03 builds rows from the library entry shape LIB-01 settles; Phase 6 does not need Phase 5. The former Phase 5 (Version evolution) is deferred to v2 (Mark, 2026-10-14) and listed under the roadmap's v2 candidates, to be numbered when v2 is defined.
+- [Phase 06]: DB_VERSION 8 to 9 adds the library store only; the oldVersion < 8 reset branch is unchanged, so a profile at 8 keeps its records (D-01)
+- [Phase 06]: putAllLibrary carries importAll's abort-by-hand catch and has no production caller; seed uses Plan 02's one-transaction method, import uses importAll
 
 ### Pending Todos
 
@@ -552,9 +555,9 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-14T10:35:27.898Z
-Stopped at: Phase 05 complete, ready to plan Phase 06
-Resume file: .planning/phases/06-the-ingredient-library-in-the-store/06-CONTEXT.md
+Last session: 2026-10-15T00:43:37.597Z
+Stopped at: Completed 06-01-PLAN.md
+Resume file: None
 
 ## Operator Next Steps
 

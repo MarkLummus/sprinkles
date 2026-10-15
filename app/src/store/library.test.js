@@ -11,6 +11,7 @@ import path from 'node:path';
 import { createRepository } from './repository.js';
 import { DB_NAME } from './db.js';
 import { seedIfEmpty } from './seed.js';
+import { exportStore, importStore, validateStoreFile, STORE_SCHEMA_VERSION } from './transfer.js';
 import { library } from '../data/library.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { oliveOilRecipe, oliveOilVersion } from '../data/olive-oil.js';
@@ -248,6 +249,18 @@ async function figuresFromStore() {
   };
 }
 
+// Sucrose's record with its PAC doubled and its sugar halved, written through
+// the repository; returns the changed record.
+async function changeSucrose(repository) {
+  const { entry } = await repository.getLibraryEntry('sucrose');
+  const changed = {
+    id: 'sucrose',
+    entry: { ...entry, composition: { ...entry.composition, pac: entry.composition.pac * 2, sugar: 0.5 } },
+  };
+  await repository.putAllLibrary([changed]);
+  return changed;
+}
+
 describe('a change to a library entry moves no stored figure (LIB-02, success criterion 3)', () => {
   const usesSucrose = (rows) => rows.some((row) => row.ingredient.name === library.sucrose.name);
 
@@ -261,12 +274,7 @@ describe('a change to a library entry moves no stored figure (LIB-02, success cr
     expect((await stored.getAllBatches()).some((batch) => usesSucrose(batch.snapshot.rows))).toBe(true);
 
     // Change the record: pac doubled, sugar halved.
-    const { entry } = await stored.getLibraryEntry('sucrose');
-    const changed = {
-      id: 'sucrose',
-      entry: { ...entry, composition: { ...entry.composition, pac: entry.composition.pac * 2, sugar: 0.5 } },
-    };
-    await stored.putAllLibrary([changed]);
+    const changed = await changeSucrose(stored);
 
     // The change landed.
     const landed = await createRepository().getLibraryEntry('sucrose');
@@ -281,5 +289,103 @@ describe('a change to a library entry moves no stored figure (LIB-02, success cr
 
     // The proof.
     expect(await figuresFromStore()).toEqual(before);
+  });
+
+  it('the change survives export and import into a fresh store, and still moves no figure (LIB-02, LIB-03)', async () => {
+    await seedIfEmpty(createRepository());
+    const before = await figuresFromStore();
+    const changed = await changeSucrose(createRepository());
+
+    const file = JSON.parse(JSON.stringify(await exportStore(createRepository())));
+    expect(validateStoreFile(file)).toEqual({ ok: true, errors: [] });
+    expect(file.library).toHaveLength(Object.keys(library).length);
+    expect(Object.hasOwn(file, 'drafts')).toBe(false);
+
+    globalThis.indexedDB = new IDBFactory();
+    expect(await importStore(createRepository(), file)).toEqual({ ok: true, errors: [] });
+
+    // Now reading the target store.
+    expect(await figuresFromStore()).toEqual(before);
+    const fresh = createRepository();
+    expect(await fresh.getLibraryEntry('sucrose')).toEqual(changed);
+    expect((await fresh.getLibraryEntry('sucrose')).entry.composition.pac).toBe(library.sucrose.composition.pac * 2);
+    expect(await fresh.listLibrary()).toHaveLength(Object.keys(library).length);
+  });
+});
+
+describe('export and import carry the library (LIB-03, D-04a, D-07)', () => {
+  const fileOf = (parts) =>
+    JSON.parse(
+      JSON.stringify({
+        app: 'sprinkles',
+        schemaVersion: STORE_SCHEMA_VERSION,
+        exportedAt: '2026-10-14T00:00:00.000Z',
+        recipes: [],
+        versions: [],
+        batches: [],
+        library: [],
+        ...parts,
+      }),
+    );
+
+  it("a file whose library list is empty leaves an unseeded store's library empty, and the next boot refills it (D-04a)", async () => {
+    const file = fileOf({ recipes: [oliveOilRecipe], versions: [oliveOilVersion], batches: [augustSecondBatch] });
+
+    expect(await importStore(createRepository(), file)).toEqual({ ok: true, errors: [] });
+    expect(await createRepository().listLibrary()).toEqual([]);
+
+    await seedIfEmpty(createRepository());
+
+    const fresh = createRepository();
+    expect(await fresh.listLibrary()).toHaveLength(Object.keys(library).length);
+    // Versions were present, so no seed recipe or version was added.
+    expect(await fresh.listVersions()).toEqual([oliveOilVersion]);
+    expect(await fresh.listRecipes()).toEqual([oliveOilRecipe]);
+  });
+
+  it('an import upserts the library by id: the record the file names is replaced and the others stay (D-07)', async () => {
+    await seedIfEmpty(createRepository());
+    const file = fileOf({ library: [{ id: 'sucrose', entry: { ...library.sucrose, name: 'Sucrose, renamed' } }] });
+
+    expect(await importStore(createRepository(), file)).toEqual({ ok: true, errors: [] });
+
+    const fresh = createRepository();
+    expect(await fresh.listLibrary()).toHaveLength(Object.keys(library).length);
+    expect((await fresh.getLibraryEntry('sucrose')).entry.name).toBe('Sucrose, renamed');
+    expect((await fresh.getLibraryEntry('wholeMilk')).entry).toEqual(library.wholeMilk);
+  });
+
+  it('a seed held after its library step does not overwrite a library record an import changed meanwhile (D-04, D-07; review item 1, import leg)', async () => {
+    const tabA = createRepository();
+    const tabB = createRepository();
+    const held = holdAfterLibraryStep(tabA);
+    const seedA = seedIfEmpty(held.repository);
+
+    // Tab A found the library empty and seeded it.
+    expect(await held.reached).toBe(true);
+
+    await seedIfEmpty(tabB);
+
+    const file = fileOf({
+      library: [
+        {
+          id: 'sucrose',
+          entry: {
+            ...library.sucrose,
+            composition: { ...library.sucrose.composition, pac: library.sucrose.composition.pac * 2 },
+          },
+        },
+      ],
+    });
+    expect(await importStore(tabB, file)).toEqual({ ok: true, errors: [] });
+
+    held.release();
+    await seedA;
+
+    const fresh = createRepository();
+    const sucrose = await fresh.getLibraryEntry('sucrose');
+    expect(sucrose.entry.composition.pac).toBe(library.sucrose.composition.pac * 2);
+    expect(sucrose.entry).toEqual(file.library[0].entry);
+    expect(await fresh.listLibrary()).toHaveLength(Object.keys(library).length);
   });
 });

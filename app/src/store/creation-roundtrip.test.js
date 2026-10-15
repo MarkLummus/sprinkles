@@ -88,6 +88,26 @@ describe('a recipe created from library records — the rest of the app reads it
     expect(buildAdvisories(version)).toEqual([]);
   });
 
+  it("a child of the root version has the root's key set, with no own key holding undefined (first review IN-01)", () => {
+    const { version } = createdRecipe();
+    const child = createChildVersion(
+      version,
+      {
+        versionLabel: 'second try',
+        reason: null,
+        citedBatchId: null,
+        rows: version.rows,
+        method: version.method,
+        sheetTitle: version.sheetTitle,
+        sheetDescription: version.sheetDescription,
+        authored: version.authored,
+      },
+      { id: 'version-plain-2', now: NOW },
+    );
+    expect(Object.keys(child).sort()).toEqual(Object.keys(version).sort());
+    expect(Object.entries(child).filter(([, value]) => value === undefined)).toEqual([]);
+  });
+
   describe.each([
     ['weighted', [500, 250, 100]],
     ['all-zero', [0, 0, 0]],

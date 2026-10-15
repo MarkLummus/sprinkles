@@ -105,6 +105,9 @@ export function versionLineUnique(versions, candidateLine, excludeId) {
   return !versions.some((version) => version.id !== excludeId && version.versionLabel.trim() === trimmed);
 }
 
+// A root version made by createRecipe leaves these out (Phase 7 D-02, D-03), so a child copies each one only when its parent owns it and never gains an own key holding undefined.
+const KEYS_COPIED_WHEN_OWNED = ['coefficientSetName', 'targets', 'equipment', 'process', 'iceEd'];
+
 /**
  * createChildVersion(parent, penFields, { id, now }) -> a new version
  * record carrying the supplied id, the parent's identity as
@@ -116,7 +119,10 @@ export function versionLineUnique(versions, candidateLine, excludeId) {
  * penFields directly (03.5-CONTEXT.md: Next version copies the parent's
  * Sheet title and Sheet description) — no recipeName field is carried;
  * recipe identity lives off the version now, in the recipes store
- * (03.5-CONTEXT.md D-11). Pure: id and now are supplied by the caller,
+ * (03.5-CONTEXT.md D-11). coefficientSetName, targets, equipment, process and
+ * iceEd are copied only when the parent owns them, so the child of a created
+ * root, or of a seed version with no targets, has no own key holding
+ * undefined. Pure: id and now are supplied by the caller,
  * exactly as domain/batch.js's createBatch takes them — this function
  * never reaches for crypto.randomUUID() or new Date() itself, and it
  * never writes to the parent (T-03-03).
@@ -131,11 +137,7 @@ export function createChildVersion(parent, penFields, { id, now }) {
     createdAt: now,
     versionLabel: penFields.versionLabel,
     coefficientSetId: parent.coefficientSetId,
-    coefficientSetName: parent.coefficientSetName,
-    targets: parent.targets,
-    equipment: parent.equipment,
-    process: parent.process,
-    iceEd: parent.iceEd,
+    ...Object.fromEntries(KEYS_COPIED_WHEN_OWNED.filter((key) => Object.hasOwn(parent, key)).map((key) => [key, parent[key]])),
     declaredAxes: parent.declaredAxes,
     declaredFlaws: parent.declaredFlaws,
     reason: penFields.reason,

@@ -5,10 +5,10 @@ milestone_name: Groundwork for creation
 current_phase: 07
 status: completed
 stopped_at: Phase 07 complete — all phases complete
-last_updated: "2026-10-15T10:36:54.662Z"
+last_updated: "2026-10-15T10:54:39.320Z"
 last_activity: 2026-10-15
 last_activity_desc: Phase 07 complete
-state_head: 5bf5967336b76f4f953615651426ce98aaa90dd4
+state_head: 04256a72ea73d2c93f23737d476be48fc31a68e5
 progress:
   total_phases: 3
   completed_phases: 3
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-10-14)
 Phase: 07
 Plan: Not started
 Status: All phases complete
-Last activity: 2026-10-15 - Completed quick task 261015-8y9: Fix Phase 7 review warnings WR-01 to WR-04
+Last activity: 2026-10-15 - Completed fast task: pin draft.js reserved-name copy to the import check
 
 Progress: [██████████] 100%
 
@@ -534,6 +534,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261014-e8c | Comments and docs only: Phase 5 review follow-ups (useRecordDraft header, RecipePage IN-02, shell test header, SC5 count, disposition rows) | 2026-10-14 | b9d8928 | .planning/quick/261014-e8c-comments-and-docs-only-correct-the-usere |
 | 261014-uy4 | Fix bug-kept-draft-note-origins-unchecked: a kept plan draft with a bad noteOrigins is refused on restore | 2026-10-14 | 8e52c06 | [261014-uy4-fix-bug-kept-draft-note-origins-unchecke](./quick/261014-uy4-fix-bug-kept-draft-note-origins-unchecke/) |
 | 261015-8y9 | Fix Phase 7 review warnings WR-01 to WR-04 | 2026-10-15 | 5bf5967 | [261015-8y9-fix-phase-7-review-warnings-wr-01-to-wr-](./quick/261015-8y9-fix-phase-7-review-warnings-wr-01-to-wr-/) |
+| 164 | Pin draft.js reserved-name copy to the import check's | 2026-10-15 | 04256a7 | — |
 
 ### Roadmap Evolution
 

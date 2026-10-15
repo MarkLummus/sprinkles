@@ -17,9 +17,9 @@ Groundwork for recipe creation, which is the next milestone (v2). The groundwork
 
 ### Creation primitives
 
-- [ ] **MAKE-01**: A framework-free function creates a recipe with a root version (no parent) from a name and starting rows, without touching the store.
-- [ ] **MAKE-02**: A step-key allocator hands out step numbers that are never reused, including after a step is removed.
-- [ ] **MAKE-03**: A row-from-ingredient builder makes a version row from a library ingredient, embedding a `structuredClone` of its coefficients and basis.
+- [x] **MAKE-01**: A framework-free function creates a recipe with a root version (no parent) from a name and starting rows, without touching the store.
+- [x] **MAKE-02**: A step-key allocator hands out step numbers that are never reused, including after a step is removed.
+- [x] **MAKE-03**: A row-from-ingredient builder makes a version row from a library ingredient, embedding a `structuredClone` of its coefficients and basis.
 
 ### Ingredient library
 
@@ -72,9 +72,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EDIT-02 | Phase 5 | Complete |
 | EDIT-03 | Phase 5 | Complete |
 | EDIT-04 | Phase 5 | Complete |
-| MAKE-01 | Phase 7 | Pending |
-| MAKE-02 | Phase 7 | Pending |
-| MAKE-03 | Phase 7 | Pending |
+| MAKE-01 | Phase 7 | Complete |
+| MAKE-02 | Phase 7 | Complete |
+| MAKE-03 | Phase 7 | Complete |
 | LIB-01 | Phase 6 | Complete |
 | LIB-02 | Phase 6 | Complete |
 | LIB-03 | Phase 6 | Complete |

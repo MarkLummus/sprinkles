@@ -34,7 +34,7 @@ Full phase detail, plans and progress: `.planning/milestones/v1-ROADMAP.md`.
 
 - [x] **Phase 5: Split the recipe page** - The recipe page's draft logic moves into pure domain operations behind hooks, leaving `RecipePage` as the route shell; the maker sees no change (completed 2026-10-14)
 - [x] **Phase 6: The ingredient library in the store** - The ingredient library becomes an object store behind the repository seam, seeded, exported and imported, and editing it never moves a stored figure (completed 2026-10-14)
-- [ ] **Phase 7: Creation primitives** - Framework-free functions create a recipe with a root version, hand out step keys that are never reused, and build a row from a library ingredient
+- [x] **Phase 7: Creation primitives** - Framework-free functions create a recipe with a root version, hand out step keys that are never reused, and build a row from a library ingredient (completed 2026-10-15)
 
 ## Phase Details
 
@@ -110,7 +110,7 @@ Plans:
   3. Building a row from a library entry embeds a `structuredClone` of the entry's coefficients and basis: changing the entry afterwards leaves the row unchanged, and a row built for an ingredient the olive oil seed uses, at the seeded amount, gives the same figures as the seeded row
   4. All three live under `app/src/domain/` with no framework, DOM or store import, their tests run under node, and the existing suite stays green with no screen changed (no creation UI calls them yet)
 
-**Plans**: 3/3 plans executed
+**Plans**: 3/3 plans complete
 
 Plans:
 **Wave 1**
@@ -129,7 +129,7 @@ Phases execute in numeric order: 5 → 6 → 7. Phase 6 starts after Phase 5 is 
 |-------|-----------|----------------|--------|-----------|
 | 5. Split the recipe page | v1.1 | 6/6 | Complete    | 2026-10-14 |
 | 6. The ingredient library in the store | v1.1 | 3/3 | Complete    | 2026-10-14 |
-| 7. Creation primitives | v1.1 | 3/3 | In Progress | - |
+| 7. Creation primitives | v1.1 | 3/3 | Complete    | 2026-10-15 |
 
 ## Later
 

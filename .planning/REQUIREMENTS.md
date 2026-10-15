@@ -24,8 +24,8 @@ Groundwork for recipe creation, which is the next milestone (v2). The groundwork
 ### Ingredient library
 
 - [x] **LIB-01**: The ingredient library is an object store behind the repository seam, seeded on an empty database from `data/library.js`, which is then read only as the seed.
-- [ ] **LIB-02**: A change to a library entry never moves a stored version's or batch's figures (proven by test, as in Phase 1).
-- [ ] **LIB-03**: Export and import carry the library with the other stores in the same one-transaction commit.
+- [x] **LIB-02**: A change to a library entry never moves a stored version's or batch's figures (proven by test, as in Phase 1).
+- [x] **LIB-03**: Export and import carry the library with the other stores in the same one-transaction commit.
 
 The database version bumps from 8 to 9 for the new store. The bump only adds the store and resets no profile at 8: recipes, versions, batches and drafts stay (Phase 6 D-01). A profile below 8 still resets, and the reset on a version bump otherwise stays until a recipe can be created from scratch.
 
@@ -76,8 +76,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MAKE-02 | Phase 7 | Pending |
 | MAKE-03 | Phase 7 | Pending |
 | LIB-01 | Phase 6 | Complete |
-| LIB-02 | Phase 6 | Pending |
-| LIB-03 | Phase 6 | Pending |
+| LIB-02 | Phase 6 | Complete |
+| LIB-03 | Phase 6 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 10 total

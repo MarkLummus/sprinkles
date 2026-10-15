@@ -4,17 +4,17 @@ milestone: v1.1
 milestone_name: Groundwork for creation
 current_phase: 06
 current_phase_name: The ingredient library in the store
-status: executing
-stopped_at: Completed 06-02-PLAN.md
-last_updated: "2026-10-15T00:47:09.423Z"
+status: verifying
+stopped_at: Completed 06-03-PLAN.md
+last_updated: "2026-10-15T00:51:21.055Z"
 last_activity: 2026-10-14
 last_activity_desc: Phase 06 execution started
-state_head: e1ad1cb1862b49872af732fdc1055fe1a8e286a4
+state_head: 45688afa29db1ad6e48b56ca88d2b3eb93771a78
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
   percent: 33
 ---
 
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-10-14)
 
 Phase: 06 (The ingredient library in the store) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-10-14 — Phase 06 execution started
 
 Progress: [███░░░░░░░] 33%
@@ -158,6 +158,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 04 P10 | 14 min | 3 tasks | 12 files |
 | Phase 06 P01 | 2 min | 2 tasks | 6 files |
 | Phase 06 P02 | 2 min | 3 tasks | 5 files |
+| Phase 06 P03 | 3 min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -328,6 +329,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 06]: putAllLibrary carries importAll's abort-by-hand catch and has no production caller; seed uses Plan 02's one-transaction method, import uses importAll
 - [Phase 06]: The library seed is one repository call (seedLibraryIfEmpty), a check and write in one transaction, so a delayed tab cannot overwrite a record an import changed (D-04 as amended)
 - [Phase 06]: seedIfEmpty runs the library step first; the library and versions guards are independent, an empty library is refilled and a filled one never topped up (D-04a, D-05)
+- [Phase 06]: 06-03: exportStore makes one exportAll call over four stores in one readonly transaction; importAll writes four stores in one readwrite transaction (D-07, D-07a)
+- [Phase 06]: 06-03: schema 8, validateLibraryRecord and library: parsed.library land in one commit; library validation checks the wrapper only and refuses reserved ids as values (D-06, D-08)
 
 ### Pending Todos
 
@@ -558,8 +561,8 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-15T00:47:09.397Z
-Stopped at: Completed 06-02-PLAN.md
+Last session: 2026-10-15T00:51:21.027Z
+Stopped at: Completed 06-03-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

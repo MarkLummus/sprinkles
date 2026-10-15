@@ -85,7 +85,7 @@ Plans:
   3. Changing a library entry in the store leaves every stored version's balance figures and every batch's snapshot exactly as they were, proven by a test against a real IndexedDB (fake-indexeddb), as Phase 1 proved it for the in-memory library
   4. An export carries the library beside recipes, versions and batches (drafts stay on the device), and importing that file restores all four in one transaction: an import that fails part-way leaves every store as it was
 
-**Plans**: 2/3 plans executed
+**Plans**: 3/3 plans executed
 
 Plans:
 **Wave 1**
@@ -95,7 +95,7 @@ Plans:
 - [x] 06-02-PLAN.md — seedIfEmpty's independent library guard; four combinations, interrupted and parallel seeds; the version-8 profile through the seed; LIB-02 proven in a real IndexedDB (LIB-01, LIB-02; D-01a, D-04, D-04a, D-05)
 
 **Wave 3** *(blocked on Wave 2 completion and on Phase 5's verification)*
-- [ ] 06-03-PLAN.md — exportAll in one readonly transaction, a four-store importAll, schema 8 with the library validator; LIB-02 through a whole export and import (LIB-03, LIB-02; D-04a, D-06, D-07, D-07a, D-08)
+- [x] 06-03-PLAN.md — exportAll in one readonly transaction, a four-store importAll, schema 8 with the library validator; LIB-02 through a whole export and import (LIB-03, LIB-02; D-04a, D-06, D-07, D-07a, D-08)
 
 **Notes**: Settle in discussion: `app/src/store/db.js` resets only profiles below 8 and says a later bump writes its own lift (04-04: "records Mark makes from now on are real"), while `REQUIREMENTS.md` says the reset applies as usual on this bump. Adding a store needs neither a reset nor a lift, so check for real stored records before choosing.
 
@@ -120,7 +120,7 @@ Phases execute in numeric order: 5 → 6 → 7. Phase 6 starts after Phase 5 is 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 5. Split the recipe page | v1.1 | 6/6 | Complete    | 2026-10-14 |
-| 6. The ingredient library in the store | v1.1 | 2/3 | In Progress | - |
+| 6. The ingredient library in the store | v1.1 | 3/3 | In Progress | - |
 | 7. Creation primitives | v1.1 | 0/TBD | Not started | - |
 
 ## Later

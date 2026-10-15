@@ -26,7 +26,7 @@ Three framework-free functions under `app/src/domain/`, so v2's creation screen 
 ### The row builder
 - **D-06:** The builder takes a library record `{ id, entry }` (Phase 6 D-02) and clones `record.entry` with `structuredClone`, so the row holds no `id` and changing the library entry afterwards leaves the row unchanged. A row built for an ingredient the olive oil seed uses, at the seeded amount, gives the same six balance figures as the seeded row (success criterion 3). — **Reversibility:** costly — v2's creation screen and every stored row read the shape.
 - **D-07:** The row's id is an argument, as `createChildVersion` takes an id, so tests stay deterministic. `ingredientName` defaults to the entry's `name`, and an optional name argument overrides it (the seed's short `Graza Drizzle` against the entry's `Graza Drizzle extra virgin olive oil`). The row has `removed: false` and one portion `{ step, grams }` with no `removed` key, as the seed rows have. `step` is an argument that defaults to 1. A negative or non-finite amount is refused as the import check refuses it.
-- **D-08:** `createRecipe` starts with `method: []` and its starting rows name step 1 by default, so the first step the maker adds gets key 1 from the allocator and picks up those rows. Until v2's screen creates step 1, the rows sit at a step that does not exist yet; v2's screen must create step 1 before it shows rows by step. The starting rows must be non-empty, because the import check refuses a version with none. — **Reversibility:** reversible.
+- **D-08:** `createRecipe` starts with `method: []` and its starting rows name step 1 by default, so the first step the maker adds gets key 1 from the allocator and picks up those rows. Until a step 1 exists the rows sit at a step that does not exist yet; whether v2 must create step 1 before it shows ingredients is a later design decision, not a Phase 7 requirement (Mark, 2026-10-14). The starting rows must be non-empty, because the import check refuses a version with none. — **Reversibility:** reversible.
 
 ### Claude's Discretion
 - File and function names under `app/src/domain/` (one module or several), and where the `VERSION_SCHEMA_VERSION` constant is read from so `domain/` imports no store or framework module.
@@ -98,7 +98,7 @@ No external specs beyond the above.
 
 - A stored high-water counter for step keys — only if a step is ever dropped from the array outright (would need a schema bump and a lift).
 - Equipment, process, targets and Ice Ed settings on a new recipe — v2's creation screen decides how the maker sets them.
-- The creation screen itself, saving the new recipe through the repository, and creating step 1 for the starting rows — v2.
+- The creation screen itself, saving the new recipe through the repository, creating step 1 for the starting rows, and whether it must exist before ingredients are shown — v2.
 
 ### Reviewed Todos (not folded)
 - Build the Recipe book print format — keyword match only; a new surface, not groundwork.

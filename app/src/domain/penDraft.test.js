@@ -4,6 +4,7 @@ import { oliveOilVersion } from '../data/olive-oil.js';
 import { buildDraftRecord, draftMatchesVersion } from './draft.js';
 import { createChildVersion } from './lineage.js';
 import { isLineRemoved } from './rows.js';
+import { nextStepKey } from './stepKeys.js';
 import {
   derivePenState,
   isPenDraftDirty,
@@ -450,6 +451,17 @@ describe('togglePenStepRemoved', () => {
     expect(next.method.find((step) => step.n === 2).removed).toBe(true);
     expect(next.method.find((step) => step.n === 1)).toBe(draft.method.find((step) => step.n === 1));
     expect(togglePenStepRemoved(next, 2).method.find((step) => step.n === 2).removed).toBe(false);
+  });
+
+  it('keeps the highest-numbered step in method, flagged, so the next step key stays past it (07 D-05a)', () => {
+    const draft = cleanDraftFor(clone());
+    const highest = draft.method.reduce((top, step) => (step.n > top ? step.n : top), 0);
+    const next = togglePenStepRemoved(draft, highest);
+    expect(next.method.length).toBe(draft.method.length);
+    expect(next.method.find((step) => step.n === highest).removed).toBe(true);
+    expect(nextStepKey(next.method)).toBe(highest + 1);
+    const restored = togglePenStepRemoved(next, highest);
+    expect(nextStepKey(restored.method)).toBe(highest + 1);
   });
 });
 

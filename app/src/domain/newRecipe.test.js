@@ -91,7 +91,8 @@ describe('createRecipe — the root version (D-01 to D-04)', () => {
     expect(version.recipeId).toBe('same-id');
   });
 
-  it('keeps the version label as the maker wrote it', () => {
+  it('stores the version label trimmed at both ends, as it stores the name', () => {
+    expect(create({ versionLabel: '  50 g oil · 800 g  ' }).version.versionLabel).toBe('50 g oil · 800 g');
     expect(create().version.versionLabel).toBe('50 g oil · 800 g');
   });
 

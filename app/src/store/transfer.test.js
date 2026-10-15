@@ -1515,3 +1515,28 @@ describe('reserved row ids: the domain builders and the import check agree (WR-0
     });
   });
 });
+
+describe('composition: the row builder and the import check agree (re-review WR-01)', () => {
+  it.each([
+    ['missing', undefined, false],
+    ['null', null, false],
+    ['an array', [], false],
+    ['a string', 'fat', false],
+    ['a NaN value', { fat: NaN }, false],
+    ['an Infinity value', { fat: Infinity }, false],
+    ['a numeric string', { fat: '1' }, false],
+    ['empty', {}, true],
+    ['finite numbers', { fat: 0.035, msnf: 0 }, true],
+  ])('%s composition %j: builder and import check both accept: %j', (_label, composition, accepted) => {
+    const base = makeVersion().rows[0];
+    const version = makeVersion({ rows: [{ ...base, ingredient: { composition } }] });
+    expect(validateStoreFile(makeStoreFile([version])).ok).toBe(accepted);
+
+    const build = () => rowFromLibraryRecord({ id: 'oil', entry: { name: 'Oil', composition } }, { id: 'row-1', grams: 10 });
+    if (accepted) {
+      expect(build).not.toThrow();
+    } else {
+      expect(build).toThrow(new TypeError('library record entry needs a composition of finite numbers'));
+    }
+  });
+});

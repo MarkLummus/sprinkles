@@ -132,6 +132,21 @@ describe('rowFromLibraryRecord — refusals (D-07)', () => {
   ])('refuses the record %j with no object entry', (record) => {
     refuses({ id: 'row-a', grams: 10, ingredientName: 'Oil' }, 'library record needs an entry', record);
   });
+
+  it.each([
+    [{ id: 'oil', entry: { name: 'Oil' } }],
+    [{ id: 'oil', entry: { name: 'Oil', composition: null } }],
+    [{ id: 'oil', entry: { name: 'Oil', composition: [] } }],
+    [{ id: 'oil', entry: { name: 'Oil', composition: { fat: NaN } } }],
+    [{ id: 'oil', entry: { name: 'Oil', composition: { fat: '1' } } }],
+  ])('refuses the entry %j, which has no composition of finite numbers', (record) => {
+    refuses({ id: 'row-a', grams: 10 }, 'library record entry needs a composition of finite numbers', record);
+  });
+
+  it('still accepts an empty composition, as the import check does', () => {
+    const row = rowFromLibraryRecord({ id: 'oil', entry: { name: 'Oil', composition: {} } }, { id: 'row-a', grams: 10 });
+    expect(row.ingredient.composition).toEqual({});
+  });
 });
 
 describe('versionRow.js stays pure (criterion 4)', () => {

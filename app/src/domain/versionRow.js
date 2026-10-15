@@ -23,8 +23,11 @@ export const RESERVED_ROW_IDS = new Set(['__proto__', 'constructor', 'prototype'
  * `step`, with no removed key on the portion. Throws a TypeError for an id
  * that is not a non-empty string or is a reserved name, an amount that is
  * not a finite number of at least zero (0 g is accepted), a step that is not
- * finite (D-07), a record whose entry is missing or not a plain object, or a
- * resolved ingredientName that is not a string or is blank.
+ * finite (D-07), a record whose entry is missing or not a plain object, an
+ * entry whose composition is not an object of finite numbers (the check
+ * store/transfer.js validateRow and validateLibraryRecord make; an empty
+ * composition passes both), or a resolved ingredientName that is not a string
+ * or is blank.
  */
 export function rowFromLibraryRecord(record, { id, grams, step = 1, ingredientName }) {
   if (typeof id !== 'string' || id === '') {
@@ -42,6 +45,15 @@ export function rowFromLibraryRecord(record, { id, grams, step = 1, ingredientNa
   const entry = record?.entry;
   if (entry === null || typeof entry !== 'object' || Array.isArray(entry)) {
     throw new TypeError('library record needs an entry');
+  }
+  const { composition } = entry;
+  if (
+    composition === null ||
+    typeof composition !== 'object' ||
+    Array.isArray(composition) ||
+    !Object.values(composition).every(Number.isFinite)
+  ) {
+    throw new TypeError('library record entry needs a composition of finite numbers');
   }
   const name = ingredientName ?? entry.name;
   if (typeof name !== 'string' || name.trim() === '') {

@@ -76,14 +76,19 @@ beforeEach(() => {
 });
 
 describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
-  it('opens a fresh (deleted) database with versions, batches, recipes and drafts stores, at version 8', async () => {
+  it('opens a fresh (deleted) database with versions, batches, recipes, drafts and library stores, at version 9', async () => {
     const db = await openStore();
-    expect(db.version).toBe(8);
+    expect(db.version).toBe(9);
     expect(db.version).toBe(DB_VERSION);
     expect(db.objectStoreNames.contains('versions')).toBe(true);
     expect(db.objectStoreNames.contains('batches')).toBe(true);
     expect(db.objectStoreNames.contains('recipes')).toBe(true);
     expect(db.objectStoreNames.contains('drafts')).toBe(true);
+    expect(db.objectStoreNames.contains('library')).toBe(true);
+    // D-02, D-03: the library store is keyed by id and holds no index.
+    const library = db.transaction('library').store;
+    expect(library.keyPath).toBe('id');
+    expect(library.indexNames.length).toBe(0);
     db.close();
   });
 
@@ -105,7 +110,7 @@ describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
     });
 
     const db = await openStore();
-    expect(db.version).toBe(8);
+    expect(db.version).toBe(9);
     for (const name of ['versions', 'batches', 'recipes', 'drafts']) {
       expect(db.objectStoreNames.contains(name)).toBe(true);
       expect(await db.getAll(name)).toEqual([]);
@@ -185,7 +190,7 @@ describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
     oldDb.close();
 
     const db = await openStore();
-    expect(db.version).toBe(8);
+    expect(db.version).toBe(9);
     expect(db.objectStoreNames.contains('versions')).toBe(true);
     expect(db.objectStoreNames.contains('batches')).toBe(true);
     expect(db.objectStoreNames.contains('recipes')).toBe(true);
@@ -222,7 +227,7 @@ describe('openStore, when another tab holds the old version open (WR-08)', () =>
     vi.unstubAllGlobals();
   });
 
-  it('calls onBlocked once, then finishes the upgrade at version 8 when the other connection closes', async () => {
+  it('calls onBlocked once, then finishes the upgrade at version 9 when the other connection closes', async () => {
     const held = await holdOpen(7);
     const onBlocked = vi.fn();
     const opening = openStore({ onBlocked });
@@ -231,7 +236,7 @@ describe('openStore, when another tab holds the old version open (WR-08)', () =>
 
     held.close();
     const db = await opening;
-    expect(db.version).toBe(8);
+    expect(db.version).toBe(9);
     for (const name of ['versions', 'batches', 'recipes', 'drafts']) {
       expect(db.objectStoreNames.contains(name)).toBe(true);
     }
@@ -245,7 +250,7 @@ describe('openStore, when another tab holds the old version open (WR-08)', () =>
     const db = await openStore();
 
     const newer = await new Promise((resolve, reject) => {
-      const request = indexedDB.open(DB_NAME, 9);
+      const request = indexedDB.open(DB_NAME, 10);
       let blocked = false;
       request.onblocked = () => {
         blocked = true;
@@ -253,7 +258,7 @@ describe('openStore, when another tab holds the old version open (WR-08)', () =>
       request.onsuccess = () => (blocked ? reject(new Error('the upgrade was blocked')) : resolve(request.result));
       request.onerror = () => reject(request.error);
     });
-    expect(newer.version).toBe(9);
+    expect(newer.version).toBe(10);
     expect(reload).toHaveBeenCalledTimes(1);
     newer.close();
     // A closed connection refuses a new transaction.

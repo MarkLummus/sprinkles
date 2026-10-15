@@ -7,6 +7,7 @@ import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { createRepository } from './repository.js';
+import { library } from '../data/library.js';
 
 beforeEach(() => {
   // A fresh database per test — the repository opens its connection when
@@ -110,6 +111,54 @@ describe('importAll, through the repository seam', () => {
     ).rejects.toThrow();
 
     expect(await everything(repository)).toEqual(before);
+  });
+});
+
+describe('the ingredient library, through the repository seam', () => {
+  const byId = (a, b) => (a.id < b.id ? -1 : 1);
+  const wholeMilk = () => ({ id: 'wholeMilk', entry: structuredClone(library.wholeMilk) });
+  const sucrose = () => ({ id: 'sucrose', entry: structuredClone(library.sucrose) });
+
+  it('putAllLibrary then listLibrary returns both records, entries unchanged, after the store is reopened', async () => {
+    await createRepository().putAllLibrary([wholeMilk(), sucrose()]);
+
+    const held = await createRepository().listLibrary();
+    expect([...held].sort(byId)).toEqual([sucrose(), wholeMilk()]);
+    expect(held.find((record) => record.id === 'wholeMilk').entry).toEqual(library.wholeMilk);
+    expect(held.find((record) => record.id === 'sucrose').entry).toEqual(library.sucrose);
+  });
+
+  it('getLibraryEntry returns the stored record, or undefined for an id it does not hold', async () => {
+    const repository = createRepository();
+    await repository.putAllLibrary([wholeMilk(), sucrose()]);
+    expect(await repository.getLibraryEntry('sucrose')).toEqual({ id: 'sucrose', entry: library.sucrose });
+    expect(await repository.getLibraryEntry('nothing-here')).toBeUndefined();
+  });
+
+  it('a second putAllLibrary upserts by id and leaves the records it does not name', async () => {
+    const repository = createRepository();
+    await repository.putAllLibrary([wholeMilk(), sucrose()]);
+
+    const changed = sucrose();
+    changed.entry.composition.pac *= 2;
+    await repository.putAllLibrary([changed]);
+
+    expect(await repository.getLibraryEntry('sucrose')).toEqual(changed);
+    expect(await repository.getLibraryEntry('wholeMilk')).toEqual(wholeMilk());
+    expect(await repository.listLibrary()).toHaveLength(2);
+  });
+
+  it('putAllLibrary rejects when a record cannot be cloned, and none of that call\'s records is written (review item 3)', async () => {
+    const repository = createRepository();
+    await repository.putAllLibrary([wholeMilk()]);
+
+    // The function value cannot be structured-cloned: the second put throws
+    // a DataCloneError after the sucrose put was already queued.
+    await expect(
+      repository.putAllLibrary([sucrose(), { id: 'bad', entry: { name: 'Bad', composition: {}, notClonable: () => {} } }]),
+    ).rejects.toThrow();
+
+    expect(await createRepository().listLibrary()).toEqual([wholeMilk()]);
   });
 });
 

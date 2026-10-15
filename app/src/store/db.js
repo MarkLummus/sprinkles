@@ -1,7 +1,7 @@
 import { openDB } from 'idb';
 
 export const DB_NAME = 'sprinkles';
-export const DB_VERSION = 8;
+export const DB_VERSION = 9;
 
 // The only module under app/src that touches the store library — every
 // other module reaches the store through repository.js's seam (D-06).
@@ -20,6 +20,7 @@ export function openStore({ onBlocked = () => {} } = {}) {
       // must reach every profile. The reset is bounded to profiles below 8
       // on purpose: records Mark makes from now on are real, so a later
       // bump must not inherit this wipe. It writes its own lift branch.
+      // The bump to 9 (Phase 6, D-01) only adds the library store, so it needs neither a reset nor a lift.
       if (oldVersion > 0 && oldVersion < 8) {
         if (db.objectStoreNames.contains('versions')) db.deleteObjectStore('versions');
         if (db.objectStoreNames.contains('batches')) db.deleteObjectStore('batches');
@@ -46,6 +47,12 @@ export function openStore({ onBlocked = () => {} } = {}) {
       // Drafts stay on this device; they are never exported.
       if (!db.objectStoreNames.contains('drafts')) {
         db.createObjectStore('drafts', { keyPath: 'versionId' });
+      }
+      // One record per library entry, `{ id, entry }`, keyed by id like the
+      // other stores (Phase 6 D-02); no secondary lookup, so no index (D-03);
+      // store/seed.js fills it, never this file (D-05).
+      if (!db.objectStoreNames.contains('library')) {
+        db.createObjectStore('library', { keyPath: 'id' });
       }
       // This callback holds no async keyword at all: deleteObjectStore and
       // createObjectStore are synchronous, which is strictly stronger than

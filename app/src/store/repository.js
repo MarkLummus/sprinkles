@@ -1,7 +1,7 @@
 import { openStore } from './db.js';
 
 // The repository seam D-06 and D-16 depend on — the only path to the store:
-// versions, batches, recipes, and the drafts of unsaved pens.
+// versions, batches, recipes, the ingredient library, and the drafts of unsaved pens.
 // No component, no domain module, and no seed check may reach past it.
 export function createRepository() {
   // Boot waits on the open, and an older tab can hold the open up (WR-08):
@@ -82,6 +82,42 @@ export function createRepository() {
       const tx = db.transaction('recipes', 'readwrite');
       await Promise.all(recipes.map((recipe) => tx.store.put(recipe)));
       return tx.done;
+    },
+    // A library record is `{ id, entry }`, `id` being the data/library.js key
+    // and `entry` that entry unchanged (Phase 6 D-02). getLibraryEntry returns
+    // the stored record, not the bare entry, as getRecipe returns the stored
+    // recipe. putAllLibrary aborts by hand for the reason importAll gives: a
+    // put the store cannot clone throws before it queues and leaves the
+    // transaction open, so without the abort the puts already queued would
+    // commit. It serves the tests that change an entry (this file's upsert
+    // test, Plan 02's LIB-02 proof and its held-seed test); the seed gets its
+    // own one-transaction method in Plan 02 (06-CONTEXT.md D-04 as amended),
+    // and import writes through importAll (no other write method).
+    async listLibrary() {
+      const db = await dbPromise;
+      return db.getAll('library');
+    },
+    async getLibraryEntry(id) {
+      const db = await dbPromise;
+      return db.get('library', id);
+    },
+    async putAllLibrary(records) {
+      const db = await dbPromise;
+      const tx = db.transaction('library', 'readwrite');
+      const done = tx.done;
+      const queued = [];
+      try {
+        for (const record of records) queued.push(tx.store.put(record));
+        await Promise.all([...queued, done]);
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
     },
     // An import is one readwrite transaction over the three stores it
     // writes: a failed put aborts it, so a storage failure part-way leaves

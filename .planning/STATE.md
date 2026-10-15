@@ -6,10 +6,10 @@ current_phase: 7
 current_phase_name: Creation primitives
 status: planning
 stopped_at: Phase 06 complete, ready to plan Phase 7
-last_updated: "2026-10-15T01:19:56.688Z"
+last_updated: "2026-10-15T02:24:50.019Z"
 last_activity: 2026-10-14
 last_activity_desc: Phase 06 complete, transitioned to Phase 7
-state_head: 02ace29f01f18a42314c7fbf711bfb2a862b4cfb
+state_head: 8e52c06ef07400919650f949d03e7c5bbc612820
 progress:
   total_phases: 3
   completed_phases: 2
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-14)
 Phase: 7 — Creation primitives
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-14 — Phase 06 complete, transitioned to Phase 7
+Last activity: 2026-10-14 - Completed quick task 261014-uy4: kept plan draft with a bad noteOrigins is refused on restore
 
 Progress: [███████░░░] 67%
 
@@ -532,6 +532,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261014-e8a | Mark's List bug-pen-note-delete-then-edit-provenance: in app/src/domain/penDraft.js setPenNoteText and removePenNote, de | 2026-10-14 | b8e5b83 | .planning/quick/261014-e8a-mark-s-list-bug-pen-note-delete-then-edi |
 | 261014-e8b | Harden app/src/ui/RecipePage.shell.test.js stripComments so it no longer treats // inside a string as a comment (a sette | 2026-10-14 | 43c6871 | .planning/quick/261014-e8b-harden-app-src-ui-recipepage-shell-test |
 | 261014-e8c | Comments and docs only: Phase 5 review follow-ups (useRecordDraft header, RecipePage IN-02, shell test header, SC5 count, disposition rows) | 2026-10-14 | b9d8928 | .planning/quick/261014-e8c-comments-and-docs-only-correct-the-usere |
+| 261014-uy4 | Fix bug-kept-draft-note-origins-unchecked: a kept plan draft with a bad noteOrigins is refused on restore | 2026-10-14 | 8e52c06 | [261014-uy4-fix-bug-kept-draft-note-origins-unchecke](./quick/261014-uy4-fix-bug-kept-draft-note-origins-unchecke/) |
 
 ### Roadmap Evolution
 

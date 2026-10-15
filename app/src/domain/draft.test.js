@@ -12,6 +12,7 @@ import {
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS, DEFECTS } from './battery.js';
+import { removePenNote, setPenNoteText } from './penDraft.js';
 
 const NOW = '2026-10-11T09:00:00.000Z';
 
@@ -198,6 +199,33 @@ describe('draftMatchesVersion: a plan draft', () => {
     const record = planRecord();
     record.payload.versionLabel = 7;
     expect(draftMatchesVersion(record, oliveOilVersion, [])).toBe(false);
+  });
+});
+
+describe("draftMatchesVersion: a plan draft's noteOrigins", () => {
+  const LIST = 'beforeYouStart';
+  const fits = (payload) => draftMatchesVersion(structuredClone(planRecord({ payload })), oliveOilVersion, []);
+  // One note left (the version's second), so its noteOrigins is { beforeYouStart: [1] }.
+  const onlyOneNote = () => removePenNote(planPayload(), LIST, 0);
+
+  it('refuses the reported [99] draft, which the pen could not edit', () => {
+    const payload = { ...onlyOneNote(), noteOrigins: { [LIST]: [99] } };
+    expect(() => setPenNoteText(payload, oliveOilVersion, LIST, 0, 'Something else')).toThrow(TypeError);
+    expect(fits(payload)).toBe(false);
+  });
+
+  it('accepts the draft the pen writes after one removal, and the pen can edit it', () => {
+    const payload = onlyOneNote();
+    expect(payload.noteOrigins).toEqual({ [LIST]: [1] });
+    const record = structuredClone(planRecord({ payload }));
+    expect(draftMatchesVersion(record, oliveOilVersion, [])).toBe(true);
+    expect(() => setPenNoteText(record.payload, oliveOilVersion, LIST, 0, 'Something else')).not.toThrow();
+  });
+
+  it('refuses a list the version does not hold as its own array', () => {
+    expect(fits({ ...onlyOneNote(), noteOrigins: { [LIST]: [1], carriedForward: [0] } })).toBe(false);
+    expect(fits({ ...onlyOneNote(), noteOrigins: { [LIST]: [1], toString: [0] } })).toBe(false);
+    expect(fits({ ...planPayload(), noteOrigins: { carriedForward: [] } })).toBe(false);
   });
 });
 

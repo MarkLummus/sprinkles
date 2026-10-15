@@ -11,6 +11,7 @@ import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { library } from '../data/library.js';
 import { RESERVED_ROW_IDS, rowFromLibraryRecord } from '../domain/versionRow.js';
 import { nextStepKey } from '../domain/stepKeys.js';
+import { buildDraftRecord, draftMatchesVersion } from '../domain/draft.js';
 
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. Mirrors createRepository's exportAll and
@@ -1473,5 +1474,44 @@ describe('reserved row ids: the domain builders and the import check agree (WR-0
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
     expect(result.errors).toContain(`$.versions[0].rows[0].id: prototype-mutating id is not allowed, got "${name}"`);
+  });
+
+  // domain/draft.js keeps a private copy of the same three names and cannot import
+  // store/, so this is the one place the two are compared.
+  describe('draft.js refuses the same names as an own key', () => {
+    const plainDraft = () =>
+      buildDraftRecord({
+        versionId: oliveOilVersion.id,
+        kind: 'plan',
+        payload: {
+          versionLabel: 'less oil',
+          reason: '',
+          citedBatchId: null,
+          sheetTitle: oliveOilVersion.sheetTitle,
+          sheetDescription: oliveOilVersion.sheetDescription,
+          rows: Object.fromEntries(
+            oliveOilVersion.rows.map((row) => [
+              row.id,
+              { portions: row.portions.map((portion) => ({ step: portion.step, grams: String(portion.grams), removed: false })) },
+            ]),
+          ),
+          method: structuredClone(oliveOilVersion.method),
+          authored: structuredClone(oliveOilVersion.authored),
+        },
+        penOpenedAt: '2026-10-11T08:00:00.000Z',
+        now: '2026-10-11T09:00:00.000Z',
+      });
+
+    it('accepts the draft without the key', () => {
+      expect(draftMatchesVersion(plainDraft(), oliveOilVersion, [])).toBe(true);
+    });
+
+    it.each([...UNSAFE_KEYS])('refuses a draft carrying an own %s key', (name) => {
+      // defineProperty makes __proto__ an own property; plain assignment would set the prototype.
+      const draft = plainDraft();
+      Object.defineProperty(draft, name, { value: 1, enumerable: true, configurable: true, writable: true });
+      expect(Object.keys(draft)).toContain(name);
+      expect(draftMatchesVersion(draft, oliveOilVersion, [])).toBe(false);
+    });
   });
 });

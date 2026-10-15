@@ -185,14 +185,26 @@ export function createRepository() {
     async exportAll() {
       const db = await dbPromise;
       const tx = db.transaction(['recipes', 'versions', 'batches', 'library'], 'readonly');
-      const [recipes, versions, batches, library] = await Promise.all([
-        tx.objectStore('recipes').getAll(),
-        tx.objectStore('versions').getAll(),
-        tx.objectStore('batches').getAll(),
-        tx.objectStore('library').getAll(),
-      ]);
-      await tx.done;
-      return { recipes, versions, batches, library };
+      const done = tx.done;
+      // Every queued read is kept so a failure can quiet the ones the abort
+      // rejects behind it.
+      const queued = [];
+      try {
+        for (const name of ['recipes', 'versions', 'batches', 'library']) {
+          queued.push(tx.objectStore(name).getAll());
+        }
+        const [recipes, versions, batches, library] = await Promise.all(queued);
+        await done;
+        return { recipes, versions, batches, library };
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
     },
     // D-16: a draft is one unsaved pen, keyed by its version id.
     async getDraft(versionId) {

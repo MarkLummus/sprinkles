@@ -169,6 +169,33 @@ describe('exportAll, through the repository seam (D-07a)', () => {
       spy.mockRestore();
     }
   });
+
+  it('when a read fails it aborts the transaction, rethrows, and leaves no unhandled rejection', async () => {
+    const repository = createRepository();
+    await repository.listRecipes();
+
+    const unhandled = [];
+    const onUnhandled = (reason) => unhandled.push(reason);
+    process.on('unhandledRejection', onUnhandled);
+    // Fails the last of the four reads, after the first three were queued.
+    const original = globalThis.IDBObjectStore.prototype.getAll;
+    const getAllSpy = vi.spyOn(globalThis.IDBObjectStore.prototype, 'getAll').mockImplementation(function (...args) {
+      if (this.name === 'library') throw new Error('read failed');
+      return original.apply(this, args);
+    });
+    const abortSpy = vi.spyOn(globalThis.IDBTransaction.prototype, 'abort');
+    try {
+      await expect(repository.exportAll()).rejects.toThrow('read failed');
+      // Let the abort's rejection of tx.done reach the event loop.
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      expect(abortSpy).toHaveBeenCalledTimes(1);
+      expect(unhandled).toEqual([]);
+    } finally {
+      getAllSpy.mockRestore();
+      abortSpy.mockRestore();
+      process.off('unhandledRejection', onUnhandled);
+    }
+  });
 });
 
 describe('the ingredient library, through the repository seam', () => {

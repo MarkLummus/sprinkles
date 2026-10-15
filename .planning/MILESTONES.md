@@ -4,6 +4,8 @@
 
 **Phases completed:** 3 phases, 12 plans, 30 tasks
 
+**Closeout:** override_closeout. All 3 phases have a passing VERIFICATION.md and all 10 requirements are satisfied (see `milestones/v1.1-MILESTONE-AUDIT.md`, status tech_debt), but Phase 6's report is stale: quick 261015-8y9 changed `store/transfer.js` after it ran. The full suite (2932 tests) and the integration check were green. Known verification overrides: 1 newly acknowledged, 0 carried forward. Six open items (2 quick tasks, 3 todos, 1 dormant seed) were acknowledged and deferred.
+
 **Key accomplishments:**
 - Deterministic WebKit walk of the built app (`record` and `compare`) with a committed 94-snapshot baseline of the version pen, record pen, correction and tasting, recorded from app/ at base commit 4f1f98f
 - Pen draft helpers (dirty check, row-lines toggle, pen-state derivation, one-step restore) moved from RecipePage.jsx into framework-free `domain/penDraft.js`, with every draft-row read by id going through an own-property accessor `penDraftRow` (closes T-03.6-02)

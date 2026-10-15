@@ -40,8 +40,44 @@
 - Sessions: not counted
 - Notable: the close audit's largest cost was re-establishing which open items were real.
 
+## Milestone: v1.1 — Groundwork for creation
+
+**Shipped:** 2026-10-15
+**Phases:** 3 (Phases 5 to 7) | **Plans:** 12 | **Sessions:** not counted
+
+### What Was Built
+- `RecipePage`'s draft logic as pure `domain/` operations behind `usePenDraft` and `useRecordDraft`, proved against a 94-snapshot WebKit walk recorded before any code moved.
+- The ingredient library as an IndexedDB store (database version 9) behind the repository seam, seeded, exported and imported with the other stores in one transaction.
+- `createRecipe`, `nextStepKey` and `rowFromLibraryRecord`: framework-free, tested under node, called by no screen yet.
+- 10 of 10 requirements satisfied; 2,932 tests passing at close.
+
+### What Worked
+- Recording a before-walk of the built app first, then comparing after: "the maker sees no change" became a MATCH instead of a claim.
+- Small phases with one audit trail each: the milestone took two days from the first walk to the last verification.
+- The integration checker confirmed the cross-phase seams (record shape, step-key rules, import check) without finding a broken path.
+
+### What Was Inefficient
+- Phase 6's verification went stale again: a Phase 7 quick task changed `store/transfer.js`, which Phase 6 covers, and the close ran as override_closeout for it.
+- `RecipePage.jsx` is still 1,837 lines. The draft logic left, but the loading effects and the regions stayed.
+- Two quick-task summaries had frontmatter that was not valid YAML, which blocked the close-out acknowledge until quoted.
+
+### Patterns Established
+- A source test pins a shell's shape (no draft setter, resets written once, domain modules pure) so a split cannot drift back.
+- A phase's primitives land behind tests before any screen calls them; the unused-export list is expected debt, not an orphan.
+
+### Key Lessons
+1. A quick task that edits a finished phase's covered files should re-run that phase's verifier, or the close pays for it.
+2. Quote flow-sequence and colon-bearing frontmatter values when writing summaries; the close tooling refuses to parse them.
+3. Wait for the second consumer before the next split: extract the loader hook when v2 creation needs a page with no loaded version.
+
+### Cost Observations
+- Model mix: not measured
+- Sessions: not counted
+- Notable: the close audit surfaced 6 open items, all history or v2 material.
+
 ## Cross-Milestone Trends
 
 | Milestone | Phases | Plans | Inserted phases | Stale verifications at close |
 |-----------|--------|-------|-----------------|------------------------------|
 | v1 | 14 | 120 | 10 | 12 |
+| v1.1 | 3 | 12 | 0 | 1 |

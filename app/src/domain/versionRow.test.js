@@ -99,6 +99,14 @@ describe('rowFromLibraryRecord — refusals (D-07)', () => {
     refuses({ id, grams: 10 }, ID_MESSAGE);
   });
 
+  it.each(['__proto__', 'constructor', 'prototype'])('refuses the reserved row id %s', (name) => {
+    refuses({ id: name, grams: 10 }, `row id "${name}" is reserved`);
+  });
+
+  it.each(['__proto__x', 'my-constructor', 'prototype-2'])('still accepts the row id %s, which only contains a reserved name', (id) => {
+    expect(rowFromLibraryRecord(oliveOilRecord(), { id, grams: 10 }).id).toBe(id);
+  });
+
   it.each([-1, NaN, Infinity, -Infinity, '40', undefined, null])('refuses the amount %j', (grams) => {
     refuses({ id: 'row-a', grams }, GRAMS_MESSAGE);
   });

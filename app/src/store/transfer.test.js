@@ -4,11 +4,12 @@ import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createRepository } from './repository.js';
-import { exportStore, importStore, validateStoreFile, STORE_SCHEMA_VERSION, OLDER_EXPORT_MESSAGE, IMPORT_STORAGE_ERROR } from './transfer.js';
+import { exportStore, importStore, validateStoreFile, UNSAFE_KEYS, STORE_SCHEMA_VERSION, OLDER_EXPORT_MESSAGE, IMPORT_STORAGE_ERROR } from './transfer.js';
 import { seedIfEmpty } from './seed.js';
 import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { library } from '../data/library.js';
+import { RESERVED_ROW_IDS, rowFromLibraryRecord } from '../domain/versionRow.js';
 
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. Mirrors createRepository's exportAll and
@@ -1432,5 +1433,22 @@ describe('a reserved row id is refused as a value (WR-01)', () => {
     expect(result.ok).toBe(false);
     expect(repository.importAllCalls).toBe(0);
     expect(repository.versions).toEqual([]);
+  });
+});
+
+describe('reserved row ids: the domain builders and the import check agree (WR-03)', () => {
+  it('the domain set equals the import check set', () => {
+    expect([...RESERVED_ROW_IDS].sort()).toEqual([...UNSAFE_KEYS].sort());
+  });
+
+  it.each([...UNSAFE_KEYS])('refuses %s at the builder and at the import check', (name) => {
+    expect(() =>
+      rowFromLibraryRecord({ id: 'wholeMilk', entry: structuredClone(library.wholeMilk) }, { id: name, grams: 10 }),
+    ).toThrow(new TypeError(`row id "${name}" is reserved`));
+
+    const version = makeVersion({ rows: [{ ...makeVersion().rows[0], id: name }] });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors).toContain(`$.versions[0].rows[0].id: prototype-mutating id is not allowed, got "${name}"`);
   });
 });

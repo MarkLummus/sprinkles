@@ -11,7 +11,8 @@
 import { AXES } from '../domain/axes.js';
 import { SEGMENT_OPTIONS, DEFECTS, MARK_ONE_OPTIONS } from '../domain/battery.js';
 
-const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+// domain/versionRow.js RESERVED_ROW_IDS mirrors this set; transfer.test.js pins the two.
+export const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 const DECLARED_AXIS_NAMES = AXES.filter((axis) => axis.group === 'declared').map((axis) => axis.name);
 // A version declares up to two scales and up to two problems (sketch 010 D25, D26).
 const MAX_DECLARED = 2;

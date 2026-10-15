@@ -209,7 +209,8 @@ function fitsNoteOrigins(payload, version) {
 
 // A plan draft (the Next version pen's penDraft) fits when its text fields
 // are strings, it holds exactly this version's rows (each with this many
-// lines), exactly this version's steps, and a note list the pen can read.
+// lines), exactly this version's steps, a note list the pen can read, and,
+// when it carries noteOrigins, origins the pen can follow (fitsNoteOrigins).
 function fitsPlanShape(payload, version) {
   if (!isPlainObject(payload)) return false;
   for (const field of ['versionLabel', 'reason', 'sheetTitle', 'sheetDescription']) {
@@ -248,9 +249,12 @@ function fitsPlanShape(payload, version) {
  * the shape version matches, the kind is plan, record or amend, no object
  * anywhere in the record has an own `__proto__`, `constructor` or `prototype`
  * key, and the payload fits the version: a plan payload holds exactly the
- * version's rows and steps; a record or amend payload holds exactly the
- * record draft's fields and keys only the version's rows and axes; an amend
- * draft also names one of `batches` and carries a baseline of the same shape.
+ * version's rows and steps, and its noteOrigins, when present, names only
+ * lists the version holds and gives one in-range origin per draft note (else
+ * the pen's next note edit would read past the version's list); a record or
+ * amend payload holds exactly the record draft's fields and keys only the
+ * version's rows and axes; an amend draft also names one of `batches` and
+ * carries a baseline of the same shape.
  * The payload's values must also be ones the pen offers and Save could store
  * (WR-04): a record payload is read against the version's declared problems
  * and axes, a Correct payload against the corrected batch's own snapshot.

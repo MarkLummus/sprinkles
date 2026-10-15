@@ -227,6 +227,46 @@ describe("draftMatchesVersion: a plan draft's noteOrigins", () => {
     expect(fits({ ...onlyOneNote(), noteOrigins: { [LIST]: [1], toString: [0] } })).toBe(false);
     expect(fits({ ...planPayload(), noteOrigins: { carriedForward: [] } })).toBe(false);
   });
+
+  it('refuses a noteOrigins that is not a plain object', () => {
+    for (const bad of [null, [1], 'beforeYouStart']) {
+      expect(fits({ ...onlyOneNote(), noteOrigins: bad })).toBe(false);
+    }
+  });
+
+  it('refuses a list value that is not an array', () => {
+    for (const bad of [1, { 0: 1 }]) {
+      expect(fits({ ...onlyOneNote(), noteOrigins: { [LIST]: bad } })).toBe(false);
+    }
+  });
+
+  it('refuses an origin that is not an integer inside the version list, a hole included', () => {
+    // The version holds two notes, so 2 is the first index past the end.
+    for (const bad of [-1, 1.5, '1', null, NaN, 2]) {
+      expect(fits({ ...onlyOneNote(), noteOrigins: { [LIST]: [bad] } })).toBe(false);
+    }
+    expect(fits({ ...onlyOneNote(), noteOrigins: { [LIST]: new Array(1) } })).toBe(false);
+  });
+
+  it("refuses an origins array whose length differs from the draft's list", () => {
+    expect(fits({ ...planPayload(), noteOrigins: { [LIST]: [0] } })).toBe(false);
+    expect(fits({ ...onlyOneNote(), noteOrigins: { [LIST]: [0, 1] } })).toBe(false);
+  });
+
+  it('accepts every draft the pen writes: the low boundary, all notes removed, a removal then an edit', () => {
+    const lowBoundary = removePenNote(planPayload(), LIST, 1);
+    expect(lowBoundary.noteOrigins).toEqual({ [LIST]: [0] });
+    expect(fits(lowBoundary)).toBe(true);
+
+    const allRemoved = removePenNote(onlyOneNote(), LIST, 0);
+    expect(allRemoved.authored[LIST]).toEqual([]);
+    expect(allRemoved.noteOrigins).toEqual({ [LIST]: [] });
+    expect(fits(allRemoved)).toBe(true);
+
+    const edited = setPenNoteText(onlyOneNote(), oliveOilVersion, LIST, 0, 'Something else');
+    expect(edited.noteOrigins).toEqual({ [LIST]: [1] });
+    expect(fits(edited)).toBe(true);
+  });
 });
 
 describe('draftMatchesVersion: a record draft', () => {

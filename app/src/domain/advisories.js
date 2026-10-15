@@ -42,8 +42,11 @@ function formatScaleGrams(grams) {
  * the machine's minimum fill is held for SCALE-01, which owns machine
  * capacity and forbids asserting a safe fit (D-05) — this module never
  * builds that fifth advisory.
+ * Returns null when the version carries no equipment block (a new recipe's
+ * root version, Phase 7 D-02): it never reads the absent block.
  */
 function subScaleAdvisory(rows, equipment) {
+  if (!equipment) return null;
   const under = rows.filter((row) => rowGrams(row) > 0 && rowGrams(row) < equipment.scaleResolutionG);
   if (under.length === 0) return null;
 
@@ -114,8 +117,11 @@ function findHydrationStep(steps, neededC) {
  * target the parser cannot read degrades to no step clause rather than
  * throwing or guessing. `matched.step` is always one of `steps`
  * (activeSteps), so it always holds a position in `stepNumbers`.
+ * Returns null when the version carries no process block (a new recipe's
+ * root version, Phase 7 D-02): it never reads the absent block.
  */
 function hydrationAdvisory(rows, steps, process, stepNumbers) {
+  if (!process) return null;
   const hold = process.pasteuriseC;
   const unmet = rows.filter(
     (row) => rowGrams(row) > 0 && row.ingredient.hydrationC != null && row.ingredient.hydrationC > hold,

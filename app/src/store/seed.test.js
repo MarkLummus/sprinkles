@@ -5,31 +5,48 @@ import { seedRecipeGroups } from '../data/seed-recipes.js';
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. This is why seedIfEmpty takes its
 // repository as a parameter, and testing the seam contract rather than the
-// storage engine is the point.
-function createInMemoryRepository(initial = []) {
+// storage engine is the point. Its writers upsert by id, as the store's puts
+// do, so a repeated write replaces records instead of duplicating them.
+function upsert(list, items) {
+  for (const item of items) {
+    const i = list.findIndex((entry) => entry.id === item.id);
+    if (i >= 0) list[i] = item;
+    else list.push(item);
+  }
+}
+
+function createInMemoryRepository(initial = [], initialLibrary = []) {
   const versions = [...initial];
   const batches = [];
   const recipes = [];
+  const library = [...initialLibrary];
   const writes = [];
   return {
     versions,
     batches,
     recipes,
+    library,
     writes,
     async listVersions() {
       return versions;
     },
     async putAll(items) {
       writes.push('versions');
-      versions.push(...items);
+      upsert(versions, items);
     },
     async putAllBatches(items) {
       writes.push('batches');
-      batches.push(...items);
+      upsert(batches, items);
     },
     async putAllRecipes(items) {
       writes.push('recipes');
-      recipes.push(...items);
+      upsert(recipes, items);
+    },
+    async seedLibraryIfEmpty(records) {
+      if (library.length > 0) return false;
+      writes.push('library');
+      upsert(library, records);
+      return true;
     },
   };
 }
@@ -62,10 +79,10 @@ describe('seedIfEmpty', () => {
     expect(repository.versions[0].id).toBe('olive-oil-ice-cream-v1');
   });
 
-  it('writes versions last, so the emptiness check only flips once recipes and batches are in', async () => {
+  it('writes the library first and versions last, so the versions check only flips once recipes and batches are in', async () => {
     const repository = createInMemoryRepository([]);
     await seedIfEmpty(repository);
-    expect(repository.writes).toEqual(['recipes', 'batches', 'versions']);
+    expect(repository.writes).toEqual(['library', 'recipes', 'batches', 'versions']);
   });
 
   it('is idempotent: a second call against the filled repository writes nothing further', async () => {

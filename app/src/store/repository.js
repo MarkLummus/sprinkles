@@ -119,6 +119,37 @@ export function createRepository() {
         throw error;
       }
     },
+    // The seed's emptiness check and its write are one readwrite transaction,
+    // so a second tab booting at the same moment cannot find an empty library
+    // and then write the seed over records another tab seeded and an import
+    // changed (06-CONTEXT.md D-04, amended after the Codex review of the
+    // Phase 6 plans). It resolves true when it wrote and false when the
+    // library already held a record. A put the store cannot clone aborts the
+    // transaction, as in importAll, so a failed seed leaves the library empty
+    // and the next boot seeds it again.
+    async seedLibraryIfEmpty(records) {
+      const db = await dbPromise;
+      const tx = db.transaction('library', 'readwrite');
+      const done = tx.done;
+      const queued = [];
+      try {
+        if ((await tx.store.count()) > 0) {
+          await done;
+          return false;
+        }
+        for (const record of records) queued.push(tx.store.put(record));
+        await Promise.all([...queued, done]);
+        return true;
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
+    },
     // An import is one readwrite transaction over the three stores it
     // writes: a failed put aborts it, so a storage failure part-way leaves
     // every store exactly as it was. A put the store cannot clone throws

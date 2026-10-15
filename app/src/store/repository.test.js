@@ -162,6 +162,47 @@ describe('the ingredient library, through the repository seam', () => {
   });
 });
 
+describe('seedLibraryIfEmpty, one transaction for the check and the write (D-04)', () => {
+  const records = Object.entries(library).map(([id, entry]) => ({ id, entry }));
+
+  it('on an empty library it writes every record and resolves true', async () => {
+    expect(await createRepository().seedLibraryIfEmpty(records)).toBe(true);
+
+    const held = await createRepository().listLibrary();
+    expect(held).toHaveLength(Object.keys(library).length);
+    for (const record of held) expect(record.entry).toEqual(library[record.id]);
+  });
+
+  it('on a library holding a record it writes nothing and resolves false', async () => {
+    const existing = { id: 'existing-entry', entry: { name: 'Existing', composition: {} } };
+    await createRepository().putAllLibrary([existing]);
+
+    expect(await createRepository().seedLibraryIfEmpty(records)).toBe(false);
+    expect(await createRepository().listLibrary()).toEqual([existing]);
+  });
+
+  it('two connections calling it at once on one empty database: exactly one writes', async () => {
+    const results = await Promise.all([
+      createRepository().seedLibraryIfEmpty(records),
+      createRepository().seedLibraryIfEmpty(records),
+    ]);
+    expect(results.filter((result) => result === true)).toHaveLength(1);
+
+    const held = await createRepository().listLibrary();
+    expect(held).toHaveLength(Object.keys(library).length);
+    expect(new Set(held.map((record) => record.id)).size).toBe(held.length);
+  });
+
+  it('a record the store cannot clone rejects the call and leaves the library empty, and the next call seeds it', async () => {
+    const bad = { id: 'bad', entry: { name: 'Bad', composition: {}, notClonable: () => {} } };
+    await expect(createRepository().seedLibraryIfEmpty([...records, bad])).rejects.toThrow();
+    expect(await createRepository().listLibrary()).toEqual([]);
+
+    expect(await createRepository().seedLibraryIfEmpty(records)).toBe(true);
+    expect(await createRepository().listLibrary()).toHaveLength(records.length);
+  });
+});
+
 describe('onBlocked, through the repository seam (WR-08)', () => {
   function holdOpen(version) {
     return new Promise((resolve, reject) => {

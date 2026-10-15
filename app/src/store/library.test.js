@@ -230,3 +230,56 @@ describe('who reads data/library.js, and who imports idb (success criterion 1, D
     expect(importers(/from\s+'idb'/)).toEqual(['store/db.js']);
   });
 });
+
+// Reads the persisted versions and batches through a new connection every
+// call, never an object the test holds, and returns the figures computed
+// from what the store returned.
+async function figuresFromStore() {
+  const repository = createRepository();
+  const versions = await repository.listVersions();
+  const batches = await repository.getAllBatches();
+  return {
+    versions: Object.fromEntries(
+      versions.map((version) => [version.id, { balance: computeBalance(version.rows), figures: buildFigures(version) }]),
+    ),
+    batches: Object.fromEntries(
+      batches.map((batch) => [batch.id, { snapshot: batch.snapshot, balance: computeBalance(batch.snapshot.rows) }]),
+    ),
+  };
+}
+
+describe('a change to a library entry moves no stored figure (LIB-02, success criterion 3)', () => {
+  const usesSucrose = (rows) => rows.some((row) => row.ingredient.name === library.sucrose.name);
+
+  it('changing sucrose in the library leaves every stored version balance, six figures and batch snapshot as they were', async () => {
+    await seedIfEmpty(createRepository());
+    const before = await figuresFromStore();
+
+    // Not vacuous: stored versions and batch snapshots use sucrose.
+    const stored = createRepository();
+    expect((await stored.listVersions()).some((version) => usesSucrose(version.rows))).toBe(true);
+    expect((await stored.getAllBatches()).some((batch) => usesSucrose(batch.snapshot.rows))).toBe(true);
+
+    // Change the record: pac doubled, sugar halved.
+    const { entry } = await stored.getLibraryEntry('sucrose');
+    const changed = {
+      id: 'sucrose',
+      entry: { ...entry, composition: { ...entry.composition, pac: entry.composition.pac * 2, sugar: 0.5 } },
+    };
+    await stored.putAllLibrary([changed]);
+
+    // The change landed.
+    const landed = await createRepository().getLibraryEntry('sucrose');
+    expect(landed.entry.composition.pac).toBe(library.sucrose.composition.pac * 2);
+
+    // The change would matter: a row that read the library would move PAC.
+    const oliveOil = (await createRepository().listVersions()).find((version) => version.id === 'olive-oil-ice-cream-v1');
+    const swapped = oliveOil.rows.map((row) =>
+      row.ingredient.name === library.sucrose.name ? { ...row, ingredient: changed.entry } : row,
+    );
+    expect(computeBalance(swapped).pac).not.toBe(before.versions['olive-oil-ice-cream-v1'].balance.pac);
+
+    // The proof.
+    expect(await figuresFromStore()).toEqual(before);
+  });
+});

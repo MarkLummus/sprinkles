@@ -1157,14 +1157,20 @@ describe('validateVersion, the fields', () => {
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
 
-  it.each([2, 0, 2.5, 2 ** 53, '1'])('the import check and nextStepKey agree on the step key %j (WR-04)', (n) => {
+  it.each([
+    [2, 3],
+    [0, 1],
+    [-3, 1],
+  ])('the import check accepts the step key %j and nextStepKey gives %j (WR-04)', (n, expected) => {
     const version = makeVersion({ method: [makeStep({ n })] });
-    const accepted = validateStoreFile(makeStoreFile([version])).ok;
-    if (accepted) {
-      expect(nextStepKey([makeStep({ n })])).toBe(n + 1);
-    } else {
-      expect(() => nextStepKey([makeStep({ n })])).toThrow(RangeError);
-    }
+    expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+    expect(nextStepKey([makeStep({ n })])).toBe(expected);
+  });
+
+  it.each([2.5, 2 ** 53, '1'])('the import check refuses the step key %j and nextStepKey throws a RangeError (WR-04)', (n) => {
+    const version = makeVersion({ method: [makeStep({ n })] });
+    expect(validateStoreFile(makeStoreFile([version])).ok).toBe(false);
+    expect(() => nextStepKey([makeStep({ n })])).toThrow(RangeError);
   });
 
   it('rejects a step whose leadIn is blank, naming the path', () => {

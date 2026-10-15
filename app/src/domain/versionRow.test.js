@@ -154,11 +154,11 @@ describe('versionRow.js stays pure (criterion 4)', () => {
     const source = readFileSync(new URL('./versionRow.js', import.meta.url), 'utf8')
       .replace(/\/\*[\s\S]*?\*\//g, '')
       .replace(/\/\/.*$/gm, '');
-    const specifiers = [...source.matchAll(/\bfrom\s+'([^']+)'/g)].map((match) => match[1]);
+    const specifiers = [...source.matchAll(/\bfrom\s+(['"])([^'"]+)\1/g)].map((match) => match[2]);
     for (const specifier of specifiers) {
       expect(specifier).toMatch(/^\.\/[\w.-]+\.js$/);
     }
-    expect(source).not.toMatch(/\bimport\s*\(|^\s*import\s+'/m);
+    expect(source).not.toMatch(/\bimport\s*\(|^\s*import\s+['"]/m);
     expect(source).not.toMatch(/\bnew Date\b|\bDate\.now\b|\bcrypto\b|\bMath\.random\b/);
   });
 

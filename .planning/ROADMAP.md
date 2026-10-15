@@ -110,7 +110,7 @@ Plans:
   3. Building a row from a library entry embeds a `structuredClone` of the entry's coefficients and basis: changing the entry afterwards leaves the row unchanged, and a row built for an ingredient the olive oil seed uses, at the seeded amount, gives the same figures as the seeded row
   4. All three live under `app/src/domain/` with no framework, DOM or store import, their tests run under node, and the existing suite stays green with no screen changed (no creation UI calls them yet)
 
-**Plans**: 2/3 plans executed
+**Plans**: 3/3 plans executed
 
 Plans:
 **Wave 1**
@@ -118,7 +118,7 @@ Plans:
 - [x] 07-02-PLAN.md — nextStepKey in domain/stepKeys.js: the highest key over every step, removed ones included, plus one; the pen's removal of the highest step keeps its key held; safe-integer range (MAKE-02; D-05, D-05a)
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 07-03-PLAN.md — createRecipe in domain/newRecipe.js and the two advisories guards: a recipe built from library records passes the import check, computes six figures, starts at step key 1, and reads through advisories, the Sheet, a child, a diff and a batch (MAKE-01; D-01, D-02, D-03, D-04, D-07, D-08)
+- [x] 07-03-PLAN.md — createRecipe in domain/newRecipe.js and the two advisories guards: a recipe built from library records passes the import check, computes six figures, starts at step key 1, and reads through advisories, the Sheet, a child, a diff and a batch (MAKE-01; D-01, D-02, D-03, D-04, D-07, D-08)
 
 ## Progress
 
@@ -129,7 +129,7 @@ Phases execute in numeric order: 5 → 6 → 7. Phase 6 starts after Phase 5 is 
 |-------|-----------|----------------|--------|-----------|
 | 5. Split the recipe page | v1.1 | 6/6 | Complete    | 2026-10-14 |
 | 6. The ingredient library in the store | v1.1 | 3/3 | Complete    | 2026-10-14 |
-| 7. Creation primitives | v1.1 | 2/3 | In Progress | - |
+| 7. Creation primitives | v1.1 | 3/3 | In Progress | - |
 
 ## Later
 

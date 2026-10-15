@@ -8,6 +8,13 @@
 // (Phase 7 D-05, D-05a). It scans the array, never indexes by a stored key,
 // and never counts the steps (a count hands out a held key once a gap
 // exists). It reads no parent chain and no row's portions.
+//
+// The supported range is safe integers, for every key and for the result:
+// from 2**53 adding one returns the same number and the key would be handed
+// out twice, so outside the range the allocator throws rather than reuse a
+// key. These throws and versionRow.js's are the first in app/src/domain
+// (Phase 7 RESEARCH A1, reversible). Keys of 0 or below never yield a key
+// below 1.
 
 /**
  * nextStepKey(method) -> the next step key never used in this method: the
@@ -17,7 +24,13 @@
 export function nextStepKey(method) {
   let highest = 0;
   for (const step of method) {
+    if (!Number.isSafeInteger(step.n)) {
+      throw new RangeError(`step key ${JSON.stringify(step.n)} is not a safe integer`);
+    }
     if (step.n > highest) highest = step.n;
+  }
+  if (!Number.isSafeInteger(highest + 1)) {
+    throw new RangeError(`no safe step key is left after ${highest}`);
   }
   return highest + 1;
 }

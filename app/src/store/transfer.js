@@ -11,7 +11,8 @@
 import { AXES } from '../domain/axes.js';
 import { SEGMENT_OPTIONS, DEFECTS, MARK_ONE_OPTIONS } from '../domain/battery.js';
 
-const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+// domain/versionRow.js RESERVED_ROW_IDS mirrors this set; transfer.test.js pins the two.
+export const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 const DECLARED_AXIS_NAMES = AXES.filter((axis) => axis.group === 'declared').map((axis) => axis.name);
 // A version declares up to two scales and up to two problems (sketch 010 D25, D26).
 const MAX_DECLARED = 2;
@@ -144,8 +145,10 @@ function validateStep(step, path, errors) {
   // WR-01 (code review): a step is a UI-facing record (its number, lead-in
   // and instruction render directly), same as a row — check them with the
   // same thoroughness validateRow already gives every ingredient field.
-  if (!isFiniteNumber(step.n)) {
-    errors.push(`${path}.n: expected a finite number, got ${JSON.stringify(step.n)}`);
+  // A step key is a safe integer so that domain/stepKeys.js nextStepKey, which
+  // hands out the next key, can read every key the import check lets in (WR-04).
+  if (!Number.isSafeInteger(step.n)) {
+    errors.push(`${path}.n: expected a safe integer, got ${JSON.stringify(step.n)}`);
   }
   if (!isNonEmptyString(step.leadIn)) {
     errors.push(`${path}.leadIn: expected a non-empty string, got ${JSON.stringify(step.leadIn)}`);

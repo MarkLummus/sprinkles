@@ -81,6 +81,16 @@ describe('createRecipe — the root version (D-01 to D-04)', () => {
     expect(version.declaredFlaws).toEqual([]);
   });
 
+  it('accepts the same string for recipeId and versionId', () => {
+    const { recipe, version } = createRecipe(
+      { name: 'Plain base', versionLabel: 'v1', rows: startingRows() },
+      { recipeId: 'same-id', versionId: 'same-id', now: NOW },
+    );
+    expect(recipe.id).toBe('same-id');
+    expect(version.id).toBe('same-id');
+    expect(version.recipeId).toBe('same-id');
+  });
+
   it('keeps the version label as the maker wrote it', () => {
     expect(create().version.versionLabel).toBe('50 g oil · 800 g');
   });
@@ -120,6 +130,26 @@ describe('createRecipe — refusals (D-03, D-08)', () => {
     const rows = startingRows();
     rows[1].id = 'row-01';
     expect(() => create({ rows })).toThrow(new TypeError('row id "row-01" appears twice'));
+  });
+
+  it.each(['recipeId', 'versionId', 'now'])('refuses a missing, non-string or empty %s', (field) => {
+    for (const value of ['', undefined, null, 7]) {
+      expect(() => createRecipe({ name: 'Plain base', versionLabel: 'v1', rows: startingRows() }, { ...IDS, [field]: value })).toThrow(
+        new TypeError(`${field} must be a non-empty string`),
+      );
+    }
+  });
+
+  it('names recipeId when the second argument is missing altogether', () => {
+    expect(() => createRecipe({ name: 'Plain base', versionLabel: 'v1', rows: startingRows() })).toThrow(
+      new TypeError('recipeId must be a non-empty string'),
+    );
+  });
+
+  it.each(['__proto__', 'constructor', 'prototype'])('refuses the reserved row id %s', (name) => {
+    const rows = startingRows();
+    rows[0].id = name;
+    expect(() => create({ rows })).toThrow(new TypeError(`row id "${name}" is reserved`));
   });
 
   it('throws a TypeError, not another error class', () => {

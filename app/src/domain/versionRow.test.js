@@ -84,10 +84,10 @@ describe('rowFromLibraryRecord — refusals (D-07)', () => {
   const GRAMS_MESSAGE = 'row grams must be a finite number of at least zero';
   const STEP_MESSAGE = 'row step must be a finite number';
 
-  function refuses(args, message) {
+  function refuses(args, message, record = oliveOilRecord()) {
     let thrown;
     try {
-      rowFromLibraryRecord(oliveOilRecord(), args);
+      rowFromLibraryRecord(record, args);
     } catch (error) {
       thrown = error;
     }
@@ -113,6 +113,24 @@ describe('rowFromLibraryRecord — refusals (D-07)', () => {
 
   it.each([NaN, Infinity, '2', null])('refuses the step %j', (step) => {
     refuses({ id: 'row-a', grams: 10, step }, STEP_MESSAGE);
+  });
+
+  it.each([5, '', '   '])('refuses the ingredientName %j', (ingredientName) => {
+    refuses({ id: 'row-a', grams: 10, ingredientName }, 'row ingredientName must not be blank');
+  });
+
+  it('refuses a blank entry name when no ingredientName is given', () => {
+    const record = { id: 'oliveOil', entry: { ...structuredClone(library.oliveOil), name: '   ' } };
+    refuses({ id: 'row-a', grams: 10 }, 'row ingredientName must not be blank', record);
+  });
+
+  it.each([
+    [{ id: 'oliveOil' }],
+    [{ id: 'oliveOil', entry: null }],
+    [{ id: 'oliveOil', entry: 'olive oil' }],
+    [{ id: 'oliveOil', entry: [] }],
+  ])('refuses the record %j with no object entry', (record) => {
+    refuses({ id: 'row-a', grams: 10, ingredientName: 'Oil' }, 'library record needs an entry', record);
   });
 });
 

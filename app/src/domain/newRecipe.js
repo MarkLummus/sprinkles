@@ -12,6 +12,8 @@
 // runs recipeNameMessage and the version-line gate first, so no maker-facing
 // message is added here (RESEARCH A1, reversible).
 
+import { RESERVED_ROW_IDS } from './versionRow.js';
+
 // Mirrors data/olive-oil.js's constant of the same name, which newRecipe.test.js
 // pins, so app/src/domain imports no seed module (RESEARCH A3).
 const VERSION_SCHEMA_VERSION = 6;
@@ -22,9 +24,17 @@ const VERSION_SCHEMA_VERSION = 6;
  * the version is its root: no parent, no reason, no cited batch, an empty
  * method, and a copy of the starting rows (structuredClone). Refuses, with a
  * TypeError, a blank name, a blank label (on its trimmed value, as lineage.js
- * blockedSaveMessage does), no rows, or two rows with the same id.
+ * blockedSaveMessage does), no rows, two rows with the same id, a row id that
+ * is a reserved name, or a recipeId, versionId or now that is not a
+ * non-empty string. recipeId and versionId may be equal: recipes and
+ * versions are separate stores, each keyed by its own id.
  */
-export function createRecipe({ name, versionLabel, rows }, { recipeId, versionId, now }) {
+export function createRecipe({ name, versionLabel, rows }, { recipeId, versionId, now } = {}) {
+  for (const [label, value] of [['recipeId', recipeId], ['versionId', versionId], ['now', now]]) {
+    if (typeof value !== 'string' || value === '') {
+      throw new TypeError(`${label} must be a non-empty string`);
+    }
+  }
   if (typeof name !== 'string' || name.trim() === '') {
     throw new TypeError('recipe name must not be blank');
   }
@@ -36,6 +46,9 @@ export function createRecipe({ name, versionLabel, rows }, { recipeId, versionId
   }
   const seen = new Set();
   for (const row of rows) {
+    if (RESERVED_ROW_IDS.has(row.id)) {
+      throw new TypeError(`row id ${JSON.stringify(row.id)} is reserved`);
+    }
     if (seen.has(row.id)) {
       throw new TypeError(`row id ${JSON.stringify(row.id)} appears twice`);
     }

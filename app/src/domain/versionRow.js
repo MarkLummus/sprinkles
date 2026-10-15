@@ -4,14 +4,30 @@
 // entry, so a later edit to the library never moves a stored version's
 // figures (Phase 7 D-06). The record's id is the library's key and never
 // enters the row.
+//
+// The refusals throw. This is the first throw in app/src/domain: a
+// constructor's normal return is a record, so a null would travel on and
+// fail only at import, far from the cause. A caller's form gates the maker's
+// input before calling (Phase 7, RESEARCH A1; reversible, no caller yet).
 
 /**
  * rowFromLibraryRecord(record, { id, grams, step = 1, ingredientName }) ->
  * a version row { id, ingredientName, ingredient, portions, removed }.
  * ingredientName defaults to the entry's name; the amount is one portion at
- * `step`, with no removed key on the portion.
+ * `step`, with no removed key on the portion. Throws a TypeError for an id
+ * that is not a non-empty string, an amount that is not a finite number of
+ * at least zero (0 g is accepted), or a step that is not finite (D-07).
  */
 export function rowFromLibraryRecord(record, { id, grams, step = 1, ingredientName }) {
+  if (typeof id !== 'string' || id === '') {
+    throw new TypeError('row id must be a non-empty string');
+  }
+  if (!Number.isFinite(grams) || grams < 0) {
+    throw new TypeError('row grams must be a finite number of at least zero');
+  }
+  if (!Number.isFinite(step)) {
+    throw new TypeError('row step must be a finite number');
+  }
   return {
     id,
     ingredientName: ingredientName ?? record.entry.name,

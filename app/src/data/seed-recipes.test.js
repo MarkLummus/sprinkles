@@ -71,6 +71,7 @@ describe('transcribedRecipeGroups validates as a store file (D-07 gate: not wire
       recipes,
       versions,
       batches,
+      library: Object.entries(library).map(([id, entry]) => ({ id, entry })),
     });
     expect(result.errors).toEqual([]);
     expect(result.ok).toBe(true);

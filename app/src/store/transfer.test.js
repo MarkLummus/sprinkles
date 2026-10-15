@@ -8,6 +8,7 @@ import { exportStore, importStore, validateStoreFile, STORE_SCHEMA_VERSION, OLDE
 import { seedIfEmpty } from './seed.js';
 import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { library } from '../data/library.js';
 
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. Mirrors createRepository's exportAll and
@@ -67,7 +68,7 @@ function createInMemoryRepository(initialVersions = [], initialBatches = [], ini
   };
 }
 
-// Schema 7-shaped by default (D-10, D-11, 03.5-CONTEXT.md; 04-03): every version
+// Schema 8-shaped by default (D-10, D-11, 03.5-CONTEXT.md; 04-03): every version
 // validateStoreFile sees in production is authored fresh (createChildVersion,
 // or the seed) — there is no lift branch left to fill these in on the way
 // in, so a well-formed fixture carries them from the start.
@@ -183,10 +184,29 @@ function makeTasting(overrides = {}) {
   };
 }
 
-// The one accepted shape (D-10, D-11): schemaVersion 7, batches and
-// recipes always present (arrays, never absent).
-function makeStoreFile(versions = [makeVersion()], batches = [], recipes = [makeRecipe()]) {
-  return { app: 'sprinkles', schemaVersion: STORE_SCHEMA_VERSION, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches, recipes };
+// D-08: a library record { id, entry }, the shape the seed writes. Its
+// default is sucrose, the real data/library.js entry.
+function makeLibraryRecord(overrides = {}) {
+  return { id: 'sucrose', entry: structuredClone(library.sucrose), ...overrides };
+}
+
+// The one accepted shape (D-06, D-10, D-11): schemaVersion 8, batches,
+// recipes and library always present (arrays, never absent).
+function makeStoreFile(
+  versions = [makeVersion()],
+  batches = [],
+  recipes = [makeRecipe()],
+  libraryRecords = [makeLibraryRecord()],
+) {
+  return {
+    app: 'sprinkles',
+    schemaVersion: STORE_SCHEMA_VERSION,
+    exportedAt: '2026-01-01T00:00:00.000Z',
+    versions,
+    batches,
+    recipes,
+    library: libraryRecords,
+  };
 }
 
 // A fresh database per test for the tests that use a real repository.
@@ -205,33 +225,40 @@ describe('exportStore, drafts stay on the device (T-04-12)', () => {
 
     const exported = await exportStore(repository);
 
-    expect(Object.keys(exported).sort()).toEqual(['app', 'batches', 'exportedAt', 'recipes', 'schemaVersion', 'versions']);
-    expect(exported.schemaVersion).toBe(7);
+    expect(Object.keys(exported).sort()).toEqual(['app', 'batches', 'exportedAt', 'library', 'recipes', 'schemaVersion', 'versions']);
+    expect(exported.schemaVersion).toBe(8);
     expect(JSON.stringify(exported)).not.toContain('DRAFT-MARKER');
     expect(JSON.stringify(exported)).not.toContain('drafts');
   });
 });
 
 describe('exportStore', () => {
-  it('returns app sprinkles, schemaVersion 7, and every version, batch and recipe the repository held', async () => {
+  it('returns app sprinkles, schemaVersion 8, and every version, batch, recipe and library record the repository held', async () => {
     const repository = createInMemoryRepository(
       [makeVersion(), makeVersion({ id: 'v2' })],
       [makeBatch()],
       [makeRecipe()],
+      [makeLibraryRecord()],
     );
     const exported = await exportStore(repository);
     expect(exported.app).toBe('sprinkles');
-    expect(exported.schemaVersion).toBe(7);
+    expect(exported.schemaVersion).toBe(8);
     expect(exported.schemaVersion).toBe(STORE_SCHEMA_VERSION);
     expect(exported.versions).toHaveLength(2);
     expect(exported.batches).toHaveLength(1);
     expect(exported.recipes).toHaveLength(1);
+    expect(exported.library).toHaveLength(1);
   });
 });
 
 describe('export then import round trip', () => {
   it('yields records deep-equal to the originals in a second empty repository', async () => {
-    const source = createInMemoryRepository([makeVersion(), makeVersion({ id: 'v2' })], [makeBatch()], [makeRecipe()]);
+    const source = createInMemoryRepository(
+      [makeVersion(), makeVersion({ id: 'v2' })],
+      [makeBatch()],
+      [makeRecipe()],
+      [makeLibraryRecord()],
+    );
     const exported = await exportStore(source);
 
     const target = createInMemoryRepository([], [], []);
@@ -241,6 +268,7 @@ describe('export then import round trip', () => {
     expect(target.versions).toEqual(source.versions);
     expect(target.batches).toEqual(source.batches);
     expect(target.recipes).toEqual(source.recipes);
+    expect(target.library).toEqual(source.library);
   });
 
   // The phase's Done-when (D-10, D-11): a store exported after this change
@@ -275,25 +303,25 @@ describe('validateStoreFile', () => {
     expect(result.errors.some((error) => error.includes('app'))).toBe(true);
   });
 
-  it('accepts a payload whose schemaVersion is 7 — the schema number flips from refused to accepted (D-10, D-11)', () => {
+  it('accepts a payload whose schemaVersion is 8 — the schema number flips from refused to accepted (D-10, D-11)', () => {
     const result = validateStoreFile(makeStoreFile());
     expect(result.errors.some((error) => error.includes('schemaVersion'))).toBe(false);
   });
 
-  it.each([1, 2, 3, 4, 5, 6])(
+  it.each([1, 2, 3, 4, 5, 6, 7])(
     'rejects a payload whose schemaVersion is %i, naming the path and both the expected and received value',
     (oldSchemaVersion) => {
       const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: oldSchemaVersion });
       expect(result.ok).toBe(false);
       const error = result.errors.find((message) => message.includes('$.schemaVersion'));
-      expect(error).toContain('expected 7');
+      expect(error).toContain('expected 8');
       expect(error).toContain(String(oldSchemaVersion));
     },
   );
 
   // D-10: a plain sentence goes first, before the path-named error, so an
   // older export's own maker sees words before a technical path.
-  it.each([1, 2, 3, 4, 5, 6])(
+  it.each([1, 2, 3, 4, 5, 6, 7])(
     'reports OLDER_EXPORT_MESSAGE as the first error for a payload whose schemaVersion is %i',
     (oldSchemaVersion) => {
       const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: oldSchemaVersion });
@@ -302,7 +330,7 @@ describe('validateStoreFile', () => {
     },
   );
 
-  it('does not report OLDER_EXPORT_MESSAGE for a well-formed schemaVersion 7 payload', () => {
+  it('does not report OLDER_EXPORT_MESSAGE for a well-formed schemaVersion 8 payload', () => {
     const result = validateStoreFile(makeStoreFile());
     expect(result.errors).not.toContain(OLDER_EXPORT_MESSAGE);
   });
@@ -753,8 +781,109 @@ describe('validateRecipe / $.recipes', () => {
 
   it('rejects a recipe carrying an own __proto__ key via the existing unsafe-key scanner, and leaves a fresh object unpolluted', () => {
     const malicious = JSON.parse(
-      '{"app":"sprinkles","schemaVersion":7,"versions":[],"batches":[],' +
+      '{"app":"sprinkles","schemaVersion":8,"versions":[],"batches":[],"library":[],' +
         '"recipes":[{"id":"r1","name":"x","description":"x","__proto__":{"polluted":true}}]}',
+    );
+    const result = validateStoreFile(malicious);
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('__proto__'))).toBe(true);
+    expect({}.polluted).toBeUndefined();
+  });
+});
+
+// D-08 as amended: a library record is checked as a wrapper, { id, entry },
+// and no further; a reserved name is refused as an id's value too.
+describe('validateLibraryRecord / $.library (D-08)', () => {
+  const fileWith = (...records) => makeStoreFile([makeVersion()], [], [makeRecipe()], records);
+
+  it('accepts { id: sucrose, entry: library.sucrose } and the whole seeded library', () => {
+    expect(validateStoreFile(fileWith(makeLibraryRecord()))).toEqual({ ok: true, errors: [] });
+    const everything = Object.entries(library).map(([id, entry]) => ({ id, entry }));
+    expect(validateStoreFile(fileWith(...everything))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('accepts an empty library list', () => {
+    expect(validateStoreFile(fileWith())).toEqual({ ok: true, errors: [] });
+  });
+
+  it.each([['absent', undefined], ['an object', {}]])('refuses a library that is %s, naming the path', (_label, value) => {
+    const result = validateStoreFile({ ...makeStoreFile(), library: value });
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual(['$.library: expected an array']);
+  });
+
+  it.each([['null', null], ['an array', []], ['a string', 'sucrose']])('refuses a record that is %s', (_label, record) => {
+    const result = validateStoreFile(fileWith(record));
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual(['$.library[0]: expected an object']);
+  });
+
+  it.each([['missing', undefined], ['empty', ''], ['a number', 42]])('refuses an id that is %s', (_label, id) => {
+    const record = makeLibraryRecord({ id });
+    if (id === undefined) delete record.id;
+    const result = validateStoreFile(fileWith(record));
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual(['$.library[0].id: expected a non-empty string']);
+  });
+
+  it.each(['__proto__', 'constructor', 'prototype'])('refuses %s as a library id, naming the path and the value', (name) => {
+    const result = validateStoreFile(fileWith(makeLibraryRecord({ id: name })));
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual([`$.library[0].id: prototype-mutating id is not allowed, got "${name}"`]);
+  });
+
+  it.each(['__proto__x', 'my-constructor', 'prototype-2'])('still accepts the library id %s, which only contains a reserved name', (id) => {
+    expect(validateStoreFile(fileWith(makeLibraryRecord({ id }))).ok).toBe(true);
+  });
+
+  it.each([['null', null], ['an array', []], ['a string', 'x']])(
+    'refuses an entry that is %s, and reports no name or composition error for it',
+    (_label, entry) => {
+      const result = validateStoreFile(fileWith(makeLibraryRecord({ entry })));
+      expect(result.ok).toBe(false);
+      expect(result.errors).toEqual(['$.library[0].entry: expected an object']);
+    },
+  );
+
+  it.each([['missing', undefined], ['empty', '']])('refuses an entry name that is %s', (_label, name) => {
+    const entry = { ...structuredClone(library.sucrose), name };
+    if (name === undefined) delete entry.name;
+    const result = validateStoreFile(fileWith(makeLibraryRecord({ entry })));
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual([`$.library[0].entry.name: expected a non-empty string, got ${JSON.stringify(name)}`]);
+  });
+
+  it.each([['missing', undefined], ['null', null], ['an array', []]])('refuses a composition that is %s', (_label, composition) => {
+    const entry = { ...structuredClone(library.sucrose), composition };
+    if (composition === undefined) delete entry.composition;
+    const result = validateStoreFile(fileWith(makeLibraryRecord({ entry })));
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual(['$.library[0].entry.composition: expected an object']);
+  });
+
+  it('refuses a composition field that is not a finite number, naming the path and the value', () => {
+    const entry = structuredClone(library.sucrose);
+    entry.composition.pac = '100';
+    const result = validateStoreFile(fileWith(makeLibraryRecord({ entry })));
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual(['$.library[0].entry.composition.pac: expected a finite number, got "100"']);
+  });
+
+  it('checks the wrapper only: an entry of just name and composition validates, and so does a category that is a number', () => {
+    const bare = { id: 'bare', entry: { name: 'Bare', composition: { fat: 1 } } };
+    const odd = makeLibraryRecord({ id: 'odd', entry: { ...structuredClone(library.sucrose), category: 42 } });
+    expect(validateStoreFile(fileWith(bare, odd))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('names the second record by its index when the first is good', () => {
+    const result = validateStoreFile(fileWith(makeLibraryRecord(), { id: 'bad', entry: null }));
+    expect(result.errors).toEqual(['$.library[1].entry: expected an object']);
+  });
+
+  it('rejects a library entry carrying an own __proto__ key via the existing unsafe-key scanner, and leaves a fresh object unpolluted', () => {
+    const malicious = JSON.parse(
+      '{"app":"sprinkles","schemaVersion":8,"versions":[],"batches":[],"recipes":[],' +
+        '"library":[{"id":"sucrose","entry":{"name":"Sucrose","composition":{"pac":100},"__proto__":{"polluted":true}}}]}',
     );
     const result = validateStoreFile(malicious);
     expect(result.ok).toBe(false);
@@ -798,6 +927,8 @@ describe('importStore, a storage failure reads in words', () => {
     expect(await target.listRecipes()).toEqual(file.recipes);
     expect(await target.listVersions()).toEqual(file.versions);
     expect(await target.getAllBatches()).toEqual(file.batches);
+    expect(file.library).toHaveLength(Object.keys(library).length);
+    expect(await target.listLibrary()).toEqual(file.library);
   });
 });
 
@@ -813,14 +944,68 @@ describe('importStore', () => {
     expect(repository.versions).toEqual(before);
   });
 
-  it('imports a well-formed schemaVersion 7 file with a batch and a recipe, through one importAll call', async () => {
+  it('imports a well-formed schemaVersion 8 file with a batch, a recipe and a library record, through one importAll call', async () => {
     const repository = createInMemoryRepository([], [], []);
     const result = await importStore(repository, makeStoreFile([makeVersion()], [makeBatch()], [makeRecipe()]));
     expect(result.ok).toBe(true);
     expect(repository.recipes).toEqual([makeRecipe()]);
     expect(repository.versions).toEqual([makeVersion()]);
     expect(repository.batches).toEqual([makeBatch()]);
+    expect(repository.library).toEqual([makeLibraryRecord()]);
     expect(repository.importAllCalls).toBe(1);
+  });
+
+  it('refuses a version 7 file, which has no library, with OLDER_EXPORT_MESSAGE first, and writes nothing (D-06)', async () => {
+    const repository = createInMemoryRepository([], [], []);
+    const file = { ...makeStoreFile(), schemaVersion: 7 };
+    delete file.library;
+
+    const result = await importStore(repository, file);
+
+    expect(result.ok).toBe(false);
+    expect(result.errors[0]).toBe(OLDER_EXPORT_MESSAGE);
+    expect(repository.importAllCalls).toBe(0);
+  });
+
+  it('refuses a file with a reserved library id and writes nothing (D-08)', async () => {
+    const repository = createInMemoryRepository([], [], []);
+    const file = JSON.parse(
+      JSON.stringify(makeStoreFile([makeVersion()], [], [makeRecipe()], [makeLibraryRecord({ id: '__proto__' })])),
+    );
+
+    const result = await importStore(repository, file);
+
+    expect(result.ok).toBe(false);
+    expect(repository.importAllCalls).toBe(0);
+    expect(repository.library).toEqual([]);
+  });
+
+  it('refuses the whole file: one bad library record beside a good one writes nothing at all', async () => {
+    const repository = createInMemoryRepository([], [], []);
+    const file = makeStoreFile([makeVersion()], [], [makeRecipe()], [makeLibraryRecord(), { id: 'bad', entry: null }]);
+
+    const result = await importStore(repository, file);
+
+    expect(result.ok).toBe(false);
+    expect(repository.importAllCalls).toBe(0);
+    expect(repository.library).toEqual([]);
+    expect(repository.versions).toEqual([]);
+  });
+
+  it('refuses a cloneable malformed library record and leaves a real store empty (review item 2)', async () => {
+    const repository = createRepository();
+    const file = JSON.parse(
+      JSON.stringify(makeStoreFile([makeVersion()], [], [makeRecipe()], [{ id: 'sucrose', entry: null }])),
+    );
+
+    const result = await importStore(repository, file);
+
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.library[0].entry'))).toBe(true);
+    const fresh = createRepository();
+    expect(await fresh.listLibrary()).toEqual([]);
+    expect(await fresh.listVersions()).toEqual([]);
+    expect(await fresh.listRecipes()).toEqual([]);
   });
 
   it('refuses the whole file: one bad batch beside a good one writes nothing at all', async () => {
@@ -1129,12 +1314,12 @@ describe('validateVersion, the fields', () => {
 
   it("rejects a file carrying __proto__ on a method step — the uses array's containing object — via the existing scanner", () => {
     const malicious = JSON.parse(
-      '{"app":"sprinkles","schemaVersion":7,"versions":[{"id":"v1","schemaVersion":6,"recipeId":"r1","coefficientSetId":"c",' +
+      '{"app":"sprinkles","schemaVersion":8,"versions":[{"id":"v1","schemaVersion":6,"recipeId":"r1","coefficientSetId":"c",' +
         '"parentVersionId":null,"parentVersionLabel":null,"reason":null,"citedBatchId":null,"createdAt":"2026-01-01T00:00:00.000Z",' +
         '"declaredAxes":["Body","Oil"],"declaredFlaws":["Bitter"],"versionLabel":"v","sheetTitle":"","sheetDescription":"",' +
         '"rows":[{"id":"r1","ingredientName":"x","portions":[{"step":1,"grams":1}],"ingredient":{"composition":{"fat":1}},"removed":false}],' +
         '"method":[{"n":1,"leadIn":"x","instruction":"x","removed":false,"uses":[],"__proto__":{"polluted":true}}],' +
-        '"authored":{"beforeYouStart":[]}}],"batches":[],"recipes":[]}',
+        '"authored":{"beforeYouStart":[]}}],"batches":[],"recipes":[],"library":[]}',
     );
     const result = validateStoreFile(malicious);
     expect(result.ok).toBe(false);

@@ -1,12 +1,13 @@
 // Whole-store JSON transfer (D-08), behind the repository seam. Neither
-// export nor import touches the store library — see repository.js for the
+// export nor import touches idb — see repository.js for the
 // only path to IndexedDB. validateStoreFile is the one gate before a
 // write: a malformed file is refused with every error found, never
 // half-applied (T-04-01) and never used to reach past an object's own
 // properties into its prototype chain (T-04-02). It now knows exactly one
-// shape — schemaVersion 7, carrying recipes beside versions and batches
-// (03.5-CONTEXT.md D-10, D-11) — and refuses everything older rather than
-// lifting it; there is no ladder here.
+// shape — schemaVersion 8, carrying recipes and the ingredient library
+// beside versions and batches (03.5-CONTEXT.md D-10, D-11; 06-CONTEXT.md
+// D-06) — and refuses everything older rather than lifting it; there is
+// no ladder here.
 import { AXES } from '../domain/axes.js';
 import { SEGMENT_OPTIONS, DEFECTS, MARK_ONE_OPTIONS } from '../domain/battery.js';
 
@@ -22,7 +23,9 @@ const MAX_DECLARED = 2;
 // version shape lost `recipeName`/`headnote` (D-11). Bumped to 7 in phase
 // 04 because declared problems became lists of 0 to 2 (`declaredFlaws`,
 // `declaredDefects`) and a batch gained At draw / From freezer picks.
-export const STORE_SCHEMA_VERSION = 7;
+// Bumped to 8 in phase 06 because the file gained a `library` array
+// (06-CONTEXT.md D-06).
+export const STORE_SCHEMA_VERSION = 8;
 
 // D-10: a plain sentence a maker can read, pushed first — before the
 // path-named `$.schemaVersion` error — whenever the file is from a
@@ -197,6 +200,43 @@ function validateRecipe(recipe, path, errors) {
   }
   if (typeof recipe.description !== 'string') {
     errors.push(`${path}.description: expected a string, got ${JSON.stringify(recipe.description)}`);
+  }
+}
+
+/**
+ * validateLibraryRecord(record, path, errors) -> void, in validateRecipe's
+ * own collect-all-errors, name-the-path style. It checks the { id, entry }
+ * wrapper and no further (06-CONTEXT.md D-08), because ING-01 will change
+ * the entry's shape: the id, the entry as an object, a non-empty name, and
+ * a composition of finite numbers. The basis, source, density, category and
+ * note of an entry are not checked. Unsafe keys inside a record are already
+ * refused by scanForUnsafeKeys over the whole payload. A reserved name is
+ * refused as an id's value too, as validateRow does for row ids, because a
+ * library id is an object key in data/library.js and may key a map later
+ * (D-08 as amended, 2026-10-14). Never throws.
+ */
+function validateLibraryRecord(record, path, errors) {
+  if (!isPlainObject(record)) {
+    errors.push(`${path}: expected an object`);
+    return;
+  }
+  if (!isNonEmptyString(record.id)) errors.push(`${path}.id: expected a non-empty string`);
+  if (UNSAFE_KEYS.has(record.id)) errors.push(`${path}.id: prototype-mutating id is not allowed, got ${JSON.stringify(record.id)}`);
+  if (!isPlainObject(record.entry)) {
+    errors.push(`${path}.entry: expected an object`);
+    return;
+  }
+  if (!isNonEmptyString(record.entry.name)) {
+    errors.push(`${path}.entry.name: expected a non-empty string, got ${JSON.stringify(record.entry.name)}`);
+  }
+  if (!isPlainObject(record.entry.composition)) {
+    errors.push(`${path}.entry.composition: expected an object`);
+  } else {
+    for (const [field, value] of Object.entries(record.entry.composition)) {
+      if (!isFiniteNumber(value)) {
+        errors.push(`${path}.entry.composition.${field}: expected a finite number, got ${JSON.stringify(value)}`);
+      }
+    }
   }
 }
 
@@ -511,9 +551,9 @@ function validateVersion(version, path, errors) {
  * know what the store already holds, live in importStore below, after
  * this gate and before any write.
  *
- * D-10, D-11 (03.5-CONTEXT.md): the accepted schema is the single value
- * STORE_SCHEMA_VERSION (7), carrying a `recipes` array beside versions
- * and batches. A store exported after this change imports after it; a
+ * D-10, D-11 (03.5-CONTEXT.md), D-06 (06-CONTEXT.md): the accepted schema
+ * is the single value STORE_SCHEMA_VERSION (8), carrying a `recipes` array
+ * and a `library` array beside versions and batches. A store exported after this change imports after it; a
  * store exported before it is refused as old — with OLDER_EXPORT_MESSAGE
  * first, a plain sentence a maker can read — rather than silently read as
  * current or lifted. The store resets rather than migrates (D-10): there
@@ -555,6 +595,12 @@ export function validateStoreFile(parsed) {
     parsed.recipes.forEach((recipe, index) => validateRecipe(recipe, `$.recipes[${index}]`, errors));
   }
 
+  if (!Array.isArray(parsed.library)) {
+    errors.push('$.library: expected an array');
+  } else {
+    parsed.library.forEach((record, index) => validateLibraryRecord(record, `$.library[${index}]`, errors));
+  }
+
   return { ok: errors.length === 0, errors };
 }
 
@@ -569,7 +615,7 @@ export const IMPORT_STORAGE_ERROR = 'Couldn’t save this file. Nothing was chan
  * built from two moments (06-CONTEXT.md D-07a).
  */
 export async function exportStore(repository) {
-  const { recipes, versions, batches } = await repository.exportAll();
+  const { recipes, versions, batches, library } = await repository.exportAll();
   return {
     app: 'sprinkles',
     schemaVersion: STORE_SCHEMA_VERSION,
@@ -577,6 +623,7 @@ export async function exportStore(repository) {
     versions,
     batches,
     recipes,
+    library,
   };
 }
 
@@ -642,10 +689,10 @@ export async function importStore(repository, parsed) {
   if (recipeErrors.length > 0) return { ok: false, errors: recipeErrors };
 
   // One transaction over recipes, versions, batches and library: all four
-  // land or none does (Mark, 2026-10-11; 06-CONTEXT.md D-07). A schema 7
-  // file carries no library, so none is written from it.
+  // land or none does (Mark, 2026-10-11; 06-CONTEXT.md D-07). The file's
+  // library is checked above with the rest (D-08).
   try {
-    await repository.importAll({ recipes: parsed.recipes, versions: parsed.versions, batches: parsed.batches, library: [] });
+    await repository.importAll({ recipes: parsed.recipes, versions: parsed.versions, batches: parsed.batches, library: parsed.library });
   } catch {
     return storageFailure;
   }

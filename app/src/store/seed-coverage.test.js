@@ -7,6 +7,7 @@
 // suite in this project.
 import { describe, it, expect } from 'vitest';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
+import { library } from '../data/library.js';
 import { validateStoreFile, STORE_SCHEMA_VERSION } from './transfer.js';
 import { computeBalance } from '../domain/composition.js';
 import { buildFigures } from '../domain/figures.js';
@@ -75,6 +76,7 @@ describe('Store-file validation over the whole seed (D-07 gate closed)', () => {
       recipes,
       versions,
       batches,
+      library: Object.entries(library).map(([id, entry]) => ({ id, entry })),
     });
     expect(result.errors).toEqual([]);
     expect(result.ok).toBe(true);

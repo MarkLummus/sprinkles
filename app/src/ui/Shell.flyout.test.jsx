@@ -21,7 +21,7 @@ vi.mock('../store/transfer.js', async (importOriginal) => {
   const actual = await importOriginal();
   return { ...actual, importStore: vi.fn(actual.importStore) };
 });
-import { importStore, validateStoreFile } from '../store/transfer.js';
+import { importStore, OLDER_EXPORT_MESSAGE, validateStoreFile } from '../store/transfer.js';
 import { Shell } from './Shell.jsx';
 
 // A mutable window width behind window.matchMedia: every list keeps its
@@ -351,13 +351,21 @@ describe('The Import error panel (sketch 011 decision 52 B; Mark 2026-10-05)', (
     expect(panel().querySelectorAll('[style]')).toHaveLength(0);
   });
 
-  it("an older export shows three lines, exactly as the validator words them", async () => {
+  it("an older export shows four lines, exactly as the validator words them", async () => {
     await mountAt(1024);
     await chooseFile(OLDER_EXPORT);
     const expected = validateStoreFile(JSON.parse(OLDER_EXPORT)).errors;
-    expect(expected).toHaveLength(3);
-    expect(panel().querySelector('p.shell__import-errors-count').textContent).toBe('3 problems found');
+    expect(expected).toHaveLength(4);
+    expect(panel().querySelector('p.shell__import-errors-count').textContent).toBe('4 problems found');
     expect(lineTexts()).toEqual(expected);
+  });
+
+  it('a well-formed older export (it has app) shows the plain sentence as its first line', async () => {
+    const wellFormedOlder = JSON.stringify({ app: 'sprinkles', schemaVersion: 7, recipes: [], versions: [], batches: [] });
+    await mountAt(1024);
+    await chooseFile(wellFormedOlder);
+    expect(lineTexts()[0]).toBe(OLDER_EXPORT_MESSAGE);
+    expect(lineTexts()).toEqual(validateStoreFile(JSON.parse(wellFormedOlder)).errors);
   });
 
   it('repeated lines and markup text stay safe: three items, text only, no duplicate-key warning', async () => {

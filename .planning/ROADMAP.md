@@ -33,7 +33,7 @@ Full phase detail, plans and progress: `.planning/milestones/v1-ROADMAP.md`.
 **Milestone Goal:** The code is ready for recipe creation, which is the next milestone (v2). No creation UI ships here. Each phase is checked by tests and by the existing screens reading as before.
 
 - [x] **Phase 5: Split the recipe page** - The recipe page's draft logic moves into pure domain operations behind hooks, leaving `RecipePage` as the route shell; the maker sees no change (completed 2026-10-14)
-- [ ] **Phase 6: The ingredient library in the store** - The ingredient library becomes an object store behind the repository seam, seeded, exported and imported, and editing it never moves a stored figure
+- [x] **Phase 6: The ingredient library in the store** - The ingredient library becomes an object store behind the repository seam, seeded, exported and imported, and editing it never moves a stored figure (completed 2026-10-14)
 - [ ] **Phase 7: Creation primitives** - Framework-free functions create a recipe with a root version, hand out step keys that are never reused, and build a row from a library ingredient
 
 ## Phase Details
@@ -85,7 +85,7 @@ Plans:
   3. Changing a library entry in the store leaves every stored version's balance figures and every batch's snapshot exactly as they were, proven by a test against a real IndexedDB (fake-indexeddb), as Phase 1 proved it for the in-memory library
   4. An export carries the library beside recipes, versions and batches (drafts stay on the device), and importing that file restores all four in one transaction: an import that fails part-way leaves every store as it was
 
-**Plans**: 3/3 plans executed
+**Plans**: 3/3 plans complete
 
 Plans:
 **Wave 1**
@@ -120,7 +120,7 @@ Phases execute in numeric order: 5 → 6 → 7. Phase 6 starts after Phase 5 is 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 5. Split the recipe page | v1.1 | 6/6 | Complete    | 2026-10-14 |
-| 6. The ingredient library in the store | v1.1 | 3/3 | In Progress | - |
+| 6. The ingredient library in the store | v1.1 | 3/3 | Complete    | 2026-10-14 |
 | 7. Creation primitives | v1.1 | 0/TBD | Not started | - |
 
 ## Later

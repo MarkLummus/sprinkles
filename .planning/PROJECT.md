@@ -33,6 +33,7 @@ Make something you like, understand how it turned out, and know what to keep or 
 - ✓ Preserve the churned version and the new version as distinct, with lineage; editing the new one never rewrites the old batch — REC-01, BATCH-02 — Phase 3
 - ✓ Prepare the next version for making through a printed bench sheet: formula pages laid by measurement, blank two-sided batch and tasting logs, a short code that finds the same version again, kept drafts — PRINT-01 to PRINT-05 — Phase 4 (v1)
 - ✓ Critical flows usable and recoverable: keyboard access on the iPad, labels, entered data surviving a closed tab — UX1-01 to UX1-03 — Phase 4 (v1)
+- ✓ The ingredient library as a store behind the repository seam (database version 9, seeded on an empty database, carried by export and import in one transaction each), rows still copying their coefficients — LIB-01 to LIB-03 — Phase 6 (v1.1)
 
 ### Active
 
@@ -42,7 +43,6 @@ v1.1 (this milestone):
 
 - [ ] Refactor `RecipePage.jsx` so creating and editing can share one editor: pure helpers into `domain/`, the pen's state as pure operations behind `usePenDraft`, the recording workflow extracted the same way, `RecipePage` left as the route shell
 - [ ] Framework-free creation primitives: create a recipe with a root version, a never-reused step-key allocator, a row-from-ingredient builder
-- [ ] The ingredient library as a store behind the repository seam, rows still copying their coefficients (groundwork for ING-01)
 
 Next milestone (v2), not scoped yet:
 
@@ -172,4 +172,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-14 after starting milestone v1.1*
+*Last updated: 2026-10-14 after Phase 6*

@@ -145,8 +145,10 @@ function validateStep(step, path, errors) {
   // WR-01 (code review): a step is a UI-facing record (its number, lead-in
   // and instruction render directly), same as a row — check them with the
   // same thoroughness validateRow already gives every ingredient field.
-  if (!isFiniteNumber(step.n)) {
-    errors.push(`${path}.n: expected a finite number, got ${JSON.stringify(step.n)}`);
+  // A step key is a safe integer so that domain/stepKeys.js nextStepKey, which
+  // hands out the next key, can read every key the import check lets in (WR-04).
+  if (!Number.isSafeInteger(step.n)) {
+    errors.push(`${path}.n: expected a safe integer, got ${JSON.stringify(step.n)}`);
   }
   if (!isNonEmptyString(step.leadIn)) {
     errors.push(`${path}.leadIn: expected a non-empty string, got ${JSON.stringify(step.leadIn)}`);

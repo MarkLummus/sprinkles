@@ -10,6 +10,7 @@ import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { library } from '../data/library.js';
 import { RESERVED_ROW_IDS, rowFromLibraryRecord } from '../domain/versionRow.js';
+import { nextStepKey } from '../domain/stepKeys.js';
 
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. Mirrors createRepository's exportAll and
@@ -1141,6 +1142,28 @@ describe('validateVersion, the fields', () => {
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('.method[0].n'))).toBe(true);
+  });
+
+  it.each([2.5, 2 ** 53])('rejects a step whose n is %j, which is not a safe integer', (n) => {
+    const version = makeVersion({ method: [makeStep({ n })] });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual([`$.versions[0].method[0].n: expected a safe integer, got ${n}`]);
+  });
+
+  it('accepts a step whose n is an integer', () => {
+    const version = makeVersion({ method: [makeStep({ n: 2 })] });
+    expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
+  it.each([2, 0, 2.5, 2 ** 53, '1'])('the import check and nextStepKey agree on the step key %j (WR-04)', (n) => {
+    const version = makeVersion({ method: [makeStep({ n })] });
+    const accepted = validateStoreFile(makeStoreFile([version])).ok;
+    if (accepted) {
+      expect(nextStepKey([makeStep({ n })])).toBe(n + 1);
+    } else {
+      expect(() => nextStepKey([makeStep({ n })])).toThrow(RangeError);
+    }
   });
 
   it('rejects a step whose leadIn is blank, naming the path', () => {

@@ -27,7 +27,7 @@ Groundwork for recipe creation, which is the next milestone (v2). The groundwork
 - [ ] **LIB-02**: A change to a library entry never moves a stored version's or batch's figures (proven by test, as in Phase 1).
 - [ ] **LIB-03**: Export and import carry the library with the other stores in the same one-transaction commit.
 
-The database version bumps for the new store, so the reset on a version bump applies as usual.
+The database version bumps from 8 to 9 for the new store. The bump only adds the store and resets no profile at 8: recipes, versions, batches and drafts stay (Phase 6 D-01). A profile below 8 still resets, and the reset on a version bump otherwise stays until a recipe can be created from scratch.
 
 ## v2 Requirements
 
@@ -55,7 +55,7 @@ Recipe creation, the next milestone. Not scoped yet.
 |---------|--------|
 | Creation UI, add/remove/reorder in the pen | Next milestone (v2); this one only lays the groundwork (Mark, 2026-10-14) |
 | Custom scales and problems (SEED-261001-iq4) | Belongs with recipe creation; seed stays dormant |
-| Storage upgrade path and storage-failure UI | The reset on a version bump stays until a recipe can be created from scratch |
+| Storage upgrade path and storage-failure UI | The reset on a version bump stays until a recipe can be created from scratch; the Phase 6 bump (8 to 9) only adds the library store and resets no profile at 8 |
 | Import hardening, line-out polish, sub-scale advisory per portion | Backlog (Mark's List, parked) |
 | Ingredients, Kitchen, Idea log, Recipe book places | Placeholders stay; each needs discovery before it enters a milestone |
 | Storage/sync architecture and provider choice | D16 keeps it open |

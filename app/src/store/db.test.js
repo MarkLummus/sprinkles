@@ -1,10 +1,13 @@
-// The D-10/D-11/D-16 proof against a real IndexedDB: DB_VERSION 8 (phase 04:
-// the shapes of 04-03 must reach every profile, and the drafts store is
-// new) holds versions, batches, recipes and drafts, and a returning profile
-// below 8 resets (D-10, one-way, approved by Mark) rather than lifting. The
-// reset is bounded: a profile already at 8 keeps what it holds. This file
-// imports db.js only — never repository.js and never idb itself, so the
-// project's seam grep (only db.js under app/src imports 'idb') stays
+// The D-10/D-11/D-16 proof against a real IndexedDB: DB_VERSION 9 holds
+// versions, batches, recipes, drafts and the ingredient library. Version 8
+// (phase 04: the shapes of 04-03 must reach every profile, and the drafts
+// store is new) set the reset line: a returning profile below 8 resets
+// (D-10, one-way, approved by Mark) rather than lifting. The reset is
+// bounded: a profile already at 8 keeps what it holds. DB_VERSION 9
+// (Phase 6) adds the library store, so a profile at 8 keeps everything it
+// holds and gains the store (D-01); a profile below 8 still resets. This
+// file imports db.js only — never repository.js and never idb itself, so
+// the project's seam grep (only db.js under app/src imports 'idb') stays
 // exact. The fake-indexeddb setup mirrors app/tests/db-reset.test.js: a
 // fresh IDBFactory per test, since a leaked open connection from a failed
 // assertion in one test would otherwise block a later test's delete/open
@@ -100,7 +103,7 @@ describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
     db.close();
   });
 
-  it('resets a database first opened at version 7 (one version, one batch) to all four stores, empty', async () => {
+  it('resets a database first opened at version 7 (one version, one batch) to all five stores, empty', async () => {
     await seedOldProfile(7, {
       stores: ['versions', 'batches', 'recipes'],
       records: [
@@ -111,14 +114,14 @@ describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
 
     const db = await openStore();
     expect(db.version).toBe(9);
-    for (const name of ['versions', 'batches', 'recipes', 'drafts']) {
+    for (const name of ['versions', 'batches', 'recipes', 'drafts', 'library']) {
       expect(db.objectStoreNames.contains(name)).toBe(true);
       expect(await db.getAll(name)).toEqual([]);
     }
     db.close();
   });
 
-  it('already at 8 keeps its records: a version and a draft survive a second open', async () => {
+  it('already at 9 keeps its records: a version and a draft survive a second open', async () => {
     const first = await openStore();
     await first.put('versions', { id: 'kept-version' });
     await first.put('drafts', { versionId: 'kept-version', note: 'kept-draft' });
@@ -127,6 +130,34 @@ describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
     const db = await openStore();
     expect(await db.getAll('versions')).toEqual([{ id: 'kept-version' }]);
     expect(await db.getAll('drafts')).toEqual([{ versionId: 'kept-version', note: 'kept-draft' }]);
+    db.close();
+  });
+
+  it('a profile left at version 8 (a recipe, a version, a batch and a draft) opens at 9 with all four records unchanged and an empty library store (D-01, D-01a)', async () => {
+    const recipe = { id: 'kept-recipe', name: 'Kept', description: '' };
+    const version = { id: 'kept-version', recipeId: 'kept-recipe' };
+    const batch = { id: 'kept-batch', versionId: 'kept-version' };
+    const draft = { versionId: 'kept-version', note: 'kept-draft' };
+    await seedOldProfile(8, {
+      stores: ['versions', 'batches', 'recipes', 'drafts'],
+      records: [
+        ['recipes', recipe],
+        ['versions', version],
+        ['batches', batch],
+        ['drafts', draft],
+      ],
+    });
+
+    const db = await openStore();
+    expect(db.version).toBe(9);
+    expect(await db.getAll('recipes')).toEqual([recipe]);
+    expect(await db.getAll('versions')).toEqual([version]);
+    expect(await db.getAll('batches')).toEqual([batch]);
+    expect(await db.getAll('drafts')).toEqual([draft]);
+    // The batches index survived the upgrade.
+    expect(await db.getAllFromIndex('batches', 'by-version', 'kept-version')).toEqual([batch]);
+    expect(db.objectStoreNames.contains('library')).toBe(true);
+    expect(await db.getAll('library')).toEqual([]);
     db.close();
   });
 
@@ -237,7 +268,7 @@ describe('openStore, when another tab holds the old version open (WR-08)', () =>
     held.close();
     const db = await opening;
     expect(db.version).toBe(9);
-    for (const name of ['versions', 'batches', 'recipes', 'drafts']) {
+    for (const name of ['versions', 'batches', 'recipes', 'drafts', 'library']) {
       expect(db.objectStoreNames.contains(name)).toBe(true);
     }
     expect(onBlocked).toHaveBeenCalledTimes(1);

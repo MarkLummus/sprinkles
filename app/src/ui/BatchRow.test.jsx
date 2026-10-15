@@ -2114,7 +2114,7 @@ describe('BatchRow — the record pen draws only what each seeded version declar
 
 describe('BatchRow — a tick made in the pen round-trips through save, the reading, export and import (0, 1 and 2 declared problems)', () => {
   function memoryRepository() {
-    const state = { versions: [], batches: [], recipes: [] };
+    const state = { versions: [], batches: [], recipes: [], library: [] };
     const merge = (list, items) => {
       for (const item of items) {
         const at = list.findIndex((entry) => entry.id === item.id);
@@ -2125,12 +2125,18 @@ describe('BatchRow — a tick made in the pen round-trips through save, the read
     return {
       state,
       getAll: async () => [...state.versions],
-      getAllBatches: async () => [...state.batches],
+      exportAll: async () => ({
+        recipes: [...state.recipes],
+        versions: [...state.versions],
+        batches: [...state.batches],
+        library: [...state.library],
+      }),
       listRecipes: async () => [...state.recipes],
-      importAll: async ({ recipes, versions, batches }) => {
+      importAll: async ({ recipes, versions, batches, library }) => {
         merge(state.recipes, recipes);
         merge(state.versions, versions);
         merge(state.batches, batches);
+        merge(state.library, library);
       },
     };
   }

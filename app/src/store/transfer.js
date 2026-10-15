@@ -563,11 +563,13 @@ export function validateStoreFile(parsed) {
 // and VERSION_SAVE_ERROR). Shell renders it as it renders every refusal.
 export const IMPORT_STORAGE_ERROR = 'Couldn’t save this file. Nothing was changed.';
 
-/** exportStore(repository) -> the whole store as one JSON-serialisable object. */
+/**
+ * exportStore(repository) -> the whole store as one JSON-serialisable object.
+ * It reads the stores it carries in one transaction, so a backup is never
+ * built from two moments (06-CONTEXT.md D-07a).
+ */
 export async function exportStore(repository) {
-  const versions = await repository.getAll();
-  const batches = await repository.getAllBatches();
-  const recipes = await repository.listRecipes();
+  const { recipes, versions, batches } = await repository.exportAll();
   return {
     app: 'sprinkles',
     schemaVersion: STORE_SCHEMA_VERSION,
@@ -639,10 +641,11 @@ export async function importStore(repository, parsed) {
   });
   if (recipeErrors.length > 0) return { ok: false, errors: recipeErrors };
 
-  // One transaction over recipes, versions and batches: all three land or
-  // none does (Mark, 2026-10-11).
+  // One transaction over recipes, versions, batches and library: all four
+  // land or none does (Mark, 2026-10-11; 06-CONTEXT.md D-07). A schema 7
+  // file carries no library, so none is written from it.
   try {
-    await repository.importAll({ recipes: parsed.recipes, versions: parsed.versions, batches: parsed.batches });
+    await repository.importAll({ recipes: parsed.recipes, versions: parsed.versions, batches: parsed.batches, library: [] });
   } catch {
     return storageFailure;
   }

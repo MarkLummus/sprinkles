@@ -150,14 +150,14 @@ export function createRepository() {
         throw error;
       }
     },
-    // An import is one readwrite transaction over the three stores it
+    // An import is one readwrite transaction over the four stores it
     // writes: a failed put aborts it, so a storage failure part-way leaves
     // every store exactly as it was. A put the store cannot clone throws
     // before it queues and leaves the transaction open, so the catch aborts
     // it by hand or the puts already queued would commit.
-    async importAll({ recipes, versions, batches }) {
+    async importAll({ recipes, versions, batches, library }) {
       const db = await dbPromise;
-      const tx = db.transaction(['recipes', 'versions', 'batches'], 'readwrite');
+      const tx = db.transaction(['recipes', 'versions', 'batches', 'library'], 'readwrite');
       const done = tx.done;
       // Every queued put is kept so a failure can quiet the ones the abort
       // rejects behind it.
@@ -166,6 +166,7 @@ export function createRepository() {
         for (const recipe of recipes) queued.push(tx.objectStore('recipes').put(recipe));
         for (const version of versions) queued.push(tx.objectStore('versions').put(version));
         for (const batch of batches) queued.push(tx.objectStore('batches').put(batch));
+        for (const record of library) queued.push(tx.objectStore('library').put(record));
         await Promise.all([...queued, done]);
       } catch (error) {
         try {
@@ -176,6 +177,22 @@ export function createRepository() {
         for (const request of [...queued, done]) request.catch(() => {});
         throw error;
       }
+    },
+    // D-07a: an export reads the four stores it carries in one readonly
+    // transaction, so a second tab writing mid-export cannot give a backup
+    // built from two moments. The drafts store is not read: drafts stay on
+    // the device.
+    async exportAll() {
+      const db = await dbPromise;
+      const tx = db.transaction(['recipes', 'versions', 'batches', 'library'], 'readonly');
+      const [recipes, versions, batches, library] = await Promise.all([
+        tx.objectStore('recipes').getAll(),
+        tx.objectStore('versions').getAll(),
+        tx.objectStore('batches').getAll(),
+        tx.objectStore('library').getAll(),
+      ]);
+      await tx.done;
+      return { recipes, versions, batches, library };
     },
     // D-16: a draft is one unsaved pen, keyed by its version id.
     async getDraft(versionId) {

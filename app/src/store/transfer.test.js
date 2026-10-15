@@ -10,13 +10,15 @@ import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
 // A plain in-memory object implementing the repository seam's contract —
-// no store library, no browser. Mirrors createRepository's importAll: upsert
-// by id, never a wholesale replace. Counts importAll calls so a test can
-// assert the write was never invoked (the refuse-whole-file gate).
-function createInMemoryRepository(initialVersions = [], initialBatches = [], initialRecipes = []) {
+// no store library, no browser. Mirrors createRepository's exportAll and
+// importAll over four stores: importAll upserts by id, never a wholesale
+// replace. Counts importAll calls so a test can assert the write was never
+// invoked (the refuse-whole-file gate).
+function createInMemoryRepository(initialVersions = [], initialBatches = [], initialRecipes = [], initialLibrary = []) {
   const versions = [...initialVersions];
   const batches = [...initialBatches];
   const recipes = [...initialRecipes];
+  const libraryRecords = [...initialLibrary];
   let importAllCalls = 0;
   return {
     get versions() {
@@ -28,19 +30,27 @@ function createInMemoryRepository(initialVersions = [], initialBatches = [], ini
     get recipes() {
       return recipes;
     },
+    get library() {
+      return libraryRecords;
+    },
     get importAllCalls() {
       return importAllCalls;
     },
     async getAll() {
       return [...versions];
     },
-    async getAllBatches() {
-      return [...batches];
-    },
     async listRecipes() {
       return [...recipes];
     },
-    async importAll({ recipes: newRecipes, versions: newVersions, batches: newBatches }) {
+    async exportAll() {
+      return {
+        recipes: [...recipes],
+        versions: [...versions],
+        batches: [...batches],
+        library: [...libraryRecords],
+      };
+    },
+    async importAll({ recipes: newRecipes, versions: newVersions, batches: newBatches, library: newLibrary }) {
       importAllCalls += 1;
       const upsert = (list, items) => {
         for (const item of items) {
@@ -52,6 +62,7 @@ function createInMemoryRepository(initialVersions = [], initialBatches = [], ini
       upsert(recipes, newRecipes);
       upsert(versions, newVersions);
       upsert(batches, newBatches);
+      upsert(libraryRecords, newLibrary);
     },
   };
 }

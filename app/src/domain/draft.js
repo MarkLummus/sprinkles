@@ -184,6 +184,29 @@ function fitsMethodStep(step) {
   return true;
 }
 
+// noteOrigins is written only by removePenNote: per list, one integer per
+// surviving note, each pointing at a note in the version's own list. Absent is
+// fine (no removal yet, or a draft kept before noteOrigins). Anything else must
+// name only lists the version holds and give one in-range origin per draft
+// note, or setPenNoteText reads past the version's list. Positions are walked
+// by index, never with every/some, because those skip the holes of a sparse
+// array. Mark's List bug-kept-draft-note-origins-unchecked.
+function fitsNoteOrigins(payload, version) {
+  if (payload.noteOrigins === undefined) return true;
+  if (!isPlainObject(payload.noteOrigins)) return false;
+  for (const listKey of ownKeys(payload.noteOrigins)) {
+    if (!has(version.authored, listKey) || !Array.isArray(version.authored[listKey])) return false;
+    if (!has(payload.authored, listKey) || !Array.isArray(payload.authored[listKey])) return false;
+    const origins = payload.noteOrigins[listKey];
+    if (!Array.isArray(origins) || origins.length !== payload.authored[listKey].length) return false;
+    for (let i = 0; i < origins.length; i += 1) {
+      const origin = origins[i];
+      if (!Number.isInteger(origin) || origin < 0 || origin >= version.authored[listKey].length) return false;
+    }
+  }
+  return true;
+}
+
 // A plan draft (the Next version pen's penDraft) fits when its text fields
 // are strings, it holds exactly this version's rows (each with this many
 // lines), exactly this version's steps, and a note list the pen can read.
@@ -215,7 +238,8 @@ function fitsPlanShape(payload, version) {
   if (!version.method.every((step) => draftSteps.includes(step.n))) return false;
 
   const notes = isPlainObject(payload.authored) ? payload.authored.beforeYouStart : undefined;
-  return Array.isArray(notes) && notes.every((note) => isPlainObject(note) && typeof note.text === 'string');
+  if (!(Array.isArray(notes) && notes.every((note) => isPlainObject(note) && typeof note.text === 'string'))) return false;
+  return fitsNoteOrigins(payload, version);
 }
 
 /**

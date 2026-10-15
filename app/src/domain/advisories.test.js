@@ -258,3 +258,34 @@ describe('buildAdvisories — never mutates', () => {
     expect(version).toEqual(before);
   });
 });
+
+describe('buildAdvisories — absent equipment or process (Phase 7 D-02)', () => {
+  it('skips the sub-scale advisory when the version has no equipment block', () => {
+    const version = clone();
+    delete version.equipment;
+    expect(buildAdvisories(version).map((advisory) => advisory.key)).toEqual([
+      'ultra-pasteurised',
+      'hydration',
+      'estimated',
+    ]);
+  });
+
+  it('skips the hydration advisory when the version has no process block', () => {
+    const version = clone();
+    delete version.process;
+    expect(buildAdvisories(version).map((advisory) => advisory.key)).toEqual([
+      'sub-scale',
+      'ultra-pasteurised',
+      'estimated',
+    ]);
+  });
+
+  it('reads a version with no equipment, process, iceEd or targets without throwing', () => {
+    const version = clone();
+    delete version.equipment;
+    delete version.process;
+    delete version.iceEd;
+    delete version.targets;
+    expect(buildAdvisories(version).map((advisory) => advisory.key)).toEqual(['ultra-pasteurised', 'estimated']);
+  });
+});

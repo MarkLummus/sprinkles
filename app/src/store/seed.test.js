@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { seedIfEmpty } from './seed.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
+import { library } from '../data/library.js';
 
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. This is why seedIfEmpty takes its
@@ -91,18 +92,96 @@ describe('seedIfEmpty', () => {
     const versionCount = repository.versions.length;
     const batchCount = repository.batches.length;
     const recipeCount = repository.recipes.length;
+    const libraryCount = repository.library.length;
+    const writeCount = repository.writes.length;
     await seedIfEmpty(repository);
     expect(repository.versions.length).toBe(versionCount);
     expect(repository.batches.length).toBe(batchCount);
     expect(repository.recipes.length).toBe(recipeCount);
+    expect(repository.library.length).toBe(libraryCount);
+    expect(repository.writes.length).toBe(writeCount);
   });
 
   it('writes nothing and leaves an existing unrelated record untouched', async () => {
-    const repository = createInMemoryRepository([{ id: 'existing' }]);
+    const existingEntry = { id: 'existing-entry', entry: { name: 'Existing', composition: {} } };
+    const repository = createInMemoryRepository([{ id: 'existing' }], [existingEntry]);
     await seedIfEmpty(repository);
     expect(repository.versions.length).toBe(1);
     expect(repository.versions[0].id).toBe('existing');
     expect(repository.recipes.length).toBe(0);
     expect(repository.batches.length).toBe(0);
+    expect(repository.writes).toEqual([]);
+    expect(repository.library).toEqual([existingEntry]);
+  });
+});
+
+describe('seedIfEmpty, the two independent guards (D-04)', () => {
+  const expectSeededLibrary = (repository) => {
+    expect(repository.library).toHaveLength(Object.keys(library).length);
+    for (const record of repository.library) {
+      expect(Object.keys(record).sort()).toEqual(['entry', 'id']);
+      expect(record.entry).toEqual(library[record.id]);
+    }
+  };
+
+  it('empty versions, empty library: writes the library, recipes, batches and versions', async () => {
+    const repository = createInMemoryRepository([], []);
+    await seedIfEmpty(repository);
+    expect(repository.writes).toEqual(['library', 'recipes', 'batches', 'versions']);
+    expectSeededLibrary(repository);
+  });
+
+  it('empty versions, filled library: writes recipes, batches and versions, and leaves the one library record alone', async () => {
+    const existingEntry = { id: 'existing-entry', entry: { name: 'Existing', composition: {} } };
+    const repository = createInMemoryRepository([], [existingEntry]);
+    await seedIfEmpty(repository);
+    expect(repository.writes).toEqual(['recipes', 'batches', 'versions']);
+    expect(repository.library).toEqual([existingEntry]);
+  });
+
+  it('filled versions, empty library: writes the library only', async () => {
+    const repository = createInMemoryRepository([{ id: 'existing' }], []);
+    await seedIfEmpty(repository);
+    expect(repository.writes).toEqual(['library']);
+    expect(repository.versions).toEqual([{ id: 'existing' }]);
+    expect(repository.recipes).toEqual([]);
+    expect(repository.batches).toEqual([]);
+    expectSeededLibrary(repository);
+  });
+
+  it('filled versions, filled library: writes nothing', async () => {
+    const existingEntry = { id: 'existing-entry', entry: { name: 'Existing', composition: {} } };
+    const repository = createInMemoryRepository([{ id: 'existing' }], [existingEntry]);
+    await seedIfEmpty(repository);
+    expect(repository.writes).toEqual([]);
+    expect(repository.library).toEqual([existingEntry]);
+    expect(repository.versions).toEqual([{ id: 'existing' }]);
+  });
+
+  it('an interrupted seed repeats only the part still missing (D-04)', async () => {
+    const repository = createInMemoryRepository([], []);
+    const putAll = repository.putAll;
+    let failed = false;
+    repository.putAll = async (items) => {
+      if (!failed) {
+        failed = true;
+        throw new Error('interrupted');
+      }
+      return putAll(items);
+    };
+
+    await expect(seedIfEmpty(repository)).rejects.toThrow('interrupted');
+    expect(repository.writes).toEqual(['library', 'recipes', 'batches']);
+    expect(repository.versions).toEqual([]);
+
+    repository.writes.length = 0;
+    await seedIfEmpty(repository);
+    expect(repository.writes).toEqual(['recipes', 'batches', 'versions']);
+
+    expect(repository.library.map((record) => record.id)).toEqual(Object.keys(library));
+    for (const record of repository.library) expect(record.entry).toEqual(library[record.id]);
+    expect(repository.recipes).toEqual(seedRecipeGroups.map((g) => g.recipe));
+    expect(repository.batches).toEqual(seedRecipeGroups.flatMap((g) => g.batches));
+    expect(repository.versions).toEqual(seedRecipeGroups.flatMap((g) => g.versions));
   });
 });

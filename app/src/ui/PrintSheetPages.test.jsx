@@ -19,6 +19,9 @@ import { activeRows, activeSteps, rowGrams } from '../domain/rows.js';
 import { sheetCode } from '../domain/sheetCode.js';
 import { buildFigures } from '../domain/figures.js';
 import { BasisNote } from './BasisNote.jsx';
+import { createRecipe } from '../domain/newRecipe.js';
+import { rowFromLibraryRecord } from '../domain/versionRow.js';
+import { library } from '../data/library.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -558,5 +561,37 @@ describe('sheetBlocks — Balance reads the active formula (review 2026-10-11 P1
     const { version } = fixtures[3];
     expect(printedBalance(version).querySelector('.basis-note').textContent).not.toContain('Allulose');
     expect(fragment(<BasisNote version={version} />).querySelector('.basis-note').textContent).toContain('Allulose');
+  });
+});
+
+describe('sheetBlocks — a recipe created from library records (Phase 7 D-02, D-07)', () => {
+  function createdVersion(grams) {
+    const rows = [
+      rowFromLibraryRecord({ id: 'wholeMilk', entry: library.wholeMilk }, { id: 'row-a', grams: grams[0] }),
+      rowFromLibraryRecord({ id: 'heavyCream', entry: library.heavyCream }, { id: 'row-b', grams: grams[1] }),
+      rowFromLibraryRecord({ id: 'sucrose', entry: library.sucrose }, { id: 'row-c', grams: grams[2] }),
+    ];
+    return createRecipe(
+      { name: 'Plain base', versionLabel: 'first try', rows },
+      { recipeId: 'recipe-plain', versionId: 'version-plain-1', now: '2026-10-14T12:00:00.000Z' },
+    ).version;
+  }
+
+  it("builds the root version's blocks: six figures, one group with no head, no notes or steps, and the Sheet code in the foot", () => {
+    const version = createdVersion([500, 250, 100]);
+    const created = sheetBlocks(version, 'first try');
+    expect(created.figures).toHaveLength(6);
+    expect(created.groups).toHaveLength(1);
+    expect(created.groups[0].head).toBeNull();
+    expect(created.notes).toEqual([]);
+    expect(created.steps).toEqual([]);
+    expect(created.totalText).toBe('850.0 g');
+    expect(created.footText).toBe(`Plain base · first try · ${sheetCode(version)}`);
+  });
+
+  it("builds an all-zero root version's blocks without throwing: no figures and a 0.0 g total", () => {
+    const created = sheetBlocks(createdVersion([0, 0, 0]), 'first try');
+    expect(created.figures).toEqual([]);
+    expect(created.totalText).toBe('0.0 g');
   });
 });

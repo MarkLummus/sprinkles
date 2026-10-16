@@ -21,6 +21,7 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 - [ ] **LIB-06**: A profile at database version 9 opens at version 10 with the larger library: the library is cleared and reseeded (amending Phase 6 D-05), the store resets to the new shapes, and the seeded recipes are rewritten in them. Nothing the maker made is lost, because none exists yet.
 - [ ] **LIB-07**: Dairy rows from the dataset do not count lactose twice in PAC or POD.
 - [ ] **LIB-08**: A row keeps a link to the library entry it was copied from, and its figures still do not move when the library changes.
+- [ ] **LIB-09**: Every seed dataset is rows in a store table that an empty store is seeded with: the library, the machines (name, minimum fill, maximum fill), the ice cream styles with their balance bands, and the core scales and problems. No seed dataset is read from a code constant at run time, so a later version can let the maker add rows.
 
 ### Places
 
@@ -100,6 +101,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LIB-06 | Phase 9 | Pending |
 | LIB-07 | Phase 9 | Pending |
 | LIB-08 | Phase 9 | Pending |
+| LIB-09 | Phase 9 | Pending |
 | PLACE-01 | Phase 9 | Pending |
 | PLACE-02 | Phase 9 | Pending |
 | MAKE-04 | Phase 10 | Pending |
@@ -123,10 +125,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROOF-02 | Phase 12 | Pending |
 
 **Coverage:**
-- v2.0 requirements: 28 total
-- Mapped to phases: 28 (Phase 8: 2, Phase 9: 8, Phase 10: 8, Phase 11: 7, Phase 12: 3)
+- v2.0 requirements: 29 total
+- Mapped to phases: 29 (Phase 8: 2, Phase 9: 9, Phase 10: 8, Phase 11: 7, Phase 12: 3)
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-10-16*
-*Last updated: 2026-10-16 after the Codex review and Mark's answers: MAKE-09, SCALE-01 and SCALE-02 moved to Phase 10; LIB-05, LIB-06, MAKE-04, MAKE-05, MAKE-06, MAKE-09, STRUCT-01, STRUCT-04, SCALE-01, SCALE-03 and SCALE-04 reworded*
+*Last updated: 2026-10-16 after Mark's decision that all seed data is rows in store tables (LIB-09), and after the Codex review and Mark's answers: MAKE-09, SCALE-01 and SCALE-02 moved to Phase 10; LIB-05, LIB-06, MAKE-04, MAKE-05, MAKE-06, MAKE-09, STRUCT-01, STRUCT-04, SCALE-01, SCALE-03 and SCALE-04 reworded*

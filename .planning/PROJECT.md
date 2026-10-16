@@ -14,9 +14,20 @@ Make something you like, understand how it turned out, and know what to keep or 
 
 Shipped v1.1 Groundwork for creation (2026-10-15): the code is ready for recipe creation and no screen changed. `RecipePage` keeps its draft logic in pure `domain/` operations behind `usePenDraft` and `useRecordDraft`; the ingredient library is an object store (database version 9) behind the repository seam, carried by export and import; and framework-free `createRecipe`, `nextStepKey` and `rowFromLibraryRecord` exist with no UI calling them yet. Milestone audit: tech_debt, 10/10 requirements, 2932 tests green (`.planning/milestones/v1.1-MILESTONE-AUDIT.md`).
 
-## Next Milestone Goals (v2, not scoped yet)
+## Current Milestone: v2.0 Recipe creation
 
-Recipe creation in the Notebook: wire the primitives to a creation screen. `RecipePage` still has no mode for a new recipe with no loaded version; extracting its loading effects into a hook is the likely first cut. Decide before library editing: `importAll` replaces a local library entry with the imported one without asking. Out of v1.1 and still waiting (Mark, 2026-10-14): version evolution (add, remove and reorder of steps and ingredients), custom scales and problems for a new recipe (SEED-261001-iq4 stays dormant), the storage upgrade path, import hardening. The database reset on a version bump stays until a recipe can be created from scratch.
+**Goal:** A maker can create a new recipe from scratch in the Notebook, authoring every section of it from a real ingredient library, and make it from a printed sheet.
+
+**Target features:**
+- Finish splitting `RecipePage` (still one component of about 1,700 lines after Phase 5), first, so creating and editing share one editor and the maker sees no change.
+- A Notebook place that starts a new recipe (`/notebook` is a placeholder today).
+- A creation screen on the shared editor, authoring name and description, version line, rows, Instructions, Before you start, scales and problems, and balance targets, equipment and process.
+- Add, remove and reorder steps and rows, at creation of a recipe's first version only.
+- The ingredient library seeded beyond the current recipes' rows, with provenance, after the coefficient conflicts between the candidate datasets are settled.
+- A read-only Ingredients place (`/ingredients`); no create or update.
+- Custom scales and problems for a new recipe (SEED-261001-iq4), settling Bitter and the "This recipe only" label.
+
+**Out of v2.0 (Mark, 2026-10-16):** structure edits on later versions, Show changes for dropped, added and moved steps, batches recording changed structure, the storage upgrade path, and import hardening. The database reset on a version bump stays until a recipe can be created from scratch. Decide before library editing: `importAll` replaces a local library entry with the imported one without asking.
 
 ## Requirements
 
@@ -36,10 +47,15 @@ Recipe creation in the Notebook: wire the primitives to a creation screen. `Reci
 
 ### Active
 
-Milestones 1 (accepted D14) and v1.1 shipped. Creation itself is the next milestone (v2), not scoped yet:
+v2.0 Recipe creation (see Current Milestone). Requirement IDs are assigned in `REQUIREMENTS.md`:
 
-- Recipe creation in the Notebook: Version evolution (the former Phase 5): add, remove and reorder of steps and ingredients, Before you start, custom scales and problems for a new recipe (SEED-261001-iq4), and Show changes for dropped steps
-- The database reset on a version bump stays until a recipe can be created from scratch; the upgrade path comes after
+- [ ] `RecipePage` split into its separate jobs, no visible change
+- [ ] Notebook starts a new recipe
+- [ ] Create a recipe and author every section of its first version
+- [ ] Add, remove and reorder steps and rows at creation
+- [ ] Ingredient library seeded beyond the current recipes, with provenance
+- [ ] Read-only Ingredients place
+- [ ] Custom scales and problems for a new recipe (SEED-261001-iq4)
 
 ### Out of Scope
 
@@ -168,4 +184,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-15 after v1.1 milestone*
+*Last updated: 2026-10-16 after starting milestone v2.0*

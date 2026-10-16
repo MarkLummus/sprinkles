@@ -4,7 +4,7 @@
 
 Purpose: give each term that collides or causes trouble one meaning, and say which code name and which screen word go with it. This is the delivery layer. Product meanings live in `product-requirements/05-domain-and-language.md` (D17 vocabulary, labels settled on the recipe page). If this file and `05` disagree, `05` wins and this file is wrong. A new product meaning goes through the decision register and Mark's approval first.
 
-Checked against the code on 2026-10-16: `DB_VERSION` 9, `STORE_SCHEMA_VERSION` 8, `VERSION_SCHEMA_VERSION` 6, five stores (`versions`, `batches`, `recipes`, `drafts`, `library`), 26 library entries, draft kinds `plan` / `record` / `amend`.
+Checked against the code on 2026-10-16 (decisions of that day added after the Codex review): `DB_VERSION` 9, `STORE_SCHEMA_VERSION` 8, `VERSION_SCHEMA_VERSION` 6, five stores (`versions`, `batches`, `recipes`, `drafts`, `library`), 26 library entries, draft kinds `plan` / `record` / `amend`.
 
 Columns: **Means here** is the one meaning. **Not** is the sense that gets mixed up with it. **Code** is the identifier or file. **Maker sees** is the word on screen, or "nothing" where there is none.
 
@@ -14,10 +14,10 @@ Columns: **Means here** is the one meaning. **Not** is the sense that gets mixed
 |---|---|---|---|---|
 | Recipe | The enduring identity that owns versions and history. | A version. A Sheet. | `recipes` store: `{id, name, description}` | Recipe name on Home and the Notebook |
 | Version | One saved state of a recipe. | The database version. A file format number. | `versions` store; `createChildVersion` in `lineage.js` | "Version 3 · name" |
-| Version name | The maker's name for a version (D17). | "Version line", the older word, still in PROJECT.md and `MAKE-05`. | `versionLabel` | Version name in the band |
+| Version name | The maker's name for a version (D17). Starts as "Version 1" on a new recipe; the maker can change it. | "Version line", the older word, still in PROJECT.md. | `versionLabel` | Version name in the band |
 | Sheet | The readable, editable, printable view of one version (D17; "Recipe Sheet" is a synonym). | A stored record. It has no store of its own. | Rendered from a version; `sheetCode.js`, print route | Sheet |
 | Sheet title, Sheet description | Version-owned title and intro. May differ from the recipe's. | Recipe name, Recipe description. | `sheetTitle`, `sheetDescription` on the version | The Sheet's heading and intro |
-| Recipe description | The recipe-level description. | The Sheet description. Two exist; one or two boxes at creation is an open decision. | `recipe.description` | About this recipe |
+| Recipe description | The recipe-level description. | The Sheet description. Two exist; at creation one box fills both (decided 2026-10-16). | `recipe.description` | About this recipe |
 | Why | The maker's reason for a version. | A note. | `reason` | Why |
 | From version | The version this one came from. | A recipe-to-recipe link (that is Adapted from). | `parentVersionId`, `parentVersionLabel` | From version |
 | From batch | The batch a version answers. | | `citedBatchId` | From batch |
@@ -46,7 +46,7 @@ Columns: **Means here** is the one meaning. **Not** is the sense that gets mixed
 | Instructions | The Sheet's name for the steps (it replaced "Method", 2026-09-24). | | Code still says `method` | Instructions |
 | Uses | The rows a step uses. | | `step.uses: [rowId]` | Uses |
 | Before you start | Prep notes above the Ingredients. | An auto-generated mise en place (a parked todo). | `authored.beforeYouStart: [{text, inheritedFrom}]` | Before you start |
-| Removed | A flag on a row or step in a child version, drawn struck in Show changes. | Deleted. A first version in v2.0 deletes outright (decision pending). | `removed` | A struck line |
+| Removed | A flag on a row or step in a child version, drawn struck in Show changes. | Deleted. A first version with no batch and no child deletes outright (decided 2026-10-16). | `removed` | A struck line |
 | Show changes | The comparison of a version against its parent. | A history list. | `buildDiff` in `diff.js`; `?changes` query | Show changes |
 
 ## The library
@@ -72,9 +72,9 @@ Columns: **Means here** is the one meaning. **Not** is the sense that gets mixed
 
 | Term | Means here | Not | Code | Maker sees |
 |---|---|---|---|---|
-| Scale | A 1 to 5 tasting measure with a word at each end and a fixed middle "right". | A kitchen scale. A plain magnitude scale (kind still undecided). | `AXES` in `axes.js` (code says "axis") | A row of five stops |
+| Scale | A 1 to 5 tasting measure with a word at each end. Two kinds (v2.0, decided 2026-10-16): goldilocks, with the fixed middle word "right", and plain magnitude. | A kitchen scale. | `AXES` in `axes.js` (code says "axis") | A row of five stops |
 | Core battery | The scales and problems every tasting has. | Recipe-declared ones. | `battery.js`; four core scales | The record pen |
-| Declared scale | A scale a recipe picks for itself. Today a name from the fixed list (Body, Oil). | A free definition (v2.0). | `version.declaredAxes: [name]` | "This recipe only" |
+| Declared scale | A scale a recipe picks for itself. Today a name from the fixed list (Body, Oil). | A free definition (v2.0: a name, a label for each end and a kind, 0 to 2 per recipe). | `version.declaredAxes: [name]` | "This recipe only" |
 | Problem | A yes/no flag in a tasting. | A scale. | Core: `DEFECTS`; recipe-declared: `version.declaredFlaws` (0 to 2; code says "flaw") | Problems |
 
 ## Store, places and codes
@@ -93,7 +93,7 @@ Columns: **Means here** is the one meaning. **Not** is the sense that gets mixed
 
 These are the places this file disagrees with the planning text. None is changed yet.
 
-- "Version line" in PROJECT.md and `MAKE-05` should read Version name (D17).
+- "Version line" in PROJECT.md should read Version name (D17). `MAKE-05` already does.
 - The older research notes say the library holds "12 entries". It holds 26; 12 is the olive oil recipe's row count.
 - Code says `method`, `axes` and `flaws` where the maker sees Instructions, scales and problems. The code names stay; this file maps them.
 

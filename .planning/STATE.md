@@ -5,10 +5,10 @@ milestone_name: Recipe creation
 current_phase: 8
 current_phase_name: Split the recipe page along its jobs
 status: planning
-stopped_at: v2.0 roadmap revised (Phases 8-12); Phase 8 ready to discuss
-last_updated: "2026-10-16T02:19:58.693Z"
+stopped_at: v2.0 roadmap revised after the Codex review (Phases 8-12); Phase 8 ready to discuss
+last_updated: "2026-10-16T03:34:10.000Z"
 last_activity: 2026-10-16
-last_activity_desc: "v2.0 roadmap revised: Phases 8-12, 28 of 28 requirements mapped (the old Phase 10 split into Phases 10 and 11; the places moved to Phase 9)"
+last_activity_desc: "v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; 28 of 28 requirements mapped"
 state_head: 1edbcd49b7d810f6076fe21093e27918a75bdfc7
 progress:
   total_phases: 5
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-10-16)
 
 ## Current Position
 
-Phase: 8 (Split the recipe page along its jobs); Phase 9 may run beside it once Mark's Phase 9 decisions are answered and its two place boards are approved
+Phase: 8 (Split the recipe page along its jobs); Phase 9 may run beside it once its two place boards are approved (Mark's Phase 9 decisions are answered)
 Plan: —
 Status: Ready to plan
-Last activity: 2026-10-16 — v2.0 roadmap revised: Phases 8-12, 28 of 28 requirements mapped (the old Phase 10 split into Phases 10 and 11; the places moved to Phase 9)
+Last activity: 2026-10-16 — v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; 28 of 28 requirements mapped
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -334,6 +334,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 06]: 06-03: exportStore makes one exportAll call over four stores in one readonly transaction; importAll writes four stores in one readwrite transaction (D-07, D-07a)
 - [Phase 06]: 06-03: schema 8, validateLibraryRecord and library: parsed.library land in one commit; library validation checks the wrapper only and refuses reserved ids as values (D-06, D-08)
 - [Roadmap v2.0, 2026-10-16]: Five phases, revised the same day from a four-phase draft after Mark's notes (its Phase 10 of 14 requirements was split, and the places moved to Phase 9): 8 Split the recipe page along its jobs (EDIT-05, EDIT-06), 9 The library and the stored shapes, plus the two places (LIB-04 to LIB-08, SCALE-03, PLACE-01, PLACE-02), 10 The creation editor, without Save (MAKE-04, MAKE-05, MAKE-06, MAKE-08, MAKE-11), 11 Steps, structure, save and print (MAKE-07, MAKE-10, MAKE-12, STRUCT-01 to STRUCT-04), 12 A recipe's own scales, and the whole loop (MAKE-09, SCALE-01, SCALE-02, SCALE-04, PROOF-01, PROOF-02). Phase 9 holds every stored-shape change and v2.0's only DB_VERSION change (9 to 10). Phase 10 has deliberately no Save, so nothing real is stored and the reset window stays open through it; Save lands in Phase 11, because structure cannot be added after the first save, and the window closes there. SCALE-03 sits in Phase 9 so the order is safe under either scale-shape answer. Phases 8 and 9 are independent. Design gates are stated on Phases 9 to 12, and Mark's 16 open decisions are mapped to the phase each blocks in ROADMAP.md (Before planning); none is resolved.
+- [Roadmap v2.0, revised 2026-10-16 after a Codex review]: MAKE-09, SCALE-01 and SCALE-02 moved from Phase 12 to Phase 10, because Phase 11 enables Save and Phase 12 added authoring that exists only at creation, so a recipe saved in Phase 11 could never gain it (Mark's instruction). Phase 10 now holds MAKE-04, 05, 06, 08, 09, 11 and SCALE-01, 02 and the design gate for scales and problems, style and balance targets, equipment and process; Phase 12 is renamed Showing a recipe's own scales and problems, and the whole loop, and keeps SCALE-04, PROOF-01, PROOF-02. Mark's answers to decisions 1 to 15 are recorded in ROADMAP.md (Before planning) and applied: the app's values stay for all seven library conflicts (LIB-05); the library is cleared and reseeded on the version bump, amending Phase 6 D-05 (LIB-06); scales are definitions only, each carrying its kind (goldilocks or plain magnitude), with a reset that rewrites the seeded recipes, so LIB-06 no longer says no recipe, version or batch is touched; the first version stays editable until it has a batch or a child version (STRUCT-04); one description box fills both descriptions, the Version name starts as "Version 1", recipe names may repeat with a warning, removal at creation deletes outright, and an ingredient not in the library adds nothing. New open decision 17 (`decide-style-bands-source`) and the Codex question on equipment and process scope block Phase 10.
 
 ### Pending Todos
 
@@ -368,10 +369,12 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Impeccable 2026-09-08 -> new phase between 3 and 4] The code work for these confirmed revisions is to be planned as a phase inserted between Phase 3 and Phase 4, not as quick tasks: the imprint (front-matter band, every control out of the spread, the save pair repeated at the foot), the binder's control treatment and its new `--focus-outline-width` token, the pen's printed-paragraph prose fields with purpose and aside on demand and the uses line, native date inputs with the calendar icon hidden, and Escape closing only an untouched pen. Briefs: `.impeccable/surfaces/route-recipe.md` (§ 3 the imprint, § 6 the binder and § 8 Controls), `route-recipe-version.md`, `route-recipe-batch.md`; critique snapshot `.impeccable/critique/2026-09-08T12-33-31Z__app-src-ui-recipepage-jsx.md` (25/40, three P1s).
 - [Phase 03.5, Plan 14] Task 2's device human-check (iPad landscape 1366, iPad portrait 1024, iPhone 393, and a desktop board comparison) is deferred to end-of-phase UAT; must run before phase 03.5 UAT closes out. See 03.5-14-SUMMARY.md "Deferred Human Verification".
 - [v1.1 → Phase 6] The reset bound: `app/src/store/db.js` resets only profiles below 8 and says a later bump writes its own lift (04-04, "records Mark makes from now on are real"); `REQUIREMENTS.md` says the reset applies as usual on the library bump. Adding a store needs neither, so Phase 6 discussion settles it after checking for real stored records.
-- [v2.0 → Phases 9-12] Mark's open decisions (ROADMAP.md, Before planning) are not yet on Mark's List as decide rows; the research run did not write them. Phase 9 waits for decisions 1, 2, 3, 5, 6 and 15 and the Bitter bug row `bug-new-version-loses-declared-defects` (decision 4).
-- [v2.0 → Phase 9] LIB-06 as written ("no recipe, version or batch touched") rules out the objects-only scale shape with a reset; if Mark picks that option, amend LIB-06 in REQUIREMENTS.md before Phase 9 is planned.
+- [v2.0 → Phase 10] Mark answered decisions 1 to 15 (ROADMAP.md, Before planning; the Bitter bug row is fixed and done, 68ea742). Two questions are open and block Phase 10: decision 17, `decide-style-bands-source` (which ice cream styles, and where their band numbers come from), and the supported-equipment scope that MAKE-09's equipment and process need (Codex review (a); `product-requirements/03-decision-register.md`). If that scope changes how equipment or process is stored, the change lands before Save in Phase 11. Decision 16 (`importAll`) has no v2.0 phase.
+- [v2.0 → Phase 9] LIB-06 is amended for decision 5 (scales as definitions only, with a reset): the version-10 upgrade clears and reseeds the library, resets the store to the new shapes and rewrites the seeded recipes; nothing a maker made is lost, because no device holds real batches (Mark). The reset rewrites the seeded versions the Phase 8 walk dumps.
+- [v2.0, open] Codex review (b): this milestone's SCALE-01 to SCALE-04 collide with product requirement SCALE-01 (quantity scaling), and REC-03 and REC-05 are not in `product-requirements/04-requirements.md`; REQUIREMENTS.md notes it, and renaming is Mark's call.
 - [v2.0 → Phases 9-12] No sketch draws any v2.0 surface. Phases 9 to 12 are not planned until their boards (listed under each phase's Design gate in ROADMAP.md) are approved on the Claude Design canvas and snapshotted into `.planning/sketches/`. Phase 9's two place boards (the Notebook recipe list and the Ingredients place) are independent of Mark's coefficient and scale decisions and can be drawn while those wait.
 - [v2.0 → Phase 11] The reset window closes when Save lands in Phase 11: no DB_VERSION change from Phase 11 on, and an export-first row goes on Mark's List before the first device build that can save a recipe. Phase 10 has no Save, so nothing real is stored and the window stays open through it.
+- [v2.0 → Phase 11] Under decision 12 a saved first version stays editable until it has a batch or a child version, so a Sheet code printed before a later change no longer finds the version; Phase 11 discussion weighs it. Whether a removal on a saved first version deletes outright, as at creation, is to be confirmed with Mark in that discussion.
 
 ### Quick Tasks Completed
 
@@ -560,6 +563,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - Phase 03.7.1 inserted after Phase 03.7: Hide Time to draw temp. on every screen and rename the batch log and tasting log; the stored field stays for now (URGENT)
 - v1.1 roadmap created (2026-10-14): Phase 5 Split the recipe page, Phase 6 The ingredient library in the store, Phase 7 Creation primitives. The former Phase 5 (Version evolution) left the active phase list for the roadmap's v2 candidates (Mark, 2026-10-14)
 - v2.0 roadmap created (2026-10-16): Phase 8 Split the recipe page along its jobs, Phase 9 The library and the stored shapes, plus the two places, Phase 10 The creation editor, without Save, Phase 11 Steps, structure, save and print, Phase 12 A recipe's own scales, and the whole loop. Revised the same day from a four-phase draft (Mark's notes): its Phase 10 (14 requirements) split into Phases 10 and 11, PLACE-01 and PLACE-02 moved to Phase 9, and its Phase 11 became Phase 12. Version evolution stays in the roadmap's Later list (out of v2.0, Mark, 2026-10-16)
+- v2.0 roadmap revised (2026-10-16) after a Codex review and Mark's answers: MAKE-09, SCALE-01 and SCALE-02 moved from Phase 12 to Phase 10 with their design gates; Phase 12 renamed Showing a recipe's own scales and problems, and the whole loop (SCALE-04, PROOF-01, PROOF-02); decisions 1 to 15 recorded as decided, decision 17 added as open, and the Codex review's two open questions noted
 
 ## Deferred Items
 
@@ -578,12 +582,12 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-16T01:56:56.000Z
-Stopped at: v2.0 roadmap revised (Phases 8-12); Phase 8 ready to discuss
+Last session: 2026-10-16T03:34:10.000Z
+Stopped at: v2.0 roadmap revised after the Codex review (Phases 8-12); Phase 8 ready to discuss
 Resume file: None
 
 ## Operator Next Steps
 
 - Discuss Phase 8 with /gsd-discuss-phase 8, then plan it with /gsd-plan-phase 8
-- Put Mark's open decisions (ROADMAP.md, Before planning) on Mark's List as decide rows, so Phase 9 can be discussed beside Phase 8
-- Draw Phase 9's two place boards (the Notebook recipe list and the Ingredients place) on the Claude Design canvas for Mark's approval; they do not wait on his coefficient and scale decisions
+- Draw Phase 9's two place boards (the Notebook recipe list and the Ingredients place) on the Claude Design canvas for Mark's approval; they wait on no decision
+- Before Phase 10 is planned, Mark answers decision 17 (`decide-style-bands-source`) and the supported-equipment scope (ROADMAP.md, Open questions from the Codex review)

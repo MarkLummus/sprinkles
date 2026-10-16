@@ -5,6 +5,8 @@
 
 Requirement authority is `product-requirements/04-requirements.md` (packet IDs such as REC-01, REC-03, REC-05, ING-01). This file selects what milestone v2.0 needs and states it as testable criteria. Category IDs continue those of v1.1 (`EDIT`, `LIB`, `MAKE`); `PLACE`, `STRUCT`, `SCALE` and `PROOF` are new. Archived: `milestones/v1-REQUIREMENTS.md`, `milestones/v1.1-REQUIREMENTS.md`.
 
+**ID note (open, from the Codex review):** this milestone's SCALE-01 to SCALE-04 collide with the product requirement SCALE-01 (quantity scaling), and REC-03 and REC-05, cited in this file, are not in `product-requirements/04-requirements.md`; renaming is left for Mark.
+
 ## v2.0 Requirements — Recipe creation
 
 ### Editor split (continues EDIT-04)
@@ -15,8 +17,8 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 ### Ingredient library (continues LIB-03)
 
 - [ ] **LIB-04**: The library is seeded beyond the current 26 entries from the reviewed dataset, each entry with provenance.
-- [ ] **LIB-05**: Every existing library entry keeps its current values, and each conflict with the dataset has a recorded decision.
-- [ ] **LIB-06**: A profile that already holds the older library receives the larger one (database version 10), with no recipe, version or batch touched.
+- [ ] **LIB-05**: Every existing library entry keeps its current values, and each of the seven conflicts with the dataset (dextrose basis, salt, fructose POD, strawberries, skim milk powder, coconut milk, heavy cream) is recorded as decided: the app's value stays.
+- [ ] **LIB-06**: A profile at database version 9 opens at version 10 with the larger library: the library is cleared and reseeded (amending Phase 6 D-05), the store resets to the new shapes, and the seeded recipes are rewritten in them. Nothing the maker made is lost, because none exists yet.
 - [ ] **LIB-07**: Dairy rows from the dataset do not count lactose twice in PAC or POD.
 - [ ] **LIB-08**: A row keeps a link to the library entry it was copied from, and its figures still do not move when the library changes.
 
@@ -27,29 +29,29 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 
 ### Creating a recipe (continues MAKE-03)
 
-- [ ] **MAKE-04**: A maker can start a blank recipe from the Notebook, needing only a name.
-- [ ] **MAKE-05**: A maker can author the recipe's name and description and its version line.
-- [ ] **MAKE-06**: A maker can add ingredient rows from the library, enter grams, and see the balance figures update. A maker can also remove a row.
+- [ ] **MAKE-04**: A maker can start a blank recipe from the Notebook, needing only a name. Two recipes may share a name; the Notebook warns when they do.
+- [ ] **MAKE-05**: A maker can author the recipe's name, its description and its Version name. One description box fills both the recipe description and the Sheet description. The Version name starts as "Version 1", which the maker can change.
+- [ ] **MAKE-06**: A maker can add ingredient rows from the library, enter grams, and see the balance figures update. A maker can also remove a row, which deletes it outright. An ingredient not in the library adds nothing: the picker says "Not in the library yet".
 - [ ] **MAKE-07**: A maker can author Instructions steps (lead-in, text, targets) and say which rows each step uses and in what portions.
 - [ ] **MAKE-08**: A maker can author Before you start notes.
-- [ ] **MAKE-09**: A maker can author balance targets, equipment and process, or leave them empty.
+- [ ] **MAKE-09**: A maker can choose an ice cream style, and the balance bands fill in from it; the maker can edit the bands or leave them blank. The maker can then author equipment and process, or leave them empty. (Open: which styles and where their band numbers come from, `decide-style-bands-source`; the supported-equipment scope.)
 - [ ] **MAKE-10**: Saving creates the recipe and its first version in one step, lands on the new page, and a failed save leaves neither behind.
 - [ ] **MAKE-11**: An unsaved creation survives a closed tab and offers Resume, and abandoning it leaves no records.
 - [ ] **MAKE-12**: A created recipe prints as a bench sheet with its Sheet code, like the seeded ones.
 
-### Structure at creation
+### Structure on a first version
 
-- [ ] **STRUCT-01**: A maker can add and remove steps and rows while creating a first version, and removing one leaves no dangling reference.
+- [ ] **STRUCT-01**: A maker can add and remove steps and rows on a first version, while creating it and after Save until it has a batch or a child version. A removal deletes outright and cleans up anything that pointed at it, so no dangling reference is left.
 - [ ] **STRUCT-02**: A maker can reorder steps, and rows within a step, with Move up and Move down buttons that work by touch and keyboard.
 - [ ] **STRUCT-03**: A step's stored number and a row's id never change on reorder.
-- [ ] **STRUCT-04**: Saved versions show no Add, Remove or Move controls.
+- [ ] **STRUCT-04**: Add, Remove and Move controls appear on a first version that has no batch and no child version, and on no other saved version. The version pen's remove and restore on later versions is unchanged.
 
 ### Custom scales and problems
 
-- [ ] **SCALE-01**: A maker can define 0 to 2 scales for a recipe, each with a name and a label for each end.
+- [ ] **SCALE-01**: A maker can define 0 to 2 scales for a recipe, each with a name, a label for each end, and its kind: goldilocks, with the fixed middle word "right", or plain magnitude.
 - [ ] **SCALE-02**: A maker can define 0 to 2 problems for a recipe.
-- [ ] **SCALE-03**: A batch snapshots the recipe's definitions, so a later change never moves a stored mark.
-- [ ] **SCALE-04**: The record pen, the reading and the printed log show a recipe's own scales and problems, and "This recipe only" shows only when it has any.
+- [ ] **SCALE-03**: A batch snapshots the recipe's definitions, a scale's kind included, so a later change never moves a stored mark.
+- [ ] **SCALE-04**: The record pen, the reading and the printed log show a recipe's own scales, each in its kind, and its problems, and "This recipe only" shows only when it has any.
 
 ### Proof
 
@@ -72,13 +74,14 @@ Tracked, not in this roadmap.
 
 | Feature | Reason |
 |---------|--------|
-| Structure edits on later versions | Mark, 2026-10-16: structure edits happen at creation of a first version only; saved versions show no structure controls |
+| Structure edits on later versions | Mark, 2026-10-16: structure is edited only on a first version, while it has no batch and no child version |
 | Show changes for dropped, added and moved steps | Follows from the above; a first version has no parent to compare with |
 | Library create, edit, duplicate | Mark, 2026-10-16: the library is seeded, not edited; picking is enough |
 | Auto-balance or Optimize | The D12 label is open and FORM-02 forbids silent replacement |
 | Template, Base or Adapted-from at creation | Mark copies recipes into each other; seeded recipes stand alone |
 | Drag-only reorder | Move buttons are the baseline for iPad, keyboard reach and the CSS-token rule |
 | More than 2 custom scales or 2 custom problems | Sketch 010 D25 and D26 |
+| A name-only row for an ingredient not in the library | Mark, 2026-10-16: the picker says "Not in the library yet" and adds nothing |
 | Any import (URL, file, photo, pasted text) | D03 assigns import to a later milestone |
 | Markdown, timers, cook mode, photos, stars, servings, nutrition, cost | Not part of the creation loop |
 | Data migration | Reset-over-migration holds while there is no live data; the reset window closes when creation becomes saveable |
@@ -103,7 +106,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MAKE-06 | Phase 10 | Pending |
 | MAKE-07 | Phase 11 | Pending |
 | MAKE-08 | Phase 10 | Pending |
-| MAKE-09 | Phase 12 | Pending |
+| MAKE-09 | Phase 10 | Pending |
 | MAKE-10 | Phase 11 | Pending |
 | MAKE-11 | Phase 10 | Pending |
 | MAKE-12 | Phase 11 | Pending |
@@ -111,8 +114,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRUCT-02 | Phase 11 | Pending |
 | STRUCT-03 | Phase 11 | Pending |
 | STRUCT-04 | Phase 11 | Pending |
-| SCALE-01 | Phase 12 | Pending |
-| SCALE-02 | Phase 12 | Pending |
+| SCALE-01 | Phase 10 | Pending |
+| SCALE-02 | Phase 10 | Pending |
 | SCALE-03 | Phase 9 | Pending |
 | SCALE-04 | Phase 12 | Pending |
 | PROOF-01 | Phase 12 | Pending |
@@ -120,9 +123,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 **Coverage:**
 - v2.0 requirements: 28 total
-- Mapped to phases: 28 (Phase 8: 2, Phase 9: 8, Phase 10: 5, Phase 11: 7, Phase 12: 6)
+- Mapped to phases: 28 (Phase 8: 2, Phase 9: 8, Phase 10: 8, Phase 11: 7, Phase 12: 3)
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-10-16*
-*Last updated: 2026-10-16 after revising the v2.0 roadmap (Phases 8-12)*
+*Last updated: 2026-10-16 after the Codex review and Mark's answers: MAKE-09, SCALE-01 and SCALE-02 moved to Phase 10; LIB-05, LIB-06, MAKE-04, MAKE-05, MAKE-06, MAKE-09, STRUCT-01, STRUCT-04, SCALE-01, SCALE-03 and SCALE-04 reworded*

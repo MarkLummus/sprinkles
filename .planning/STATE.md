@@ -3,10 +3,10 @@ gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Recipe creation
 status: planning
-last_updated: "2026-10-16T01:10:00.834Z"
-last_activity: 2026-10-15
+last_updated: "2026-10-16T01:56:56.000Z"
+last_activity: 2026-10-16
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,19 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-14)
+See: .planning/PROJECT.md (updated 2026-10-16)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 06 — The ingredient library in the store
+**Current focus:** Phase 8 — Split the recipe page along its jobs, with Phase 9 — The library and the stored shapes beside it (milestone v2.0 Recipe creation, Phases 8-12)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 8 (Split the recipe page along its jobs); Phase 9 may run beside it once Mark's Phase 9 decisions are answered and its two place boards are approved
 Plan: —
-Status: Defining requirements
-Last activity: 2026-10-15 — Milestone v2.0 started
+Status: Ready to plan
+Last activity: 2026-10-16 — v2.0 roadmap revised: Phases 8-12, 28 of 28 requirements mapped (the old Phase 10 split into Phases 10 and 11; the places moved to Phase 9)
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -326,6 +328,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 06]: seedIfEmpty runs the library step first; the library and versions guards are independent, an empty library is refilled and a filled one never topped up (D-04a, D-05)
 - [Phase 06]: 06-03: exportStore makes one exportAll call over four stores in one readonly transaction; importAll writes four stores in one readwrite transaction (D-07, D-07a)
 - [Phase 06]: 06-03: schema 8, validateLibraryRecord and library: parsed.library land in one commit; library validation checks the wrapper only and refuses reserved ids as values (D-06, D-08)
+- [Roadmap v2.0, 2026-10-16]: Five phases, revised the same day from a four-phase draft after Mark's notes (its Phase 10 of 14 requirements was split, and the places moved to Phase 9): 8 Split the recipe page along its jobs (EDIT-05, EDIT-06), 9 The library and the stored shapes, plus the two places (LIB-04 to LIB-08, SCALE-03, PLACE-01, PLACE-02), 10 The creation editor, without Save (MAKE-04, MAKE-05, MAKE-06, MAKE-08, MAKE-11), 11 Steps, structure, save and print (MAKE-07, MAKE-10, MAKE-12, STRUCT-01 to STRUCT-04), 12 A recipe's own scales, and the whole loop (MAKE-09, SCALE-01, SCALE-02, SCALE-04, PROOF-01, PROOF-02). Phase 9 holds every stored-shape change and v2.0's only DB_VERSION change (9 to 10). Phase 10 has deliberately no Save, so nothing real is stored and the reset window stays open through it; Save lands in Phase 11, because structure cannot be added after the first save, and the window closes there. SCALE-03 sits in Phase 9 so the order is safe under either scale-shape answer. Phases 8 and 9 are independent. Design gates are stated on Phases 9 to 12, and Mark's 16 open decisions are mapped to the phase each blocks in ROADMAP.md (Before planning); none is resolved.
 
 ### Pending Todos
 
@@ -360,6 +363,10 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Impeccable 2026-09-08 -> new phase between 3 and 4] The code work for these confirmed revisions is to be planned as a phase inserted between Phase 3 and Phase 4, not as quick tasks: the imprint (front-matter band, every control out of the spread, the save pair repeated at the foot), the binder's control treatment and its new `--focus-outline-width` token, the pen's printed-paragraph prose fields with purpose and aside on demand and the uses line, native date inputs with the calendar icon hidden, and Escape closing only an untouched pen. Briefs: `.impeccable/surfaces/route-recipe.md` (§ 3 the imprint, § 6 the binder and § 8 Controls), `route-recipe-version.md`, `route-recipe-batch.md`; critique snapshot `.impeccable/critique/2026-09-08T12-33-31Z__app-src-ui-recipepage-jsx.md` (25/40, three P1s).
 - [Phase 03.5, Plan 14] Task 2's device human-check (iPad landscape 1366, iPad portrait 1024, iPhone 393, and a desktop board comparison) is deferred to end-of-phase UAT; must run before phase 03.5 UAT closes out. See 03.5-14-SUMMARY.md "Deferred Human Verification".
 - [v1.1 → Phase 6] The reset bound: `app/src/store/db.js` resets only profiles below 8 and says a later bump writes its own lift (04-04, "records Mark makes from now on are real"); `REQUIREMENTS.md` says the reset applies as usual on the library bump. Adding a store needs neither, so Phase 6 discussion settles it after checking for real stored records.
+- [v2.0 → Phases 9-12] Mark's open decisions (ROADMAP.md, Before planning) are not yet on Mark's List as decide rows; the research run did not write them. Phase 9 waits for decisions 1, 2, 3, 5, 6 and 15 and the Bitter bug row `bug-new-version-loses-declared-defects` (decision 4).
+- [v2.0 → Phase 9] LIB-06 as written ("no recipe, version or batch touched") rules out the objects-only scale shape with a reset; if Mark picks that option, amend LIB-06 in REQUIREMENTS.md before Phase 9 is planned.
+- [v2.0 → Phases 9-12] No sketch draws any v2.0 surface. Phases 9 to 12 are not planned until their boards (listed under each phase's Design gate in ROADMAP.md) are approved on the Claude Design canvas and snapshotted into `.planning/sketches/`. Phase 9's two place boards (the Notebook recipe list and the Ingredients place) are independent of Mark's coefficient and scale decisions and can be drawn while those wait.
+- [v2.0 → Phase 11] The reset window closes when Save lands in Phase 11: no DB_VERSION change from Phase 11 on, and an export-first row goes on Mark's List before the first device build that can save a recipe. Phase 10 has no Save, so nothing real is stored and the window stays open through it.
 
 ### Quick Tasks Completed
 
@@ -546,6 +553,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - Phase 03.7 inserted after Phase 03.6: Before you start as its own Sheet section (URGENT)
 - Phase 03.7.1 inserted after Phase 03.7: Hide Time to draw temp. on every screen and rename the batch log and tasting log; the stored field stays for now (URGENT)
 - v1.1 roadmap created (2026-10-14): Phase 5 Split the recipe page, Phase 6 The ingredient library in the store, Phase 7 Creation primitives. The former Phase 5 (Version evolution) left the active phase list for the roadmap's v2 candidates (Mark, 2026-10-14)
+- v2.0 roadmap created (2026-10-16): Phase 8 Split the recipe page along its jobs, Phase 9 The library and the stored shapes, plus the two places, Phase 10 The creation editor, without Save, Phase 11 Steps, structure, save and print, Phase 12 A recipe's own scales, and the whole loop. Revised the same day from a four-phase draft (Mark's notes): its Phase 10 (14 requirements) split into Phases 10 and 11, PLACE-01 and PLACE-02 moved to Phase 9, and its Phase 11 became Phase 12. Version evolution stays in the roadmap's Later list (out of v2.0, Mark, 2026-10-16)
 
 ## Deferred Items
 
@@ -564,10 +572,12 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-15T02:42:44.285Z
-Stopped at: Phase 07 complete — all phases complete
-Resume file: .planning/phases/07-creation-primitives/07-CONTEXT.md
+Last session: 2026-10-16T01:56:56.000Z
+Stopped at: v2.0 roadmap revised (Phases 8-12); Phase 8 ready to discuss
+Resume file: None
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Discuss Phase 8 with /gsd-discuss-phase 8, then plan it with /gsd-plan-phase 8
+- Put Mark's open decisions (ROADMAP.md, Before planning) on Mark's List as decide rows, so Phase 9 can be discussed beside Phase 8
+- Draw Phase 9's two place boards (the Notebook recipe list and the Ingredients place) on the Claude Design canvas for Mark's approval; they do not wait on his coefficient and scale decisions

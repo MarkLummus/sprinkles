@@ -23,13 +23,13 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 ### Places
 
 - [ ] **PLACE-01**: The Ingredients place lists the library, with search by name and category, read-only.
-- [ ] **PLACE-02**: The Notebook place lists recipes and starts a new one.
+- [ ] **PLACE-02**: The Notebook place lists the recipes.
 
 ### Creating a recipe (continues MAKE-03)
 
 - [ ] **MAKE-04**: A maker can start a blank recipe from the Notebook, needing only a name.
 - [ ] **MAKE-05**: A maker can author the recipe's name and description and its version line.
-- [ ] **MAKE-06**: A maker can add ingredient rows from the library, enter grams, and see the balance figures update.
+- [ ] **MAKE-06**: A maker can add ingredient rows from the library, enter grams, and see the balance figures update. A maker can also remove a row.
 - [ ] **MAKE-07**: A maker can author Instructions steps (lead-in, text, targets) and say which rows each step uses and in what portions.
 - [ ] **MAKE-08**: A maker can author Before you start notes.
 - [ ] **MAKE-09**: A maker can author balance targets, equipment and process, or leave them empty.
@@ -89,40 +89,40 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| EDIT-05 | — | Pending |
-| EDIT-06 | — | Pending |
-| LIB-04 | — | Pending |
-| LIB-05 | — | Pending |
-| LIB-06 | — | Pending |
-| LIB-07 | — | Pending |
-| LIB-08 | — | Pending |
-| PLACE-01 | — | Pending |
-| PLACE-02 | — | Pending |
-| MAKE-04 | — | Pending |
-| MAKE-05 | — | Pending |
-| MAKE-06 | — | Pending |
-| MAKE-07 | — | Pending |
-| MAKE-08 | — | Pending |
-| MAKE-09 | — | Pending |
-| MAKE-10 | — | Pending |
-| MAKE-11 | — | Pending |
-| MAKE-12 | — | Pending |
-| STRUCT-01 | — | Pending |
-| STRUCT-02 | — | Pending |
-| STRUCT-03 | — | Pending |
-| STRUCT-04 | — | Pending |
-| SCALE-01 | — | Pending |
-| SCALE-02 | — | Pending |
-| SCALE-03 | — | Pending |
-| SCALE-04 | — | Pending |
-| PROOF-01 | — | Pending |
-| PROOF-02 | — | Pending |
+| EDIT-05 | Phase 8 | Pending |
+| EDIT-06 | Phase 8 | Pending |
+| LIB-04 | Phase 9 | Pending |
+| LIB-05 | Phase 9 | Pending |
+| LIB-06 | Phase 9 | Pending |
+| LIB-07 | Phase 9 | Pending |
+| LIB-08 | Phase 9 | Pending |
+| PLACE-01 | Phase 9 | Pending |
+| PLACE-02 | Phase 9 | Pending |
+| MAKE-04 | Phase 10 | Pending |
+| MAKE-05 | Phase 10 | Pending |
+| MAKE-06 | Phase 10 | Pending |
+| MAKE-07 | Phase 11 | Pending |
+| MAKE-08 | Phase 10 | Pending |
+| MAKE-09 | Phase 12 | Pending |
+| MAKE-10 | Phase 11 | Pending |
+| MAKE-11 | Phase 10 | Pending |
+| MAKE-12 | Phase 11 | Pending |
+| STRUCT-01 | Phase 11 | Pending |
+| STRUCT-02 | Phase 11 | Pending |
+| STRUCT-03 | Phase 11 | Pending |
+| STRUCT-04 | Phase 11 | Pending |
+| SCALE-01 | Phase 12 | Pending |
+| SCALE-02 | Phase 12 | Pending |
+| SCALE-03 | Phase 9 | Pending |
+| SCALE-04 | Phase 12 | Pending |
+| PROOF-01 | Phase 12 | Pending |
+| PROOF-02 | Phase 12 | Pending |
 
 **Coverage:**
 - v2.0 requirements: 28 total
-- Mapped to phases: 0
-- Unmapped: 28 ⚠️
+- Mapped to phases: 28 (Phase 8: 2, Phase 9: 8, Phase 10: 5, Phase 11: 7, Phase 12: 6)
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-10-16*
-*Last updated: 2026-10-16 after defining milestone v2.0*
+*Last updated: 2026-10-16 after revising the v2.0 roadmap (Phases 8-12)*

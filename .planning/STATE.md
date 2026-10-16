@@ -2,9 +2,14 @@
 gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Recipe creation
+current_phase: 8
+current_phase_name: Split the recipe page along its jobs
 status: planning
-last_updated: "2026-10-16T01:56:56.000Z"
+stopped_at: v2.0 roadmap revised (Phases 8-12); Phase 8 ready to discuss
+last_updated: "2026-10-16T02:19:58.693Z"
 last_activity: 2026-10-16
+last_activity_desc: "v2.0 roadmap revised: Phases 8-12, 28 of 28 requirements mapped (the old Phase 10 split into Phases 10 and 11; the places moved to Phase 9)"
+state_head: 1edbcd49b7d810f6076fe21093e27918a75bdfc7
 progress:
   total_phases: 5
   completed_phases: 0
@@ -537,6 +542,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261015-8y9 | Fix Phase 7 review warnings WR-01 to WR-04 | 2026-10-15 | 5bf5967 | [261015-8y9-fix-phase-7-review-warnings-wr-01-to-wr-](./quick/261015-8y9-fix-phase-7-review-warnings-wr-01-to-wr-/) |
 | 164 | Pin draft.js reserved-name copy to the import check's | 2026-10-15 | 04256a7 | — |
 | 261015-b90 | Phase 7 review cleanup: re-review WR-01 and IN-01, first-review IN-01 to IN-03 | 2026-10-15 | 0a2b7e2 | [261015-b90-phase-7-review-cleanup-re-review-wr-01-a](./quick/261015-b90-phase-7-review-cleanup-re-review-wr-01-a/) |
+| 166 | Draft .planning/GLOSSARY.md for review | 2026-10-15 | 1edbcd4 | — |
 
 ### Roadmap Evolution
 

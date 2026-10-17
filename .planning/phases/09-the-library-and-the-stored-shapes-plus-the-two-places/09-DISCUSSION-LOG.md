@@ -103,3 +103,7 @@ Table and store names, the catalog's shape, the converter's field mapping, the u
 ## Deferred Ideas
 
 Equipment-class and calibration-family tables; a smarter search; maker-added machines, styles, scales and problems.
+
+## Codex review of 09-CONTEXT.md (2026-10-17)
+
+Two blockers, five major, two minor; no code changed. Fixed in the context as D-03a, D-03b, D-04a, D-04b, D-09 (exception and reviewed id mapping), D-10 (basis), D-10a (converter checks), the `create` draft payload, and the schema-8 and styles-update notes. Mark's one choice: new library figures have the basis `inherited` (shown as "unreviewed") until reviewed; the dataset's sources stay as text.

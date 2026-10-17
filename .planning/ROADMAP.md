@@ -142,7 +142,7 @@ Plans:
   7. A version stores its Sheet code, assigned when the version is created (a first version and every Next version) and unique; no edit to the recipe name, the Version name, the Sheet title or description, or any row, step or note changes it; the seeded versions keep the codes they print today, so sheets already in the binder still find them
   8. The machines, the styles with their bands, and the core scales and problems travel in the store file with the library: the file validator checks them, the store file version changes, and an export from one profile imported into a fresh profile restores them
 
-**Plans:** 14 plans in 7 waves (09-01 stops for Mark's library review, D-16; 09-09 confirms the one-way reset before the bump)
+**Plans:** 15 plans in 8 waves (09-01 stops for Mark's library review, D-16; 09-09 confirms the one-way reset before the bump; no plan writes app/dist, so the device build is Mark's own step on 09-15's device check)
 
 Plans:
 **Wave 1**
@@ -162,16 +162,19 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 - [ ] 09-10-PLAN.md — store file schema 9: the tables travel; import keeps the Sheet code rule
-- [ ] 09-11-PLAN.md — boot validates the tables and loads the catalog; the log and the record pen read it; import reloads it
+- [ ] 09-11-PLAN.md — boot validates the tables and loads the catalog; the printed log reads it; import reloads it
 
 **Wave 5** *(blocked on Wave 4 completion)*
-- [ ] 09-12-PLAN.md — a batch snapshots its core scales and problems; import checks a batch against its own snapshot
+- [ ] 09-12-PLAN.md — the recipe page reads the catalog and a new batch's record pen draws its scales and problem chips from it
 
 **Wave 6** *(blocked on Wave 5 completion)*
-- [ ] 09-13-PLAN.md — kept drafts read the catalog; the code constants retire; the static seed scan; the upgrade proof of stable marks
+- [ ] 09-13-PLAN.md — a batch snapshots its core scales and problems; import checks a batch against its own snapshot
 
 **Wave 7** *(blocked on Wave 6 completion)*
-- [ ] 09-14-PLAN.md — the re-walk against the allow-list, the places at the larger library, Mark's List rows
+- [ ] 09-14-PLAN.md — kept drafts read the catalog; the code constants retire; the static seed scan; the upgrade proof of stable marks
+
+**Wave 8** *(blocked on Wave 7 completion)*
+- [ ] 09-15-PLAN.md — the re-walk against the allow-list, the places at the larger library, Mark's List rows
 
 **Design gate**: MET (Mark, 2026-10-17). The boards for the Notebook place (the recipe list) and the Ingredients place (the library, read-only, with search by name and category) are approved and snapshotted as `.planning/sketches/012-places/` (README `## Decisions`: the category filter is a select, the Notebook lists the most recently touched recipe first as Home does, the provenance columns read Basis and Source). Plans cite the snapshot by path.
 **UI hint**: yes

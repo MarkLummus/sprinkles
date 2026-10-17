@@ -1,12 +1,14 @@
 ---
 phase: 9
-reviewers: [opencode]
-reviewed_at: 2026-10-17T20:10:35Z
+reviewers: [opencode, codex]
+reviewed_at: 2026-10-17T20:35:15Z
 plans_reviewed: [09-01-PLAN.md, 09-02-PLAN.md, 09-03-PLAN.md, 09-04-PLAN.md, 09-05-PLAN.md, 09-06-PLAN.md, 09-07-PLAN.md, 09-08-PLAN.md, 09-09-PLAN.md, 09-10-PLAN.md, 09-11-PLAN.md, 09-12-PLAN.md, 09-13-PLAN.md, 09-14-PLAN.md, 09-15-PLAN.md]
 models:
   opencode: "openrouter/deepseek/deepseek-v4.1-flash#high"
+  codex: "gpt-6.1-sol (reasoning=high)"
 model_sources:
   opencode: "pinned"
+  codex: "banner"
 ---
 
 # Cross-AI Plan Review — Phase 9
@@ -334,26 +336,385 @@ Each of these is a concrete, reproducible red suite that the plan's own "full su
 
 ---
 
+## Codex Review
+
+Reviewed the repository at `39d369c`, including the referenced implementation, tests, plans, dataset and sketch contract. The current suite passes: **96 files, 3,000 tests**. Mark’s List was unavailable through this session’s tools, so external approval states remain unverified.
+
+## 09-01
+
+**Summary:** A sound converter plan with useful review gates and numerical checks. The alcohol exceptions need a more explicit contract.
+
+**Strengths**
+
+- The lactose subtraction matches the engine: `computeBalance` adds lactose-derived PAC and POD independently of the ingredient’s dairy flag (`app/src/domain/composition.js:35–44`). I independently applied the proposed conversion rules to the dataset; its milk-solids rows met the specified tolerances.
+- The baseline strategy preserves the existing deterministic capture mechanism, including fixed identity generation and store dumps (`.planning/phases/08-split-the-recipe-page-along-its-jobs/08-walk.mjs:21–24`, `:169–203`).
+
+**Concerns**
+
+- **MEDIUM:** The alcohol treatment is ambiguous. The generic conversion gives `alcohol-40pct` an `other: 0.4` fraction because its dataset solids are 40%; only ethanol receives an explicit composition override. Saying the other alcohol rows are “flagged the same way” does not establish whether those solids remain. See `09-01-PLAN.md:131` and `/Users/mark/Downloads/sprinkles-ingredient-seed-db.json:1739–1754`.
+- **LOW:** The automated output check accepts merely “at least 60” new entries. That would not detect a converter silently omitting several dataset rows (`09-01-PLAN.md`, Task 1 verification).
+
+**Suggestions**
+
+- Pin separate expected compositions and explanatory notes for ethanol, rum and alcohol 40%.
+- Assert exact conservation: all 103 dataset IDs appear exactly once as a same-ingredient mapping or a new entry.
+
+**Risk assessment:** **MEDIUM**, concentrated in conversion interpretation rather than architecture.
+
+## 09-02
+
+**Summary:** The stored-code design addresses the right constructors and readers while preserving printed identities.
+
+**Strengths**
+
+- Both constructors build versions explicitly, so adding the field there is necessary; save-over already spreads the existing version and naturally preserves it (`app/src/domain/newRecipe.js:62–80`, `app/src/domain/lineage.js:130–150`, `:162–172`).
+- Keeping the legacy derivation protects existing paper. I verified **19 versions, 19 unique codes**, with olive oil still `64JH-G408`. The current encoding mechanism is at `app/src/domain/sheetCode.js:122–130`.
+
+**Concerns**
+
+- **LOW:** Stamping only `seedRecipeGroups` creates two representations of seeded versions: stamped aggregate records and unstamped direct exports. The aggregate currently contains those direct exports (`app/src/data/seed-recipes.js:74–77`); many tests import individual recipe modules directly.
+
+**Suggestions**
+
+- Identify which direct-export fixtures subsequently enter persistence or printing, and explicitly stamp or replace those fixtures.
+- Keep a test proving the aggregate stamping does not mutate the original seed objects.
+
+**Risk assessment:** **LOW**; the main implementation risk is fixture consistency.
+
+## 09-03
+
+**Summary:** The places follow the approved scope and reuse appropriate ordering and search seams. The detail rendering contract needs tightening.
+
+**Strengths**
+
+- Reusing `activeWork` preserves Home’s existing recipe grouping, recency ordering and duplicate-name behavior (`app/src/domain/lastEvent.js:111–132`).
+- The proposed filters and ordering match the approved board’s deliberately simple search (`.planning/sketches/012-places/README.md:64–66`).
+
+**Concerns**
+
+- **MEDIUM:** The existing library validator deliberately ignores category, basis, source and note types (`app/src/store/transfer.js:209–215`). I confirmed that a record with object-valued category and source passes validation. The new page’s capitalization and React rendering can consequently fail on an accepted import.
+- **MEDIUM:** The task omits packed state and hydration temperature from its detail rendering, although the approved board requires both when present (`.planning/sketches/012-places/README.md:34`). Existing entries contain these fields (`app/src/data/library.js:51`, `:88–91`).
+
+**Suggestions**
+
+- Define safe handling for every optional display field accepted by the validator, or explicitly extend validation for this new surface.
+- Add Sucrose packed-state and Locust bean gum hydration cases.
+- Include a failed repository-read state rather than leaving the page indefinitely loading.
+
+**Risk assessment:** **MEDIUM**, with concrete compatibility and board-conformance gaps.
+
+## 09-04
+
+**Summary:** Extending the existing hook is appropriate, but the proposed creation-draft contract is incomplete enough to block the phase’s stored-shape goal.
+
+**Strengths**
+
+- The plan correctly identifies both existing obstacles: restoration requires a loaded version, and persistence recognizes only the existing pens (`app/src/ui/useKeptDraft.js:110–156`, `:162–201`).
+- Reusing the existing writer retains debounce, unmount and pagehide behavior (`app/src/ui/useKeptDraft.js:29–49`, `:203–218`).
+
+**Concerns**
+
+- **HIGH:** The exhaustive allowed-key list has no Instructions/method field or step allocations; rows hold only ID, library ID and one grams string (`09-04-PLAN.md:105`). Creation must author steps and portions (`.planning/REQUIREMENTS.md:36`), and the current persisted model represents these as method steps and row portions (`app/src/domain/newRecipe.js:75–79`, `app/src/domain/draft.js:221–239`). Later implementation must either lose this information or change the supposedly settled contract.
+- **HIGH:** Applying `isScaleDefinition` to drafts accepts only complete scale definitions. A partially typed scale can therefore make restoration reject—and delete—the entire creation draft (`09-04-PLAN.md:103–107`).
+- **MEDIUM:** Adding a third `buildDraftRecord` call breaks the existing source-contract test, which requires exactly two (`app/src/ui/RecipePage.shell.test.js:267`). That test is absent from the plan’s changes.
+
+**Suggestions**
+
+- Define the full creation payload now, including method, allocations, stable keys and raw incomplete input.
+- Separate draft-shape acceptance from saved-record validity.
+- Update the source-contract assertions explicitly, preserving their ownership guarantees.
+- Test dirty detection against the actual initial defaults, including `"Version 1"`.
+
+**Risk assessment:** **HIGH**; revise before execution.
+
+## 09-05
+
+**Summary:** The copied-coefficients approach preserves the existing model and adds useful provenance without making calculations depend on the library.
+
+**Strengths**
+
+- `rowFromLibraryRecord` already clones the ingredient; adding an informational link preserves that isolation (`app/src/domain/versionRow.js:62–67`).
+- Requiring the link on both version and snapshot rows fits the existing shared `validateRow` path (`app/src/store/transfer.js:98–125`).
+
+**Concerns**
+
+- **MEDIUM:** The constructor currently validates the entry but never validates `record.id` (`app/src/domain/versionRow.js:45–60`). Simply copying it into `libraryId` allows the constructor to produce a row that its new import validator rejects.
+- **LOW:** “Exactly two strawberry definitions” must describe definition identities, not two row occurrences: seeded versions and batch snapshots repeat rows (`app/src/data/seed-recipes.js:58–61`).
+
+**Suggestions**
+
+- Validate the incoming library record ID with the same nonempty/reserved-name rules as `libraryId`.
+- Express the strawberry exception assertion as an explicit set of permitted definition identities.
+
+**Risk assessment:** **LOW** after aligning constructor and validator contracts.
+
+## 09-06
+
+**Summary:** The transaction design closes the intended race. The plan’s verification scope misses existing UI contracts that the API change necessarily breaks.
+
+**Strengths**
+
+- Moving checking into the write transaction improves on the current unconditional `db.put` (`app/src/store/repository.js:32–35`).
+- The existing save handler already preserves the draft and reports failure through its catch path (`app/src/ui/useVersionPen.js:199–215`).
+
+**Concerns**
+
+- **HIGH:** Changing the handler to `createVersion` breaks existing UI mocks and assertions that expose only `saveVersion`. A concrete example presses “Save as a new version” and waits for `store.saveVersion` (`app/src/ui/RecipePage.beforeYouStart.test.jsx:259–272`); another does the same for row removal (`app/src/ui/RecipePage.perStep.test.jsx:207–219`).
+- **MEDIUM:** The architectural test requires exactly two `repository.saveVersion` calls (`app/src/ui/RecipePage.shell.test.js:233`). The proposed change leaves one.
+
+**Suggestions**
+
+- Add the affected UI tests and source-contract test to this plan’s ownership.
+- Assert one creation call and one save-over call, rather than weakening the architectural check.
+- Add a UI collision case proving the pen and entered data remain available after refusal.
+
+**Risk assessment:** **HIGH for execution readiness**, although the transaction approach itself is sound.
+
+## 09-07
+
+**Summary:** The merge and conflict gate are well structured, but the lactose invariant currently references records that the generated module intentionally excludes.
+
+**Strengths**
+
+- Spreading existing entries last protects their values mechanically, consistent with the existing seed-on-empty seam (`app/src/store/seed.js:21–27`).
+- The proposed numerical invariant checks the actual engine rather than merely checking converted object fields (`app/src/domain/composition.js:26–44`).
+
+**Concerns**
+
+- **HIGH:** Task 3 evaluates every milk-solids check using `librarySeedDb[key]` (`09-07-PLAN.md:151`). However, same-ingredient rows are excluded from that module and retained only in `samePairs` (`09-01-PLAN.md:134–135`). `skim-milk-powder` is such a row; the existing entry is `skimMilkPowder` (`app/src/data/library.js:39–45`). The prescribed lookup is therefore undefined.
+- **MEDIUM:** Substituting the merged library would also be wrong: intentionally retained app coefficients need not reproduce dataset totals.
+
+**Suggestions**
+
+- Run dataset invariants against converted candidates, including `samePairs[datasetId].converted`.
+- Keep separate assertions for converted-candidate correctness and retained-app-value preservation.
+
+**Risk assessment:** **HIGH** until the test-data contract is corrected.
+
+## 09-08
+
+**Summary:** The definition conversion and child cloning are necessary. Its intermediate draft implementation would reject ordinary core marks before the later catalog work arrives.
+
+**Strengths**
+
+- The plan fixes an actual reference-sharing problem: children currently share both declaration arrays with their parent (`app/src/domain/lineage.js:141–142`).
+- Batch creation already deep-copies declarations, providing the right foundation for object definitions (`app/src/domain/batch.js:184–189`).
+
+**Concerns**
+
+- **HIGH:** Task 2 makes `declaredOf` return only declared definition keys. But `fitsRecordValues` checks **every** mark against that returned list (`app/src/domain/draft.js:165–176`). Checking core keys separately in `fitsRecordShape` does not help: a valid Sweetness mark still fails the later check. Plan 09-14 eventually repairs this, but 09-08 requires a green full suite.
+
+**Suggestions**
+
+- Preserve the union of core and declared keys during this intermediate stage.
+- Add explicit tests for core-only, declared-only and combined marks before changing the helper.
+
+**Risk assessment:** **HIGH** because the written intermediate implementation violates its own verification contract.
+
+## 09-09
+
+**Summary:** The bounded reset and seeded-table work cover the central upgrade requirements. The future-upgrade proof needs a fixed historical starting version.
+
+**Strengths**
+
+- The proposed reset extends an existing guarded upgrade pattern, including preserving the batch index (`app/src/store/db.js:24–55`).
+- Generalizing the existing atomic seed operation retains its count-and-write protection against concurrent booting (`app/src/store/repository.js:130–151`).
+
+**Concerns**
+
+- **MEDIUM:** The behavioral ratchet’s task creates its starting profile at `DB_VERSION`, despite the truth requiring version 10 (`09-09-PLAN.md:151`). Once `DB_VERSION` becomes 11, that test exercises 11→12 and stops covering preservation of a version-10 profile.
+- **MEDIUM:** `fake-indexeddb` supplies valuable upgrade tests but does not establish browser persistence behavior. The existing harness uses a fresh `IDBFactory` (`app/src/store/db.test.js:75–78`), while the WebKit walk starts fresh browser contexts (`08-walk.mjs:87`).
+- **LOW:** Several declared truths—aborted upgrade rollback and concurrent seeding of the new tables—lack explicit test cases.
+
+**Suggestions**
+
+- Pin the preservation fixture to historical version **10**, independently of the current version.
+- Add one WebKit stored-9→10 upgrade case, including reopening.
+- Add explicit abort/retry and concurrent new-table seed cases.
+
+**Risk assessment:** **MEDIUM**, with inherently significant consequences if upgrade protection regresses.
+
+## 09-10
+
+**Summary:** The eight-store transaction and repeated Sheet code check address the important import guarantees.
+
+**Strengths**
+
+- The existing import implementation already aborts explicitly on synchronous put failures; extending that pattern preserves atomicity (`app/src/store/repository.js:158–179`).
+- Reusing the versions read for prechecks avoids an unnecessary additional read (`app/src/store/transfer.js:655–662`).
+
+**Concerns**
+
+- **MEDIUM:** Deriving core keys from `parsed.scales` introduces a dependency on unvalidated nested input (`09-10-PLAN.md:103`). The current validator validates versions before later arrays (`app/src/store/transfer.js:583–604`). Missing, non-array or null-containing scales must produce errors rather than throw while validating a version.
+- **MEDIUM:** The described race test calls `importAll` directly after another write. That tests transaction enforcement, but does not by itself verify that `importStore` translates the resulting error correctly.
+
+**Suggestions**
+
+- Derive core keys defensively and add malformed-scales cases alongside valid versions.
+- Add a controlled `importStore` test that inserts the competing write between precheck and transaction, then checks both the message and unchanged stores.
+
+**Risk assessment:** **MEDIUM**.
+
+## 09-11
+
+**Summary:** Boot validation and catalog delivery fit the existing architecture. Post-import reload failure and the ordering contract need explicit treatment.
+
+**Strengths**
+
+- Boot already has a pre-mount asynchronous boundary suitable for validation (`app/src/main.jsx:27–38`).
+- Reloading after import uses the correct existing integration point, immediately before the revision update (`app/src/ui/Shell.jsx:347–353`).
+
+**Concerns**
+
+- **MEDIUM:** Catalog reloading can fail after import has committed. The current handler has no catch around this new operation (`app/src/ui/Shell.jsx:347–353`), leaving the app with committed data and potentially stale displayed records.
+- **MEDIUM:** The ordering test contradicts the helper contract: `coreScaleDefinitions` preserves supplied order, but the proposed axes test supplies key order and expects table order (`09-11-PLAN.md:126`, `:134`).
+- **LOW:** A mocked `reloadCatalog` proves call sequencing, not that the real provider and routed data remain consistent.
+
+**Suggestions**
+
+- Specify truthful recovery for “import committed, catalog reload failed”; do not reuse “Nothing was changed.”
+- Choose one sorting boundary and make helper tests reflect it.
+- Add an integration case using the real provider and imported changed definitions.
+
+**Risk assessment:** **MEDIUM**.
+
+## 09-12
+
+**Summary:** Reading context at the route and passing data into the presentational row is appropriately scoped.
+
+**Strengths**
+
+- The current fresh-record stand-in is exactly the path that needs replacement (`app/src/ui/BatchRow.jsx:1042–1056`).
+- Keeping the Correct path separate preserves its existing snapshot-based declaration behavior (`app/src/ui/BatchRow.jsx:621–626`).
+
+**Concerns**
+
+- **MEDIUM:** The catalog becomes variable, but desktop `AxesGrid` renders only `core[0]` through `core[3]`; stacked layout maps every core axis (`app/src/ui/BatchRow.jsx:209–219`, `:240–245`). Accepted catalogs with additional core rows would display differently across widths.
+- **LOW:** Checking only whether tests contain `CatalogFixture` is a weak acceptance condition; source-only tests need no provider, while a named fixture does not prove every mount uses it.
+
+**Suggestions**
+
+- Explicitly enforce the supported core-scale cardinality, or handle additional rows consistently with design approval.
+- Test the chosen contract at both layout arrangements.
+- Make provider coverage an executed mount check rather than a text-presence check.
+
+**Risk assessment:** **MEDIUM**.
+
+## 09-13
+
+**Summary:** This plan follows the snapshot model through creation, correction, reading and import. Its principal remaining gap is proof using definitions beyond the incumbent goldilocks set.
+
+**Strengths**
+
+- Extending `createBatch` while leaving `completeRecord`’s snapshot untouched preserves the existing immutability boundary (`app/src/domain/batch.js:177–193`, `:206–212`).
+- Checking mark keys against snapshot definitions closes a real validation gap: current validation checks mark values but not their keys (`app/src/store/transfer.js:255–264`).
+
+**Concerns**
+
+- **MEDIUM:** The prescribed tests concentrate on existing goldilocks scales. `stopWordsFor`, `readMarkWord` and `AxisMark` currently assume a `"right"` midpoint (`app/src/domain/axes.js:37–38`, `:87–90`; `app/src/ui/AxisMark.jsx:111–114`). Storing a kind therefore must not be mistaken for completing kind-aware presentation.
+- **LOW:** Mutation tests against shared `SEED_CATALOG` can contaminate later tests unless they clone or restore the fixture.
+
+**Suggestions**
+
+- Round-trip a custom magnitude definition and renamed declared scale through creation and import.
+- Explicitly hand kind-aware rendering to Phase 12.
+- Mutate a cloned catalog when testing snapshot independence.
+
+**Risk assessment:** **MEDIUM**, with a strong underlying implementation approach.
+
+## 09-14
+
+**Summary:** Retiring runtime seed constants completes the architectural goal. The stability proof needs a marked scale that actually changes.
+
+**Strengths**
+
+- The planned caller inventory covers all current runtime draft checks: restore, waiting-plan filtering and Home’s draft lead (`app/src/ui/useKeptDraft.js:121`, `app/src/ui/RecipePage.jsx:311`, `app/src/ui/RecipeList.jsx:98`).
+- Existing tests already establish that declaration removal from a live version must not affect a batch (`app/src/domain/axes.test.js:97–103`).
+
+**Concerns**
+
+- **MEDIUM:** The upgrade proof changes Hardness, but the seeded batch marks only Sweetness and Oil (`app/src/data/batch-2026-08-02.js:57`). Its marked-word assertions could pass even if core-word lookup incorrectly used the current catalog. Deleting the table’s Oil row primarily tests a declared scale already embedded in the version (`09-14-PLAN.md:158`).
+- **LOW:** The import scan catches conventional static imports but does not prove all runtime seed access is impossible; its claim should match its actual coverage.
+
+**Suggestions**
+
+- Change a **marked core scale**, such as Sweetness, and assert its old words after reload and round-trip.
+- Also change/remove a later version’s declared definition and problem.
+- Describe the scan as an architectural guard, supplemented by behavior tests.
+
+**Risk assessment:** **MEDIUM**.
+
+## 09-15
+
+**Summary:** The checked allow-list is a sensible final regression gate, but its negative tests and library-size measurement modes need strengthening.
+
+**Strengths**
+
+- The inherited comparator reports exact paths and values, providing a suitable foundation for narrow exceptions (`08-walk.mjs:843–855`, `:885–895`).
+- The plan preserves device verification as separate evidence, consistent with the sketch’s explicit statement that desktop WebKit measurements are not iPad verification (`.planning/sketches/012-places/README.md:68–70`).
+
+**Concerns**
+
+- **MEDIUM:** Checking only differences does not prove required additions exist. If `libraryId` remains absent in both files, `diffLeaves` emits nothing, so no allow-list check runs (`08-walk.mjs:843–855`; `09-15-PLAN.md:76`).
+- **MEDIUM:** “Keep every 09-03 check” retains the 26-entry mobile row range while adding the larger-library range (`09-15-PLAN.md:101`). Those are distinct measured datasets: 88–105 versus 71–109 pixels (`.planning/sketches/012-places/README.md:47`, `:52`). Without fixture modes, valid new rows can fail the old assertions.
+- **LOW:** The doctored recipe-name test exercises an unrelated path, not incorrect values at permitted paths.
+
+**Suggestions**
+
+- Assert required new fields independently of the diff.
+- Add negative cases for a wrong permitted value and a missing required addition.
+- Separate original-library fixture measurements from current-library measurements.
+- Record side-by-side visual evidence; passing dimensions alone does not establish full board conformance.
+
+**Risk assessment:** **MEDIUM**.
+
+## Cross-plan assessment
+
+**Recommendation: request changes before execution.** Requirement coverage is broad, but several written steps cannot meet their own green-suite acceptance criteria.
+
+| Priority | Required correction | Plans |
+|---|---|---|
+| HIGH | Complete the creation-draft contract and preserve partially authored input | 09-04 |
+| HIGH | Update UI mocks and architectural assertions for `createVersion` | 09-06 |
+| HIGH | Evaluate converted same-ingredient candidates in dataset invariants | 09-07 |
+| HIGH | Preserve core marks during the intermediate draft conversion | 09-08 |
+| MEDIUM | Align accepted library shapes with safe Ingredients rendering | 09-03, 09-09, 09-11 |
+| MEDIUM | Pin historical upgrade fixtures and strengthen final evidence | 09-09, 09-14, 09-15 |
+
+The dependency waves otherwise follow the implementation’s main seams: domain shapes, repository transactions, boot catalog, consumers and final proof. The planned work largely stays within approved scope; deferring magnitude presentation and creation UI remains appropriate.
+
+**Overall risk: HIGH as written.** The principal risks are incomplete contracts and verification dependencies, rather than the chosen architecture. All **15 plans** are covered above.
+
+---
+
 ## Consensus Summary
 
-One reviewer ran (opencode, DeepSeek v4.1 Flash, over OpenRouter). It cites `file:line` evidence throughout, so it counts as a grounded review, but a single reviewer cannot show agreement. The orchestrator checked the three HIGH findings against the repo before recording them; all three are real.
+Two grounded reviewers ran: opencode (DeepSeek v4.1 Flash, rated overall risk MEDIUM) and Codex (GPT, rated overall risk HIGH, "request changes before execution"). Both cite `file:line` evidence and both covered all 15 plans. Their overlap is real but their strongest findings differ, so the union is what matters. The orchestrator checked these against the repo: opencode's three HIGH findings (all real), Codex's plan 07 lookup bug (real), Codex's plan 08 `declaredOf` finding (consistent with `draft.js:165-176` and the plan text), and Codex's plan 04 contract gap (the plan's key list has no method steps or allocations).
 
 ### Agreed Strengths
-Not applicable with one reviewer. Its strengths, for the record: the lactose math, the 18-collision count, the reset branch, the hook guard line and the call-site counts all check out against source.
+- The lactose math, the 18-key collision count, the hook guard line (`useKeptDraft.js:112`) and the caller inventories verify against source.
+- Reusing `activeWork`, the existing hook and the existing transaction pattern keeps the new work on established seams.
+- The dependency waves follow the real seams; no reviewer found a wave-ordering error.
+- Reviewing the full suite: 96 files and 3,000 tests pass today (Codex).
 
 ### Agreed Concerns
-Not applicable with one reviewer. Verified findings, highest priority first:
+1. **Plans 04 and 06 break `RecipePage.shell.test.js` and the plans do not name it** (both reviewers). 04 changes the `buildDraftRecord(` count from 2 and the `deleteDraft` count from 3 (`:262-275`); 06 drops `repository.saveVersion(` from 2 to 1 (`:233`). Codex adds that 06 also breaks UI tests that wait on `store.saveVersion` (`RecipePage.beforeYouStart.test.jsx:259-272`, `RecipePage.perStep.test.jsx:207-219`); the orchestrator did not check those two.
+2. **Plan 09's upgrade proof is thinner than its stakes** (both). opencode: the reset checkpoint is auto-selected, so do not call it a human confirmation, and the static ratchet should be anchored on `oldVersion < 10`. Codex: build the behavioural ratchet's starting profile at literal version 10, not `DB_VERSION`; add a WebKit 9→10 case and explicit abort and concurrent-seed cases.
+3. **Plan 15's allow-list needs negative proof** (both). opencode: it must accept a null `libraryId`. Codex: checking only differences cannot prove a required addition exists; add a wrong-value and a missing-addition negative case.
+4. **Fixture sweeps are under-specified** (both): plan 05 (every hand-built store-file fixture, plus validating the library record id before copying it into `libraryId`, from Codex) and plan 10 (four new arrays per fixture; make nested `scales` validation defensive, from Codex).
 
-1. **HIGH, verified: plan 09-04 breaks `RecipePage.shell.test.js`.** The `useKeptDraft` marker pins `buildDraftRecord(` at 2 and `repository.deleteDraft(versionId)` at 3 (`RecipePage.shell.test.js:262-275`); those counts are exact today (`useKeptDraft.js:167,175` and `:49,122,191`). A `create` branch changes them. The file is not in 09-04's `files_modified` (only 09-12 and 09-13 name it).
-2. **HIGH, verified: plan 09-06 breaks `RecipePage.shell.test.js`.** The `useVersionPen` marker pins `repository.saveVersion(` at 2 (`:233`); `useVersionPen.js:199` and `:239` are the two calls. Routing the child save through `createVersion` leaves 1. The file is not in 09-06's plan.
-3. **HIGH, verified: plan 09-11 breaks `PrintLogPages.test.jsx`.** The "import no literal list" case asserts `src` contains `axesForVersion(version)` and `DEFECTS` (`PrintLogPages.test.jsx:172-173`). The plan changes the call to take a catalog and requires `DEFECTS` gone. The file is in the plan's `files_modified`, but no task describes rewriting this case.
-4. **MEDIUM: plan 09-05 validator tightening.** Requiring `libraryId` reaches every hand-built store-file fixture (`creation-roundtrip`, `seed-roundtrip`, `sheet-code-import`, `library` tests), not just `transfer.test.js`. State the sweep.
-5. **MEDIUM: plan 09-15 allow-list and null `libraryId`.** The two strawberry rows carry `libraryId: null`; the allow-list must accept null and the doctored-file test should include one.
-6. **MEDIUM: plan 09-01.** The review list should contrast the new whole-milk row with the existing `wholeMilk33` and `wholeMilk37`; the walk verify says "usage lines" change but `08-walk.mjs:904` (after the cut point) must stay, so the plan should name header lines 4-9 only; the coconut-milk name guard will not fire.
-7. **MEDIUM: plan 09-07.** Generate the seven conflict notes from the converter's output instead of asserting numbers by hand.
-8. **MEDIUM: plan 09-09.** The reset checkpoint is `auto_select="proceed"`, so the record must not describe it as a human confirmation. The reviewer's suggested static ratchet (every `deleteObjectStore` between the `oldVersion < 10` line and the first guarded create) is sturdier than a text scan for `clear(`.
-9. **MEDIUM: plan 09-13.** Run the full suite after the data-file sweep, before touching the UI, because a forgotten `catalog` throws at import time.
-10. **LOW and MEDIUM, plans 09-10 and 09-14:** list the exact fixtures (a store-file fixture builder would help), and exempt the data-scan by an explicit path allow-list rather than a substring `/data/`.
+### Findings from one reviewer only (highest priority first)
+- **HIGH (opencode, verified): plan 11 breaks `PrintLogPages.test.jsx:172-173`.** The "no literal list" case asserts `DEFECTS` and `axesForVersion(version)` are in the source; the plan removes both. No task rewrites the case. Codex did not raise this.
+- **HIGH (Codex, verified): plan 07 Task 3 reads `librarySeedDb[key]` for `skim-milk-powder`, which plan 01 excludes** from that module and keeps only in `samePairs`. The lookup is undefined. Run the invariant on converted candidates, including `samePairs[id].converted`. opencode rated plan 07 MEDIUM and missed this.
+- **HIGH (Codex): plan 08's `declaredOf` returns only declared keys, but `fitsRecordValues` checks every mark against it,** so a valid core mark (Sweetness) fails the check until plan 14. Keep core plus declared keys in the intermediate stage. opencode rated 08 LOW-MEDIUM.
+- **HIGH (Codex, partly verified): plan 04's create-draft contract is incomplete.** The key list has rows with only id, libraryId and grams, and no method steps or portion allocations, which conflicts with criterion 2 ("nothing creation stores changes shape after this phase") once Phase 11 adds steps. Applying `isScaleDefinition` to drafts also means a half-typed scale rejects and deletes the whole draft. Separate draft acceptance from saved-record validity.
+- **MEDIUM (Codex):** plan 03 renders library fields the validator does not type-check (an object-valued category passes import), and omits packed state and hydration temperature that the board requires; plan 11 has no recovery path when the catalog reload fails after a committed import, and its axes ordering test contradicts the helper's contract; plan 12 renders four core scales on desktop but all of them stacked; plan 13's tests only exercise goldilocks scales; plan 14's stability proof changes Hardness, which the seeded batch never marked; plan 15 keeps the 26-entry mobile row range beside the larger-library range.
+- **MEDIUM (opencode):** plan 01's review list should contrast the new whole-milk row with `wholeMilk33` and `wholeMilk37`, and its walk verify must name header lines 4-9 only; plan 07 should generate the seven conflict notes from the converter; plan 13 needs a full-suite gate after the data-file sweep.
+- **MEDIUM (Codex):** plan 01's alcohol rows (ethanol, rum, alcohol 40%) need pinned expected compositions, and the check should assert all 103 dataset ids appear exactly once, not just "at least 60".
 
 ### Divergent Views
-None (one reviewer). Mark's List items were not verifiable by the reviewer; the plan checker already reviewed them.
+- **Overall risk:** opencode MEDIUM, Codex HIGH. The gap is mostly plans 04, 07 and 08, where Codex found contract errors opencode did not.
+- **Plan 09's auto-selected checkpoint:** opencode flags it as a record-keeping problem; Codex does not mention it.
+- **Plan 14:** opencode worries about the data-scan exemption surface; Codex about which scale the stability proof changes. Both are valid and do not conflict.
+
+**Recommendation:** replan with `/gsd-plan-phase 9 --reviews` before executing. The four HIGH items on plans 04, 06, 07 and 08 and the plan 11 test case would each leave the suite red or the stored shape unsettled as written.

@@ -56,7 +56,10 @@ const OTHER_HOOK_SETTERS = [
 const wholeWord = (names) => new RegExp('\\b(' + names.join('|') + ')\\b');
 
 // Phase 8: the modules the page was cut into, as [label, path].
-const NEW_MODULES = [['useAnnouncer.js', './useAnnouncer.js']];
+const NEW_MODULES = [
+  ['useAnnouncer.js', './useAnnouncer.js'],
+  ['useRecipeData.js', './useRecipeData.js'],
+];
 
 // The names a source imports with `import { a, b as c } from` and then uses
 // fewer than twice (the import and one use): the algorithm of the shell's own
@@ -134,10 +137,38 @@ const JOBS = [
     shellLacks: ['function announce(', 'StatusTimerRef'],
     allow: ['react'],
   },
+  {
+    name: 'useRecipeData',
+    file: './useRecipeData.js',
+    specifier: './useRecipeData.js',
+    call: 'useRecipeData(versionId)',
+    hook: true,
+    markers: [
+      ['.getVersion(', 2],
+      ['.listBatchesForVersion(', 1],
+      ['.listDrafts(', 1],
+      ['.listVersions(', 1],
+      ['.getRecipe(', 1],
+      ['.getBatch(', 1],
+      ['.getAllBatches(', 1],
+      ['setLoadFailed(true)', 8],
+    ],
+    shellLacks: [
+      '.getVersion(',
+      '.listBatchesForVersion(',
+      '.listDrafts(',
+      '.listVersions(',
+      '.getRecipe(',
+      '.getBatch(',
+      '.getAllBatches(',
+      'setLoadFailed',
+    ],
+    allow: ['react', '../store/repository.js'],
+  },
 ];
 
 // The shell's hook calls in the order they must appear, all above the early returns.
-const HOOK_ORDER = ['useAnnouncer()', 'useRecordDraft()'];
+const HOOK_ORDER = ['useAnnouncer()', 'useRecipeData(versionId)', 'useRecordDraft()'];
 
 describe('RecipePage.jsx holds no draft setter (D-12)', () => {
   it('has none of the five setters D-12 names', () => {
@@ -254,7 +285,7 @@ describe('RecipePage.jsx is the route shell', () => {
     expect([...exportedFunctions].sort()).toEqual(['RecipeNotFound', 'RecipePage']);
   });
 
-  it('still loads its records through the repository seam', () => {
+  it('still writes through the repository seam', () => {
     expect(recipePage).toContain("import { repository } from '../store/repository.js';");
   });
 

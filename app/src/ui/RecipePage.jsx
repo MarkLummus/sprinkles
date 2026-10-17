@@ -211,10 +211,10 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // never discard a sheet of transcription. Registered on `document`, not
   // the article, so an Escape pressed while focus rests on `body` (the
   // state the critique found batch Cancel leaving behind) still closes
-  // the pen. Reads the same two dirty checks the draft persistence above
-  // reads — introducing no third notion of dirtiness. An open but
+  // the pen. Reads the same two dirty checks the draft persistence in
+  // useKeptDraft.js reads — introducing no third notion of dirtiness. An open but
   // empty tasting section (tastingOpen true, nothing else touched) counts
-  // as no ink under isDraftDirty's own baseline/blank comparisons above,
+  // as no ink under isDraftDirty's own baseline/blank comparisons,
   // so Escape closes it exactly as it closes any other untouched pen
   // (RESEARCH.md Open Question 4). openPen is recomputed here via
   // derivePenState (not read as an outer variable) because this effect

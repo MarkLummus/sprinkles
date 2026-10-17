@@ -317,8 +317,8 @@ export function useBatchRecording({
   // always name the same batch (T-wn0-01). On an older batch's address the
   // band moves to the awaiting batch's own address and the pen opens there
   // (startTastingOnMount, in useRouteIntents). openBatch is the batch in view,
-  // computed here by the same rule sheetView uses, because the shell computes
-  // its own only after its early returns.
+  // computed here by openBatchFor, the rule sheetView uses, because the shell
+  // builds its view only below its early returns, after this hook is called.
   function handleStartTasting(batch) {
     const openBatch = openBatchFor(batches, batchId);
     if (openBatch && openBatch.id === batch.id) {

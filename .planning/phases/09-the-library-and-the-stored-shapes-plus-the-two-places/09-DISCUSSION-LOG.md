@@ -120,3 +120,7 @@ Areas: Import into a seeded profile, Walk baseline after the reset, When Mark re
 | Bad tables | Reseed empty, refuse bad row / Reseed both / Refuse both | Reseed empty, refuse bad row |
 
 Captured as D-14 to D-18 (D-18 is not a choice: Phase 8 landed, extend `useKeptDraft`).
+
+## Codex review of D-14 to D-18 (2026-10-17)
+
+No blocker; four major, one minor. Applied: D-04a (refuse a same-id version with a different stored code, independent of uniqueness); D-15 (the walk has no screenshots, so the claim is reworded to its 94 snapshots; allow-list gains the core problem definitions in batch snapshots, with expected values checked; places verified side by side in WebKit, select checked rendered); D-18 (hook acceptance contract); D-17 (library included, validation before `App` mounts, message names the table, marked as Claude's reading for Mark to narrow). Not adopted: adding image capture and comparison to the walk, because Phase 9 changes no screen the walk visits.

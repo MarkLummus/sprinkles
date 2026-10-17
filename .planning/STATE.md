@@ -2,20 +2,20 @@
 gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Recipe creation
-current_phase: 08
-current_phase_name: Split the recipe page along its jobs
-status: executing
-stopped_at: Completed 08-06-PLAN.md
-last_updated: "2026-10-17T18:05:29.893Z"
+current_phase: 09
+current_phase_name: The library and the stored shapes, plus the two places
+status: planning
+stopped_at: Phase 08 complete, ready to plan Phase 09
+last_updated: "2026-10-17T18:07:43.420Z"
 last_activity: 2026-10-17
-last_activity_desc: Phase 08 execution started
-state_head: 8690b89628b210d05fc7524fb5fa4825c1877b9e
+last_activity_desc: Phase 08 complete, transitioned to Phase 09
+state_head: de4a1782510157a805080aa4dd312f27537c31fc
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 6
   completed_plans: 6
-  percent: 0
+  percent: 20
 ---
 
 # Project State
@@ -29,18 +29,18 @@ See: .planning/PROJECT.md (updated 2026-10-16)
 
 ## Current Position
 
-Phase: 08 (Split the recipe page along its jobs) — EXECUTING
-Plan: 6 of 6 (08-06 gap closure complete)
-Status: Phase 08 plans executed, awaiting re-verification
-Last activity: 2026-10-17 — Completed 08-06-PLAN.md
+Phase: 09 — The library and the stored shapes, plus the two places
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-10-17 — Phase 08 complete, transitioned to Phase 09
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 132
+- Total plans completed: 138
 - Average duration: —
 - Total execution time: —
 
@@ -65,6 +65,7 @@ Progress: [░░░░░░░░░░] 0%
 | 05 | 6 | - | - |
 | 06 | 3 | - | - |
 | 07 | 3 | - | - |
+| 08 | 6 | - | - |
 
 **Recent Trend:**
 
@@ -598,7 +599,7 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-10-17T18:05:29.871Z
-Stopped at: Completed 08-06-PLAN.md
+Stopped at: Phase 08 complete, ready to plan Phase 09
 Resume file: None
 
 ## Operator Next Steps

@@ -11,8 +11,8 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 
 ### Editor split (continues EDIT-04)
 
-- [ ] **EDIT-05**: `RecipePage` is cut along its separate jobs (announcer, record loading, sheet view, version pen, kept drafts, route intents) and the maker sees no change.
-- [ ] **EDIT-06**: The shell test asserts the new modules positively, and the recorded WebKit walk of 94 snapshots still matches.
+- [x] **EDIT-05**: `RecipePage` is cut along its separate jobs (announcer, record loading, sheet view, version pen, kept drafts, route intents) and the maker sees no change.
+- [x] **EDIT-06**: The shell test asserts the new modules positively, and the recorded WebKit walk of 94 snapshots still matches.
 
 ### Ingredient library (continues LIB-03)
 
@@ -98,8 +98,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| EDIT-05 | Phase 8 | Gaps Found |
-| EDIT-06 | Phase 8 | Gaps Found |
+| EDIT-05 | Phase 8 | Complete |
+| EDIT-06 | Phase 8 | Complete |
 | LIB-04 | Phase 9 | Pending |
 | LIB-05 | Phase 9 | Pending |
 | LIB-06 | Phase 9 | Pending |

@@ -45,7 +45,7 @@ Full phase detail, plans and progress: `.planning/milestones/v1.1-ROADMAP.md`.
 
 **Milestone Goal:** A maker can create a new recipe from scratch in the Notebook, authoring every section of it from a real ingredient library, and make it from a printed sheet.
 
-- [ ] **Phase 8: Split the recipe page along its jobs** - `RecipePage` is cut into the modules creating and editing will share; the maker sees no change
+- [x] **Phase 8: Split the recipe page along its jobs** - `RecipePage` is cut into the modules creating and editing will share; the maker sees no change (completed 2026-10-17)
 - [ ] **Phase 9: The library and the stored shapes, plus the two places** - The reviewed library reaches every profile with provenance, every shape creation will store is settled while a reset is still free, every seed dataset is rows in a store table, and the Ingredients and Notebook places list the library and the recipes
 - [ ] **Phase 10: The creation editor, without Save** - A maker starts a recipe from the Notebook with only a name, authors all of it but its steps against live figures (rows, Version name, Before you start, its own scales and problems, its style and balance targets, a machine and process), and can Resume it; nothing is saved yet
 - [ ] **Phase 11: Steps, structure, save and print** - A maker authors and shapes the new recipe's Instructions steps, saves it as its first version, which stays editable until it has a batch or a child version, and prints it as a bench sheet
@@ -103,7 +103,7 @@ These gates apply to the v2.0 phases below.
   3. The shell test names each new module and asserts that the shell imports it and that its job lives there, not only that code is gone from `RecipePage.jsx`
   4. Every existing test passes; tests whose code moved change only their imports, and none is deleted or weakened
 
-**Plans:** 6/6 plans executed (5/5 executed; 08-06 is gap closure), waves 1 to 5 in sequence (every cut touches `RecipePage.jsx`)
+**Plans:** 6/6 plans complete (5/5 executed; 08-06 is gap closure), waves 1 to 5 in sequence (every cut touches `RecipePage.jsx`)
 
 Plans:
 **Wave 1**
@@ -203,7 +203,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 8. Split the recipe page along its jobs | v2.0 | 6/6 | In Progress | - |
+| 8. Split the recipe page along its jobs | v2.0 | 6/6 | Complete    | 2026-10-17 |
 | 9. The library and the stored shapes, plus the two places | v2.0 | 0/TBD | Not started | - |
 | 10. The creation editor, without Save | v2.0 | 0/TBD | Not started | - |
 | 11. Steps, structure, save and print | v2.0 | 0/TBD | Not started | - |

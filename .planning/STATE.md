@@ -5,16 +5,16 @@ milestone_name: Recipe creation
 current_phase: 08
 current_phase_name: Split the recipe page along its jobs
 status: executing
-stopped_at: Phase 9 context gathered
-last_updated: "2026-10-17T12:18:07.451Z"
-last_activity: 2026-10-16
-last_activity_desc: "v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; decisions 19 and 20 recorded (Sheet code fixed at creation, seed tables travel in the store file) and the scale requirements renamed TASTE-01 to TASTE-04; 30 of 30 requirements mapped"
-state_head: 13beacace1968192033d30f97285d947f135cc6e
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-10-17T16:06:19.920Z"
+last_activity: 2026-10-17
+last_activity_desc: Phase 08 execution started
+state_head: 5a49c56187c60fbace1d3396c98154005085ea6d
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 5
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -25,14 +25,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-16)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 8 — Split the recipe page along its jobs, with Phase 9 — The library and the stored shapes beside it (milestone v2.0 Recipe creation, Phases 8-12)
+**Current focus:** Phase 08 — Split the recipe page along its jobs
 
 ## Current Position
 
-Phase: 08 (Split the recipe page along its jobs) — READY TO EXECUTE
-Plan: —
+Phase: 08 (Split the recipe page along its jobs) — EXECUTING
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-10-16 — v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; decisions 19 and 20 recorded (Sheet code fixed at creation, seed tables travel in the store file) and the scale requirements renamed TASTE-01 to TASTE-04; 30 of 30 requirements mapped
+Last activity: 2026-10-17 — Phase 08 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -161,6 +161,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 06 P01 | 2 min | 2 tasks | 6 files |
 | Phase 06 P02 | 2 min | 3 tasks | 5 files |
 | Phase 06 P03 | 3 min | 3 tasks | 9 files |
+| Phase 08 P01 | 15 min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -335,6 +336,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 06]: 06-03: schema 8, validateLibraryRecord and library: parsed.library land in one commit; library validation checks the wrapper only and refuses reserved ids as values (D-06, D-08)
 - [Roadmap v2.0, 2026-10-16]: Five phases, revised the same day from a four-phase draft after Mark's notes (its Phase 10 of 14 requirements was split, and the places moved to Phase 9): 8 Split the recipe page along its jobs (EDIT-05, EDIT-06), 9 The library and the stored shapes, plus the two places (LIB-04 to LIB-08, SCALE-03, PLACE-01, PLACE-02), 10 The creation editor, without Save (MAKE-04, MAKE-05, MAKE-06, MAKE-08, MAKE-11), 11 Steps, structure, save and print (MAKE-07, MAKE-10, MAKE-12, STRUCT-01 to STRUCT-04), 12 A recipe's own scales, and the whole loop (MAKE-09, SCALE-01, SCALE-02, SCALE-04, PROOF-01, PROOF-02). Phase 9 holds every stored-shape change and v2.0's only DB_VERSION change (9 to 10). Phase 10 has deliberately no Save, so nothing real is stored and the reset window stays open through it; Save lands in Phase 11, because structure cannot be added after the first save, and the window closes there. SCALE-03 sits in Phase 9 so the order is safe under either scale-shape answer. Phases 8 and 9 are independent. Design gates are stated on Phases 9 to 12, and Mark's 16 open decisions are mapped to the phase each blocks in ROADMAP.md (Before planning); none is resolved.
 - [Roadmap v2.0, revised 2026-10-16 after a Codex review]: MAKE-09, SCALE-01 and SCALE-02 moved from Phase 12 to Phase 10, because Phase 11 enables Save and Phase 12 added authoring that exists only at creation, so a recipe saved in Phase 11 could never gain it (Mark's instruction). Phase 10 now holds MAKE-04, 05, 06, 08, 09, 11 and SCALE-01, 02 and the design gate for scales and problems, style and balance targets, equipment and process; Phase 12 is renamed Showing a recipe's own scales and problems, and the whole loop, and keeps SCALE-04, PROOF-01, PROOF-02. Mark's answers to decisions 1 to 15 are recorded in ROADMAP.md (Before planning) and applied: the app's values stay for all seven library conflicts (LIB-05); the library is cleared and reseeded on the version bump, amending Phase 6 D-05 (LIB-06); scales are definitions only, each carrying its kind (goldilocks or plain magnitude), with a reset that rewrites the seeded recipes, so LIB-06 no longer says no recipe, version or batch is touched; the first version stays editable until it has a batch or a child version (STRUCT-04); one description box fills both descriptions, the Version name starts as "Version 1", recipe names may repeat with a warning, removal at creation deletes outright, and an ingredient not in the library adds nothing. New open decision 17 (`decide-style-bands-source`) and the Codex question on equipment and process scope block Phase 10.
+- [Phase 08]: 08-01: no 08-walk-before.json; the base build matches 05-walk-before.json twice, so every later walk compare uses the Phase 5 baseline (D-06)
+- [Phase 08]: 08-01: the walk resolves PROBE_DIST with path.resolve because TMPDIR ends in a slash on this machine; the static server's startsWith check 404'd otherwise
 
 ### Pending Todos
 
@@ -583,9 +586,9 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-17T05:00:03.035Z
-Stopped at: Phase 9 context gathered
-Resume file: .planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-CONTEXT.md
+Last session: 2026-10-17T16:06:19.899Z
+Stopped at: Completed 08-01-PLAN.md
+Resume file: None
 
 ## Operator Next Steps
 

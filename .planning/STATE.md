@@ -590,5 +590,5 @@ Resume file: .planning/phases/08-split-the-recipe-page-along-its-jobs/08-CONTEXT
 ## Operator Next Steps
 
 - Discuss Phase 8 with /gsd-discuss-phase 8, then plan it with /gsd-plan-phase 8
-- Draw Phase 9's two place boards (the Notebook recipe list and the Ingredients place) on the Claude Design canvas for Mark's approval; they wait on no decision
+- Phase 9's two place boards are approved and snapshotted as `.planning/sketches/012-places/`; discuss Phase 9 next with /gsd-discuss-phase 9 (Phase 8 merges first, per its context)
 - Phase 9's seed content is settled: the four styles' approved bands and fields (`.planning/notes/2026-10-16-style-bands-draft.md`) and the Whynter row (maximum empty)

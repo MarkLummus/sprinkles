@@ -25,8 +25,13 @@
 - **D-05:** Phase 8 executes and merges before Phase 9 executes. The walk baseline stays valid (Phase 9's reset rewrites the seeded versions the walk dumps), and Phase 9's `create` draft kind builds on the finished kept-draft hook. Phase 9's planning, and Sid's two place boards, may proceed meanwhile. (Mark, 2026-10-17)
 
 ### Proof of no change
-- **D-06:** Before any code moves, run the walk (`.planning/milestones/v1.1-phases/05-split-the-recipe-page/05-walk.mjs`) at this phase's base commit and compare it with the old baseline `05-walk-before.json`. If it does not match, record a new before-walk at that base commit (as Phase 5 plan 01 did) and compare the finished split against it. The old baseline predates Phases 6 and 7 and later quick tasks. (Mark, 2026-10-17)
+- **D-06:** The walk cannot run from its archived location as it stands (Codex review, verified): `05-walk.mjs` imports its harness from `../../milestones/v1-phases/...`, which resolves to a path that does not exist, its repo root resolves to `.planning/` so the default build directory is `.planning/app/dist`, and its Playwright import points into an npx cache. The plan's first task repairs those paths (copying the walk into this phase's directory is fine) and proves it runs. Then, before any code moves, run the walk (`.planning/milestones/v1.1-phases/05-split-the-recipe-page/05-walk.mjs`) at this phase's base commit and compare it with the old baseline `05-walk-before.json`. If it does not match, record a new before-walk at that base commit (as Phase 5 plan 01 did) and compare the finished split against it. The old baseline predates Phases 6 and 7 and later quick tasks. (Mark, 2026-10-17)
 - **D-07:** No iPad device check for this phase: the WebKit walk and the tests are the evidence, and the iPad is checked once, in Phase 12, for the whole loop. No device row is added to Mark's List for Phase 8. (Mark, 2026-10-17)
+
+### Wiring and contracts the plan must settle
+- **D-08:** The version pen and the kept drafts depend on each other. Version save and cancel call `discardDraft` (`RecipePage.jsx` about 1362-1368, 1497-1504, 1537-1543) and the record save and cancel need it too (about 1260-1320), while the draft restore resets the version pen's state, locks and timestamps (about 533-539). The plan states which hook owns what and how the callbacks are wired, so the hooks do not need each other to initialise, with every hook above the early returns and the callbacks safe while records are still loading.
+- **D-09:** What Phase 8 delivers for Phase 10: the pure `sheetView` accepts `baseline = null`, and `RecipeSheet` renders with no stored version and no baseline (diff props nullable, no band, no batch aside). Phase 8 adds a node test for `sheetView` with a null baseline and a component test that mounts `RecipeSheet` without a stored version. Phase 10's new controls and its `creating` mode are not part of this phase.
+- **D-10:** StrictMode: the restore-once effect (about 450-457) keeps its started-ref behaviour and gets no conventional cancellation cleanup, which would suppress the only permitted restore read. The plan adds a focused test that mounts the page under `React.StrictMode` and proves the draft is restored once, because the current draft tests have no StrictMode wrapper and the walk runs the built app.
 
 ### Claude's Discretion
 - The names and homes of the new modules, within the existing patterns (hooks beside `usePenDraft.js` and `useRecordDraft.js` under `app/src/ui/`, pure functions under `app/src/domain/` or `ui/sheetView.js` as the research proposes).
@@ -74,8 +79,8 @@
 - `app/src/ui/useBelowDesktop.js` (`useFold`, `useSheetTwoColumns`): fold and media state already extracted.
 
 ### Established Patterns
-- Ten existing `RecipePage.*.test.jsx` files mount the page and are the no-visible-change net; they stay as they are except for imports.
-- `RecipePage` today: about 12 `useEffect`s, about 40 handlers, `announce` at about line 886, record-pen handlers about 933-1330, version-pen handlers about 1334-1560, kept-draft restore and persist about 463-700.
+- Eight `RecipePage.*.test.jsx` files mount the page and are the no-visible-change net (`RecipePage.test.jsx` itself does not render the page); they stay as they are except for imports.
+- `RecipePage` today: 16 `useEffect`s (eight repository-load effects, a title effect, three draft effects, two route-intent effects, Escape and the Import guard), about 37 `handle*` functions, `announce` at about line 886, record-pen handlers about 933-1330, version-pen handlers about 1334-1560, kept-draft restore and persist about 463-700.
 
 ### Integration Points
 - Phase 10's creation editor mounts `RecipeSheet` in a `creating` mode with no baseline, and reuses `useAnnouncer` and the kept-draft hook with a `create` kind.

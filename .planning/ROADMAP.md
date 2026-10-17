@@ -103,7 +103,7 @@ These gates apply to the v2.0 phases below.
   3. The shell test names each new module and asserts that the shell imports it and that its job lives there, not only that code is gone from `RecipePage.jsx`
   4. Every existing test passes; tests whose code moved change only their imports, and none is deleted or weakened
 
-**Plans:** 6 plans (5/5 executed; 08-06 is gap closure), waves 1 to 5 in sequence (every cut touches `RecipePage.jsx`)
+**Plans:** 6/6 plans executed (5/5 executed; 08-06 is gap closure), waves 1 to 5 in sequence (every cut touches `RecipePage.jsx`)
 
 Plans:
 **Wave 1**
@@ -122,7 +122,7 @@ Plans:
 - [x] 08-05-PLAN.md — cut 7 `useRouteIntents`; the gated bonus `useBatchRecording`; the final shell test, walk and base-to-result test audit
 
 **Gap closure** *(after verification)*
-- [ ] 08-06-PLAN.md — WR-01: pin RecipeSheet's Show changes hop to IngredientsHead (RecipePage.test.jsx untouched, D-11); WR-02: guard the recording read of a missing draft, test first; IN-01 comments; review dispositions
+- [x] 08-06-PLAN.md — WR-01: pin RecipeSheet's Show changes hop to IngredientsHead (RecipePage.test.jsx untouched, D-11); WR-02: guard the recording read of a missing draft, test first; IN-01 comments; review dispositions
 
 **UI hint**: yes
 **Notes**: No screen changes, so no design gate and no UI-SPEC. The walk is `.planning/milestones/v1.1-phases/05-split-the-recipe-page/05-walk.mjs` with its baseline `05-walk-before.json`, recorded at 4f1f98f before Phases 6 and 7 and later quick tasks landed: first confirm the baseline still matches at this phase's base commit, and if it does not, record a new before-walk there, as 05-01 did, before any code moves. The walk dumps the versions, batches, recipes and drafts stores, not the library, so Phase 9's larger library does not disturb it; Phase 9's reset does rewrite the seeded versions it dumps (decision 5: scales become definitions), so finish this phase's walk before Phase 9 merges, or re-record the baseline on Phase 9's result. Phase 9's `create` draft kind and this phase's kept-draft cut both touch the draft restore path; whichever lands second builds on the first. The research disagrees on when to extract record loading (early or late); settle it in discussion. The batch-recording controller is not among EDIT-05's jobs and creation does not need it; it can stay in place if the split runs long.
@@ -203,7 +203,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 8. Split the recipe page along its jobs | v2.0 | 5/5 | In Progress | - |
+| 8. Split the recipe page along its jobs | v2.0 | 6/6 | In Progress | - |
 | 9. The library and the stored shapes, plus the two places | v2.0 | 0/TBD | Not started | - |
 | 10. The creation editor, without Save | v2.0 | 0/TBD | Not started | - |
 | 11. Steps, structure, save and print | v2.0 | 0/TBD | Not started | - |

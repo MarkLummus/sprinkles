@@ -5,16 +5,16 @@ milestone_name: Recipe creation
 current_phase: 08
 current_phase_name: Split the recipe page along its jobs
 status: executing
-stopped_at: Completed 08-05-PLAN.md
-last_updated: "2026-10-17T17:58:05.142Z"
+stopped_at: Completed 08-06-PLAN.md
+last_updated: "2026-10-17T18:05:29.893Z"
 last_activity: 2026-10-17
 last_activity_desc: Phase 08 execution started
-state_head: 6a0d1184198aa8de0a85a68579a52621ddf1cfe2
+state_head: 8690b89628b210d05fc7524fb5fa4825c1877b9e
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
   percent: 0
 ---
 
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-10-16)
 
 ## Current Position
 
-Phase: 08 (Split the recipe page along its jobs) — READY TO EXECUTE
-Plan: 5 of 5
-Status: Ready to execute
-Last activity: 2026-10-17 — Phase 08 execution started
+Phase: 08 (Split the recipe page along its jobs) — EXECUTING
+Plan: 6 of 6 (08-06 gap closure complete)
+Status: Phase 08 plans executed, awaiting re-verification
+Last activity: 2026-10-17 — Completed 08-06-PLAN.md
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -166,6 +166,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08 P03 | 3 min | 2 tasks | 5 files |
 | Phase 08 P04 | 5 min | 2 tasks | 6 files |
 | Phase 08 P05 | 12 min | 3 tasks | 8 files |
+| Phase 08 P06 | 2 min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -346,6 +347,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 08]: 08-04: useDraftWriter (effect-free) is called before useVersionPen and useKeptDraft after it, taking the pen's restorePlan as onRestorePlan; the restore keeps its started-ref guard with no cancellation cleanup (D-08, D-10)
 - [Phase 08]: 08-04: VERSION_SAVED_STATUS, VERSION_SAVE_ERROR, VERSION_BLOCKED_STATUS and DRAFT_KEPT_STATUS stay importable from RecipePage.jsx through re-exports
 - [Phase 08]: Phase 8 bonus cut landed: useBatchRecording holds the record pen and tasting handlers; openBatchFor in sheetView is the shared openBatch rule
+- [Phase 08]: [Phase 08, Plan 06] The WR-01 pin on RecipeSheet's IngredientsHead hop lives in RecipeSheet.test.jsx, not Test I: D-11 limits RecipePage.test.jsx to read-target edits, so it stays byte-identical to 1b0dcab; 08-test-audit.mjs check (E) gained an additions-only allowance for that one file.
+- [Phase 08]: [Phase 08, Plan 06] WR-02 guard covers RecipeSheet's own recording read only (draft?.stepChanges ?? {}); IngredientTable.jsx still reads the draft in recording mode, pre-existing and untouched.
 
 ### Pending Todos
 
@@ -594,8 +597,8 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-17T16:31:45.929Z
-Stopped at: Completed 08-05-PLAN.md
+Last session: 2026-10-17T18:05:29.871Z
+Stopped at: Completed 08-06-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

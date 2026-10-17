@@ -1,8 +1,8 @@
 ---
 phase: 08-split-the-recipe-page-along-its-jobs
-verified: 2026-10-17T16:38:16Z
-status: gaps_found
-score: 3/4 must-haves verified
+verified: 2026-10-17T18:20:00Z
+status: passed
+score: 4/4 must-haves verified
 covered_files:
   - ".planning/phases/08-split-the-recipe-page-along-its-jobs/08-01-PLAN.md"
   - ".planning/phases/08-split-the-recipe-page-along-its-jobs/08-01-SUMMARY.md"
@@ -14,6 +14,8 @@ covered_files:
   - ".planning/phases/08-split-the-recipe-page-along-its-jobs/08-04-SUMMARY.md"
   - ".planning/phases/08-split-the-recipe-page-along-its-jobs/08-05-PLAN.md"
   - ".planning/phases/08-split-the-recipe-page-along-its-jobs/08-05-SUMMARY.md"
+  - ".planning/phases/08-split-the-recipe-page-along-its-jobs/08-06-PLAN.md"
+  - ".planning/phases/08-split-the-recipe-page-along-its-jobs/08-06-SUMMARY.md"
   - "app/src/ui/RecipePage.jsx"
   - "app/src/ui/RecipePage.shell.test.js"
   - "app/src/ui/RecipePage.shellEffects.test.jsx"
@@ -30,86 +32,83 @@ covered_files:
   - "app/src/ui/useRecipeData.js"
   - "app/src/ui/useRouteIntents.js"
   - "app/src/ui/useVersionPen.js"
-covered_digest: "v3:sha256:e13d42c25375ec06a67caa5d4a17579c2fa482843b0b3fe424f81575310fe612"
+covered_digest: "v3:sha256:9029bbd7a1b60d5d49a08391e157ea37327e4604ff1953577d9c9598ed763702"
 behavior_unverified: 0
 overrides_applied: 0
-gaps:
-  - truth: "Every existing test passes; tests whose code moved change only their imports, and none is deleted or weakened (ROADMAP criterion 4)"
-    status: partial
-    reason: "One source-text pin lost power in the D-11 re-point. RecipePage.test.jsx 'Test I' (261002-wn1) counts onToggleShowChanges={handleToggleShowChanges} and expects 2. Before the split the two sites were VersionRow and IngredientsHead. After the split RecipePage.jsx alone holds two (VersionRow and <RecipeSheet>), and the IngredientsHead hop is written onToggleShowChanges={onToggleShowChanges} inside RecipeSheet.jsx, which the regex does not match. The count is met without the IngredientsHead hop being wired. No other test covers it: the walk records at width 1366, where the below-724 heading control does not render, and no RecipePage-level jsdom test clicks that control. The wiring is present in the code today (read in RecipePage.jsx 419-458 and RecipeSheet.jsx 126-132); the protection against it breaking is what was weakened. 08-test-audit.mjs reports AUDIT OK because it looks at changed expect lines, and this change altered no expect line. This is review finding WR-01."
-    artifacts:
-      - path: "app/src/ui/RecipePage.test.jsx"
-        issue: "Test I (lines ~1289-1304) is satisfied by VersionRow plus RecipeSheet in the shell, so it no longer fails if RecipeSheet stops passing the handler to IngredientsHead"
-    missing:
-      - "Pin the three-hop wiring: keep the shell count at 2 (VersionRow, RecipeSheet) and add an assertion on the comment-stripped RecipeSheet.jsx that <IngredientsHead ... onToggleShowChanges={onToggleShowChanges}> is present; retitle the case to name VersionRow and RecipeSheet, which hands it to IngredientsHead"
-human_verification:
-  - test: "In WebKit at a 393-wide coarse window, open a version that has a parent, with no pen open. In the Ingredients heading press Show changes, then Hide changes."
-    expected: "The heading control toggles the changes view and the URL gains and loses the `changes` key, exactly as at the base commit. The band carries no second Show changes control at this width."
-    why_human: "The recorded walk is at width 1366, where IngredientsHead draws no control, and no RecipePage-level test clicks it, so the RecipeSheet-to-IngredientsHead hop is exercised by nothing automated (WR-01). Also confirms the maker sees no change at a narrow width, which the walk does not cover."
+re_verification:
+  previous_status: gaps_found
+  previous_score: 3/4
+  gaps_closed:
+    - "Every existing test passes; tests whose code moved change only their imports, and none is deleted or weakened (ROADMAP criterion 4): the IngredientsHead hop of Show changes is pinned again (WR-01)"
+  gaps_remaining: []
+  regressions: []
 ---
 
 # Phase 8: Split the recipe page along its jobs Verification Report
 
 **Phase Goal:** `RecipePage` is cut along its separate jobs, so the creation editor in Phase 10 can mount the same Sheet and pen modules that editing uses, and the maker sees no change
-**Verified:** 2026-10-17T16:38:16Z
-**Status:** gaps_found
-**Re-verification:** No, initial verification
+**Verified:** 2026-10-17T18:20:00Z
+**Status:** passed
+**Re-verification:** Yes, after gap-closure plan 08-06
 
 ## Goal Achievement
 
-The split itself is real and the maker-facing behavior matches the baseline. One narrow gap remains against ROADMAP criterion 4: a source-text test pin was weakened in the re-point. It is a two-line test fix and does not touch behavior.
+The one gap from the first verification (WR-01, ROADMAP criterion 4) is closed. I re-ran the suite and the audit, and I broke the wiring myself to check that the new test fails. All four criteria now hold.
 
 ### Observable Truths
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | `RecipePage.jsx` is the route shell only: the announcer, record loading, the sheet view, the version pen, kept drafts and route intents each live in a module of their own, and the Sheet renders through one component the creation editor can mount | VERIFIED | Each module exists and is substantive: `useAnnouncer.js` (73 lines), `useRecipeData.js` (222), `sheetView.js` (152, imports only `../domain/`), `RecipeSheet.jsx` (235), `useVersionPen.js` (290), `useKeptDraft.js` (222, holds `useDraftWriter` and `useKeptDraft`), `useRouteIntents.js` (75), plus the bonus `useBatchRecording.js` (567). `RecipePage.jsx` went from 1,837 to 509 lines and calls all of them above its first early return (read in full). It declares only `PageLoadFailed`, `RecipeNotFound` and `RecipePage`. It makes no store read and has no draft setter. Its remaining inline logic is route identity, the mode, the title effect, Escape, the waiting-draft lookup and the band and Batch aside markup. `RecipeSheet.jsx` imports no store module and takes `view`, `version`, `mode` and `foot`. `RecipeSheet.test.jsx` mounts it with no stored version and `baseline: null`, empty and populated, and `sheetView.test.js` covers the null baseline. |
-| 2 | In the built app the maker sees no change: the recorded WebKit walk of 94 snapshots compares MATCH with its baseline | VERIFIED | Ran `sh 08-walk-check.sh`: it built into a scratch directory under `$TMPDIR` and printed `RECORDED ... 94 snapshots` then `MATCH 94 snapshots`. `08-walk-after.json` is committed. Scope limit: the walk runs at width 1366 only (`08-walk.mjs` line 70), so narrow-width behavior is not covered by it (see Human Verification). |
-| 3 | The shell test names each new module and asserts that the shell imports it and that its job lives there, not only that code is gone from `RecipePage.jsx` | VERIFIED | `RecipePage.shell.test.js` holds a `JOBS` table of nine entries (useAnnouncer, useRecipeData, sheetView, RecipeSheet, useVersionPen, useDraftWriter, useKeptDraft, useBatchRecording, useRouteIntents). `jobProblems` checks the export, the shell's import from the specifier, exactly one call, hook order above the early return, per-module marker counts, `shellLacks` and an import allow-list. A `HOOK_ORDER` case, a completeness case, seven broken fixtures proving each check can fail, and `NEW_MODULES` setter, unused-import and `dangerouslySetInnerHTML` cases are also present. It ran green in the full suite. |
-| 4 | Every existing test passes; tests whose code moved change only their imports, and none is deleted or weakened | FAILED (partial) | Passing: full suite `Test Files 96 passed (96)`, `Tests 2998 passed (2998)` (base was 91 files, 2932 tests). `08-test-audit.mjs 78e962d` printed `AUDIT OK`. Failing: the audit cannot see one weakening, WR-01 above. Test I in `RecipePage.test.jsx` (the 261002-wn1 describe) is met by the VersionRow and RecipeSheet sites in the shell, so the IngredientsHead hop is no longer pinned and no other test covers it. The `removed:` lines the audit lists for the shell test are legitimate: they are the assertions that moved with `usePenDraft`/`useRecordDraft` into `useVersionPen`/`useBatchRecording`, replaced by narrower checks that the shell calls the owning hook once above the early returns and that the draft hooks are called once inside the modules. |
+| 1 | `RecipePage.jsx` is the route shell only; each job lives in its own module, and the Sheet renders through one component the creation editor can mount | VERIFIED (regression check) | Same file set as the first verification: `useAnnouncer.js` 73 lines, `useRecipeData.js` 222, `sheetView.js` 152, `RecipeSheet.jsx` 235, `useVersionPen.js` 290, `useKeptDraft.js` 222, `useRouteIntents.js` 75, `useBatchRecording.js` 567, `RecipePage.jsx` 509. The app diff since the first verification (`git diff 545b7e8 HEAD -- app`) touches four files: three comment-line rewordings (IN-01), one guard in `RecipeSheet.jsx`, and additions to `RecipeSheet.test.jsx`. No module was removed or merged. The shell test (`RecipePage.shell.test.js`) passed in the full suite. |
+| 2 | In the built app the maker sees no change: the recorded WebKit walk of 94 snapshots compares MATCH | VERIFIED (carried, with a diff argument) | I did not re-run the walk: it starts a server and builds, and the brief forbids that. The first verification ran it and got `MATCH 94 snapshots`. Since then the only non-comment, non-test app change is `draft?.stepChanges ?? {}` in `RecipeSheet.jsx` line 171. It only differs when `draft` is null in recording mode, and the shell always passes `draft` (read: `RecipePage.jsx`). So no render the app makes changes. The walk is at width 1366 only (see Scope note). |
+| 3 | The shell test names each new module and asserts the shell imports it and that its job lives there | VERIFIED (regression check) | `RecipePage.shell.test.js` was not changed by 08-06 and passed in the full suite (96 of 96 files). |
+| 4 | Every existing test passes; tests whose code moved change only their imports, and none is deleted or weakened | VERIFIED | Full suite `Test Files 96 passed (96)`, `Tests 3000 passed (3000)`. `08-test-audit.mjs 78e962d` ends `AUDIT OK` and prints `Gap-closure additions (08-06)`. `RecipePage.test.jsx` is byte-identical to `1b0dcab` (`git diff --exit-code 1b0dcab -- app/src/ui/RecipePage.test.jsx` exits 0, D-11). The Show changes wiring is pinned at all three hops, proved by my own mutations below. |
 
-**Score:** 3/4 truths verified
+**Score:** 4/4 truths verified (0 behavior-unverified)
+
+### Gap closure evidence (WR-01)
+
+The three hops are `RecipePage` to `VersionRow` (line 382), `RecipePage` to `RecipeSheet` (line 447), and `RecipeSheet` to `IngredientsHead` (`RecipeSheet.jsx` line 131). I mutated one hop at a time, ran the tests, and restored with `git checkout --`.
+
+| Mutation (scratch, restored) | Result |
+|---|---|
+| `RecipeSheet.jsx`: `onToggleShowChanges={onToggleShowChanges}` replaced by `{() => {}}` | `RecipeSheet.test.jsx`: 1 failed, 7 passed. The failing case is `passes onToggleShowChanges to its one IngredientsHead tag...`, with `AssertionError: expected '<IngredientsHead ...' to contain 'onToggleShowChanges={onToggleShowChan…'`. This is the hop the first verification found unpinned. |
+| `RecipePage.test.jsx` run under that same mutation | 111 passed. Test I alone still cannot see the third hop, which is why the new case is needed. It is the honest reading of the design, not a defect. |
+| `RecipePage.jsx` line 447 (the `RecipeSheet` hop) replaced by `{() => {}}` | `RecipePage.test.jsx`: 1 failed, 110 passed. Test I (`has one handleToggleShowChanges, handed to both VersionRow and IngredientsHead...`) fails. |
+
+After each restore, `git status --porcelain app/` printed nothing, and `RecipeSheet.test.jsx` read 8 passed again. The only dirty paths at the end are `.planning/state.json` and the untracked `.review-diagnostics/`, both outside my remit.
+
+The new case lives in `RecipeSheet.test.jsx`, not in Test I. The first verification suggested editing Test I, but D-11 limits `RecipePage.test.jsx` to read-target edits, so the plan placed the pin beside RecipeSheet's tests. That is a sound reading: criterion 4 asks that no test is weakened, and the combined pins (Test I plus the new case) now cover every hop Test I covered before the split.
+
+WR-02 is also closed. `RecipeSheet.jsx` line 171 reads `(draft?.stepChanges ?? {})`, and a new case in `RecipeSheet.test.jsx` mounts recording mode with no draft over a steps-only version. The plan's SUMMARY records that this case threw `Cannot read properties of null (reading 'stepChanges')` before the guard; I did not re-run that red state. Limit, stated in the test file and the SUMMARY: a recording Sheet over a version with rows and no draft still throws from `IngredientTable.jsx`, which is pre-existing code outside Phase 8 and a record-pen path that creation never takes (D-01).
 
 ### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `app/src/ui/useAnnouncer.js` | three live regions, guarded 5 s clear | VERIFIED | Real timers and `announce`; imported and called by the shell |
-| `app/src/ui/useRecipeData.js` | the eight record reads with cancellation flags | VERIFIED | Called as `useRecipeData(versionId)`; reads through `../store/repository.js` |
-| `app/src/ui/sheetView.js` | pure derived view, nullable baseline, `markedFigure`, `openBatchFor` | VERIFIED | Domain imports only; shell and `RecipeSheet` use it |
-| `app/src/ui/RecipeSheet.jsx` | one Sheet component with `foot` slot | VERIFIED | Mounted by the shell; mounted with no store by `RecipeSheet.test.jsx` |
-| `app/src/ui/useVersionPen.js` | version pen with `usePenDraft` inside | VERIFIED | Called once above the early returns |
-| `app/src/ui/useKeptDraft.js` | `useDraftWriter` (no effect) and `useKeptDraft` | VERIFIED | StrictMode guard kept; hook-level and page-level StrictMode tests present |
-| `app/src/ui/useRouteIntents.js` | two consume-once openers waiting on `draftRestoreDone` | VERIFIED | Read in full; dependency arrays as in the base per the review |
-| `app/src/ui/useBatchRecording.js` | bonus cut: record pen and tasting | VERIFIED | Landed after the D-01 gate; shell test pins it |
-| `08-walk.mjs`, `08-walk-server.mjs`, `08-walk-check.sh`, `08-walk-after.json`, `08-test-audit.mjs` | walk and audit tooling | VERIFIED | Ran both; `08-walk-after.json` committed |
+| `app/src/ui/RecipeSheet.jsx` | one Sheet component, guarded recording read | VERIFIED | Line 171 guard present; line 131 passes the handler to `IngredientsHead` |
+| `app/src/ui/RecipeSheet.test.jsx` | WR-01 pin and WR-02 case, additions only | VERIFIED | 37 added lines, 0 removed (`git diff 545b7e8 HEAD`); 8 tests pass |
+| `08-test-audit.mjs` | additions-only allowance for one file | VERIFIED | Ends `AUDIT OK`; the plan's teeth check (a removed line prints `AUDIT FAIL`) is recorded in the SUMMARY; I did not repeat it |
+| `08-REVIEW-DISPOSITION.md` | five findings dispositioned | VERIFIED | WR-01, WR-02, IN-01 fixed with commits `7367a56`, `eb6a23d`, `db52d5a`; IN-02, IN-03 deferred with reasons; `open: 0` |
+| The other modules from plans 01 to 05 | as in the first verification | VERIFIED | Unchanged apart from IN-01 comment lines in `useBatchRecording.js` and `RecipePage.jsx` |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| `RecipePage.jsx` | each job module | import + one call above the first early return | WIRED | Pinned by `HOOK_ORDER` and `JOBS`; read in the source |
-| `RecipePage.jsx` | `RecipeSheet` | `<RecipeSheet view=... foot={<PenFoot .../>} .../>` | WIRED | `view` from `sheetView({... baseline: version ...})` |
-| `RecipeSheet.jsx` | `IngredientsHead` | `onToggleShowChanges={onToggleShowChanges}` | WIRED, UNPINNED | Present in code; no test fails if it is removed (WR-01) |
-| `useRouteIntents` | `useBatchRecording` / `useVersionPen` | `onStartAmending`, `onStartDeveloping` | WIRED | Shell passes `handleStartAmending` and `handleStartDeveloping` |
-| `useKeptDraft` | pens | `onRestorePlan`, `onRestoreRecord` | WIRED | Shell passes `restorePlan` and `restoreRecord` |
-
-### Data-Flow Trace (Level 4)
-
-| Artifact | Data Variable | Source | Produces Real Data | Status |
-|----------|---------------|--------|--------------------|--------|
-| `RecipeSheet` | `view`, `version` | `useRecipeData` store reads, `sheetView` | Yes | FLOWING |
-| `RecipePage` | `batches`, `drafts`, `versions` | `useRecipeData` | Yes | FLOWING |
+| `RecipePage.jsx` | `VersionRow` | `onToggleShowChanges={handleToggleShowChanges}` (line 382) | WIRED, PINNED | Test I |
+| `RecipePage.jsx` | `RecipeSheet` | `onToggleShowChanges={handleToggleShowChanges}` (line 447) | WIRED, PINNED | Test I, shown red by my mutation |
+| `RecipeSheet.jsx` | `IngredientsHead` | `onToggleShowChanges={onToggleShowChanges}` (line 131) | WIRED, PINNED | New case, shown red by my mutation |
+| Other links (module imports, hook order, route intents, kept drafts) | | | WIRED | Unchanged; pinned by the shell test, which passed |
 
 ### Behavioral Spot-Checks
 
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
-| Full suite | `npm --prefix app test -- --run` | 96 files, 2998 tests passed, exit 0 | PASS |
-| Base-to-result test audit | `node 08-test-audit.mjs 78e962d` | `AUDIT OK` | PASS (but see WR-01) |
-| Walk against baseline | `sh 08-walk-check.sh` | `MATCH 94 snapshots` | PASS |
-
-The state-transition and cancellation invariants in this phase (the restore guard, the consume-once refs) are covered by named tests that ran in the suite: `useKeptDraft.test.jsx`, `RecipePage.strictMode.test.jsx`, `RecipePage.shellEffects.test.jsx`. The reviewer's mutation (removing the restore guard) turned those red, so I did not mark any truth PRESENT_BEHAVIOR_UNVERIFIED.
+| Full suite | `npm --prefix app test -- --run` | 96 files, 3000 tests passed | PASS |
+| Test audit | `node .planning/phases/08-split-the-recipe-page-along-its-jobs/08-test-audit.mjs 78e962d` | `AUDIT OK`, gap-closure section printed | PASS |
+| D-11 | `git diff --exit-code 1b0dcab -- app/src/ui/RecipePage.test.jsx` | exit 0, no output | PASS |
+| WR-01 mutation | see table above | red as required, restored | PASS |
 
 ### Probe Execution
 
@@ -119,46 +118,32 @@ SKIPPED: the phase declares no `probe-*.sh` probes.
 
 | Requirement | Source Plan | Description | Status | Evidence |
 |-------------|-------------|-------------|--------|----------|
-| EDIT-05 | 08-01 to 08-05 (all five declare it) | `RecipePage` is cut along its separate jobs (announcer, record loading, sheet view, version pen, kept drafts, route intents) and the maker sees no change | SATISFIED | All six named jobs and the bonus record pen live in their own modules; walk MATCH 94 |
-| EDIT-06 | 08-01 to 08-05 | The shell test asserts the new modules positively, and the recorded WebKit walk of 94 snapshots still matches | SATISFIED | `JOBS` table and `HOOK_ORDER` in the shell test; `MATCH 94 snapshots` re-run by the verifier |
+| EDIT-05 | 08-01 to 08-06 (all six declare it) | `RecipePage` is cut along its separate jobs and the maker sees no change | SATISFIED | Six named jobs plus the record pen in their own modules; the Sheet mounts with no store and no baseline; the shell always passes `draft`, so the guard changes no render |
+| EDIT-06 | 08-01 to 08-06 | The shell test asserts the new modules positively, and the recorded WebKit walk of 94 snapshots still matches | SATISFIED | `JOBS` table and `HOOK_ORDER` in the shell test, passing; walk `MATCH 94` from the first verification, with the diff argument above |
 
-No orphans: REQUIREMENTS.md maps only EDIT-05 and EDIT-06 to Phase 8 (rows 101-102), and both appear in every plan's `requirements`. The Complete marks that plan 08-05 wrote are supported by the code. The one qualifier is the WR-01 pin, which falls under ROADMAP criterion 4, not under either requirement's text.
+No orphans: REQUIREMENTS.md maps only EDIT-05 and EDIT-06 to Phase 8 (rows 101 and 102), and every plan lists both. REQUIREMENTS.md still shows both as `[ ]` and `Gaps Found`; it is not edited by this verification, so the orchestrator should set them Complete.
 
 ### Anti-Patterns Found
 
 | File | Line | Pattern | Severity | Impact |
 |------|------|---------|----------|--------|
-| (all nine new or changed source files) | - | TBD/FIXME/XXX/TODO/HACK scan | none | Clean |
-| `app/src/ui/RecipePage.test.jsx` | ~1289-1304 | Weakened source-text pin (WR-01) | Blocker for criterion 4 | See gap |
-| `app/src/ui/RecipeSheet.jsx` | 171 | `draft.stepChanges` read unguarded, though `draft` defaults to `null` (WR-02) | Warning | No effect today: the shell always passes `draft`, the record pen is not part of creation, and `RecipeSheet.test.jsx` covers `reading` and `developing` only. A Phase 10 caller passing `mode="recording"` without `draft` would throw |
-| `useBatchRecording.js` 319-321, `RecipePage.jsx` 214-216 | - | Stale comments (IN-01) | Info | Comments only |
-| `sheetView.js` | 19-23 | Third `joinNames` copy (IN-02) | Info | Pre-existing duplication |
-| `RecipePage.shell.test.js` | JOBS markers | Literal occurrence counts unexplained (IN-03) | Info | Maintenance cost only |
+| (changed source files) | - | TBD/FIXME/XXX/TODO/HACK | none | Clean; the four files 08-06 touched add no such marker |
+| `sheetView.js` | 19-23 | Third `joinNames` copy (IN-02) | Info | Deferred in the ledger with a reason |
+| `RecipePage.shell.test.js` | JOBS markers | Literal occurrence counts (IN-03) | Info | Deferred in the ledger with a reason |
 
-Store and convention checks: no file under `app/src` other than the store imports `idb`; no `dangerouslySetInnerHTML` in any new module. Every changed file in `78e962d..HEAD` is under `app/src/ui/`; no domain, store or CSS file changed.
-
-### Review Findings Judged
-
-- WR-01: confirmed by my own reading of the diff and the regex, and it is the gap above. It affects ROADMAP criterion 4, not the goal's behavior.
-- WR-02: does not affect goal achievement. It is a latent trap for Phase 10 if its caller uses the record pen mode, and the plan keeps the record pen with the notebook page. Worth fixing with WR-01.
-- IN-01, IN-02, IN-03: no effect on the goal.
-- Known Phase 10 limitation, recorded in `RecipeSheet.test.jsx`: with `baseline: null` in `developing` mode the steps stay read-only (`Method` needs a baseline). This is documented there and assigned to Phase 10, so it is not a Phase 8 gap.
+IN-01 (the stale comments) is fixed: the diff shows comment lines only.
 
 ### Human Verification Required
 
-#### 1. Show changes from the Ingredients heading at a narrow width
+None required. The first verification listed a narrow-width check of Show changes because the heading hop was unpinned. It is now pinned by a test that I showed to fail when the hop breaks, so I dropped it as a gate.
 
-**Test:** In WebKit at a 393-wide coarse window, open a version that has a parent, with no pen open. In the Ingredients heading press Show changes, then Hide changes.
-**Expected:** The heading control toggles the changes view and the URL gains and loses the `changes` key, exactly as at the base commit. No second Show changes control appears in the band at this width.
-**Why human:** The walk is at 1366, where the heading draws no control, and no automated test presses it through the page. This is the one hop WR-01 leaves unpinned. It also confirms the maker sees no change at a narrow width. No iPad check is required (D-07).
+Scope note, not a gate: the recorded walk runs at width 1366 only, and no jsdom test presses the heading's Show changes control at a narrow width. The wiring is unchanged from the base and pinned in source, but a click at 393 wide in WebKit would be the only end-to-end proof. D-07 asks for no device check.
 
 ### Gaps Summary
 
-The phase delivers its goal in substance. The page is cut into eight modules, the shell imports and calls each in order, the Sheet renders through one component that mounts with no store and no baseline, the full suite is green at 96 files and 2998 tests, the walk matches 94 snapshots, and the shell test names every module and fails if a job is dropped.
-
-The single gap is ROADMAP criterion 4: "none is deleted or weakened". When `RecipePage.test.jsx` Test I was re-pointed to read `RecipeSheet.jsx` as well, its count of 2 became satisfiable by the shell's VersionRow and RecipeSheet sites, so it no longer fails if the IngredientsHead hop breaks. The hop is wired correctly today, and `08-test-audit.mjs` cannot see this kind of change. The closure is small: add an assertion on `RecipeSheet.jsx` that `IngredientsHead` receives `onToggleShowChanges={onToggleShowChanges}`, and retitle the case. Fixing WR-02 (`draft?.stepChanges ?? {}` plus a `recording` case in `RecipeSheet.test.jsx`) at the same time is cheap and protects Phase 10.
+No gaps. The page is cut into its modules, the shell test names each, the suite is green at 96 files and 3000 tests, the audit ends `AUDIT OK`, `RecipePage.test.jsx` is untouched since 08-05, and all three Show changes hops are pinned.
 
 ---
 
-_Verified: 2026-10-17T16:38:16Z_
+_Verified: 2026-10-17T18:20:00Z_
 _Verifier: Claude (gsd-verifier)_

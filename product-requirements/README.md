@@ -2,7 +2,7 @@
 
 Prepared 2026-09-04; context reviewed 2026-09-05. Status: **accepted product decisions with draft detailed requirements and design briefs**.
 
-This folder is the active product handoff for GSD implementation/project management and Impeccable design/branding. D01–D18 are accepted. Detailed specifications and design briefs still require review within that direction; these documents do not assert current implementation or framework-initialization status.
+This folder is the active product handoff for GSD implementation/project management and Impeccable design/branding. D01–D19 are accepted. Detailed specifications and design briefs still require review within that direction; these documents do not assert current implementation or framework-initialization status.
 
 ## Reading order
 

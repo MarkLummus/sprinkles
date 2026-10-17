@@ -1,6 +1,6 @@
 # Decision register
 
-**D01–D18 are accepted.** D14 establishes the first product milestone's outcome, not its implementation plan. Acceptance does not mark implementation complete. Framework choice (GSD for delivery; Impeccable for design/branding) is user-confirmed, but exact GSD distribution is unresolved.
+**D01–D19 are accepted.** D14 establishes the first product milestone's outcome, not its implementation plan. Acceptance does not mark implementation complete. Framework choice (GSD for delivery; Impeccable for design/branding) is user-confirmed, but exact GSD distribution is unresolved.
 
 | ID | Accepted decision | Basis | Consequence / tradeoff |
 |---|---|---|---|

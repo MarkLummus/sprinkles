@@ -8,7 +8,7 @@ status: planning
 stopped_at: v2.0 roadmap revised after the Codex review (Phases 8-12); Phase 8 ready to discuss
 last_updated: "2026-10-16T03:34:10.000Z"
 last_activity: 2026-10-16
-last_activity_desc: "v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; 29 of 29 requirements mapped"
+last_activity_desc: "v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; decisions 19 and 20 recorded (Sheet code fixed at creation, seed tables travel in the store file) and the scale requirements renamed TASTE-01 to TASTE-04; 30 of 30 requirements mapped"
 state_head: 1edbcd49b7d810f6076fe21093e27918a75bdfc7
 progress:
   total_phases: 5
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-16)
 Phase: 8 (Split the recipe page along its jobs); Phase 9 may run beside it once its two place boards are approved (Mark's Phase 9 decisions are answered)
 Plan: —
 Status: Ready to plan
-Last activity: 2026-10-16 — v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; 29 of 29 requirements mapped
+Last activity: 2026-10-16 — v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; decisions 19 and 20 recorded (Sheet code fixed at creation, seed tables travel in the store file) and the scale requirements renamed TASTE-01 to TASTE-04; 30 of 30 requirements mapped
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -371,7 +371,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [v1.1 → Phase 6] The reset bound: `app/src/store/db.js` resets only profiles below 8 and says a later bump writes its own lift (04-04, "records Mark makes from now on are real"); `REQUIREMENTS.md` says the reset applies as usual on the library bump. Adding a store needs neither, so Phase 6 discussion settles it after checking for real stored records.
 - [v2.0 → Phase 10] Mark answered decisions 1 to 15 (ROADMAP.md, Before planning; the Bitter bug row is fixed and done, 68ea742). Two questions are open and block Phase 10: decision 17, `decide-style-bands-source` (which ice cream styles, and where their band numbers come from), and the supported-equipment scope that MAKE-09's equipment and process need (Codex review (a); `product-requirements/03-decision-register.md`). If that scope changes how equipment or process is stored, the change lands before Save in Phase 11. Decision 16 (`importAll`) has no v2.0 phase.
 - [v2.0 → Phase 9] LIB-06 is amended for decision 5 (scales as definitions only, with a reset): the version-10 upgrade clears and reseeds the library, resets the store to the new shapes and rewrites the seeded recipes; nothing a maker made is lost, because no device holds real batches (Mark). The reset rewrites the seeded versions the Phase 8 walk dumps.
-- [v2.0, open] Codex review (b): this milestone's SCALE-01 to SCALE-04 collide with product requirement SCALE-01 (quantity scaling), and REC-03 and REC-05 are not in `product-requirements/04-requirements.md`; REQUIREMENTS.md notes it, and renaming is Mark's call.
+- [v2.0, decided 2026-10-16] Codex review (b): the tasting-scale requirements SCALE-01 to SCALE-04 are renamed TASTE-01 to TASTE-04 (crosswalk in REQUIREMENTS.md); REC-03 and REC-05 are replaced by plain wording.
+- [v2.0 → Phase 9] Decision 19 (Mark): a version's Sheet code is assigned at creation, unique, stored and never changed by an edit (CODE-01), reversing Phase 4 D-08 and D-09. Decision 20 (Mark): the machines, styles and core scales and problems travel in the store file (LIB-09).
 - [v2.0 → Phases 9-12] No sketch draws any v2.0 surface. Phases 9 to 12 are not planned until their boards (listed under each phase's Design gate in ROADMAP.md) are approved on the Claude Design canvas and snapshotted into `.planning/sketches/`. Phase 9's two place boards (the Notebook recipe list and the Ingredients place) are independent of Mark's coefficient and scale decisions and can be drawn while those wait.
 - [v2.0 → Phase 11] The reset window closes when Save lands in Phase 11: no DB_VERSION change from Phase 11 on, and an export-first row goes on Mark's List before the first device build that can save a recipe. Phase 10 has no Save, so nothing real is stored and the window stays open through it.
 - [v2.0 → Phase 11] Under decision 12 a saved first version stays editable until it has a batch or a child version, so a Sheet code printed before a later change no longer finds the version; Phase 11 discussion weighs it. Whether a removal on a saved first version deletes outright, as at creation, is to be confirmed with Mark in that discussion.

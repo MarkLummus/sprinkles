@@ -85,7 +85,7 @@ Columns: **Means here** is the one meaning. **Not** is the sense that gets mixed
 | Lift | An upgrade that converts stored records instead of dropping them. Needed once a recipe can be saved. | A reset. | Not built | Nothing |
 | Place | A destination in the rail: Home, Notebook, Recipe book, Idea log, Ingredients, Kitchen. | A page or a route. | `router.jsx` | The rail |
 | Notebook | The place for gram-governed development of recipes. | The Recipe book. | `/notebook` | Notebook |
-| Sheet code | A short code, `XXXX-XXXX`, derived from the version id and printed content. It finds the same version again. | A QR code. | `sheetCode.js` | The code on a printed foot, Enter Sheet code |
+| Sheet code | A short code, `XXXX-XXXX`, assigned when a version is created, unique, stored with the version and never changed by an edit (decided 2026-10-16). It finds the same version again. | A QR code. | `sheetCode.js` | The code on a printed foot, Enter Sheet code |
 | Balance | The six figures (PAC, POD, fat, milk solids, sugar, solids) against their bands. | The Things to check advisories. | `figures.js`, `composition.js` | Balance |
 | Things to check | The derived advisories beside the Balance. | Authored notes. | `advisories.js` | Things to check |
 

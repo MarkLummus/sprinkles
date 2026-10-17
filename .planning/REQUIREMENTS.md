@@ -3,9 +3,9 @@
 **Defined:** 2026-10-16
 **Core Value:** Make something you like, understand how it turned out, and know what to keep or change next time. If everything else fails, a maker must still be able to develop a recipe, make it from a printed sheet, and get back a record of what happened that the next version can cite.
 
-Requirement authority is `product-requirements/04-requirements.md` (packet IDs such as REC-01, REC-03, REC-05, ING-01). This file selects what milestone v2.0 needs and states it as testable criteria. Category IDs continue those of v1.1 (`EDIT`, `LIB`, `MAKE`); `PLACE`, `STRUCT`, `SCALE` and `PROOF` are new. Archived: `milestones/v1-REQUIREMENTS.md`, `milestones/v1.1-REQUIREMENTS.md`.
+Requirement authority is `product-requirements/04-requirements.md` (packet IDs such as REC-01, ING-01). This file selects what milestone v2.0 needs and states it as testable criteria. Category IDs continue those of v1.1 (`EDIT`, `LIB`, `MAKE`); `PLACE`, `STRUCT`, `CODE`, `TASTE` and `PROOF` are new. Archived: `milestones/v1-REQUIREMENTS.md`, `milestones/v1.1-REQUIREMENTS.md`.
 
-**ID note (open, from the Codex review):** this milestone's SCALE-01 to SCALE-04 collide with the product requirement SCALE-01 (quantity scaling), and REC-03 and REC-05, cited in this file, are not in `product-requirements/04-requirements.md`; renaming is left for Mark.
+**ID note (decided 2026-10-16, Mark):** this milestone's tasting-scale requirements were SCALE-01 to SCALE-04 and are now TASTE-01 to TASTE-04, because the product requirement SCALE-01 means quantity scaling (crosswalk: SCALE-01 → TASTE-01, SCALE-02 → TASTE-02, SCALE-03 → TASTE-03, SCALE-04 → TASTE-04). REC-03 and REC-05 are not defined in `product-requirements/04-requirements.md`, so this file says "structure edits on later versions" in words instead.
 
 ## v2.0 Requirements — Recipe creation
 
@@ -21,7 +21,7 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 - [ ] **LIB-06**: A profile at database version 9 opens at version 10 with the larger library: the library is cleared and reseeded (amending Phase 6 D-05), the store resets to the new shapes, and the seeded recipes are rewritten in them. Nothing the maker made is lost, because none exists yet.
 - [ ] **LIB-07**: Dairy rows from the dataset do not count lactose twice in PAC or POD.
 - [ ] **LIB-08**: A row keeps a link to the library entry it was copied from, and its figures still do not move when the library changes.
-- [ ] **LIB-09**: Every seed dataset is rows in a store table that an empty store is seeded with: the library, the machines (name, minimum fill, maximum fill), the ice cream styles with their balance bands, and the core scales and problems. No seed dataset is read from a code constant at run time, so a later version can let the maker add rows.
+- [ ] **LIB-09**: Every seed dataset is rows in a store table that an empty store is seeded with: the library, the machines (name, minimum fill, maximum fill), the ice cream styles with their balance bands, and the core scales and problems. No seed dataset is read from a code constant at run time, so a later version can let the maker add rows. Those tables travel in the store file with the library: the file validator checks them, the store file version changes, and an import into a fresh profile restores them.
 
 ### Places
 
@@ -38,7 +38,7 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 - [ ] **MAKE-09**: A maker can choose an ice cream style, and the balance bands fill in from it; the maker can edit the bands or leave them blank. The styles are Philadelphia, French, gelato and sorbet; the bands for each are proposed for Mark's approval before they ship. The maker can then pick a conventional machine from a short list, which fills its minimum and maximum fill, and set the process (pasteurise temperature and hold time, as stored today), or leave both empty. (The machine table starts with Whynter at 700 g minimum and no maximum; Mark adds other machines and fills the maximum later.)
 - [ ] **MAKE-10**: Saving creates the recipe and its first version in one step, lands on the new page, and a failed save leaves neither behind.
 - [ ] **MAKE-11**: An unsaved creation survives a closed tab and offers Resume, and abandoning it leaves no records.
-- [ ] **MAKE-12**: A created recipe prints as a bench sheet with its Sheet code, like the seeded ones.
+- [ ] **MAKE-12**: A created recipe prints as a bench sheet with its Sheet code (CODE-01), like the seeded ones, and typing that code finds it after any later edit.
 
 ### Structure on a first version
 
@@ -47,12 +47,16 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 - [ ] **STRUCT-03**: A step's stored number and a row's id never change on reorder.
 - [ ] **STRUCT-04**: Add, Remove and Move controls appear on a first version that has no batch and no child version, and on no other saved version. The version pen's remove and restore on later versions is unchanged.
 
+### Sheet code
+
+- [ ] **CODE-01**: A version's Sheet code is assigned when the version is created, a first version and every Next version alike, and is unique. It is stored with the version and never changes afterwards, whatever is edited: the recipe name, the Version name, the Sheet title or description, or any row, step or note.
+
 ### Custom scales and problems
 
-- [ ] **SCALE-01**: A maker can define 0 to 2 scales for a recipe, each with a name, a label for each end, and its kind: goldilocks, with the fixed middle word "right", or plain magnitude.
-- [ ] **SCALE-02**: A maker can define 0 to 2 problems for a recipe.
-- [ ] **SCALE-03**: A batch snapshots the recipe's definitions, a scale's kind included, so a later change never moves a stored mark.
-- [ ] **SCALE-04**: The record pen, the reading and the printed log show a recipe's own scales, each in its kind, and its problems, and "This recipe only" shows only when it has any.
+- [ ] **TASTE-01**: A maker can define 0 to 2 scales for a recipe, each with a name, a label for each end, and its kind: goldilocks, with the fixed middle word "right", or plain magnitude.
+- [ ] **TASTE-02**: A maker can define 0 to 2 problems for a recipe.
+- [ ] **TASTE-03**: A batch snapshots the recipe's definitions, a scale's kind included, so a later change never moves a stored mark.
+- [ ] **TASTE-04**: The record pen, the reading and the printed log show a recipe's own scales, each in its kind, and its problems, and "This recipe only" shows only when it has any.
 
 ### Proof
 
@@ -63,7 +67,7 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 
 Tracked, not in this roadmap.
 
-- **REC-03 / REC-05 (later versions)**: structure edits on later versions, and batches recording reordered or new steps.
+- **Version evolution (later versions)**: structure edits on later versions, and batches recording reordered or new steps.
 - **Show changes**: dropped, added and moved steps and rows.
 - **Fill-limit advisory**: a Things to check advisory when a batch is under a machine's minimum fill or over its maximum fill. Both limits are stored from v2.0, and nothing reads them yet.
 - **ING-01 (editing)**: creating and editing library ingredients, with provenance. `importAll` overwrite policy to be decided first.
@@ -104,6 +108,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LIB-09 | Phase 9 | Pending |
 | PLACE-01 | Phase 9 | Pending |
 | PLACE-02 | Phase 9 | Pending |
+| CODE-01 | Phase 9 | Pending |
 | MAKE-04 | Phase 10 | Pending |
 | MAKE-05 | Phase 10 | Pending |
 | MAKE-06 | Phase 10 | Pending |
@@ -117,16 +122,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRUCT-02 | Phase 11 | Pending |
 | STRUCT-03 | Phase 11 | Pending |
 | STRUCT-04 | Phase 11 | Pending |
-| SCALE-01 | Phase 10 | Pending |
-| SCALE-02 | Phase 10 | Pending |
-| SCALE-03 | Phase 9 | Pending |
-| SCALE-04 | Phase 12 | Pending |
+| TASTE-01 | Phase 10 | Pending |
+| TASTE-02 | Phase 10 | Pending |
+| TASTE-03 | Phase 9 | Pending |
+| TASTE-04 | Phase 12 | Pending |
 | PROOF-01 | Phase 12 | Pending |
 | PROOF-02 | Phase 12 | Pending |
 
 **Coverage:**
-- v2.0 requirements: 29 total
-- Mapped to phases: 29 (Phase 8: 2, Phase 9: 9, Phase 10: 8, Phase 11: 7, Phase 12: 3)
+- v2.0 requirements: 30 total
+- Mapped to phases: 30 (Phase 8: 2, Phase 9: 10, Phase 10: 8, Phase 11: 7, Phase 12: 3)
 - Unmapped: 0 ✓
 
 ---

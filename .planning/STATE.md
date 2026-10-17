@@ -4,17 +4,17 @@ milestone: v2.0
 milestone_name: Recipe creation
 current_phase: 08
 current_phase_name: Split the recipe page along its jobs
-status: executing
-stopped_at: Completed 08-04-PLAN.md
-last_updated: "2026-10-17T16:23:25.089Z"
+status: verifying
+stopped_at: Completed 08-05-PLAN.md
+last_updated: "2026-10-17T16:31:45.950Z"
 last_activity: 2026-10-17
 last_activity_desc: Phase 08 execution started
-state_head: c5e6cc0f0b903b0a0af6c3922aa4b443b8716db8
+state_head: 1b0dcab09b75bb3632802899f0f35d6bdcb49037
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-10-16)
 
 Phase: 08 (Split the recipe page along its jobs) — EXECUTING
 Plan: 5 of 5
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-10-17 — Phase 08 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -165,6 +165,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08 P02 | 6 min | 2 tasks | 5 files |
 | Phase 08 P03 | 3 min | 2 tasks | 5 files |
 | Phase 08 P04 | 5 min | 2 tasks | 6 files |
+| Phase 08 P05 | 12 min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -344,6 +345,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 08]: 08-02: useRecipeData returns only the setters the page's handlers call (setVersion, setVersions, setBatches, setRecipe); sheetView takes a nullable baseline and the editing page passes baseline: version
 - [Phase 08]: 08-04: useDraftWriter (effect-free) is called before useVersionPen and useKeptDraft after it, taking the pen's restorePlan as onRestorePlan; the restore keeps its started-ref guard with no cancellation cleanup (D-08, D-10)
 - [Phase 08]: 08-04: VERSION_SAVED_STATUS, VERSION_SAVE_ERROR, VERSION_BLOCKED_STATUS and DRAFT_KEPT_STATUS stay importable from RecipePage.jsx through re-exports
+- [Phase 08]: Phase 8 bonus cut landed: useBatchRecording holds the record pen and tasting handlers; openBatchFor in sheetView is the shared openBatch rule
 
 ### Pending Todos
 
@@ -592,8 +594,8 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-17T16:23:25.069Z
-Stopped at: Completed 08-04-PLAN.md
+Last session: 2026-10-17T16:31:45.929Z
+Stopped at: Completed 08-05-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

@@ -59,6 +59,7 @@ const wholeWord = (names) => new RegExp('\\b(' + names.join('|') + ')\\b');
 const NEW_MODULES = [
   ['useAnnouncer.js', './useAnnouncer.js'],
   ['useRecipeData.js', './useRecipeData.js'],
+  ['sheetView.js', './sheetView.js'],
 ];
 
 // The names a source imports with `import { a, b as c } from` and then uses
@@ -165,6 +166,20 @@ const JOBS = [
     ],
     allow: ['react', '../store/repository.js'],
   },
+  {
+    name: 'sheetView',
+    file: './sheetView.js',
+    specifier: './sheetView.js',
+    call: 'sheetView(',
+    hook: false,
+    markers: [
+      ['export function markedFigure(', 1],
+      ['function joinNames(', 1],
+      ['buildDiff(', 2],
+    ],
+    shellLacks: ['buildDiff(', 'penDraftVersion(', 'displayNumbers(', 'function joinNames('],
+    allow: ['../domain/'],
+  },
 ];
 
 // The shell's hook calls in the order they must appear, all above the early returns.
@@ -253,7 +268,7 @@ describe('the domain modules stay pure (D-01)', () => {
     }
   });
 
-  it.each(['../domain/penDraft.test.js', '../domain/recordDraft.test.js'])(
+  it.each(['../domain/penDraft.test.js', '../domain/recordDraft.test.js', './sheetView.test.js'])(
     '%s carries no jsdom docblock on its first line',
     (path) => {
       expect(raw(path).split('\n')[0]).not.toContain('@vitest-environment');
@@ -277,8 +292,8 @@ describe('RecipePage.jsx is the route shell', () => {
   const moduleFunctions = [...recipePage.matchAll(/^(?:export )?function (\w+)/gm)].map((match) => match[1]);
   const exportedFunctions = [...recipePage.matchAll(/^export function (\w+)/gm)].map((match) => match[1]);
 
-  it('declares no module-level function beyond joinNames, PageLoadFailed, RecipeNotFound and RecipePage', () => {
-    expect([...moduleFunctions].sort()).toEqual(['PageLoadFailed', 'RecipeNotFound', 'RecipePage', 'joinNames']);
+  it('declares no module-level function beyond PageLoadFailed, RecipeNotFound and RecipePage', () => {
+    expect([...moduleFunctions].sort()).toEqual(['PageLoadFailed', 'RecipeNotFound', 'RecipePage']);
   });
 
   it('exports only RecipeNotFound and RecipePage as functions', () => {

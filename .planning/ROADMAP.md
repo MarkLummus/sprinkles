@@ -113,13 +113,13 @@ Plans:
 - [ ] 08-02-PLAN.md — cut 2 `useRecipeData`; cut 3 the pure `sheetView` with a nullable baseline
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 08-03-PLAN.md — cut 4 `RecipeSheet` with the D-11 re-points; the no-stored-version component test
+- [ ] 08-03-PLAN.md — cut 4 `RecipeSheet` with the D-11 re-points; the no-stored-version component tests, empty and populated
 
 **Wave 4** *(blocked on Wave 3 completion)*
 - [ ] 08-04-PLAN.md — cut 5 `useVersionPen` with `useDraftWriter`; cut 6 `useKeptDraft` with the hook-level StrictMode test
 
 **Wave 5** *(blocked on Wave 4 completion)*
-- [ ] 08-05-PLAN.md — cut 7 `useRouteIntents`; the gated bonus `useBatchRecording`; the final shell test and walk
+- [ ] 08-05-PLAN.md — cut 7 `useRouteIntents`; the gated bonus `useBatchRecording`; the final shell test, walk and base-to-result test audit
 
 **UI hint**: yes
 **Notes**: No screen changes, so no design gate and no UI-SPEC. The walk is `.planning/milestones/v1.1-phases/05-split-the-recipe-page/05-walk.mjs` with its baseline `05-walk-before.json`, recorded at 4f1f98f before Phases 6 and 7 and later quick tasks landed: first confirm the baseline still matches at this phase's base commit, and if it does not, record a new before-walk there, as 05-01 did, before any code moves. The walk dumps the versions, batches, recipes and drafts stores, not the library, so Phase 9's larger library does not disturb it; Phase 9's reset does rewrite the seeded versions it dumps (decision 5: scales become definitions), so finish this phase's walk before Phase 9 merges, or re-record the baseline on Phase 9's result. Phase 9's `create` draft kind and this phase's kept-draft cut both touch the draft restore path; whichever lands second builds on the first. The research disagrees on when to extract record loading (early or late); settle it in discussion. The batch-recording controller is not among EDIT-05's jobs and creation does not need it; it can stay in place if the split runs long.

@@ -102,7 +102,25 @@ These gates apply to the v2.0 phases below.
   2. In the built app the maker sees no change: the recorded WebKit walk of 94 snapshots (the version pen, the record pen, a correction and a tasting, each opened, edited, saved, cancelled and kept after a reload) compares MATCH with its baseline
   3. The shell test names each new module and asserts that the shell imports it and that its job lives there, not only that code is gone from `RecipePage.jsx`
   4. Every existing test passes; tests whose code moved change only their imports, and none is deleted or weakened
-**Plans**: TBD
+
+**Plans:** 5 plans, waves 1 to 5 in sequence (every cut touches `RecipePage.jsx`)
+
+Plans:
+**Wave 1**
+- [ ] 08-01-PLAN.md — the walk runs from Phase 8 and matches at the base (tracer); shell effects and StrictMode restore pinned; cut 1 `useAnnouncer`
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 08-02-PLAN.md — cut 2 `useRecipeData`; cut 3 the pure `sheetView` with a nullable baseline
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 08-03-PLAN.md — cut 4 `RecipeSheet` with the D-11 re-points; the no-stored-version component test
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 08-04-PLAN.md — cut 5 `useVersionPen` with `useDraftWriter`; cut 6 `useKeptDraft` with the hook-level StrictMode test
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [ ] 08-05-PLAN.md — cut 7 `useRouteIntents`; the gated bonus `useBatchRecording`; the final shell test and walk
+
 **UI hint**: yes
 **Notes**: No screen changes, so no design gate and no UI-SPEC. The walk is `.planning/milestones/v1.1-phases/05-split-the-recipe-page/05-walk.mjs` with its baseline `05-walk-before.json`, recorded at 4f1f98f before Phases 6 and 7 and later quick tasks landed: first confirm the baseline still matches at this phase's base commit, and if it does not, record a new before-walk there, as 05-01 did, before any code moves. The walk dumps the versions, batches, recipes and drafts stores, not the library, so Phase 9's larger library does not disturb it; Phase 9's reset does rewrite the seeded versions it dumps (decision 5: scales become definitions), so finish this phase's walk before Phase 9 merges, or re-record the baseline on Phase 9's result. Phase 9's `create` draft kind and this phase's kept-draft cut both touch the draft restore path; whichever lands second builds on the first. The research disagrees on when to extract record loading (early or late); settle it in discussion. The batch-recording controller is not among EDIT-05's jobs and creation does not need it; it can stay in place if the split runs long.
 
@@ -120,6 +138,7 @@ These gates apply to the v2.0 phases below.
   6. The machines, the ice cream styles with their bands, and the core scales and problems are rows in store tables that the app reads, with no seed dataset read from a code constant at run time, and the database upgrade from 9 to 10 creates and seeds them
   7. A version stores its Sheet code, assigned when the version is created (a first version and every Next version) and unique; no edit to the recipe name, the Version name, the Sheet title or description, or any row, step or note changes it; the seeded versions keep the codes they print today, so sheets already in the binder still find them
   8. The machines, the styles with their bands, and the core scales and problems travel in the store file with the library: the file validator checks them, the store file version changes, and an export from one profile imported into a fresh profile restores them
+
 **Plans**: TBD
 **Design gate**: MET (Mark, 2026-10-17). The boards for the Notebook place (the recipe list) and the Ingredients place (the library, read-only, with search by name and category) are approved and snapshotted as `.planning/sketches/012-places/` (README `## Decisions`: the category filter is a select, the Notebook lists the most recently touched recipe first as Home does, the provenance columns read Basis and Source). Plans cite the snapshot by path.
 **UI hint**: yes
@@ -136,6 +155,7 @@ These gates apply to the v2.0 phases below.
   3. While creating, the maker picks rows from the library, enters grams and removes a row, which deletes it outright, and the balance figures follow each change; an ingredient not in the library reads "Not in the library yet" and adds nothing
   4. While creating, the maker defines 0 to 2 scales, each with a name, a label for each end and its kind (goldilocks, with the fixed middle word "right", or plain magnitude), and 0 to 2 problems; chooses an ice cream style, so the balance bands fill in, then edits them or leaves them blank; and picks a machine from the short list and sets the process, or leaves either empty, an empty one reading in the editor with no gap or error
   5. A half-made recipe survives a closed tab: the Notebook offers Resume and reopens it as it was left, scales, problems and targets included, and abandoning it leaves no record behind; there is no Save: however far a creation goes, the Notebook lists no new recipe, and the only record a creation writes is its draft
+
 **Plans**: TBD
 **Design gate**: Approved and snapshotted boards for the creation editor (name and its one description, Version name, Before you start, rows and the live Balance, a row's Remove included, since this phase removes a row), the ingredient picker (its "Not in the library yet" included), the Notebook's New recipe, its same-name warning and Resume, authoring scales and problems (each scale's kind included), and choosing a style with its balance bands, and picking a machine and setting the process. None is drawn yet. The style board shows the four styles with the bands Mark approved (decision 17); the machine and process boards wait on nothing further (the Whynter row's maximum fill is seeded empty).
 **UI hint**: yes
@@ -152,6 +172,7 @@ These gates apply to the v2.0 phases below.
   3. Save creates the recipe and its first version in one step, carrying everything authored in the editor (its scales and problems, style, targets, equipment and process included), and lands on the new page, after which the Notebook lists the recipe and no longer offers Resume for it; a failed save leaves neither recipe nor version behind
   4. After Save, the first version keeps the same Add, Remove and Move controls, working as they did while creating, until it has a batch or a child version, and then shows none; no other saved version shows them, and the version pen's remove and restore on later versions works as before
   5. The created recipe prints as a bench sheet with its Sheet code, like the seeded ones, and typing that code finds it, also after a reorder or any other edit made after printing; a recipe with empty targets, equipment or process prints with no gap
+
 **Plans**: TBD
 **Design gate**: Approved and snapshotted boards for the creation editor's Instructions steps with their uses and portions, and the Add, Remove, Move up and Move down controls for steps and rows, both while creating and on a saved first version that has no batch and no child version. None is drawn yet.
 **UI hint**: yes
@@ -166,6 +187,7 @@ These gates apply to the v2.0 phases below.
   1. The record pen, the reading and the printed log show the recipe's own scales, each in its kind, and its problems, and "This recipe only" shows only for a recipe that has any
   2. A recipe created in the app round-trips: it prints, a batch recorded against it marks a custom scale, and after export and import it reopens with the same figures, Sheet code and marks
   3. On the iPad, from the production build, a maker creates a recipe end to end, its scales, problems and targets included, and prints it: Tab reaches every creation control, each Move button included, and after a move focus stays with the moved step or row
+
 **Plans**: TBD
 **Design gate**: Approved and snapshotted boards for the record pen, the reading and the printed log showing a recipe's own scales and problems, a scale of each kind among them, and showing none (sketches 007, 008 and 010 draw only the fixed declared scales).
 **UI hint**: yes

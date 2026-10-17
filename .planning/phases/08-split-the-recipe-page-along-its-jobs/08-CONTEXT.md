@@ -33,6 +33,9 @@
 - **D-09:** What Phase 8 delivers for Phase 10: the pure `sheetView` accepts `baseline = null`, and `RecipeSheet` renders with no stored version and no baseline (diff props nullable, no band, no batch aside). Phase 8 adds a node test for `sheetView` with a null baseline and a component test that mounts `RecipeSheet` without a stored version. Phase 10's new controls and its `creating` mode are not part of this phase.
 - **D-10:** StrictMode: the restore-once effect (about 450-457) keeps its started-ref behaviour and gets no conventional cancellation cleanup, which would suppress the only permitted restore read. The plan adds a focused test that mounts the page under `React.StrictMode` and proves the draft is restored once, because the current draft tests have no StrictMode wrapper and the walk runs the built app.
 
+### Test pins (settled while planning)
+- **D-11:** "Tests whose code moved change only their imports" (ROADMAP criterion 4) includes re-pointing the `readFileSync` target of the source-text describes in `RecipePage.test.jsx` from `RecipePage.jsx` to the module that now holds the code. Every regex and expectation stays identical; the plan lists each re-pointed describe. Re-exports from `RecipePage.jsx` keep moved constants importable. (Mark, 2026-10-17, asked in `/gsd-plan-phase 8`, research assumption A1)
+
 ### Claude's Discretion
 - The names and homes of the new modules, within the existing patterns (hooks beside `usePenDraft.js` and `useRecordDraft.js` under `app/src/ui/`, pure functions under `app/src/domain/` or `ui/sheetView.js` as the research proposes).
 - The exact props of `RecipeSheet` (the research: the derived view, the mode, handlers and diff props, all nullable; it does not include the band or the batch aside).

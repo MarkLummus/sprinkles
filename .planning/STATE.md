@@ -2,18 +2,18 @@
 gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Recipe creation
-current_phase: 8
+current_phase: 08
 current_phase_name: Split the recipe page along its jobs
-status: planning
+status: executing
 stopped_at: Phase 9 context gathered
-last_updated: "2026-10-17T05:00:03.052Z"
+last_updated: "2026-10-17T12:18:07.451Z"
 last_activity: 2026-10-16
 last_activity_desc: "v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; decisions 19 and 20 recorded (Sheet code fixed at creation, seed tables travel in the store file) and the scale requirements renamed TASTE-01 to TASTE-04; 30 of 30 requirements mapped"
-state_head: ceea85cb235e35016794f49d075fcfa16ad18fa5
+state_head: 13beacace1968192033d30f97285d947f135cc6e
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
+  total_plans: 5
   completed_plans: 0
   percent: 0
 ---
@@ -29,9 +29,9 @@ See: .planning/PROJECT.md (updated 2026-10-16)
 
 ## Current Position
 
-Phase: 8 (Split the recipe page along its jobs); Phase 9 may run beside it once its two place boards are approved (Mark's Phase 9 decisions are answered)
+Phase: 08 (Split the recipe page along its jobs) — READY TO EXECUTE
 Plan: —
-Status: Ready to plan
+Status: Ready to execute
 Last activity: 2026-10-16 — v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; decisions 19 and 20 recorded (Sheet code fixed at creation, seed tables travel in the store file) and the scale requirements renamed TASTE-01 to TASTE-04; 30 of 30 requirements mapped
 
 Progress: [░░░░░░░░░░] 0%

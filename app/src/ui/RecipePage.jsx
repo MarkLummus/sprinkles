@@ -59,6 +59,7 @@ import { FoldRow } from './FoldRow.jsx';
 import { useBelow724, useBelowDesktop, useFold, useSheetTwoColumns } from './useBelowDesktop.js';
 import { usePenDraft } from './usePenDraft.js';
 import { useRecordDraft } from './useRecordDraft.js';
+import { useAnnouncer } from './useAnnouncer.js';
 
 // "a, b, and c" — the joining GraduatedRule and BasisNote each keep their own
 // copy of; this is the third, for the marked-rows announcement.
@@ -163,6 +164,9 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // own back button return to the clean reading, with no extra code.
   const [searchParams, setSearchParams] = useSearchParams();
   const showingChanges = searchParams.has('changes');
+  // The three live regions' text and announce, with the guarded five-second
+  // clear (useAnnouncer owns them).
+  const { formStatus, setFormStatus, tastingStatus, setTastingStatus, recordStatus, setRecordStatus, announce } = useAnnouncer();
   const [version, setVersion] = useState(undefined);
   const [versions, setVersions] = useState([]);
   const [batches, setBatches] = useState([]);
@@ -192,7 +196,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   const [mode, setMode] = useState('reading');
   // The record pen's draft, its amend target, baseline and opener, its
   // blocked-save state (field errors, the churn-date block) and the pending
-  // undo (useRecordDraft owns all of them); formStatus below is the open pen's
+  // undo (useRecordDraft owns all of them); formStatus above is the open pen's
   // own form-status live region text, whichever pen is open.
   const recordPen = useRecordDraft();
   const {
@@ -211,25 +215,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // focus effect re-fires even on a second press.
   const [addTastingAttempt, setAddTastingAttempt] = useState(null);
   const addTastingAttemptRef = useRef(0);
-  const [formStatus, setFormStatus] = useState('');
-  const formStatusTimerRef = useRef(null);
-  // The tasting-status channel (contract "Feedback and undo lifecycle"):
-  // in this build the only announcement it ever carries is "Tasting
-  // restored." (Task 2's handleUndoRemove) — the always-visible mode's own
-  // two tasting-status strings are never built (Pitfall 6). pendingUndo
-  // holds the removed tasting's own values as a plain object (Task 2's
-  // restore reads it), or null while no removal is pending — "an undo
-  // exists" is exactly pendingUndo !== null.
-  const [tastingStatus, setTastingStatus] = useState('');
-  const tastingStatusTimerRef = useRef(null);
-  // The end-of-record ceremony's own live region (007 @ 109733d line 303;
-  // the ninth round, Pattern 5) — the removal toasts' channel, since the
-  // toast lives where the action was: TASTING_REMOVED_EMPTY_STATUS and
-  // TASTING_REMOVED_DATA_STATUS both write here now, never to formStatus.
-  // formStatus stays the open pen's own save/validation channel (line
-  // 309), whichever pen is open.
-  const [recordStatus, setRecordStatus] = useState('');
-  const recordStatusTimerRef = useRef(null);
   // Remove tasting's own focus landing (D-01, contract "Focus landings";
   // the ninth round, Pitfall 8): both hidden-mode removal paths move
   // focus — the same WR-01 attempt-counter pattern as addTastingAttempt
@@ -871,47 +856,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   const comparisonBatchLabel = comparisonBatch
     ? `Compared with batch · ${comparisonBatch.churn.churnDate ? formatRecordDate(comparisonBatch.churn.churnDate) : 'date unknown'}`
     : null;
-
-  // announce(message, { selfClear, target }) -> writes one of the three
-  // live regions' text (contract "Feedback and undo lifecycle"): form
-  // (the default), tasting — the channel handleUndoRemove's own restore
-  // announcement writes to — or record — the end-of-record ceremony's own
-  // region, the removal toasts' channel (the ninth round, Pattern 5).
-  // Validation and block statuses never self-clear; the tasting/record
-  // removal/undo toasts pass selfClear: true and get the guarded
-  // five-second clear — it clears only if the text on screen is still the
-  // message it wrote, so a newer message is never wiped (RESEARCH.md Code
-  // Example 5). All three channels share the one guard shape, each
-  // against its own timer ref.
-  function announce(message, { selfClear = false, target = 'form' } = {}) {
-    if (target === 'tasting') {
-      setTastingStatus(message);
-      if (tastingStatusTimerRef.current) clearTimeout(tastingStatusTimerRef.current);
-      if (selfClear) {
-        tastingStatusTimerRef.current = setTimeout(() => {
-          setTastingStatus((current) => (current === message ? '' : current));
-        }, 5000);
-      }
-      return;
-    }
-    if (target === 'record') {
-      setRecordStatus(message);
-      if (recordStatusTimerRef.current) clearTimeout(recordStatusTimerRef.current);
-      if (selfClear) {
-        recordStatusTimerRef.current = setTimeout(() => {
-          setRecordStatus((current) => (current === message ? '' : current));
-        }, 5000);
-      }
-      return;
-    }
-    setFormStatus(message);
-    if (formStatusTimerRef.current) clearTimeout(formStatusTimerRef.current);
-    if (selfClear) {
-      formStatusTimerRef.current = setTimeout(() => {
-        setFormStatus((current) => (current === message ? '' : current));
-      }, 5000);
-    }
-  }
 
   // The band's Go to batch row (sketch 011 decision 30). It opens the Batch
   // fold if the maker closed it (decision 50, Mark 2026-10-05), then runs the

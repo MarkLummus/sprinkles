@@ -9,6 +9,11 @@ import { describe, expect, it } from 'vitest';
 // owns the draft state. So this is how the split's shape is pinned: no direct
 // draft setter in the page, each reset written once, the domain modules pure,
 // the hooks stopping at the draft.
+// Phase 8 (EDIT-06) adds the other half: this test now names each job's module
+// and proves the shell imports it and the job lives there (JOBS and
+// jobProblems below), so a cut that leaves its job behind, or a job that
+// drifts back into the shell, turns a named case red. The seven broken
+// fixtures show each check can fire on its own.
 // Node environment on purpose: no docblock, no DOM.
 
 function raw(relative) {
@@ -50,6 +55,90 @@ const OTHER_HOOK_SETTERS = [
 ];
 const wholeWord = (names) => new RegExp('\\b(' + names.join('|') + ')\\b');
 
+// Phase 8: the modules the page was cut into, as [label, path].
+const NEW_MODULES = [['useAnnouncer.js', './useAnnouncer.js']];
+
+// The names a source imports with `import { a, b as c } from` and then uses
+// fewer than twice (the import and one use): the algorithm of the shell's own
+// "imports nothing it does not use" case, for any one file.
+function unusedImports(source) {
+  const imported = [];
+  for (const block of source.matchAll(/import\s*\{([^}]*)\}\s*from/g)) {
+    for (const part of block[1].split(',')) {
+      const name = part.trim().split(/\s+as\s+/).pop();
+      if (name) imported.push(name);
+    }
+  }
+  return imported.filter((name) => (source.match(new RegExp('\\b' + name + '\\b', 'g')) || []).length < 2);
+}
+
+const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// jobProblems(entry, moduleSource, shellSource) -> the problems with one job,
+// each starting with the tag of the check that found it; [] when the job is in
+// place. Both sources arrive with comments stripped. An entry is
+// { name, file, specifier, call, hook, markers, shellLacks, allow }:
+//   export:     the module exports `function name(` exactly once
+//   import:     the shell imports name from specifier
+//   call:       the shell holds `call` exactly once
+//   order:      a hook is called before the shell's first early return
+//   marker:     each [needle, n] occurs exactly n times in the module
+//   shellLacks: no needle in shellLacks occurs in the shell
+//   allow:      every module import is on the allow-list (an entry ending in /
+//               allows anything under it)
+function jobProblems(entry, moduleSource, shellSource) {
+  const problems = [];
+  const exported = count(moduleSource, 'export function ' + entry.name + '(');
+  if (exported !== 1) problems.push('export: ' + entry.name + ' is exported ' + exported + ' times, expected 1');
+  const importPattern = new RegExp(
+    'import\\s*\\{[^}]*\\b' + entry.name + '\\b[^}]*\\}\\s*from\\s*\'' + escapeRegExp(entry.specifier) + '\'',
+  );
+  if (!importPattern.test(shellSource)) {
+    problems.push('import: the shell does not import ' + entry.name + ' from ' + entry.specifier);
+  }
+  const calls = count(shellSource, entry.call);
+  if (calls !== 1) problems.push('call: ' + entry.call + ' occurs ' + calls + ' times in the shell, expected 1');
+  if (entry.hook) {
+    const at = shellSource.indexOf(entry.call);
+    const early = shellSource.indexOf('if (loadFailed) return');
+    if (early < 0 || at < 0 || at > early) {
+      problems.push('order: ' + entry.call + ' is not called before the first early return');
+    }
+  }
+  for (const [needle, n] of entry.markers) {
+    const found = count(moduleSource, needle);
+    if (found !== n) problems.push("marker: '" + needle + "' occurs " + found + ' times, expected ' + n);
+  }
+  for (const needle of entry.shellLacks) {
+    if (shellSource.includes(needle)) problems.push("shellLacks: the shell still holds '" + needle + "'");
+  }
+  for (const specifier of specifiersOf(moduleSource)) {
+    const allowed = entry.allow.some((rule) => specifier === rule || (rule.endsWith('/') && specifier.startsWith(rule)));
+    if (!allowed) problems.push("allow: the module imports '" + specifier + "', which is not on its allow-list");
+  }
+  return problems;
+}
+
+// One entry per cut, in the order the shell calls the hooks.
+const JOBS = [
+  {
+    name: 'useAnnouncer',
+    file: './useAnnouncer.js',
+    specifier: './useAnnouncer.js',
+    call: 'useAnnouncer()',
+    hook: true,
+    markers: [
+      ['5000', 3],
+      ['function announce(', 1],
+    ],
+    shellLacks: ['function announce(', 'StatusTimerRef'],
+    allow: ['react'],
+  },
+];
+
+// The shell's hook calls in the order they must appear, all above the early returns.
+const HOOK_ORDER = ['useAnnouncer()', 'useRecordDraft()'];
+
 describe('RecipePage.jsx holds no draft setter (D-12)', () => {
   it('has none of the five setters D-12 names', () => {
     expect(recipePage).not.toMatch(wholeWord(D12_SETTERS));
@@ -57,6 +146,10 @@ describe('RecipePage.jsx holds no draft setter (D-12)', () => {
 
   it('has none of the seven other setters the hooks own', () => {
     expect(recipePage).not.toMatch(wholeWord(OTHER_HOOK_SETTERS));
+  });
+
+  it.each(NEW_MODULES)('%s holds none of the draft setters either', (_name, path) => {
+    expect(stripComments(raw(path))).not.toMatch(wholeWord([...D12_SETTERS, ...OTHER_HOOK_SETTERS]));
   });
 
   it('the pattern is anchored: it matches the hook-owned calls and not the page-owned ones', () => {
@@ -179,6 +272,10 @@ describe('RecipePage.jsx is the route shell', () => {
       expect(uses.length, name + ' is imported but never used').toBeGreaterThanOrEqual(2);
     }
   });
+
+  it.each(NEW_MODULES)('%s imports nothing it does not use', (_name, path) => {
+    expect(unusedImports(stripComments(raw(path)))).toEqual([]);
+  });
 });
 
 describe('notes and prose render as text, never as markup', () => {
@@ -191,5 +288,61 @@ describe('notes and prose render as text, never as markup', () => {
     ['recordDraft.js', recordDraft],
   ])('%s has no dangerouslySetInnerHTML', (_name, source) => {
     expect(source).not.toContain('dangerouslySetInnerHTML');
+  });
+
+  it.each(NEW_MODULES)('%s has no dangerouslySetInnerHTML', (_name, path) => {
+    expect(stripComments(raw(path))).not.toContain('dangerouslySetInnerHTML');
+  });
+});
+
+describe('RecipePage.jsx is cut along its jobs (EDIT-05, EDIT-06)', () => {
+  it.each(JOBS.map((job) => [job.name, job]))('%s lives in its module, and the shell imports and calls it', (_name, job) => {
+    expect(jobProblems(job, stripComments(raw(job.file)), recipePage)).toEqual([]);
+  });
+
+  it('the shell calls its hooks in the planned order, all above the early returns', () => {
+    const earlyReturn = recipePage.indexOf('if (loadFailed) return');
+    expect(earlyReturn).toBeGreaterThan(-1);
+    const at = HOOK_ORDER.map((call) => recipePage.indexOf(call));
+    for (const index of at) expect(index).toBeGreaterThan(-1);
+    for (let i = 1; i < at.length; i += 1) expect(at[i]).toBeGreaterThan(at[i - 1]);
+    expect(at[at.length - 1]).toBeLessThan(earlyReturn);
+  });
+
+  // Each fixture breaks exactly one check of jobProblems, so exactly one
+  // problem comes back and it carries that check's tag; the clean one returns [].
+  const FIXTURE_ENTRY = {
+    name: 'useThing',
+    file: './useThing.js',
+    specifier: './useThing.js',
+    call: 'useThing()',
+    hook: true,
+    markers: [['5000', 3]],
+    shellLacks: ['function announce('],
+    allow: ['react'],
+  };
+  const CLEAN_MODULE =
+    "import { useRef } from 'react';\nexport function useThing() {\n  useRef(5000);\n  useRef(5000);\n  useRef(5000);\n}\n";
+  const CLEAN_SHELL =
+    "import { useThing } from './useThing.js';\nexport function Page() {\n  useThing();\n  if (loadFailed) return null;\n}\n";
+  const FIXTURES = [
+    ['export:', CLEAN_MODULE.replace('export function', 'function'), CLEAN_SHELL],
+    ['import:', CLEAN_MODULE, CLEAN_SHELL.replace("import { useThing } from './useThing.js';\n", '')],
+    ['call:', CLEAN_MODULE, CLEAN_SHELL.replace('  useThing();\n', '  useThing();\n  useThing();\n')],
+    ['order:', CLEAN_MODULE, CLEAN_SHELL.replace('  useThing();\n  if (loadFailed) return null;\n', '  if (loadFailed) return null;\n  useThing();\n')],
+    ['marker:', CLEAN_MODULE.replace('  useRef(5000);\n', ''), CLEAN_SHELL],
+    ['shellLacks:', CLEAN_MODULE, CLEAN_SHELL + 'function announce() {}\n'],
+    ['allow:', "import x from 'lodash';\n" + CLEAN_MODULE, CLEAN_SHELL],
+    [null, CLEAN_MODULE, CLEAN_SHELL],
+  ];
+
+  it.each(FIXTURES)('each job check can fail: %s', (tag, moduleSource, shellSource) => {
+    const problems = jobProblems(FIXTURE_ENTRY, moduleSource, shellSource);
+    if (tag === null) {
+      expect(problems).toEqual([]);
+    } else {
+      expect(problems).toHaveLength(1);
+      expect(problems[0].startsWith(tag)).toBe(true);
+    }
   });
 });

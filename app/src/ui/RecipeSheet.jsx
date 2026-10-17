@@ -168,7 +168,7 @@ export function RecipeSheet({
         <section className="method-region" aria-label="Instructions">
           <Method
             steps={methodSteps}
-            stepChanges={mode === 'recording' ? draft.stepChanges : evidenceBatch ? evidenceBatch.churn.stepChanges : {}}
+            stepChanges={mode === 'recording' ? (draft?.stepChanges ?? {}) : evidenceBatch ? evidenceBatch.churn.stepChanges : {}}
             mode={mode}
             onChangeStepChange={onChangeStepChange}
             rows={version.rows}

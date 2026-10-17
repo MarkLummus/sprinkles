@@ -18,6 +18,9 @@ const empty = { id: 'v-empty', recipeId: 'r-empty', rows: [], method: [], author
 // with a fresh id.
 const inMemory = { ...structuredClone(oliveOilVersion), id: 'v-in-memory' };
 
+// Steps and no rows: the shape that reaches RecipeSheet's own read of the draft's step changes without reaching IngredientTable.
+const stepsOnly = { ...empty, id: 'v-steps-only', method: structuredClone(oliveOilVersion.method) };
+
 function render(version, { baseline, mode, penDraft, foot }) {
   const view = sheetView({
     version,
@@ -106,5 +109,20 @@ describe('RecipeSheet hands Show changes on to IngredientsHead (WR-01, 261002-wn
     expect(sheetSource.match(/<IngredientsHead\b/g)).toHaveLength(1);
     const tag = sheetSource.match(/<IngredientsHead\b[\s\S]*?\/>/)?.[0] ?? '';
     expect(tag).toContain('onToggleShowChanges={onToggleShowChanges}');
+  });
+});
+
+// IngredientTable's as-made cells still read the draft in recording mode, so a
+// recording Sheet with rows still needs a draft. The record pen always passes
+// one, and creation never records (D-01). This case therefore has no rows and
+// proves RecipeSheet's own guard only.
+describe('RecipeSheet in recording mode with no draft (WR-02)', () => {
+  it('steps and no rows: the Instructions draw the recording controls with no step changes', () => {
+    const markup = render(stepsOnly, { baseline: null, mode: 'recording', penDraft: null });
+    expect(markup).toContain('aria-label="Instructions"');
+    expect(markup).toContain('Tare, pour, check.');
+    expect(markup).toContain('aria-label="Step 1, skipped"');
+    expect(markup).toContain('This version has no ingredient rows.');
+    expect(markup).not.toContain('method-step__skipped-label');
   });
 });

@@ -103,14 +103,14 @@ These gates apply to the v2.0 phases below.
   3. The shell test names each new module and asserts that the shell imports it and that its job lives there, not only that code is gone from `RecipePage.jsx`
   4. Every existing test passes; tests whose code moved change only their imports, and none is deleted or weakened
 
-**Plans:** 1/5 plans executed, waves 1 to 5 in sequence (every cut touches `RecipePage.jsx`)
+**Plans:** 2/5 plans executed, waves 1 to 5 in sequence (every cut touches `RecipePage.jsx`)
 
 Plans:
 **Wave 1**
 - [x] 08-01-PLAN.md — the walk runs from Phase 8 and matches at the base (tracer); shell effects and StrictMode restore pinned; cut 1 `useAnnouncer`
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 08-02-PLAN.md — cut 2 `useRecipeData`; cut 3 the pure `sheetView` with a nullable baseline
+- [x] 08-02-PLAN.md — cut 2 `useRecipeData`; cut 3 the pure `sheetView` with a nullable baseline
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 08-03-PLAN.md — cut 4 `RecipeSheet` with the D-11 re-points; the no-stored-version component tests, empty and populated
@@ -200,7 +200,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 8. Split the recipe page along its jobs | v2.0 | 1/5 | In Progress | - |
+| 8. Split the recipe page along its jobs | v2.0 | 2/5 | In Progress | - |
 | 9. The library and the stored shapes, plus the two places | v2.0 | 0/TBD | Not started | - |
 | 10. The creation editor, without Save | v2.0 | 0/TBD | Not started | - |
 | 11. Steps, structure, save and print | v2.0 | 0/TBD | Not started | - |

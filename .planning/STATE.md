@@ -5,16 +5,16 @@ milestone_name: Recipe creation
 current_phase: 08
 current_phase_name: Split the recipe page along its jobs
 status: executing
-stopped_at: Completed 08-01-PLAN.md
-last_updated: "2026-10-17T16:06:19.920Z"
+stopped_at: Completed 08-02-PLAN.md
+last_updated: "2026-10-17T16:12:16.909Z"
 last_activity: 2026-10-17
 last_activity_desc: Phase 08 execution started
-state_head: 5a49c56187c60fbace1d3396c98154005085ea6d
+state_head: 5c0c027156fb4f0f66fc1a9996450855678b4ec8
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 5
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-10-16)
 ## Current Position
 
 Phase: 08 (Split the recipe page along its jobs) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-10-17 — Phase 08 execution started
 
@@ -162,6 +162,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 06 P02 | 2 min | 3 tasks | 5 files |
 | Phase 06 P03 | 3 min | 3 tasks | 9 files |
 | Phase 08 P01 | 15 min | 3 tasks | 8 files |
+| Phase 08 P02 | 6 min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -338,6 +339,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Roadmap v2.0, revised 2026-10-16 after a Codex review]: MAKE-09, SCALE-01 and SCALE-02 moved from Phase 12 to Phase 10, because Phase 11 enables Save and Phase 12 added authoring that exists only at creation, so a recipe saved in Phase 11 could never gain it (Mark's instruction). Phase 10 now holds MAKE-04, 05, 06, 08, 09, 11 and SCALE-01, 02 and the design gate for scales and problems, style and balance targets, equipment and process; Phase 12 is renamed Showing a recipe's own scales and problems, and the whole loop, and keeps SCALE-04, PROOF-01, PROOF-02. Mark's answers to decisions 1 to 15 are recorded in ROADMAP.md (Before planning) and applied: the app's values stay for all seven library conflicts (LIB-05); the library is cleared and reseeded on the version bump, amending Phase 6 D-05 (LIB-06); scales are definitions only, each carrying its kind (goldilocks or plain magnitude), with a reset that rewrites the seeded recipes, so LIB-06 no longer says no recipe, version or batch is touched; the first version stays editable until it has a batch or a child version (STRUCT-04); one description box fills both descriptions, the Version name starts as "Version 1", recipe names may repeat with a warning, removal at creation deletes outright, and an ingredient not in the library adds nothing. New open decision 17 (`decide-style-bands-source`) and the Codex question on equipment and process scope block Phase 10.
 - [Phase 08]: 08-01: no 08-walk-before.json; the base build matches 05-walk-before.json twice, so every later walk compare uses the Phase 5 baseline (D-06)
 - [Phase 08]: 08-01: the walk resolves PROBE_DIST with path.resolve because TMPDIR ends in a slash on this machine; the static server's startsWith check 404'd otherwise
+- [Phase 08]: 08-02: useRecipeData returns only the setters the page's handlers call (setVersion, setVersions, setBatches, setRecipe); sheetView takes a nullable baseline and the editing page passes baseline: version
 
 ### Pending Todos
 
@@ -586,8 +588,8 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-17T16:06:19.899Z
-Stopped at: Completed 08-01-PLAN.md
+Last session: 2026-10-17T16:12:16.889Z
+Stopped at: Completed 08-02-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

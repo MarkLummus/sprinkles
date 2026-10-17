@@ -107,3 +107,16 @@ Equipment-class and calibration-family tables; a smarter search; maker-added mac
 ## Codex review of 09-CONTEXT.md (2026-10-17)
 
 Two blockers, five major, two minor; no code changed. Fixed in the context as D-03a, D-03b, D-04a, D-04b, D-09 (exception and reviewed id mapping), D-10 (basis), D-10a (converter checks), the `create` draft payload, and the schema-8 and styles-update notes. Mark's one choice: new library figures have the basis `inherited` (shown as "unreviewed") until reviewed; the dataset's sources stay as text.
+
+## Second discussion (2026-10-17, after Phase 8 landed)
+
+Areas: Import into a seeded profile, Walk baseline after the reset, When Mark reviews the library, Tables empty or damaged at boot.
+
+| Area | Options | Selected |
+|------|---------|----------|
+| Import clash | The file wins / The profile keeps its row / Refuse with a message | The file wins |
+| Walk | Re-record on the result with an allow-list / Screenshots only / Re-record both after | Re-record on the result |
+| Library review | Before planning locks / Checkpoint inside the plan / After the phase | Checkpoint inside the plan |
+| Bad tables | Reseed empty, refuse bad row / Reseed both / Refuse both | Reseed empty, refuse bad row |
+
+Captured as D-14 to D-18 (D-18 is not a choice: Phase 8 landed, extend `useKeptDraft`).

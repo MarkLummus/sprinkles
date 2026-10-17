@@ -1,6 +1,6 @@
 # Phase 9: The library and the stored shapes, plus the two places - Context
 
-**Gathered:** 2026-10-17
+**Gathered:** 2026-10-17 (updated 2026-10-17: D-14 to D-18)
 **Status:** Ready for planning
 
 <domain>
@@ -38,6 +38,13 @@ While a reset is still free, every shape creation will store is settled, in v2.0
 - **D-11:** Ingredient search is as sketch 012 draws it: the name contains the typed letters in any case, the category is exact, results stay A to Z (`filterLibrary(records, query, category)`, reused by Phase 10's picker). Anything smarter (folding accents, matching every word, ranking a prefix first) goes back to Sid as a design change. (Mark, 2026-10-17)
 - **D-12:** A style row stores, beside its six balance bands, the other fields of Mark's balance research (egg yolk, overrun, stabilizer and emulsifier ranges, default serve temperature) and its default equipment class and calibration family as plain text ids. There are no equipment-class or calibration-family tables yet; nothing reads them, and they arrive with the balance-model feature as an update of the styles table that keeps the maker's added rows. The values are in `.planning/notes/2026-10-16-style-bands-draft.md`. PAC and sugar bands are blank. (Mark, 2026-10-17)
 - **D-13:** A version records its machine as a copy of the row's values (name, minimum fill, maximum fill), taken when the maker picks it, as a row copies an ingredient's figures, so a later edit to the machines table never moves a stored version. `maxFillG` is a new stored field; Whynter seeds with 700 g minimum and no maximum. (Mark, 2026-10-17)
+
+### Import, proof, review and boot (second discussion, Phase 8 done)
+- **D-14:** On import, the file wins for the machines, styles, scales, problems and library: a row with the same id replaces the local row (the `put`-by-id `importAll` already uses for recipes, versions and batches). Local rows the file does not hold stay; import never deletes. The validator requires every seed table in the file. This does not settle decision 16 (the `importAll` overwrite policy stays open for library editing). (Mark, 2026-10-17)
+- **D-15:** The walk is re-recorded: a new before-walk at Phase 9's base commit, then the result is compared against it. Screenshots must MATCH. The store dumps may differ only on an explicit allow-list (scale definitions, stored Sheet codes, the added `libraryId` and machine fields); any other dump difference fails. The Phase 8 baseline is not reused. (Mark, 2026-10-17)
+- **D-16:** The converter's output is a checkpoint inside the plan. The first plan writes the converter and the reviewed mapping file (the 18 key collisions marked same ingredient or different product, plus rows it flags as unmappable) and stops until Mark approves the list; the plans that seed the library, test the conflict gate and run the upgrade wait on it. The other plans can be planned now. The plan puts the review on Mark's List as a look row. (Mark, 2026-10-17)
+- **D-17:** At boot an empty seed table (machines, styles, scales, problems) is reseeded from the committed seed, as `seedLibraryIfEmpty` does for the library. A row that fails its shape check stops the app opening, with a plain message; there is no half-working catalog. (Mark, 2026-10-17)
+- **D-18:** Phase 8 has landed. The `create` draft kind extends its kept-draft hook (`useKeptDraft`) instead of adding a second restore path.
 
 ### Fixed by earlier decisions (carry forward)
 - Library: keep the app's values for all seven conflicts (LIB-05); clear and reseed on the bump, amending Phase 6 D-05 (LIB-06); the 26 keys never change; a row keeps a `libraryId` link and its figures do not move when the library changes (LIB-08).

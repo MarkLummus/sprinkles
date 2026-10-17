@@ -142,7 +142,37 @@ Plans:
   7. A version stores its Sheet code, assigned when the version is created (a first version and every Next version) and unique; no edit to the recipe name, the Version name, the Sheet title or description, or any row, step or note changes it; the seeded versions keep the codes they print today, so sheets already in the binder still find them
   8. The machines, the styles with their bands, and the core scales and problems travel in the store file with the library: the file validator checks them, the store file version changes, and an export from one profile imported into a fresh profile restores them
 
-**Plans**: TBD
+**Plans:** 14 plans in 7 waves (09-01 stops for Mark's library review, D-16; 09-09 confirms the one-way reset before the bump)
+
+Plans:
+**Wave 1**
+- [ ] 09-01-PLAN.md — the converter and its reviewed mapping, the before-walk at the base commit (tracer: the dataset converts end to end); stops for Mark on look-p9-library-mapping
+- [ ] 09-02-PLAN.md — the stored Sheet code: seeded versions keep their printed codes, print and search read the field, children and created roots get id-derived codes
+- [ ] 09-03-PLAN.md — the Notebook place and the Ingredients place as sketch 012 draws them, with filterLibrary and a WebKit measurement
+- [ ] 09-04-PLAN.md — the create draft kind through useKeptDraft (D-18) and the scale definition contract
+- [ ] 09-05-PLAN.md — rows keep libraryId; equipment stores maxFillG
+
+**Wave 2** *(blocked on Wave 1 completion; 09-07 also on Mark's approval)*
+- [ ] 09-06-PLAN.md — the Sheet code enforced inside createVersion and saveVersion, two tabs included
+- [ ] 09-07-PLAN.md — the larger library seeded, every same-ingredient case recorded and gated, lactose once
+- [ ] 09-08-PLAN.md — declared scales become definitions carrying their kind
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 09-09-PLAN.md — DB_VERSION 9 to 10: the bounded reset, the four seed tables, the upgrade proof and the ratchets
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 09-10-PLAN.md — store file schema 9: the tables travel; import keeps the Sheet code rule
+- [ ] 09-11-PLAN.md — boot validates the tables and loads the catalog; the log and the record pen read it; import reloads it
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [ ] 09-12-PLAN.md — a batch snapshots its core scales and problems; import checks a batch against its own snapshot
+
+**Wave 6** *(blocked on Wave 5 completion)*
+- [ ] 09-13-PLAN.md — kept drafts read the catalog; the code constants retire; the static seed scan; the upgrade proof of stable marks
+
+**Wave 7** *(blocked on Wave 6 completion)*
+- [ ] 09-14-PLAN.md — the re-walk against the allow-list, the places at the larger library, Mark's List rows
+
 **Design gate**: MET (Mark, 2026-10-17). The boards for the Notebook place (the recipe list) and the Ingredients place (the library, read-only, with search by name and category) are approved and snapshotted as `.planning/sketches/012-places/` (README `## Decisions`: the category filter is a select, the Notebook lists the most recently touched recipe first as Home does, the provenance columns read Basis and Source). Plans cite the snapshot by path.
 **UI hint**: yes
 **Notes**: This is v2.0's only database version change and it must land before Phase 11 can save a recipe. The converter runs offline once (a node script reading `~/Downloads/sprinkles-ingredient-seed-db.json`) and commits a reviewed module; nothing is fetched or parsed at runtime. The 26 existing keys must not change, because the seeded recipe files import entries by key (`data/library.js` holds 26 entries, counted 2026-10-16; the "12" in parts of the research is the olive oil recipe's row count). The seven conflicts keep the app's values (decision 1), so no existing basis changes; the conflict-gate test reads each recorded decision. The version-10 upgrade clears the library and reseeds it (decision 2, amending Phase 6 D-05), and resets the store to the new shapes, rewriting the seeded recipes (decision 5); nothing a maker made is lost, because no device holds real batches (Mark). The clear also removes library records an import wrote; that is harmless while the library is read-only, and is to be recorded in `db.js` and tested. The reset rewrites the seeded versions the Phase 8 walk dumps (see Phase 8's Notes). The stores for the machines, the styles, and the core scales and problems are stored-shape changes, so they land in this same 9 to 10 bump inside the reset window (decision 18, LIB-09). Their seed content is settled: the Whynter machine row (maximum fill empty, `decide-whynter-max-fill`) and the four styles, whose bands and other fields Mark approved (`look-style-bands`, `decide-style-extra-fields`; the values are in `.planning/notes/2026-10-16-style-bands-draft.md`). A style names its equipment class and calibration family as plain ids; they are not tables yet (Phase 9 context D-12). The record pen, the reading and the printed log read the core scales and problems from the tables, which touches this phase and needs discussion. The Sheet code (decision 19) is a stored field on the version, so it lands in this bump; it amends Phase 4 D-08 and D-09, and `sheetCode.js` stops deriving the code from content for new versions. The code is derived once from the version id, checked for clashes and stored, and the seeded versions keep the codes they print today (Phase 9 context D-04 to D-06). The new tables are part of the store file (decision 20): `transfer.js` exports, validates and imports them, and the store file version (8) changes. Criterion 2's draft kind is groundwork for MAKE-11, which Phase 10 delivers. The places replace today's placeholders at `/notebook` and `/ingredients` (`router.jsx`). The Notebook place lists the recipes and starts nothing: there is no creation editor until Phase 10, which adds the New recipe entry. The Ingredients place reads the library through the repository seam and never writes it; its search is the pure `filterLibrary(records, query, category)`, which Phase 10's picker reuses. Sketch 012 draws the matching as: the name contains the typed letters in any case, the category is exact, results stay A to Z. The research (`SUMMARY.md`) describes more (folding diacritics, matching every typed word, ranking a name-prefix first); any of that in the build is a design change to take back to Sid, and the discussion chose the board's matching (Phase 9 context D-11). The Phase 8 walk visits only version and batch routes under `/notebook/:recipeId/`, so the places do not disturb it. Every new button, checkbox and radio renders through `ui/Button.jsx`, `Checkbox.jsx` or `Radio.jsx`, every link carries `tabIndex={0}`, and every visual value reads a token.
@@ -204,7 +234,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 8. Split the recipe page along its jobs | v2.0 | 6/6 | Complete    | 2026-10-17 |
-| 9. The library and the stored shapes, plus the two places | v2.0 | 0/TBD | Not started | - |
+| 9. The library and the stored shapes, plus the two places | v2.0 | 0/14 | Planned | - |
 | 10. The creation editor, without Save | v2.0 | 0/TBD | Not started | - |
 | 11. Steps, structure, save and print | v2.0 | 0/TBD | Not started | - |
 | 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/TBD | Not started | - |

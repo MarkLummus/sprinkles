@@ -22,6 +22,15 @@ function joinNames(names) {
   return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
 }
 
+// The batch a page shows: the one the URL names, or, with no batch named, the
+// version's newest, or null when it has none. The rule sheetView and the record
+// pen's Record a tasting both read.
+export function openBatchFor(batches, batchId) {
+  if (batchId) return batches.find((batch) => batch.id === batchId) ?? null;
+  if (batches.length > 0) return sortedBatches(batches)[0];
+  return null;
+}
+
 export function sheetView({ version, baseline, mode, penDraft, parentVersion, showingChanges, batches, batchId }) {
   const hasRows = version.rows.length > 0;
   // The clean reading: every reader that is not the pen's own table takes
@@ -90,12 +99,7 @@ export function sheetView({ version, baseline, mode, penDraft, parentVersion, sh
   // The batch this page shows: the one the URL names, or — with no batch
   // named in the URL — the version's newest batch, where a batch stands at its
   // churn date or else the day it was recorded, or null when it has none.
-  let openBatch = null;
-  if (batchId) {
-    openBatch = batches.find((batch) => batch.id === batchId) ?? null;
-  } else if (batches.length > 0) {
-    openBatch = sortedBatches(batches)[0];
-  }
+  const openBatch = openBatchFor(batches, batchId);
 
   // A plan pen shows batch evidence only after the maker explicitly cites
   // it. The route's open/latest batch remains the reading-state record;

@@ -34,10 +34,10 @@ export function useRouteIntents({
   // state is replaced with null, so Back or a reload never reopens a pen.
   // It waits for the draft restore: a draft kept on this page reopens its own
   // pen and consumes the request without opening a second one.
-  // onStartAmending is the shell's hoisted handleStartAmending function
-  // declaration, which reads only refs, setters, the onPageStatus prop and the
-  // recordPen hook value (declared above, at the useRecordDraft call), so
-  // calling it from here, above the early returns, is safe.
+  // onStartAmending is useBatchRecording's handleStartAmending, a function
+  // declaration that reads only refs, setters, the onPageStatus prop and the
+  // recordPen hook value, so calling it from here, above the early returns, is
+  // safe.
   const startTastingConsumedRef = useRef(false);
   useEffect(() => {
     if (!startTastingOnMount || startTastingConsumedRef.current || !draftRestoreDone) return;

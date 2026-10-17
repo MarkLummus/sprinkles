@@ -40,6 +40,7 @@ const usePenDraft = stripComments(raw('./usePenDraft.js'));
 const useRecordDraft = stripComments(raw('./useRecordDraft.js'));
 const useVersionPen = stripComments(raw('./useVersionPen.js'));
 const useKeptDraft = stripComments(raw('./useKeptDraft.js'));
+const useBatchRecording = stripComments(raw('./useBatchRecording.js'));
 const penDraft = stripComments(raw('../domain/penDraft.js'));
 const recordDraft = stripComments(raw('../domain/recordDraft.js'));
 const ingredientTable = stripComments(raw('./IngredientTable.jsx'));
@@ -66,6 +67,7 @@ const NEW_MODULES = [
   ['useVersionPen.js', './useVersionPen.js'],
   ['useKeptDraft.js', './useKeptDraft.js'],
   ['useRouteIntents.js', './useRouteIntents.js'],
+  ['useBatchRecording.js', './useBatchRecording.js'],
 ];
 
 // The names a source imports with `import { a, b as c } from` and then uses
@@ -277,6 +279,25 @@ const JOBS = [
     allow: ['react', '../store/repository.js', '../domain/', './notebookPaths.js'],
   },
   {
+    name: 'useBatchRecording',
+    file: './useBatchRecording.js',
+    specifier: './useBatchRecording.js',
+    call: 'useBatchRecording(',
+    hook: true,
+    markers: [
+      ['useRecordDraft()', 1],
+      ['repository.saveBatch(record)', 2],
+      ['createBatch(', 1],
+      ['completeRecord(', 1],
+      ['onPageStatus(batchSavedStatus(record))', 2],
+      ['announce(BATCH_SAVE_ERROR)', 5],
+      ['function focusBatch(', 1],
+      ['function restoreRecord(', 1],
+    ],
+    shellLacks: ['useRecordDraft', 'recordPen.', 'repository.saveBatch', 'createBatch(', 'completeRecord(', 'batchSaveLockRef', 'function handleSaveBatch('],
+    allow: ['react', '../store/repository.js', '../domain/', './useRecordDraft.js', './notebookPaths.js', './sheetView.js'],
+  },
+  {
     name: 'useRouteIntents',
     file: './useRouteIntents.js',
     specifier: './useRouteIntents.js',
@@ -299,8 +320,8 @@ const JOBS = [
 const HOOK_ORDER = [
   'useAnnouncer()',
   'useRecipeData(versionId)',
-  'useRecordDraft()',
   'useDraftWriter(versionId)',
+  'useBatchRecording(',
   'useVersionPen(',
   'useKeptDraft(',
   'useRouteIntents(',
@@ -360,9 +381,14 @@ describe('the draft hooks sit above the early returns', () => {
     expect(earlyReturn).toBeGreaterThan(-1);
   });
 
-  it.each(['useRecordDraft()'])('%s is called exactly once, before the early returns', (call) => {
+  it.each(['useBatchRecording('])('%s is called exactly once, before the early returns', (call) => {
     expect(count(recipePage, call)).toBe(1);
     expect(recipePage.indexOf(call)).toBeLessThan(earlyReturn);
+  });
+
+  it('useRecordDraft() is called once, inside useBatchRecording.js, and nowhere in the shell', () => {
+    expect(count(useBatchRecording, 'useRecordDraft()')).toBe(1);
+    expect(count(recipePage, 'useRecordDraft()')).toBe(0);
   });
 
   it('usePenDraft() is called once, inside useVersionPen.js, and the shell calls useVersionPen once above the early returns', () => {

@@ -882,7 +882,7 @@ describe('VERSION_BLOCKED_STATUS — the form-owned reassurance for a field-owne
 // and a path that changes channel does.
 describe('RecipePage.jsx — the version pen\'s refusal and failure route through announce, never onPageStatus', () => {
   const recipePagePath = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
-  const recipePageSource = [readFileSync(recipePagePath, 'utf8'), readFileSync(fileURLToPath(new URL('./useVersionPen.js', import.meta.url)), 'utf8')].join('\n')
+  const recipePageSource = [readFileSync(recipePagePath, 'utf8'), readFileSync(fileURLToPath(new URL('./useVersionPen.js', import.meta.url)), 'utf8'), readFileSync(fileURLToPath(new URL('./useBatchRecording.js', import.meta.url)), 'utf8')].join('\n')
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
 
@@ -1248,7 +1248,7 @@ describe('RecipePage places the Go to batch row last in the band grid (quick 261
 // the describes above use.
 describe('RecipePage.jsx — the band\'s record act is wired to the log\'s own handler (261002-wmz)', () => {
   const recipePagePath = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
-  const source = readFileSync(recipePagePath, 'utf8')
+  const source = [readFileSync(recipePagePath, 'utf8'), readFileSync(fileURLToPath(new URL('./useBatchRecording.js', import.meta.url)), 'utf8')].join('\n')
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
 
@@ -1277,7 +1277,7 @@ describe('RecipePage.jsx — the band\'s record act is wired to the log\'s own h
   });
 
   it('leaves no SEAM(261002-wn0) marker in the file once the seam is replaced (Test L, 261002-wn0)', () => {
-    const raw = readFileSync(recipePagePath, 'utf8');
+    const raw = [readFileSync(recipePagePath, 'utf8'), readFileSync(fileURLToPath(new URL('./useBatchRecording.js', import.meta.url)), 'utf8')].join('\n');
     expect(raw).not.toContain('SEAM(261002-wn0)');
     expect(raw).not.toContain('handleRecordTasting');
   });

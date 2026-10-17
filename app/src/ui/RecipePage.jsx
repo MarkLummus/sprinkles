@@ -4,7 +4,7 @@ import { repository } from '../store/repository.js';
 import { createBatch, completeRecord } from '../domain/batch.js';
 import { freshId } from '../domain/id.js';
 import { versionsForRecipe } from '../domain/lineage.js';
-import { buildDraftRecord, draftMatchesVersion, newestDraft } from '../domain/draft.js';
+import { draftMatchesVersion, newestDraft } from '../domain/draft.js';
 import { derivePenState, isPenDraftDirty } from '../domain/penDraft.js';
 import {
   batchSavedStatus,
@@ -27,7 +27,7 @@ import { PenFoot } from './PenFoot.jsx';
 import { RecipeSheet } from './RecipeSheet.jsx';
 import { useBelow724, useBelowDesktop, useFold } from './useBelowDesktop.js';
 import { useVersionPen } from './useVersionPen.js';
-import { useDraftWriter } from './useKeptDraft.js';
+import { useDraftWriter, useKeptDraft } from './useKeptDraft.js';
 import { useRecordDraft } from './useRecordDraft.js';
 import { useAnnouncer } from './useAnnouncer.js';
 import { useRecipeData } from './useRecipeData.js';
@@ -47,10 +47,7 @@ export const CHURN_DATE_BLOCKED_STATUS = 'Check the churn date. Your entries hav
 export const BATCH_SAVE_ERROR = 'Couldn’t save the batch. Try again.';
 export { VERSION_SAVED_STATUS, VERSION_SAVE_ERROR, VERSION_BLOCKED_STATUS } from './useVersionPen.js';
 
-// The page notice a restored draft announces (D-15; sketch 010 decide-p4-draft-kept-words
-// C, screen-draft-kept-words.html). Sent with no options, so the router's
-// PageStatus clears it after its own five seconds and nothing persists it.
-export const DRAFT_KEPT_STATUS = 'Draft kept. Cancel discards it.';
+export { DRAFT_KEPT_STATUS } from './useKeptDraft.js';
 
 // The one line the page shows when a store read fails (WR-05). Word for word
 // the boot failure line in main.jsx, so it adds no new words.
@@ -180,7 +177,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // version pen, which takes discardDraft from it (D-08). useKeptDraft, below,
   // takes both.
   const draftWriter = useDraftWriter(versionId);
-  const { draftStoredRef, pendingDraftRef, draftTimerRef, flushPendingDraft, discardDraft } = draftWriter;
+  const { discardDraft } = draftWriter;
   const {
     penDraft,
     blockedMessage,
@@ -216,143 +213,33 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     };
   }, [recipeName]);
 
-  // Kept drafts (04-09, D-14 to D-17). A pen's draft lives in the drafts store,
-  // through the repository seam, from its first keystroke until Save or
-  // Cancel: a reload, a closed tab, a crash or the next day brings the pen
-  // back with its ink. The refs below hold what the effects share; each is
-  // read at the moment it fires, so none of them is a dependency.
-  //  - draftRestoreStartedRef: the restore runs once per page instance. A ref,
-  //    not state, and no cancelled flag: StrictMode runs the effect twice in
-  //    development, and a flag set by the first cleanup would drop the read the
-  //    guard let through.
-  //  - draftRestoreDone: the persist effect below waits for it (research
-  //    Pitfall 5): on first render mode is 'reading' and both drafts are null,
-  //    which reads as clean and would delete the draft the restore is about to
-  //    read.
-  //  - draftStoredRef / pendingDraftRef / draftTimerRef: the writer's refs
-  //    (useDraftWriter, above).
-  const [draftRestoreDone, setDraftRestoreDone] = useState(false);
-  const draftRestoreStartedRef = useRef(false);
-  const modeRef = useRef(mode);
-  modeRef.current = mode;
-
-  // Restore (D-15): once the version and its batches are read, look for this
-  // version's draft. A record that no longer fits (an import replaced the
-  // version, the batch it corrects is gone) is deleted quietly and the page
-  // opens in reading; one that fits reopens its pen with the ink and the page
-  // notice. Restoring sets state only: nothing is written to versions or
-  // batches until the maker presses Save, and nothing is asked (no dialog).
-  useEffect(() => {
-    if (draftRestoreStartedRef.current) return;
-    if (!version || version.recipeId !== recipeId || !batchesLoaded || loadFailed) return;
-    draftRestoreStartedRef.current = true;
-    Promise.resolve()
-      .then(() => repository.getDraft(versionId))
-      .then((record) => {
-        if (!record) {
-          setDraftRestoreDone(true);
-          return;
-        }
-        if (!draftMatchesVersion(record, version, batches)) {
-          Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
-          setDraftRestoreDone(true);
-          return;
-        }
-        // A pen the maker opened while the read was out wins over the stored
-        // one; the persist effect then keeps whichever is open.
-        if (modeRef.current !== 'reading') {
-          setDraftRestoreDone(true);
-          return;
-        }
-        // A Correct draft belongs to its own batch's address: the head, the
-        // axes snapshot and the amend save all name the batch the URL shows,
-        // so this page never edits a batch it is not showing. Opened on any
-        // other address of the version, the address is replaced with the
-        // batch's own and nothing is restored here. The persist effect stays
-        // off on this instance (draftRestoreDone is not set), so it cannot
-        // delete the draft the next instance, keyed by that batch, reads.
-        if (record.kind === 'amend' && batchId !== record.amendingBatchId) {
-          navigate(notebookPath(version.recipeId, version.id, record.amendingBatchId), { replace: true });
-          return;
-        }
-        draftStoredRef.current = true;
-        if (record.kind === 'plan') {
-          restorePlan(record.payload, record.penOpenedAt);
-        } else {
-          // A new batch's record ('record') opens on any of the version's
-          // addresses; a Correct draft ('amend') only on its own batch's,
-          // which the redirect above has already settled.
-          recordPen.restore(record);
-          setMode('recording');
-        }
-        onPageStatus(DRAFT_KEPT_STATUS);
-        setDraftRestoreDone(true);
-      })
-      .catch(() => setDraftRestoreDone(true));
-  }, [version, batchesLoaded, loadFailed]);
-
-  // Persist: while a pen is open and holds ink, its draft is written 250 ms
-  // after the last change; when no pen is open, or the open pen is clean
-  // again, the stored draft is deleted. Dirtiness is the two checks the Escape
-  // effect below reads (isPenDraftDirty, isDraftDirty), never a third.
-  useEffect(() => {
-    if (!draftRestoreDone) return undefined;
-    const { openPen: persistedPen } = derivePenState({ mode, amendingBatchId });
-    let record = null;
-    if (persistedPen === 'plan' && isPenDraftDirty(mode, penDraft, version)) {
-      record = buildDraftRecord({
-        versionId,
-        kind: 'plan',
-        payload: penDraft,
-        penOpenedAt: penOpenedAtRef.current,
-        now: new Date().toISOString(),
-      });
-    } else if ((persistedPen === 'record' || persistedPen === 'amend') && isDraftDirty(mode, draft, amendBaseline)) {
-      record = buildDraftRecord({
-        versionId,
-        kind: persistedPen,
-        payload: draft,
-        amendingBatchId,
-        amendBaseline,
-        amendOpener,
-        now: new Date().toISOString(),
-      });
-    }
-    if (!record) {
-      if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
-      draftTimerRef.current = null;
-      pendingDraftRef.current = null;
-      if (draftStoredRef.current) {
-        draftStoredRef.current = false;
-        Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
-      }
-      return undefined;
-    }
-    pendingDraftRef.current = record;
-    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
-    draftTimerRef.current = setTimeout(flushPendingDraft, 250);
-    return () => {
-      if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
-    };
-  }, [draftRestoreDone, mode, amendingBatchId, penDraft, draft, amendBaseline, amendOpener, version]);
-
-  // A page going away inside the debounce window must not lose the last
-  // keystrokes: pagehide and a tab going hidden write the waiting record at
-  // once, and so does unmounting (best effort at pagehide; IndexedDB may not
-  // finish before the page is gone, so up to the last 250 ms of typing can be
-  // lost to a hard kill).
-  useEffect(() => {
-    function handleVisibilityChange() {
-      if (document.visibilityState === 'hidden') flushPendingDraft();
-    }
-    window.addEventListener('pagehide', flushPendingDraft);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => {
-      window.removeEventListener('pagehide', flushPendingDraft);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      flushPendingDraft();
-    };
-  }, []);
+  // Kept drafts (04-09, D-14 to D-17): the restore, persist and pagehide
+  // effects live in useKeptDraft, called after the version pen so it can take
+  // the pen's restorePlan (D-08). draftRestoreDone gates the route intents below.
+  const { draftRestoreDone } = useKeptDraft({
+    writer: draftWriter,
+    versionId,
+    recipeId,
+    batchId,
+    version,
+    batches,
+    batchesLoaded,
+    loadFailed,
+    mode,
+    amendingBatchId,
+    penDraft,
+    draft,
+    amendBaseline,
+    amendOpener,
+    penOpenedAtRef,
+    onRestorePlan: restorePlan,
+    onRestoreRecord: (record) => {
+      recordPen.restore(record);
+      setMode('recording');
+    },
+    onPageStatus,
+    navigate,
+  });
 
   // Opens the pen the band's Record a tasting asked for across a remount
   // (route state, the focusBatch pattern: the router keys RecipePage by

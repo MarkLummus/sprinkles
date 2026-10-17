@@ -1,5 +1,14 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { repository } from '../store/repository.js';
+import { buildDraftRecord, draftMatchesVersion } from '../domain/draft.js';
+import { derivePenState, isPenDraftDirty } from '../domain/penDraft.js';
+import { isDraftDirty } from '../domain/recordDraft.js';
+import { notebookPath } from './notebookPaths.js';
+
+// The page notice a restored draft announces (D-15; sketch 010 decide-p4-draft-kept-words
+// C, screen-draft-kept-words.html). Sent with no options, so the router's
+// PageStatus clears it after its own five seconds and nothing persists it.
+export const DRAFT_KEPT_STATUS = 'Draft kept. Cancel discards it.';
 
 // The kept draft's writer (Phase 8 cut 5, D-08). It owns the three refs the
 // draft effects share and the two functions that write or end a draft, and it
@@ -41,4 +50,173 @@ export function useDraftWriter(versionId) {
   }
 
   return { draftStoredRef, pendingDraftRef, draftTimerRef, flushPendingDraft, discardDraft };
+}
+
+// The kept-draft effects (Phase 8 cut 6, EDIT-05, D-08, D-10). Called after
+// useVersionPen, above the early returns: the writer comes from useDraftWriter,
+// onRestorePlan is useVersionPen's restorePlan, and onRestoreRecord is the
+// record pen's half of a restore. Both callbacks run only after the restore
+// guard has seen the version and its batches, so they are safe while records
+// are still loading.
+export function useKeptDraft({
+  writer,
+  versionId,
+  recipeId,
+  batchId,
+  version,
+  batches,
+  batchesLoaded,
+  loadFailed,
+  mode,
+  amendingBatchId,
+  penDraft,
+  draft,
+  amendBaseline,
+  amendOpener,
+  penOpenedAtRef,
+  onRestorePlan,
+  onRestoreRecord,
+  onPageStatus,
+  navigate,
+}) {
+  const { draftStoredRef, pendingDraftRef, draftTimerRef, flushPendingDraft } = writer;
+
+  // Kept drafts (04-09, D-14 to D-17). A pen's draft lives in the drafts store,
+  // through the repository seam, from its first keystroke until Save or
+  // Cancel: a reload, a closed tab, a crash or the next day brings the pen
+  // back with its ink. The refs below hold what the effects share; each is
+  // read at the moment it fires, so none of them is a dependency.
+  //  - draftRestoreStartedRef: the restore runs once per page instance. A ref,
+  //    not state, and no cancelled flag: StrictMode runs the effect twice in
+  //    development, and a flag set by the first cleanup would drop the read the
+  //    guard let through.
+  //  - draftRestoreDone: the persist effect below waits for it (research
+  //    Pitfall 5): on first render mode is 'reading' and both drafts are null,
+  //    which reads as clean and would delete the draft the restore is about to
+  //    read.
+  //  - draftStoredRef / pendingDraftRef / draftTimerRef: the writer's refs
+  //    (useDraftWriter).
+  const [draftRestoreDone, setDraftRestoreDone] = useState(false);
+  const draftRestoreStartedRef = useRef(false);
+  const modeRef = useRef(mode);
+  modeRef.current = mode;
+
+  // Restore (D-15): once the version and its batches are read, look for this
+  // version's draft. A record that no longer fits (an import replaced the
+  // version, the batch it corrects is gone) is deleted quietly and the page
+  // opens in reading; one that fits reopens its pen with the ink and the page
+  // notice. Restoring sets state only: nothing is written to versions or
+  // batches until the maker presses Save, and nothing is asked (no dialog).
+  useEffect(() => {
+    if (draftRestoreStartedRef.current) return;
+    if (!version || version.recipeId !== recipeId || !batchesLoaded || loadFailed) return;
+    draftRestoreStartedRef.current = true;
+    Promise.resolve()
+      .then(() => repository.getDraft(versionId))
+      .then((record) => {
+        if (!record) {
+          setDraftRestoreDone(true);
+          return;
+        }
+        if (!draftMatchesVersion(record, version, batches)) {
+          Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
+          setDraftRestoreDone(true);
+          return;
+        }
+        // A pen the maker opened while the read was out wins over the stored
+        // one; the persist effect then keeps whichever is open.
+        if (modeRef.current !== 'reading') {
+          setDraftRestoreDone(true);
+          return;
+        }
+        // A Correct draft belongs to its own batch's address: the head, the
+        // axes snapshot and the amend save all name the batch the URL shows,
+        // so this page never edits a batch it is not showing. Opened on any
+        // other address of the version, the address is replaced with the
+        // batch's own and nothing is restored here. The persist effect stays
+        // off on this instance (draftRestoreDone is not set), so it cannot
+        // delete the draft the next instance, keyed by that batch, reads.
+        if (record.kind === 'amend' && batchId !== record.amendingBatchId) {
+          navigate(notebookPath(version.recipeId, version.id, record.amendingBatchId), { replace: true });
+          return;
+        }
+        draftStoredRef.current = true;
+        if (record.kind === 'plan') {
+          onRestorePlan(record.payload, record.penOpenedAt);
+        } else {
+          // A new batch's record ('record') opens on any of the version's
+          // addresses; a Correct draft ('amend') only on its own batch's,
+          // which the redirect above has already settled.
+          onRestoreRecord(record);
+        }
+        onPageStatus(DRAFT_KEPT_STATUS);
+        setDraftRestoreDone(true);
+      })
+      .catch(() => setDraftRestoreDone(true));
+  }, [version, batchesLoaded, loadFailed]);
+
+  // Persist: while a pen is open and holds ink, its draft is written 250 ms
+  // after the last change; when no pen is open, or the open pen is clean
+  // again, the stored draft is deleted. Dirtiness is the two checks the Escape
+  // effect below reads (isPenDraftDirty, isDraftDirty), never a third.
+  useEffect(() => {
+    if (!draftRestoreDone) return undefined;
+    const { openPen: persistedPen } = derivePenState({ mode, amendingBatchId });
+    let record = null;
+    if (persistedPen === 'plan' && isPenDraftDirty(mode, penDraft, version)) {
+      record = buildDraftRecord({
+        versionId,
+        kind: 'plan',
+        payload: penDraft,
+        penOpenedAt: penOpenedAtRef.current,
+        now: new Date().toISOString(),
+      });
+    } else if ((persistedPen === 'record' || persistedPen === 'amend') && isDraftDirty(mode, draft, amendBaseline)) {
+      record = buildDraftRecord({
+        versionId,
+        kind: persistedPen,
+        payload: draft,
+        amendingBatchId,
+        amendBaseline,
+        amendOpener,
+        now: new Date().toISOString(),
+      });
+    }
+    if (!record) {
+      if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+      draftTimerRef.current = null;
+      pendingDraftRef.current = null;
+      if (draftStoredRef.current) {
+        draftStoredRef.current = false;
+        Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
+      }
+      return undefined;
+    }
+    pendingDraftRef.current = record;
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    draftTimerRef.current = setTimeout(flushPendingDraft, 250);
+    return () => {
+      if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    };
+  }, [draftRestoreDone, mode, amendingBatchId, penDraft, draft, amendBaseline, amendOpener, version]);
+
+  // A page going away inside the debounce window must not lose the last
+  // keystrokes: pagehide and a tab going hidden write the waiting record at
+  // once, and so does unmounting (best effort at pagehide; IndexedDB may not
+  // finish before the page is gone, so up to the last 250 ms of typing can be
+  // lost to a hard kill).
+  useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'hidden') flushPendingDraft();
+    }
+    window.addEventListener('pagehide', flushPendingDraft);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('pagehide', flushPendingDraft);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      flushPendingDraft();
+    };
+  }, []);
+
+  return { draftRestoreDone };
 }

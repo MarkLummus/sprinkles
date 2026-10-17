@@ -243,6 +243,38 @@ const JOBS = [
     shellLacks: ['function flushPendingDraft(', 'function discardDraft('],
     allow: ['react', '../store/repository.js', '../domain/', './notebookPaths.js'],
   },
+  {
+    name: 'useKeptDraft',
+    file: './useKeptDraft.js',
+    specifier: './useKeptDraft.js',
+    call: 'useKeptDraft(',
+    hook: true,
+    markers: [
+      ['repository.getDraft(versionId)', 1],
+      ['repository.saveDraft(record)', 1],
+      ['repository.deleteDraft(versionId)', 3],
+      ['draftMatchesVersion(', 1],
+      ['buildDraftRecord(', 2],
+      ['setTimeout(flushPendingDraft, 250)', 1],
+      ['if (draftRestoreStartedRef.current) return;', 1],
+      ['draftRestoreStartedRef.current = true', 1],
+      ['onRestorePlan(record.payload, record.penOpenedAt)', 1],
+      ['onRestoreRecord(record)', 1],
+      ['onPageStatus(DRAFT_KEPT_STATUS)', 1],
+      ["window.addEventListener('pagehide', flushPendingDraft)", 1],
+    ],
+    shellLacks: [
+      '.getDraft(',
+      '.saveDraft(',
+      '.deleteDraft(',
+      'draftRestoreStartedRef',
+      'setTimeout(flushPendingDraft',
+      'pagehide',
+      'buildDraftRecord(',
+      'setDraftRestoreDone',
+    ],
+    allow: ['react', '../store/repository.js', '../domain/', './notebookPaths.js'],
+  },
 ];
 
 // The shell's hook calls in the order they must appear, all above the early returns.
@@ -252,6 +284,7 @@ const HOOK_ORDER = [
   'useRecordDraft()',
   'useDraftWriter(versionId)',
   'useVersionPen(',
+  'useKeptDraft(',
 ];
 
 describe('RecipePage.jsx holds no draft setter (D-12)', () => {
@@ -490,5 +523,38 @@ describe('useDraftWriter declares no effect (D-08)', () => {
     const clean = "export function useDraftWriter(versionId) {\n  return {};\n}\nexport function useKeptDraft() {\n  useEffect(() => {}, []);\n}\n";
     expect(writerDeclaresNoEffect(withEffect)).toBe(false);
     expect(writerDeclaresNoEffect(clean)).toBe(true);
+  });
+});
+
+// D-10: the restore keeps its started-ref guard and gets no cancellation flag,
+// which would drop the one read the guard lets through under StrictMode.
+function hasCancellationFlag(source) {
+  return /\bcancell?ed\b/.test(source);
+}
+
+// Pitfall 4: the amend redirect leaves draftRestoreDone unset, so the next page
+// instance owns the draft. The text from `record.kind === 'amend'` to the first
+// `return;` after it.
+function amendRedirectSpan(source) {
+  const start = source.indexOf("record.kind === 'amend'");
+  if (start < 0) return null;
+  const end = source.indexOf('return;', start);
+  return end < 0 ? null : source.slice(start, end);
+}
+
+describe('the kept-draft restore keeps its order-sensitive shape (D-10, Pitfall 4)', () => {
+  it('the restore keeps its started-ref guard and no cancellation flag (D-10)', () => {
+    expect(hasCancellationFlag(useKeptDraft)).toBe(false);
+    expect(hasCancellationFlag('let cancelled = false;\nreturn () => { cancelled = true; };')).toBe(true);
+    expect(hasCancellationFlag('let canceled = false;')).toBe(true);
+  });
+
+  it('the amend redirect leaves draftRestoreDone unset (Pitfall 4)', () => {
+    const span = amendRedirectSpan(useKeptDraft);
+    expect(span).not.toBeNull();
+    expect(span).toContain('navigate(');
+    expect(span).not.toContain('setDraftRestoreDone');
+    const broken = "if (record.kind === 'amend' && x) {\n  setDraftRestoreDone(true);\n  return;\n}";
+    expect(amendRedirectSpan(broken)).toContain('setDraftRestoreDone');
   });
 });

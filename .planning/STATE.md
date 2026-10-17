@@ -5,11 +5,11 @@ milestone_name: Recipe creation
 current_phase: 8
 current_phase_name: Split the recipe page along its jobs
 status: planning
-stopped_at: Phase 8 context gathered
-last_updated: "2026-10-17T04:15:38.008Z"
+stopped_at: Phase 9 context gathered
+last_updated: "2026-10-17T05:00:03.052Z"
 last_activity: 2026-10-16
 last_activity_desc: "v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; decisions 19 and 20 recorded (Sheet code fixed at creation, seed tables travel in the store file) and the scale requirements renamed TASTE-01 to TASTE-04; 30 of 30 requirements mapped"
-state_head: e7beb05087e75445c71c9e7b9ab68a537db7dbce
+state_head: ceea85cb235e35016794f49d075fcfa16ad18fa5
 progress:
   total_phases: 5
   completed_phases: 0
@@ -583,9 +583,9 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-17T04:15:37.991Z
-Stopped at: Phase 8 context gathered
-Resume file: .planning/phases/08-split-the-recipe-page-along-its-jobs/08-CONTEXT.md
+Last session: 2026-10-17T05:00:03.035Z
+Stopped at: Phase 9 context gathered
+Resume file: .planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-CONTEXT.md
 
 ## Operator Next Steps
 

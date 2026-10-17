@@ -38,6 +38,8 @@ function specifiersOf(source) {
 const recipePage = stripComments(raw('./RecipePage.jsx'));
 const usePenDraft = stripComments(raw('./usePenDraft.js'));
 const useRecordDraft = stripComments(raw('./useRecordDraft.js'));
+const useVersionPen = stripComments(raw('./useVersionPen.js'));
+const useKeptDraft = stripComments(raw('./useKeptDraft.js'));
 const penDraft = stripComments(raw('../domain/penDraft.js'));
 const recordDraft = stripComments(raw('../domain/recordDraft.js'));
 const ingredientTable = stripComments(raw('./IngredientTable.jsx'));
@@ -61,6 +63,8 @@ const NEW_MODULES = [
   ['useRecipeData.js', './useRecipeData.js'],
   ['sheetView.js', './sheetView.js'],
   ['RecipeSheet.jsx', './RecipeSheet.jsx'],
+  ['useVersionPen.js', './useVersionPen.js'],
+  ['useKeptDraft.js', './useKeptDraft.js'],
 ];
 
 // The names a source imports with `import { a, b as c } from` and then uses
@@ -208,10 +212,47 @@ const JOBS = [
     ],
     allow: ['react', './'],
   },
+  {
+    name: 'useVersionPen',
+    file: './useVersionPen.js',
+    specifier: './useVersionPen.js',
+    call: 'useVersionPen(',
+    hook: true,
+    markers: [
+      ['usePenDraft()', 1],
+      ['repository.saveVersion(', 2],
+      ['createChildVersion(', 1],
+      ['saveOverVersion(', 1],
+      ['function restorePlan(', 1],
+      ['announce(VERSION_BLOCKED_STATUS)', 1],
+      ['onPageStatus(VERSION_SAVED_STATUS)', 2],
+    ],
+    shellLacks: ['usePenDraft', 'saveVersion', 'createChildVersion', 'versionPen.', 'versionSaveLockRef', 'function handleStartDeveloping('],
+    allow: ['react', '../store/repository.js', '../domain/', './usePenDraft.js', './notebookPaths.js'],
+  },
+  {
+    name: 'useDraftWriter',
+    file: './useKeptDraft.js',
+    specifier: './useKeptDraft.js',
+    call: 'useDraftWriter(versionId)',
+    hook: true,
+    markers: [
+      ['function flushPendingDraft(', 1],
+      ['function discardDraft(', 1],
+    ],
+    shellLacks: ['function flushPendingDraft(', 'function discardDraft('],
+    allow: ['react', '../store/repository.js', '../domain/', './notebookPaths.js'],
+  },
 ];
 
 // The shell's hook calls in the order they must appear, all above the early returns.
-const HOOK_ORDER = ['useAnnouncer()', 'useRecipeData(versionId)', 'useRecordDraft()'];
+const HOOK_ORDER = [
+  'useAnnouncer()',
+  'useRecipeData(versionId)',
+  'useRecordDraft()',
+  'useDraftWriter(versionId)',
+  'useVersionPen(',
+];
 
 describe('RecipePage.jsx holds no draft setter (D-12)', () => {
   it('has none of the five setters D-12 names', () => {
@@ -260,16 +301,23 @@ describe('stripComments keeps what a string holds (WR-02)', () => {
   });
 });
 
-describe('the two hooks sit in the shell above the early returns', () => {
+describe('the draft hooks sit above the early returns', () => {
   const earlyReturn = recipePage.indexOf('if (loadFailed) return');
 
   it('finds the first early return', () => {
     expect(earlyReturn).toBeGreaterThan(-1);
   });
 
-  it.each(['usePenDraft()', 'useRecordDraft()'])('%s is called exactly once, before the early returns', (call) => {
+  it.each(['useRecordDraft()'])('%s is called exactly once, before the early returns', (call) => {
     expect(count(recipePage, call)).toBe(1);
     expect(recipePage.indexOf(call)).toBeLessThan(earlyReturn);
+  });
+
+  it('usePenDraft() is called once, inside useVersionPen.js, and the shell calls useVersionPen once above the early returns', () => {
+    expect(count(useVersionPen, 'usePenDraft()')).toBe(1);
+    expect(count(recipePage, 'usePenDraft()')).toBe(0);
+    expect(count(recipePage, 'useVersionPen(')).toBe(1);
+    expect(recipePage.indexOf('useVersionPen(')).toBeLessThan(earlyReturn);
   });
 });
 
@@ -418,5 +466,29 @@ describe('RecipePage.jsx is cut along its jobs (EDIT-05, EDIT-06)', () => {
       expect(problems).toHaveLength(1);
       expect(problems[0].startsWith(tag)).toBe(true);
     }
+  });
+});
+
+// D-08: the writer is the effect-free half of the kept-draft job. The text from
+// its declaration to the next exported function holds no useEffect(.
+function writerDeclaresNoEffect(source) {
+  const start = source.indexOf('export function useDraftWriter(');
+  if (start < 0) return false;
+  const next = source.indexOf('export function ', start + 1);
+  const body = next < 0 ? source.slice(start) : source.slice(start, next);
+  return !body.includes('useEffect(');
+}
+
+describe('useDraftWriter declares no effect (D-08)', () => {
+  it('useDraftWriter declares no effect (D-08)', () => {
+    expect(writerDeclaresNoEffect(useKeptDraft)).toBe(true);
+  });
+
+  it('the check can fail: a writer body holding a useEffect( is refused', () => {
+    const withEffect =
+      "export function useDraftWriter(versionId) {\n  useEffect(() => {}, []);\n  return {};\n}\nexport function useKeptDraft() {}\n";
+    const clean = "export function useDraftWriter(versionId) {\n  return {};\n}\nexport function useKeptDraft() {\n  useEffect(() => {}, []);\n}\n";
+    expect(writerDeclaresNoEffect(withEffect)).toBe(false);
+    expect(writerDeclaresNoEffect(clean)).toBe(true);
   });
 });

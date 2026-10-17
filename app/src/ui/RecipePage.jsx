@@ -3,27 +3,9 @@ import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'reac
 import { repository } from '../store/repository.js';
 import { createBatch, completeRecord } from '../domain/batch.js';
 import { freshId } from '../domain/id.js';
-import {
-  createChildVersion,
-  saveOverVersion,
-  versionsForRecipe,
-} from '../domain/lineage.js';
+import { versionsForRecipe } from '../domain/lineage.js';
 import { buildDraftRecord, draftMatchesVersion, newestDraft } from '../domain/draft.js';
-import {
-  derivePenState,
-  isPenDraftDirty,
-  removePenNote,
-  restoreStepFromVersion,
-  setPenField,
-  setPenGrams,
-  setPenNoteText,
-  setPenStepField,
-  setPenStepTarget,
-  togglePenLine,
-  togglePenRowLines,
-  togglePenStepRemoved,
-  togglePenStepUses,
-} from '../domain/penDraft.js';
+import { derivePenState, isPenDraftDirty } from '../domain/penDraft.js';
 import {
   batchSavedStatus,
   isDraftDirty,
@@ -44,7 +26,8 @@ import { RecipeHistory } from './RecipeHistory.jsx';
 import { PenFoot } from './PenFoot.jsx';
 import { RecipeSheet } from './RecipeSheet.jsx';
 import { useBelow724, useBelowDesktop, useFold } from './useBelowDesktop.js';
-import { usePenDraft } from './usePenDraft.js';
+import { useVersionPen } from './useVersionPen.js';
+import { useDraftWriter } from './useKeptDraft.js';
 import { useRecordDraft } from './useRecordDraft.js';
 import { useAnnouncer } from './useAnnouncer.js';
 import { useRecipeData } from './useRecipeData.js';
@@ -62,9 +45,7 @@ export const MEASURED_INVALID_STATUS = 'Check the marked measurements. Your entr
 // visible copy of the field's own sentence.
 export const CHURN_DATE_BLOCKED_STATUS = 'Check the churn date. Your entries have been kept.';
 export const BATCH_SAVE_ERROR = 'Couldn’t save the batch. Try again.';
-export const VERSION_SAVED_STATUS = 'Version saved.';
-export const VERSION_SAVE_ERROR = 'Couldn’t save the version. Try again.';
-export const VERSION_BLOCKED_STATUS = 'Check the version. Your changes have been kept.';
+export { VERSION_SAVED_STATUS, VERSION_SAVE_ERROR, VERSION_BLOCKED_STATUS } from './useVersionPen.js';
 
 // The page notice a restored draft announces (D-15; sketch 010 decide-p4-draft-kept-words
 // C, screen-draft-kept-words.html). Sent with no options, so the router's
@@ -195,16 +176,34 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   const batchSaveLockRef = useRef(false);
   const [focusBatchAttempt, setFocusBatchAttempt] = useState(null);
   const focusBatchAttemptRef = useRef(0);
-  // The plan's own pen draft, its blocked-save message and the field that
-  // message names (usePenDraft owns all three).
-  const versionPen = usePenDraft();
-  const { penDraft, blockedMessage, blockedTarget } = versionPen;
-  const [versionSaveAction, setVersionSaveAction] = useState(null);
-  const versionSaveLockRef = useRef(false);
-  // The History rail's draft node (03.5-05 Task 2, D-13): the day the
-  // pen opened, held in memory only — never stored, cleared wherever the
-  // pen closes.
-  const penOpenedAtRef = useRef(null);
+  // The kept draft's writer (refs, flush and discard; no effect), then the
+  // version pen, which takes discardDraft from it (D-08). useKeptDraft, below,
+  // takes both.
+  const draftWriter = useDraftWriter(versionId);
+  const { draftStoredRef, pendingDraftRef, draftTimerRef, flushPendingDraft, discardDraft } = draftWriter;
+  const {
+    penDraft,
+    blockedMessage,
+    blockedTarget,
+    versionSaveAction,
+    penOpenedAtRef,
+    restorePlan,
+    handleStartDeveloping,
+    handleCancelDeveloping,
+    handleChangePenField,
+    handleChangePenGrams,
+    handleTogglePenRowRemoved,
+    handleTogglePenLineRemoved,
+    handleChangePenStepField,
+    handleChangePenStepTarget,
+    handleTogglePenStepUses,
+    handleTogglePenStepRemoved,
+    handleRestorePenStep,
+    handleChangePenNoteText,
+    handleRemovePenNote,
+    handleSaveAsNewVersion,
+    handleSaveOverVersion,
+  } = useVersionPen({ version, versions, batches, setMode, setVersion, setVersions, announce, onPageStatus, discardDraft, navigate });
 
   // D-20: the tab title leads with the recipe name while the page is mounted
   // (a plain string, never markup, T-04-27); the print route sets its own.
@@ -230,41 +229,12 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   //    Pitfall 5): on first render mode is 'reading' and both drafts are null,
   //    which reads as clean and would delete the draft the restore is about to
   //    read.
-  //  - draftStoredRef: whether a record may be sitting in the store for this
-  //    version, so a pen that goes clean deletes it and a pen that was never
-  //    dirty writes nothing at all.
-  //  - pendingDraftRef / draftTimerRef: the record waiting out the 250 ms
-  //    debounce, and its timer.
+  //  - draftStoredRef / pendingDraftRef / draftTimerRef: the writer's refs
+  //    (useDraftWriter, above).
   const [draftRestoreDone, setDraftRestoreDone] = useState(false);
   const draftRestoreStartedRef = useRef(false);
-  const draftStoredRef = useRef(false);
-  const pendingDraftRef = useRef(null);
-  const draftTimerRef = useRef(null);
   const modeRef = useRef(mode);
   modeRef.current = mode;
-
-  // Writes the record waiting out the debounce at once. Reads refs only, so
-  // the listener below can hold the first render's copy for the page's life.
-  function flushPendingDraft() {
-    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
-    draftTimerRef.current = null;
-    const record = pendingDraftRef.current;
-    if (!record) return;
-    pendingDraftRef.current = null;
-    draftStoredRef.current = true;
-    Promise.resolve().then(() => repository.saveDraft(record)).catch(() => {});
-  }
-
-  // Save and Cancel end a draft: drop whatever is waiting to be written, so a
-  // keystroke typed just before Save cannot write the draft back after it
-  // was deleted, then delete the stored record.
-  function discardDraft() {
-    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
-    draftTimerRef.current = null;
-    pendingDraftRef.current = null;
-    draftStoredRef.current = false;
-    Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
-  }
 
   // Restore (D-15): once the version and its batches are read, look for this
   // version's draft. A record that no longer fits (an import replaced the
@@ -307,11 +277,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
         }
         draftStoredRef.current = true;
         if (record.kind === 'plan') {
-          versionPen.restore(record.payload);
-          penOpenedAtRef.current = record.penOpenedAt;
-          setVersionSaveAction(null);
-          versionSaveLockRef.current = false;
-          setMode('developing');
+          restorePlan(record.payload, record.penOpenedAt);
         } else {
           // A new batch's record ('record') opens on any of the version's
           // addresses; a Correct draft ('amend') only on its own batch's,
@@ -961,24 +927,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     setFormStatus('');
   }
 
-  // Seeds penDraft from the version the pen opened on (versionPen.open, which
-  // builds it with penDraftFromVersion). Never touches draft or
-  // amendingBatchId — mode alone still decides which of developing/recording
-  // is live; derivePenState above is what now decides availability everywhere
-  // else (RESEARCH.md Pattern 4).
-  function handleStartDeveloping() {
-    versionPen.open(version);
-    setVersionSaveAction(null);
-    versionSaveLockRef.current = false;
-    penOpenedAtRef.current = new Date().toISOString();
-    onPageStatus('');
-    // Load-bearing, not defensive: without this a refusal survives in
-    // formStatus after the pen closes and prints itself when this pen
-    // reopens.
-    announce('');
-    setMode('developing');
-  }
-
   // The show-changes toggle (D-02): adds or deletes the `changes` key,
   // building a new URLSearchParams from the previous one rather than
   // mutating it, and leaving setSearchParams's default push behaviour
@@ -989,200 +937,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
       if (next.has('changes')) next.delete('changes');
       else next.set('changes', '');
       return next;
-    });
-  }
-
-  // Discards with no dialog of the app's own (D-10) — mirrors
-  // handleCancelRecording exactly.
-  function handleCancelDeveloping() {
-    discardDraft();
-    setMode('reading');
-    versionPen.close();
-    setVersionSaveAction(null);
-    versionSaveLockRef.current = false;
-    penOpenedAtRef.current = null;
-    onPageStatus('');
-    announce('');
-  }
-
-  function handleChangePenField(field, value) {
-    onPageStatus('');
-    announce('');
-    versionPen.edit(setPenField, field, value);
-  }
-
-  // Writes exactly one portion's raw typed string, leaving every other
-  // portion and the removed flag untouched — the pen's amounts edit, the
-  // split does not (CONTEXT.md phase boundary).
-  function handleChangePenGrams(rowId, portionIndex, value) {
-    versionPen.edit(setPenGrams, rowId, portionIndex, value);
-  }
-
-  // Serves the orphaned-row flag's "remove this row" control only: it acts
-  // on every line of the row through toggleDraftRowLines, does not clear
-  // any grams and does not touch any step (route-recipe-version.md § 3).
-  // Removal never cascades, so this is always the maker's own tap.
-  function handleTogglePenRowRemoved(rowId) {
-    versionPen.edit(togglePenRowLines, rowId);
-  }
-
-  // Removing a line sets only that portion's removed flag — every other
-  // portion and the row-level flag stay as they are, so Step 3's milk is
-  // Step 3's (sketch 011 decision 51, Mark's answer 1). The same handler
-  // restores; it is always the maker's own tap.
-  function handleTogglePenLineRemoved(rowId, portionIndex) {
-    versionPen.edit(togglePenLine, rowId, portionIndex);
-  }
-
-  // A step field setter for leadIn/instruction/purpose/aside (03-02):
-  // `field` is always one of these four literal strings supplied by this
-  // file's own call sites, never a maker-influenced key, so a computed
-  // property name here carries no T-02-32 risk.
-  function handleChangePenStepField(stepN, field, value) {
-    versionPen.edit(setPenStepField, stepN, field, value);
-  }
-
-  // A target chip's label or value, matched by its index within the
-  // step's own targets array rather than by label — a label can itself be
-  // mid-edit, so matching by index avoids two chips momentarily colliding
-  // on the same label while the maker types.
-  function handleChangePenStepTarget(stepN, targetIndex, field, value) {
-    versionPen.edit(setPenStepTarget, stepN, targetIndex, field, value);
-  }
-
-  // The step's uses list, written through a filter and a concat
-  // (route-recipe-version.md § 3), never a bare bracket write — a
-  // different fact from the row's own step allocation, and both are kept.
-  function handleTogglePenStepUses(stepN, rowId) {
-    versionPen.edit(togglePenStepUses, stepN, rowId);
-  }
-
-  // Removing sets only the draft step's removed flag — removal never
-  // cascades, so this is always the maker's own tap, whether flipping a
-  // step's own control or the removed-row cross-flag's "remove this step"
-  // control.
-  function handleTogglePenStepRemoved(stepN) {
-    versionPen.edit(togglePenStepRemoved, stepN);
-  }
-
-  // Cancel on an open step (sketch 011 decisions_recorded 5, decision 1;
-  // Task 3): restores exactly the one step the pen opened on, from the
-  // version the pen opened on (`version`, in scope for the whole page) —
-  // the same clear-blocked-state shape every other pen-step handler above
-  // already follows.
-  function handleRestorePenStep(stepN) {
-    versionPen.edit(restoreStepFromVersion, version, stepN);
-  }
-
-  // An authored note's text, and the inherited-from marker it carries
-  // (route-recipe-version.md, "Inherited notes"): the marker persists when
-  // the edited text still equals the text this version inherited it with,
-  // and clears the instant it differs — computed once, here, so every
-  // reader (Authored.jsx included) can read `note.inheritedFrom` directly
-  // rather than re-deriving it.
-  function handleChangePenNoteText(listKey, index, value) {
-    versionPen.edit(setPenNoteText, version, listKey, index, value);
-  }
-
-  // A note can be removed per note (route-recipe-version.md § 3) — an
-  // outright removal from the list, not a struck-in-place flag: an
-  // authored note carries no cross-flag concern the way a row or step does.
-  function handleRemovePenNote(listKey, index) {
-    versionPen.edit(removePenNote, listKey, index);
-  }
-
-  // Shared by both save paths: the one message that blocks the save is
-  // computed by the tested domain function (D-04) — the same sentence can
-  // never drift between the two save controls. `excludeId` scopes the
-  // uniqueness check: null for a fresh child (compared against every
-  // version of the recipe, including the one the pen opened on), the
-  // current version's own id for a save-over (so keeping its own line
-  // never reads as a collision with itself). Returns null when blocked, or
-  // the pen's fields coerced for the domain constructor (rows' grams
-  // strings are Number()'d here, at save time, never on keystroke —
-  // Pitfall 5). A reason of nothing but whitespace is treated as blank and
-  // stored as null, exactly as an empty reason already was.
-  function buildPenFields(excludeId) {
-    const scopedVersions = versionsForRecipe(versions, version.recipeId).filter((v) => v.id !== excludeId);
-    const { blockedKind, fields } = versionPen.checkSave(version, scopedVersions);
-    if (blockedKind === 'versionLine') announce(VERSION_BLOCKED_STATUS);
-    return fields;
-  }
-
-  // The two impure calls (a fresh id, the current instant) live here, in
-  // the one save handler — createChildVersion stays deterministic. The
-  // parent is never passed to repository.saveVersion (D04, T-03-03).
-  function handleSaveAsNewVersion() {
-    if (versionSaveLockRef.current) return;
-    const penFields = buildPenFields(null);
-    if (!penFields) return;
-    versionSaveLockRef.current = true;
-    setVersionSaveAction('new');
-    onPageStatus('');
-    announce('');
-    let child;
-    try {
-      child = createChildVersion(version, penFields, { id: freshId(), now: new Date().toISOString() });
-    } catch {
-      versionSaveLockRef.current = false;
-      setVersionSaveAction(null);
-      announce(VERSION_SAVE_ERROR);
-      return;
-    }
-    Promise.resolve().then(() => repository.saveVersion(child)).then(() => {
-      // The parent's draft: this page's own version id, deleted before the
-      // navigation that unmounts the page.
-      discardDraft();
-      setVersions((prev) => [...prev, child]);
-      setMode('reading');
-      versionPen.close();
-      penOpenedAtRef.current = null;
-      onPageStatus(VERSION_SAVED_STATUS);
-      // The child mounts fresh because router.jsx keys RecipePage by its
-      // route. Land on the saved identity before offering another fork.
-      navigate(notebookPath(child.recipeId, child.id), { state: { focusVersion: true } });
-    }).catch(() => {
-      versionSaveLockRef.current = false;
-      setVersionSaveAction(null);
-      announce(VERSION_SAVE_ERROR);
-    });
-  }
-
-  // Available only on a version with zero batches (D-01). The control's
-  // absence from the headnote is the design; this re-check is the
-  // guarantee — a churned version's own record is never written to (D04)
-  // even if this handler were somehow reached with the control hidden.
-  function handleSaveOverVersion() {
-    if (batches.length > 0 || versionSaveLockRef.current) return;
-    const penFields = buildPenFields(version.id);
-    if (!penFields) return;
-    versionSaveLockRef.current = true;
-    setVersionSaveAction('over');
-    onPageStatus('');
-    announce('');
-    let updated;
-    try {
-      updated = saveOverVersion(version, penFields, { now: new Date().toISOString() });
-    } catch {
-      versionSaveLockRef.current = false;
-      setVersionSaveAction(null);
-      announce(VERSION_SAVE_ERROR);
-      return;
-    }
-    Promise.resolve().then(() => repository.saveVersion(updated)).then(() => {
-      discardDraft();
-      setVersion(updated);
-      setVersions((prev) => prev.map((existing) => (existing.id === updated.id ? updated : existing)));
-      setMode('reading');
-      versionPen.close();
-      penOpenedAtRef.current = null;
-      versionSaveLockRef.current = false;
-      setVersionSaveAction(null);
-      onPageStatus(VERSION_SAVED_STATUS);
-    }).catch(() => {
-      versionSaveLockRef.current = false;
-      setVersionSaveAction(null);
-      announce(VERSION_SAVE_ERROR);
     });
   }
 

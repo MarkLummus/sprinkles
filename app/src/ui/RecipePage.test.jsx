@@ -882,7 +882,7 @@ describe('VERSION_BLOCKED_STATUS — the form-owned reassurance for a field-owne
 // and a path that changes channel does.
 describe('RecipePage.jsx — the version pen\'s refusal and failure route through announce, never onPageStatus', () => {
   const recipePagePath = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
-  const recipePageSource = readFileSync(recipePagePath, 'utf8')
+  const recipePageSource = [readFileSync(recipePagePath, 'utf8'), readFileSync(fileURLToPath(new URL('./useVersionPen.js', import.meta.url)), 'utf8')].join('\n')
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
 

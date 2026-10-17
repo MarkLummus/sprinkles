@@ -65,6 +65,7 @@ const NEW_MODULES = [
   ['RecipeSheet.jsx', './RecipeSheet.jsx'],
   ['useVersionPen.js', './useVersionPen.js'],
   ['useKeptDraft.js', './useKeptDraft.js'],
+  ['useRouteIntents.js', './useRouteIntents.js'],
 ];
 
 // The names a source imports with `import { a, b as c } from` and then uses
@@ -275,6 +276,23 @@ const JOBS = [
     ],
     allow: ['react', '../store/repository.js', '../domain/', './notebookPaths.js'],
   },
+  {
+    name: 'useRouteIntents',
+    file: './useRouteIntents.js',
+    specifier: './useRouteIntents.js',
+    call: 'useRouteIntents(',
+    hook: true,
+    markers: [
+      ['location.state?.startTasting', 1],
+      ['location.state?.startNextVersion', 1],
+      ['state: null', 3],
+      ["onStartAmending(target, { opener: 'record-a-tasting' })", 1],
+      ['onStartDeveloping()', 1],
+      ['versionsForRecipe(', 1],
+    ],
+    shellLacks: ['startTastingConsumedRef', 'startNextVersionConsumedRef', 'location.state?.startTasting', 'location.state?.startNextVersion'],
+    allow: ['react', '../domain/'],
+  },
 ];
 
 // The shell's hook calls in the order they must appear, all above the early returns.
@@ -285,6 +303,7 @@ const HOOK_ORDER = [
   'useDraftWriter(versionId)',
   'useVersionPen(',
   'useKeptDraft(',
+  'useRouteIntents(',
 ];
 
 describe('RecipePage.jsx holds no draft setter (D-12)', () => {

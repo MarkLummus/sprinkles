@@ -29,6 +29,7 @@ import { useBelow724, useBelowDesktop, useFold } from './useBelowDesktop.js';
 import { useVersionPen } from './useVersionPen.js';
 import { useDraftWriter, useKeptDraft } from './useKeptDraft.js';
 import { useRecordDraft } from './useRecordDraft.js';
+import { useRouteIntents } from './useRouteIntents.js';
 import { useAnnouncer } from './useAnnouncer.js';
 import { useRecipeData } from './useRecipeData.js';
 import { sheetView } from './sheetView.js';
@@ -107,13 +108,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   const location = useLocation();
   const focusVersionOnMount = Boolean(location.state?.focusVersion);
   const focusBatchOnMount = Boolean(location.state?.focusBatch);
-  // The band's Record a tasting, pressed on an older batch's address, moves
-  // to the awaiting batch's own address and sets this (handleStartTasting);
-  // the effect below opens the pen once that page instance has its batches.
-  const startTastingOnMount = Boolean(location.state?.startTasting);
-  // Home's Next version sets this; the effect below opens the Next version pen
-  // once this page has decided its kept draft.
-  const startNextVersionOnMount = Boolean(location.state?.startNextVersion);
   // The show-changes state (D-02): on when the `changes` key is present in
   // the URL's search parameters at all — its value is never consulted, so
   // presence is the whole signal. Composes with both /recipe/:id and
@@ -241,50 +235,11 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     navigate,
   });
 
-  // Opens the pen the band's Record a tasting asked for across a remount
-  // (route state, the focusBatch pattern: the router keys RecipePage by
-  // address, so state is all that crosses). Consumed once: the entry's
-  // state is replaced with null, so Back or a reload never reopens a pen.
-  // It waits for the draft restore: a draft kept on this page reopens its own
-  // pen and consumes the request without opening a second one.
-  // handleStartAmending is a function declaration, hoisted, and reads only
-  // refs, setters, the onPageStatus prop and the recordPen hook value
-  // (declared above, at the useRecordDraft call), so calling it from here,
-  // above the early returns, is safe.
-  const startTastingConsumedRef = useRef(false);
-  useEffect(() => {
-    if (!startTastingOnMount || startTastingConsumedRef.current || !draftRestoreDone) return;
-    if (!batchId) return;
-    if (mode !== 'reading') {
-      startTastingConsumedRef.current = true;
-      navigate({ pathname: location.pathname, search: location.search }, { replace: true, state: null });
-      return;
-    }
-    const target = batches.find((batch) => batch.id === batchId);
-    if (!target || target.tasting) return;
-    startTastingConsumedRef.current = true;
-    navigate({ pathname: location.pathname, search: location.search }, { replace: true, state: null });
-    handleStartAmending(target, { opener: 'record-a-tasting' });
-  }, [startTastingOnMount, mode, batchId, batches, draftRestoreDone]);
-
-  // Opens the Next version pen Home's Next version asked for, the startTasting
-  // effect's pattern: used once, the entry's state replaced with null before
-  // the pen opens, so Back, Forward or a reload never reopens it. A kept draft
-  // wins, twice over: a pen already open (a restored one included) means
-  // nothing more is opened, and so does a draft kept on another version of
-  // this recipe (this version's own was decided by the restore). The pen
-  // itself is the button's own, through handleStartDeveloping.
-  const startNextVersionConsumedRef = useRef(false);
-  useEffect(() => {
-    if (!startNextVersionOnMount || startNextVersionConsumedRef.current) return;
-    if (!draftRestoreDone || !versionsLoaded || !draftsLoaded) return;
-    startNextVersionConsumedRef.current = true;
-    navigate({ pathname: location.pathname, search: location.search }, { replace: true, state: null });
-    if (mode !== 'reading') return;
-    const recipeVersionIds = new Set(versionsForRecipe(versions, version.recipeId).map((candidate) => candidate.id));
-    if (drafts.some((record) => record.versionId !== version.id && recipeVersionIds.has(record.versionId))) return;
-    handleStartDeveloping();
-  }, [startNextVersionOnMount, mode, draftRestoreDone, versionsLoaded, draftsLoaded, versions, drafts, version]);
+  // The route intents (useRouteIntents): the band's Record a tasting and Home's
+  // Next version ask for a pen through route state, each consumed once after the
+  // draft restore. The openers are the shell's hoisted handleStartAmending and
+  // the version pen's handleStartDeveloping.
+  useRouteIntents({ location, navigate, mode, batchId, batches, draftRestoreDone, versionsLoaded, draftsLoaded, versions, drafts, version, onStartAmending: handleStartAmending, onStartDeveloping: handleStartDeveloping });
 
   // Escape (D-27): closes only an untouched pen, and does nothing at all
   // once the pen holds ink — Cancel is the one exit, so a stray key can

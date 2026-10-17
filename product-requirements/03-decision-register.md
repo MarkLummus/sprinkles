@@ -34,7 +34,6 @@ D17 below settles the connected workspaces, measurement domains, and vocabulary 
 | First milestone planning | Recipe-development outcome is accepted under D14. Detailed design, technical sequencing, and delivery plans belong to the GSD and Impeccable workflows. | Framework planning and design approval |
 | Later import channels | Pasted text first is accepted. Assign URL and file import to a later milestone and define file formats. Investigate photo import before a delivery commitment. | Later import milestone planning; photo discovery review |
 | Platform/stack/deployment | Inspect existing project and ask only material unknowns | Native framework initialization/build |
-| Supported equipment | Define initial conventional-machine scope and handling of other processes | Process schema and design brief approval |
 | Stars vs overall outcomes | Test outcomes alone versus outcomes plus optional rating | Batch logging design approval |
 | Base/adaptation implementation | D17 settles meaning and the Adapt action; persistence and interaction details remain to be shaped | Recipe-library implementation planning |
 | Brand authority | Review existing cone/scoop/slate-blue work with Mark | Visual direction approval |
@@ -56,6 +55,30 @@ D17 below settles the connected workspaces, measurement domains, and vocabulary 
 When Mark approves a decision, record date, status, and any conditions here. Promote only the associated approved requirements to GSD scope. If implementation or design exposes a needed change, propose it here before altering the capability contract. A dated approval record—not framework-generated completion—is the authority.
 
 ## Completed Decisions
+
+### D19 — Supported equipment
+
+**Status:** Accepted
+
+**Date:** 2026-10-16
+
+**Owner:** Mark
+
+**Scope:** The initial conventional-machine scope for v2.0 recipe creation; no interface labels, no fill-limit advisory
+
+**Decision:** The maker picks a conventional machine from a short table. Each machine carries a minimum fill and a maximum fill. The table starts with Whynter at a 700 g minimum fill and an empty maximum fill; Mark adds other machines and fills the maximum later. The process stays as stored today (pasteurise temperature and hold time).
+
+**Consequences:**
+
+1. The chosen machine needs a storage field, including a new maximum fill, so it lands in v2.0's single database version change, before a recipe can be saved.
+2. Nothing reads either fill limit yet; a Things to check advisory for a batch under the minimum or over the maximum is a later feature.
+3. A maker adding their own machine row is a later feature.
+
+**Rationale:** Mark's answers on Mark's List rows `decide-equipment-process-scope`, `decide-machine-list` and `decide-whynter-max-fill`.
+
+**Open questions:** Whynter's maximum fill, which Mark fills in later; it blocks nothing.
+
+**Affected artifacts:** `.planning/ROADMAP.md` (Open questions from the Codex review, (a)); `.planning/REQUIREMENTS.md` (MAKE-09).
 
 ### D18 — Assets and processes
 

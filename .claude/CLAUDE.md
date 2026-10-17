@@ -15,7 +15,7 @@ Product truth lives in `product-requirements/` (read `README.md` first). This fi
 - **Product authority**: The decision register governs; Mark approves scope and design. Neither framework may resolve an open decision by running first.
 - **Tech stack (ratified)**: React with JSX, bundled by Vite, as recorded in `CLAUDE.md` — ratified in Phase 1 on real code. TypeScript is not adopted. Domain math lives in framework-free modules.
 - **Persistence (provisional)**: A local store behind a small repository seam, labeled provisional, so D16 stays open and the backend can be replaced without touching the domain.
-- **Ingredient data**: The seed dataset is undecided; it is chosen in phase planning after the recipe data model is designed. Batches snapshot coefficients regardless.
+- **Ingredient data**: The seed dataset began as the old-sprinkles transcription (Phase 1); v2.0 seeds a larger reviewed library with provenance, and every seed dataset is rows in a store table. Batches snapshot coefficients regardless.
 - **Codebase mapping**: Deferred until real code lands in this repo; the JSX mockups are not a codebase.
 - **Privacy**: No external model calls or network import without a stated policy (TRUST-01, IMP-01).
 - **Design**: Impeccable owns design decisions and design QA; GSD phases consume approved surface briefs. Existing mockups and the old-sprinkles visual world are evidence until Mark confirms their authority (D13).

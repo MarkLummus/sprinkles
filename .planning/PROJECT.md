@@ -21,8 +21,8 @@ Shipped v1.1 Groundwork for creation (2026-10-15): the code is ready for recipe 
 **Target features:**
 - Finish splitting `RecipePage` (still one component of about 1,700 lines after Phase 5), first, so creating and editing share one editor and the maker sees no change.
 - A Notebook place that starts a new recipe (`/notebook` is a placeholder today).
-- A creation screen on the shared editor, authoring name and description, version line, rows, Instructions, Before you start, scales and problems, and balance targets, equipment and process.
-- Add, remove and reorder steps and rows, at creation of a recipe's first version only.
+- A creation screen on the shared editor, authoring name and description, Version name, rows, Instructions, Before you start, scales and problems, and balance targets, equipment and process.
+- Add, remove and reorder steps and rows on a recipe's first version, while creating it and after Save until it has a batch or a child version.
 - The ingredient library seeded beyond the current recipes' rows, with provenance, after the coefficient conflicts between the candidate datasets are settled.
 - A read-only Ingredients place (`/ingredients`); no create or update.
 - Custom scales and problems for a new recipe (SEED-261001-iq4), settling Bitter and the "This recipe only" label.

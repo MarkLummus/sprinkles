@@ -8,7 +8,7 @@ status: planning
 stopped_at: v2.0 roadmap revised after the Codex review (Phases 8-12); Phase 8 ready to discuss
 last_updated: "2026-10-16T03:34:10.000Z"
 last_activity: 2026-10-16
-last_activity_desc: "v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; 28 of 28 requirements mapped"
+last_activity_desc: "v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; 29 of 29 requirements mapped"
 state_head: 1edbcd49b7d810f6076fe21093e27918a75bdfc7
 progress:
   total_phases: 5
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-16)
 Phase: 8 (Split the recipe page along its jobs); Phase 9 may run beside it once its two place boards are approved (Mark's Phase 9 decisions are answered)
 Plan: —
 Status: Ready to plan
-Last activity: 2026-10-16 — v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; 28 of 28 requirements mapped
+Last activity: 2026-10-16 — v2.0 roadmap revised after the Codex review: scales, problems, style, targets, equipment and process moved to Phase 10; Mark's decisions 1 to 15 recorded; 29 of 29 requirements mapped
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -590,4 +590,4 @@ Resume file: None
 
 - Discuss Phase 8 with /gsd-discuss-phase 8, then plan it with /gsd-plan-phase 8
 - Draw Phase 9's two place boards (the Notebook recipe list and the Ingredients place) on the Claude Design canvas for Mark's approval; they wait on no decision
-- Before Phase 10 is planned, Mark answers decision 17 (`decide-style-bands-source`) and the supported-equipment scope (ROADMAP.md, Open questions from the Codex review)
+- Before Phase 9 executes, Mark approves the four ice cream styles' band numbers (Claude drafts them; the approach is decided, decision 17); the equipment scope is decided (Whynter row seeded, maximum empty)

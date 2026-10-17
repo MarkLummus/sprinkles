@@ -60,6 +60,7 @@ const NEW_MODULES = [
   ['useAnnouncer.js', './useAnnouncer.js'],
   ['useRecipeData.js', './useRecipeData.js'],
   ['sheetView.js', './sheetView.js'],
+  ['RecipeSheet.jsx', './RecipeSheet.jsx'],
 ];
 
 // The names a source imports with `import { a, b as c } from` and then uses
@@ -179,6 +180,33 @@ const JOBS = [
     ],
     shellLacks: ['buildDiff(', 'penDraftVersion(', 'displayNumbers(', 'function joinNames('],
     allow: ['../domain/'],
+  },
+  {
+    name: 'RecipeSheet',
+    file: './RecipeSheet.jsx',
+    specifier: './RecipeSheet.jsx',
+    call: '<RecipeSheet',
+    hook: false,
+    markers: [
+      ['<article className={sheetClassName}', 1],
+      ['<IngredientTable', 1],
+      ['<Method', 1],
+      ['<FormulationNote', 1],
+      ['useSheetTwoColumns()', 1],
+      ['markedFigure(view, focusedFigureKey)', 1],
+      ['{foot}', 1],
+    ],
+    shellLacks: [
+      '<article',
+      '<IngredientTable',
+      '<Method',
+      '<FormulationNote',
+      'sheetClassName',
+      'useSheetTwoColumns',
+      'focusedFigureKey',
+      'markedFigure(',
+    ],
+    allow: ['react', './'],
   },
 ];
 

@@ -928,7 +928,8 @@ describe('the running head is gone; PageStatus anchors outside the keyed page (2
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
   const thisFilesRecipePagePath = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
-  const thisFilesRecipePageSource = readFileSync(thisFilesRecipePagePath, 'utf8')
+  const thisFilesRecipeSheetPath = fileURLToPath(new URL('./RecipeSheet.jsx', import.meta.url));
+  const thisFilesRecipePageSource = [readFileSync(thisFilesRecipePagePath, 'utf8'), readFileSync(thisFilesRecipeSheetPath, 'utf8')].join('\n')
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
 
@@ -1136,7 +1137,7 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
 });
 
 describe('the steps region is named Instructions (Mark, 2026-09-24)', () => {
-  const recipePagePathForInstructions = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
+  const recipePagePathForInstructions = fileURLToPath(new URL('./RecipeSheet.jsx', import.meta.url));
   const recipePageSourceForInstructions = readFileSync(recipePagePathForInstructions, 'utf8')
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
@@ -1149,7 +1150,7 @@ describe('the steps region is named Instructions (Mark, 2026-09-24)', () => {
 });
 
 describe('the empty Instructions section is left out (261003-9bz)', () => {
-  const recipePagePathForEmptyMethod = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
+  const recipePagePathForEmptyMethod = fileURLToPath(new URL('./RecipeSheet.jsx', import.meta.url));
   const source = readFileSync(recipePagePathForEmptyMethod, 'utf8')
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
@@ -1286,7 +1287,7 @@ describe('RecipePage.jsx — the band\'s record act is wired to the log\'s own h
 // and the one `changes` search parameter; the Ingredients heading is the head
 // component. Read as text with comments stripped.
 describe('RecipePage.jsx — the Ingredients heading carries Show changes below 724 through the one handler (261002-wn1)', () => {
-  const source = readFileSync(fileURLToPath(new URL('./RecipePage.jsx', import.meta.url)), 'utf8')
+  const source = [readFileSync(fileURLToPath(new URL('./RecipePage.jsx', import.meta.url)), 'utf8'), readFileSync(fileURLToPath(new URL('./RecipeSheet.jsx', import.meta.url)), 'utf8')].join('\n')
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
 

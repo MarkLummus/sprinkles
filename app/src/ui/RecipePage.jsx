@@ -36,26 +36,19 @@ import {
   toggleDefect,
 } from '../domain/recordDraft.js';
 import { notebookPath } from './notebookPaths.js';
-import { IngredientTable, IngredientsHead } from './IngredientTable.jsx';
-import { Method, showsMethodRegion } from './Method.jsx';
-import { NoteList } from './Authored.jsx';
-import { FormulationNote } from './FormulationNote.jsx';
-import { BasisNote } from './BasisNote.jsx';
 import { BatchRow } from './BatchRow.jsx';
 import { RecipeBand } from './RecipeBand.jsx';
-import { Headnote } from './Headnote.jsx';
 import { VersionRow } from './VersionRow.jsx';
 import { GoToBatch } from './GoToBatch.jsx';
 import { RecipeHistory } from './RecipeHistory.jsx';
 import { PenFoot } from './PenFoot.jsx';
-import { DerivedAdvisories } from './DerivedAdvisories.jsx';
-import { FoldRow } from './FoldRow.jsx';
-import { useBelow724, useBelowDesktop, useFold, useSheetTwoColumns } from './useBelowDesktop.js';
+import { RecipeSheet } from './RecipeSheet.jsx';
+import { useBelow724, useBelowDesktop, useFold } from './useBelowDesktop.js';
 import { usePenDraft } from './usePenDraft.js';
 import { useRecordDraft } from './useRecordDraft.js';
 import { useAnnouncer } from './useAnnouncer.js';
 import { useRecipeData } from './useRecipeData.js';
-import { markedFigure, sheetView } from './sheetView.js';
+import { sheetView } from './sheetView.js';
 
 // The contract's verbatim form-status sentence for a malformed measurement
 // ("Controls spec"), read from handleSaveBatch's own announce() call.
@@ -158,11 +151,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // The eight record reads and the state they fill, settled before the kept-draft
   // restore that waits on loadFailed (useRecipeData owns them).
   const { version, setVersion, versions, setVersions, batches, setBatches, batchesLoaded, drafts, draftsLoaded, versionsLoaded, loadFailed, recipe, setRecipe, citedBatch, parentVersion, allBatches } = useRecipeData(versionId);
-  // The signature trace (route-recipe.md § 3, § 5): focusing a balance
-  // figure marks the ingredient rows it rests on. This page is the shared
-  // parent of the figures and the table, so it is the one place the
-  // focused figure's key can live.
-  const [focusedFigureKey, setFocusedFigureKey] = useState(null);
   // The pen layer's state (route-recipe-batch.md § 3): a mode, one of
   // 'reading' | 'recording' | 'developing', and the draft form state it is
   // recorded into. mode is never derived from the URL — only the margin's
@@ -482,29 +470,23 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   }, [mode, amendingBatchId, onPenOpenChange]);
 
   // The folds at every width (sketch 011 decisions 18/19 and 33, 03.5-15/16):
-  // two media reads, two cuts. Balance and Watch for read sheetTwoColumns
-  // (SHEET_TWO_COLUMNS_QUERY, 984): open by default wherever the Sheet is two
-  // columns (decision 33, brief task 4). Version details, History, Tasting and
-  // the batch list read belowDesktop (BELOW_DESKTOP_QUERY, 1366), passed down
-  // as each region's own foldsOpen prop (its negation): open by default from
-  // 1366, closed below (decision 18, unchanged). Each fold returns to its own
-  // width's default on every visit or crossing of its own cut (useFold,
-  // decisions_recorded 2), so a Hide on Balance at 1024 survives a rotation to
-  // 1366. Balance's own fold state is local to this component, since its
-  // region renders here; Watch for's lives inside DerivedAdvisories and
-  // Tasting's inside TastingReading. Both hooks below must sit above the
-  // early returns.
+  // two media reads, two cuts. Version details, History, Tasting and the batch
+  // list read belowDesktop (BELOW_DESKTOP_QUERY, 1366), passed down as each
+  // region's own foldsOpen prop (its negation): open by default from 1366,
+  // closed below (decision 18, unchanged). Each fold returns to its own width's
+  // default on every visit or crossing of its own cut (useFold,
+  // decisions_recorded 2). Balance and Watch for read the other cut (984) and
+  // live in RecipeSheet; Tasting's fold lives inside TastingReading. Both hooks
+  // below must sit above the early returns.
   const belowDesktop = useBelowDesktop();
   // The recipe band's record act (sketch 011 decision 30): below 724 its
   // first control is the filled record act. Above the early returns, like
   // every hook here.
   const below724 = useBelow724();
-  const sheetTwoColumns = useSheetTwoColumns();
-  const [balanceOpen, toggleBalance] = useFold(sheetTwoColumns);
   // The Batch fold (sketch 011 decision 50 C1, Mark 2026-10-05) is open on
   // first load at every width. Its default never changes, so no width
-  // crossing resets it, and nothing is stored. It lives here beside Balance's
-  // so Go to batch can open it in the same update that fires the landing.
+  // crossing resets it, and nothing is stored. It lives here so Go to batch can
+  // open it in the same update that fires the landing.
   // RecipePage is keyed by recipe, version and batch, so moving to another
   // batch still opens it again.
   const [batchOpen, toggleBatch] = useFold(true);
@@ -564,22 +546,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // The sheet's derived values, from the pure sheetView; the editing page's
   // pen compares against the stored version.
   const view = sheetView({ version, baseline: version, mode, penDraft, parentVersion, showingChanges, batches, batchId });
-  const {
-    hasRows,
-    readingVersion,
-    draftVersion,
-    liveVersion,
-    changeDiff,
-    changeStaleSteps,
-    penDiff,
-    penStaleSteps,
-    currentStepNumbers,
-    baselineStepNumbers,
-    openBatch,
-    evidenceBatch,
-    comparisonBatchLabel,
-  } = view;
-  const { markedRowIds, markedFigureLabel, markedAnnouncement } = markedFigure(view, focusedFigureKey);
+  const { openBatch } = view;
 
   // The band's Go to batch row (sketch 011 decision 30). It opens the Batch
   // fold if the maker closed it (decision 50, Mark 2026-10-05), then runs the
@@ -1229,21 +1196,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     return repository.saveRecipe(next).then(() => setRecipe(next));
   }
 
-  // The values the two sections read, held once so each guard and its section
-  // never read different ones (261003-9bz). Before you start is a section of its
-  // own above the Ingredients, drawn when it has notes, and in the pen always,
-  // with no notes as its heading alone (pen E2); the Instructions are drawn when
-  // the version shows a step, or in the pen (sketch 011 decision 36, Mark's
-  // answers 1, 3 and 5, 2026-10-04).
-  const methodSteps = mode === 'developing' || showingChanges ? version.method : readingVersion.method;
-  const beforeNotes = mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart;
-  const beforeRegionShown = mode === 'developing' || beforeNotes.length > 0;
-  const methodRegionShown = showsMethodRegion({ mode, steps: methodSteps });
-  // An explicit grid row with no item keeps its gutters, so each absent section
-  // drops its row through a modifier (app.css).
-  const sheetClassName =
-    'recipe-page' + (beforeRegionShown ? '' : ' recipe-page--no-before') + (methodRegionShown ? '' : ' recipe-page--no-method');
-
   return (
     <div className="notebook">
       <header className="notebook-band">
@@ -1306,152 +1258,46 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
 
       <div className="notebook-body">
         <div className="notebook-body__sheet">
-          <article className={sheetClassName} aria-busy={versionSaveAction || batchSaveAction ? 'true' : undefined}>
-            <div className="recipe-band">
-              <Headnote
-                version={version}
-                mode={mode}
-                penDraft={penDraft}
-                onChangePenField={handleChangePenField}
-                isSaving={versionSaveAction !== null}
-              />
-            </div>
-
-            {/* Before you start, its own section above the Ingredients: the
-                order of the cook's day, and the order the screen reader, the
-                Tab key and the printer meet (sketch 011 decision 36). */}
-            {beforeRegionShown && (
-              <section className="before-region" aria-label="Before you start">
-                <h2 className="region-name">Before you start</h2>
-                {beforeNotes.length > 0 && (
-                  <NoteList
-                    listKey="beforeYouStart"
-                    notes={beforeNotes}
-                    mode={mode}
-                    onChangeNoteText={handleChangePenNoteText}
-                    onRemoveNote={handleRemovePenNote}
-                  />
-                )}
-              </section>
-            )}
-
-            <section className="ingredient-table-region" aria-label="Ingredients">
-              <IngredientsHead
-                parentVersion={parentVersion}
+          <RecipeSheet
+            view={view}
+            version={version}
+            mode={mode}
+            penDraft={penDraft}
+            draft={draft}
+            parentVersion={parentVersion}
+            showingChanges={showingChanges}
+            openPen={openPen}
+            below724={below724}
+            blockedTarget={blockedTarget}
+            blockedMessage={blockedMessage}
+            versionSaveAction={versionSaveAction}
+            batchSaveAction={batchSaveAction}
+            foot={
+              <PenFoot
                 openPen={openPen}
-                below724={below724}
-                showingChanges={showingChanges}
-                onToggleShowChanges={handleToggleShowChanges}
+                batchSaveAction={batchSaveAction}
+                tastingOpen={draft?.tastingOpen ?? false}
+                pendingUndo={pendingUndo}
+                onCancelRecording={handleCancelRecording}
+                onSaveBatch={handleSaveBatch}
+                onAddTasting={handleAddTasting}
               />
-              {hasRows ? (
-                <IngredientTable
-                  rows={version.rows}
-                  draftVersion={draftVersion}
-                  diff={changeDiff}
-                  showingChanges={showingChanges}
-                  // The parent: what Show changes compares against, and, while the pen is open, what a line already
-                  // out at open reads (Mark's List row per-step-open-pen-with-line-out, D-A).
-                  baselineVersion={mode === 'developing' || (showingChanges && changeDiff) ? parentVersion : null}
-                  blockedRowId={blockedTarget?.kind === 'row' ? blockedTarget.rowId : null}
-                  blockedRowAttempt={blockedTarget?.kind === 'row' ? blockedTarget.attempt : null}
-                  blockedLineIndex={blockedTarget?.kind === 'row' ? blockedTarget.index : null}
-                  blockedRowMessage={blockedTarget?.kind === 'row' ? blockedMessage : null}
-                  markedRowIds={markedRowIds}
-                  markedFigureLabel={markedFigureLabel}
-                  mode={mode}
-                  draft={draft}
-                  penDraft={penDraft}
-                  openBatch={evidenceBatch}
-                  comparisonBatchLabel={comparisonBatchLabel}
-                  steps={version.method}
-                  currentStepNumbers={currentStepNumbers}
-                  onChangeAsMade={handleChangeAsMade}
-                  onChangePenGrams={handleChangePenGrams}
-                  onTogglePenRowRemoved={handleTogglePenRowRemoved}
-                  onTogglePenLineRemoved={handleTogglePenLineRemoved}
-                />
-              ) : (
-                <p>This version has no ingredient rows.</p>
-              )}
-            </section>
-
-            {/* No Instructions section when there is no step to show (261003-9bz;
-                decision 36, Mark's answer 5). */}
-            {methodRegionShown && (
-              <section className="method-region" aria-label="Instructions">
-                <Method
-                  steps={methodSteps}
-                  stepChanges={mode === 'recording' ? draft.stepChanges : evidenceBatch ? evidenceBatch.churn.stepChanges : {}}
-                  mode={mode}
-                  onChangeStepChange={handleChangeStepChange}
-                  rows={version.rows}
-                  draftVersion={draftVersion}
-                  baselineVersion={version}
-                  penDiff={penDiff}
-                  penStaleSteps={penStaleSteps}
-                  showingChanges={showingChanges}
-                  changeDiff={changeDiff}
-                  staleSteps={changeStaleSteps}
-                  staleFlagVisible={mode === 'developing' || showingChanges}
-                  currentStepNumbers={currentStepNumbers}
-                  baselineStepNumbers={baselineStepNumbers}
-                  onChangePenStepField={handleChangePenStepField}
-                  onChangePenStepTarget={handleChangePenStepTarget}
-                  onTogglePenStepUses={handleTogglePenStepUses}
-                  onTogglePenStepRemoved={handleTogglePenStepRemoved}
-                  onRestorePenStep={handleRestorePenStep}
-                />
-              </section>
-            )}
-
-            {/* Column two, what the sheet does not print: the formulation
-                note beside the table, then the margin beneath it. One
-                flow, so the method's height never separates the two. */}
-            <div className="side-region">
-              {/* Balance and Watch for fold apart, each through its own
-                  full-row control inside its own h2 (decision 18): this
-                  region's own control lives here, since the region itself
-                  renders here; Watch for's own control lives inside
-                  DerivedAdvisories, reading the same sheetTwoColumns. One
-                  branch at every width — the fold wrapper and its hidden
-                  attribute always exist; they simply never hide anything from
-                  984 up, where both panels are open by default (decision 33,
-                  useFold's own default). */}
-              <section className="formulation-note-region" aria-label="Balance">
-                <h2 className="region-name">
-                  <FoldRow label="Balance" open={balanceOpen} onToggle={toggleBalance} controls="fold-balance" />
-                </h2>
-                <div id="fold-balance" hidden={!balanceOpen}>
-                  <FormulationNote
-                    version={liveVersion}
-                    mode={mode}
-                    diff={mode === 'developing' ? penDiff : changeDiff}
-                    onFocusFigure={setFocusedFigureKey}
-                    onBlurFigure={() => setFocusedFigureKey(null)}
-                    showHeading={false}
-                  />
-                  <BasisNote version={liveVersion} />
-                </div>
-                <p className="visually-hidden" role="status" aria-live="polite">
-                  {markedAnnouncement}
-                </p>
-              </section>
-
-              <div className="margin-region">
-                <DerivedAdvisories version={liveVersion} foldsOpen={sheetTwoColumns} />
-              </div>
-            </div>
-
-            <PenFoot
-              openPen={openPen}
-              batchSaveAction={batchSaveAction}
-              tastingOpen={draft?.tastingOpen ?? false}
-              pendingUndo={pendingUndo}
-              onCancelRecording={handleCancelRecording}
-              onSaveBatch={handleSaveBatch}
-              onAddTasting={handleAddTasting}
-            />
-          </article>
+            }
+            onChangePenField={handleChangePenField}
+            onChangePenNoteText={handleChangePenNoteText}
+            onRemovePenNote={handleRemovePenNote}
+            onToggleShowChanges={handleToggleShowChanges}
+            onChangeAsMade={handleChangeAsMade}
+            onChangePenGrams={handleChangePenGrams}
+            onTogglePenRowRemoved={handleTogglePenRowRemoved}
+            onTogglePenLineRemoved={handleTogglePenLineRemoved}
+            onChangeStepChange={handleChangeStepChange}
+            onChangePenStepField={handleChangePenStepField}
+            onChangePenStepTarget={handleChangePenStepTarget}
+            onTogglePenStepUses={handleTogglePenStepUses}
+            onTogglePenStepRemoved={handleTogglePenStepRemoved}
+            onRestorePenStep={handleRestorePenStep}
+          />
         </div>
 
         <aside className="notebook-log" aria-label="Batch">

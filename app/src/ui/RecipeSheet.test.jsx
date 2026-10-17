@@ -3,6 +3,8 @@
 // needed. These cases mount it with no stored version, no store mock and no
 // baseline, through renderToStaticMarkup in the node environment.
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { RecipeSheet } from './RecipeSheet.jsx';
@@ -87,5 +89,22 @@ describe('RecipeSheet over a populated version that was never stored, with no ba
   it('developing with the version as baseline: the steps open for editing', () => {
     const markup = render(inMemory, { baseline: inMemory, mode: 'developing', penDraft: penDraftFromVersion(inMemory) });
     expect(markup).toContain(', edit this step"');
+  });
+});
+
+// Source-text pin (WR-01): Test I in RecipePage.test.jsx counts the shell's two
+// handleToggleShowChanges sites (VersionRow and RecipeSheet) but cannot see the
+// third hop, RecipeSheet handing the prop on to IngredientsHead. D-11 keeps
+// RecipePage.test.jsx to read-target edits, so the pin sits here, in the
+// comment-stripped idiom of that file's describes.
+describe('RecipeSheet hands Show changes on to IngredientsHead (WR-01, 261002-wn1)', () => {
+  const sheetSource = readFileSync(fileURLToPath(new URL('./RecipeSheet.jsx', import.meta.url)), 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+
+  it('passes onToggleShowChanges to its one IngredientsHead tag, the third hop after VersionRow and RecipeSheet in the shell (Test I)', () => {
+    expect(sheetSource.match(/<IngredientsHead\b/g)).toHaveLength(1);
+    const tag = sheetSource.match(/<IngredientsHead\b[\s\S]*?\/>/)?.[0] ?? '';
+    expect(tag).toContain('onToggleShowChanges={onToggleShowChanges}');
   });
 });

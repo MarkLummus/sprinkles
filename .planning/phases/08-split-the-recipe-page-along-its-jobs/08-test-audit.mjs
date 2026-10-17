@@ -8,6 +8,10 @@
 // It compares the base commit with the working tree, so an uncommitted edit is
 // caught too. Prints one `AUDIT FAIL` line per failure and exits 1; otherwise
 // the last line is `AUDIT OK`.
+//
+// Plan 08-06 (gap closure, WR-01 and WR-02) adds cases to RecipeSheet.test.jsx,
+// so check (E) lets that one file gain lines after the commit that created it,
+// and never lose one.
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -51,8 +55,8 @@ const countExpects = (text) => text.split('expect(').length - 1;
 const baseText = (file) => git(['show', base + ':' + file]);
 
 // The changed content lines of a -U0 diff of one file, and each hunk's new-side start.
-function parseDiff(file) {
-  const diff = git(['diff', '-U0', base, '--', file]);
+function parseDiff(file, from = base) {
+  const diff = git(['diff', '-U0', from, '--', file]);
   const changed = [];
   const hunks = [];
   let inHunk = false;
@@ -197,6 +201,9 @@ for (const [oldTitle, newTitle] of RENAMES) console.log('  renamed: ' + oldTitle
 for (const line of removed) console.log('  removed: ' + line.trim());
 
 // (E) tests the phase added stay as committed
+// 08-03 Task 2 created RecipeSheet.test.jsx, and 08-06 adds to it.
+const ADDITIONS_ONLY = { 'app/src/ui/RecipeSheet.test.jsx': 'b2264ca1878bab2ff6fba59fb1d9406e7f9d5164' };
+const additionLines = new Map();
 for (const file of [
   'app/src/ui/RecipePage.shellEffects.test.jsx',
   'app/src/ui/RecipePage.strictMode.test.jsx',
@@ -208,9 +215,26 @@ for (const file of [
     fail('phase test missing ' + file);
     continue;
   }
+  if (ADDITIONS_ONLY[file]) {
+    const from = ADDITIONS_ONLY[file];
+    const { changed } = parseDiff(file, from);
+    for (const line of changed) {
+      if (line.startsWith('-')) fail('phase test ' + file + ' lost a line since ' + from.slice(0, 7) + ': ' + line.trim());
+    }
+    if (!(countExpects(readFileSync(file, 'utf8')) > countExpects(git(['show', from + ':' + file])))) {
+      fail('phase test ' + file + ' expect( count did not grow since ' + from.slice(0, 7));
+    }
+    additionLines.set(file, changed.filter((line) => line.startsWith('+') && /\b(describe|it)\(/.test(line)));
+    continue;
+  }
   const commits = git(['log', '--format=%h', base + '..HEAD', '--', file]).split('\n').filter(Boolean);
   if (commits.length !== 1) fail('phase test ' + file + ' has ' + commits.length + ' commits since the base, expected 1');
   if (!gitQuietSame(['HEAD', '--', file])) fail('phase test ' + file + ' differs from HEAD');
+}
+console.log('Gap-closure additions (08-06)');
+for (const [file, lines] of additionLines) {
+  console.log('  ' + file + ' since ' + ADDITIONS_ONLY[file].slice(0, 7));
+  for (const line of lines) console.log('    ' + line.slice(1).trim());
 }
 
 if (failures.length > 0) process.exit(1);

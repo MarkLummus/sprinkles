@@ -13,7 +13,14 @@ import { describe, expect, it } from 'vitest';
 // and proves the shell imports it and the job lives there (JOBS and
 // jobProblems below), so a cut that leaves its job behind, or a job that
 // drifts back into the shell, turns a named case red. The seven broken
-// fixtures show each check can fire on its own.
+// fixtures show each check can fire on its own, and the completeness case
+// fails if a job's entry is dropped.
+// The final shape: the shell holds route identity, the mode, the band and the
+// Batch aside. The jobs live in useAnnouncer (the three live regions),
+// useRecipeData (the record reads), sheetView (the sheet's derived values),
+// RecipeSheet (the sheet's markup), useVersionPen (the version pen),
+// useDraftWriter and useKeptDraft (the kept draft), useRouteIntents (the
+// consume-once openers) and useBatchRecording (the record pen and tasting).
 // Node environment on purpose: no docblock, no DOM.
 
 function raw(relative) {
@@ -498,6 +505,22 @@ describe('notes and prose render as text, never as markup', () => {
 describe('RecipePage.jsx is cut along its jobs (EDIT-05, EDIT-06)', () => {
   it.each(JOBS.map((job) => [job.name, job]))('%s lives in its module, and the shell imports and calls it', (_name, job) => {
     expect(jobProblems(job, stripComments(raw(job.file)), recipePage)).toEqual([]);
+  });
+
+  it('every job EDIT-05 names has a module of its own (completeness)', () => {
+    const names = JOBS.map((job) => job.name);
+    for (const name of [
+      'useAnnouncer',
+      'useRecipeData',
+      'sheetView',
+      'RecipeSheet',
+      'useVersionPen',
+      'useDraftWriter',
+      'useKeptDraft',
+      'useRouteIntents',
+    ]) {
+      expect(names).toContain(name);
+    }
   });
 
   it('the shell calls its hooks in the planned order, all above the early returns', () => {

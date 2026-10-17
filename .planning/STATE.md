@@ -4,16 +4,16 @@ milestone: v2.0
 milestone_name: Recipe creation
 current_phase: 08
 current_phase_name: Split the recipe page along its jobs
-status: verifying
+status: executing
 stopped_at: Completed 08-05-PLAN.md
-last_updated: "2026-10-17T16:31:45.950Z"
+last_updated: "2026-10-17T17:58:05.142Z"
 last_activity: 2026-10-17
 last_activity_desc: Phase 08 execution started
-state_head: 1b0dcab09b75bb3632802899f0f35d6bdcb49037
+state_head: 6a0d1184198aa8de0a85a68579a52621ddf1cfe2
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 5
+  total_plans: 6
   completed_plans: 5
   percent: 0
 ---
@@ -29,9 +29,9 @@ See: .planning/PROJECT.md (updated 2026-10-16)
 
 ## Current Position
 
-Phase: 08 (Split the recipe page along its jobs) — EXECUTING
+Phase: 08 (Split the recipe page along its jobs) — READY TO EXECUTE
 Plan: 5 of 5
-Status: Phase complete — ready for verification
+Status: Ready to execute
 Last activity: 2026-10-17 — Phase 08 execution started
 
 Progress: [░░░░░░░░░░] 0%

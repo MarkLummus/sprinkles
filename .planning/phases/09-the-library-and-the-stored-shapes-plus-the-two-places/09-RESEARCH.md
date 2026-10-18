@@ -484,21 +484,27 @@ return versions.filter((version) => version.sheetCode === wanted).sort(/* create
 | A7 | `kind` values `'goldilocks'` and `'magnitude'` and `group` values `'core'`, `'declared'` | Pattern 3 | Names are discretion; the requirement says "goldilocks or plain magnitude" |
 | A8 | Playwright WebKit renders the same as Mark's iPad for the side-by-side check | Pattern 8 | The README itself says the iPad and iPhone are unchecked; device confirmation stays with Mark |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Problem definition shape**
    - What we know: tastings store problem words; `declaredFlaws` is a word list; the context says definitions are copied into the batch snapshot.
    - What's unclear: whether a "definition" of a problem needs more than a name.
    - Recommendation: words (A1). Decide in the plan before Phase 10 authors problems.
+   - RESOLVED: plan 09-04 (scale and problem definition contract).
 2. **Dairy residual policy** (A2)
    - Recommendation: preserve the dataset total, show the flagged rows on the review list for Mark.
+   - RESOLVED: plan 09-01 (review flags on `look-p9-library-mapping`).
 3. **`libraryId` on the two inline strawberry rows** (A4)
    - Recommendation: null, allowed by the validator.
+   - RESOLVED: plan 09-05.
 4. **The lactose helper line for a non-dairy row with MSNF** (milk chocolate)
    - What we know: the board says the line appears "only for dairy"; the engine applies lactose to any row with MSNF.
    - Recommendation: show the line when `composition.msnf > 0`, and bring this to Sid as a one-line design note, since the boards draw no such entry.
+   - RESOLVED: built as drawn (dairy only) in 09-03; Mark's choice is on row `decide-p9-lactose-line-non-dairy` (09-17).
 5. **Where the seed codes are stamped** (`seed-recipes.js` or each data file) and the key for dataset ids with dots. Both are plan-level choices, noted in Pattern 4 and Pitfall 7.
+   - RESOLVED: plans 09-02 and 09-01.
 6. **Mark's List rows.** `CLAUDE.md` asks that each Mark-facing decision be a row: the library review look row (D-16), closing `todo-place-ingredients` and `todo-place-notebook-rail-link`, and the device check of the two places. The researcher could not read the list in this run; the planner reads it first.
+   - RESOLVED: plans 09-01 and 09-17 write the rows.
 
 ## Environment Availability
 

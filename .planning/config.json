@@ -107,7 +107,10 @@
   },
   "review": {
     "models": {
-      "opencode": "openrouter/qwen/qwen3.8-max-0902"
+      "opencode": "openrouter/deepseek/deepseek-v4.1-flash"
+    },
+    "timeouts": {
+      "opencode": 2400
     }
   }
 }

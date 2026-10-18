@@ -104,5 +104,10 @@
   },
   "model_overrides": {
     "gsd-plan-checker": "sonnet"
+  },
+  "review": {
+    "models": {
+      "opencode": "openrouter/qwen/qwen3.8-max-0902"
+    }
   }
 }

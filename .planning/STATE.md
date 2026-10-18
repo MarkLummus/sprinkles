@@ -6,10 +6,10 @@ current_phase: 09
 current_phase_name: The library and the stored shapes, plus the two places
 status: executing
 stopped_at: Phase 9 context updated
-last_updated: "2026-10-18T01:27:56.267Z"
+last_updated: "2026-10-18T01:35:52.711Z"
 last_activity: 2026-10-17
 last_activity_desc: Phase 08 complete, transitioned to Phase 09
-state_head: bcc8d348b4108d25d70716db962f180d0b0790a0
+state_head: 3be68270660aab258b8f63d4075d71d220084a4d
 progress:
   total_phases: 5
   completed_phases: 1
@@ -566,6 +566,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 168 | Record D-19 serving temperature and defer heating the base in Phase 9 context | 2026-10-17 | adf758b | — |
 | 261017-tit | Make the Before you start note remove control look like a link (text-control), D31 | 2026-10-17 | 7196b4d | [261017-tit-make-the-before-you-start-note-remove-co](./quick/261017-tit-make-the-before-you-start-note-remove-co/) |
 | 170 | Record pasteurise fields stay out of the editor; queue D-19 for the Phase 9 replan | 2026-10-17 | bcc8d34 | — |
+| 171 | Equipment leaves the creation editor; add serving temperature to MAKE-09 | 2026-10-17 | 3be6827 | — |
 
 ### Roadmap Evolution
 

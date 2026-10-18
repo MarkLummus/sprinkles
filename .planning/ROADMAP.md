@@ -146,7 +146,7 @@ Plans:
 
 Plans:
 **Wave 1**
-- [ ] 09-01-PLAN.md — the converter and its reviewed mapping (the six D-20 coefficients and STAGE_IDS included), the before-walk at the base commit (tracer: the dataset converts end to end); stops for Mark on look-p9-library-mapping, with decide-p9-boot-check-scope on the list beside it
+- [ ] 09-01-PLAN.md — the converter and its reviewed mapping (the six D-20 coefficients and STAGE_IDS included), the before-walk at the base commit (tracer: the dataset converts end to end); stops for Mark on look-p9-library-mapping (the 26 existing entries' coefficients included), with decide-p9-boot-check-scope and decide-p9-version-style on the list beside it
 - [ ] 09-02-PLAN.md — the stored Sheet code: seeded versions keep their printed codes, print and search read the field, children and created roots get id-derived codes
 - [ ] 09-03-PLAN.md — the Notebook place and the Ingredients place as sketch 012 draws them, with filterLibrary and a WebKit measurement
 - [ ] 09-04-PLAN.md — the create draft kind through useKeptDraft (D-18), its payload carrying the serving temperature (D-19) and no machine or process, and the scale definition contract

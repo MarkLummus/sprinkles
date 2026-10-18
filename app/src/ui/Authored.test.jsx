@@ -63,6 +63,13 @@ describe('NoteList — a note while developing (03.1-04, D-13 § 8)', () => {
     const markup = renderNoteList({ mode: 'developing' });
     expect(markup).toMatch(/<button[^>]*>remove<\/button>/);
   });
+
+  it('the remove control takes the row remove\'s link look, class text-control (sketch 010 D31)', () => {
+    const markup = renderNoteList({ mode: 'developing' });
+    const tags = markup.match(/<button\b[^>]*>/g);
+    expect(tags).toHaveLength(2);
+    for (const tag of tags) expect(tag).toContain('class="text-control"');
+  });
 });
 
 describe('NoteList — the inherited-from marker survives both states (D-06)', () => {

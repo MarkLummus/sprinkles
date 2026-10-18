@@ -264,7 +264,7 @@ The plan-set is unusually rigorous: every round-1 concern I spot-checked is genu
 
 ## Mark's decisions after review round 2 (2026-10-18)
 
-- [ ] D-19 (09-CONTEXT.md): each version stores a target serving temperature, a nullable number in degrees C, filled from the chosen style's default and editable; it lands in this phase's one 9 to 10 bump: the version shape, the create draft payload (09-04), the store file schema and validator (09-10) and the sketch/board it appears on (Phase 10 P10_Style). No PAC computation from it in this phase. Clear empties it (Mark, decide-p10-serve-temp-clear, 2026-10-18); picking a style fills it. Phase 9 changes nothing for pasteurise.
+- [x] D-19 (09-CONTEXT.md): each version stores a target serving temperature, a nullable number in degrees C, filled from the chosen style's default and editable; it lands in this phase's one 9 to 10 bump: the version shape, the create draft payload (09-04), the store file schema and validator (09-10) and the sketch/board it appears on (Phase 10 P10_Style). No PAC computation from it in this phase. Clear empties it (Mark, decide-p10-serve-temp-clear, 2026-10-18); picking a style fills it. Phase 9 changes nothing for pasteurise.
 
 ## Consensus Summary
 

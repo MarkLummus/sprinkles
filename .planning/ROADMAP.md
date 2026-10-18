@@ -149,19 +149,19 @@ Plans:
 - [ ] 09-01-PLAN.md — the converter and its reviewed mapping, the before-walk at the base commit (tracer: the dataset converts end to end); stops for Mark on look-p9-library-mapping, with decide-p9-boot-check-scope on the list beside it
 - [ ] 09-02-PLAN.md — the stored Sheet code: seeded versions keep their printed codes, print and search read the field, children and created roots get id-derived codes
 - [ ] 09-03-PLAN.md — the Notebook place and the Ingredients place as sketch 012 draws them, with filterLibrary and a WebKit measurement
-- [ ] 09-04-PLAN.md — the create draft kind through useKeptDraft (D-18) and the scale definition contract
-- [ ] 09-05-PLAN.md — rows keep libraryId; equipment stores maxFillG
+- [ ] 09-04-PLAN.md — the create draft kind through useKeptDraft (D-18), its payload carrying the serving temperature (D-19) and no machine or process, and the scale definition contract
+- [ ] 09-05-PLAN.md — rows keep libraryId; equipment stores maxFillG; every seeded version stores an empty serving temperature (D-19)
 
 **Wave 2** *(blocked on Wave 1 completion; 09-07 also on Mark's approval)*
 - [ ] 09-06-PLAN.md — the Sheet code enforced inside createVersion and saveVersion, two tabs included
 - [ ] 09-07-PLAN.md — the larger library seeded, every same-ingredient case recorded and gated, lactose once
-- [ ] 09-08-PLAN.md — declared scales become definitions carrying their kind
+- [ ] 09-08-PLAN.md — declared scales become definitions carrying their kind; a created root and a child carry the serving temperature (D-19)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 09-09-PLAN.md — DB_VERSION 9 to 10: the bounded reset, the four seed tables, the upgrade proof and the ratchets, and the app/dist guard
 
 **Wave 4** *(blocked on Wave 3 completion)*
-- [ ] 09-10-PLAN.md — store file schema 9: the tables travel; import keeps the Sheet code rule
+- [ ] 09-10-PLAN.md — store file schema 9: the tables travel; import keeps the Sheet code rule and requires the serving temperature
 - [ ] 09-11-PLAN.md — boot validates the tables and loads the catalog; the printed log reads it; import reloads it
 
 **Wave 5** *(blocked on Wave 4 completion)*

@@ -1,14 +1,17 @@
 ---
 phase: 9
 reviewers: [codex, opencode]
+reviewer_instances: [opencode-gemini-argon]
 reviewed_at: 2026-10-18T22:59:39Z
 plans_reviewed: [09-01-PLAN.md, 09-02-PLAN.md, 09-03-PLAN.md, 09-04-PLAN.md, 09-05-PLAN.md, 09-06-PLAN.md, 09-07-PLAN.md, 09-08-PLAN.md, 09-09-PLAN.md, 09-10-PLAN.md, 09-11-PLAN.md, 09-12-PLAN.md, 09-13-PLAN.md, 09-14-PLAN.md, 09-15-PLAN.md, 09-16-PLAN.md, 09-17-PLAN.md]
 models:
   codex: "gpt-6.1-sol (reasoning=high)"
   opencode: "openrouter/qwen/qwen3.8-max-0902#high"
+  opencode-gemini-argon: "openrouter/google/gemini-4-argon#high"
 model_sources:
   codex: "banner"
   opencode: "pinned"
+  opencode-gemini-argon: "pinned"
 ---
 
 # Cross-AI Plan Review — Phase 9
@@ -706,6 +709,427 @@ The plans are in the repo and the base state looks right. Let me verify the load
 
 ---
 
+---
+
+## OpenCode Review (opencode-gemini-argon)
+
+Addendum, 2026-10-18. This lane ran separately from the round-4 pass as an alternates trial (Gemini 4 Argon, Kimi K3, DeepSeek v4 Pro on the same prompt; the other two outputs are under `.review-diagnostics/*-alternates-*/`). Its three HIGH findings were verified against source by Claude before this append: `app/src/styles/shell.test.js:60` and `:114` pin the selector roots and the `@media` count, `app/src/store/library.test.js:231` expects `data/olive-oil.js` among library importers, and `app/src/store/transfer.test.js:933` with `app/src/store/seed.test.js:120` expect the seeded library to hold exactly the 26 entries. None of the three files is owned by the plan that breaks it (09-03, 09-05, 09-07). Neither Codex nor Qwen raised any of them. Gemini 4 Argon is the OpenCode lane from the next round on.
+
+## 09-01
+
+1. **Summary**
+   This plan converts `~/Downloads/sprinkles-ingredient-seed-db.json` (103 ingredients) offline into `app/src/data/library-seed-db.js`, introduces `app/src/domain/stages.js` (`STAGE_IDS`), records `09-walk-before.json` at base commit `3f23c7f`, and gates execution on Mark's review (`look-p9-library-mapping`) while surfacing `decide-p9-boot-check-scope` early. All Round 3 findings on this plan—scoping the `inherited` basis check to composition figures, exempting cultured dairy (`CULTURED_DAIRY_IDS`) from the `msnf * 0.017` derived acidity rule, and adding `app/src/domain/stages.js` and `stages.test.js` to `files_modified` and `artifacts`—have been cleanly resolved.
+
+2. **Strengths**
+   - **Verified lactose subtraction and acidity provenance:** Subtracting `msnf * 0.545` from dairy `sugar`, `pac`, and `pod` matches `computeBalance` in `app/src/domain/composition.js:35-44`, and `CULTURED_DAIRY_IDS` (`buttermilk`, `buttermilk-light`, `sour-cream`, `yogurt-3.5pct`) respects `.planning/notes/2026-10-18-sourced-formulation-bands.md:285` ("measured or label value; it varies with fermentation").
+   - **Reconciled automated verify:** Task 1's inline Node verification now checks `e.basis[f] !== 'inherited'` only over `Object.keys(e.composition)` and separately verifies `titratableAcidity` provenance and the six D-20 keys.
+   - **Deterministic base-walk guard:** `09-walk-record-base.sh` builds `3f23c7f` in a detached worktree and verifies that no non-Phase-9 commit has touched `app/` since `3f23c7f`.
+
+3. **Concerns**
+   - **LOW — Changing a row from `different` to `same` at Task 3 can trip `planMerge`'s `coefficients` guard:** Task 1 specifies that `planMerge` throws on "a `coefficients` id that is not in the dataset or names a same pair", while Task 3's resume instructions say to "edit `app/scripts/ingredient-mapping.json`". If Mark moves a dataset id (e.g., `coconut-milk` or `whole-milk`) into `same` during review without also removing its key from `mapping.coefficients`, `planMerge` will throw.
+
+4. **Suggestions**
+   - In Task 3's `<resume-signal>` (or in `planMerge`), note that moving an entry to `same` in `app/scripts/ingredient-mapping.json` also requires removing its id from `mapping.coefficients` (since `same` pairs keep the app's entry in `app/src/data/library.js`).
+
+5. **Risk Assessment**
+   **LOW.** The Round 3 verification contradiction and file-ownership gaps are resolved, and the converter's invariants are well-pinned.
+
+---
+
+## 09-02
+
+1. **Summary**
+   This plan introduces stored Sheet codes (`CODE-01`): it commits the 19 legacy content-derived codes in `app/src/data/seed-sheet-codes.js`, stamps copies in `app/src/data/seed-recipes.js`, adds `codeFromVersionId` in `app/src/domain/sheetCode.js` for `createChildVersion` and `createRecipe`, and switches `PrintSheet.jsx`, `PrintSheetPages.jsx`, and `findVersionsByCode` to read `version.sheetCode`.
+
+2. **Strengths**
+   - **Constructors and readers verified against source:** `createChildVersion` (`app/src/domain/lineage.js:130-151`) and `createRecipe` (`app/src/domain/newRecipe.js:62-80`) construct version records explicitly, `saveOverVersion` (`app/src/domain/lineage.js:162-174`) spreads `...version`, and `findVersionsByCode` (`app/src/domain/sheetCode.js:189-199`) is the single lookup used by `SheetCodeSearch.jsx:80`.
+   - **Non-mutating stamp:** Stamping copies in `seedRecipeGroups` while keeping `oliveOilVersion` and `transcribedRecipeGroups` unmutated avoids side effects on module-level exports.
+
+3. **Concerns**
+   - **LOW/MEDIUM — Existing equality assertion in `app/src/data/seed-recipes.test.js:41` breaks when `seedRecipeGroups` stamps `sheetCode` onto copies while `transcribedRecipeGroups` stays unstamped:** `app/src/data/seed-recipes.test.js:38-43` currently asserts:
+     ```js
+     expect(seedRecipeGroups.slice(1)).toEqual(transcribedRecipeGroups);
+     ```
+     Because Task 1 stamps `sheetCode` onto every version in `seedRecipeGroups` while leaving `transcribedRecipeGroups` untouched ("`transcribedRecipeGroups` stays as it is; only `seedRecipeGroups` ... carries the codes"), `seedRecipeGroups.slice(1)`'s versions have `sheetCode` and `transcribedRecipeGroups`'s versions do not, causing `seed-recipes.test.js:41` to fail in Task 1's verify.
+
+4. **Suggestions**
+   - In Task 1, explicitly update `app/src/data/seed-recipes.test.js:41` (which is already in Task 1's `files`) so that it compares `seedRecipeGroups.slice(1)` against `transcribedRecipeGroups` with `sheetCode` stripped from each version (or with `SEED_SHEET_CODES[v.id]` stamped onto `transcribedRecipeGroups`), preserving the ordering and structure test alongside the new no-mutation test.
+
+5. **Risk Assessment**
+   **LOW.** `seed-recipes.test.js` is already owned by Task 1; noting line 41 prevents an immediate test failure during execution.
+
+---
+
+## 09-03
+
+1. **Summary**
+   This plan replaces the `/notebook` and `/ingredients` placeholders in `app/src/router.jsx:123,126` with `NotebookPlace` and `IngredientsPlace`, adds pure `filterLibrary` and `libraryCategories` in `app/src/domain/ingredientSearch.js`, extracts `countWords.js`, ports sketch 012's `.nb__*` and `.ing__*` CSS rules into `app/src/styles/shell.css`, and verifies layout in WebKit via `09-places-check.mjs`.
+
+2. **Strengths**
+   - **Defensive display and form submission:** `shownFields` protects `IngredientsPlace` from unvalidated optional fields (`category`, `basis`, `source`, `note`, `densityGPerMl`, `hydrationC`), and Round 5 added `event.preventDefault()` on `form.ing__filters` submission (`SheetCodeSearch.jsx:68` precedent) plus a WebKit Enter-key check.
+   - **Shared ordering with Home:** `NotebookPlace` reuses `activeWork(versions, batches, recipes)` (`app/src/domain/lastEvent.js:111-133`), guaranteeing identical ordering with `RecipeList.jsx`.
+
+3. **Concerns**
+   - **HIGH — Adding `.nb__*` and `.ing__*` rules and `@media` blocks to `app/src/styles/shell.css` breaks four hard-pinned assertions in `app/src/styles/shell.test.js`, which is not in `09-03`'s `files_modified`:**
+     Task 3 ports `.nb__*` and `.ing__*` rules—including `@media (max-width: 1099.98px)`, `@media (max-width: 759.98px)`, and `@media (pointer: coarse)`—into `app/src/styles/shell.css`, and runs `npm --prefix app test -- src/styles` in its automated verify. However, `app/src/styles/shell.test.js` enforces four strict invariants on `shell.css` that will immediately fail:
+     1. `app/src/styles/shell.test.js:60-71` (`every rule is scoped under the .shell or .place root`): asserts every selector in `shell.css` starts with `.shell` or `.place` (or is `html` or `button.shell__place`). Any unprefixed `.nb__*` or `.ing__*` selector fails this test.
+     2. `app/src/styles/shell.test.js:81-84` (`the only @media conditions allowed in shell.css are the fly-out cut and the phone cut`): asserts `[...mediaConditions].sort()` equals `['(max-width: 1589.98px)', '(max-width: 723.98px)'].sort()`. Adding `(max-width: 1099.98px)`, `(max-width: 759.98px)`, and `(pointer: coarse)` fails this test.
+     3. `app/src/styles/shell.test.js:114-120` (`shell.css carries exactly two @media blocks`): asserts `expect(shellCssSource.match(/@media/g)).toHaveLength(2)`. Adding the places' `@media` blocks fails this test.
+     4. `app/src/styles/shell.test.js:380-394` (`only .shell__sprinkle, .shell__place, the menu button and the wordmark link declare a border-radius`): asserts the exact sorted list of selectors in `shell.css` that declare `border-radius` is `['.shell__brand a', '.shell__import-errors', '.shell__menu', '.shell__place', '.shell__sprinkle']`. The board's `.nb__rail`, `.nb__name a`, `.ing__clear`, `.ing__rail`, and `.ing__head` all declare `border-radius` (`.planning/sketches/012-places/ingredients-place-103-entries.html:2933,2935,2945,2948,2949`), failing this test.
+
+4. **Suggestions**
+   - Either:
+     1. Add `app/src/styles/shell.test.js` to `09-03-PLAN.md`'s `files_modified` and Task 3's `files`, and update `shell.test.js:60-71`, `:81-84`, `:114-120`, and `:380-394` to account for the `.nb__*`/`.ing__*` selectors, the three place `@media` blocks, and the five place `border-radius` selectors; **or**
+     2. Follow the `app/src/styles/home.css` + `app/src/styles/home.test.js` pattern (`app/src/styles/home.test.js:1-7`) by placing the `.nb__*` and `.ing__*` rules in a new `app/src/styles/places.css` (imported in `app/src/main.jsx`) with its own `app/src/styles/places.test.js` token-discipline suite, leaving `shell.css` and `shell.test.js` untouched.
+
+5. **Risk Assessment**
+   **HIGH** until `shell.test.js` (or a separate `places.css`) is accounted for, because Task 3's automated verify (`npm --prefix app test -- src/styles`) is guaranteed to fail against `app/src/styles/shell.test.js:60-120, 380-394`.
+
+---
+
+## 09-04
+
+1. **Summary**
+   This plan establishes `app/src/domain/catalog.js` (`SCALE_KINDS`, `SCALE_GROUPS`, `MAX_RECIPE_SCALES`, `MAX_RECIPE_PROBLEMS`, `CORE_SCALE_COUNT`, `isScaleDefinition`, `scaleDefinition`, `mintScaleKey`), adds the `create` draft kind (`draftMatchesCreate`, `blankCreateDraft`, `isCreateDraftDirty`, `CREATE_DRAFT_KEYS`) to `app/src/domain/draft.js`, extends `app/src/ui/useKeptDraft.js` with a `creating` branch and edit-generation late-read protection, and updates `app/src/ui/RecipePage.shell.test.js`.
+
+2. **Strengths**
+   - **Late-read protection resolved (`useKeptDraft.js:126-130`):** Adding `createDraftRef` compared against `createDraftAtRead` prevents a slow `repository.getDraft(versionId)` resolution from overwriting input typed while the read was in flight, matching the edit path's `modeRef.current !== 'reading'` guard and verified by a deferred-`getDraft` test.
+   - **Source-contract markers verified:** Reusing the single `repository.getDraft(versionId)` call (`app/src/ui/useKeptDraft.js:115`) and the three `repository.deleteDraft(versionId)` sites (`:49, :122, :191`) while incrementing `buildDraftRecord(` from 2 to 3 matches `app/src/ui/RecipePage.shell.test.js:257-286`.
+
+3. **Concerns**
+   - **LOW — Restore `useEffect` dependency array in `app/src/ui/useKeptDraft.js:156`:** Currently `useKeptDraft.js:156` has `}, [version, batchesLoaded, loadFailed]);`. When `creating` is `true`, `version` is `null` and `batchesLoaded` is `false` on mount, so the effect runs once on mount; including `creating` in that dependency array (`[creating, version, batchesLoaded, loadFailed]`) keeps the hook dependencies accurate.
+
+4. **Suggestions**
+   - Include `creating` in the restore `useEffect` dependency array at `app/src/ui/useKeptDraft.js:156`, and ensure the persist `useEffect` (`:165-184`) branches `if (creating) { ... } else if (persistedPen === 'plan' ...)` so a clean `create` draft always reaches the `if (!record)` cleanup branch at `:185`.
+
+5. **Risk Assessment**
+   **LOW.** All Round 3 concerns on `09-04` have been resolved and verified against the source.
+
+---
+
+## 09-05
+
+1. **Summary**
+   This plan adds `libraryId` to `rowFromLibraryRecord` (`app/src/domain/versionRow.js`), creates `app/src/data/library-embed.js` (`embedFromLibrary`) and switches all eight seed recipe files to use it, sets `libraryId: null` and six `null` D-20 coefficient keys on the two local strawberry definitions (`STRAWBERRIES_V1_V2_IER`, `DRIED_STRAWBERRY_V2_IER`), adds `maxFillG: null` to seeded equipment blocks, stamps `serveTempC` copied from `iceEd.servingTemperatureC` onto all 19 seeded versions, and extends `validateRow` and `validateVersion` in `app/src/store/transfer.js`.
+
+2. **Strengths**
+   - **Uniform embedded-ingredient shape for D-20:** Adding the six D-20 keys (`null`) to `STRAWBERRIES_V1_V2_IER` and `DRIED_STRAWBERRY_V2_IER` (`app/src/data/strawberry.js:34-68`) ensures every seeded row's embedded `ingredient` has the same own keys once `09-07` populates `app/src/data/library.js`.
+   - **Verified `serveTempC` literals:** All 19 `iceEd` blocks across the eight seed files match the 17 numeric values (`-17` to `-14`) and 2 `null`s (`olive-oil-ice-cream-v1` and `underbelly-light-base-v1`).
+
+3. **Concerns**
+   - **HIGH — Dropping `import { library } from './library.js'` from `app/src/data/olive-oil.js` breaks `app/src/store/library.test.js:231`, halting Task 3's full-suite gate:**
+     Task 1 instructs: "In `app/src/data/olive-oil.js` replace the local `embed` with `embedFromLibrary` and pass the key as a string ... drop the now-unused `library` import if nothing else reads it." Nothing else in `app/src/data/olive-oil.js` reads `library` (`olive-oil.js:5, 81-92`).
+     However, `app/src/store/library.test.js:226-231` scans `app/src` for imports of `/library.js` and asserts:
+     ```js
+     expect(libraryImporters).toEqual(expect.arrayContaining(['store/seed.js', 'data/olive-oil.js']));
+     ```
+     Once `olive-oil.js` drops its `library.js` import in Task 1, `libraryImporters` becomes `['data/library-embed.js', 'store/seed.js']` and no longer contains `'data/olive-oil.js'`. When Task 3 runs `npm --prefix app test`, `app/src/store/library.test.js:231` will fail—and Task 3 explicitly instructs: "If the full suite names any other file, stop and report it rather than editing a file outside this plan."
+
+4. **Suggestions**
+   - Add `app/src/store/library.test.js` to `09-05-PLAN.md`'s `files_modified` (no other Wave 1 plan touches `library.test.js`) and update `app/src/store/library.test.js:231` from `'data/olive-oil.js'` to `'data/library-embed.js'`.
+   - Also consider updating `app/src/store/transfer.test.js:933` (`expect(file.library).toHaveLength(Object.keys(library).length)`) in `09-05` Task 3 (since `09-05` already owns `transfer.test.js` in Wave 1) to `expect(file.library.length).toBeGreaterThanOrEqual(Object.keys(library).length)` so that `09-07` in Wave 2 does not fail on `transfer.test.js:933` when `seedIfEmpty` seeds the larger library (see `09-07` below).
+
+5. **Risk Assessment**
+   **HIGH** until `app/src/store/library.test.js:231` is included in `09-05`, because Task 1's instruction to drop the unused `library` import in `olive-oil.js` directly breaks `library.test.js:231` during Task 3's full-suite verification.
+
+---
+
+## 09-06
+
+1. **Summary**
+   This plan adds `sheetCodeProblems` and `SheetCodeError` to `app/src/domain/sheetCode.js`, enforces Sheet code uniqueness and immutability inside `repository.createVersion` and `repository.saveVersion` (`app/src/store/repository.js`), routes "Save as a new version" in `app/src/ui/useVersionPen.js:199` through `repository.createVersion`, and updates `RecipePage.shell.test.js`, `RecipePage.perStep.test.jsx`, `RecipePage.beforeYouStart.test.jsx`, and `RecipePage.drafts.test.jsx`.
+
+2. **Strengths**
+   - **Verified against source:** `app/src/ui/useVersionPen.js:199` (`handleSaveAsNewVersion`) and `:239` (`handleSaveOverVersion`) are the exact two `repository.saveVersion(` calls pinned by `app/src/ui/RecipePage.shell.test.js:233`, and `useVersionPen.js:211-215` keeps the pen open and releases `versionSaveLockRef` on rejection.
+   - **Real collision pair and two-tab serialization:** Brute-forcing a colliding id pair for `codeFromVersionId` tests real transaction serialization across two `createRepository()` instances.
+
+3. **Concerns**
+   - None material. All Round 1–3 concerns on this plan are resolved.
+
+4. **Suggestions**
+   - Keep both the repository-level two-connection race test and the UI-level `SheetCodeError` retry test as specified.
+
+5. **Risk Assessment**
+   **LOW.**
+
+---
+
+## 09-07
+
+1. **Summary**
+   This plan merges `librarySeedDb` into `app/src/store/seed.js` (`{ ...librarySeedDb, ...library }`), adds the six D-20 coefficient keys and dairy `titratableAcidity` provenance to the 26 entries in `app/src/data/library.js`, writes `app/src/data/library-decisions.js` for all same-ingredient pairs and the seven named conflicts, and adds the conflict gate and lactose-once invariant tests in `app/src/data/library-seed-db.test.js`.
+
+2. **Strengths**
+   - **Round 3 concerns resolved:** `app/src/data/library.js` is now in `files_modified` and Task 1's `files`, the 26 entries' D-20 values are pinned by exact value (including the five dairy `titratableAcidity` values: `wholeMilk` `0.001496`, `heavyCream` `0.000918`, `skimMilkPowder` `0.01649`, `wholeMilk33` `0.001479`, `wholeMilk37` `0.001471`, matching `composition.msnf * 0.017` in `app/src/data/library.js`), and existing fields are checked against `3f23c7f:app/src/data/library.js`.
+
+3. **Concerns**
+   - **HIGH — `app/src/store/transfer.test.js:933` asserts `expect(file.library).toHaveLength(Object.keys(library).length)` (26) after `seedIfEmpty`, which fails in Task 3's `npm --prefix app test` once Task 1 merges `librarySeedDb` into `seedIfEmpty`:**
+     Look at `app/src/store/transfer.test.js:922-935`:
+     ```js
+     it("still round-trips the seeded store's export through importStore and a real repository", async () => {
+       const source = createRepository();
+       await seedIfEmpty(source);
+       const file = JSON.parse(JSON.stringify(await exportStore(source)));
+       ...
+       expect(file.library).toHaveLength(Object.keys(library).length);
+       expect(await target.listLibrary()).toEqual(file.library);
+     });
+     ```
+     Once Task 1 updates `app/src/store/seed.js` to seed `{ ...librarySeedDb, ...library }` (~109 entries), `file.library` has ~109 entries while `Object.keys(library).length` is 26. When Task 3 runs `npm --prefix app test`, `transfer.test.js:933` will fail—and `transfer.test.js` is not updated for this line in `09-07`, `09-08`, `09-09`, or `09-10`. (Note also that `09-08` is in Wave 2 alongside `09-07` and owns `transfer.test.js`.)
+   - **MEDIUM — `app/src/store/seed.test.js:120-124, 181-182` and `app/src/store/library.test.js:32-38, 150` assert `record.entry` against `library[record.id]`, not just the count:**
+     Task 1 says: "Update `seed.test.js` and `library.test.js`: where a test counts the seeded library, count `Object.keys({ ...librarySeedDb, ...library })`". However, `seed.test.js:123, 181-182` and `library.test.js:35, 38, 150` also loop over the seeded records and assert `expect(record.entry).toEqual(library[record.id])` (and `expect(repository.library.map(r => r.id)).toEqual(Object.keys(library))`). For any record from `librarySeedDb`, `library[record.id]` is `undefined`.
+
+4. **Suggestions**
+   - Update `app/src/store/transfer.test.js:933` in `09-05` Task 3 (which already owns `app/src/store/transfer.test.js` in Wave 1, avoiding any Wave 2 file overlap between `09-07` and `09-08`) to `expect(file.library.length).toBeGreaterThanOrEqual(Object.keys(library).length)`, and then pin the merged length in `09-10` when `transfer.test.js` is swept.
+   - In `09-07` Task 1, specify that `seed.test.js:120-124, 181-182` and `library.test.js:32-38, 150` look up entries in `const merged = { ...librarySeedDb, ...library }` rather than `library[record.id]`.
+
+5. **Risk Assessment**
+   **HIGH** until `app/src/store/transfer.test.js:933` (and the `library[record.id]` lookups in `seed.test.js` and `library.test.js`) are addressed, as Task 3 runs the full test suite (`npm --prefix app test`).
+
+---
+
+## 09-08
+
+1. **Summary**
+   This plan converts `declaredAxes` on `oliveOilVersion` (`app/src/data/olive-oil.js:120`) and in test fixtures from name strings to scale definition objects `{ key, name, low, high, kind, group }`, updates `axesForVersion` and `axesForBatch` (`app/src/domain/axes.js`), deep-clones `declaredAxes` and `declaredFlaws` and copies `serveTempC` in `createChildVersion` (`app/src/domain/lineage.js:141-142`), adds `serveTempC: null` to `createRecipe` (`app/src/domain/newRecipe.js`), updates `declaredOf` in `app/src/domain/draft.js`, and updates `validateDeclaredAxes` in `app/src/store/transfer.js`.
+
+2. **Strengths**
+   - **Verified caller enumeration for `createChildVersion`:** All six callers of `createChildVersion` in `app/src` and `app/tests` pass a seeded version, a clone/spread of one, or a `createRecipe` root, all of which own `serveTempC` once `09-05` and `09-08` Task 2 run.
+   - **Clean `declaredOf` transition:** Keeping the four core keys from `AXES` plus `declaredAxes.map(a => a.key)` in `declaredOf` (`app/src/domain/draft.js:173-177`) while dropping its call to `axesForVersion` avoids breaking core-mark validation before `09-15` and avoids a signature break when `09-11` adds `catalog` to `axesForVersion`.
+
+3. **Concerns**
+   - **LOW — Wave 2 coordination with `09-07` on `npm --prefix app test`:** Both `09-07` and `09-08` are in Wave 2 and both run `npm --prefix app test` in Task 3. If `09-07` merges before `09-08` (or when Wave 2 merges), `app/src/store/transfer.test.js:933` will fail unless updated (see `09-07` Concern 1; `09-08` owns `app/src/store/transfer.test.js` in Wave 2).
+
+4. **Suggestions**
+   - Update `app/src/store/transfer.test.js:933` in `09-05` (Wave 1) as suggested under `09-05` and `09-07` so both `09-07` and `09-08` pass `npm --prefix app test` independently and after merge.
+
+5. **Risk Assessment**
+   **LOW.**
+
+---
+
+## 09-09
+
+1. **Summary**
+   This plan bumps `DB_VERSION` from 9 to 10 in `app/src/store/db.js`, exports `upgradeStores` with the destructive reset bounded to `oldVersion > 0 && oldVersion < 10` (dropping `versions`, `batches`, `recipes`, `drafts`, and `library`), creates and seeds the `machines`, `styles`, `scales`, and `problems` object stores via `seedTableIfEmpty`, moves `validateLibraryRecord` to `app/src/store/seedTables.js` and adds the six D-20 coefficient checks, updates `app/src/store/library.test.js` and `app/src/store/transfer.test.js`, adds `app/tests/db-upgrade-10.test.js` and the two anti-reset ratchets in `app/src/store/db.test.js`, and creates `09-dist-guard.sh`.
+
+2. **Strengths**
+   - **Round 3 concerns resolved:** `app/src/store/library.test.js` (`:182-212`, the version-8 upgrade test) and `app/src/store/transfer.test.js` (`:875-879`, the bare library entry test) are now owned by `09-09` and updated for the `< 10` reset and the six required D-20 keys.
+   - **Strong ratchets and `app/dist` guard:** Exporting `upgradeStores` enables both the behavioral ratchet at literal `RESET_BOUND = 10` and the comment-stripped static brace scan on `if (oldVersion > 0 && oldVersion < 10) {`.
+
+3. **Concerns**
+   - **LOW/MEDIUM — `createInMemoryRepository` in `app/src/store/seed.test.js:19-53` lacks `seedTableIfEmpty` until Task 3 updates it, and `:86, :130, :145, :174` assert exact `repository.writes` arrays:**
+     In Task 2, `app/src/store/seed.js` is edited to call `repository.seedTableIfEmpty('machines', MACHINE_ROWS)`, and in Task 3 to call `seedTableIfEmpty` for `styles`, `scales`, and `problems`. In `app/src/store/seed.test.js:19-53`, `createInMemoryRepository` is a hand-written mock that only defines `listVersions`, `putAll`, `putAllBatches`, `putAllRecipes`, and `seedLibraryIfEmpty`—it does not define `seedTableIfEmpty`! And `seed.test.js:86, 130, 145, 174` assert `expect(repository.writes).toEqual(['library', 'recipes', 'batches', 'versions'])` (or subsets). Task 3 owns `app/src/store/seed.test.js` and runs it in Task 3's verify, so Task 3 must add `seedTableIfEmpty` to `createInMemoryRepository` in `seed.test.js`.
+
+4. **Suggestions**
+   - In Task 3, explicitly note that `createInMemoryRepository` in `app/src/store/seed.test.js:19-53` must implement `seedTableIfEmpty` (and `seedLibraryIfEmpty` delegating to it or recording writes consistently with `seed.test.js:86, 130, 145, 174`).
+
+5. **Risk Assessment**
+   **LOW.** Both HIGH findings from Round 3 on `09-09` are resolved.
+
+---
+
+## 09-10
+
+1. **Summary**
+   This plan bumps `STORE_SCHEMA_VERSION` from 8 to 9 in `app/src/store/transfer.js`, extends `exportAll` and `importAll` (`app/src/store/repository.js`) to all eight stores (`recipes`, `versions`, `batches`, `library`, `machines`, `styles`, `scales`, `problems`), validates the four new seed tables and `CORE_SCALE_COUNT` (4) both in `importStore`'s pre-check and inside `repository.importAll`'s transaction (`CoreScaleCountError`), requires canonical `sheetCode` and `serveTempC` on every imported version, enforces Sheet code uniqueness and immutability on import, and sweeps the store-file test fixtures via `app/src/store/storeFile.fixtures.js`.
+
+2. **Strengths**
+   - **Round 3 transactional race resolved:** `repository.importAll` now reads the `scales` store inside its readwrite transaction before queuing puts, merges incoming `scales` by `id`, and aborts with `CoreScaleCountError` if the resulting core scale count is not `CORE_SCALE_COUNT` (4), closing the two-import race Codex identified in Round 3.
+   - **Defensive `fileCoreKeys`:** Computing `fileCoreKeys(parsed.scales)` without throwing when `parsed.scales` is missing or malformed prevents uncaught exceptions during version validation.
+
+3. **Concerns**
+   - **MEDIUM/HIGH — Four existing export/import round-trip tests in `app/src/store/seed-roundtrip.test.js` and `app/src/store/transfer.test.js` and `app/src/ui/BatchRow.test.jsx` will fail Task 1/Task 2's new `CORE_SCALE_COUNT` and `sheetCode` checks if updated only as described:**
+     1. **`app/src/store/seed-roundtrip.test.js:121` spreads the unstamped `oliveOilVersion`:**
+        Task 1's fixture sweep claims that in `seed-roundtrip.test.js`, "any version built in the test carries the code `createRecipe` or `createChildVersion` stored." However, `app/src/store/seed-roundtrip.test.js:121` actually builds its version via:
+        ```js
+        const version = { ...oliveOilVersion, id: `rt-${declaredFlaws.length}`, declaredFlaws };
+        ```
+        where `oliveOilVersion` is imported directly from `../data/olive-oil.js` (`seed-roundtrip.test.js:16`) and has **no** `sheetCode`! And even if it spread the stamped olive oil version, its `sheetCode` (`'64JH-G408'`) would collide with the seeded `'olive-oil-ice-cream-v1'` written by `await seedIfEmpty(first)` at `:126` when `validateStoreFile(exported)` (`:130`) and `importStore(second, exported)` (`:134`) run in Task 2!
+     2. **`app/src/store/transfer.test.js:284` uses the unstamped `oliveOilVersion`:**
+        `app/src/store/transfer.test.js:284-295` runs `const source = createInMemoryRepository([oliveOilVersion], [augustSecondBatch], [oliveOilRecipe]); const exported = await exportStore(source); ... await importStore(target, serialised);`. Because `oliveOilVersion` is the unstamped direct export from `../data/olive-oil.js`, it has no `sheetCode` and will fail Task 2's required `sheetCode` check in `importStore` unless `:284` and `:292` use `stampedSeedVersions()[0]`.
+     3. **`createInMemoryRepository` (`app/src/store/transfer.test.js:21-72`) and `memoryRepository` (`app/src/ui/BatchRow.test.jsx:2116-2142`) export empty `scales` unless seeded by default:**
+        In `transfer.test.js:259, 284, 519, 586, 1420` and `BatchRow.test.jsx:2185-2191`, the tests build a store file by calling `await exportStore(source)` on an in-memory repository (not `makeStoreFile` / `storeFileOf`) and pass it to `importStore(target, file)`. If `createInMemoryRepository` and `memoryRepository` default `scales` to `[]` instead of `structuredClone(SEED_CATALOG.scales)` (and similarly for `machines`, `styles`, `problems`), `exportStore(source)` will export `scales: []` (0 core scales) and `importStore` will reject the file with `$.scales: the scales table would hold 0 core scales after this import; Sprinkles reads exactly 4`!
+     4. **`makeVersion(overrides = {})` (`app/src/store/transfer.test.js:78`) with overridden `id`:**
+        `transfer.test.js:240, 260, 1032-1033` call `[makeVersion(), makeVersion({ id: 'v2' })]` or `makeVersion({ id: 'parent' })`, `makeVersion({ id: 'child', ... })`. If `makeVersion` computes `sheetCode: codeFromVersionId('v1')` before spreading `...overrides`, two versions with different `id`s in the same file will share `'v1'`'s `sheetCode` and fail Task 2's duplicate-code check in `importStore`.
+
+4. **Suggestions**
+   - In Task 1's fixture sweep:
+     - In `app/src/store/seed-roundtrip.test.js:121`, set `sheetCode: codeFromVersionId(\`rt-\${declaredFlaws.length}\`)` on `version`.
+     - In `app/src/store/transfer.test.js:284, 292`, use `stampedSeedVersions()[0]` (or `{ ...oliveOilVersion, sheetCode: SEED_SHEET_CODES[oliveOilVersion.id] }`).
+     - In `createInMemoryRepository` (`app/src/store/transfer.test.js:21-72`) and `memoryRepository` (`app/src/ui/BatchRow.test.jsx:2116-2142`), default `machines`, `styles`, `scales`, and `problems` to `structuredClone(SEED_CATALOG.*)` so `exportStore(source)` produces a valid 4-core-scale catalog for `importStore`.
+     - In `makeVersion(overrides = {})` (`app/src/store/transfer.test.js:78`), compute `const id = overrides.id ?? 'v1'` and set `sheetCode: codeFromVersionId(id)` before `...overrides` (and also update the literal `schemaVersion` / `Object.keys(exported)` checks at `transfer.test.js:231-232, 248, 309-339, 933, 950`).
+
+5. **Risk Assessment**
+   **MEDIUM.** All affected test files (`seed-roundtrip.test.js`, `transfer.test.js`, `BatchRow.test.jsx`) are already in `09-10-PLAN.md`'s `files_modified`, so calling out these exact lines makes the fixture sweep turnkey.
+
+---
+
+## 09-11
+
+1. **Summary**
+   This plan adds `app/src/store/catalog.js` (`readSeedTables`, `catalogFrom`, `loadCatalog`), `app/src/ui/CatalogContext.jsx`, and `app/src/ui/catalog.fixtures.jsx`, adds `coreScaleDefinitions` and `problemNames` to `app/src/domain/catalog.js`, adds `firstDamagedTable` and `bootDamagedLine` to `app/src/store/seedTables.js`, validates the five seed tables at boot in `app/src/main.jsx` before mounting `<App />`, reloads the catalog before incrementing `storeRevision` on import in `app/src/ui/Shell.jsx` (showing `IMPORT_RELOAD_LINE` if reload fails after commit), and updates `axesForVersion(version, catalog)` and `PrintLogPages.jsx` / `PrintSheet.jsx`.
+
+2. **Strengths**
+   - **Round 3 boot-fixture contradiction resolved:** The "odd display fields" library record in Task 2's behavior block now carries all six D-20 coefficient keys set to `null` (`fatStructural: null, ownEmulsifier: null, titratableAcidity: null, defaultStage: null, prepNote: null, requiresHeat: null`), so it passes `validateLibraryRecord` while still testing tolerance for malformed cosmetic fields (`category: { x: 1 }`, `note: 42`, `densityGPerMl: 'heavy'`), alongside a negative test that omits `defaultStage`.
+   - **Single sorting boundary and truthful post-import error handling:** `catalogFrom` sorts by `order` then `id`, and `Shell.jsx` awaits `reloadCatalog()` before `setStoreRevision`, surfacing `IMPORT_RELOAD_LINE` if `reloadCatalog()` rejects.
+
+3. **Concerns**
+   - **LOW — Additional `AXES`, `CORE_AXIS_COUNT`, and `DEFECTS` references in `app/src/ui/PrintLogPages.test.jsx:15-19, 91-105, 125-138`:** Task 1 mentions that `PrintLogPages.test.jsx` reads expected counts from `coreScaleDefinitions(SEED_CATALOG.scales).length` and rewrites the source-text test at `:164-174`. Note that `PrintLogPages.test.jsx:28` (`const page2 = (version) => renderToStaticMarkup(<TastingLogPage version={version} footText={footFor(version, 2)} />);`) is the shared helper used by all `TastingLogPage` tests in that file, so adding `catalog={SEED_CATALOG}` to `page2` in `:28` covers every call site at once.
+
+4. **Suggestions**
+   - Pass `catalog = SEED_CATALOG` in `PrintLogPages.test.jsx:28`'s `page2` helper (`const page2 = (version, catalog = SEED_CATALOG) => renderToStaticMarkup(<TastingLogPage version={version} catalog={catalog} footText={footFor(version, 2)} />);`).
+
+5. **Risk Assessment**
+   **LOW.** All Round 3 findings on `09-11` are resolved.
+
+---
+
+## 09-12
+
+1. **Summary**
+   This plan wires the catalog into `RecipePage.jsx` (`const { catalog } = useCatalog()`) and passes it as a prop to `BatchRow.jsx`, which uses `axesForVersion(version, catalog)` and `problemNames(catalog.problems)` for a new batch's record pen while keeping `BatchRow` presentational, and wraps all `RecipePage` test mounts in `CatalogFixture`.
+
+2. **Strengths**
+   - **Verified `RecipePage.shell.test.js` import-usage rule:** Importing `useCatalog` by name and calling `useCatalog()` once in `RecipePage.jsx` satisfies `app/src/ui/RecipePage.shell.test.js:468-480` (each imported identifier appears at least twice in `RecipePage.jsx`).
+   - **Unmutated `SEED_CATALOG` in cardinality tests:** Round 5 explicitly clones `SEED_CATALOG` via `structuredClone(SEED_CATALOG)` and asserts `SEED_CATALOG` is unmutated after the 4-core-scale desktop/stacked arrangement tests.
+
+3. **Concerns**
+   - **LOW — `HOOK_ORDER` in `app/src/ui/RecipePage.shell.test.js:327-335`:** Let's verify whether `RecipePage.shell.test.js` asserts an exact list of hook calls or only relative ordering of the listed hooks in `HOOK_ORDER`. Let's check: `HOOK_ORDER` checks `recipePage.indexOf(call)` for the 7 listed hooks (`useAnnouncer()`, `useRecipeData(versionId)`, `useDraftWriter(versionId)`, `useBatchRecording(`, `useVersionPen(`, `useKeptDraft(`, `useRouteIntents(`), so adding `const { catalog } = useCatalog();` above the early returns does not break `HOOK_ORDER`, and Task 1's verify runs `src/ui/RecipePage.shell.test.js` directly.
+
+4. **Suggestions**
+   - Keep `src/ui/RecipePage.shell.test.js` in Task 1's verify command as written.
+
+5. **Risk Assessment**
+   **LOW.**
+
+---
+
+## 09-13
+
+1. **Summary**
+   This plan updates `createBatch` (`app/src/domain/batch.js:177`) to require `{ catalog }` and snapshot `coreScales: coreScaleDefinitions(catalog.scales)` and `coreProblems: problemNames(catalog.problems)`, switches `axesForBatch` (`app/src/domain/axes.js`) and `coreProblemsForBatch` (`app/src/domain/battery.js`) to read only from `batch.snapshot`, updates the six seeded batch data files (12 `createBatch` calls) in Task 1 behind a contained-failure JSON-reporter gate, and updates `useBatchRecording.js` and the remaining test callers in Task 2.
+
+2. **Strengths**
+   - **Contained-failure gate after module-load seed changes:** Because `batch-2026-08-02.js`, `strawberry.js`, `mexican-chocolate.js`, `coconut.js`, `mocha.js`, and `pineapple.js` call `createBatch` at module import time, running Vitest with `--reporter=json` at the end of Task 1 and verifying that only Task 2's 4 file families fail immediately catches any missed seed call.
+   - **Verified `useBatchRecording.js` import allow-list:** Passing `catalog` as a property of the argument object to `useBatchRecording` (`app/src/ui/RecipePage.jsx:142`) adds no new import to `useBatchRecording.js`, preserving `app/src/ui/RecipePage.shell.test.js:305`'s import allow-list.
+
+3. **Concerns**
+   - None material. All callers of `createBatch` and `axesForBatch` in `app/src` and `app/tests` match the plan's inventory.
+
+4. **Suggestions**
+   - Keep the contained-failure gate in Task 1's verify command as written.
+
+5. **Risk Assessment**
+   **LOW.**
+
+---
+
+## 09-14
+
+1. **Summary**
+   This plan updates `validateBatch` and `validateTasting` in `app/src/store/transfer.js` to validate `snapshot.coreScales` (requiring `CORE_SCALE_COUNT` = 4 core scale definitions with unique keys) and `snapshot.coreProblems`, validates `tasting.marks` and `tasting.defects` against the batch's own snapshot rather than the receiving profile's catalog or global `AXES`/`DEFECTS` (`D-03a`), removes `AXES` and `DEFECTS` imports from `transfer.js`, and adds `app/src/store/definition-roundtrip.test.js` for a custom `magnitude` scale and a renamed declared scale.
+
+2. **Strengths**
+   - **True historical independence (`D-03a`):** Validating `tasting.marks`, `tasting.defects`, and `snapshot.declaredAxes` against `batch.snapshot.coreScales` and `batch.snapshot.coreProblems` ensures an exported batch remains valid even if the receiving profile's tables have changed.
+   - **Exercises both `magnitude` kind and key preservation across rename (`D-03b`):** `definition-roundtrip.test.js` tests a minted `scale-t1` with `kind: 'magnitude'` and `key: 'oil'` renamed to `'Olive'` with marks on both.
+
+3. **Concerns**
+   - **LOW — Malformed `snapshot.coreScales` or `snapshot.coreProblems` when `validateTasting` runs:** In `app/src/store/transfer.js:486-488`, `validateTasting(batch.tasting, batch.snapshot, ...)` runs even if `batch.snapshot.coreScales` or `batch.snapshot.coreProblems` had validation errors earlier in `validateBatch`. Task 1 notes that `validateTasting` reads the allowed mark keys from the snapshot "without throwing when either list is malformed, whose own errors `validateBatch` already reports"; ensure the same guard applies to `snapshot.coreProblems` (`Array.isArray(snapshot?.coreProblems) ? snapshot.coreProblems.filter(isNonEmptyString) : []`) before checking `tasting.defects`.
+
+4. **Suggestions**
+   - In `validateTasting`, guard both `snapshot?.coreScales` and `snapshot?.coreProblems` with `Array.isArray(...)` so a malformed `coreProblems` (e.g. `null` or a number) reports its error once in `validateBatch` and never throws `TypeError` when `validateTasting` checks `tasting.defects`.
+
+5. **Risk Assessment**
+   **LOW.**
+
+---
+
+## 09-15
+
+1. **Summary**
+   This plan passes `catalog` into `draftMatchesVersion(record, version, batches, catalog)` (`app/src/domain/draft.js`) and its callers (`useKeptDraft.js`, `RecipePage.jsx`, `RecipeList.jsx`), removes `AXES`, `CORE_AXIS_COUNT`, and `DEFECTS` from `app/src/domain/axes.js` and `app/src/domain/battery.js`, adds the static import and literal guard `app/src/store/seed-data-scan.test.js`, and extends `app/tests/db-upgrade-10.test.js` to prove that editing `sweetness`, deleting `oil`, renaming a core problem in the tables, or renaming `oil` on a child version does not move the 2 Aug batch's marks or words.
+
+2. **Strengths**
+   - **Non-vacuous stability proof:** Testing changes to `sweetness` and `oil`—the exact two scales marked `{ sweetness: 4, oil: 4 }` on the 2 Aug batch—proves that `axesForBatch` and `readMarkWord` read from the batch's snapshot rather than the live catalog.
+   - **Exact-path allow-list in `seed-data-scan.test.js`:** Resolving relative import specifiers with `node:path` and checking exact file paths (plus stripping comments via `stripComments` before scanning bracketed array literals) prevents false positives and substring bypasses.
+
+3. **Concerns**
+   - **LOW — `app/src/store/transfer.test.js:1512, 1520` calls `draftMatchesVersion(plainDraft(), oliveOilVersion, [])` with 3 arguments:** In `app/src/store/transfer.test.js:1488-1522`, `plainDraft()` has `kind: 'plan'`. Task 1 notes "A plan draft does not read the catalog." As long as `draftMatchesVersion(record, version, batches, catalog)` checks `if (record.kind === 'plan') return fitsPlanShape(record.payload, version);` before touching `catalog`, those 3-argument calls in `transfer.test.js:1512, 1520` will continue to pass without editing `transfer.test.js`.
+
+4. **Suggestions**
+   - Ensure `draftMatchesVersion` in `app/src/domain/draft.js:273` keeps `if (record.kind === 'plan') return fitsPlanShape(record.payload, version);` above any read of `catalog`, and returns `false` (rather than throwing) if `catalog` is missing for a `record` or `amend` draft.
+
+5. **Risk Assessment**
+   **LOW.**
+
+---
+
+## 09-16
+
+1. **Summary**
+   This plan updates `09-walk.mjs` with the `D-15` store-dump allow-list (`ALLOWED_STORE_PATHS`), the independent required-additions pass (`REQUIRED_STORE_FIELDS`), the pre-walk `expected` self-check mode, and the 7-case `selftest` mode (now including the D-20 coefficient and acidity-provenance paths), records `09-walk-after.json` (`MATCH 94 snapshots`), and runs `09-places-check.mjs` in both `--library original` (with `--evidence`) and `--library current` modes.
+
+2. **Strengths**
+   - **Round 3 D-20 walk gap completely resolved:** `ALLOWED_STORE_PATHS`, `REQUIRED_STORE_FIELDS`, `expected` check `(d)`, and `selftest` (`wrongcoef`, `nocoef`) now explicitly cover `versions[i].rows[j].ingredient.<K>` and `batches[i].snapshot.rows[j].ingredient.<K>` for all six D-20 keys plus `.basis.titratableAcidity` and `.source.titratableAcidity`, looking up expected values in `app/src/data/library.js` via the seeded counterpart's `libraryId` (and expecting `null` / absent provenance on the two null-linked strawberry definitions).
+   - **Verified against `diffLeaves` in `08-walk.mjs:843-856`:** Because all five dairy entries in `app/src/data/library.js` already have plain-object `basis` and `source` maps in `09-walk-before.json`, `diffLeaves` recurses into `basis` and `source` and emits leaf paths `stores.versions[i].rows[j].ingredient.basis.titratableAcidity` and `...source.titratableAcidity`, matching the plan's path patterns.
+
+3. **Concerns**
+   - **LOW — Walk-created batch in `record-pen-save` and `tasting-save` scenarios (`08-walk.mjs:644-666, 785-810`):** In `08-walk.mjs`, those two scenarios create a new batch (`id: '00000000-0000-4000-8000-000000000001'`) on `olive-oil-ice-cream-v1` in both the before-walk and the after-walk. Because Task 1 states "and a batch resolves through its `versionId`", resolving a batch's expected row `libraryId` and D-20 coefficients via `batch.versionId` (by looking up the version's row in `seedRecipeGroups` by `batch.versionId` and `row.id`) works identically for both seeded batches and the walk-created batch on `olive-oil-ice-cream-v1`.
+
+4. **Suggestions**
+   - Make sure the batch row lookup helper in `09-walk.mjs` resolves expected `libraryId` and D-20 coefficients by `(batch.versionId, row.id)` from `seedRecipeGroups` (rather than by `batch.id`), so it handles both seeded batches and the walk-created batch (`00000000-0000-4000-8000-000000000001`) seamlessly.
+
+5. **Risk Assessment**
+   **LOW.** The Round 3 HIGH finding on D-20 paths in the walk is thoroughly resolved.
+
+---
+
+## 09-17
+
+1. **Summary**
+   This plan runs a real WebKit 9-to-10 upgrade and reopen proof (`09-upgrade-check.sh` and `09-upgrade-check.mjs`) from a profile created by the `3f23c7f` base build to the final Phase 9 build on a shared origin, verifies via `09-dist-guard.sh` that `app/dist` was never modified during the phase, walks the iPad device-check steps in WebKit (`09-places-check.mjs --library current`), and updates Mark's List rows.
+
+2. **Strengths**
+   - **Real browser persistence and reopen verification:** Testing the 9-to-10 upgrade on a single origin (`http://sprinkles-upgrade.test`) in WebKit and then writing a draft record and reloading proves both that IndexedDB upgrades cleanly in WebKit and that reopening at version 10 does not trigger a second reset.
+   - **Mechanical `app/dist` gate before hand-over:** Running `09-dist-guard.sh scan` and `check` before writing `check-p9-places-and-reset-on-ipad` enforces the safety premise of the recorded reset decision.
+
+3. **Concerns**
+   - **LOW — Raw `indexedDB.open('sprinkles')` connections inside `page.evaluate` in `09-upgrade-check.mjs`:** If `09-upgrade-check.mjs` opens `indexedDB.open('sprinkles')` inside `page.evaluate` to inspect version 9 or write `importedThing` / the draft record and does not call `db.close()` in a `finally` block (as `08-walk.mjs:173-203` does), an unclosed raw connection without a `versionchange` listener can block a subsequent open in the same context.
+
+4. **Suggestions**
+   - In `09-upgrade-check.mjs`, ensure every `indexedDB.open('sprinkles')` call inside `page.evaluate` closes `db.close()` in a `try ... finally` block (matching `08-walk.mjs:200-202`).
+
+5. **Risk Assessment**
+   **LOW.**
+
+---
+
+## Cross-Plan Assessment
+
+### Verification of Round 3 Fixes
+All five priority issues from Round 3 (`09-REVIEWS.md`) were verified against the updated plans and repository source and are **resolved**:
+1. **`09-01` D-20 basis check, cultured dairy acidity, and `stages.js` ownership:** Resolved in `09-01-PLAN.md`.
+2. **`09-09` and `09-11` invalidated tests (`library.test.js:182-204`, `transfer.test.js:875-878`, and `09-11`'s odd-display-fields boot fixture):** Resolved in `09-09-PLAN.md` and `09-11-PLAN.md`.
+3. **`09-10` in-transaction core-scale cardinality check (`CoreScaleCountError`) and two-import race test:** Resolved in `09-10-PLAN.md`.
+4. **`09-16` walk allow-list, required additions, `expected` mode, and `selftest` for embedded D-20 fields:** Resolved in `09-16-PLAN.md`.
+5. **`09-04` creation late-restore protection (`createDraftRef`) and `09-07` `app/src/data/library.js` ownership and value pins:** Resolved in `09-04-PLAN.md` and `09-07-PLAN.md`.
+
+### Remaining Actionable Blockers Found in Source Verification (Round 4)
+Four concrete test-suite collisions against existing files in the repository remain and should be patched before execution so no plan hits a red gate:
+
+1. **`09-03-PLAN.md` Task 3 (HIGH) — `app/src/styles/shell.test.js:60-71, 81-84, 114-120, 380-394`:**
+   Adding `.nb__*` and `.ing__*` selectors, `@media (max-width: 1099.98px)`, `@media (max-width: 759.98px)`, `@media (pointer: coarse)`, and place `border-radius` declarations to `app/src/styles/shell.css` violates four hard-pinned tests in `app/src/styles/shell.test.js`, which is not in `09-03`'s `files_modified`. Either add `app/src/styles/shell.test.js` to `09-03` and update those four assertions, or put the places' rules in a new `app/src/styles/places.css` + `app/src/styles/places.test.js` (matching `home.css` + `home.test.js`).
+2. **`09-05-PLAN.md` Tasks 1 & 3 (HIGH) — `app/src/store/library.test.js:231`:**
+   Dropping `import { library } from './library.js'` from `app/src/data/olive-oil.js` in Task 1 breaks `expect(libraryImporters).toEqual(expect.arrayContaining(['store/seed.js', 'data/olive-oil.js']))` in `app/src/store/library.test.js:231` when Task 3 runs `npm --prefix app test`. Add `app/src/store/library.test.js` to `09-05` (no other Wave 1 plan touches it) and change `'data/olive-oil.js'` at line 231 to `'data/library-embed.js'`.
+3. **`09-07-PLAN.md` Tasks 1 & 3 (HIGH) — `app/src/store/transfer.test.js:933`, `app/src/store/seed.test.js:123, 181-182`, and `app/src/store/library.test.js:35, 38, 150`:**
+   Merging `librarySeedDb` into `seedIfEmpty` in `09-07` Task 1 causes `app/src/store/transfer.test.js:933` (`expect(file.library).toHaveLength(Object.keys(library).length)`) to fail when `09-07` Task 3 runs `npm --prefix app test`, and causes the `expect(record.entry).toEqual(library[record.id])` loops in `seed.test.js` and `library.test.js` to look up new keys in `library` (`undefined`) instead of `{ ...librarySeedDb, ...library }`.
+4. **`09-10-PLAN.md` Tasks 1 & 2 (MEDIUM/HIGH) — `app/src/store/seed-roundtrip.test.js:121`, `app/src/store/transfer.test.js:21-72, 78, 284`, and `app/src/ui/BatchRow.test.jsx:2117`:**
+   `seed-roundtrip.test.js:121` and `transfer.test.js:284` spread/use the unstamped direct export `oliveOilVersion` (no `sheetCode`), `createInMemoryRepository` (`transfer.test.js:21`) and `memoryRepository` (`BatchRow.test.jsx:2117`) need default `SEED_CATALOG` rows so `exportStore` -> `importStore` round-trips pass the 4-core-scale check, and `makeVersion(overrides)` (`transfer.test.js:78`) should derive `sheetCode` from `overrides.id ?? 'v1'`. (Also note `app/src/data/seed-recipes.test.js:41` in `09-02` Task 1.)
+
+
+---
+
 ## Consensus Summary
 
 Both reviewers read the plans against source at `40b10c2` and re-checked the round-3 dispositions; neither found one contradicted. Codex asks for changes before execution, naming two HIGH findings in 09-10. OpenCode found no HIGH, one MEDIUM (also in 09-10) and recommends proceeding after two small plan edits. The two reviews overlap on where the risk sits (09-10's import sweep, 09-09 as the one-way bump) and diverge on how settled the stored shapes are.
@@ -723,6 +1147,8 @@ Both reviewers read the plans against source at `40b10c2` and re-checked the rou
 
 - **09-10's fixture sweep is incomplete** (Codex HIGH, OpenCode MEDIUM, different files). Codex: `Shell.flyout.test.jsx:354` expects four schema errors today; the plan's claim that old exports are refused before the arrays are read is wrong (`transfer.js:577` records the error and continues at `:583`), so four required arrays make it eight and nothing updates that assertion. OpenCode: `library-link.test.js`, created by 09-05 in wave 1, round-trips a hand-built version with no `sheetCode` or `serveTempC`, which 09-10 then refuses; the planning-time grep could not see a file that did not exist yet. Both say the "enumerated, not left to whichever test goes red" contract is false as written. Fix: add both files to 09-10's sweep and restate the enumeration as a floor re-run at execution.
 - **09-09 is the riskiest plan by size** (both MEDIUM): 17 files at the one-way boundary. Mitigations are judged as good as the repo has had.
+
+- **Existing tests the plans break without owning them** (Gemini addendum, three HIGH, verified by Claude): 09-03's new selectors and media blocks against `shell.test.js:60,114`; 09-05 dropping olive-oil's library import against `library.test.js:231`; 09-07's merged seed against the 26-entry counts in `transfer.test.js:933` and `seed.test.js:120`. Same class of gap as the agreed 09-10 sweep finding, spread across three more plans: each needs the test file added to its manifest with the approved rewrite.
 
 ### Divergent Views
 

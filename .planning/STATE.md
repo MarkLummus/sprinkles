@@ -6,10 +6,10 @@ current_phase: 09
 current_phase_name: The library and the stored shapes, plus the two places
 status: executing
 stopped_at: Phase 9 context updated
-last_updated: "2026-10-18T01:05:27.640Z"
+last_updated: "2026-10-18T01:23:22.087Z"
 last_activity: 2026-10-17
 last_activity_desc: Phase 08 complete, transitioned to Phase 09
-state_head: adf758bdcad64cd57bde3d6ac519ebc6a3fa3302
+state_head: 7196b4d2e02e8604fb623c1bb20eee258de91c5e
 progress:
   total_phases: 5
   completed_phases: 1
@@ -564,6 +564,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 166 | Draft .planning/GLOSSARY.md for review | 2026-10-15 | 1edbcd4 | — |
 | 167 | Record decision 16 (import overwrite policy: ask for each differing entry) | 2026-10-17 | ee0e734 | — |
 | 168 | Record D-19 serving temperature and defer heating the base in Phase 9 context | 2026-10-17 | adf758b | — |
+| 261017-tit | Make the Before you start note remove control look like a link (text-control), D31 | 2026-10-17 | 7196b4d | [261017-tit-make-the-before-you-start-note-remove-co](./quick/261017-tit-make-the-before-you-start-note-remove-co/) |
 
 ### Roadmap Evolution
 

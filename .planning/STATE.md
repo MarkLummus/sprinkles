@@ -6,10 +6,10 @@ current_phase: 09
 current_phase_name: The library and the stored shapes, plus the two places
 status: executing
 stopped_at: Phase 9 context updated
-last_updated: "2026-10-18T03:07:14.909Z"
+last_updated: "2026-10-18T20:38:24.409Z"
 last_activity: 2026-10-17
 last_activity_desc: Phase 08 complete, transitioned to Phase 09
-state_head: a120c90912a107d82b45d82eb392ad3e7402d082
+state_head: 163f00886f62e66b86ac90cb1e555690265ce5c1
 progress:
   total_phases: 5
   completed_phases: 1
@@ -569,6 +569,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 170 | Record pasteurise fields stay out of the editor; queue D-19 for the Phase 9 replan | 2026-10-17 | bcc8d34 | — |
 | 171 | Equipment leaves the creation editor; add serving temperature to MAKE-09 | 2026-10-17 | 3be6827 | — |
 | 261017-ttf | Widen the Sweetness POD Balance rule from 0-30 to 0-40 (D30) | 2026-10-17 | 3f23c7f | [261017-ttf-widen-the-sweetness-pod-balance-rule-fro](./quick/261017-ttf-widen-the-sweetness-pod-balance-rule-fro/) |
+| 173 | docs(09): D-20 six per-ingredient coefficients; 2026-10-18 decisions recorded | 2026-10-18 | 163f008 | — |
 
 ### Roadmap Evolution
 

@@ -1,11 +1,11 @@
 ---
 phase: 9
 reviewers: [codex, opencode]
-reviewed_at: 2026-10-18T21:04:20Z
+reviewed_at: 2026-10-18T22:59:39Z
 plans_reviewed: [09-01-PLAN.md, 09-02-PLAN.md, 09-03-PLAN.md, 09-04-PLAN.md, 09-05-PLAN.md, 09-06-PLAN.md, 09-07-PLAN.md, 09-08-PLAN.md, 09-09-PLAN.md, 09-10-PLAN.md, 09-11-PLAN.md, 09-12-PLAN.md, 09-13-PLAN.md, 09-14-PLAN.md, 09-15-PLAN.md, 09-16-PLAN.md, 09-17-PLAN.md]
 models:
   codex: "gpt-6.1-sol (reasoning=high)"
-  opencode: "openrouter/deepseek/deepseek-v4.1-flash#high"
+  opencode: "openrouter/qwen/qwen3.8-max-0902#high"
 model_sources:
   codex: "banner"
   opencode: "pinned"
@@ -18,514 +18,717 @@ model_sources:
 
 <!-- gsd:plan-revision-conflicts:end -->
 
-Round 3, after the D-20 amendment at 163f008. Round 2 (OpenCode) is in git at 18d4c5b; round 1 (OpenCode and Codex) at 47604aa.
+Round 4, after the round-3 replan at 92d6761 and 9d928f4. Round 3 is in git at 3869044; round 2 (OpenCode) at 18d4c5b; round 1 (OpenCode and Codex) at 47604aa. The OpenCode lane (Qwen3.8 Max) timed out at the 11-minute floor on its first attempt and completed on a retry with a 40-minute cap; the lane is pinned back to DeepSeek v4.1 Flash for later rounds.
 
 ## Codex Review
 
-Source review completed for all 17 plans. The existing baseline passes **96 test files and 3,007 tests**. Planned behavior is assessed against the current source; it is not reported as implemented.
+Reviewed against source at `40b10c2`, including the prior dispositions. Baseline verification passed: **96 files, 3,007 tests**. No implementation changes were made; phase-specific browser and device evidence remains outstanding.
 
 ## 09-01
 
-**Summary.** The converter is well specified, but the D-20 amendment introduces contradictions that must be resolved before execution.
+**Summary.** The converter, review checkpoint and reproducible baseline are well specified. The previous D-20 contradictions appear resolved.
 
-- **Strengths:** Lactose subtraction matches the engine’s addition mechanism in `app/src/domain/composition.js:35–44`. Separating converted candidates from preserved app entries is appropriate.
-- **Concerns — HIGH:** The amendment requires `basis.titratableAcidity = 'derived'`, but the automated verification rejects **every** basis value other than `inherited`. A correctly converted dairy entry therefore fails. See [09-01-PLAN.md:150](/Users/mark/Documents/projects/sprinkles/.planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-01-PLAN.md:150) and its verification at line 153.
-- **Concerns — MEDIUM:** Applying `msnf × 0.017` to every milk-solids row labels yogurt acidity as derived. D-20 distinguishes cultured dairy, and `.planning/notes/2026-10-18-sourced-formulation-bands.md:285` requires a measured or label value for yogurt.
-- **Suggestions:** Check `inherited` only for composition figures; separately check acidity provenance. Give cultured dairy an approved estimated value or `null` when unknown. Add `stages.js` and its test to the file manifest.
-- **Risk Assessment: HIGH.** The prescribed verification currently rejects the prescribed output.
+**Strengths**
+- Lactose subtraction matches the actual engine: lactose is added independently of the dairy flag at `app/src/domain/composition.js:35`, then contributes to PAC and POD at `:43`.
+- The baseline captures meaningful behavior: fields and focus at `08-walk.mjs:150`, page-text hashes at `:166`, and stored records at `:170`.
+
+**Concerns**
+- No new material finding. I confirmed the input contains 103 ingredients and that no `app/` commit follows the proposed base, `3f23c7f`.
+
+**Suggestions**
+- Retain the independent known-answer tests alongside the generated conservation checks; they establish different things.
+
+**Risk assessment: MEDIUM.** Conversion judgments require review, but the checkpoint and numerical checks provide appropriate controls.
 
 ## 09-02
 
-**Summary.** The stored-code change follows the actual creation and printing paths cleanly.
+**Summary.** Stored codes are introduced across the correct constructors and readers, with useful tests distinguishing stored values from recomputed ones.
 
-- **Strengths:** The legacy hash explicitly excludes embedded coefficients and equipment in `app/src/domain/sheetCode.js:26–30`, so D-20 need not change existing printed codes. I verified 19 unique seeded codes and Olive Oil’s `64JH-G408`.
-- **Concerns:** No new material concern found. Both constructors really build records explicitly: `app/src/domain/lineage.js:130` and `app/src/domain/newRecipe.js:62`.
-- **Suggestions:** Retain the stored-code-differs tests; they establish that readers use the field rather than reproduce the legacy calculation.
-- **Risk Assessment: LOW.** The changes are localized and the compatibility checks are specific.
+**Strengths**
+- Both print dependencies are real: `app/src/ui/PrintSheet.jsx:125` and `app/src/ui/PrintSheetPages.jsx:84` currently compute codes.
+- Search currently hashes each candidate at `app/src/domain/sheetCode.js:193`; the proposed stored-field comparison removes that dependency.
+- Running the existing derivation over all 19 seeded versions confirmed the listed codes.
+
+**Concerns**
+- No new material finding.
+
+**Suggestions**
+- Preserve the stored-code-differs tests and the exact seed-id/map equality check.
+
+**Risk assessment: LOW.** The affected readers and constructors are explicitly covered.
 
 ## 09-03
 
-**Summary.** The places use suitable existing routing, ordering and display conventions.
+**Summary.** The places follow the approved interaction contract and defend against optional fields that existing import validation accepts.
 
-- **Strengths:** `activeWork()` already supplies recipe identity, versions, batches and recency order in `app/src/domain/lastEvent.js:111–132`. Both target routes are currently placeholders at `app/src/router.jsx:123` and `:126`.
-- **Concerns — LOW:** Task 2 specifies a search form without specifying submission handling. The existing search page explicitly prevents default submission in `app/src/ui/SheetCodeSearch.jsx:68`; the shared Button defaults to `type="button"` at `app/src/ui/Button.jsx:7`.
-- **Suggestions:** Specify that Enter in Name preserves the current filters and route, and add that browser check. This is an unverified interaction gap; WebKit could not launch during this review.
-- **Risk Assessment: MEDIUM.** Store access is straightforward; responsive layout and keyboard behavior remain the main execution work.
+**Strengths**
+- Reusing `activeWork()` preserves Home’s actual ordering and grouping mechanism at `app/src/domain/lastEvent.js:111`.
+- Defensive display handling is justified: `validateLibraryRecord` checks name and composition but leaves cosmetic fields unchecked at `app/src/store/transfer.js:221`.
+- Preventing form submission follows the existing implementation at `app/src/ui/SheetCodeSearch.jsx:68`.
+
+**Concerns**
+- No new material finding. The earlier missing submission handling is now addressed.
+
+**Suggestions**
+- Keep visual evidence separate from dimension checks, particularly for expanded provenance tables.
+
+**Risk assessment: MEDIUM.** Responsive conformance remains execution work, but the specified checks are concrete.
 
 ## 09-04
 
-**Summary.** The draft contract handles incomplete input carefully, but its asynchronous restore behavior needs one additional contract.
+**Summary.** The incomplete-input and late-restore contracts are strong, but the supposedly complete creation shape still lacks step-allocation history.
 
-- **Strengths:** Extending the existing hook addresses its real restrictions: the version prerequisite is at `app/src/ui/useKeptDraft.js:112`, and persistence currently recognizes only existing pen kinds at `:166–184`.
-- **Concerns — MEDIUM:** [09-04-PLAN.md:126](/Users/mark/Documents/projects/sprinkles/.planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-04-PLAN.md:126) disables the existing late-read protection for creation. That protection currently preserves a pen opened while the read was pending at `app/src/ui/useKeptDraft.js:126–130`. If creation permits typing during `getDraft`, a late restore can replace that input.
-- **Suggestions:** Either require editing to remain disabled until restoration finishes, or protect restoration with an edit-generation check. Test a deferred `getDraft` response arriving after input changes.
-- **Risk Assessment: MEDIUM.** Shape checks are thorough; restoration can still lose input without the additional rule.
+**Strengths**
+- The new branch addresses the hook’s actual version prerequisite at `app/src/ui/useKeptDraft.js:112`.
+- The deferred-read test extends the existing protection at `:126`, rather than assuming an immediate repository response.
+
+**Concerns**
+- **MEDIUM — Step keys can be reused after deletion and restoration.** The strict payload contract at `09-04-PLAN.md:122` stores the current method but no allocation watermark or issued-key history. `app/src/domain/stepKeys.js:24` derives the next key solely from remaining steps; its safety explicitly depends on retaining removed steps at `:4`. I reproduced allocating `3`, deleting that step, and receiving `3` again. Phase 11 instead requires outright removal and no reused key in `.planning/ROADMAP.md:221`.
+
+**Suggestions**
+- Settle a persistent watermark or issued-key ledger now, for both kept creations and editable first versions.
+- Add an add → remove highest step → persist → restore → add case.
+
+**Risk assessment: MEDIUM.** The immediate hook behavior is covered; the frozen shape does not yet support the promised later deletion behavior.
 
 ## 09-05
 
-**Summary.** Library links, equipment limits and serving temperature are grounded in the actual stored records.
+**Summary.** Library links, equipment limits and serving-temperature literals align with the existing data.
 
-- **Strengths:** Rows already clone entries in `app/src/domain/versionRow.js:65` and `app/src/data/olive-oil.js:54–58`. I verified the 19 Ice Ed records contain exactly 17 numeric temperatures and the two specified nulls.
-- **Concerns — LOW:** The two recipe-owned strawberry definitions bypass the library entirely at `app/src/data/strawberry.js:34` and `:52`. Adding D-20 fields only to library entries leaves these embedded definitions with a different coefficient shape.
-- **Suggestions:** Explicitly decide whether these two definitions receive six nullable fields too. If intentionally exempt, document that downstream coefficient readers must tolerate their absence.
-- **Risk Assessment: LOW.** D-19 is consistent with the source; the remaining question concerns D-20 shape consistency.
+**Strengths**
+- The link preserves an established copy boundary: `app/src/domain/versionRow.js:65` and `app/src/data/olive-oil.js:54` already clone ingredient records.
+- The two strawberry exceptions are genuinely separate definitions at `app/src/data/strawberry.js:34` and `:52`.
+- I verified all 19 Ice Ed temperatures: 17 numbers and the two specified nulls.
+
+**Concerns**
+- No new material finding. The six nullable coefficients now cover the recipe-owned definitions too.
+
+**Suggestions**
+- Keep the copy-independence assertion separate from link round-trip assertions.
+
+**Risk assessment: LOW.** The changes preserve existing figures and have explicit exceptions.
 
 ## 09-06
 
-**Summary.** Transactional code enforcement and failed-save recovery fit the existing implementation.
+**Summary.** Transactional uniqueness and failed-save recovery are appropriately separated.
 
-- **Strengths:** The repository currently performs an unchecked put at `app/src/store/repository.js:32–34`. Moving read, check and write into one transaction addresses that gap. The existing failure handler leaves the pen open and releases the lock at `app/src/ui/useVersionPen.js:211–215`.
-- **Concerns:** No new material concern found beyond the deliberately documented treatment of legacy test fixtures.
-- **Suggestions:** Keep the concurrent-repository case and UI retry case as separate proofs: one establishes serialization, the other preserves the maker’s input.
-- **Risk Assessment: LOW.** The plan covers both persistence failure and user-visible recovery.
+**Strengths**
+- The current unchecked write is precisely located at `app/src/store/repository.js:32`.
+- The existing rejection handler leaves the pen open and releases the save lock at `app/src/ui/useVersionPen.js:211`.
+- The architectural marker requiring two saves currently exists at `app/src/ui/RecipePage.shell.test.js:233`; its planned replacement preserves the check’s purpose.
+
+**Concerns**
+- No new material finding within the prescribed production write paths.
+
+**Suggestions**
+- Retain both concurrency and UI retry tests: transaction serialization does not establish input preservation.
+
+**Risk assessment: LOW.** The plan covers persistence enforcement and recovery behavior directly.
 
 ## 09-07
 
-**Summary.** The merge and conflict gate are sound, but D-20’s new file ownership is incomplete.
+**Summary.** The merge, approval gate and separation of converted candidates from retained app values are sound.
 
-- **Strengths:** Existing seeding already writes `{ id, entry }` records through the repository at `app/src/store/seed.js:22`. Preserving original entries last in the merge protects their composition values.
-- **Concerns — MEDIUM:** Task 1 now edits `app/src/data/library.js`, but neither its task file list nor frontmatter includes that file. Compare [09-07-PLAN.md:7](/Users/mark/Documents/projects/sprinkles/.planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-07-PLAN.md:7) with the amendment at line 103.
-- **Suggestions:** Add the file explicitly. Pin representative coefficient values and acidity provenance, not just key presence and stage membership; those checks would accept incorrectly seeded values.
-- **Risk Assessment: MEDIUM.** The amendment is executable, but ownership and semantic assertions need updating.
+**Strengths**
+- The invariant targets the engine’s real lactose contribution at `app/src/domain/composition.js:43`.
+- Keeping candidate correctness separate from retained-value preservation respects the existing copied-entry mechanism at `app/src/data/olive-oil.js:57`.
+- The base-file comparison supplements the otherwise weaker assertion that stored entries equal the newly edited `library.js`.
+
+**Concerns**
+- No new material finding. File ownership and representative D-20 values are now explicit.
+
+**Suggestions**
+- Preserve the base-file comparison as durable verification evidence, since it establishes that pre-existing fields stayed unchanged.
+
+**Risk assessment: MEDIUM.** Dataset interpretation remains consequential, but approval and numerical gates cover it.
 
 ## 09-08
 
-**Summary.** Definition copying and serving-temperature propagation follow the constructors correctly.
+**Summary.** Definition cloning and temperature propagation are correct; one creation-related stored contract remains unspecified.
 
-- **Strengths:** `createChildVersion` currently shares declared lists at `app/src/domain/lineage.js:141–142`; cloning fixes a real aliasing problem. Updating root and child together respects the exact-key assertion at `app/src/store/creation-roundtrip.test.js:107`.
-- **Concerns:** No new material concern found. The numeric-parent and null-parent cases cover the amended D-19 behavior.
-- **Suggestions:** Keep the mutation test that changes a child definition and checks the parent, since equality alone would not detect sharing.
-- **Risk Assessment: LOW.** The affected shapes and callers are identified.
+**Strengths**
+- `createChildVersion` currently shares declared arrays at `app/src/domain/lineage.js:141`; cloning fixes a real alias.
+- Coordinating root and child changes respects the exact-key invariant at `app/src/store/creation-roundtrip.test.js:107`.
+
+**Concerns**
+- **MEDIUM — Open design question: where does the selected style persist?** The creation draft defines a style id at `09-04-PLAN.md:122`, and Phase 11 promises to save the authored style at `.planning/ROADMAP.md:214`. However, `createRecipe` has no style field at `app/src/domain/newRecipe.js:62`, and the child constructor has no style-copy rule at `app/src/domain/lineage.js:130`. This plan fixes the root at 19 keys without settling that representation.
+
+**Suggestions**
+- Define whether a saved version carries a style id, a snapshot, or only copied defaults. If selection persists, specify validation and child propagation now.
+
+**Risk assessment: MEDIUM.** Current changes are sound, but the “all stored shapes settled” claim remains incomplete.
 
 ## 09-09
 
-**Summary.** The reset proof is strong, but the plan misses existing tests that its new behavior necessarily invalidates.
+**Summary.** The reset, historical-version ratchet and rollback proof are strong. Collection-level problem identity needs an additional invariant.
 
-- **Strengths:** The existing upgrade callback is synchronous and guarded in `app/src/store/db.js:24–55`. Preserving that structure while bounding destruction below 10 is appropriate.
-- **Concerns — HIGH:** `app/src/store/library.test.js:182–204` explicitly asserts that a version-8 profile retains its records and draft. The proposed `< 10` reset necessarily invalidates those assertions. This file is absent from this plan’s ownership list.
-- **Concerns — HIGH:** Requiring D-20 fields invalidates the accepted bare-entry case at `app/src/store/transfer.test.js:875–878`. The plan adds new validator tests but does not assign the existing fixture update.
-- **Suggestions:** Include both test files in this plan. Replace the historical preservation expectation with the approved reset expectation, and update valid library fixtures with the six fields while retaining explicit missing-field refusal tests.
-- **Risk Assessment: HIGH.** The full-suite gate cannot pass as currently prescribed.
+**Strengths**
+- The existing synchronous, guarded upgrade at `app/src/store/db.js:24` supports the proposed bounded reset.
+- The rewritten historical test correctly replaces the preservation expectation at `app/src/store/library.test.js:182`.
+
+**Concerns**
+- **MEDIUM — Distinct problem ids may carry duplicate names.** The planned validator checks rows individually at `09-09-PLAN.md:224`, while problem identity in tastings is the word itself: `app/src/store/transfer.js:295`. Two valid rows with different ids and the same name can therefore enter the catalog. The planned batch constructor copies both names, but `09-14-PLAN.md:95` requires unique snapshot problem words. A catalog accepted by the app could produce an export its own validator rejects.
+
+**Suggestions**
+- Add a shared collection check for unique problem names.
+- Apply it to boot and the resulting imported table, and test recording/export after an attempted duplicate-name import.
+
+**Risk assessment: MEDIUM.** Reset coverage is strong; the catalog acceptance contract needs to match snapshot validity.
 
 ## 09-10
 
-**Summary.** Export consistency and Sheet-code enforcement are carefully handled, but the new catalog invariant lacks equivalent transactional protection.
+**Summary.** The transactional count race is now fixed, but two execution blockers remain.
 
-- **Strengths:** `repository.importAll` already provides an all-or-nothing transaction with explicit abort handling at `app/src/store/repository.js:158–179`. Extending it to eight stores preserves that mechanism.
-- **Concerns — HIGH:** The merged core-scale count is checked only before the transaction in [09-10-PLAN.md:113](/Users/mark/Documents/projects/sprinkles/.planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-10-PLAN.md:113). Two imports can each pass against four core rows, both demote the same core row, and each add a different core row. Sequential commits then leave **five** core scales, which boot refuses.
-- **Suggestions:** Recompute the merged scale count inside `repository.importAll` before any puts, alongside the Sheet-code check. Add a controlled two-import race proving one import is refused and all its stores remain unchanged.
-- **Risk Assessment: HIGH.** The pre-check does not establish the invariant claimed over the resulting store.
+**Strengths**
+- Extending the explicit-abort transaction at `app/src/store/repository.js:158` preserves atomic import.
+- The existing consistent export transaction at `:185` provides the correct foundation for eight-store export.
+
+**Concerns**
+- **HIGH — Four core scales does not guarantee non-conflicting scale identities.** The plan validates incoming versions against file keys, then checks only the resulting core count (`09-10-PLAN.md:114`). A file containing no versions can demote `sweetness` and promote `oil` to core. The count remains four, while the retained olive-oil version still declares Oil at `app/src/data/olive-oil.js:120`. The planned reader then returns Oil twice under one mark key; a newly recorded batch subsequently fails the planned core/declared collision validator. I traced this merge and obtained combined keys ending `oil, body, oil`.
+- **HIGH — The fixture sweep incorrectly excludes a necessarily failing test.** `09-10-PLAN.md:131` says old exports are refused before arrays are read. Actual validation records a schema error at `app/src/store/transfer.js:577` and continues through the arrays at `:583`. `app/src/ui/Shell.flyout.test.jsx:354` explicitly expects **four** errors; requiring four more arrays makes that expectation **eight**. Neither planned wrapping nor the current sweep updates it.
+
+**Suggestions**
+- Inside the write transaction, check core-key compatibility across the **resulting versions and scales**, including retained local versions.
+- Test successful import → record → export → validate for the promotion scenario.
+- Assign the Shell assertion update explicitly and reconcile file ownership/dependencies with the Shell test changes.
+
+**Risk assessment: HIGH.** An accepted import can create inconsistent records, and the prescribed full-suite gate cannot pass unchanged.
 
 ## 09-11
 
-**Summary.** Catalog loading and truthful post-import recovery are appropriate, but the boot tests were not reconciled with D-20.
+**Summary.** Catalog delivery and truthful recovery are improved, but freezing `storeRevision` does not fully contain a failed reload.
 
-- **Strengths:** Boot already has a pre-mount store-opening boundary at `app/src/main.jsx:27–38`. Shell currently increments the revision directly after import at `app/src/ui/Shell.jsx:347–353`, making the proposed reload boundary easy to identify.
-- **Concerns — HIGH:** The “odd display fields” fixture intentionally omits all six D-20 fields yet must pass boot validation at [09-11-PLAN.md:171](/Users/mark/Documents/projects/sprinkles/.planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-11-PLAN.md:171). It cannot pass the amended required-own-key validator.
-- **Suggestions:** Add six valid nullable coefficient fields to that fixture. Keep its malformed cosmetic fields so it still proves display tolerance. Update the prose describing the validator’s checked structure.
-- **Risk Assessment: MEDIUM.** The architecture is suitable; the specified acceptance case is contradictory.
+**Strengths**
+- Boot already has a pre-mount failure boundary at `app/src/main.jsx:27`.
+- The real-provider test improves on merely checking the current revision increment at `app/src/ui/Shell.jsx:352`.
+
+**Concerns**
+- **MEDIUM — Navigation bypasses the proposed stale-data containment.** Holding `storeRevision` prevents one refresh, but navigation remains available through `app/src/ui/Shell.jsx:445`. A different version route remounts `RecipePage` at `app/src/router.jsx:80`, and `app/src/ui/useRecipeData.js:32` reads newly imported records independently of the revision. Those records can render against the old catalog.
+- **LOW — The surrounding heading still contradicts successful import.** Putting `IMPORT_RELOAD_LINE` into the existing panel leaves its title reading “This file can’t be imported” at `app/src/ui/Shell.jsx:421`.
+
+**Suggestions**
+- Use an explicit post-commit recovery state that prevents record editing/navigation until catalog reload succeeds or the page reloads.
+- Test navigation after reload failure and give the recovery state an accurate heading.
+- Clarify that the empty-list acceptance case at `09-11-PLAN.md:167` excludes an empty scales table.
+
+**Risk assessment: MEDIUM.** The normal path is covered; failure containment remains incomplete.
 
 ## 09-12
 
-**Summary.** The route-to-presentational-component catalog boundary is clear and supported by the current component structure.
+**Summary.** The route-level context read and presentational prop boundary fit the existing components.
 
-- **Strengths:** `BatchRow` already distinguishes fresh recording from correction at `app/src/ui/BatchRow.jsx:621–625`. The desktop grid’s four explicit core positions are visible at `:240–244`, supporting the cardinality tests.
-- **Concerns:** No additional source-backed gap found in this plan.
-- **Suggestions:** Keep the direct BatchRow tests and route-level tracer test; they prove different parts of the wiring.
-- **Risk Assessment: MEDIUM.** Provider coverage touches many tests, but the plan enumerates that work.
+**Strengths**
+- Fresh recording and correction already select different sources at `app/src/ui/BatchRow.jsx:624`.
+- The desktop grid really has four explicit positions at `app/src/ui/BatchRow.jsx:240`, supporting the proposed arrangement tests.
+- The import-name source check exists at `app/src/ui/RecipePage.shell.test.js:470`, and the plan accommodates it.
+
+**Concerns**
+- No new material finding in provider coverage or the caller sweep.
+
+**Suggestions**
+- Keep the route tracer and direct component tests; neither substitutes for the other.
+
+**Risk assessment: MEDIUM.** Numerous fixtures change, but their ownership is explicit.
 
 ## 09-13
 
-**Summary.** Snapshot creation and snapshot-only reading are aligned with the existing batch lifecycle.
+**Summary.** Snapshot creation and historical reading align with the existing batch lifecycle.
 
-- **Strengths:** `createBatch` already copies version-owned data once at `app/src/domain/batch.js:184–189`. `completeRecord` preserves the snapshot through its spread at `:206–212`.
-- **Concerns:** No new material concern found. Updating module-load seed callers before UI callers is important because an omitted catalog would fail during import.
-- **Suggestions:** Preserve the contained-failure gate and cloned-catalog mutation test as written.
-- **Risk Assessment: MEDIUM.** The changes span many callers, but the intermediate failure boundary is explicit.
+**Strengths**
+- `createBatch` already takes one-time copies at `app/src/domain/batch.js:184`; extending that boundary is appropriate.
+- `completeRecord` preserves the snapshot through its spread at `app/src/domain/batch.js:206`.
+- The contained-failure gate addresses module-load seed construction rather than waiting for the final suite.
+
+**Concerns**
+- No additional caller or snapshot-copy finding. Accepted-catalog validity needs the collection invariant identified in 09-09.
+
+**Suggestions**
+- Include a constructor/export validity case using a catalog that has passed the shared catalog checks.
+
+**Risk assessment: MEDIUM.** The caller sweep is broad, but its intermediate failure boundary is controlled.
 
 ## 09-14
 
-**Summary.** Validating historical batches against their own definitions achieves the intended independence from current tables.
+**Summary.** Snapshot-based validation establishes the intended independence from live catalog definitions.
 
-- **Strengths:** Current defect validation depends on global `DEFECTS` at `app/src/store/transfer.js:295–296`; replacing that dependency addresses the actual historical-data problem. The From freezer exclusion reads the tasting’s own values at `:318–324`, so it can remain independent.
-- **Concerns:** No new material concern found in the snapshot validation or definition round trip.
-- **Suggestions:** Retain the case where the receiving catalog lacks a snapshot-defined problem; it distinguishes snapshot validation from accidental catalog validation.
-- **Risk Assessment: LOW.** The plan exercises the intended boundary directly.
+**Strengths**
+- Current core-defect validation reads the global list at `app/src/store/transfer.js:295`; replacing it addresses the actual dependency.
+- The From freezer exclusion reads the tasting’s own values at `app/src/store/transfer.js:318`, so it can remain unchanged.
+- The magnitude/rename round trip exercises more than the incumbent Body/Oil definitions.
+
+**Concerns**
+- No new material finding in this plan’s validation boundary.
+
+**Suggestions**
+- Preserve the receiving-catalog-missing-word test; it demonstrates that snapshot validation is actually used.
+
+**Risk assessment: LOW.** The plan directly tests its central historical-data guarantee.
 
 ## 09-15
 
-**Summary.** This completes the runtime catalog transition and tests changes to definitions the batch actually used.
+**Summary.** The final constant retirement and marked-scale stability proof are well targeted.
 
-- **Strengths:** Draft checks currently depend on global scale and problem lists at `app/src/domain/draft.js:146` and `:165`. The plan removes those dependencies from both payload and baseline checks.
-- **Concerns:** No additional material gap found here. The D-20 walk incompatibility belongs to 09-16 rather than this stability proof.
-- **Suggestions:** Retain the distinction between static architectural checks and behavior tests. The import scan cannot independently establish runtime data provenance.
-- **Risk Assessment: MEDIUM.** Broad consumer changes remain, but the plan names them and finishes with the full suite.
+**Strengths**
+- Both draft dependencies are real: global axis keys at `app/src/domain/draft.js:146` and global problem words at `:165`.
+- Testing Sweetness and Oil targets definitions the seeded batch actually marked, rather than an unused scale.
+- The architectural scan’s stated limits appropriately distinguish static imports from runtime behavior.
+
+**Concerns**
+- No new material finding in the retirement or stability work.
+
+**Suggestions**
+- Keep the assertion that each table/child edit actually landed before asserting the historical batch stayed unchanged.
+
+**Risk assessment: MEDIUM.** The sweep is extensive, but the tests address observable independence.
 
 ## 09-16
 
-**Summary.** The proof structure is rigorous, but its allow-list predates D-20 and will reject the amended seed.
+**Summary.** The comparison now checks expected additions independently and tests its own refusal behavior.
 
-- **Strengths:** The existing walk captures complete version and batch records at `.planning/phases/08-split-the-recipe-page-along-its-jobs/08-walk.mjs:169–199`. Required additions and negative self-tests supplement its leaf comparison appropriately.
-- **Concerns — HIGH:** D-20 adds six fields inside embedded ingredients and adds acidity basis/source entries. Those changes propagate through the actual cloning paths at `app/src/data/olive-oil.js:54–58` and `app/src/domain/batch.js:187`. None appears in the allowed paths prescribed by [09-16-PLAN.md:89](/Users/mark/Documents/projects/sprinkles/.planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-16-PLAN.md:89).
-- **Suggestions:** Add narrowly defined paths for the six coefficients and approved provenance additions, checking exact expected seed values. Extend required-field checks and add wrong-coefficient and missing-coefficient negative cases. Include any existing-note amendments explicitly rather than allowing whole ingredient objects.
-- **Risk Assessment: HIGH.** A correct D-20 implementation currently cannot obtain the required MATCH result.
+**Strengths**
+- The existing `diffLeaves` reports absent-to-object additions as whole values at `08-walk.mjs:843`, matching the proposed exact-value checks.
+- Required-field checks address the real limitation of comparison at `:855`: fields missing from both inputs produce no difference.
+- Separate library modes match the distinct measurement datasets recorded in `.planning/sketches/012-places/README.md:46` and `:51`.
+
+**Concerns**
+- No new material finding in the allow-list or evidence design.
+
+**Suggestions**
+- Keep doctored-file selftests separate from the seed-based expected-value checks; their failure modes differ.
+
+**Risk assessment: MEDIUM.** The verifier is substantial, but its negative tests provide useful protection against false passes.
 
 ## 09-17
 
-**Summary.** The final-build upgrade and reopen check is the appropriate browser-level complement to the store tests.
+**Summary.** The final-build reset check and explicit evidence handoff complete the planned verification boundary.
 
-- **Strengths:** The base commit matches the current latest app change, `3f23c7f`. The existing connection-closing behavior at `app/src/store/db.js:74–76` supports upgrading between builds; reopening with a retained draft tests that the destructive branch does not run twice.
-- **Concerns — LOW:** Browser and Mark’s List verification remain execution prerequisites. WebKit launch aborted during this review, and ArtifactData was unavailable, so neither browser reachability nor live row state was independently verified.
-- **Suggestions:** Treat those checks as outstanding evidence. Record successful browser execution and row readbacks before reporting their outcomes.
-- **Risk Assessment: MEDIUM.** The plan is well ordered, but its final evidence requires capabilities unavailable in this review session.
+**Strengths**
+- A same-origin browser upgrade supplements the existing fake-IndexedDB tests and exercises the real upgrade path at `app/src/store/db.js:10`.
+- Reopening with a retained draft distinguishes successful initial reset from repeated destruction.
+- Actual row readbacks match the concurrency requirement in `CLAUDE.md:132` that existing-row writes use a read version.
 
-## Cross-plan assessment
+**Concerns**
+- No new implementation finding. ArtifactData was unavailable in this review, and the proposed browser scripts do not exist yet, so neither List outcomes nor phase-specific browser PASS results are verified.
 
-**Coverage: 17/17 plans reviewed.** The requirement allocation is complete, and D-19’s seed counts, null cases and constructor propagation agree with the source.
+**Suggestions**
+- Keep those results pending until actual runs and readbacks exist, as the plan requires.
 
-**Overall risk: HIGH until the identified contradictions are corrected.** The main issues are executable-plan failures rather than a need to redesign the phase.
+**Risk assessment: MEDIUM.** Completion depends on browser execution and the external List connection.
 
-Priority fixes:
+## Overall assessment
 
-1. **Reconcile D-20 with converter verification and acidity provenance** in 09-01.
-2. **Assign and update the reset and validator fixtures** in 09-09 and 09-11.
-3. **Enforce core-scale cardinality inside the import transaction** in 09-10.
-4. **Extend the walk’s exact-value checks for embedded D-20 fields** in 09-16.
-5. **Specify creation’s late-restore protection** in 09-04 and update file ownership in 09-01/09-07.
+**Request changes before execution.** The previous round’s major fixes are substantially incorporated. The principal remaining blockers are both in **09-10**: resulting-store scale compatibility and the missed Shell assertion.
 
-The baseline test suite is healthy. These findings concern the prescribed changes and their acceptance checks; the existing passing suite does not establish that those future checks can pass.
+Also settle step-allocation history, the saved-style representation, unique problem names, and post-import reload failure containment. These are bounded contract fixes; the 17-plan structure otherwise provides strong coverage of the phase goals.
 
 ---
 
 ## OpenCode Review
 
-I'll verify these plans against the actual source. Let me start by exploring the repo.
-I've verified the plans against the repo (db.js, sheetCode.js, axes.js, batch.js, transfer.js, versionRow.js, lineage.js, useKeptDraft.js, useVersionPen.js, RecipeList.jsx, router.jsx, main.jsx, Shell.jsx, the seed data files, 08-walk.mjs, and the notes), ran the Sheet-code derivation over the real seed, and read the ingredient dataset. Findings below cite what I checked.
+The plans are in the repo and the base state looks right. Let me verify the load-bearing claims against source, in batches.
 
-# Cross-AI Plan Review — Phase 9 (round 3)
+
+# Cross-AI Plan Review — Phase 9 (Round 4)
+
+**Verification basis.** I checked the plans against the working tree at `40b10c2`. Every line citation below was read this session. Spot-checks included: `db.js` (DB_VERSION 9, reset branch, guarded creates), `sheetCode.js` (derivation tags, `printedContent`'s explicit exclusion list, golden vector at `sheetCode.test.js:43`), `transfer.js:11-12,29,255,273,345,613,875-879`, `repository.js:6-17,32-35,158,185`, `lineage.js:109,141-142`, `newRecipe.js` + `newRecipe.test.js:36-38`, `creation-roundtrip.test.js:107-108,147`, `draft.js:12,47,112,146,165`, `useKeptDraft.js:61-81,112`, `RecipePage.shell.test.js:233,263-267,468`, `RecipePage.jsx:39,142,267,305-317,462`, `RecipeList.jsx:93-101,187`, `router.jsx:112-127`, `axes.js:17-30,49-66`, `battery.js:1,46`, `BatchRow.jsx:3-4,186,269,624,1042-1051`, `PrintLogPages.jsx:172,186,195` + `PrintLogPages.test.jsx:164-174`, `useVersionPen.js:192,199,239`, `useBatchRecording.js:468`, `main.jsx`, `Shell.jsx:334-354`, `seed.js`, `library.js` (26 keys, msnf values, heavyCream basis, sucrose/locust fields), all eight data files (embed, iceEd counts/values, strawberry constants at `strawberry.js:34,52,108,206-207`), `db.test.js` (5× `toBe(9)`, open-at-10 at :284-292), `db-reset.test.js` (2 pins), `library.test.js:158,182`, `pen-note-roundtrip.test.js:47,64`, `penDraft.test.js:586`, `transfer.test.js:1512-1520`, `08-walk.mjs` (906 lines, import at :42, usage at :904, `diffLeaves` at :843-856, counter ids at :98,573,587, dumpStores at :170-204), `08-walk-check.sh` (fallback baseline), the dataset (`~/Downloads/sprinkles-ingredient-seed-db.json`: 103 ingredients, and the exact per-row figures plans 09-01/09-07 pin), `.planning/sketches/012-places/` (README "Measured" numbers), `.planning/notes/2026-10-16-style-bands-draft.md` (Gelato −12.5, blank PAC/sugar), `vitest.config.js`, `tabindex-scan.test.js:15`, `styles/shell.test.js:314`, and `git log 3f23c7f..HEAD -- app/` (empty — the base is currently correct).
+
+**Headline:** this plan set is unusually well anchored — every file:line claim I checked resolved exactly, including the ones introduced by the round-3/4/5 amendments (D-19 values, D-20 coefficients, the moved base commit). I found one new MEDIUM enumeration gap (09-10), one LOW-MEDIUM caller gap (09-15), and a handful of LOWs. No HIGH findings. Round-3 dispositions I re-checked against source (09-01's verify rewrite, 09-09's ownership of `library.test.js`/`transfer.test.js` fixtures, 09-11's six-key boot fixture, the D-19 amendments across 09-05/09-08/09-09/09-10/09-16/09-17) all hold.
+
+---
 
 ## 09-01
 
-**Summary.** The converter + reviewed-mapping + before-walk plan is the most externally grounded of the set: the dataset (103 ingredients, `meta.version` "0.2-draft", sources `Goff/Mullan/UB/USDA`) and the six named collision/name rows (`heavy-cream-36`, `lambda-carrageenan`, `whole-milk`, `coconut-milk`) all exist as described. The byte-identical walk contract is achievable: `08-walk.mjs` is 906 lines, line 42 is the server import, line 904 is the `05-walk.mjs` usage message, lines 1–9 are the header/usage block.
+**Summary.** Converter + reviewed mapping + before-walk at `3f23c7f`, with a blocking human checkpoint. The round-3 rewrites (D-20 folded into Task 1, base moved to `3f23c7f` with a non-phase-commit guard) are coherent and match the repo state.
 
 **Strengths.**
-- The base-commit reasoning is verified: `git log --format='%h %s' 3f23c7f..HEAD -- app/` is empty, so 3f23c7f really is the newest app tree before the phase; the guard that refuses a base when a non-phase commit touches `app/` is sound.
-- The conservation check (103 ids each named once across `samePairs ∪ entries`) is a real anti-drop guard; the dataset count is truly 103.
+- Base-commit choice verified live: `git log --format='%h %s' 3f23c7f..HEAD -- app/` is currently empty, and `3f23c7f` is indeed "widen the Sweetness · POD rule to 0 to 40" — the record-base guard ("FAIL app/ changed after BASE…") is a real protection, not decoration.
+- The byte-identical walk-copy check is exactly right for the actual file: `08-walk.mjs` is 906 lines, the server import is on line 42, the usage message ("Usage: node 05-walk.mjs…") is on line 904, and the header is 9 lines — the verify's `splice(41,1)` + `slice(9)` cut matches this layout precisely.
+- Dataset literals verified against the real file: whole-milk (3.25/8.45/4.6/4.6/0.7), milk-chocolate (29.66/16/51.5/98.5/13.5/53), sweetened-condensed-milk (8/23/54.5/73/54.5/44), yogurt inconsistency (14.2+3.5 > 14.0), ethanol `{pac:744}`, rum-40pct (water 66.6, solids 0, pac 297), alcohol-40pct (water 60, solids 40, pac 297), heavy-cream-36 fat 36, goat-milk pod 5.1 — every pin in the plan corresponds to the data.
+- `camelKey('yogurt-3.5pct') → 'yogurt35pct'` follows from the stated algorithm (strip non-alphanumerics after capitalisation).
+- Vitest picks up `app/scripts/*.test.mjs`: `app/vitest.config.js` sets only `environment: 'node'`, so the default include glob covers `.test.mjs` under the app root.
+- The conservation check (103 ids each once across `samePairs` ∪ `entries`) is a genuinely stronger guard than the round-1 "at least 60" it replaced.
 
 **Concerns.**
-- **HIGH — Task 1's own verify contradicts the D-20 amendment.** The verify asserts `Object.values(basis).some(b => b !== 'inherited')` must be empty, but the D-20 paragraph in the same task gives new dairy entries `titratableAcidity` basis `'derived'`. Every new milk-solids entry (e.g. `wholeMilk325`, `buffalo-milk`) makes `bad` non-empty and the gate prints `FAIL`/exits 1. The must-have truth "the basis inherited for every figure" is stale for the same reason. The amendment (and this truth/verify) must be reconciled — e.g. exempt `basis.titratableAcidity` from the all-inherited check.
-- **MEDIUM — `app/src/domain/stages.js` (and its one-line test) is created by the D-20 paragraph but is absent from `files_modified`, `artifacts`, and every acceptance criterion.** Plan 09-09 imports `STAGE_IDS` from it, so the ownership gap is real for GSD's file-conflict handling.
-- **MEDIUM — the D-20 six coefficients are not mirrored into 09-16's walk allow-list.** `dumpStores` (`08-walk.mjs:169-209`) dumps full `versions`/`batches` records, and `embedFromLibrary` will `structuredClone` the library entry, so adding the six keys to `library.js` (09-07) makes every seeded row's `ingredient` differ at `fatStructural/ownEmulsifier/titratableAcidity/defaultStage/prepNote/requiresHeat` plus `basis.titratableAcidity`/`source.titratableAcidity`. See the cross-plan finding.
-- **LOW** — the alcohol/exception pins were recomputed in round 2 and are internally consistent; no new issue.
+- LOW — the mapping's `renamed` bucket has no stated precedence. The action defines refusals for `same`/`different`/unmapped collisions, and `camelKey` already resolves the one known odd key, but nothing says whether `renamed` overrides `different`'s key or is advisory. Two executors could produce different `entries` maps for the same approval.
+- LOW — Task 2's Mark's List writes assume ArtifactData is reachable; plan 09-17 has an explicit stop-and-checkpoint rule for the same dependency, this plan does not. If the tool is unavailable mid-Task 2, the checkpoint rows (`decide-p9-library-*`) that Task 3's resume-signal requires would silently not exist.
 
-**Suggestions.** Add `app/src/domain/stages.js` (+`stages.test.js`) to `files_modified`/`artifacts`; fix the verify's basis assertion; forward the six coefficient paths to 09-16.
+**Suggestions.**
+- One line in the mapping-file paragraph: key resolution order is `same` → `different` → `renamed` (override of the camelCased key) → camelKey, and `entries` in the checks file records the final key.
+- Mirror 09-17's rule: "if ArtifactData is unavailable, stop and return a checkpoint naming it, rather than proceeding without the rows."
 
-**Risk.** MEDIUM — the converter is high-value and well-specified, but it currently cannot pass its own automated gate as amended (D-20).
+**Risk: LOW.** Well-verified inputs, deterministic outputs, human gate correctly placed.
 
 ---
 
 ## 09-02
 
-**Summary.** The stored-Sheet-code plan is correct and unusually verifiable. I ran `sheetCode()` over `seedRecipeGroups`: 19 versions, 0 duplicates, and every value matches RESEARCH Pattern 4 exactly (`olive-oil-ice-cream-v1` = `64JH-G408`, `mexican-chocolate-v1` = `4144-RCQJ`, …). `sheetCode.js:189-199` filters on `sheetCode(version) === wanted`, so the change to `version.sheetCode` is the right line; the golden vector at `sheetCode.test.js:43` is untouched.
+**Summary.** Stored Sheet codes: seed stamping, id-derivation, print/search on the stored field, child/root assignment. All citations verified.
 
 **Strengths.**
-- The "stamped copies, direct exports unmutated" test closes a real aliasing hazard (`seedRecipeGroups` must not mutate `oliveOilVersion`).
-- The stored-code-differs case (print/find from the field, not the coincidence that they agree) is the right way to prove the field is read.
+- Every call site cited is exact: `PrintSheet.jsx:125`, `PrintSheetPages.jsx:84`, `SheetCodeSearch.jsx:80`, golden vector `sheetCode.test.js:43`, and the three `footText` assertions in `PrintSheetPages.test.jsx` at **exactly** lines 354, 564, 604 (the round-3 "moved 15 lines" correction is right).
+- The wave-1 merge-order safety claim checks out at the mechanism level: `printedContent` (`sheetCode.js:55+`) is built from explicit field lists ("never a spread, never dependent on key order") and its header comment (`sheetCode.js:26-31`) excludes declaredAxes, coefficients, targets bands, equipment and process — so plan 09-05's `libraryId`/`maxFillG`/`serveTempC`/D-20 additions cannot move a code, and 09-02's pin test (`SEED_SHEET_CODES[id] === sheetCode(version)`) survives either merge order.
+- The stored-code-differs tests (round-1 fix) are the right shape: they prove the field is read, not the coincidence.
+- The pre-bump window (profiles at 9 with code-less stored versions) is honestly stated, and is actually harmless for the reset scenario: a pre-bump stray build keeps `DB_VERSION` 9, so no device can reset into it.
 
 **Concerns.**
-- **LOW** — after 09-02, `findVersionsByCode` reads `version.sheetCode`, but a profile still at DB v9 stores versions without that field, so code search would return `[]` until 09-09's reset forces a reload. Acceptable given the reset, but worth one sentence in the plan.
-- **LOW** — the plan leans on 09-10 stamping the direct-export fixtures; that dependency is named, so no action.
+- LOW — `findVersionsByCode` switching to the stored field means, between this plan and 09-09, a dev profile seeded before the stamp finds nothing at `/search`. Stated and accepted; no fallback is the right call, but the acceptance relies on 09-09's dist guard whose fingerprint is only taken at wave 3. Since pre-bump builds cannot trigger a reset, residual exposure is dev-machine-only. No change needed; noting the reasoning chain is longer than the plan text suggests.
 
-**Suggestions.** Note the pre-bump search window explicitly; otherwise as written.
+**Suggestions.** None material.
 
-**Risk.** LOW.
+**Risk: LOW.**
 
 ---
 
 ## 09-03
 
-**Summary.** The two places match the code: `router.jsx` still routes `/notebook` and `/ingredients` to `Placeholder`; `activeWork` exists at `lastEvent.js:111`; `batchCountWords` is genuinely private at `RecipeList.jsx:187`; `repository.listRecipes/getAllBatches/listVersions/listLibrary` all exist. The defensive/repository-failure handling is thoughtful.
+**Summary.** The two places per sketch 012, `filterLibrary`, CSS port, WebKit measurement. Every data-dependent test expectation I could check matches the real library.
 
 **Strengths.**
-- `shownFields` defends against an import-accepted but badly-typed entry without weakening the boot validator — a correct separation of concerns (and it is what makes 09-11's "tolerant at display" posture coherent).
-- Reusing `activeWork` means Notebook order cannot drift from Home.
+- Test expectations verified against `data/library.js`: 'milk' matches exactly 5 entries (wholeMilk, wholeMilk33, wholeMilk37, skimMilkPowder, coconutMilk); category `sugar` is exactly 4 (sucrose, allulose, dextrose, fructose); heavyCream's basis is `{fat:'derived', msnf:'estimated'}` with source only for `fat` — so "MSNF 5.4% estimated with not recorded" is the real render; sucrose is `0.85` / `'granulated, loose'`; locustBeanGum carries `hydrationC: 82` with source "commonly cited 80–85 °C, varies by grade".
+- The README "Measured" numbers the check script pins are quoted correctly (69 px rows; 88–105 at 393; 44 px floor; Name 598.9; Category 120; Clear filters 78.6×44; cuts at 760/1100; no overflow 393–1590), and the 26-entry vs 103-name dataset split is correctly deferred to 09-16's two modes.
+- Placeholders confirmed at `router.jsx:123,126`; `batchCountWords` private at `RecipeList.jsx:187` (extraction, not copy, is right); the select blind spot in `tabindex-scan.test.js:15` is real, so the literal `tabIndex={0}` on the select plus a WebKit Tab check is the correct compensation.
+- `shownFields` defensive typing (round-1 fix) is the right disposition given `validateLibraryRecord` genuinely does not type-check category/basis/source/note (`transfer.js:221+` checks id/name/composition).
 
 **Concerns.**
-- **LOW** — the readme "26-entry" vs "103-name" ranges are handled in 09-16 but the merged library will hold ~109 entries, not 103 (83 new + 26); row height is per-row so the range still holds, but the summary wording in 09-16 should not call the current library "103".
-- **LOW** — the "Packed state"/non-dairy lactose wording is correctly deferred to 09-17.
+- LOW — the node-environment static harness will hit the repository singleton: `repository.js` ends with `export const repository = createRepository()` and `createRepository` calls `openStore()` eagerly (`repository.js:6-17`), which needs a global `indexedDB`. `RecipePage.test.jsx:11,20` solves this with `vi.mock('../store/repository.js', () => ({ repository: {} }))`. The plan says "the existing harness" and mocks the repository for the jsdom cases, but never names this module-load trap for `NotebookPlace.test.jsx`/`IngredientsPlace.test.jsx` — an executor copying the wrong harness gets a confusing ReferenceError at import.
 
-**Suggestions.** None material.
+**Suggestions.**
+- In Tasks 1 and 2's test paragraphs, name the stub explicitly: "mock `../store/repository.js` at module load, the `RecipePage.test.jsx:20` idiom, because the singleton opens IndexedDB at import."
 
-**Risk.** LOW.
+**Risk: LOW.**
 
 ---
 
 ## 09-04
 
-**Summary.** The create-draft contract and `domain/catalog.js` are well-pinned. `draft.js:47` `KINDS`, `:173 declaredOf`, `:264 draftMatchesVersion`, and the hook guard at `useKeptDraft.js:112` are all as cited. The 13-name key list and the "cost of a later change" framing are exactly the kind of contract that prevents silent draft deletion.
+**Summary.** The `create` draft kind, its fit check, the full first-version payload, and the scale-definition contract. The round-1 HIGH fixes (hook marker counts, half-made drafts, method/portions in the payload) all hold against source.
 
 **Strengths.**
-- Reconciling the payload with criterion 2 (steps/portions now, machine/process removed) is explicit and reasoned, including the supersession of the CONTEXT carry-forward.
-- The half-made-draft fit check vs `isScaleDefinition` split (restore vs Save validity) is correct.
+- Marker arithmetic verified against the real file: `RecipePage.shell.test.js` pins `['repository.getDraft(versionId)', 1]` (:263), `['repository.deleteDraft(versionId)', 3]` (:265), `['buildDraftRecord(', 2]` (:267). The plan's "reuse the one read and both deletes, add a third `buildDraftRecord` branch" structure yields exactly the claimed 1/3/3 counts — this is a genuinely load-bearing detail and it is right.
+- The restore guard is where the plan says (`useKeptDraft.js:112`: `if (!version || version.recipeId !== recipeId || !batchesLoaded || loadFailed) return;`), and the existing late-read idiom (`modeRef.current !== 'reading'`, visible at :128-131) is faithfully mirrored by the `createDraftRef` generation check.
+- `CREATE_DRAFT_KEYS` counts to exactly the thirteen pinned names; the dirty-check defaults ('Version 1', `serveTempC: ''`) are tested against `blankCreateDraft` itself, not prose.
+- The claim that existing consumers ignore a create record is verified: `RecipeList.jsx:93-101` filters on `versions.find(...)` (a create draft's versionId resolves to nothing) and `RecipePage.jsx:305-317` filters `record.kind !== 'plan'`.
+- The round-3 payload change (machine/process out, serveTempC in) is correctly reasoned against `creation-roundtrip.test.js:107` — the root/child key-equality pin — and the cost-of-change paragraph gives Mark the real tradeoff.
 
 **Concerns.**
-- **LOW — the CONTEXT carry-forward still says the `create` kind carries "style and machine" (09-CONTEXT.md, "Fixed by earlier decisions").** The plan explains why machine is dropped, but the CONTEXT isn't updated, so a future reader sees a contradiction. Consider a one-line CONTEXT note.
-- **LOW** — `CREATE_DRAFT_KEYS` pinned three ways is good; ensure the `draft.test.js` literal list is the one that fails if `blankCreateDraft` gains a key (the plan says it does).
+- LOW — the late-read guard's correctness depends on Phase 10 holding `createDraft` as a state object replaced only on change; the plan documents this in the hook comment, which is the best available mitigation, but it is a contract with an unbuilt phase.
+- LOW — the payload settles shapes before Phase 10/11 are designed; pinned three ways and gated behind Mark's decision, so acceptable, but criterion 2's "nothing creation stores changes shape after this phase" is doing real work on an unvalidated editor design.
 
-**Risk.** LOW.
+**Suggestions.** None new — the round-2/3 dispositions cover both concerns.
+
+**Risk: LOW-MEDIUM** (shape-freeze risk is inherent to the criterion, not the plan).
 
 ---
 
 ## 09-05
 
-**Summary.** Verified: 8 seed files define local `embed(` (olive-oil has 13 matches = 1 def + 12 calls, matching the "12" acceptance); `rowFromLibraryRecord` header says the id "never enters the row" (`versionRow.js` top comment) and must be amended; `olive-oil.js:120-121` has `declaredAxes: ['Body','Oil']`, equipment `minFillG: 700`; the 19 `iceEd` blocks hold exactly the values listed (`olive-oil` null, `underbelly-light-base-v1` null, mexican-chocolate v1 `-15`, v2 `-16`, v3 `-16`, v4 `-17`, …), so "17 numbers, 2 nulls" is right.
+**Summary.** `libraryId` on rows, `maxFillG`, `serveTempC` copied from each version's own Ice Ed figure, validator tightening, and the LIB-08 proof. All 19 iceEd figures and file counts verified.
 
 **Strengths.**
-- The D-19 copy rule (serveTempC = the line above's `servingTemperatureC`, written as a plain literal, no expression) keeps the data files plain data, and the `assumption_delta_decision` invariant test is well-formed.
-- The enumerated fixture sweep (transfer.test.js as the only hand-built row/equipment source) matches what I found.
+- The per-file serveTempC counts (1/1/2/3/2/4/4/2 = 19) and values match the data files exactly, including the two nulls (olive-oil v1, underbelly-light-base v1) and mexican-chocolate's file order (−17, −15, −16, −16). The "copy each from the iceEd line directly above, never from this list" instruction is the right anti-drift rule.
+- `STRAWBERRIES_V1_V2_IER` / `DRIED_STRAWBERRY_V2_IER` verified module-private at `strawberry.js:34,52` with uses at :108,206-207 — the export + identity-set (not row-count) exception is correctly specified.
+- `embed()` verified in all eight data files; olive-oil has exactly 12 call sites (13 `embed(` lines minus the definition), matching the acceptance grep.
+- The fixture sweep is enumerated from a real grep and matches today's file set; the "stop and report rather than edit outside the plan" rule is the right posture.
+- The `assumption_delta_decision` block (serveTempC promoted, `iceEd.servingTemperatureC` demoted to transcription detail) with the `toBe` invariant test is exactly how this should be recorded.
 
 **Concerns.**
-- **LOW/MEDIUM — D-20 interacts with this plan's embedded rows.** After 09-07 the embedded `ingredient` gains the six keys and `basis/source.titratableAcidity`; this is harmless to 09-05's tests, but the plan's "Consumed later" line should name the walk allow-list need (handled by the cross-plan finding).
-- **LOW** — `maxFillG: null` is added to `KITCHEN_EQUIPMENT` and olive oil's block; the validator change ("minFillG/maxFillG null or finite ≥ 0") is fine.
+- MEDIUM (cross-plan with 09-10, attributed to both) — `library-link.test.js`, created here in Task 1, round-trips a **hand-assembled** version through `exportStore` → `importStore`. At wave 1 that version legitimately has no `sheetCode` and no `serveTempC`; from plan 09-10 both are required on every imported version, so this test goes red in wave 4 — and 09-10's "enumerated" sweep does not name the file (it did not exist when 09-10's grep ran). See 09-10 below for the fix; the cheapest repair on this side is a forward-pointer sentence in Task 1 ("this file's hand-built version is stamped by plan 09-10's sweep").
 
-**Risk.** LOW.
+**Suggestions.**
+- Add that forward pointer, or have Task 1 build the version through `createRecipe` + `rowFromLibraryRecord` once 09-02's `codeFromVersionId` is merged (fragile across wave-1 merge order — the forward pointer is better).
+
+**Risk: LOW** (the one gap surfaces as a red test in 09-10's own verify, not as silent breakage).
 
 ---
 
 ## 09-06
 
-**Summary.** Verified against source: `useVersionPen.js:199` saves the child via `repository.saveVersion(child)` and `:239` saves over; `RecipePage.shell.test.js:233` pins `['repository.saveVersion(', 2]`; `importAll` (`repository.js:159-180`) is the abort-by-hand template the new `createVersion` copies. The in-transaction uniqueness design is correct for the two-tab race.
+**Summary.** In-transaction uniqueness/immutability for Sheet codes, the UI moved onto `createVersion`, and the refused-save-keeps-the-pen proof. All mechanism claims verified.
 
 **Strengths.**
-- Requiring a canonical `sheetCode` on `createVersion` input (TypeError for a code-less caller) is a good caller-bug guard given `sheetCodeProblems` ignores code-less versions.
-- The committed colliding id pair (brute-forced) makes the race tests real rather than theoretical.
+- The two-repository race test is meaningful, not theatre: `createRepository()` builds its own `dbPromise` per instance (`repository.js:6-17`), so two instances are two real connections and fake-indexeddb's transaction scheduling applies.
+- The UI fallout is enumerated correctly: `useVersionPen.js:199` calls `repository.saveVersion(child)` today; `RecipePage.perStep.test.jsx` flushes on `store.saveVersion` at :216-219 with 10 "Save as a new version" presses (counted); the shell marker `['repository.saveVersion(', 2]` is at :233 — the 2→1+1 marker split with `createVersion` added to `shellLacks` keeps the architectural check at full strength.
+- `pen-note-roundtrip.test.js:64` really does `saveVersion(child)` on a not-yet-stored id, so Task 2's "no 'changed' problem without a stored record" case is required, not hypothetical.
+- The collision fixture follows a real precedent (`sheetCode.test.js:23-31,249-250` — two pinned pairs already exist for the legacy derivation).
+- The round-2 canonical-code TypeError on `createVersion` closes the "code-less version takes part in no clash" hole at the right layer.
 
 **Concerns.**
-- **LOW** — `saveVersion` now reads all versions inside its transaction on every save; fine at this scale, but note it grows with version count (no index on the store today).
-- **LOW** — the marker move (2→1 + `createVersion` 1) and `Shell.flyout`/`importGuard` are correctly identified; no gap.
+- LOW — the race test's assertion shape ("exactly one resolves, the store holds exactly one") is order-agnostic, which is correct; but if fake-indexeddb ever serialises the two transactions differently than browsers, the test could pass for a weaker reason. Acceptable; the WebKit walk and 09-17 give browser-level coverage elsewhere.
 
-**Risk.** LOW.
+**Suggestions.** None material.
+
+**Risk: LOW.**
 
 ---
 
 ## 09-07
 
-**Summary.** Well-amended for D-20 and consistent with the dataset facts I confirmed. The conflict gate (`samePairs[id].differs` quoted, never hand-asserted) and the `candidate(datasetId)` helper (avoiding the undefined lookup for same-pair-only rows like `skim-milk-powder`) are the right fixes from round 1/2.
+**Summary.** Seed the merged library, the decision gate, the lactose invariant, and D-20 values on the 26. Every pinned literal I recomputed from `library.js` is arithmetically exact.
 
 **Strengths.**
-- Separating "converted candidate correctness" from "kept app value preservation" is exactly the distinction the domain needs (the merged library must not be tested against dataset totals).
-- The approval precondition (`approvedBy`/`approvedAt`) as the gate's first case closes a resume-out-of-order hole.
+- The five dairy acidity literals check out to the last digit: msnf 0.088/0.054/0.97/0.087/0.0865 × 0.017 → 0.001496/0.000918/0.01649/0.001479/0.001471 at six places. The "rule equals literal" test (both asserted) prevents drift in either direction.
+- The 26 keys named in the plan (wholeMilk33, wholeMilk37, stabilizerMix4421 included) are exactly the file's keys.
+- The `candidate(datasetId)` design (round-1 HIGH fix) is correct and its acceptance grep (`librarySeedDb[checks.rows` returns 0) pins the anti-pattern out; the converted-correctness vs kept-app-value split into two describe blocks is the right structure.
+- Generating the seven conflict notes from `samePairs[].differs` rather than hand-typed numbers, with the gate failing on a stale quote, is a solid round-1 fix.
+- The approval check as the gate's first case closes the resumed-run hole.
+- Merge order `{ ...librarySeedDb, ...library }` verified against the current `seed.js` structure — a one-line change at the right seam.
 
 **Concerns.**
-- **MEDIUM — D-20's six keys are written onto `library.js` here, and the seed merges `{...librarySeedDb, ...library}`; the six then ride every embedded row into 09-16's dumps (cross-plan finding).** Within this plan it's fine; note the downstream effect.
-- **LOW** — Task 3 behavior "every composition field … basis inherited" stays correctly scoped to composition fields, so the D-20 `titratableAcidity` basis `derived` doesn't trip it.
+- LOW — Task 1's "every existing field kept" acceptance compares against `git show 3f23c7f:app/src/data/library.js`. If a legitimate quick task edits `library.js` between now and execution (09-01's base guard refuses to *record the walk* in that case, but this acceptance has no equivalent escape hatch), the check fails for the wrong reason. One sentence ("if the base moved, compare against the new base and say so") would suffice.
 
-**Risk.** LOW–MEDIUM (only because of the downstream walk interaction).
+**Suggestions.** As above.
+
+**Risk: LOW.**
 
 ---
 
 ## 09-08
 
-**Summary.** Verified the load-bearing facts: `lineage.js:109` `KEYS_COPIED_WHEN_OWNED`, `:140-141` hand-built child with shared `declaredAxes`; `draft.js:12` imports `AXES, STOPS, axesForVersion` and `:176 declaredOf` calls `axesForVersion({declaredAxes})`. The sequencing note (declaredOf must stop calling axesForVersion before 09-11 re-signs it) is correct and important.
+**Summary.** Declared scales become definitions; children clone them; `serveTempC` lands on created roots and children; the draft fit check reads keys from definitions. The sequencing claims are verified and genuinely load-bearing.
 
 **Strengths.**
-- Keeping the union (core keys + declared keys) in `declaredOf` until 09-15, with core-only/declared-only/combined mark tests written first, prevents a green-suite break.
-- Pairing `createRecipe`'s root and `createChildVersion`'s child in one task because `creation-roundtrip.test.js` pins child keys = root keys is exactly right.
+- `lineage.js:141-142` shares `declaredAxes`/`declaredFlaws` by reference today — the `structuredClone` fix is real (D-03b).
+- The "both changes in one task" reasoning is verified: `creation-roundtrip.test.js:107-108` pins child keys == root keys **and** rejects any own-`undefined` value, so `serveTempC` must join `newRecipe.js` and `lineage.js` together, and the unguarded copy is defended by that very pin plus the enumerated caller search — a better answer than an `Object.hasOwn` guard, as the plan argues.
+- The ordering claim ("declaredOf stops calling `axesForVersion` here, before 09-11 re-signs it") is verified against source: `draft.js:12` imports `axesForVersion` today; the acceptance grep (`^import {...axesForVersion` returns 0 in draft.js) makes the wave-2-before-wave-4 dependency executable rather than prose.
+- The "core keys stay in `declaredOf` until 09-15" fix (round-1 HIGH) is the correct call — returning only declared keys would break every core-mark fit check in between.
+- `olive-oil.js:120-121` (`declaredAxes: ['Body', 'Oil']`, `declaredFlaws: ['Bitter']`) matches the plan's interface quote.
 
 **Concerns.**
-- **LOW/MEDIUM — `serveTempC: parent.serveTempC` is an unconditional copy**, unlike the `Object.hasOwn`-guarded keys in `KEYS_COPIED_WHEN_OWNED`. A hand-built parent in a test that lacks the key would give the child an own `serveTempC: undefined`, which 09-05's "when the key is present, null or finite" check and 09-10's required key both reject. Either guard with `Object.hasOwn(parent,'serveTempC')` or enumerate the hand-built-parent fixtures. Verify the plan's claim that "every parent owns the key" holds for every test parent, not just seeded ones.
-- **LOW** — `newRecipe.test.js` 18→19 keys is correctly noted.
+- LOW — none new. The kind-aware-presentation deferral to Phase 12 is correctly recorded as a header paragraph rather than code.
 
-**Risk.** LOW–MEDIUM.
+**Suggestions.** None.
+
+**Risk: LOW.**
 
 ---
 
 ## 09-09
 
-**Summary.** The bump plan is verified against `db.js` (DB_VERSION 9, reset `< 8`), `seedLibraryIfEmpty` (`repository.js:130-152`, the transaction pattern to generalise), `seedOldProfile` (`db.test.js:49`), and the literal pins (`db.test.js:84/116/152/224/270`, newer open at `:284`; `db-reset.test.js:98/169`). The two ratchets (behavioural at literal v10, static anchored on `oldVersion < 10`) are the right shape.
+**Summary.** The 9→10 bump: bounded reset, four seed tables, moved validator with D-20 checks, ratchets, upgrade proof, dist guard. This is the phase's riskiest plan and it is also its most heavily fortified.
 
 **Strengths.**
-- The `09-dist-guard.sh` fingerprint of the main checkout's `app/dist` (resolved via `--git-common-dir` from a worktree) mechanises the reset's safety premise — a genuine improvement from round 2.
-- `upgradeStores` exported for direct driving is what makes both ratchets implementable.
+- Pitfall 1 is real and precisely located: `db.test.js:284` opens `indexedDB.open(DB_NAME, 10)` and :292 asserts `newer.version` is 10 — at `DB_VERSION` 10 this silently stops testing the blocking handler. The rewrite to `DB_VERSION + 1` is correct.
+- The round-3/5 fixture ownership fixes hold against source: `library.test.js:158,182` really does assert Phase 6's keep-the-records upgrade (which `< 10` breaks), and `transfer.test.js:875-879` really is the bare-entry case the six-key requirement refuses — both quoted verbatim in the plan, both owned here with approved rewrites.
+- The behavioural ratchet at a **literal** `RESET_BOUND = 10` (not `DB_VERSION`) is the right fix for the round-1 finding — a ratchet keyed to `DB_VERSION` would go vacuous at 11.
+- `seed.js`'s current structure (library first, then the versions early-return) confirms that seeding the four tables "right after the library, before the versions check" is required for D-17's reseed-on-every-boot — the plan gets this ordering right.
+- The dist guard is mechanically sound: `app/dist` exists (fingerprint is a hash, not "absent"), every build line in all 17 plans' automated verifies uses `--outDir` into scratch (I checked each), and the worktree-aware `--git-common-dir` resolution handles executor worktrees.
+- The auto-selected checkpoint wording ("recorded, not confirmed") correctly implements the round-1 finding.
 
 **Concerns.**
-- **MEDIUM — the D-20 propagation gap reaches the boot validator.** After D-20, `validateLibraryRecord` requires the six keys as own keys; plan 09-11's boot-check fixture omits them (see 09-11). Within 09-09 the amended validator and the truth are internally consistent, and the db-upgrade test asserting "every library record passes validateLibraryRecord" is right.
-- **LOW** — the `--outDir`-scan premise depends on every plan's automated line carrying `--outDir`; I checked 09-02/03/11/13/15/16/17 and `08-walk-check.sh` — all do. Keep it that way when amending.
-- **LOW** — `VERSION_SCHEMA_VERSION`/`BATCH_SCHEMA_VERSION` left unchanged is fine (nothing branches on them).
+- LOW — Task 2 + Task 3 span 17 files at a 106k low-confidence estimate; the plan is at the edge of what one executor session should carry. The task split and per-task verifies mitigate, but this is the plan most likely to need a mid-execution replan.
+- LOW — the round-3 note about where the "seed rows equal today's constants" test lives is ambiguous ("a test in this task asserts…"); plan 09-15 assumes it is in `seedTables.test.js`. If the executor puts it in a new `data/core-scales.test.js`, 09-15's constant removal breaks a file outside its `files_modified` (its search-and-update instruction would still catch it, but the file list would be wrong).
 
-**Risk.** MEDIUM.
+**Suggestions.**
+- Name the file for the words-equal-constants test explicitly (`seedTables.test.js`), matching 09-15's assumption.
+
+**Risk: MEDIUM** — inherent to being the one-way bump; mitigations (ratchets, guard, aborted-upgrade test, WebKit proof in 09-17) are as good as this repo has ever had.
 
 ---
 
 ## 09-10
 
-**Summary.** Store file schema 9 + import code checks are well-specified; `transfer.js:11-12` imports the domain constants today, `validateDeclaredAxes` at `:345` uses `DECLARED_AXIS_NAMES` (`:16`), `STORE_SCHEMA_VERSION` at `:29`. The `storeFileOf` builder and the enumerated sweep are the right response to round 1's fixture churn.
+**Summary.** Store-file schema 9, the eight-store import/export, code and core-count checks at both pre-check and transaction level, required `serveTempC`. The dual-level race designs are correct; one enumeration gap.
 
 **Strengths.**
-- `fileCoreKeys` never throwing on malformed nested scales (with the scales array reporting its own errors) is a real robustness fix.
-- The two-level race test (direct `importAll` for the abort, wrapped `importStore` for the message) correctly separates the two behaviours.
+- Verified against source: `importAll`/`exportAll` are four-store single transactions today (`repository.js:158,185`), `transfer.js:11-12` imports `AXES`/`DEFECTS` (removed later by 09-14 as staged), and every file in the sweep exists and matches its described role (including `Shell.flyout.test.jsx` importing only older files and `Shell.importGuard.test.jsx` mocking `importStore`).
+- The `CoreScaleCountError` in-transaction recount (round-5 HIGH fix) correctly closes the two-import race that the pre-check alone leaves open, and recognising the error by `error.name` keeps `transfer.js` free of a `repository.js` import that the Shell mocks would break — a subtle, correct choice.
+- `fileCoreKeys` never-throws design plus the three malformed-scales cases answers the round-1 unvalidated-input finding completely.
+- The required-`serveTempC` reasoning (schema bump covers old files; lift-later posture stated in the comment) is honest about its own expiry: it holds only until 09-17 hands Mark a build.
 
 **Concerns.**
-- **MEDIUM — requiring `serveTempC` on every imported version is a new hard requirement derived from D-19.** The justification (schema-8 files refused first; every schema-9 file comes from a build that writes it) is sound *only if* no schema-9 build ever shipped without the field. Since the phase's guard says no build reached a device mid-phase, this holds — but it is the one place a future "schema-9 without serveTempC" file would be refused rather than tolerated. Consider noting the lift-later posture explicitly (as the plan does for the file-schema bump).
-- **LOW/MEDIUM — the merged-scales cardinality pre-check (exactly `CORE_SCALE_COUNT` core rows) is an invented constraint**, only tangentially in LIB-09/D-14. It is surfaced on the decide row, but it adds a refusal path a maker could hit on a legitimate import (e.g. importing a file into a profile whose core rows were hand-edited). Flag it as the deliberate design choice it is.
+- **MEDIUM — the enumerated sweep misses `app/src/store/library-link.test.js`**, which plan 09-05 Task 1 creates in wave 1 with an explicit `exportStore` → `importStore` round trip of a hand-assembled version. That version will have no `sheetCode` (09-02 stamps only `seedRecipeGroups`; `createRecipe` roots gain codes but this fixture is built from `rowFromLibraryRecord` rows, not `createRecipe`) and no `serveTempC` until required. From this plan on, `validateVersion` refuses it, so the test goes red — and the plan's must_have ("every store-file test builds its file through `storeFile.fixtures.js` … the sweep is enumerated in Task 1 and Task 2, not left to whichever test goes red") is false as written. The planning-time grep (`grep -rln "validateStoreFile\|importStore\|exportStore\|importAll"`) could not see the file because it did not exist yet; that is exactly why the sweep should have been projected over the phase's own artifact list (09-05's Artifacts section names `library-link.test.js`). It will surface in this plan's verify (`npm test -- src/store …`), and the fix is small, but an executor following the plan's own "enumerated, not left to whichever test goes red" contract has no instruction for a file the enumeration missed.
 
-**Risk.** MEDIUM.
+**Suggestions.**
+- Add to Task 1's sweep: "`store/library-link.test.js` (created by plan 09-05): its hand-built version gains `sheetCode: codeFromVersionId(id)` and `serveTempC: null`, or the test seeds a full profile and exports the stamped seed version." Alternatively, restate the sweep as a floor: "re-run the grep at execution; the enumeration names every file known at plan time, and any additional file found is swept by the same rules and named in the summary."
+
+**Risk: LOW-MEDIUM** — the gap is caught by the plan's own verify, not by production behaviour.
 
 ---
 
 ## 09-11
 
-**Summary.** Catalog load/boot-check/reload is well-designed and matches `main.jsx` (seed then `App`), `Shell.jsx:334-353` (`setImportErrors([]); setStoreRevision(...)`), `PrintLogPages.jsx:172/186/195`, and `PrintSheet.jsx:164`. The real-provider test and the failed-reload line (`IMPORT_RELOAD_LINE`) are good additions.
+**Summary.** Boot validation, catalog load/reload, the printed log on the catalog. The round-1 HIGH fix (the source-text test) is verified against the actual test.
 
 **Strengths.**
-- Making `catalogFrom` the single sorting boundary and proving the key-order→order-field case in `store/catalog.test.js` (with `axesForVersion` proven to keep its given order) resolves the round-1 ordering contradiction cleanly.
-- The `IMPORT_RELOAD_LINE` branch (truthful "the file was imported") plus holding `storeRevision` is the right recovery for a post-commit reload failure.
+- `PrintLogPages.test.jsx:164-174` is quoted accurately: the case really asserts `expect(src).toContain('axesForVersion(version)')` and `expect(src).toContain('DEFECTS')` — both of which this plan removes — and the rewrite (forbid the words, require the new call shapes) is specified down to the acceptance greps.
+- `Shell.jsx:334-353` and `IMPORT_STORAGE_ERROR`'s exact text (`transfer.js:613`, "Nothing was changed") confirm the `IMPORT_RELOAD_LINE` design: without it, a failed reload after a committed import would tell the maker a lie. Holding `storeRevision` in that branch is the correct consistency choice.
+- `main.jsx`'s current boot shape matches the interface quote exactly, so "readSeedTables inside the same try, check between read and render" slots in cleanly.
+- The boot-posture truth (as strict as import on structure, as tolerant as the place on display) is stated, tested with a fixture whose six D-20 keys are present (round-5 HIGH fix), and tied to `decide-p9-boot-check-scope` — the asymmetry is deliberate rather than accidental.
+- The real-provider Shell test (raw IndexedDB write inside mocked `importStore`) proves the thing the mocked-order test cannot.
 
 **Concerns.**
-- **MEDIUM — Task 2's boot-check fixture is now inconsistent with D-20.** The behavior case expects `firstDamagedTable` to return `null` for `{ id:'odd', entry:{ name:'Odd', category:{x:1}, note:42, densityGPerMl:'heavy', composition:{fat:0.1} } }`, but after 09-09's D-20 amendment `validateLibraryRecord` requires the six coefficient keys as own keys, so this entry is *refused* at boot. The fixture must gain the six keys (null) for `null` to be the correct expectation. This plan was not amended for D-20.
-- **LOW/MEDIUM — the CORE_SCALE_COUNT boot refusal is an invented constraint** (the record pen's desktop grid places four). Surfaced on `decide-p9-boot-check-scope`, so acceptable, but it is a boot-stopping refusal on a shape the CONTEXT never bound.
+- LOW — the real-provider case depends on importing `fake-indexeddb/auto` before `repository.js`'s module-load `createRepository()` (the singleton opens the DB at import; `repository.js` tail). The plan does say "import 'fake-indexeddb/auto' first", but given how easily import order is rearranged by formatting tools, this deserves a must-have truth or a comment requirement, not just an action clause.
 
-**Risk.** MEDIUM.
+**Suggestions.**
+- Promote the import-order requirement into the behavior block or a code comment the test must carry.
+
+**Risk: LOW.**
 
 ---
 
 ## 09-12
 
-**Summary.** Correctly scoped down from 09-11 (log only; the pen is here). `BatchRow.jsx:4/269/622/1042-1055/1091` and `RecipePage`'s hooks-above-early-returns, plus `RecipePage.shell.test.js:468-480` (each import used ≥2×) are all as cited. The `useCatalog`-import-used-twice accommodation is real.
+**Summary.** RecipePage reads the catalog and hands it to BatchRow; every page test supplies the provider. Small, well-scoped, correctly split out of 09-11.
 
 **Strengths.**
-- Making provider coverage an *executed* check (mount without a provider throws) rather than a text grep is the right resolution.
-- `BatchRow` staying prop-only (no context import) keeps it presentational.
+- The "imports nothing it does not use" constraint is real and located (`RecipePage.shell.test.js:81-82,468` — each imported name must appear at least twice); `useCatalog` at import + one call passes it, and the plan says the quiet part out loud (a later edit that drops a use must adjust the case explicitly).
+- Provider coverage as an executed check (no-provider mount must throw, per `useCatalog`'s design) is stronger than the round-1 grep it replaced.
+- The cardinality tests (four renamed core scales in both stacked and desktop arrangements) plus the `structuredClone(SEED_CATALOG)` no-mutation rule (round-5 fix) close the shared-fixture contamination hole.
+- `BatchRow.jsx:1042-1051` confirms the stand-in snapshot the plan replaces, and 09-13's dependency on its removal is stated in both plans.
 
 **Concerns.**
-- **LOW** — the cardinality test (four renamed core + two declared, both arrangements) is good; ensure it also keeps `SEED_CATALOG` unmutated.
-- **LOW** — `RecipePage.shell.test.js` is correctly run in Task 1's verify.
+- LOW — none new.
 
-**Risk.** LOW.
+**Suggestions.** None.
+
+**Risk: LOW.**
 
 ---
 
 ## 09-13
 
-**Summary.** The snapshot-of-catalog change is well-guarded by the contained-failure gate (data files build batches at module load, so a mistake cascades). The `createBatch` interface change, the six seeded data files (12 calls), and the caller list all match a fresh grep. `axes.js` handing kind-aware presentation to Phase 12 is a correct scope boundary.
+**Summary.** Batch snapshots gain `coreScales`/`coreProblems`; every reader and caller follows; a contained-failure gate between the data sweep and the UI. Caller enumeration verified to the unit.
 
 **Strengths.**
-- The single-task-wide red window plus the JSON-reporter gate that only tolerates the Task 2 file set is a strong mechanism.
-- The copy-independence test on `structuredClone(SEED_CATALOG)` (not the shared fixture) is right.
+- Every caller count is exact against source: `batch.test.js` 34, `RecipePage.test.jsx` 7, `BatchRow.test.jsx` 3, `recordDraft.test.js` 1, `creation-roundtrip.test.js` 1 (:142), `seed-roundtrip.test.js` 1 (:123), `useBatchRecording.js:468`, and 12 `createBatch(` calls across the six data files (1+3+2+2+3+1). This is the most precisely enumerated sweep in the phase.
+- I traced the contained-failure gate's regex against the real failure set: after Task 1, the files that can fail are exactly `RecipePage*.test.jsx` (recordTasting's save path), `BatchRow*.test.jsx`, and the two roundtrip tests — all matched by the regex. `RecipePage.shell.test.js` is `.test.js` (not matched) but cannot fail after Task 1 because `useBatchRecording.js` text is untouched until Task 2; `db-reset.test.js:161`'s `axesForBatch` runs over seeded batches, which Task 1 gives `coreScales`. The gate is right.
+- `creation-roundtrip.test.js:147`'s exact snapshot-key pin is owned in Task 2 as required.
+- The kind-aware-presentation handoff to Phase 12 (header paragraph in `axes.js`) prevents "stores a kind" from being mistaken for "renders a kind" — `stopWordsFor`/`readMarkWord`/`AxisMark` genuinely do assume a goldilocks middle today.
 
 **Concerns.**
-- **LOW/MEDIUM — `axesForBatch` spreading `snapshot.coreScales` makes any hand-built snapshot without it throw.** Plan 09-12 removed BatchRow.test stand-ins and `db-reset.test.js:161` reads a *seeded* batch (which gains `coreScales` in this plan's data files), so the risk is contained — but confirm no other test hand-builds a snapshot for `axesForBatch` (grep found only `axes.test.js`, `db-reset.test.js`, `BatchRow*`).
-- **LOW** — the `creation-roundtrip.test.js` snapshot key list (add `coreScales`, `coreProblems`) is correctly called out.
+- LOW — the gate's path extraction (`t.name.slice(t.name.indexOf('/app/')+5)`) assumes every JSON-reporter result name contains `/app/`. If it doesn't (reporter change, path shape), `indexOf` returns −1 and the slice produces garbage that matches nothing → the gate FAILs with nonsense names. It fails safe (stops the plan) but would be confusing; a basename fallback would cost two lines.
 
-**Risk.** LOW–MEDIUM.
+**Suggestions.**
+- Slice from the repo root (`process.cwd()` or `git rev-parse --show-toplevel`) or fall back to matching on the basename when `/app/` is absent.
+
+**Risk: LOW-MEDIUM** — biggest surface of any plan (20 files), but the gate bounds the blast radius well.
 
 ---
 
 ## 09-14
 
-**Summary.** The split-off import-checks plan is clean: `validateBatch` at `transfer.js:414-419` and `validateMarks`/`validateTasting` around `:255/:295` match the citations; snapshot-based validation is the correct D-03a reading. The magnitude/renamed round trip directly exercises TASTE-03.
+**Summary.** Import judges each batch by its own snapshot; `transfer.js` drops the domain constants; magnitude + renamed definitions round-trip. Correctly split from 09-13.
 
 **Strengths.**
-- Judging a batch only by its own snapshot (accept a defect the receiving table lacks; refuse a mark the snapshot lacks) is the precise D-03a contract.
-- `CORE_SCALE_COUNT` enforced on snapshots closes the "table the record pen can't place" hole.
+- All cited anchor points verified: `validateMarks` at `transfer.js:255` (values 1–5 only — the mark-key check genuinely does not exist yet), `validateTasting` at :273 (defects against `DEFECTS`), `validateDeclaredAxes` at :345 with `DECLARED_AXIS_NAMES` (:16) and `MAX_DECLARED = 2` (:18). The prohibition ("never the receiving profile's tables") matches D-03a and is testable both directions (accepted-though-table-lacks-it / refused-though-table-has-it).
+- The dual core-key source (file's scales table for versions, snapshot for batches) is subtle but explicitly stated in a must-have truth, and the round-5 ledger shows both reviewers accepted it.
+- Task 2's round trip exercises the two shapes the incumbent tests cannot (minted `magnitude` key; renamed declared scale under a kept key) — directly answering the round-1 finding that prescribed tests only covered goldilocks pairs.
+- The From-freezer exclusion pinned unchanged is the right regression guard for a validator rewrite.
 
 **Concerns.**
-- **LOW** — `validateDeclaredAxes` on a batch snapshot now takes the snapshot's core keys; on a version it takes the file's scale keys (09-10). This dual source is correct but subtle; the plan states it.
+- LOW — none new.
 
-**Risk.** LOW.
+**Suggestions.** None.
+
+**Risk: LOW.**
 
 ---
 
 ## 09-15
 
-**Summary.** Verified the constants to remove (`axes.js:17 AXES`, `:30 CORE_AXIS_COUNT`; `battery.js:46 DEFECTS`) and that `transfer.js` no longer imports them after 09-14. `draft.js:176` is the one in-domain caller to move to the catalog. The static seed-data scan and the "stability changes a *marked* scale" fix are correct.
+**Summary.** Draft checks onto catalog/snapshot, domain constants retired, static seed-data scan, and the stability proof on the bumped database. One caller gap.
 
 **Strengths.**
-- Honest framing of the scan as a static-import architectural guard with the runtime reads proven behaviourally.
-- Changing Sweetness (marked 4 on the 2 Aug batch) rather than Hardness makes the stability proof non-vacuous — a real round-1 fix.
+- The seed-data-scan allow-list is verifiably complete: today the only non-test importer of `app/src/data` from outside is `store/seed.js` (`seed.js:1-2`); the phase adds exactly two fixtures (`catalog.fixtures.jsx`, `storeFile.fixtures.js`), both allow-listed by exact path. The round-2 `stripComments` + bracketed-array-literal constraints keep the second case from firing on prose, and `data/core-*.js` are exempt by the "outside app/src/data" scope.
+- Constant removal is contained: `battery.js:1` declares "No imports at all"; `AxisMark.jsx:2` imports only `STOPS, stopWordsFor` (which stay); `data/olive-oil.js:115` and `AxisMark.jsx:18` reference `AXES` in comments only — so the acceptance grep over imports (not text) is the right check and will pass.
+- The stability proof now changes scales the 2 Aug batch actually marked (`{ sweetness: 4, oil: 4 }` — verified in the research and consistent with `olive-oil.js:120`'s declarations), asserts each edit landed before asserting the batch didn't move, and covers a later version's renamed definition. This is a materially stronger test than the round-1 Hardness version.
+- `draftMatchesVersion(` survives as a shell-test marker under the 4-arg change (the marker is the prefix substring, verified at `RecipePage.shell.test.js:266`) — no marker churn, correctly unlisted from files_modified.
 
 **Concerns.**
-- **LOW — the second scan case ("array literal holding all four problem words or all six scale names") needs the `stripComments` + bracket-bound care the round-2 note already raised; the plan now says both. Verify the exempt `app/src/data/core-problems.js`/`core-scales.js` (inside `data`) don't trip it — they don't, by the "outside app/src/data" clause.**
-- **LOW** — confirm `draft.js` loses its `AXES` import in Task 1 (it also imports `STOPS`, which stays).
+- LOW-MEDIUM — **three-argument external callers are unaccounted for.** `draftMatchesVersion` is called with three arguments, on plan drafts, at `penDraft.test.js:586`, `pen-note-roundtrip.test.js:47`, and `transfer.test.js:1512,1520` (all verified `kind: 'plan'`). The plan's "A plan draft does not read the catalog" keeps them green — but only if the executor does *not* add a missing-catalog TypeError, which is this phase's own dominant idiom for caller bugs (`rowFromLibraryRecord` in 09-05, `createVersion` in 09-06, `createBatch` in 09-13). None of the three files is in `files_modified`, and the plan neither names them nor forbids the throw. An executor following the house idiom breaks three files outside the plan with no instruction.
 
-**Risk.** LOW.
+**Suggestions.**
+- One sentence in Task 1: "`draftMatchesVersion` must not throw for a missing catalog when the record is a plan draft; the three existing three-argument plan-draft callers (`penDraft.test.js`, `pen-note-roundtrip.test.js`, `transfer.test.js`) stay green unedited." (Or add the catalog argument to them and list the files.)
+
+**Risk: LOW.**
 
 ---
 
 ## 09-16
 
-**Summary.** The walk allow-list, required-additions pass, selftest, expected-value pre-check, and two-mode places check are the right security posture for D-15. The split-out from round 2 is a good call. **But the D-20 amendment never reached this plan, and that is the review's most important finding.**
+**Summary.** The allow-list compare, required-additions pass, expected-value pre-check, selftest, and two-mode places check with side-by-side evidence. The allow-list design is compatible with the actual diff engine.
 
 **Strengths.**
-- The required-additions pass (a field absent from *both* files produces no diff, so differences alone can't prove an addition) is exactly the gap round 1 flagged.
-- The expected-mode pre-check (with the allow-list's own functions) closes the "allow-list is only as good as its expected-value functions" gap.
+- I verified the allow-list against `diffLeaves` (`08-walk.mjs:843-856`): a primitive→object change (declaredAxes name→definition) emits one diff at the element path with the whole object as `after`; a key added to an object (sheetCode, serveTempC, libraryId, maxFillG, the six coefficients, `basis/source.titratableAcidity`) emits one diff at the exact leaf path with `before=undefined`; a whole added array (`snapshot.coreScales`) emits one diff at the array path. Every allow-list entry shape in the plan corresponds to a real diff-emission shape — the design is not aspirational.
+- The required-additions pass is necessary and correctly reasoned (a field missing from *both* files produces no diff — verified: `diffLeaves` unions object keys, but `undefined === undefined` stringifies equal only when the key exists on one side; a key absent on both sides never appears).
+- The `expected` mode (round-2 fix) uses the allow-list's own functions — one definition per expected value — which is what makes it a real pre-check rather than a parallel implementation.
+- The selftest's `servetemp` doctoring ("first seeded version whose serveTempC is a number, +1") correctly avoids the round-4 trap: −14 is five seeded versions' own value, so a fixed literal could pass unrefused. Verified against the data files.
+- The two library modes keep the 26-entry (88–105 px) and 103-name (71–109 px) ranges in separate branches, matching README:47,52 — the round-1 dataset-conflation fix is intact.
 
 **Concerns.**
-- **HIGH — the allow-list omits the six D-20 coefficient paths and their basis/source companions.** `dumpStores` (`08-walk.mjs:169-209`) dumps full `versions` and `batches`, embedding each row's `ingredient` copy. Because `embedFromLibrary` does `structuredClone(library[key])` and 09-07 adds `fatStructural/ownEmulsifier/titratableAcidity/defaultStage/prepNote/requiresHeat` (plus `basis.titratableAcidity`/`source.titratableAcidity`) to `library.js`, every seeded version row and batch snapshot row gains these keys vs. the base-commit before-walk. The plan's `ALLOWED_STORE_PATHS` (sheetCode, libraryId, maxFillG, declaredAxes, coreScales/coreProblems, serveTempC) covers none of them, and the plan says "any other difference fails" and "no snapshot is skipped whole". The walk would emit DIFF lines for these paths and the plan would stop. Fix: add the nested path family `versions[i].rows[j].ingredient.<six>` and `.basis.titratableAcidity` / `.source.titratableAcidity` (and the same under `batches[i].snapshot.rows[j].ingredient.*`), each with expected values read from `data/library.js` by the row's `libraryId` (null-safe for the two strawberry local definitions). `09-16-PLAN.md` currently contains zero mentions of the six.
-- **LOW — "the 103-name board's numbers" for `--library current`.** The merged library is ~109 entries (83 new + 26), so the wording is imprecise even though per-row heights still hold. Read all counts from the store (the plan already does).
+- LOW — `compare` will now import `app/src/data/seed-recipes.js`, whose module graph (after 09-13) executes `createBatch` at load through `SEED_CATALOG`. All plain ESM today, but the walk tooling becomes coupled to the data graph's node-importability; a future framework import there breaks the walk harness, not just a test. Worth a comment in 09-walk.mjs, nothing more.
 
-**Suggestions.** Amend 09-16's allow-list and required-additions pass for the six coefficients + basis/source; add a selftest doctoring of one coefficient path.
+**Suggestions.** As above (comment only).
 
-**Risk.** HIGH as written (the phase's central "maker sees no change" proof would fail).
+**Risk: LOW.**
 
 ---
 
 ## 09-17
 
-**Summary.** Verified the base build, the `09-dist-guard.sh` hand-over gate, and the device-row/Mark's-List work. The WebKit 9→10 reset with a reopen on the same origin is the right complement to the fake-indexeddb proof. The `09-places-check.mjs --library current` walk of the device steps matches the round-1 memory rule.
+**Summary.** WebKit 9→10 reset with reopen, dist-guard check before the device row, device steps walked first, Mark's List rows with readbacks. The right capstone, correctly split from 09-16.
 
 **Strengths.**
-- Refusing to write the device row when `app/dist` changed is the correct consequence of the recorded reset decision.
-- Reading `decide-p9-boot-check-scope` back rather than acting on it respects the List protocol.
+- The single-origin two-build route-handler design is the correct way to prove browser persistence that fake-indexeddb cannot (round-1 finding, carried through two plan splits without being lost — the ledger trail 09-09→09-16→09-17 is consistent).
+- Making 09-09's auto-selected reset safe *mechanically* (guard scan + fingerprint + check before writing the device row, with a stop-and-tell-Mark branch on FAIL) converts the phase's weakest premise ("no plan writes app/dist" by convention) into a checked invariant. I confirmed every automated build line in all 17 plans uses `--outDir` into scratch, so the scan will pass on arrival.
+- The row-readback and PASS-line-quoting requirements (round-5 fix) make browser and Mark's List outcomes falsifiable in the summary rather than asserted.
+- The device-row detail correctly words the reset as decisions 2 and 5 recorded, never as a fresh confirmation, and carries 09-16's evidence gaps forward.
+- Base build `3f23c7f` verified as the newest app/ commit; the acceptance grep and worktree-cleanup check are executable.
 
 **Concerns.**
-- **MEDIUM — this plan's WebKit reset check and places walk inherit the D-20 gap indirectly:** the reset check reads specific fields (code, serveTempC, table counts), so it is *not* affected by the six coefficients; the two places don't show them. So 09-17 is largely safe — but the `--library current` run depends on 09-16's script, which needs the six fix. Note the dependency.
-- **LOW** — the device-row detail correctly names decisions 2/5 as recorded, not re-confirmed.
+- LOW — the upgrade check's expected library count is computed in node from `{...librarySeedDb, ...library}` (robust to Mark's approval outcome ✓), but the exact table counts (1/4/6/4) are literals — correct against the plan-09-09 seeds, and any change there should indeed fail here, so this is fine; noting only that they are the one place a seed change requires a synchronized edit.
 
-**Risk.** MEDIUM (dependent on 09-16).
+**Suggestions.** None material.
+
+**Risk: LOW.**
 
 ---
 
-## Cross-plan findings (new this round)
+# Cross-Plan Assessment
 
-1. **HIGH — D-20's amendment is incomplete across the plan set.** D-20 was applied to 09-01, 09-07, 09-09 (as the prompt states), but its effects reach **09-16** (walk allow-list / required additions — missing entirely) and **09-11** (boot-check fixture now refused by the stricter validator), and it **contradicts 09-01 Task 1's own verify**. The amendment should propagate to all four before execution.
-2. **MEDIUM — missing ownership entry:** `app/src/domain/stages.js` (+ test) is created by 09-01 but declared nowhere.
-3. **LOW — CONTEXT carry-forward staleness:** "the `create` draft kind carries … style and machine" contradicts 09-04's (correct) removal of machine; the CONTEXT was updated for D-19 but not this line.
-4. **LOW/MEDIUM — invented constraints** (`CORE_SCALE_COUNT` at boot/import/snapshot, merged-scales cardinality) are reasonable but go beyond LIB-09/D-14 wording; they are surfaced on `decide-p9-boot-check-scope`, which is the right mitigation.
+**Wave structure and file overlap — verified clean.** For every multi-plan wave I compared `files_modified` sets pairwise: wave 1 (09-01…09-05), wave 2 (09-06/07/08) and wave 4 (09-10/11, with matching `coupling_justified` notes) have **zero file overlap**. Semantic merge interactions I traced are safe: 09-02's code pins survive 09-05's field additions because `printedContent` is explicit-field (`sheetCode.js:26-31`); 09-02's stamping spreads over 09-05's modified literals in either merge order; 09-03's `RecipeList.jsx` edit and 09-04's `RecipeList.test.jsx` edit are disjoint; 09-10 and 09-11 touch adjacent modules (`transfer.js` vs `seedTables.js`) without shared files. The load-bearing 09-08-before-09-11 ordering (draft.js drops the `axesForVersion` import before it is re-signed) is real (`draft.js:12`) and enforced by an acceptance grep.
 
-## Verification notes
-- Confirmed by running: 19 seeded Sheet codes match RESEARCH Pattern 4 exactly (0 duplicates).
-- Confirmed by reading: dataset (103, sources, ids), `db.js`, `sheetCode.js`, `axes.js`, `batch.js`, `battery.js`, `transfer.js`, `versionRow.js`, `lineage.js`, `useKeptDraft.js`, `useVersionPen.js`, `repository.js`, `RecipeList.jsx`, `main.jsx`, `router.jsx`, `Shell.jsx`, `seed.js`, all eight seed data files' `embed`/`iceEd`/equipment, `08-walk.mjs` (length + cited lines), style-bands note, `RecipePage.shell.test.js` markers, `db.test.js` pins and `seedOldProfile`.
-- Could not execute the Vitest suite or the WebKit harness in this review; the runtime-read claims are traced statically.
+**New findings this round (not previously dispositioned):**
 
-## Overall risk assessment: MEDIUM–HIGH
+1. **MEDIUM — 09-10's fixture sweep misses `library-link.test.js`** (created by 09-05 in wave 1; export→import of a hand-assembled version that will lack required `sheetCode`/`serveTempC`). Caught by 09-10's own verify, but the plan's "enumerated, not left to whichever test goes red" contract should enumerate it. Fix: one sweep line in 09-10 (or a forward pointer in 09-05).
+2. **LOW-MEDIUM — 09-15's signature change has three unlisted three-argument callers** (`penDraft.test.js:586`, `pen-note-roundtrip.test.js:47`, `transfer.test.js:1512/1520`, all plan drafts). Green only if no missing-catalog throw is added; the phase's own caller-bug idiom makes that throw likely. Fix: one sentence forbidding it or listing the files.
+3. **LOW — 09-01's `renamed` mapping bucket precedence** unspecified.
+4. **LOW — 09-03's node-env test harness** must stub the repository singleton (`repository.js` opens IndexedDB at module load; the `RecipePage.test.jsx:20` idiom); the plan implies but never names it.
+5. **LOW — 09-09 should name the file** for the seed-rows-equal-constants test that 09-15 later re-pins (`seedTables.test.js` is assumed by 09-15).
+6. **LOW — 09-13's gate path-slicing** (`indexOf('/app/')+5`) is brittle though fail-safe.
+7. **LOW — 09-01's Mark's List writes lack the ArtifactData-unavailable checkpoint rule** that 09-17 has.
 
-The architecture is sound and almost every plan is well-evidenced against the real code; the base-commit, code table, and dataset facts all check out. What keeps this at MEDIUM–HIGH is that a very recent, in-place amendment (D-20) was applied to only three plans while its blast radius covers at least two more, and one of the three it touched now fails its own automated verify. These are mechanical, fixable gaps, not design flaws — but the phase cannot pass its own gates as the files currently stand. Recommend: reconcile 09-01's verify/must-have with D-20, add `stages.js` to 09-01's manifest, propagate the six coefficient paths to 09-16 (and fix 09-11's boot fixture), then proceed.
+**Round-3 dispositions re-verified against source:** 09-01's D-20 verify rewrite (composition-only inherited + separate acidity provenance) is internally consistent with 09-07's and 09-09's checks; 09-09's ownership of the `library.test.js` version-8 case and the `transfer.test.js` bare entry matches the real cases verbatim; 09-11's boot fixture six-key addition matches 09-09's validator; the D-19-as-amended chain (09-05 copies → 09-08 child copy → 09-09 reset proof reads −15 → 09-10 round trip → 09-16 allow-list from seed → 09-17 WebKit check) is arithmetically consistent with the 19 iceEd figures in the data files. None of the dispositions I checked is contradicted by source.
+
+**Phase-goal coverage.** All eight success criteria map to executable proofs: criterion 1 (09-07's gate + invariants), 2 (09-09's upgrade proof + ratchets), 3 (09-05's library-link proof), 4 (09-08 + 09-14 + 09-15 Task 3), 5 (09-03 + 09-16 Task 2), 6 (09-09 tables + 09-11/12 reads + 09-15 scan), 7 (09-02 + 09-06 + 09-10), 8 (09-10 + 09-14). The two human gates (09-01 Task 3, 09-17's device row) sit where the decisions actually are.
+
+**Overall risk: MEDIUM-LOW.** The plan set is exceptionally well-evidenced — dozens of line-level citations checked this session all resolved, including the post-amendment ones. Residual risk concentrates in (a) 09-09's sheer size at the one-way boundary, (b) the Mark-approval critical path blocking waves 2–10 by design, and (c) the two enumeration gaps above, both of which surface as red tests inside the phase's own verifies rather than as shipped defects. I recommend proceeding after folding findings 1 and 2 into 09-10 and 09-15 (each is a one-to-three-line plan edit); the LOWs can ride in executor summaries.
 
 ---
 
 ## Consensus Summary
 
-Round 3, after the in-place D-20 amendment at 163f008 (six per-ingredient coefficients). Round 2 (OpenCode only) is in git at 18d4c5b and earlier; round 1 (OpenCode and Codex) at 47604aa. Both reviewers read the repo and cited `file:line` evidence; both covered all 17 plans. Neither could run WebKit; Codex ran the Vitest baseline (96 files, 3,007 tests passing), OpenCode ran the Sheet-code derivation over the seed (19 codes, 0 duplicates).
+Both reviewers read the plans against source at `40b10c2` and re-checked the round-3 dispositions; neither found one contradicted. Codex asks for changes before execution, naming two HIGH findings in 09-10. OpenCode found no HIGH, one MEDIUM (also in 09-10) and recommends proceeding after two small plan edits. The two reviews overlap on where the risk sits (09-10's import sweep, 09-09 as the one-way bump) and diverge on how settled the stored shapes are.
 
 ### Agreed Strengths
-- The architecture and the non-D-20 plans are sound and well evidenced: stored Sheet code (09-02), transactional uniqueness (09-06), the catalog boundary (09-11 to 09-15), the batch snapshot (09-13, 09-14) and the reset ratchets (09-09) all match the source they cite.
-- D-19's seed facts check out: 17 numeric Ice Ed temperatures and 2 nulls, constructors propagate the field, the Phase 8 walk dumps whole records.
-- Base commit 3f23c7f is the newest app change; the dist guard mechanises the reset's safety premise.
+
+- The round-3 fixes hold against source: 09-01's D-20 verification split, 09-09's ownership of the `library.test.js` and `transfer.test.js` fixtures, 09-11's six-key boot fixture, and the D-19 serve-temperature chain (both reviewers recomputed the 19 Ice Ed figures).
+- 09-02's stored Sheet codes and 09-06's in-transaction uniqueness are grounded in the real call sites (`PrintSheet.jsx:125`, `PrintSheetPages.jsx:84`, `repository.js:32`, `useVersionPen.js`).
+- 09-08's `structuredClone` of declared definitions fixes a real alias at `lineage.js:141`.
+- 09-13's caller sweep is exact (both counted the `createBatch` call sites) and its contained-failure gate bounds the blast radius.
+- 09-16's allow-list matches how `diffLeaves` at `08-walk.mjs:843` actually emits additions, and the required-additions pass covers the field-missing-on-both-sides blind spot.
+- 09-17 turns the "no plan writes app/dist" convention into a checked invariant.
 
 ### Agreed Concerns
-- **HIGH, both: the D-20 amendment is incomplete.** It was applied to 09-01, 09-07 and 09-09, but its blast radius covers 09-16 (the walk allow-list has no path for the six coefficients or the acidity basis/source entries, so a correct D-20 seed cannot MATCH) and 09-11 (the boot-check "odd display fields" fixture omits the six keys and would now be refused by the stricter validator).
-- **HIGH, both: 09-01 Task 1's own verify contradicts D-20.** The verify rejects any basis other than `inherited`, while the amendment gives dairy entries `basis.titratableAcidity = 'derived'`; the all-inherited must-have truth is stale for the same reason.
-- **MEDIUM, both: `app/src/domain/stages.js` (and its test) is created by 09-01 but owned nowhere** (not in files_modified, artifacts or acceptance), while 09-09 imports it.
-- **MEDIUM, both: 09-07 edits `app/src/data/library.js` but does not list it**, and its tests pin key presence only, not representative coefficient values or acidity provenance.
-- **MEDIUM, both: the CORE_SCALE_COUNT cardinality rule is an invented constraint** beyond LIB-09/D-14 wording; Codex adds that 09-10 checks it only before the import transaction, so two racing imports can leave five core scales, which boot then refuses. Surfaced on `decide-p9-boot-check-scope`.
+
+- **09-10's fixture sweep is incomplete** (Codex HIGH, OpenCode MEDIUM, different files). Codex: `Shell.flyout.test.jsx:354` expects four schema errors today; the plan's claim that old exports are refused before the arrays are read is wrong (`transfer.js:577` records the error and continues at `:583`), so four required arrays make it eight and nothing updates that assertion. OpenCode: `library-link.test.js`, created by 09-05 in wave 1, round-trips a hand-built version with no `sheetCode` or `serveTempC`, which 09-10 then refuses; the planning-time grep could not see a file that did not exist yet. Both say the "enumerated, not left to whichever test goes red" contract is false as written. Fix: add both files to 09-10's sweep and restate the enumeration as a floor re-run at execution.
+- **09-09 is the riskiest plan by size** (both MEDIUM): 17 files at the one-way boundary. Mitigations are judged as good as the repo has had.
 
 ### Divergent Views
-- Codex (HIGH) finds existing tests the 09-09 reset necessarily invalidates and that the plan does not own: `library.test.js:182-204` (a version-8 profile keeps its records) and `transfer.test.js:875-878` (a bare library entry accepted). OpenCode did not raise these.
-- Codex (MEDIUM) flags 09-04's removal of the late-read protection in `useKeptDraft.js:126-130` as a way a late restore can overwrite typed input; OpenCode found 09-04 LOW risk and only asks for a CONTEXT carry-forward note (the `create` kind no longer carries machine).
-- Codex (LOW) asks whether the two recipe-owned strawberry definitions in 09-05 also get the six nullable fields; OpenCode notes the walk fix must be null-safe for them. Same gap, different plan.
-- OpenCode (LOW/MEDIUM) flags 09-08's unconditional `serveTempC: parent.serveTempC` copy (a hand-built parent without the key yields an own `undefined`, which 09-10's required-key check refuses); Codex found 09-08 clean.
-- OpenCode (MEDIUM) notes 09-10's hard requirement of `serveTempC` on every imported schema-9 file; Codex did not.
-- Cultured dairy: Codex (MEDIUM) says applying `msnf × 0.017` to yogurt labels a measured-or-label value as derived; D-20 names cultured dairy `estimated`. The converter rule in 09-01 should exclude yogurt-category rows.
 
-Overall: Codex HIGH, OpenCode MEDIUM–HIGH. Both say the gaps are mechanical, not design flaws: propagate D-20 to 09-16 and 09-11, reconcile 09-01's verify and truth, add the file ownership lines, then execute.
+- **Core-scale identity on import** (Codex HIGH, OpenCode silent). Codex traced a store file with no versions that demotes Sweetness and promotes Oil to core: the count stays four, the retained olive-oil version still declares Oil (`olive-oil.js:120`), the reader returns Oil twice under one key, and the next recorded batch fails the planned collision validator. OpenCode praised the in-transaction recount without testing this case. Worth settling: a compatibility check across the resulting versions and scales inside the write transaction.
+- **Are the stored shapes actually settled?** Codex raises two MEDIUMs OpenCode does not: 09-04's create draft stores no step-key watermark, so `stepKeys.js:24` reissues a deleted key after restore (Phase 11 promises no reuse, `ROADMAP.md:221`); and 09-08 fixes the root at 19 keys while the selected style has nowhere to persist (`newRecipe.js:62` has no style field, `lineage.js:130` no copy rule, Phase 11 promises to save it). OpenCode rates the shape-freeze as inherent to criterion 2 and acceptable.
+- **09-09 problem names** (Codex MEDIUM): rows are validated one at a time, so two problem ids with the same word can enter the catalog, and 09-14's snapshot validator then rejects the export. OpenCode did not raise it.
+- **09-11 failure containment** (Codex MEDIUM): holding `storeRevision` after a failed catalog reload stops one refresh but not navigation (`Shell.jsx:445` → `router.jsx:80` → `useRecipeData.js:32`), so imported records can render against the old catalog; and the panel heading still reads "This file can't be imported" (`Shell.jsx:421`) after a successful import. OpenCode accepted the design and raised only the fake-indexeddb import order.
+- **09-15 three-argument callers** (OpenCode LOW-MEDIUM, Codex silent): `penDraft.test.js:586`, `pen-note-roundtrip.test.js:47` and `transfer.test.js:1512,1520` call `draftMatchesVersion` with three arguments on plan drafts; the plan must either forbid a missing-catalog throw or list the files.
+- OpenCode's remaining LOWs (09-01 `renamed` precedence and ArtifactData stop rule, 09-03 repository stub at module load, 09-09 naming the constants-test file, 09-13 gate path slicing) are executor-summary material.

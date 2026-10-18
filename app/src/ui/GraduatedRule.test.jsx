@@ -6,6 +6,8 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { GraduatedRule, RuleDrawing } from './GraduatedRule.jsx';
+import { buildFigures, describeDeviation } from '../domain/figures.js';
+import { oliveOilVersion } from '../data/olive-oil.js';
 
 const figure = {
   key: 'fat',
@@ -152,5 +154,55 @@ describe('GraduatedRule — the deviation words in the accessible name', () => {
   it('keeps the basis last, after the deviation words', () => {
     const est = { ...figure, deviation: { kind: 'above', amount: 0.8, words: '0.8% above 18%' }, basis: 'estimated', estimatedRowNames: ['Whole milk', 'Heavy cream'] };
     expect(nameOf(est)).toBe('Fat, 18.8%, target 16–18%, 0.8% above 18%, estimated: Whole milk, and Heavy cream');
+  });
+});
+
+// Sketch 010 D30 (Mark, 2026-10-18): the Sweetness rule runs 0 to 40. The
+// numbers are the retaken boards' own (sheet-page-1-formula.html and
+// screen-draft-kept.html), in the rule's 320-unit drawing.
+describe('RuleDrawing — the Sweetness · POD rule on 0 to 40 (sketch 010 D30)', () => {
+  const podOf = (version) => buildFigures(version).find((f) => f.key === 'pod');
+  const near = (actual, expected) => Math.abs(Number(actual) - expected) < 0.01;
+  const edgesOf = (markup) => [...markup.matchAll(/<line x1="([\d.]+)" y1="2"/g)].map((m) => Number(m[1]));
+  const bandOf = (markup) => markup.match(/<rect x="([\d.]+)" y="4" width="([\d.]+)"/);
+  const tickOf = (markup) => markup.match(/<line x1="([\d.]+)" y1="0"[^>]*stroke-width="2\.5"/);
+  const hollowOf = (markup) => markup.match(/<rect x="([\d.]+)" y="0" width="2\.5"[^>]*fill="none"/);
+
+  it('draws Olive Oil v1\'s 12–16 band from 96 to 128, the tick at 104.37, and the anchors 0, inside 12–16, 40', () => {
+    const markup = renderToStaticMarkup(<RuleDrawing figure={podOf(oliveOilVersion)} />);
+    const band = bandOf(markup);
+    expect(near(band[1], 96)).toBe(true);
+    expect(near(band[2], 32)).toBe(true);
+    const edges = edgesOf(markup);
+    expect(edges).toHaveLength(2);
+    expect(near(edges[0], 96)).toBe(true);
+    expect(near(edges[1], 128)).toBe(true);
+    expect(near(tickOf(markup)[1], 104.369)).toBe(true);
+    expect(markup).toContain(
+      '<div class="graduated-rule__anchors" aria-hidden="true"><span>0</span><span class="graduated-rule__deviation">inside 12–16</span><span>40</span></div>',
+    );
+  });
+
+  it('draws the pen with Whole milk portion 1 at 110 g: hollow was tick at 103.119, tick at 105.613, head 13.0 then 13.2', () => {
+    const draft = structuredClone(oliveOilVersion);
+    draft.rows.find((row) => row.ingredientName === 'Whole milk').portions[0].grams = 110;
+    const was = podOf(oliveOilVersion);
+    const now = podOf(draft);
+    const figureDelta = { key: 'pod', label: now.label, unit: '', decimals: 1, from: was.value, to: now.value, changed: true };
+    const markup = renderToStaticMarkup(<RuleDrawing figure={now} figureDelta={figureDelta} />);
+    expect(near(hollowOf(markup)[1], 103.119)).toBe(true);
+    expect(near(tickOf(markup)[1], 105.613)).toBe(true);
+    expect(markup).toContain('<span class="struck-value">13.0</span>13.2');
+  });
+
+  it('draws Sorbet\'s approved 24–32 band with both edges inside the rule, at 192 and 256', () => {
+    const sorbet = { ...podOf(oliveOilVersion), value: 28, band: [24, 32], deviation: describeDeviation(28, [24, 32], 1, '') };
+    const markup = renderToStaticMarkup(<RuleDrawing figure={sorbet} />);
+    const edges = edgesOf(markup);
+    expect(edges).toHaveLength(2);
+    expect(near(edges[0], 192)).toBe(true);
+    expect(near(edges[1], 256)).toBe(true);
+    expect(Math.max(...edges)).toBeLessThan(319);
+    expect(near(bandOf(markup)[2], 64)).toBe(true);
   });
 });

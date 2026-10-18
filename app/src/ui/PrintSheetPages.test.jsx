@@ -173,6 +173,21 @@ describe('PrintBalance — Balance in column 2 (E3, E4)', () => {
     const column = balance();
     expect(column.textContent).toContain('estimated: Whole milk, Heavy cream');
   });
+
+  it('prints the Sweetness gauge on 0 to 40: band 96 to 128, anchors 0, inside 12–16, 40 (sketch 010 D30)', () => {
+    const gauge = [...balance().querySelectorAll('.formulation-note__rule .ps-gauge')].find(
+      (g) => g.querySelector('.graduated-rule__label-word').textContent === 'Sweetness',
+    );
+    const svg = gauge.querySelector('svg');
+    const band = svg.querySelector('rect');
+    expect(Math.abs(Number(band.getAttribute('x')) - 96)).toBeLessThan(0.01);
+    expect(Math.abs(Number(band.getAttribute('width')) - 32)).toBeLessThan(0.01);
+    const edges = [...svg.querySelectorAll('line[y1="2"]')].map((line) => Number(line.getAttribute('x1')));
+    expect(edges).toHaveLength(2);
+    expect(Math.abs(edges[0] - 96)).toBeLessThan(0.01);
+    expect(Math.abs(edges[1] - 128)).toBeLessThan(0.01);
+    expect([...gauge.querySelectorAll('.graduated-rule__anchors span')].map((span) => span.textContent)).toEqual(['0', 'inside 12–16', '40']);
+  });
 });
 
 describe('SheetPage — one laid page of the Sheet', () => {

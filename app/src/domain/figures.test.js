@@ -41,6 +41,25 @@ describe('FIGURE_SPECS', () => {
       'Solids',
     ]);
   });
+
+  it('prints the six scales as sketch 010 D30 draws them: Sweetness runs 0 to 40, like Freezing', () => {
+    expect(FIGURE_SPECS.map((spec) => [spec.key, spec.domain])).toEqual([
+      ['pac', [0, 40]],
+      ['pod', [0, 40]],
+      ['fat', [0, 30]],
+      ['msnf', [0, 15]],
+      ['sugar', [0, 25]],
+      ['solids', [25, 55]],
+    ]);
+    const pod = buildFigures(oliveOilVersion).find((figure) => figure.key === 'pod');
+    expect(pod.domain).toEqual([0, 40]);
+  });
+
+  it('keeps Sorbet\'s approved Sweetness band, 24 to 32, inside the rule with room past both edges (sketch 010 D30)', () => {
+    const [lo, hi] = FIGURE_SPECS.find((spec) => spec.key === 'pod').domain;
+    expect(lo).toBeLessThan(24);
+    expect(32).toBeLessThan(hi);
+  });
 });
 
 describe('figureLabelText', () => {

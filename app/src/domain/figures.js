@@ -29,7 +29,7 @@ export const FIGURE_SPECS = [
     label: { word: 'Sweetness', term: 'POD' },
     unit: '',
     decimals: 1,
-    domain: [0, 30],
+    domain: [0, 40], // sketch 010 D30 (Mark, 2026-10-18): 0 to 40 like PAC, so Sorbet's 24–32 band shows both edges
     targetKey: 'pod',
     fields: ['pod', 'msnf'],
   },

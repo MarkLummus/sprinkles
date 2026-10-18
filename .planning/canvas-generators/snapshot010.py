@@ -1,7 +1,7 @@
 # Sid, 2026-10-06 (Phase 4 D-02; Mark approved the Print formats page: "approved, snapshot 010 and update the brief"): snapshots the approved boards into .planning/sketches/010-bench-sheet/.
 # Retaken again 2026-10-08 for D29 (the Sheet's three real pages; the method pages retitled as the table-fits variant; the route pictures).
 # Retaken 2026-10-08 after Mark closed the design (Mark's List row decide-design-done-snapshot-2: D1 to D28): the log pages, Sheet, method pages, record pen and reading, recipe-declared notation boards and Phase 4 screens, all as served at version 1791421339-aeaf.
-#   python3 snapshot010.py <dir holding project/*.dc.html as read from the artifact root at approval> <dest>
+#   python3 snapshot010.py <dir holding project/*.dc.html as read from the artifact root at approval> <dest> [<Board> ...]
 #   (read them with the Artifact tool: action read, paths ["project/<Board>.dc.html", ...], out_dir <dir>; never hand-edit a board or a snapshot)
 # The approved boards are taken AS SERVED by the canvas (the canvas wins over this repo's generators); the as-built Sheet they started from is generated here from printstart-capture.json
 # with none of Mark's edits (sheetedits.py E1 to E8), so the delta is explicit. Every file is made to open on its own: the canvas's support.js line is dropped and the font upload is
@@ -10,6 +10,7 @@ import sys, os, re, json, shutil
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 import printstart
 SRC, DEST = sys.argv[1], sys.argv[2]
+ONLY = sys.argv[3:]   # 2026-10-18 (README D30, D31): board names after <dest> retake only those boards, as served; nothing else in DEST is touched (the as-built Sheet and the measurements are left alone)
 FONT_BLOB = '/_blob/37ac467ba5558024f5fb5a2e5c22a7bc'
 FONT_LOCAL = '../../../app/public/fonts/caveat-regular.woff2'
 # 2026-10-10: the 393 print route board references its five page pictures as canvas assets (phase4screens-assets.json), not data: URIs, so the served board is 290 KB, not 5.6 MB (the editor drops a board over 2 MiB).
@@ -54,7 +55,9 @@ SERVED = {  # canvas board -> snapshot file
     'MethodPrintAsBuilt': 'method-as-built.html',                  # as built, reference: the method the build prints today
 }
 for k, out in SERVED.items():
+    if ONLY and k not in ONLY: continue
     open(os.path.join(DEST, out), 'w').write(standalone(open(os.path.join(SRC, 'project', k + '.dc.html')).read()))
+if ONLY: print('retaken:', [SERVED[k] for k in ONLY]); sys.exit(0)
 # the as-built printed Sheet (no batch), before E1 to E8: the capture, the app's own stylesheets resolved for print at 816, the page white as the real print renders it
 CAP = printstart.CAP
 sheet = printstart.drop_hidden(CAP['sheet'])

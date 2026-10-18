@@ -1,17 +1,19 @@
 ---
 phase: 9
 reviewers: [codex, opencode]
-reviewer_instances: [opencode-gemini-argon]
+reviewer_instances: [opencode-gemini-argon, opencode-astra]
 reviewed_at: 2026-10-18T22:59:39Z
 plans_reviewed: [09-01-PLAN.md, 09-02-PLAN.md, 09-03-PLAN.md, 09-04-PLAN.md, 09-05-PLAN.md, 09-06-PLAN.md, 09-07-PLAN.md, 09-08-PLAN.md, 09-09-PLAN.md, 09-10-PLAN.md, 09-11-PLAN.md, 09-12-PLAN.md, 09-13-PLAN.md, 09-14-PLAN.md, 09-15-PLAN.md, 09-16-PLAN.md, 09-17-PLAN.md]
 models:
   codex: "gpt-6.1-sol (reasoning=high)"
   opencode: "openrouter/qwen/qwen3.8-max-0902#high"
   opencode-gemini-argon: "openrouter/google/gemini-4-argon#high"
+  opencode-astra: "openrouter/openai/gpt-6-astra#high"
 model_sources:
   codex: "banner"
   opencode: "pinned"
   opencode-gemini-argon: "pinned"
+  opencode-astra: "pinned"
 ---
 
 # Cross-AI Plan Review — Phase 9
@@ -1130,6 +1132,361 @@ Four concrete test-suite collisions against existing files in the repository rem
 
 ---
 
+## OpenCode Review (opencode-astra)
+
+Addendum, 2026-10-18. Run after the round-4 pass and the Gemini addendum, against a worktree pinned at `40b10c2` with the identical prompt (same plans, context, research, instructions and manifest), so it is directly comparable. Six minutes, all 17 plans. It independently reproduced Codex's two 09-10 HIGHs, Gemini's three HIGHs (09-03, 09-05, 09-07), Qwen's `library-link.test.js` gap and Codex's 09-04/09-08/09-09/09-11 MEDIUMs. Two findings are new and were verified by Claude: 09-01's review list shows coefficients for new entries only, while CONTEXT.md D-20 says the list shows Mark the planner's inferred values for the 26 existing entries too (the 4421 stabiliser mix, skim milk powder, cocoa, the coconut entries); and 09-04's late-read fix leaves `draftStoredRef` false (`useKeptDraft.js:25`) when the maker types and clears back to blank while the read is pending, so the clean-draft delete at `:185-191` never fires and the old stored draft reappears. It also warns that `transfer.test.js` and `Shell.flyout.test.jsx` already have owners in their waves, so the test files the HIGHs require must be assigned without creating a same-wave overlap.
+
+I’ll check all 17 plans against the source and prior review dispositions, focusing on unresolved gaps and whether the verification steps exercise what they claim.
+
+Several verification gates would fail as written: the new place CSS conflicts with existing shell-style tests, and the library refactor leaves import and count assertions unassigned. I’m also checking whether imports can pass the proposed validators yet leave a catalog that produces invalid batches.
+
+The baseline passes: **96 test files, 3,007 tests**. Two proposed contracts still have gaps: four core scales can include a key already declared by a retained recipe, and the creation draft stores no history to prevent reusing a deleted step key. I also found that the library review omits the existing 26 entries’ proposed coefficients, which CONTEXT explicitly says Mark should see.
+
+
+Reviewed against source at `59dd5be`, including the round-3 review in git and the current dispositions. Baseline verification passed: **96 test files, 3,007 tests**. I also checked the dataset, recomputed all 19 seeded Sheet codes, and reproduced the step-key reuse and proposed catalog-key collision scenarios.
+
+Phase-specific browser checks and Mark’s List readbacks remain execution evidence; they were not performed in this review.
+
+## 09-01
+
+**Summary.** The converter and baseline design are well grounded, but the human-review artifact does not yet cover everything CONTEXT says Mark must approve.
+
+**Strengths**
+- The lactose subtraction addresses the actual calculation: `computeBalance` adds lactose from MSNF independently of the dairy flag at `app/src/domain/composition.js:35–44`. Testing milk chocolate as well as dairy is therefore necessary.
+- The before-walk captures fields, focus, statuses and text hashes—not merely successful navigation—at `.planning/phases/08-split-the-recipe-page-along-its-jobs/08-walk.mjs:137–166`. Building the historical commit protects those observations from concurrent implementation.
+
+**Concerns**
+- **MEDIUM — The existing 26 entries’ proposed coefficients are missing from the prescribed review.** `.planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-CONTEXT.md:49` explicitly says Mark sees the inferred values for the existing entries, including the stabilizer blend, skim milk powder, cocoa and coconut entries. However, `09-01-PLAN.md:167` defines the Coefficients section as “one line per **new entry**” and defers existing entries to subsequent implementation. The checkpoint can therefore approve the generated review without showing these specified judgments.
+
+**Suggestions**
+- Add an “Existing 26 entries” coefficient table to the checkpoint artifact, explicitly identifying the inferred values named in D-20.
+- Make the later seed-value assertions refer to the approved values, so approval and implementation cannot diverge.
+
+**Risk Assessment: MEDIUM.** Numerical conversion has good controls; approval coverage needs completing before the checkpoint is considered sufficient.
+
+## 09-02
+
+**Summary.** The stored-code change reaches the correct constructors and readers. One existing equality assertion needs an explicit update.
+
+**Strengths**
+- Both print dependencies are real: `app/src/ui/PrintSheet.jsx:125` and `app/src/ui/PrintSheetPages.jsx:84` currently derive codes from content. The stored-code-differs tests will prove these readers actually switch.
+- `printedContent` uses explicit fields at `app/src/domain/sheetCode.js:55–81`, excluding embedded coefficients and equipment. The other planned stored-field additions should not disturb legacy codes.
+- I recomputed all 19 codes; they match the plan, including `64JH-G408`.
+
+**Concerns**
+- **LOW — Stamping copies breaks the existing seed-group equality test.** `app/src/data/seed-recipes.test.js:41` compares `seedRecipeGroups.slice(1)` directly with unstamped `transcribedRecipeGroups`. The proposed stamping makes them unequal. This file is already owned by the task, so this is a small omitted instruction rather than a dependency problem.
+
+**Suggestions**
+- Update that assertion to compare against explicitly stamped expected versions, preserving group order and all other fields.
+- Retain the separate no-mutation assertion for direct exports.
+
+**Risk Assessment: LOW.** The remaining issue is a predictable test adjustment in an already-owned file.
+
+## 09-03
+
+**Summary.** The routes, filtering and defensive rendering match the intended places. The CSS task cannot pass its prescribed verification without updating the stylesheet’s existing contracts.
+
+**Strengths**
+- Reusing `activeWork()` preserves Home’s grouping and recency order through its actual implementation at `app/src/domain/lastEvent.js:111–132`.
+- Defensive handling of cosmetic fields is justified: `app/src/store/transfer.js:221–243` validates the library name and composition but leaves those fields unchecked.
+- Preventing search-form submission follows the existing behavior at `app/src/ui/SheetCodeSearch.jsx:67–68`.
+
+**Concerns**
+- **HIGH — The stylesheet contract sweep is incomplete.** The planned `.nb__*`/`.ing__*` rules and three media conditions conflict with:
+  - permitted selector roots at `app/src/styles/shell.test.js:60–69`;
+  - the exact media-condition set at `:81–83`;
+  - the exact two-media-block count at `:114–119`;
+  - the exact border-radius selector list at `:380–382`.
+
+  The approved board really adds radiused place selectors, including `.ing__head`, at `.planning/sketches/012-places/ingredients-place.html:2945–2949`. `shell.test.js` is not assigned to this plan, yet Task 3 runs that suite.
+
+**Suggestions**
+- Assign `app/src/styles/shell.test.js` to Task 3 and update its narrow contracts for the approved place rules, retaining token checks and existing shell-layout guarantees.
+
+**Risk Assessment: HIGH until corrected.** This is a deterministic execution blocker, not merely a visual uncertainty.
+
+## 09-04
+
+**Summary.** The plan correctly distinguishes incomplete drafts from valid saved records. Two state-history cases remain outside the proposed contract.
+
+**Strengths**
+- The creation branch addresses the real version prerequisite at `app/src/ui/useKeptDraft.js:112`.
+- The new dirty-input race test extends an existing late-read mechanism at `:126–130`; it does not assume repository reads resolve immediately.
+- Reusing the existing writer preserves the snapshotting performed by `buildDraftRecord` at `app/src/domain/draft.js:71–80`.
+
+**Concerns**
+- **MEDIUM — The frozen payload cannot preserve step-allocation history after outright deletion.** The allocator at `app/src/domain/stepKeys.js:24–35` uses only the highest remaining step number. Its documented safety depends on retaining removed steps (`:4–10`). The creation payload stores current method steps but no watermark or issued-key history, while `.planning/ROADMAP.md:213–221` requires outright removal and no reused key. I reproduced allocating `3`, deleting it, restoring the remaining method, and allocating `3` again.
+- **MEDIUM — The late-read fix misses “typed, then cleared.”** Under the prescribed branch order, a changed creation payload skips restore before setting `draftStoredRef.current`. That ref begins false at `app/src/ui/useKeptDraft.js:25`, while clean-draft deletion requires it to be true at `:185–191`. If the maker types and clears back to blank while the read is pending, the old stored draft survives and can reappear next visit. The round-3 fix covers dirty replacement, but not this clean outcome.
+
+**Suggestions**
+- Settle persistent step-allocation history for both creation drafts and editable first versions before declaring the shapes frozen.
+- Track that a stored record exists even when local edits win; test pending read → type → clear → resolve → reopen, expecting the old draft to be gone.
+
+**Risk Assessment: MEDIUM.** These are lifecycle gaps with specific, bounded fixes.
+
+## 09-05
+
+**Summary.** The library-link and temperature changes preserve the existing copy boundary. The full-suite gate has an unassigned source-contract failure.
+
+**Strengths**
+- Ingredient independence already rests on `structuredClone` in `app/src/domain/versionRow.js:65` and `app/src/data/olive-oil.js:54–58`. Adding an informational link without dereferencing it for calculations preserves that guarantee.
+- The strawberry exceptions are genuinely separate recipe-owned definitions at `app/src/data/strawberry.js:34–68`.
+- I verified the 19 Ice Ed temperatures: 17 numeric values and the two specified nulls.
+
+**Concerns**
+- **HIGH — Removing Olive Oil’s direct library import breaks an explicitly pinned importer.** `app/src/store/library.test.js:226–231` requires `data/olive-oil.js` among the direct library importers. Replacing its local embed helper removes that import. The plan does not own this test and explicitly tells the executor to stop on unexpected files.
+
+**Suggestions**
+- Assign `app/src/store/library.test.js` here and replace the expected importer with `data/library-embed.js`.
+- Keep the existing restriction that only seeding and data modules import the library.
+
+**Risk Assessment: HIGH until the test ownership is corrected.** The production design is straightforward; the prescribed execution otherwise stops.
+
+## 09-06
+
+**Summary.** Transactional code enforcement and failed-save recovery are well separated and target the actual write paths.
+
+**Strengths**
+- The unchecked single-version write is precisely at `app/src/store/repository.js:32–35`; moving read/check/write into one transaction closes the relevant race.
+- The explicit abort pattern at `app/src/store/repository.js:158–179` already handles synchronous failures that could otherwise leave queued writes committing.
+- The existing failure handler keeps the pen open and releases the lock at `app/src/ui/useVersionPen.js:211–215`. The proposed UI test verifies that behavior remains true for code collisions.
+
+**Concerns**
+- No new material concern in the prescribed production paths. The deliberate distinction between `createVersion`, save-over and seed bulk writes is stated rather than concealed.
+
+**Suggestions**
+- Keep both the two-connection collision test and the retry test. Store serialization does not establish preservation of entered text.
+
+**Risk Assessment: LOW.** The central invariant is enforced at the correct persistence boundary.
+
+## 09-07
+
+**Summary.** Candidate conversion and retained app values are appropriately tested separately. The larger seed invalidates more assertions than the assigned count updates cover.
+
+**Strengths**
+- The merge extends the existing seed boundary at `app/src/store/seed.js:21–27`; spreading incumbent entries last protects their keys.
+- The lactose invariant exercises the actual independent MSNF contribution at `app/src/domain/composition.js:35–44`.
+- Comparing incumbent fields with the base file is stronger than merely comparing stored entries with the newly edited `library.js`.
+
+**Concerns**
+- **HIGH — An unowned export assertion still requires exactly the incumbent library size.** `app/src/store/transfer.test.js:922–934` exports a real seeded profile and asserts its library length equals `Object.keys(library).length`. After the larger seed lands, that assertion fails. This plan’s file list excludes `transfer.test.js`.
+- **MEDIUM — Some assertions need a merged lookup, not only a new count.** `app/src/store/seed.test.js:119–124` checks every seeded record against `library[record.id]`. Updating its length alone leaves new entries compared with `undefined`. The task currently specifies count changes but not this lookup change.
+
+**Suggestions**
+- Assign the export assertion update before this plan’s full-suite gate, with file ownership coordinated to avoid concurrent edits.
+- Use the merged seed for per-record expectations. In the transfer test, compare the exported library with the source repository’s actual library rather than an unrelated incumbent-only constant.
+
+**Risk Assessment: HIGH until corrected.** The data design is sound, but the prescribed suite cannot pass unchanged.
+
+## 09-08
+
+**Summary.** Definition cloning and serving-temperature propagation are correctly coordinated. The saved representation of an authored style is still unsettled.
+
+**Strengths**
+- `createChildVersion` currently shares declared arrays at `app/src/domain/lineage.js:141–142`; cloning removes a real alias.
+- Updating root and child together respects `app/src/store/creation-roundtrip.test.js:107–108`, which checks equal key sets and rejects own `undefined` values.
+
+**Concerns**
+- **MEDIUM — Open contract question: where does the chosen style persist?** The creation draft contains a style id, and `.planning/ROADMAP.md:214` says Save carries the authored style. However, the root record at `app/src/domain/newRecipe.js:62–80` has no style field, and the child constructor at `app/src/domain/lineage.js:130–149` has no style propagation rule. This plan fixes the root’s key set without settling that representation.
+
+**Suggestions**
+- Define whether the saved version retains a style id, a style snapshot, or only copied defaults.
+- If the selection persists, assign its seed/default value, validator and child-copy behavior now. If only defaults persist, explicitly reconcile that with the roadmap’s “style included” promise.
+
+**Risk Assessment: MEDIUM.** Current edits are coherent; the broader stored-shape freeze remains incomplete.
+
+## 09-09
+
+**Summary.** The bounded reset, rollback case and historical-version ratchet are strong. The new problem table needs a collection-level identity rule.
+
+**Strengths**
+- The existing synchronous upgrade and guarded creates at `app/src/store/db.js:24–55` support the proposed bounded reset.
+- Changing the newer-version test is necessary: `app/src/store/db.test.js:284–292` currently opens literal version 10, which ceases to be newer after this bump.
+- Seeding tables before the versions early return correctly follows the current boundary at `app/src/store/seed.js:22–24`.
+
+**Concerns**
+- **MEDIUM — Distinct problem ids can have duplicate problem words.** The planned row validator checks each `{id,name,order}` independently, but tasting identity is the word, as shown by `app/src/store/transfer.js:295–306`. Two valid rows with different ids and the same name can therefore pass table validation. Copying their names produces duplicate snapshot words, which the planned snapshot validator explicitly refuses in `.planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-14-PLAN.md:95`.
+
+**Suggestions**
+- Add a shared collection check for unique problem names.
+- Apply it at boot and to the resulting imported problem table, including the transactional check.
+- Test accepted catalog → recorded batch → export validation.
+
+**Risk Assessment: MEDIUM.** Reset coverage is good; table validity must imply validity of records created from that table.
+
+## 09-10
+
+**Summary.** The transaction-level core-count fix addresses the previous race. Cardinality alone still does not establish a compatible resulting store, and the fixture sweep contains a demonstrably false exemption.
+
+**Strengths**
+- Eight-store import and export extend the existing atomic transaction boundaries at `app/src/store/repository.js:158–198`.
+- The controlled race through `importStore` appropriately tests error translation as well as transaction refusal; the current generic catch is at `app/src/store/transfer.js:697–700`.
+
+**Concerns**
+- **HIGH — Four core scales can still collide with retained declared scales.** The plan checks incoming versions against file scale keys, then checks only the merged core count. A file with no versions can demote `sweetness` and promote `oil` to core. The resulting count remains four, while retained Olive Oil still declares Oil (`app/src/data/olive-oil.js:120`). Applying the proposed reader produces keys:
+  `hardness, scoopability, smoothness, oil, body, oil`.
+
+  `AxesGrid` reads and writes marks by `axis.key` at `app/src/ui/BatchRow.jsx:195–204`, so the two Oil controls share one mark. A newly created snapshot then fails the planned core/declared collision validation. This remains possible after the round-3 cardinality-race fix.
+- **HIGH — Older files are not rejected before array validation.** The exemption at `09-10-PLAN.md:131` contradicts `app/src/store/transfer.js:577–604`: validation appends schema errors and continues through arrays. `app/src/ui/Shell.flyout.test.jsx:354–360` explicitly expects four errors. Adding four required arrays changes that to eight. Its mock calls the real importer by default (`:18–24`), so wrapping it in a provider does not solve this.
+- **MEDIUM — The sweep omits a test created earlier in this phase.** `09-05-PLAN.md:116` introduces `library-link.test.js` with an export/import round trip, but the sweep at `09-10-PLAN.md:122–131` does not assign its transition to required codes, temperatures and populated catalog tables. Its eventual fixture choice may avoid some changes, but that is currently unspecified.
+
+**Suggestions**
+- Inside the write transaction, validate core-key compatibility across the **resulting versions and scales**, including retained local versions.
+- Add import → record → export → validate coverage for the Oil-promotion scenario.
+- Assign the Shell assertion update and the new library-link fixture explicitly, reconciling ownership with the other work in the wave.
+
+**Risk Assessment: HIGH.** An accepted import can produce inconsistent records, and the full-suite gate has a guaranteed unassigned failure.
+
+## 09-11
+
+**Summary.** Normal catalog delivery is well planned. The failed-reload recovery message is truthful in isolation, but its proposed containment and surrounding UI are incomplete.
+
+**Strengths**
+- Pre-mount validation fits the existing boot failure boundary at `app/src/main.jsx:27–36`.
+- The real-provider test is materially stronger than checking only that the revision increment at `app/src/ui/Shell.jsx:352–353` follows a mocked callback.
+
+**Concerns**
+- **MEDIUM — Holding `storeRevision` does not prevent new records rendering with the old catalog.** Navigation remains available at `app/src/ui/Shell.jsx:445–461`. A different recipe/version route mounts a new keyed page at `app/src/router.jsx:80`, whose data hook reads the store at `app/src/ui/useRecipeData.js:32–45` independently of the revision. After a committed import and failed catalog reload, navigation can therefore combine imported records with stale definitions.
+- **LOW — The panel heading contradicts the proposed recovery line.** The existing title remains “This file can’t be imported” at `app/src/ui/Shell.jsx:421`, even when the new line says the import succeeded.
+- **LOW — Empty-scales behavior is contradictory.** `09-11-PLAN.md:167` accepts empty lists, while `:169` requires exactly four core scales. An empty scales table needs an explicit expected result.
+
+**Suggestions**
+- Introduce a post-commit recovery state that prevents routed record use until the catalog is successfully reloaded or the page restarts.
+- Test navigation after reload failure, not just an unchanged revision.
+- Give that state an accurate heading and make the empty-scales case explicit.
+
+**Risk Assessment: MEDIUM.** The normal path is covered; the failure path does not yet guarantee the consistency it claims.
+
+## 09-12
+
+**Summary.** The route-level context read and presentational prop boundary fit the existing components, with useful coverage of both layout arrangements.
+
+**Strengths**
+- The layout constraint is real: stacked rendering maps every core scale at `app/src/ui/BatchRow.jsx:209–219`, while desktop rendering explicitly places four at `:240–245`.
+- Passing the catalog from RecipePage is consistent with its existing composition of data and pen hooks at `app/src/ui/RecipePage.jsx:89–142`.
+- Testing both direct BatchRow rendering and the route-level tracer exercises different wiring failures.
+
+**Concerns**
+- No new material concern in this plan’s provider and prop changes. The four-scale policy is already dispositioned; I am not reopening that choice.
+
+**Suggestions**
+- Preserve the renamed-core tests in both arrangements and the assertion that the shared seed fixture remains unchanged.
+
+**Risk Assessment: LOW.** The changes are localized and the test sweep is explicit.
+
+## 09-13
+
+**Summary.** Extending the batch’s existing one-time snapshot is the right mechanism, and the staged caller sweep is well bounded.
+
+**Strengths**
+- `createBatch` already copies rows and declared definitions once at `app/src/domain/batch.js:184–189`; adding core definitions at that boundary avoids a second snapshot mechanism.
+- `completeRecord` preserves the original snapshot through its spread at `app/src/domain/batch.js:206–212`.
+- Updating the exact snapshot-key assertion at `app/src/store/creation-roundtrip.test.js:147–153` prevents a predictable fixture failure.
+
+**Concerns**
+- No additional snapshot-copy or caller-ownership gap found. The accepted-catalog consistency issue is upstream; copying a bad catalog faithfully would not repair it.
+
+**Suggestions**
+- Retain the cloned-catalog mutation test and the contained-failure gate.
+- Once collection validation exists, include one end-to-end proof that a validated catalog produces an importable batch.
+
+**Risk Assessment: MEDIUM.** The surface is broad, but the snapshot mechanism and intermediate verification are appropriate.
+
+## 09-14
+
+**Summary.** Snapshot-based validation establishes the intended historical independence, including custom kinds and renamed definitions.
+
+**Strengths**
+- The dependency being removed is concrete: core defects currently validate against global `DEFECTS` at `app/src/store/transfer.js:295–296`.
+- The From freezer exclusion reads the tasting’s own marks and words at `:318–324`, so preserving it while changing the allowed-definition source is correct.
+- The current mark validator checks only numeric stops at `:255–264`; the proposed key-membership checks close a real omission.
+
+**Concerns**
+- No new material concern in the snapshot-validation boundary. The magnitude test appropriately claims storage and transfer coverage rather than kind-aware presentation.
+
+**Suggestions**
+- Keep the case where a snapshot-defined problem imports despite being absent from the receiving catalog.
+- Preserve the reopen assertion; JSON round-tripping alone does not exercise persisted reopening.
+
+**Risk Assessment: LOW.** The tests directly address the historical-data guarantee.
+
+## 09-15
+
+**Summary.** The final constant retirement and marked-scale stability proof target the correct remaining dependencies.
+
+**Strengths**
+- Both draft dependencies are real: the global axis list at `app/src/domain/draft.js:146–148` and global problem words at `:165`.
+- Home uses the same draft validator as restoration at `app/src/ui/RecipeList.jsx:93–100`, so passing the catalog there is necessary to keep “Go to draft” honest.
+- Checking `readMarkWord` after changing Sweetness exercises the actual anchor lookup at `app/src/domain/axes.js:87–90`.
+
+**Concerns**
+- No new material finding. The stated “plan drafts do not read the catalog” rule is compatible with the existing early return at `app/src/domain/draft.js:273`; there is no reason to invent a blanket missing-catalog throw.
+
+**Suggestions**
+- Preserve that early return and leave three-argument plan-draft callers valid.
+- Keep the static scan described as an architectural guard, with behavioral tests supplying the runtime evidence.
+
+**Risk Assessment: MEDIUM.** The retirement sweep is extensive, but the behavioral invariants are well chosen.
+
+## 09-16
+
+**Summary.** The allow-list now accounts for the added fields and tests its own refusal behavior. This is a strong verification design.
+
+**Strengths**
+- The existing diff function emits absent-to-object additions at the enclosing path and primitive-to-definition changes at the element path (`.planning/phases/08-split-the-recipe-page-along-its-jobs/08-walk.mjs:843–855`), matching the planned exact-value checks.
+- Required-addition checks address the actual limitation of comparing only differing keys: fields absent from both inputs produce no difference.
+- Separate library modes match the distinct measurement datasets at `.planning/sketches/012-places/README.md:46–52`.
+
+**Concerns**
+- No new material concern in the comparison mechanism. The previous D-20 omission is addressed by narrow coefficient/provenance paths, required fields and negative cases.
+
+**Suggestions**
+- Retain the distinction between expected-value checks and doctored-output tests: the former tests expectations against seeds; the latter tests whether incorrect output is refused.
+- Keep evidence verdicts explicit when a measurement passes but a visual difference remains.
+
+**Risk Assessment: MEDIUM.** The verifier is substantial, but its independent checks reduce the risk of a false pass.
+
+## 09-17
+
+**Summary.** The same-origin final-build upgrade and explicit evidence handoff appropriately finish the phase. One proof claim should be narrower than its mechanism.
+
+**Strengths**
+- Closing the old page before opening the new build is consistent with the existing connection-release behavior at `app/src/store/db.js:74–76`.
+- Reopening with a retained draft distinguishes a successful one-time reset from repeated destruction.
+- Row readbacks and versioned writes follow the actual List requirements at `CLAUDE.md:142–148`.
+
+**Concerns**
+- **LOW — An unchanged fingerprint does not prove that no intermediate build was ever served.** The guard specified at `.planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-09-PLAN.md:162` compares endpoint content. A transient replacement followed by restoration produces the same fingerprint. The scan and checksum are useful controls, but the conclusion “no build reached app/dist” is stronger than what they establish.
+
+**Suggestions**
+- Report the precise evidence: planned build commands use scratch output, and `app/dist` matches its pre-bump fingerprint at handoff.
+- Keep the explicit checkpoint for any known intermediate device exposure or unavailable browser/List tooling; no heavier monitoring system is necessary for this phase.
+
+**Risk Assessment: MEDIUM.** Completion still depends on actual browser runs and external List access, which the plan correctly leaves as execution prerequisites.
+
+## Cross-plan assessment
+
+**Recommendation: request bounded changes before execution.**
+
+The round-3 fixes are substantially incorporated: the D-20 basis verification, coefficient ownership, reset-fixture updates, boot fixture, transactional core-count recount and walk allow-list now agree with their stated mechanisms. The remaining issues fall into three groups:
+
+| Priority | Required adjustment | Plans principally affected |
+|---|---|---|
+| **Before execution** | Assign the stylesheet contracts, direct-library-import assertion, expanded-library assertions and Shell error-count update | 09-03, 09-05, 09-07, 09-10 |
+| **Before declaring shapes settled** | Define persistent step-allocation history and the saved-style representation | 09-04, 09-08 |
+| **Before accepting imported catalogs** | Check unique problem words and compatibility between resulting core keys and retained version declarations | 09-09, 09-10, 09-13, 09-14 |
+| **Before closing lifecycle coverage** | Cover clean local edits during pending restore and navigation after failed catalog reload | 09-04, 09-11 |
+| **Before library approval** | Show the existing 26 entries’ inferred coefficients in the review artifact | 09-01, 09-07 |
+
+I checked the declared file sets: **the current multi-plan waves have no direct file overlap**. Preserve that when assigning the missing test edits. In particular, `transfer.test.js` and `Shell.flyout.test.jsx` already have owners elsewhere in their respective waves; adding them casually would create conflicts.
+
+**Overall risk: HIGH as written, reducible to MEDIUM with these corrections.** The architecture does not need replacing. The blockers are specific executable-plan failures and a few incomplete state invariants. The most important product-level issue is that “valid table rows” plus “four core scales” does not yet guarantee that recording from the resulting store produces valid, round-trippable batches.
+
+**Decision question:** Before approving the stored-shape freeze, can every accepted catalog and retained recipe combination be shown to produce a batch that the same build can export, import and reopen without rejection or ambiguous marks?
+
+
+---
+
 ## Consensus Summary
 
 Both reviewers read the plans against source at `40b10c2` and re-checked the round-3 dispositions; neither found one contradicted. Codex asks for changes before execution, naming two HIGH findings in 09-10. OpenCode found no HIGH, one MEDIUM (also in 09-10) and recommends proceeding after two small plan edits. The two reviews overlap on where the risk sits (09-10's import sweep, 09-09 as the one-way bump) and diverge on how settled the stored shapes are.
@@ -1149,6 +1506,8 @@ Both reviewers read the plans against source at `40b10c2` and re-checked the rou
 - **09-09 is the riskiest plan by size** (both MEDIUM): 17 files at the one-way boundary. Mitigations are judged as good as the repo has had.
 
 - **Existing tests the plans break without owning them** (Gemini addendum, three HIGH, verified by Claude): 09-03's new selectors and media blocks against `shell.test.js:60,114`; 09-05 dropping olive-oil's library import against `library.test.js:231`; 09-07's merged seed against the 26-entry counts in `transfer.test.js:933` and `seed.test.js:120`. Same class of gap as the agreed 09-10 sweep finding, spread across three more plans: each needs the test file added to its manifest with the approved rewrite.
+
+- **Astra addendum, two new MEDIUMs**: 09-01's review checkpoint omits the 26 existing entries' inferred coefficients that D-20 says Mark sees; 09-04's late-read fix misses the typed-then-cleared case. Plus a wave-overlap caution on assigning the newly owned test files.
 
 ### Divergent Views
 

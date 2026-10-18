@@ -175,6 +175,7 @@ Progress: [██░░░░░░░░] 20%
 
 Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–D16 live in `product-requirements/03-decision-register.md` and are accepted.
 
+- [Phase 09, 2026-10-18]: D-20 adds six nullable per-ingredient coefficients to the library seed in the 9 to 10 bump; the other 2026-10-18 decisions (approved style values stand, Guelph method with a calibrated target, Balance tiers in v2.1, stage model at Phase 11, menus for the Phase 10 style and machine pickers) are in `.planning/notes/2026-10-18-balance-and-process-decisions.md`.
 - Roadmap: Milestone 1 is four vertical slices on the olive oil working case (read → record → develop → print), not technical layers.
 - Roadmap: No storage/backend phase — D16 stays open, milestone 1 uses a provisional local store behind a repository seam.
 - Roadmap: UX1-01–UX1-03 are verified end-to-end in Phase 4 but are build constraints in every phase.
@@ -604,9 +605,9 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-17T18:14:04.453Z
-Stopped at: Phase 9 context updated
-Resume file: .planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-CONTEXT.md
+Last session: 2026-10-18T19:42:35.000Z
+Stopped at: Session resumed; Phase 9 execution waits on four Mark's List decide rows
+Resume file: .planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/.continue-here.md
 
 ## Operator Next Steps
 

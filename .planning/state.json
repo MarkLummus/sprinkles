@@ -1,88 +1,38 @@
 {
   "contract": "1.0.0",
   "flavor": "core",
-  "milestone": "v2.0",
+  "milestone": "v2.0 — Recipe creation",
   "phases": [
     {
-      "number": "1",
-      "name": "Read the churned recipe",
+      "number": "8",
+      "name": "Split the recipe page along its jobs",
       "status": "complete"
     },
     {
-      "number": "2",
-      "name": "Record the first batch",
-      "status": "complete"
+      "number": "9",
+      "name": "The library and the stored shapes, plus the two places",
+      "status": "in_progress"
     },
     {
-      "number": "3",
-      "name": "Develop the next version",
-      "status": "complete"
+      "number": "10",
+      "name": "The creation editor, without Save",
+      "status": "pending"
     },
     {
-      "number": "03.1",
-      "name": "The imprint and the binder",
-      "status": "complete"
+      "number": "11",
+      "name": "Steps, structure, save and print",
+      "status": "pending"
     },
     {
-      "number": "03.2",
-      "name": "The portion and the reset",
-      "status": "complete"
-    },
-    {
-      "number": "03.3",
-      "name": "The front-matter rows and the page in step order",
-      "status": "complete"
-    },
-    {
-      "number": "03.3.1",
-      "name": "The full battery: the record pen rebuilt from sketch 007",
-      "status": "complete"
-    },
-    {
-      "number": "03.3.1.1",
-      "name": "Record pen conformance polish",
-      "status": "complete"
-    },
-    {
-      "number": "03.4",
-      "name": "The design layer in code",
-      "status": "complete"
-    },
-    {
-      "number": "03.5",
-      "name": "Separate the recipe from the sheet",
-      "status": "complete"
-    },
-    {
-      "number": "03.6",
-      "name": "Per-step shared ingredients",
-      "status": "complete"
-    },
-    {
-      "number": "4",
-      "name": "Prepare the next version for making",
-      "status": "complete"
-    },
-    {
-      "number": "5",
-      "name": "Split the recipe page",
-      "status": "complete"
-    },
-    {
-      "number": "6",
-      "name": "The ingredient library in the store",
-      "status": "complete"
-    },
-    {
-      "number": "7",
-      "name": "Creation primitives",
-      "status": "complete"
+      "number": "12",
+      "name": "Showing a recipe's own scales and problems, and the whole loop",
+      "status": "pending"
     }
   ],
   "next": {
-    "command": "/gsd-discuss-phase",
-    "label": "Discuss the first phase",
-    "reason": "Project initialized — plan your first phase"
+    "command": "/gsd-progress --next",
+    "label": "Advance to the next step",
+    "reason": "Phase 2 of 5 · 20% · executing"
   },
-  "updated_at": "2026-10-16T01:10:00.836Z"
+  "updated_at": "2026-10-18T23:50:01.946Z"
 }

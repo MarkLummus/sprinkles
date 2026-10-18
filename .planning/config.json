@@ -111,6 +111,21 @@
     },
     "timeouts": {
       "opencode": 2400
+    },
+    "default_reviewers": [
+      "opencode-astra",
+      "opencode-argon"
+    ],
+    "parallel_lanes": true,
+    "reviewer_instances": {
+      "opencode-astra": {
+        "cli": "opencode",
+        "model": "openrouter/openai/gpt-6-astra"
+      },
+      "opencode-argon": {
+        "cli": "opencode",
+        "model": "openrouter/google/gemini-4-argon"
+      }
     }
   }
 }

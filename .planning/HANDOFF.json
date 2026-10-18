@@ -1,0 +1,61 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-10-18T19:37:51.513Z",
+  "phase": "9",
+  "phase_name": "The library and the stored shapes, plus the two places",
+  "phase_dir": ".planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places",
+  "plan": 0,
+  "task": 0,
+  "total_tasks": 17,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": 0, "name": "Phase 9 planned and verified: 17 plans in 10 waves, gates passed", "status": "done", "commit": "a7d3542"}
+  ],
+  "remaining_tasks": [
+    {"id": 1, "name": "Execute Phase 9 (/gsd-execute-phase 9), unless decide-p9-fat-structural-fields or decide-sourced-bands-override-styles asks for a replan first", "status": "not_started"}
+  ],
+  "blockers": [
+    {"description": "Two Mark's List decisions may change Phase 9's seed before it runs: decide-p9-fat-structural-fields (new row coefficients in the 9 to 10 bump) and decide-sourced-bands-override-styles (Sorbet default serve temperature)", "type": "human_action", "workaround": "If Mark says execute first, run Phase 9 as planned; the flags would then need a later reset or lift"}
+  ],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {"action": "Answer decide-p9-fat-structural-fields on Mark's List", "context": "Add fat_structural and an own-emulsifier flag to the library seed and row shape in the Phase 9 bump", "blocking": true},
+    {"action": "Answer decide-sourced-bands-override-styles on Mark's List", "context": "Whether the sourced bands change any approved style value (recommended: Sorbet serve temperature to -10 only)", "blocking": true},
+    {"action": "Answer decide-frozen-share-method on Mark's List", "context": "Guelph 72% vs f = 0.79; shapes the later Balance redesign, not Phase 9", "blocking": false},
+    {"action": "Answer decide-balance-tiers-milestone on Mark's List", "context": "Goal-and-guardrails Balance in v2.0 or v2.1", "blocking": false}
+  ],
+  "decisions": [
+    {"decision": "D-19 amended: seeded versions take serveTempC from iceEd.servingTemperatureC", "rationale": "Ice Ed's serving temperature balanced the formulation and drew the freezing curve", "phase": "9"},
+    {"decision": "Equipment leaves the creation editor; machines table still seeded", "rationale": "Equipment belongs to churning a batch (todo-rethink-batch-equipment)", "phase": "10"},
+    {"decision": "Sourced-bands review: no file edited; four decide rows added", "rationale": "Mark reviews before the seed changes", "phase": "9"}
+  ],
+  "uncommitted_files": [
+    " M .planning/canvas-generators/phase4screens-pages.json",
+    " M .planning/canvas-generators/snapshot010.py",
+    " M .planning/config.json",
+    " M .planning/sketches/010-bench-sheet/CONTRACT.md",
+    " M .planning/sketches/010-bench-sheet/README.md",
+    " M .planning/sketches/010-bench-sheet/screen-draft-kept-words.html",
+    " M .planning/sketches/010-bench-sheet/screen-draft-kept.html",
+    " M .planning/sketches/010-bench-sheet/screen-print-route-1280.html",
+    " M .planning/sketches/010-bench-sheet/sheet-balance-col2.html",
+    " M .planning/sketches/010-bench-sheet/sheet-page-1-formula.html",
+    " M .planning/state.json",
+    "?? .planning/canvas-generators/d30-boards.py",
+    "?? .planning/canvas-generators/d30-route.py",
+    "?? .planning/canvas-generators/noteremove.py",
+    "?? .planning/canvas-generators/p10-boxes.json",
+    "?? .planning/canvas-generators/p10-capture.json",
+    "?? .planning/canvas-generators/p10-capture.mjs",
+    "?? .planning/canvas-generators/p10-measure.json",
+    "?? .planning/canvas-generators/p10-measure.mjs",
+    "?? .planning/canvas-generators/p10-run.sh",
+    "?? .planning/canvas-generators/p10-shot.mjs",
+    "?? .planning/canvas-generators/p10.py",
+    "?? .planning/canvas-generators/pod40.py",
+    "?? .planning/phases/08-split-the-recipe-page-along-its-jobs/.review-diagnostics/",
+    "?? .planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/.review-diagnostics/"
+  ],
+  "next_action": "Run /marks-list to pick up Mark's answers to the four decide rows; if decide-p9-fat-structural-fields is add-now or decide-sourced-bands-override-styles changes a value, replan Phase 9 narrowly (library seed, row shape, style note) before /gsd-execute-phase 9; otherwise /clear then /gsd-execute-phase 9",
+  "context_notes": "Phase 9 is fully planned (a7d3542). Mark then shared ~/Downloads/sprinkles-sourced-formulation-bands.md (Goff, Guelph, Mullan, Italian trade sources). It introduces a three-tier Balance (goal: 72% frozen at serving temperature; guardrails; reference bands) and two per-ingredient coefficients (fat_structural, own-emulsifier flag). Only the coefficients are urgent, because they ride the one 9 to 10 bump. Naming: `emulsifier` is already a composition %, `heatTreatment` already covers processing. Sid's sketch 010 D30/D31 redraws and the canvas-generator files are uncommitted and are Sid's to commit."
+}

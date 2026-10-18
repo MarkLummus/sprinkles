@@ -107,7 +107,7 @@
   },
   "review": {
     "models": {
-      "opencode": "openrouter/deepseek/deepseek-v4.1-flash"
+      "opencode": "openrouter/google/gemini-4-argon"
     },
     "timeouts": {
       "opencode": 2400

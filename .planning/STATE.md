@@ -6,10 +6,10 @@ current_phase: 09
 current_phase_name: The library and the stored shapes, plus the two places
 status: executing
 stopped_at: Phase 9 context updated
-last_updated: "2026-10-17T22:12:53.625Z"
+last_updated: "2026-10-18T00:01:48.960Z"
 last_activity: 2026-10-17
 last_activity_desc: Phase 08 complete, transitioned to Phase 09
-state_head: a644faefc7184236f6eadd8a75b10270ad3ef2c7
+state_head: ee0e7347a4608bdba9981398edff9a64da3eacfa
 progress:
   total_phases: 5
   completed_phases: 1
@@ -562,6 +562,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 164 | Pin draft.js reserved-name copy to the import check's | 2026-10-15 | 04256a7 | — |
 | 261015-b90 | Phase 7 review cleanup: re-review WR-01 and IN-01, first-review IN-01 to IN-03 | 2026-10-15 | 0a2b7e2 | [261015-b90-phase-7-review-cleanup-re-review-wr-01-a](./quick/261015-b90-phase-7-review-cleanup-re-review-wr-01-a/) |
 | 166 | Draft .planning/GLOSSARY.md for review | 2026-10-15 | 1edbcd4 | — |
+| 167 | Record decision 16 (import overwrite policy: ask for each differing entry) | 2026-10-17 | ee0e734 | — |
 
 ### Roadmap Evolution
 

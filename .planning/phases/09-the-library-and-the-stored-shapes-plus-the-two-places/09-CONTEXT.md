@@ -1,6 +1,6 @@
 # Phase 9: The library and the stored shapes, plus the two places - Context
 
-**Gathered:** 2026-10-17 (updated 2026-10-17: D-14 to D-18)
+**Gathered:** 2026-10-17 (updated 2026-10-17: D-14 to D-18; 2026-10-18: D-19)
 **Status:** Ready for planning
 
 <domain>
@@ -45,6 +45,7 @@ While a reset is still free, every shape creation will store is settled, in v2.0
 - **D-16:** The converter's output is a checkpoint inside the plan. The first plan writes the converter and the reviewed mapping file (the 18 key collisions marked same ingredient or different product, plus rows it flags as unmappable) and stops until Mark approves the list; the plans that seed the library, test the conflict gate and run the upgrade wait on it. The other plans can be planned now. The plan puts the review on Mark's List as a look row. (Mark, 2026-10-17)
 - **D-17:** At boot an empty seed table (machines, styles, scales, problems) is reseeded from the committed seed, as `seedLibraryIfEmpty` does for the library. A row that fails its shape check stops the app opening, with a plain message that names the table; there is no half-working catalog. Validation covers the four new tables and the library (existing rows checked with `validateLibraryRecord`), and runs in `main.jsx` before `App` mounts. (Library included and the table-naming message: Claude's reading of "refuse a bad row", from the Codex review; Mark may narrow it.) (Mark, 2026-10-17)
 - **D-18:** Phase 8 has landed. The `create` draft kind extends its kept-draft hook (`useKeptDraft`) instead of adding a second restore path. Today the hook cannot hold one: it starts restoring only with a loaded `version` and batches, sends every non-`plan` kind to `onRestoreRecord`, and persists only plan, record and amend drafts (deleting the stored draft otherwise). The acceptance contract: a StrictMode hook test restores and keeps a name-only `create` draft with `version` null and no batch-load prerequisite, through the 250 ms debounce and the unmount path, with no version or recipe written. (Codex review, 2026-10-17)
+- **D-19:** Each version stores a target serving temperature: a nullable number in degrees C, filled from the chosen style's default serve temperature and editable by the maker (Mark, 2026-10-18, `decide-p9-serve-temp-field`, store-on-version). It lands in this phase's one 9 to 10 bump: the version shape, the `create` draft and the store file. The PAC target computed from it (the frozen-fraction calibration families) is not part of this phase or of this decision, and the styles' PAC bands stay blank. The plans do not cover D-19 yet: a replan of Phase 9 is pending.
 
 ### Fixed by earlier decisions (carry forward)
 - Library: keep the app's values for all seven conflicts (LIB-05); clear and reseed on the bump, amending Phase 6 D-05 (LIB-06); the 26 keys never change; a row keeps a `libraryId` link and its figures do not move when the library changes (LIB-08).
@@ -123,6 +124,7 @@ Sketch 012 is the authority for both places; the 103-entry board is the stand-in
 - Equipment-class and calibration-family tables, the balance-model feature, and the serving-equipment decision (Mark's `decision-xx-serving-equipment.md`, not adopted, written for a different stack).
 - A smarter ingredient search (accent folding, all-words matching, prefix ranking), if ever wanted, via Sid.
 - Letting the maker add machines, styles, scales and problems (todos `todo-custom-machine`, `todo-custom-ice-cream-type`).
+- Heating the base (Mark, 2026-10-18, `decide-p9-heat-the-base`: this is the Mise en Place todo applied to Process, so defer it): a heating-method choice (not heated, stove, immersion circulator), and flags on library entries for ingredients that need heating with an editor hint. Mark's separate request to remove the pasteurise temperature and hold time waits on his answer to `decide-p9-pasteurise-fields` and is not decided here.
 
 ### Reviewed Todos (not folded)
 - "Build the Recipe book print format", "Write a product brief for phone-based jobs", "Consider a Mise en Place auto-generator": keyword matches only.

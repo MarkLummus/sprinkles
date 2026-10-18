@@ -266,6 +266,8 @@ The plan-set is unusually rigorous: every round-1 concern I spot-checked is genu
 
 - [x] D-19 (09-CONTEXT.md): each version stores a target serving temperature, a nullable number in degrees C, filled from the chosen style's default and editable; it lands in this phase's one 9 to 10 bump: the version shape, the create draft payload (09-04), the store file schema and validator (09-10) and the sketch/board it appears on (Phase 10 P10_Style). No PAC computation from it in this phase. Clear empties it (Mark, decide-p10-serve-temp-clear, 2026-10-18); picking a style fills it. Phase 9 changes nothing for pasteurise.
 
+- [x] D-19 amended (09-CONTEXT.md, Mark 2026-10-18): the 19 seeded versions' `serveTempC` is copied from each version's `iceEd.servingTemperatureC` (17 hold a figure between -14 and -17; 2 are null and stay null), not stored as null. The `iceEd` block stays unchanged. Update 09-05 (the seed data, its counts and the invariant test that currently pins null), and every check that expects null for a seeded version (09-09's and 09-17's reset proof for olive oil v1 stays null because its Ice Ed figure is null; 09-16's walk expectation reads the seed value). No other behaviour changes.
+
 ## Consensus Summary
 
 One reviewer ran (OpenCode, DeepSeek 4.1 Flash), so nothing here is a 2+ reviewer agreement. It read the repo and cites `file:line` throughout, so it counts at full weight. I confirmed its first finding against the plan text and the dataset: 09-01 pins sweetened condensed milk's `sugar` at `0.4197`, but the stated rule (`Number(value.toFixed(6))`) gives `0.41965`.

@@ -6,10 +6,10 @@ current_phase: 09
 current_phase_name: The library and the stored shapes, plus the two places
 status: executing
 stopped_at: Phase 9 context updated
-last_updated: "2026-10-18T00:38:53.616Z"
+last_updated: "2026-10-18T01:05:27.640Z"
 last_activity: 2026-10-17
 last_activity_desc: Phase 08 complete, transitioned to Phase 09
-state_head: d6a47e36c2431d1eb5e0b2e9a11b9a73e435ee7c
+state_head: adf758bdcad64cd57bde3d6ac519ebc6a3fa3302
 progress:
   total_phases: 5
   completed_phases: 1
@@ -563,6 +563,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261015-b90 | Phase 7 review cleanup: re-review WR-01 and IN-01, first-review IN-01 to IN-03 | 2026-10-15 | 0a2b7e2 | [261015-b90-phase-7-review-cleanup-re-review-wr-01-a](./quick/261015-b90-phase-7-review-cleanup-re-review-wr-01-a/) |
 | 166 | Draft .planning/GLOSSARY.md for review | 2026-10-15 | 1edbcd4 | — |
 | 167 | Record decision 16 (import overwrite policy: ask for each differing entry) | 2026-10-17 | ee0e734 | — |
+| 168 | Record D-19 serving temperature and defer heating the base in Phase 9 context | 2026-10-17 | adf758b | — |
 
 ### Roadmap Evolution
 

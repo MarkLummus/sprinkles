@@ -78,7 +78,7 @@ These gates apply to the v2.0 phases below.
 | 13 | Whether recipe names must be unique | DECIDED: two recipes may share a name; the Notebook warns (MAKE-04) | Phase 10 |
 | 14 | One description or two (the recipe record and the Sheet each have one) | DECIDED: one description box that fills both the recipe description and the Sheet description (MAKE-05) | Phase 10 |
 | 15 | A `libraryId` link on rows, or record it as deferred (LIB-08 states the link) | DECIDED earlier: the link stays (LIB-08) | Phase 9 |
-| 16 | The `importAll` overwrite policy | OPEN | No v2.0 phase: library editing is out of v2.0; decide before library editing |
+| 16 | The `importAll` overwrite policy | ANSWERED (2026-10-18) | When an import brings a library entry the device already has and the two differ, stop and ask for each entry that differs. No v2.0 phase builds it: library editing is out of v2.0 |
 | 17 | Styles and their bands: which ice cream styles a maker picks from, and where each style's band numbers come from (Mark's List `decide-style-bands-source`) | DECIDED and APPROVED (Mark, 2026-10-17): four styles (Philadelphia, French, gelato, sorbet) with the bands from Mark's own research (`~/Downloads/Balance Bands`), approved on `look-style-bands` and recorded in `.planning/notes/2026-10-16-style-bands-draft.md`; PAC and sugar start blank (`decide-style-pac-band`); the maker can edit a band after choosing (MAKE-09) | Phase 9 (the approved values are seeded there; Phase 10's style board shows them) |
 | 18 | Where seed data lives | DECIDED (Mark, 2026-10-16): every seed dataset is rows in store tables (LIB-09): the library, machines, ice cream styles with their bands, and the core scales and problems | Phase 9 |
 | 19 | Sheet code durability: the code follows the content, keeps every printed code, or printing locks the structure | DECIDED (Mark, 2026-10-16, `decide-printed-code-after-edit`): the code is assigned when a version is created (a first version included), is unique, is stored with the version and never changes, whatever is edited (CODE-01). This reverses Phase 4 D-08 and D-09, which computed the code and never stored it | Phase 9 (the stored field), Phase 11 |
@@ -251,7 +251,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 
 - Version evolution (structure edits on later versions): structure edits on a later version, and batches recording reordered or new steps. Deferred from Phase 03.5 (Mark, 2026-09-23), from v1.1 (Mark, 2026-10-14) and out of v2.0 (Mark, 2026-10-16), which allows structure edits on a first version only, until it has a batch or a child version.
 - Show changes for dropped, added and moved steps and rows.
-- Library editing (ING-01): creating and editing library ingredients, with provenance; decide the `importAll` overwrite policy first.
+- Library editing (ING-01): creating and editing library ingredients, with provenance; the `importAll` overwrite policy is decided (decision 16): stop and ask for each entry that differs.
 - Bounded transformation calculations (ING-02).
 - The storage upgrade path: lift records instead of dropping stores, and show storage failures in the UI.
 - Import hardening: the validator edge cases from the v1 audit.

@@ -70,7 +70,7 @@ Tracked, not in this roadmap.
 - **Version evolution (later versions)**: structure edits on later versions, and batches recording reordered or new steps.
 - **Show changes**: dropped, added and moved steps and rows.
 - **Fill-limit advisory**: a Things to check advisory when a batch is under a machine's minimum fill or over its maximum fill. Both limits are stored from v2.0, and nothing reads them yet.
-- **ING-01 (editing)**: creating and editing library ingredients, with provenance. `importAll` overwrite policy to be decided first.
+- **ING-01 (editing)**: creating and editing library ingredients, with provenance. `importAll` overwrite policy decided (roadmap decision 16, 2026-10-18): when an import brings an entry the device already has and the two differ, stop and ask for each entry that differs.
 - **ING-02**: bounded transformation calculations.
 - **Storage upgrade path**: lift records instead of dropping stores, and storage failures shown in the UI.
 - **Import hardening**: validator edge cases from the v1 audit.

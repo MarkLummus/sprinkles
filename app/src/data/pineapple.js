@@ -2,17 +2,9 @@
 // (Ice Cream Log Pages/IMG_2481.HEIC). A single version, a single batch,
 // churned and tasted (D-05). See 03.5-SEED-REVIEW.md.
 // Nothing here is wired into store/seed.js (D-07).
-import { library } from './library.js';
+import { embedFromLibrary } from './library-embed.js';
 import { createBatch } from '../domain/batch.js';
 import { KITCHEN_EQUIPMENT } from './mexican-chocolate.js';
-
-function embed(ingredientName, ingredient, fields) {
-  return {
-    ingredientName,
-    ingredient: structuredClone(ingredient),
-    ...fields,
-  };
-}
 
 export const pineappleRecipe = {
   id: 'pineapple',
@@ -44,22 +36,23 @@ export const pineappleV1 = {
   // — the handwritten "61" is the as-made correction, recorded on the
   // batch below, not the plan.
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.3%', library.wholeMilk33, { portions: [{ step: 1, grams: 342 }], removed: false }) },
-    { id: 'row-02', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 171 }], removed: false }) },
-    { id: 'row-03', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 60.6 }], removed: false }) },
-    { id: 'row-04', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 26 }], removed: false }) },
-    { id: 'row-05', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 89 }], removed: false }) },
-    { id: 'row-06', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 0 }], removed: false }) },
-    { id: 'row-07', ...embed('Lecithin', library.lecithin, { portions: [{ step: 1, grams: 1.1 }], removed: false }) },
-    { id: 'row-08', ...embed('Locust Bean Gum', library.locustBeanGum, { portions: [{ step: 1, grams: 1.1 }], removed: false }) },
-    { id: 'row-09', ...embed('Guar', library.guarGum, { portions: [{ step: 1, grams: 0.55 }], removed: false }) },
-    { id: 'row-10', ...embed('Lambda Carrageenan', library.carrageenan, { portions: [{ step: 1, grams: 0.28 }], removed: false }) },
-    { id: 'row-11', ...embed('Salt', library.salt, { portions: [{ step: 1, grams: 0.5 }], removed: false }) },
-    { id: 'row-12', ...embed('Pineapple', library.pineapple, { portions: [{ step: 1, grams: 342 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary('Whole Milk 3.3%', 'wholeMilk33', { portions: [{ step: 1, grams: 342 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Cream, heavy', 'heavyCream', { portions: [{ step: 1, grams: 171 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Dried Skimmed Milk Powder', 'skimMilkPowder', { portions: [{ step: 1, grams: 60.6 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 1, grams: 26 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 1, grams: 89 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Fructose', 'fructose', { portions: [{ step: 1, grams: 0 }], removed: false }) },
+    { id: 'row-07', ...embedFromLibrary('Lecithin', 'lecithin', { portions: [{ step: 1, grams: 1.1 }], removed: false }) },
+    { id: 'row-08', ...embedFromLibrary('Locust Bean Gum', 'locustBeanGum', { portions: [{ step: 1, grams: 1.1 }], removed: false }) },
+    { id: 'row-09', ...embedFromLibrary('Guar', 'guarGum', { portions: [{ step: 1, grams: 0.55 }], removed: false }) },
+    { id: 'row-10', ...embedFromLibrary('Lambda Carrageenan', 'carrageenan', { portions: [{ step: 1, grams: 0.28 }], removed: false }) },
+    { id: 'row-11', ...embedFromLibrary('Salt', 'salt', { portions: [{ step: 1, grams: 0.5 }], removed: false }) },
+    { id: 'row-12', ...embedFromLibrary('Pineapple', 'pineapple', { portions: [{ step: 1, grams: 342 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   process: {},
   iceEd: { style: 'Gelato', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.1 },
+  serveTempC: -14, // target serving temperature in degrees C (D-19), copied from the iceEd block's servingTemperatureC above, which balanced this formulation; a new recipe's comes from its chosen style
   declaredAxes: [],
   declaredFlaws: [],
   // The two process lines on the page ("Cooked Pineapple in SousVide

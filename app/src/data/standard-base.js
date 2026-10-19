@@ -6,16 +6,8 @@
 // 1) — two versions, not a scale. No binder page and no workbook column,
 // so no batch. Every judgement call is flagged in 03.5-SEED-REVIEW.md.
 // Nothing here is wired into store/seed.js (D-07).
-import { library } from './library.js';
+import { embedFromLibrary } from './library-embed.js';
 import { KITCHEN_EQUIPMENT } from './mexican-chocolate.js';
-
-function embed(ingredientName, ingredient, fields) {
-  return {
-    ingredientName,
-    ingredient: structuredClone(ingredient),
-    ...fields,
-  };
-}
 
 export const standardBaseRecipe = {
   id: 'standard-base',
@@ -44,17 +36,18 @@ export const standardBaseV1 = {
   sheetTitle: 'Standard Base',
   sheetDescription: '',
   rows: [
-    { id: 'row-01', ...embed('whole milk, 3.7%', library.wholeMilk37, { portions: [{ step: 1, grams: 264 }], removed: false }) },
-    { id: 'row-02', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 140 }], removed: false }) },
-    { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 43.1 }], removed: false }) },
-    { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 29.6 }], removed: false }) },
-    { id: 'row-05', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 20.5 }], removed: false }) },
-    { id: 'row-06', ...embed('Lecithin', library.lecithin, { portions: [{ step: 1, grams: 2.42 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary('whole milk, 3.7%', 'wholeMilk37', { portions: [{ step: 1, grams: 264 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Cream, heavy', 'heavyCream', { portions: [{ step: 1, grams: 140 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 1, grams: 43.1 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 1, grams: 29.6 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Dried Skimmed Milk Powder', 'skimMilkPowder', { portions: [{ step: 1, grams: 20.5 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Lecithin', 'lecithin', { portions: [{ step: 1, grams: 2.42 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   // Empty Notes on this file — no process text belongs on this version's plan.
   process: {},
   iceEd: { style: 'Standard', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.1014 },
+  serveTempC: -14, // target serving temperature in degrees C (D-19), copied from the iceEd block's servingTemperatureC above, which balanced this formulation; a new recipe's comes from its chosen style
   declaredAxes: [],
   declaredFlaws: [],
   method: [],
@@ -80,16 +73,17 @@ export const standardBaseV2 = {
   sheetTitle: 'Standard Base',
   sheetDescription: '',
   rows: [
-    { id: 'row-01', ...embed('whole milk, 3.7%', library.wholeMilk37, { portions: [{ step: 1, grams: 500 }], removed: false }) },
-    { id: 'row-02', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 260 }], removed: false }) },
-    { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 70 }], removed: false }) },
-    { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 65 }], removed: false }) },
-    { id: 'row-05', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 37 }], removed: false }) },
-    { id: 'row-06', ...embed('Lecithin', library.lecithin, { portions: [{ step: 1, grams: 4.5 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary('whole milk, 3.7%', 'wholeMilk37', { portions: [{ step: 1, grams: 500 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Cream, heavy', 'heavyCream', { portions: [{ step: 1, grams: 260 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 1, grams: 70 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 1, grams: 65 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Dried Skimmed Milk Powder', 'skimMilkPowder', { portions: [{ step: 1, grams: 37 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Lecithin', 'lecithin', { portions: [{ step: 1, grams: 4.5 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   process: {},
   iceEd: { style: 'Standard', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.1014 },
+  serveTempC: -15,
   declaredAxes: [],
   declaredFlaws: [],
   method: [],

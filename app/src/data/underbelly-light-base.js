@@ -8,16 +8,8 @@
 // (D-11, D-08), so it is seeded as an ordinary recipe here. No gellan row
 // (decision 3d). Every judgement call is flagged in 03.5-SEED-REVIEW.md.
 // Nothing here is wired into store/seed.js (D-07).
-import { library } from './library.js';
+import { embedFromLibrary } from './library-embed.js';
 import { KITCHEN_EQUIPMENT } from './mexican-chocolate.js';
-
-function embed(ingredientName, ingredient, fields) {
-  return {
-    ingredientName,
-    ingredient: structuredClone(ingredient),
-    ...fields,
-  };
-}
 
 export const underbellyLightBaseRecipe = {
   id: 'underbelly-light-base',
@@ -55,14 +47,14 @@ export const underbellyLightBaseV1 = {
   sheetTitle: 'Underbelly Light Base',
   sheetDescription: '',
   rows: [
-    { id: 'row-01', ...embed('whole milk, 3.7%', library.wholeMilk37, { portions: [{ step: 1, grams: 500 }], removed: false }) },
-    { id: 'row-02', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 220 }], removed: false }) },
-    { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 55 }], removed: false }) },
-    { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 56 }], removed: false }) },
-    { id: 'row-05', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 8 }], removed: false }) },
-    { id: 'row-06', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 51 }], removed: false }) },
-    { id: 'row-07', ...embed('Lecithin', library.lecithin, { portions: [{ step: 1, grams: 4.5 }], removed: false }) },
-    { id: 'row-08', ...embed('Vanilla Extract', library.vanillaExtract, { portions: [{ step: 1, grams: 5 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary('whole milk, 3.7%', 'wholeMilk37', { portions: [{ step: 1, grams: 500 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Cream, heavy', 'heavyCream', { portions: [{ step: 1, grams: 220 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 1, grams: 55 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 1, grams: 56 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Fructose', 'fructose', { portions: [{ step: 1, grams: 8 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Dried Skimmed Milk Powder', 'skimMilkPowder', { portions: [{ step: 1, grams: 51 }], removed: false }) },
+    { id: 'row-07', ...embedFromLibrary('Lecithin', 'lecithin', { portions: [{ step: 1, grams: 4.5 }], removed: false }) },
+    { id: 'row-08', ...embedFromLibrary('Vanilla Extract', 'vanillaExtract', { portions: [{ step: 1, grams: 5 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   // The workbook's Sous Vide Temp row is blank for this column.
@@ -71,6 +63,7 @@ export const underbellyLightBaseV1 = {
   // workbook's Hardness 0.75 and Serving Temperature −18 rows are
   // calculator inputs, sent to the sidecar, not this field.
   iceEd: { style: null, servingTemperatureC: null, hardness: null, overrunPercent: null },
+  serveTempC: null, // target serving temperature in degrees C (D-19), copied from the iceEd block's servingTemperatureC above, which balanced this formulation; a new recipe's comes from its chosen style
   declaredAxes: [],
   declaredFlaws: [],
   method: [],
@@ -99,21 +92,22 @@ export const underbellyLightBaseV2 = {
   sheetTitle: 'Underbelly Light Base',
   sheetDescription: '',
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.3%', library.wholeMilk33, { portions: [{ step: 1, grams: 480 }], removed: false }) },
-    { id: 'row-02', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 240 }], removed: false }) },
-    { id: 'row-03', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 85 }], removed: false }) },
-    { id: 'row-04', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 70 }], removed: false }) },
-    { id: 'row-05', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 36 }], removed: false }) },
-    { id: 'row-06', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 6 }], removed: false }) },
-    { id: 'row-07', ...embed('Lecithin', library.lecithin, { portions: [{ step: 1, grams: 2 }], removed: false }) },
-    { id: 'row-08', ...embed('Locust Bean Gum', library.locustBeanGum, { portions: [{ step: 1, grams: 0.8 }], removed: false }) },
-    { id: 'row-09', ...embed('Guar', library.guarGum, { portions: [{ step: 1, grams: 0.6 }], removed: false }) },
-    { id: 'row-10', ...embed('Lambda Carrageenan', library.carrageenan, { portions: [{ step: 1, grams: 0.4 }], removed: false }) },
-    { id: 'row-11', ...embed('Salt', library.salt, { portions: [{ step: 1, grams: 0.7 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary('Whole Milk 3.3%', 'wholeMilk33', { portions: [{ step: 1, grams: 480 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Cream, heavy', 'heavyCream', { portions: [{ step: 1, grams: 240 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Dried Skimmed Milk Powder', 'skimMilkPowder', { portions: [{ step: 1, grams: 85 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 1, grams: 70 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 1, grams: 36 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Fructose', 'fructose', { portions: [{ step: 1, grams: 6 }], removed: false }) },
+    { id: 'row-07', ...embedFromLibrary('Lecithin', 'lecithin', { portions: [{ step: 1, grams: 2 }], removed: false }) },
+    { id: 'row-08', ...embedFromLibrary('Locust Bean Gum', 'locustBeanGum', { portions: [{ step: 1, grams: 0.8 }], removed: false }) },
+    { id: 'row-09', ...embedFromLibrary('Guar', 'guarGum', { portions: [{ step: 1, grams: 0.6 }], removed: false }) },
+    { id: 'row-10', ...embedFromLibrary('Lambda Carrageenan', 'carrageenan', { portions: [{ step: 1, grams: 0.4 }], removed: false }) },
+    { id: 'row-11', ...embedFromLibrary('Salt', 'salt', { portions: [{ step: 1, grams: 0.7 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   process: {},
   iceEd: { style: 'Gelato', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.1014 },
+  serveTempC: -14,
   declaredAxes: [],
   declaredFlaws: [],
   method: [],

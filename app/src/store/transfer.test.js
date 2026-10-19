@@ -92,6 +92,7 @@ function makeVersion(overrides = {}) {
         ingredientName: 'Whole milk',
         portions: [{ step: 1, grams: 100 }],
         ingredient: { composition: { fat: 0.035, msnf: 0.088 } },
+        libraryId: 'wholeMilk',
         removed: false,
       },
     ],
@@ -147,6 +148,7 @@ function makeBatch(overrides = {}) {
           ingredientName: 'Whole milk',
           portions: [{ step: 1, grams: 100 }],
           ingredient: { composition: { fat: 0.035, msnf: 0.088 } },
+          libraryId: 'wholeMilk',
           removed: false,
         },
       ],
@@ -930,7 +932,11 @@ describe('importStore, a storage failure reads in words', () => {
     expect(await target.listRecipes()).toEqual(file.recipes);
     expect(await target.listVersions()).toEqual(file.versions);
     expect(await target.getAllBatches()).toEqual(file.batches);
-    expect(file.library).toHaveLength(Object.keys(library).length);
+    // The export carries exactly what the seeded source holds, and every
+    // data/library.js key is among it; the merged seed's own count is pinned
+    // by the seed tests, not here.
+    expect(file.library).toEqual(await source.listLibrary());
+    expect(file.library.map((record) => record.id)).toEqual(expect.arrayContaining(Object.keys(library)));
     expect(await target.listLibrary()).toEqual(file.library);
   });
 });
@@ -1544,5 +1550,119 @@ describe('composition: the row builder and the import check agree (re-review WR-
     } else {
       expect(build).toThrow(new TypeError('library record entry needs a composition of finite numbers'));
     }
+  });
+});
+
+// LIB-08, D-13, D-19: the link a row keeps to its library entry, the machine's
+// two fill limits, and a version's target serving temperature.
+describe('a row\'s library link (LIB-08, T-09-10)', () => {
+  const versionPath = '$.versions[0].rows[0].libraryId';
+  const snapshotPath = '$.batches[0].snapshot.rows[0].libraryId';
+
+  it('accepts null and a library key on a version row and a snapshot row', () => {
+    for (const libraryId of [null, 'wholeMilk']) {
+      const version = makeVersion();
+      version.rows[0].libraryId = libraryId;
+      const batch = makeBatch();
+      batch.snapshot.rows[0].libraryId = libraryId;
+      expect(validateStoreFile(makeStoreFile([version], [batch])).ok).toBe(true);
+    }
+  });
+
+  it('refuses a version row without libraryId, naming the path', () => {
+    const version = makeVersion();
+    delete version.rows[0].libraryId;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.startsWith(versionPath))).toBe(true);
+  });
+
+  it('refuses a batch snapshot row without libraryId, naming the path', () => {
+    const batch = makeBatch();
+    delete batch.snapshot.rows[0].libraryId;
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.startsWith(snapshotPath))).toBe(true);
+  });
+
+  it.each([
+    ['an empty string', ''],
+    ['a number', 7],
+    ['true', true],
+    ['__proto__', '__proto__'],
+    ['constructor', 'constructor'],
+    ['prototype', 'prototype'],
+  ])('refuses %s as a libraryId, naming the path', (_label, value) => {
+    const version = makeVersion();
+    version.rows[0].libraryId = value;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.startsWith(versionPath))).toBe(true);
+  });
+
+  it('accepts a libraryId that names no library entry: nothing reads a figure through the link', () => {
+    const version = makeVersion();
+    version.rows[0].libraryId = 'removedLater';
+    expect(validateStoreFile(makeStoreFile([version])).ok).toBe(true);
+  });
+});
+
+describe('a version\'s equipment and serveTempC (D-13, D-19, T-09-42)', () => {
+  const equipment = (overrides = {}) => ({ machine: 'Whynter', minFillG: 700, maxFillG: null, ...overrides });
+  const errorsFor = (overrides) => validateStoreFile(makeStoreFile([makeVersion(overrides)])).errors;
+
+  it('accepts a version with no equipment, and with equipment holding null or numeric limits', () => {
+    expect(errorsFor({})).toEqual([]);
+    expect(errorsFor({ equipment: equipment() })).toEqual([]);
+    expect(errorsFor({ equipment: equipment({ minFillG: 0, maxFillG: 1500 }) })).toEqual([]);
+    expect(errorsFor({ equipment: equipment({ machine: null, minFillG: null }) })).toEqual([]);
+  });
+
+  it.each([
+    ['maxFillG as a string', { maxFillG: '700' }, 'maxFillG'],
+    ['minFillG below zero', { minFillG: -1 }, 'minFillG'],
+    ['maxFillG not finite', { maxFillG: Infinity }, 'maxFillG'],
+    ['a machine that is a number', { machine: 7 }, 'machine'],
+  ])('refuses equipment with %s, naming the path', (_label, overrides, field) => {
+    const errors = errorsFor({ equipment: equipment(overrides) });
+    expect(errors.some((error) => error.startsWith(`$.versions[0].equipment.${field}`))).toBe(true);
+  });
+
+  it('refuses equipment without maxFillG or minFillG, since a limit not yet known is null, never absent', () => {
+    const { maxFillG, ...withoutMax } = equipment();
+    expect(maxFillG).toBeNull();
+    expect(errorsFor({ equipment: withoutMax }).some((error) => error.startsWith('$.versions[0].equipment.maxFillG'))).toBe(true);
+    const { minFillG, ...withoutMin } = equipment();
+    expect(minFillG).toBe(700);
+    expect(errorsFor({ equipment: withoutMin }).some((error) => error.startsWith('$.versions[0].equipment.minFillG'))).toBe(true);
+  });
+
+  it('refuses equipment that is not an object', () => {
+    expect(errorsFor({ equipment: 'Whynter' }).some((error) => error.startsWith('$.versions[0].equipment'))).toBe(true);
+    expect(errorsFor({ equipment: null }).some((error) => error.startsWith('$.versions[0].equipment'))).toBe(true);
+  });
+
+  it.each([
+    ['null', null],
+    ['-14', -14],
+    ['-12.5, with no range check', -12.5],
+    ['a positive figure, with no range check', 4],
+  ])('accepts serveTempC %s', (_label, serveTempC) => {
+    expect(errorsFor({ serveTempC })).toEqual([]);
+  });
+
+  it.each([
+    ['the string "-14"', '-14'],
+    ['true', true],
+    ['NaN', Number.NaN],
+    ['Infinity', Infinity],
+  ])('refuses serveTempC as %s, naming the path', (_label, serveTempC) => {
+    const errors = errorsFor({ serveTempC });
+    expect(errors.some((error) => error.startsWith('$.versions[0].serveTempC'))).toBe(true);
+  });
+
+  it('does not yet require serveTempC when the version does not own the key (plan 09-10 makes it required)', () => {
+    expect(Object.hasOwn(makeVersion(), 'serveTempC')).toBe(false);
+    expect(errorsFor({})).toEqual([]);
   });
 });

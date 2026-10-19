@@ -1,5 +1,6 @@
 import { openStore } from './db.js';
 import { normaliseCode, sheetCodeProblems, SheetCodeError } from '../domain/sheetCode.js';
+import { catalogConflicts, mergeById, CatalogConflictError } from './seedTables.js';
 
 // The one write both createVersion and saveVersion make: the read of every stored
 // version, the pure check and the put share one readwrite transaction. A problem
@@ -244,6 +245,26 @@ export function createRepository() {
       // rejects behind it.
       const queued = [];
       try {
+        // The two checks importStore ran before the transaction, repeated over
+        // what this transaction reads, because two imports, or an import and
+        // another tab's createVersion, can each pass them: the Sheet code rule
+        // over the stored and incoming versions (CODE-01, D-04a), and
+        // catalogConflicts over the scales, problems and versions the store
+        // would hold after the import (a file row replaces the stored row of its
+        // id; stored rows it lacks stay). Either aborts before any put.
+        const [storedVersions, storedScales, storedProblems] = await Promise.all([
+          tx.objectStore('versions').getAll(),
+          tx.objectStore('scales').getAll(),
+          tx.objectStore('problems').getAll(),
+        ]);
+        const codeProblems = sheetCodeProblems(storedVersions, versions);
+        if (codeProblems.length > 0) throw new SheetCodeError(codeProblems);
+        const conflicts = catalogConflicts({
+          scales: mergeById(storedScales, scales),
+          problems: mergeById(storedProblems, problems),
+          versions: mergeById(storedVersions, versions),
+        });
+        if (conflicts.length > 0) throw new CatalogConflictError(conflicts);
         const incoming = { recipes, versions, batches, library, machines, styles, scales, problems };
         for (const name of FILE_STORES) {
           for (const row of incoming[name]) queued.push(tx.objectStore(name).put(row));

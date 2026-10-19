@@ -11,9 +11,11 @@
 // is no ladder here.
 import { isScaleDefinition, CORE_SCALE_COUNT, MAX_RECIPE_SCALES } from '../domain/catalog.js';
 import { SEGMENT_OPTIONS, DEFECTS, MARK_ONE_OPTIONS } from '../domain/battery.js';
+import { normaliseCode, sheetCodeProblems, SheetCodeError } from '../domain/sheetCode.js';
 import {
   UNSAFE_KEYS,
   SEED_TABLES,
+  CatalogConflictError,
   catalogConflicts,
   mergeById,
   isPlainObject,
@@ -488,6 +490,13 @@ function validateVersion(version, path, errors, coreKeys) {
   }
   if (!isNonEmptyString(version.id)) errors.push(`${path}.id: expected a non-empty string`);
   if (!isNonEmptyString(version.recipeId)) errors.push(`${path}.recipeId: expected a non-empty string`);
+  // The Sheet code is stored on the version and kept exactly as written, never
+  // recomputed (CODE-01, D-04a): it must already be the canonical XXXX-XXXX
+  // Crockford form. Uniqueness and immutability need the store and are checked
+  // by importStore and again inside repository.importAll.
+  if (typeof version.sheetCode !== 'string' || version.sheetCode !== normaliseCode(version.sheetCode)) {
+    errors.push(`${path}.sheetCode: expected a Sheet code in the form XXXX-XXXX, got ${JSON.stringify(version.sheetCode)}`);
+  }
   if (typeof version.coefficientSetId !== 'string') errors.push(`${path}.coefficientSetId: expected a string`);
   if (!Array.isArray(version.rows) || version.rows.length === 0) {
     errors.push(`${path}.rows: expected a non-empty array`);
@@ -660,6 +669,35 @@ function catalogConflictMessages(conflicts) {
   });
 }
 
+// The path-named line a maker reads for each way an import would break the
+// Sheet code rule (D-04a, D-04b), from sheetCodeProblems' list. Both the
+// pre-check and the SheetCodeError importAll throws inside its transaction word
+// their refusal through here. `fileVersions` is the file's own list, so a
+// problem names the file path of each side that is in the file.
+function sheetCodeMessages(problems, fileVersions) {
+  const fileIndex = new Map(fileVersions.map((version, index) => [version.id, index]));
+  return problems.map((problem) => {
+    if (problem.kind === 'changed') {
+      return `$.versions[${fileIndex.get(problem.versionId)}].sheetCode: ${JSON.stringify(problem.incomingCode)} would replace the Sheet code ${JSON.stringify(problem.storedCode)} of the stored version ${JSON.stringify(problem.versionId)}, and a Sheet code never changes`;
+    }
+    const code = JSON.stringify(problem.code);
+    const first = fileIndex.get(problem.versionId);
+    const second = fileIndex.get(problem.otherVersionId);
+    if (first !== undefined && second !== undefined) {
+      const [later, earlier] = first > second ? [first, second] : [second, first];
+      const earlierId = first > second ? problem.otherVersionId : problem.versionId;
+      return `$.versions[${later}].sheetCode: ${code} is already the Sheet code of version ${JSON.stringify(earlierId)} ($.versions[${earlier}].sheetCode)`;
+    }
+    if (first !== undefined) {
+      return `$.versions[${first}].sheetCode: ${code} is already the Sheet code of version ${JSON.stringify(problem.otherVersionId)}`;
+    }
+    if (second !== undefined) {
+      return `$.versions[${second}].sheetCode: ${code} is already the Sheet code of version ${JSON.stringify(problem.versionId)}`;
+    }
+    return `$.versions: ${code} is the Sheet code of both ${JSON.stringify(problem.versionId)} and ${JSON.stringify(problem.otherVersionId)}`;
+  });
+}
+
 /**
  * exportStore(repository) -> the whole store as one JSON-serialisable object.
  * It reads the stores it carries in one transaction, so a backup is never
@@ -746,6 +784,15 @@ export async function importStore(repository, parsed) {
   });
   if (recipeErrors.length > 0) return { ok: false, errors: recipeErrors };
 
+  // CODE-01, D-04a: no two versions may share a Sheet code once the file's
+  // versions have replaced the stored ones of the same ids, and a file version
+  // may not give a stored version a different code. The codes are kept as
+  // written; nothing is re-drawn. repository.importAll repeats this over the
+  // versions it reads inside its own transaction, so a version another tab
+  // writes after this read still aborts the import.
+  const codeProblems = sheetCodeProblems(storeVersions, parsed.versions);
+  if (codeProblems.length > 0) return { ok: false, errors: sheetCodeMessages(codeProblems, parsed.versions) };
+
   // The store this import would leave must be one a valid batch can be
   // recorded against: the file wins (a file row replaces the local row of the
   // same id), local rows the file lacks stay, and import never deletes (D-14).
@@ -787,7 +834,12 @@ export async function importStore(repository, parsed) {
       scales: parsed.scales,
       problems: parsed.problems,
     });
-  } catch {
+  } catch (error) {
+    // A clash another tab wrote between the pre-checks and the write is a
+    // refusal in the pre-check's words, not a storage failure, and the
+    // transaction left every store as the other tab left it.
+    if (error instanceof SheetCodeError) return { ok: false, errors: sheetCodeMessages(error.problems, parsed.versions) };
+    if (error instanceof CatalogConflictError) return { ok: false, errors: catalogConflictMessages(error.conflicts) };
     return storageFailure;
   }
   return { ok: true, errors: [] };

@@ -550,6 +550,36 @@ describe('HomeBody — an open draft takes the lead (D-18, 04-09)', () => {
   });
 });
 
+// Phase 9 plan 04 (D-18): a create draft belongs to no stored version, so a
+// store holding one changes nothing Home shows.
+describe('HomeBody — a create draft in the store changes nothing (D-18)', () => {
+  const versions = [
+    makeVersion({ id: 'v1', recipeId: 'r1', versionLabel: 'newest work', createdAt: '2026-02-01T00:00:00.000Z' }),
+    makeVersion({ id: 'v2', recipeId: 'r2', versionLabel: 'older work', createdAt: '2026-01-01T00:00:00.000Z' }),
+  ];
+
+  function createDraftOn(versionId) {
+    return buildDraftRecord({
+      versionId,
+      kind: 'create',
+      payload: { recipeId: 'r-new', versionId, name: 'Lemon' },
+      now: '2026-03-05T00:00:00.000Z',
+    });
+  }
+
+  it('renders the same markup as with no drafts when the create draft names no stored version', () => {
+    const without = renderBodyWithDrafts(versions, [], []);
+    expect(renderBodyWithDrafts(versions, [], [createDraftOn('v-new')])).toBe(without);
+  });
+
+  it('renders the same markup even when its versionId equals a stored version’s id', () => {
+    const without = renderBodyWithDrafts(versions, [], []);
+    const markup = renderBodyWithDrafts(versions, [], [createDraftOn('v2')]);
+    expect(markup).toBe(without);
+    expect(markup).not.toContain('home__lead-draft');
+  });
+});
+
 describe('HomeBody — the empty shelf (D-08, 03.4-04 Task 3)', () => {
   it('renders the sentence and the two leading links, and no row, for an empty store', () => {
     const markup = renderBody([]);

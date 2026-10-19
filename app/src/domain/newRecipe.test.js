@@ -4,6 +4,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import { createRecipe } from './newRecipe.js';
+import { codeFromVersionId } from './sheetCode.js';
 import { oliveOilVersion, VERSION_SCHEMA_VERSION } from '../data/olive-oil.js';
 
 const NOW = '2026-10-14T12:00:00.000Z';
@@ -33,7 +34,12 @@ describe('createRecipe — the recipe record (D-01)', () => {
 });
 
 describe('createRecipe — the root version (D-01 to D-04)', () => {
-  it('carries exactly seventeen keys, and no equipment, process, iceEd, targets or coefficientSetName', () => {
+  it('gives the root the code derived from its own version id (D-04)', () => {
+    expect(create().version.sheetCode).toBe(codeFromVersionId('version-new-1'));
+    expect(create().version.sheetCode).not.toBe(codeFromVersionId('version-other'));
+  });
+
+  it('carries exactly eighteen keys, and no equipment, process, iceEd, targets or coefficientSetName', () => {
     const { version } = create();
     expect(Object.keys(version).sort()).toEqual([
       'authored',
@@ -50,6 +56,7 @@ describe('createRecipe — the root version (D-01 to D-04)', () => {
       'recipeId',
       'rows',
       'schemaVersion',
+      'sheetCode',
       'sheetDescription',
       'sheetTitle',
       'versionLabel',

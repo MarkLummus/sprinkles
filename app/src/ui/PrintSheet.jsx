@@ -3,7 +3,6 @@ import { Link, useOutletContext, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { formatRecordDate } from '../domain/batch.js';
 import { sortedVersions, versionIdentity, versionsForRecipe } from '../domain/lineage.js';
-import { sheetCode } from '../domain/sheetCode.js';
 import { Button } from './Button.jsx';
 import { BatchLogPage, TastingLogPage, logFootText } from './PrintLogPages.jsx';
 import { SheetPage, useSheetPages } from './PrintSheetPages.jsx';
@@ -122,7 +121,7 @@ export function PrintSheet({ recipeId, versionId }) {
   if (recipe === undefined || versions === undefined) return null;
   if (recipe === null) return <RecipeNotFound />;
 
-  const code = sheetCode(version);
+  const code = version.sheetCode;
   const saved = formatRecordDate(version.createdAt);
   const footFor = (side) => logFootText({ sheetTitle: version.sheetTitle, identity, code, side });
 

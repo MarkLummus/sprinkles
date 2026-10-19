@@ -34,8 +34,9 @@ function problemLine(problem) {
 const RESULT_ID = 'sheet-code-result';
 
 // The Search route's body (D-09 to D-13): the Sheet code field, and the
-// lookup over every stored version. The code is computed from each version on
-// the spot (domain/sheetCode.js); nothing stores or indexes one. A match opens
+// lookup over every stored version. The code is read from each version's stored
+// sheetCode field (D-06, domain/sheetCode.js); nothing is hashed at search time
+// and no separate index exists. A match opens
 // that version's own Notebook page, built by notebookPath from the stored
 // version's ids, never from what was typed (T-04-03). The frame is the unbuilt
 // place's (Placeholder.jsx), so the shell's rail and the page gutter match.

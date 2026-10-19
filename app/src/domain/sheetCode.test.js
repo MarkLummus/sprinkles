@@ -4,6 +4,8 @@
 import { describe, it, expect } from 'vitest';
 import {
   SHEET_CODE_DERIVATION,
+  SHEET_CODE_ID_DERIVATION,
+  codeFromVersionId,
   CROCKFORD_ALPHABET,
   printedContent,
   canonicalPrintedContent,
@@ -58,6 +60,42 @@ describe('sheetCode — the pinned derivation (D-08, one-way)', () => {
     const composed = { ...structuredClone(oliveOilVersion), sheetTitle: 'Café ice cream' };
     const decomposed = { ...structuredClone(oliveOilVersion), sheetTitle: 'Café ice cream' };
     expect(sheetCode(composed)).toBe(sheetCode(decomposed));
+  });
+});
+
+describe('codeFromVersionId — a new version\'s code, derived once from its id (D-04)', () => {
+  it('names the id derivation with its own tag, apart from the legacy content derivation', () => {
+    expect(SHEET_CODE_ID_DERIVATION).toBe('sprinkles-sheet-code-id:1');
+    expect(SHEET_CODE_ID_DERIVATION).not.toBe(SHEET_CODE_DERIVATION);
+  });
+
+  it("gives olive-oil-ice-cream-v1 a pinned code — THIS VALUE IS ON PAPER ONCE A CREATED SHEET IS PRINTED", () => {
+    // Computed once and cross-checked against an independent FNV-1a 64 over
+    // utf8('sprinkles-sheet-code-id:1:' + id). A change to the tag, the hash or
+    // the encoding is a NEW derivation tag, never an edit of this literal.
+    expect(codeFromVersionId('olive-oil-ice-cream-v1')).toBe('8MDQ-VWFY');
+  });
+
+  it("gives the walk's first child id a pinned code", () => {
+    expect(codeFromVersionId('00000000-0000-4000-8000-000000000001')).toBe('688G-BZQN');
+  });
+
+  it('is deterministic and has the format XXXX-XXXX over the Crockford alphabet', () => {
+    const first = codeFromVersionId('some-version-id');
+    expect(codeFromVersionId('some-version-id')).toBe(first);
+    expect(first).toMatch(CODE_SHAPE);
+    expect(codeFromVersionId('some-version-id-2')).not.toBe(first);
+  });
+
+  it('throws a TypeError for an empty string and for anything but a string', () => {
+    for (const bad of ['', 42, undefined, null]) {
+      expect(() => codeFromVersionId(bad)).toThrow(TypeError);
+      expect(() => codeFromVersionId(bad)).toThrow(/version id must be a non-empty string/);
+    }
+  });
+
+  it('leaves the legacy content derivation alone', () => {
+    expect(sheetCode(oliveOilVersion)).toBe('64JH-G408');
   });
 });
 
@@ -228,40 +266,50 @@ describe('codeProblem', () => {
   });
 });
 
-describe('findVersionsByCode', () => {
-  const other = { ...structuredClone(oliveOilVersion), id: 'other', sheetTitle: 'Other' };
+describe('findVersionsByCode (reads the stored sheetCode field, D-06)', () => {
+  const stored = { ...structuredClone(oliveOilVersion), sheetCode: '64JH-G408' };
+  const other = { ...structuredClone(oliveOilVersion), id: 'other', sheetTitle: 'Other', sheetCode: 'ZZZZ-0000' };
 
-  it('finds a version by its own code, in any case, with or without the hyphen', () => {
-    const code = sheetCode(oliveOilVersion);
-    expect(findVersionsByCode([other, oliveOilVersion], code)).toEqual([oliveOilVersion]);
-    expect(findVersionsByCode([other, oliveOilVersion], code.toLowerCase().replace('-', ''))).toEqual([
-      oliveOilVersion,
-    ]);
+  it('finds a version by its stored code, in any case, with or without the hyphen', () => {
+    expect(findVersionsByCode([other, stored], '64JH-G408')).toEqual([stored]);
+    expect(findVersionsByCode([other, stored], '64jhg408')).toEqual([stored]);
   });
 
   it('returns [] for a code that matches nothing or cannot be read as a code', () => {
-    expect(findVersionsByCode([oliveOilVersion], '0000-0000')).toEqual([]);
-    expect(findVersionsByCode([oliveOilVersion], '')).toEqual([]);
-    expect(findVersionsByCode([oliveOilVersion], 'UUUU-UUUU')).toEqual([]);
+    expect(findVersionsByCode([stored], '0000-0000')).toEqual([]);
+    expect(findVersionsByCode([stored], '')).toEqual([]);
+    expect(findVersionsByCode([stored], 'UUUU-UUUU')).toEqual([]);
   });
 
-  it('confirms the pinned colliding pair really collides', () => {
+  it('finds a version by its stored code after its printed content changes (the field wins over content)', () => {
+    const edited = { ...structuredClone(stored), sheetTitle: 'A different title', rows: [], method: [] };
+    expect(sheetCode(edited)).not.toBe('64JH-G408');
+    expect(findVersionsByCode([edited], '64JH-G408')).toEqual([edited]);
+    expect(findVersionsByCode([edited], sheetCode(edited))).toEqual([]);
+  });
+
+  it('never finds a version that has no stored code, even when its content derives that code', () => {
+    const unstamped = structuredClone(oliveOilVersion);
+    expect(sheetCode(unstamped)).toBe('64JH-G408');
+    expect(findVersionsByCode([unstamped], '64JH-G408')).toEqual([]);
+  });
+
+  it('confirms the pinned colliding pair really collides under the legacy derivation', () => {
     expect(sheetCode(collider('x259595'))).toBe(COLLIDING_CODE);
     expect(sheetCode(collider('x1558660'))).toBe(COLLIDING_CODE);
   });
 
-  it('orders a collision newest createdAt first, then by id, whatever the store order', () => {
-    const older = collider('x259595', { id: 'c', createdAt: '2026-01-01T00:00:00.000Z' });
-    const newer = collider('x1558660', { id: 'c', createdAt: '2026-02-01T00:00:00.000Z' });
+  it('orders two versions sharing a stored code newest createdAt first, then by id, whatever the store order', () => {
+    const older = collider('x259595', { id: 'c', createdAt: '2026-01-01T00:00:00.000Z', sheetCode: COLLIDING_CODE });
+    const newer = collider('x1558660', { id: 'c', createdAt: '2026-02-01T00:00:00.000Z', sheetCode: COLLIDING_CODE });
     expect(findVersionsByCode([older, newer], COLLIDING_CODE)).toEqual([newer, older]);
     expect(findVersionsByCode([newer, older], COLLIDING_CODE)).toEqual([newer, older]);
-
   });
 
   it('breaks a createdAt tie by id, whatever the store order', () => {
     const at = '2026-01-01T00:00:00.000Z';
-    const a = idCollider('k1037770', { createdAt: at });
-    const b = idCollider('k2436248', { createdAt: at });
+    const a = idCollider('k1037770', { createdAt: at, sheetCode: ID_COLLIDING_CODE });
+    const b = idCollider('k2436248', { createdAt: at, sheetCode: ID_COLLIDING_CODE });
     expect(sheetCode(a)).toBe(ID_COLLIDING_CODE);
     expect(sheetCode(b)).toBe(ID_COLLIDING_CODE);
     expect(findVersionsByCode([a, b], ID_COLLIDING_CODE)).toEqual([a, b]);

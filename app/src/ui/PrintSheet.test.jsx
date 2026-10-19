@@ -35,9 +35,13 @@ vi.mock('../store/repository.js', () => ({
 }));
 
 import { PrintSheetForRoute, PRINT_TOO_LONG_LINE } from './PrintSheet.jsx';
-import { oliveOilRecipe, oliveOilVersion } from '../data/olive-oil.js';
+import { oliveOilRecipe } from '../data/olive-oil.js';
+import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { sheetCode } from '../domain/sheetCode.js';
 import { printPath } from './notebookPaths.js';
+
+// The stamped olive oil version the store holds: it carries its stored sheetCode.
+const oliveOilVersion = seedRecipeGroups[0].versions[0];
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -104,8 +108,8 @@ describe('PrintSheet — the route line (D-04)', () => {
   it('reads the version line, the saved date and the Sheet code of the saved version', () => {
     const parts = [...host.querySelectorAll('.print-route__part')].map((part) => part.textContent);
     expect(parts[0]).toBe('Version 1 · 50 g oil · 800 g');
-    expect(parts[1]).toBe(`Saved 1 Jul 2026 · Sheet code ${sheetCode(oliveOilVersion)}`);
-    expect(host.querySelector('.print-route__code').textContent).toBe(sheetCode(oliveOilVersion));
+    expect(parts[1]).toBe(`Saved 1 Jul 2026 · Sheet code ${oliveOilVersion.sheetCode}`);
+    expect(host.querySelector('.print-route__code').textContent).toBe(oliveOilVersion.sheetCode);
   });
 
   it('marks the route ready once the version, the recipe and the versions have loaded', () => {
@@ -153,9 +157,24 @@ describe('PrintSheet — the pages as pictures', () => {
 
   it('carries a foot on each page with the Sheet title, the version line, the code and the side', () => {
     const feet = [...host.querySelectorAll('.lf-foot')].map((foot) => foot.textContent);
-    const line = `Olive Oil Ice Cream · Version 1 · 50 g oil · 800 g · ${sheetCode(oliveOilVersion)}`;
+    const line = `Olive Oil Ice Cream · Version 1 · 50 g oil · 800 g · ${oliveOilVersion.sheetCode}`;
     expect(feet).toEqual([`${line} · Side 1 of 2`, `${line} · Side 2 of 2`]);
     for (const foot of feet) expect(foot).not.toMatch(/page \d+ of/i);
+  });
+});
+
+describe('PrintSheet — prints the stored Sheet code, not one derived from content (D-06)', () => {
+  it('prints a stored code that differs from sheetCode(version) in the head and both feet', async () => {
+    const stored = { ...oliveOilVersion, sheetCode: 'ZZZZ-0000' };
+    expect(sheetCode(stored)).not.toBe('ZZZZ-0000');
+    await mount(OLIVE_PATH, { versions: [stored] });
+    expect(host.querySelector('.print-route__code').textContent).toBe('ZZZZ-0000');
+    const feet = [...host.querySelectorAll('.lf-foot')].map((foot) => foot.textContent);
+    expect(feet).toHaveLength(2);
+    for (const foot of feet) {
+      expect(foot).toContain('ZZZZ-0000');
+      expect(foot).not.toContain(sheetCode(stored));
+    }
   });
 });
 
@@ -250,7 +269,7 @@ describe('PrintSheet — [edge PRINT-05/idempotency] the same version twice', ()
     await mount(OLIVE_PATH);
     const second = host.querySelector('.print-route__code').textContent;
     expect(second).toBe(first);
-    expect(second).toBe(sheetCode(oliveOilVersion));
+    expect(second).toBe(oliveOilVersion.sheetCode);
     expect([...host.querySelectorAll('.lf-foot')].map((foot) => foot.textContent)).toEqual(firstFeet);
     expect(store.batches).toHaveLength(0);
     expect(store.calls).not.toContain('saveBatch');
@@ -266,12 +285,12 @@ describe('PrintSheet — [edge PRINT-05/concurrency] a draft that changes the Sh
     };
     await mount(OLIVE_PATH, { drafts: [draft] });
     expect(host.querySelector('.print-route__name').textContent).toBe(oliveOilVersion.sheetTitle);
-    expect(host.querySelector('.print-route__code').textContent).toBe(sheetCode(oliveOilVersion));
+    expect(host.querySelector('.print-route__code').textContent).toBe(oliveOilVersion.sheetCode);
     const feet = [...host.querySelectorAll('.lf-foot')].map((foot) => foot.textContent);
     expect(feet).toHaveLength(2);
     for (const foot of feet) {
       expect(foot.startsWith(`${oliveOilVersion.sheetTitle} · `)).toBe(true);
-      expect(foot).toContain(sheetCode(oliveOilVersion));
+      expect(foot).toContain(oliveOilVersion.sheetCode);
       expect(foot).not.toContain('Draft Title');
     }
     expect(host.textContent).not.toContain('A Draft Title That Is Not Saved');
@@ -328,15 +347,15 @@ describe('PrintSheet — an import re-reads the open route (review 2026-10-11 P2
       await mount(OLIVE_PATH);
       const printButton = () => [...host.querySelectorAll('button')].find((candidate) => candidate.textContent === 'Print');
       expect(host.querySelector('.print-route__name').textContent).toBe('Olive Oil Ice Cream');
-      expect(host.querySelector('.print-route__code').textContent).toBe(sheetCode(oliveOilVersion));
+      expect(host.querySelector('.print-route__code').textContent).toBe(oliveOilVersion.sheetCode);
       expect(printButton().disabled).toBe(false);
 
       // What a successful import does: the stored version now carries another
       // Sheet title, then the shell's revision moves. The fonts are held so the
       // replacement's pages cannot be laid yet.
-      const imported = { ...oliveOilVersion, sheetTitle: 'IMPORTED REVIEW TITLE' };
-      const importedCode = sheetCode(imported);
-      expect(importedCode).not.toBe(sheetCode(oliveOilVersion));
+      const imported = { ...oliveOilVersion, sheetTitle: 'IMPORTED REVIEW TITLE', sheetCode: 'ZZZZ-0000' };
+      const importedCode = imported.sheetCode;
+      expect(importedCode).not.toBe(oliveOilVersion.sheetCode);
       store.versions = [imported];
       let release;
       const ready = new Promise((resolve) => {

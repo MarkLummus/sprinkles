@@ -23,8 +23,11 @@ import {
   SHEET_CODE_LETTER_U,
   SHEET_CODE_OTHER_CHARACTER,
 } from './SheetCodeSearch.jsx';
-import { oliveOilVersion } from '../data/olive-oil.js';
+import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { sheetCode } from '../domain/sheetCode.js';
+
+// The stamped olive oil version the store holds: it carries its stored sheetCode.
+const oliveOilVersion = seedRecipeGroups[0].versions[0];
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -127,7 +130,7 @@ describe('SheetCodeSearch — the field', () => {
 describe('SheetCodeSearch — a code typed lands on its version (D-09, D-10, D-12)', () => {
   it("opens Olive Oil v1's own Notebook page from its code in lower case without the hyphen", async () => {
     await mount([oliveOilVersion]);
-    const typed = sheetCode(oliveOilVersion).replace('-', '').toLowerCase();
+    const typed = oliveOilVersion.sheetCode.replace('-', '').toLowerCase();
     await typeAndSubmit(typed);
     expect(host.querySelector('[data-testid="landed"]').textContent).toBe(
       'olive-oil-ice-cream/olive-oil-ice-cream-v1',
@@ -136,18 +139,30 @@ describe('SheetCodeSearch — a code typed lands on its version (D-09, D-10, D-1
 
   it('reads the hyphenated form and surrounding spaces too', async () => {
     await mount([oliveOilVersion]);
-    await typeAndSubmit(` ${sheetCode(oliveOilVersion)} `);
+    await typeAndSubmit(` ${oliveOilVersion.sheetCode} `);
     expect(host.querySelector('[data-testid="landed"]')).not.toBeNull();
   });
 
   it('lands on the newer version when two share a code', async () => {
-    // Two versions that really share a code (pinned in sheetCode.test.js).
-    const older = { id: 'c', recipeId: 'r', versionLabel: 'x259595', rows: [], method: [], createdAt: '2026-01-01T00:00:00.000Z' };
-    const newer = { id: 'c', recipeId: 'r2', versionLabel: 'x1558660', rows: [], method: [], createdAt: '2026-02-01T00:00:00.000Z' };
-    expect(sheetCode(older)).toBe(sheetCode(newer));
+    // Two versions that share one stored code.
+    const shared = 'XJ9K-948V';
+    const older = { id: 'c', recipeId: 'r', versionLabel: 'x259595', rows: [], method: [], createdAt: '2026-01-01T00:00:00.000Z', sheetCode: shared };
+    const newer = { id: 'c', recipeId: 'r2', versionLabel: 'x1558660', rows: [], method: [], createdAt: '2026-02-01T00:00:00.000Z', sheetCode: shared };
     await mount([older, newer]);
-    await typeAndSubmit(sheetCode(older));
+    await typeAndSubmit(shared);
     expect(host.querySelector('[data-testid="landed"]').textContent).toBe('r2/c');
+  });
+
+  it('finds a version by its stored code, not the one its content derives', async () => {
+    const stored = { ...oliveOilVersion, sheetCode: 'ZZZZ-0000' };
+    expect(sheetCode(stored)).not.toBe('ZZZZ-0000');
+    await mount([stored]);
+    await typeAndSubmit(sheetCode(stored));
+    expect(host.querySelector('[data-testid="landed"]')).toBeNull();
+    await typeAndSubmit('zzzz0000');
+    expect(host.querySelector('[data-testid="landed"]').textContent).toBe(
+      'olive-oil-ice-cream/olive-oil-ice-cream-v1',
+    );
   });
 });
 
@@ -277,7 +292,7 @@ describe('SheetCodeSearch — the versions load first (WR-07)', () => {
     await mount([]);
     const find = host.querySelector('button');
     expect(find.disabled).toBe(true);
-    await typeAndSubmit(sheetCode(oliveOilVersion));
+    await typeAndSubmit(oliveOilVersion.sheetCode);
     expect(host.querySelector('[role="status"]').textContent).toBe('');
     expect(host.querySelector('[data-testid="landed"]')).toBeNull();
 
@@ -286,7 +301,7 @@ describe('SheetCodeSearch — the versions load first (WR-07)', () => {
       await pending;
     });
     expect(host.querySelector('button').disabled).toBe(false);
-    await typeAndSubmit(sheetCode(oliveOilVersion));
+    await typeAndSubmit(oliveOilVersion.sheetCode);
     expect(host.querySelector('[data-testid="landed"]').textContent).toBe(
       'olive-oil-ice-cream/olive-oil-ice-cream-v1',
     );

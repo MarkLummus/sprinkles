@@ -8,6 +8,7 @@
 
 import { sortedBatches } from './batch.js';
 import { isStepRemoved } from './rows.js';
+import { codeFromVersionId } from './sheetCode.js';
 
 /**
  * sortedVersions(versions) -> a new array ordered by createdAt, most
@@ -122,7 +123,9 @@ const KEYS_COPIED_WHEN_OWNED = ['coefficientSetName', 'targets', 'equipment', 'p
  * (03.5-CONTEXT.md D-11). coefficientSetName, targets, equipment, process and
  * iceEd are copied only when the parent owns them, so the child of a created
  * root, or of a seed version with no targets, has no own key holding
- * undefined. Pure: id and now are supplied by the caller,
+ * undefined. The child's own sheetCode is derived once from its id
+ * (codeFromVersionId) and stored, never copied from the parent (D-04b).
+ * Pure: id and now are supplied by the caller,
  * exactly as domain/batch.js's createBatch takes them — this function
  * never reaches for crypto.randomUUID() or new Date() itself, and it
  * never writes to the parent (T-03-03).
@@ -147,6 +150,7 @@ export function createChildVersion(parent, penFields, { id, now }) {
     sheetTitle: penFields.sheetTitle,
     sheetDescription: penFields.sheetDescription,
     authored: structuredClone(penFields.authored),
+    sheetCode: codeFromVersionId(id),
   };
 }
 
@@ -157,7 +161,8 @@ export function createChildVersion(parent, penFields, { id, now }) {
  * shape domain/batch.js's completeRecord applies to a batch. Callers may
  * pass a third { now } argument for signature symmetry with
  * createChildVersion; this record's own createdAt is never retaken, so it
- * is unused here.
+ * is unused here. The stored sheetCode is never retaken either: the spread
+ * keeps it whatever the pen edits (CODE-01).
  */
 export function saveOverVersion(version, penFields) {
   return {

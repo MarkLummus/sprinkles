@@ -18,6 +18,7 @@ import {
   descendantVersions,
 } from './lineage.js';
 import { sortedBatches } from './batch.js';
+import { codeFromVersionId } from './sheetCode.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { coconutV1 } from '../data/coconut.js';
 
@@ -244,6 +245,14 @@ describe('createChildVersion', () => {
     expect(child.recipeId).toBe('olive-oil-ice-cream');
   });
 
+  it('gives the child the code derived from its own id, not its parent\'s code (D-04b)', () => {
+    const parent = { ...oliveOilVersion, sheetCode: '64JH-G408' };
+    const child = createChildVersion(parent, penFields, { id: 'v2', now: '2026-09-07T10:00:00.000Z' });
+    expect(child.sheetCode).toBe(codeFromVersionId('v2'));
+    expect(child.sheetCode).toBe('527P-MK7B');
+    expect(child.sheetCode).not.toBe(parent.sheetCode);
+  });
+
   it('carries no recipeName key — recipe identity lives off the version now (D-11)', () => {
     const child = createChildVersion(oliveOilVersion, penFields, { id: 'v2', now: '2026-09-07T10:00:00.000Z' });
     expect(child.recipeName).toBeUndefined();
@@ -361,6 +370,36 @@ describe('saveOverVersion', () => {
     expect(updated.citedBatchId).toBe('b-1');
     expect(updated.sheetTitle).toBe('new title');
     expect(updated.sheetDescription).toBe('new description');
+  });
+
+  it('keeps the version\'s own sheetCode whatever the correction edits (CODE-01)', () => {
+    const version = {
+      id: 'v2',
+      parentVersionId: 'olive-oil-ice-cream-v1',
+      parentVersionLabel: '50 g oil · 800 g',
+      createdAt: '2026-09-07T10:00:00.000Z',
+      versionLabel: '60 g oil · 800 g',
+      reason: null,
+      citedBatchId: null,
+      rows: oliveOilVersion.rows,
+      method: oliveOilVersion.method,
+      sheetTitle: 'old title',
+      sheetDescription: 'old description',
+      authored: oliveOilVersion.authored,
+      sheetCode: 'ABCD-1234',
+    };
+    const updated = saveOverVersion(version, {
+      versionLabel: 'a new Version name',
+      reason: 'changed my mind',
+      citedBatchId: null,
+      rows: [],
+      method: [],
+      sheetTitle: 'a new Sheet title',
+      sheetDescription: 'a new description',
+      authored: { beforeYouStart: [{ id: 'n1', text: 'A new note' }] },
+    });
+    expect(updated.sheetCode).toBe('ABCD-1234');
+    expect(version.sheetCode).toBe('ABCD-1234');
   });
 });
 

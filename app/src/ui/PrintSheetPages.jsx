@@ -2,7 +2,6 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { computeBalance, formatGrams, formatPortionLine } from '../domain/composition.js';
 import { activeRows, activeSteps, rowGrams } from '../domain/rows.js';
 import { displayNumberOf, displayNumbers } from '../domain/stepNumbers.js';
-import { sheetCode } from '../domain/sheetCode.js';
 import { buildFigures } from '../domain/figures.js';
 import { layPages, pagesOverflow } from '../domain/sheetPages.js';
 import { groupPortionsByStep, dataFlagFor } from './IngredientTable.jsx';
@@ -81,7 +80,7 @@ export function sheetBlocks(version, identity) {
     figures: buildFigures(readingVersion),
     steps: activeSteps(version),
     numbers: displayNumbers(steps),
-    footText: [version.sheetTitle, identity, sheetCode(version)].join(' · '),
+    footText: [version.sheetTitle, identity, version.sheetCode].join(' · '),
   };
 }
 

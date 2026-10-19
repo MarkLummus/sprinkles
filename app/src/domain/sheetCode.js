@@ -2,11 +2,20 @@
 // sheet's match-back handle (PRINT-04; D-08 to D-13): a maker holding paper
 // types the code and lands on the version it came from.
 //
-// It is computed, never stored: no field, index or cache holds one (D-08,
-// D-09). It is derived from the version id plus the recipe content both print
-// formats share, so an unchanged version always yields the same code and a
-// Save over that changes printed content yields a new one. There is no nonce:
-// the same input is the same code on every device and every day.
+// From Phase 9 the code is STORED on the version (version.sheetCode; decision
+// 19, amending Phase 4 D-08 and D-09): print and search read the stored field,
+// and no edit changes it. sheetCode(version) below remains only to compute the
+// seeded versions' codes once (data/seed-sheet-codes.js) and to keep the golden
+// vector; nothing recomputes a code from content at run time.
+//
+// A new version's code is derived once from its id at creation and stored
+// (D-04; codeFromVersionId): the same id gives the same code on any device, and
+// a change to that derivation is a new tag, never an edit.
+//
+// The legacy derivation hashes the version id plus the recipe content both
+// print formats share, so an unchanged version always yields the same code.
+// There is no nonce: the same input is the same code on every device and every
+// day.
 //
 // ONE-WAY. Once a sheet is in the binder, its code is on paper. Changing the
 // canonical form below, the hash, or the encoding strands every printed code,
@@ -38,6 +47,10 @@ import { activeRows, activeSteps } from './rows.js';
 import { displayNumbers, displayNumberOf } from './stepNumbers.js';
 
 export const SHEET_CODE_DERIVATION = 'sprinkles-sheet-code:1';
+
+// The tag of the id derivation below. Like SHEET_CODE_DERIVATION, a change to it
+// is a NEW tag, never an edit.
+export const SHEET_CODE_ID_DERIVATION = 'sprinkles-sheet-code-id:1';
 
 // Crockford base32: no I, L, O or U. crockford.com/base32.html
 export const CROCKFORD_ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
@@ -116,11 +129,9 @@ function fnv1a64(bytes) {
   return hash;
 }
 
-/**
- * sheetCode(version) -> 'XXXX-XXXX', the version's Sheet code.
- */
-export function sheetCode(version) {
-  const bytes = new TextEncoder().encode(canonicalPrintedContent(version));
+// The shared last step of both derivations: FNV-1a 64 over the bytes, the top
+// 40 bits written as eight Crockford symbols grouped XXXX-XXXX.
+function codeFromBytes(bytes) {
   let bits = fnv1a64(bytes) >> 24n; // top 40 of 64 bits
   let symbols = '';
   for (let i = 0; i < CODE_SYMBOLS; i += 1) {
@@ -128,6 +139,29 @@ export function sheetCode(version) {
     bits >>= 5n;
   }
   return `${symbols.slice(0, 4)}-${symbols.slice(4)}`;
+}
+
+/**
+ * sheetCode(version) -> 'XXXX-XXXX', the version's code derived from its
+ * printed content (the legacy derivation). It computes the seeded versions'
+ * codes once and keeps the golden vector; no run-time reader calls it.
+ */
+export function sheetCode(version) {
+  return codeFromBytes(new TextEncoder().encode(canonicalPrintedContent(version)));
+}
+
+/**
+ * codeFromVersionId(id) -> 'XXXX-XXXX', the code a new version stores, derived
+ * once from its id (D-04): the UTF-8 bytes of SHEET_CODE_ID_DERIVATION, a colon
+ * and the id, through the same hash and encoding as sheetCode. The same id gives
+ * the same code on any device. Throws a TypeError for anything but a non-empty
+ * string (a caller bug).
+ */
+export function codeFromVersionId(id) {
+  if (typeof id !== 'string' || id === '') {
+    throw new TypeError('version id must be a non-empty string');
+  }
+  return codeFromBytes(new TextEncoder().encode(`${SHEET_CODE_ID_DERIVATION}:${id}`));
 }
 
 /**
@@ -182,15 +216,16 @@ export function codeProblem(input) {
 }
 
 /**
- * findVersionsByCode(versions, code) -> every version whose sheetCode equals
- * the normalised `code`, newest createdAt first and then by id, so a 40-bit
- * collision never depends on store order. An unnormalisable code returns [].
+ * findVersionsByCode(versions, code) -> every version whose STORED sheetCode
+ * equals the normalised `code`, newest createdAt first and then by id, so a
+ * 40-bit collision never depends on store order. An unnormalisable code
+ * returns []; a version with no stored code is never found.
  */
 export function findVersionsByCode(versions, code) {
   const wanted = normaliseCode(code);
   if (wanted === null) return [];
   return versions
-    .filter((version) => sheetCode(version) === wanted)
+    .filter((version) => version.sheetCode === wanted)
     .sort((a, b) => {
       if (a.createdAt !== b.createdAt) return a.createdAt < b.createdAt ? 1 : -1;
       if (a.id === b.id) return 0;

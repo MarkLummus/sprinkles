@@ -49,6 +49,7 @@ import { draftFromBatch } from '../domain/recordDraft.js';
 import { notebookPath } from './notebookPaths.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -77,6 +78,7 @@ function Harness(props) {
     batchId: props.batchId,
     version: props.version,
     batches: props.batches,
+    catalog: SEED_CATALOG,
     batchesLoaded: props.batchesLoaded,
     loadFailed: props.loadFailed,
     mode,
@@ -224,6 +226,21 @@ describe('useKeptDraft restores once under React.StrictMode (D-10)', () => {
     const last = renders[renders.length - 1];
     expect(last.draftRestoreDone).toBe(false);
     expect(last.mode).toBe('reading');
+  });
+
+  // Plan 09-15 (D-02): a kept record draft is checked against the page's
+  // catalog, so one that marks a core scale restores only because the hook
+  // passes the catalog on (with none the check throws and the restore ends).
+  it('restores a kept record draft that marks a core scale, checking it against the catalog', async () => {
+    const payload = { ...draftFromBatch(augustSecondBatch), churnDate: '2026-10-11', marks: { hardness: 3 } };
+    const record = buildDraftRecord({ versionId: oliveOilVersion.id, kind: 'record', payload, now: WRITTEN_AT });
+    repo.getDraft.mockResolvedValue(structuredClone(record));
+
+    await mountStrict([]);
+
+    expect(onRestoreRecord).toHaveBeenCalledTimes(1);
+    expect(onRestoreRecord).toHaveBeenCalledWith(expect.objectContaining({ kind: 'record' }));
+    expect(onPageStatus).toHaveBeenCalledWith(DRAFT_KEPT_STATUS);
   });
 });
 

@@ -6,6 +6,7 @@ import { newestDraft, draftMatchesVersion } from '../domain/draft.js';
 import { activeWork, NOT_YET_CHURNED, AWAITING_TASTING, TASTED, STANDING_WORDS } from '../domain/lastEvent.js';
 import { notebookPath } from './notebookPaths.js';
 import { batchCountWords } from './countWords.js';
+import { useCatalog } from './CatalogContext.jsx';
 
 // Home — "Active work first" (.impeccable/surfaces/route.md, Home
 // direction amendment 2026-09-20; DESIGN.md "App marks"). The outer
@@ -22,6 +23,7 @@ export function RecipeList() {
   // context), so this route reloads its own data with no page reload and
   // without Shell reaching into this route's state.
   const storeRevision = useOutletContext();
+  const { catalog } = useCatalog();
   const [versions, setVersions] = useState(null);
   const [batches, setBatches] = useState([]);
   const [recipes, setRecipes] = useState([]);
@@ -54,7 +56,7 @@ export function RecipeList() {
         {versions === null ? (
           <p className="home__loading">Loading your recipes…</p>
         ) : (
-          <HomeBody versions={versions} batches={batches} recipes={recipes} drafts={drafts} />
+          <HomeBody versions={versions} batches={batches} recipes={recipes} drafts={drafts} catalog={catalog} />
         )}
       </div>
     </div>
@@ -66,7 +68,7 @@ export function RecipeList() {
 // separate presentational component, over plain versions/batches props,
 // so it is testable without driving RecipeList's own fetch effect — the
 // same convention HomeLead and RecipeRows already establish.
-export function HomeBody({ versions, batches, recipes = [], drafts = [] }) {
+export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog }) {
   if (versions.length === 0) {
     return (
       <div className="home__empty">
@@ -96,7 +98,7 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [] }) {
       const version = versions.find((candidate) => candidate.id === record.versionId);
       return (
         version !== undefined &&
-        draftMatchesVersion(record, version, batches.filter((batch) => batch.versionId === version.id))
+        draftMatchesVersion(record, version, batches.filter((batch) => batch.versionId === version.id), catalog)
       );
     }),
   );

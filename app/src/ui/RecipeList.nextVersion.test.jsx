@@ -15,6 +15,7 @@ vi.mock('../store/repository.js', () => ({ repository: {} }));
 
 import { HomeBody } from './RecipeList.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -63,7 +64,7 @@ async function mount(batches) {
       <MemoryRouter initialEntries={['/']}>
         <Where />
         <Routes>
-          <Route path="/" element={<HomeBody versions={[makeVersion()]} batches={batches} recipes={[]} />} />
+          <Route path="/" element={<HomeBody versions={[makeVersion()]} batches={batches} recipes={[]} catalog={SEED_CATALOG} />} />
           <Route path="/notebook/:recipeId/:versionId" element={null} />
           <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={null} />
         </Routes>

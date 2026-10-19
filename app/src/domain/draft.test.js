@@ -13,11 +13,12 @@ import {
   isCreateDraftDirty,
   newestDraft,
 } from './draft.js';
-import { isScaleDefinition } from './catalog.js';
+import { isScaleDefinition, problemNames } from './catalog.js';
 import { nextStepKey } from './stepKeys.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
-import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS, DEFECTS } from './battery.js';
+import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS } from './battery.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { removePenNote, setPenNoteText } from './penDraft.js';
 
 const NOW = '2026-10-11T09:00:00.000Z';
@@ -106,6 +107,13 @@ function amendRecord(overrides = {}) {
 
 const batches = [augustSecondBatch];
 
+// Every call below checks against the seeded catalog unless a case passes its
+// own; a case that changes a catalog changes a structuredClone of it, never the
+// shared SEED_CATALOG.
+const matches = (record, version, batchList, catalog = SEED_CATALOG) => draftMatchesVersion(record, version, batchList, catalog);
+const SEED_PROBLEM_WORDS = problemNames(SEED_CATALOG.problems);
+
+
 describe('RECORD_DRAFT_KEYS', () => {
   it('lists the record draft fields once each', () => {
     expect(new Set(RECORD_DRAFT_KEYS).size).toBe(RECORD_DRAFT_KEYS.length);
@@ -151,14 +159,14 @@ describe('newestDraft', () => {
 
 describe('draftMatchesVersion: a plan draft', () => {
   it('accepts a draft built from the version itself', () => {
-    expect(draftMatchesVersion(planRecord(), oliveOilVersion, [])).toBe(true);
+    expect(matches(planRecord(), oliveOilVersion, [])).toBe(true);
   });
 
   it('refuses a draft of another shape version, another kind or another version', () => {
-    expect(draftMatchesVersion({ ...planRecord(), shapeVersion: 2 }, oliveOilVersion, [])).toBe(false);
-    expect(draftMatchesVersion({ ...planRecord(), kind: 'tasting' }, oliveOilVersion, [])).toBe(false);
-    expect(draftMatchesVersion({ ...planRecord(), versionId: 'someone-else' }, oliveOilVersion, [])).toBe(false);
-    expect(draftMatchesVersion(null, oliveOilVersion, [])).toBe(false);
+    expect(matches({ ...planRecord(), shapeVersion: 2 }, oliveOilVersion, [])).toBe(false);
+    expect(matches({ ...planRecord(), kind: 'tasting' }, oliveOilVersion, [])).toBe(false);
+    expect(matches({ ...planRecord(), versionId: 'someone-else' }, oliveOilVersion, [])).toBe(false);
+    expect(matches(null, oliveOilVersion, [])).toBe(false);
   });
 
   it('refuses a draft whose row ids no longer match the version', () => {
@@ -166,51 +174,51 @@ describe('draftMatchesVersion: a plan draft', () => {
     const [firstId] = Object.keys(record.payload.rows);
     record.payload.rows['row-renamed'] = record.payload.rows[firstId];
     delete record.payload.rows[firstId];
-    expect(draftMatchesVersion(record, oliveOilVersion, [])).toBe(false);
+    expect(matches(record, oliveOilVersion, [])).toBe(false);
 
     const extra = planRecord();
     extra.payload.rows['row-extra'] = { portions: [{ step: 1, grams: '1', removed: false }] };
-    expect(draftMatchesVersion(extra, oliveOilVersion, [])).toBe(false);
+    expect(matches(extra, oliveOilVersion, [])).toBe(false);
   });
 
   it('refuses a draft whose line count differs from a row, or whose grams is not a string', () => {
     const fewer = planRecord();
     fewer.payload.rows['row-01'].portions.pop();
-    expect(draftMatchesVersion(fewer, oliveOilVersion, [])).toBe(false);
+    expect(matches(fewer, oliveOilVersion, [])).toBe(false);
 
     const numeric = planRecord();
     numeric.payload.rows['row-01'].portions[0].grams = 120;
-    expect(draftMatchesVersion(numeric, oliveOilVersion, [])).toBe(false);
+    expect(matches(numeric, oliveOilVersion, [])).toBe(false);
   });
 
   it('refuses a draft whose steps differ from the version, or whose notes are not { text }', () => {
     const missingStep = planRecord();
     missingStep.payload.method.pop();
-    expect(draftMatchesVersion(missingStep, oliveOilVersion, [])).toBe(false);
+    expect(matches(missingStep, oliveOilVersion, [])).toBe(false);
 
     const renumbered = planRecord();
     renumbered.payload.method[0].n = 99;
-    expect(draftMatchesVersion(renumbered, oliveOilVersion, [])).toBe(false);
+    expect(matches(renumbered, oliveOilVersion, [])).toBe(false);
 
     const badNote = planRecord();
     badNote.payload.authored.beforeYouStart = [{ words: 'no text key' }];
-    expect(draftMatchesVersion(badNote, oliveOilVersion, [])).toBe(false);
+    expect(matches(badNote, oliveOilVersion, [])).toBe(false);
 
     const noList = planRecord();
     noList.payload.authored = {};
-    expect(draftMatchesVersion(noList, oliveOilVersion, [])).toBe(false);
+    expect(matches(noList, oliveOilVersion, [])).toBe(false);
   });
 
   it('refuses a draft whose text fields are not strings', () => {
     const record = planRecord();
     record.payload.versionLabel = 7;
-    expect(draftMatchesVersion(record, oliveOilVersion, [])).toBe(false);
+    expect(matches(record, oliveOilVersion, [])).toBe(false);
   });
 });
 
 describe("draftMatchesVersion: a plan draft's noteOrigins", () => {
   const LIST = 'beforeYouStart';
-  const fits = (payload) => draftMatchesVersion(structuredClone(planRecord({ payload })), oliveOilVersion, []);
+  const fits = (payload) => matches(structuredClone(planRecord({ payload })), oliveOilVersion, []);
   // One note left (the version's second), so its noteOrigins is { beforeYouStart: [1] }.
   const onlyOneNote = () => removePenNote(planPayload(), LIST, 0);
 
@@ -224,7 +232,7 @@ describe("draftMatchesVersion: a plan draft's noteOrigins", () => {
     const payload = onlyOneNote();
     expect(payload.noteOrigins).toEqual({ [LIST]: [1] });
     const record = structuredClone(planRecord({ payload }));
-    expect(draftMatchesVersion(record, oliveOilVersion, [])).toBe(true);
+    expect(matches(record, oliveOilVersion, [])).toBe(true);
     expect(() => setPenNoteText(record.payload, oliveOilVersion, LIST, 0, 'Something else')).not.toThrow();
   });
 
@@ -277,60 +285,60 @@ describe("draftMatchesVersion: a plan draft's noteOrigins", () => {
 
 describe('draftMatchesVersion: a record draft', () => {
   it('accepts a blank-shaped record draft with ink in it', () => {
-    expect(draftMatchesVersion(recordRecord(), oliveOilVersion, [])).toBe(true);
+    expect(matches(recordRecord(), oliveOilVersion, [])).toBe(true);
   });
 
   it('accepts as-made values and marks that name the version’s own rows and the version’s axes', () => {
     const record = recordRecord({ asMade: { 'row-01': ['120', ''] }, marks: { hardness: 3, oil: 4 } });
-    expect(draftMatchesVersion(record, oliveOilVersion, [])).toBe(true);
+    expect(matches(record, oliveOilVersion, [])).toBe(true);
   });
 
   it('refuses a missing field, an extra field or a field of the wrong type', () => {
     const missing = recordRecord();
     delete missing.payload.meltStyle;
-    expect(draftMatchesVersion(missing, oliveOilVersion, [])).toBe(false);
+    expect(matches(missing, oliveOilVersion, [])).toBe(false);
 
     const extra = recordRecord();
     extra.payload.surprise = 'x';
-    expect(draftMatchesVersion(extra, oliveOilVersion, [])).toBe(false);
+    expect(matches(extra, oliveOilVersion, [])).toBe(false);
 
-    expect(draftMatchesVersion(recordRecord({ tastingOpen: 'yes' }), oliveOilVersion, [])).toBe(false);
-    expect(draftMatchesVersion(recordRecord({ defects: 'icy' }), oliveOilVersion, [])).toBe(false);
-    expect(draftMatchesVersion(recordRecord({ churnDate: 20261011 }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ tastingOpen: 'yes' }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ defects: 'icy' }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ churnDate: 20261011 }), oliveOilVersion, [])).toBe(false);
   });
 
   it('refuses as-made for a row the version lacks, or an array longer than the row’s lines', () => {
-    expect(draftMatchesVersion(recordRecord({ asMade: { 'row-missing': ['1'] } }), oliveOilVersion, [])).toBe(false);
-    expect(draftMatchesVersion(recordRecord({ asMade: { 'row-02': ['1', '2'] } }), oliveOilVersion, [])).toBe(false);
-    expect(draftMatchesVersion(recordRecord({ asMade: { 'row-01': [120] } }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ asMade: { 'row-missing': ['1'] } }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ asMade: { 'row-02': ['1', '2'] } }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ asMade: { 'row-01': [120] } }), oliveOilVersion, [])).toBe(false);
   });
 
   it('refuses a mark for an axis that does not exist, or a stop outside 1 to 5', () => {
-    expect(draftMatchesVersion(recordRecord({ marks: { flavour: 3 } }), oliveOilVersion, [])).toBe(false);
-    expect(draftMatchesVersion(recordRecord({ marks: { hardness: 9 } }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ marks: { flavour: 3 } }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ marks: { hardness: 9 } }), oliveOilVersion, [])).toBe(false);
   });
 
   it('refuses a record draft that names a batch', () => {
     const record = recordRecord();
     record.amendingBatchId = augustSecondBatch.id;
-    expect(draftMatchesVersion(record, oliveOilVersion, batches)).toBe(false);
+    expect(matches(record, oliveOilVersion, batches)).toBe(false);
   });
 });
 
 describe('draftMatchesVersion: an amend draft', () => {
   it('accepts a draft that names a batch of the version and carries a baseline', () => {
-    expect(draftMatchesVersion(amendRecord(), oliveOilVersion, batches)).toBe(true);
+    expect(matches(amendRecord(), oliveOilVersion, batches)).toBe(true);
   });
 
   it('refuses a draft naming a batch no longer in the store', () => {
-    expect(draftMatchesVersion(amendRecord(), oliveOilVersion, [])).toBe(false);
-    expect(draftMatchesVersion(amendRecord({ amendingBatchId: 'gone' }), oliveOilVersion, batches)).toBe(false);
+    expect(matches(amendRecord(), oliveOilVersion, [])).toBe(false);
+    expect(matches(amendRecord({ amendingBatchId: 'gone' }), oliveOilVersion, batches)).toBe(false);
   });
 
   it('refuses a draft with no baseline, a baseline of the wrong shape or an unknown opener', () => {
-    expect(draftMatchesVersion(amendRecord({ amendBaseline: null }), oliveOilVersion, batches)).toBe(false);
-    expect(draftMatchesVersion(amendRecord({ amendBaseline: { churnDate: '' } }), oliveOilVersion, batches)).toBe(false);
-    expect(draftMatchesVersion(amendRecord({ amendOpener: 'somewhere' }), oliveOilVersion, batches)).toBe(false);
+    expect(matches(amendRecord({ amendBaseline: null }), oliveOilVersion, batches)).toBe(false);
+    expect(matches(amendRecord({ amendBaseline: { churnDate: '' } }), oliveOilVersion, batches)).toBe(false);
+    expect(matches(amendRecord({ amendOpener: 'somewhere' }), oliveOilVersion, batches)).toBe(false);
   });
 });
 
@@ -343,16 +351,16 @@ describe('draftMatchesVersion: values Save could store (WR-04)', () => {
   it('accepts each word the pen offers, a declared problem and marks on declared axes', () => {
     for (const [field, options] of Object.entries(SEGMENT_OPTIONS)) {
       for (const word of options) {
-        expect(draftMatchesVersion(recordRecord({ [field]: word }), oliveOilVersion, [])).toBe(true);
+        expect(matches(recordRecord({ [field]: word }), oliveOilVersion, [])).toBe(true);
       }
     }
     for (const word of MARK_ONE_OPTIONS) {
-      expect(draftMatchesVersion(recordRecord({ atDraw: word }), oliveOilVersion, [])).toBe(true);
-      expect(draftMatchesVersion(recordRecord({ fromFreezer: word }), oliveOilVersion, [])).toBe(true);
+      expect(matches(recordRecord({ atDraw: word }), oliveOilVersion, [])).toBe(true);
+      expect(matches(recordRecord({ fromFreezer: word }), oliveOilVersion, [])).toBe(true);
     }
-    expect(draftMatchesVersion(recordRecord({ defects: [DEFECTS[0]] }), oliveOilVersion, [])).toBe(true);
-    expect(draftMatchesVersion(recordRecord({ declaredDefects: ['Bitter'] }), oliveOilVersion, [])).toBe(true);
-    expect(draftMatchesVersion(recordRecord({ marks: { body: 2, oil: 4 } }), oliveOilVersion, [])).toBe(true);
+    expect(matches(recordRecord({ defects: [SEED_PROBLEM_WORDS[0]] }), oliveOilVersion, [])).toBe(true);
+    expect(matches(recordRecord({ declaredDefects: ['Bitter'] }), oliveOilVersion, [])).toBe(true);
+    expect(matches(recordRecord({ marks: { body: 2, oil: 4 } }), oliveOilVersion, [])).toBe(true);
   });
 
   it('refuses a word the pen does not offer in any of the five choice fields', () => {
@@ -364,14 +372,14 @@ describe('draftMatchesVersion: values Save could store (WR-04)', () => {
       { fromFreezer: 'maybe' },
     ];
     for (const overrides of refused) {
-      expect(draftMatchesVersion(recordRecord(overrides), oliveOilVersion, [])).toBe(false);
+      expect(matches(recordRecord(overrides), oliveOilVersion, [])).toBe(false);
     }
   });
 
   it('refuses a defect chip that is not one of the four, an undeclared problem, or a problem twice', () => {
-    expect(draftMatchesVersion(recordRecord({ defects: ['whatever'] }), oliveOilVersion, [])).toBe(false);
-    expect(draftMatchesVersion(recordRecord({ declaredDefects: ['NotDeclared'] }), oliveOilVersion, [])).toBe(false);
-    expect(draftMatchesVersion(recordRecord({ declaredDefects: ['Bitter', 'Bitter'] }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ defects: ['whatever'] }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ declaredDefects: ['NotDeclared'] }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ declaredDefects: ['Bitter', 'Bitter'] }), oliveOilVersion, [])).toBe(false);
   });
 
   it('refuses the review’s reproduction on a version that declares no axis and no problem', () => {
@@ -387,7 +395,7 @@ describe('draftMatchesVersion: values Save could store (WR-04)', () => {
       },
       now: NOW,
     });
-    expect(draftMatchesVersion(record, bareVersion, [])).toBe(false);
+    expect(matches(record, bareVersion, [])).toBe(false);
   });
 
   it('refuses a mark on an axis the version does not declare, and keeps a core axis', () => {
@@ -399,8 +407,8 @@ describe('draftMatchesVersion: values Save could store (WR-04)', () => {
       payload: { ...blankRecord(), marks: { hardness: 3 } },
       now: NOW,
     });
-    expect(draftMatchesVersion(oilOnly(bareVersion), bareVersion, [])).toBe(false);
-    expect(draftMatchesVersion(hardnessOnly, bareVersion, [])).toBe(true);
+    expect(matches(oilOnly(bareVersion), bareVersion, [])).toBe(false);
+    expect(matches(hardnessOnly, bareVersion, [])).toBe(true);
   });
 
   it('reads a Correct draft against the corrected batch’s snapshot, not the live version', () => {
@@ -409,7 +417,7 @@ describe('draftMatchesVersion: values Save could store (WR-04)', () => {
       versionId: bareVersion.id,
       payload: { ...blankRecord(), churnDate: '2026-08-02', ...values },
     });
-    expect(draftMatchesVersion(correct, bareVersion, batches)).toBe(true);
+    expect(matches(correct, bareVersion, batches)).toBe(true);
 
     const asRecord = buildDraftRecord({
       versionId: bareVersion.id,
@@ -417,42 +425,104 @@ describe('draftMatchesVersion: values Save could store (WR-04)', () => {
       payload: { ...blankRecord(), ...values },
       now: NOW,
     });
-    expect(draftMatchesVersion(asRecord, bareVersion, [])).toBe(false);
+    expect(matches(asRecord, bareVersion, [])).toBe(false);
   });
 
   // The fit check reads a version's declared keys from the definitions themselves
-  // and keeps the core keys beside them (plan 09-08, until plan 09-15 passes the catalog).
+  // and keeps the catalog's core keys beside them (plan 09-08, catalog since 09-15).
   it('fits a record draft marking only a core scale, only a declared scale, or both', () => {
-    expect(draftMatchesVersion(recordRecord({ marks: { sweetness: 3 } }), oliveOilVersion, [])).toBe(true);
-    expect(draftMatchesVersion(recordRecord({ marks: { oil: 4 } }), oliveOilVersion, [])).toBe(true);
-    expect(draftMatchesVersion(recordRecord({ marks: { hardness: 2, body: 5 } }), oliveOilVersion, [])).toBe(true);
+    expect(matches(recordRecord({ marks: { sweetness: 3 } }), oliveOilVersion, [])).toBe(true);
+    expect(matches(recordRecord({ marks: { oil: 4 } }), oliveOilVersion, [])).toBe(true);
+    expect(matches(recordRecord({ marks: { hardness: 2, body: 5 } }), oliveOilVersion, [])).toBe(true);
   });
 
   it('refuses a mark on "mystery", and a mark on "body" for a version that declares no scales', () => {
-    expect(draftMatchesVersion(recordRecord({ marks: { mystery: 3 } }), oliveOilVersion, [])).toBe(false);
+    expect(matches(recordRecord({ marks: { mystery: 3 } }), oliveOilVersion, [])).toBe(false);
     const bodyOnBare = buildDraftRecord({
       versionId: bareVersion.id,
       kind: 'record',
       payload: { ...blankRecord(), marks: { body: 3 } },
       now: NOW,
     });
-    expect(draftMatchesVersion(bodyOnBare, bareVersion, [])).toBe(false);
+    expect(matches(bodyOnBare, bareVersion, [])).toBe(false);
   });
 
   it('reads a Correct draft against the snapshot: a declared key only the live version holds does not fit', () => {
     const [body] = oliveOilVersion.declaredAxes;
     const bodyOnlyBatch = { ...structuredClone(augustSecondBatch), snapshot: { ...structuredClone(augustSecondBatch.snapshot), declaredAxes: [body] } };
     const correct = (marks) => amendRecord({ payload: { ...blankRecord(), churnDate: '2026-08-02', marks } });
-    expect(draftMatchesVersion(correct({ body: 3 }), oliveOilVersion, [bodyOnlyBatch])).toBe(true);
-    expect(draftMatchesVersion(correct({ oil: 3 }), oliveOilVersion, [bodyOnlyBatch])).toBe(false);
+    expect(matches(correct({ body: 3 }), oliveOilVersion, [bodyOnlyBatch])).toBe(true);
+    expect(matches(correct({ oil: 3 }), oliveOilVersion, [bodyOnlyBatch])).toBe(false);
   });
 
   it('does not throw, and refuses, a Correct draft ticking a problem on a batch with no snapshot', () => {
     const noSnapshot = { ...augustSecondBatch };
     delete noSnapshot.snapshot;
     const correct = amendRecord({ payload: { ...blankRecord(), churnDate: '2026-08-02', declaredDefects: ['Bitter'] } });
-    expect(() => draftMatchesVersion(correct, oliveOilVersion, [noSnapshot])).not.toThrow();
-    expect(draftMatchesVersion(correct, oliveOilVersion, [noSnapshot])).toBe(false);
+    expect(() => matches(correct, oliveOilVersion, [noSnapshot])).not.toThrow();
+    expect(matches(correct, oliveOilVersion, [noSnapshot])).toBe(false);
+  });
+});
+
+// Plan 09-15 (D-02, D-03a): the allowed core marks and defects come from the
+// catalog for a record draft and from the corrected batch's own snapshot for a
+// Correct draft. Every catalog here is a structuredClone of SEED_CATALOG.
+describe('draftMatchesVersion: the catalog and the snapshot decide what a draft may name', () => {
+  const correctWith = (payload) => amendRecord({ payload: { ...blankRecord(), churnDate: '2026-08-02', ...payload } });
+
+  it('refuses a record draft marking a key the catalog lacks, and fits it once the catalog has it', () => {
+    const withoutHardness = structuredClone(SEED_CATALOG);
+    withoutHardness.scales = withoutHardness.scales.filter((row) => row.key !== 'hardness');
+    const record = recordRecord({ marks: { hardness: 3 } });
+    expect(matches(record, oliveOilVersion, [], SEED_CATALOG)).toBe(true);
+    expect(matches(record, oliveOilVersion, [], withoutHardness)).toBe(false);
+  });
+
+  it('fits a defect from a catalog with a fifth problem with that catalog and not with the seeded one', () => {
+    const fifth = structuredClone(SEED_CATALOG);
+    fifth.problems.push({ id: 'watery', name: 'Watery', order: 5 });
+    const record = recordRecord({ defects: ['Watery'] });
+    expect(matches(record, oliveOilVersion, [], fifth)).toBe(true);
+    expect(matches(record, oliveOilVersion, [], SEED_CATALOG)).toBe(false);
+  });
+
+  it('fits a core scale only the catalog holds as a core scale for a record draft, not for a Correct draft', () => {
+    const withCreaminess = structuredClone(SEED_CATALOG);
+    withCreaminess.scales.push({
+      id: 'creaminess',
+      key: 'creaminess',
+      name: 'Creaminess',
+      low: 'thin',
+      high: 'rich',
+      kind: 'goldilocks',
+      group: 'core',
+      order: 7,
+    });
+    expect(matches(recordRecord({ marks: { creaminess: 3 } }), oliveOilVersion, [], withCreaminess)).toBe(true);
+    expect(matches(recordRecord({ marks: { creaminess: 3 } }), oliveOilVersion, [], SEED_CATALOG)).toBe(false);
+    expect(matches(correctWith({ marks: { creaminess: 3 } }), oliveOilVersion, batches, withCreaminess)).toBe(false);
+  });
+
+  it('fits a Correct draft against its batch’s snapshot words even when the catalog differs', () => {
+    const changed = structuredClone(SEED_CATALOG);
+    changed.scales = changed.scales.filter((row) => row.key !== 'hardness');
+    changed.problems = changed.problems.filter((row) => row.name !== 'Coarse, icy');
+    const correct = correctWith({ marks: { hardness: 2, sweetness: 4 }, defects: ['Coarse, icy'] });
+    expect(matches(correct, oliveOilVersion, batches, changed)).toBe(true);
+    expect(matches(correct, oliveOilVersion, batches, SEED_CATALOG)).toBe(true);
+  });
+
+  it('refuses a Correct draft ticking a problem the batch’s snapshot lacks, though the catalog has it', () => {
+    const fifth = structuredClone(SEED_CATALOG);
+    fifth.problems.push({ id: 'watery', name: 'Watery', order: 5 });
+    expect(matches(correctWith({ defects: ['Watery'] }), oliveOilVersion, batches, fifth)).toBe(false);
+  });
+
+  it('throws a TypeError naming the catalog for a record draft given none, and still fits a plan draft', () => {
+    expect(() => draftMatchesVersion(recordRecord(), oliveOilVersion, [])).toThrow(TypeError);
+    expect(() => draftMatchesVersion(recordRecord(), oliveOilVersion, [])).toThrow(/catalog/);
+    expect(draftMatchesVersion(planRecord(), oliveOilVersion, [])).toBe(true);
+    expect(draftMatchesVersion(amendRecord(), oliveOilVersion, batches)).toBe(true);
   });
 });
 
@@ -462,24 +532,24 @@ describe('draftMatchesVersion: keys that reach a prototype (T-04-23)', () => {
     const record = recordRecord();
     record.payload.asMade = payload;
     expect(Object.prototype.hasOwnProperty.call(record.payload.asMade, '__proto__')).toBe(true);
-    expect(draftMatchesVersion(record, oliveOilVersion, [])).toBe(false);
+    expect(matches(record, oliveOilVersion, [])).toBe(false);
   });
 
   it('refuses a constructor or prototype key, however deep', () => {
     const nested = planRecord();
     nested.payload.method[0].targets = [{ label: 'x', value: 'y', constructor: 'z' }];
-    expect(draftMatchesVersion(nested, oliveOilVersion, [])).toBe(false);
+    expect(matches(nested, oliveOilVersion, [])).toBe(false);
 
     const deeper = recordRecord();
     deeper.payload.stepChanges = { 1: { struck: false, line: null, prototype: {} } };
-    expect(draftMatchesVersion(deeper, oliveOilVersion, [])).toBe(false);
+    expect(matches(deeper, oliveOilVersion, [])).toBe(false);
   });
 
   it('does not loop on a cyclic stored value', () => {
     const record = planRecord();
     record.payload.method[0].targets = [{ label: 'a', value: 'b' }];
     record.payload.method[0].targets[0].self = record.payload.method[0].targets;
-    expect(() => draftMatchesVersion(record, oliveOilVersion, [])).not.toThrow();
+    expect(() => matches(record, oliveOilVersion, [])).not.toThrow();
   });
 });
 
@@ -630,7 +700,7 @@ describe('draftMatchesCreate: what a first version holds as typed (D-18)', () =>
   it('is not draftMatchesVersion’s kind: a create record fails it even with a version of the same id', () => {
     const record = createRecord({ versionId: oliveOilVersion.id }, { versionId: oliveOilVersion.id });
     expect(draftMatchesCreate(record)).toBe(true);
-    expect(draftMatchesVersion(record, oliveOilVersion, [])).toBe(false);
+    expect(matches(record, oliveOilVersion, [])).toBe(false);
   });
 });
 

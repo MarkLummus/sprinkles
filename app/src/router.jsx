@@ -6,6 +6,8 @@ import { RecipePage } from './ui/RecipePage.jsx';
 import { Shell, ImportGuardContext } from './ui/Shell.jsx';
 import { Placeholder } from './ui/Placeholder.jsx';
 import { SheetCodeSearch } from './ui/SheetCodeSearch.jsx';
+import { NotebookPlace } from './ui/NotebookPlace.jsx';
+import { IngredientsPlace } from './ui/IngredientsPlace.jsx';
 import { PrintSheetForRoute } from './ui/PrintSheet.jsx';
 import { NotebookLatestRedirect, LegacyRecipeRedirect } from './ui/NotebookRedirects.jsx';
 
@@ -120,10 +122,10 @@ export const router = createBrowserRouter([
       // D-16: kept indefinitely, not deleted — the old id is a version id.
       { path: '/recipe/:id', Component: LegacyRecipeRedirect },
       { path: '/recipe/:id/batch/:batchId', Component: LegacyRecipeRedirect },
-      { path: '/notebook', element: <Placeholder name="Notebook" /> },
+      { path: '/notebook', Component: NotebookPlace },
       { path: '/recipe-book', element: <Placeholder name="Recipe book" /> },
       { path: '/idea-log', element: <Placeholder name="Idea log" /> },
-      { path: '/ingredients', element: <Placeholder name="Ingredients" /> },
+      { path: '/ingredients', Component: IngredientsPlace },
       { path: '/kitchen', element: <Placeholder name="Kitchen" /> },
       { path: '/search', Component: SheetCodeSearch },
     ],

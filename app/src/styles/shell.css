@@ -353,6 +353,426 @@ button.shell__place {
   min-width: 0;
 }
 
+/* The Notebook place (PLACE-02, sketch 012 notebook-place.html): the title, the
+   count in words, and one row per recipe. A row is the rail, the name (the
+   link), the description where the recipe has one, and the counts in words.
+   The sketch is the authority; every place rule below is scoped under .place,
+   which replaces the board's per-panel wrapper and keeps its specificity, so a
+   bare class cannot lose to app.css's button:hover. */
+.place .nb__count {
+  margin: 0 0 var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.place .nb__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.place .nb__row {
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) var(--app-col-tally);
+  grid-template-areas: 'rail name meta' 'rail desc desc';
+  column-gap: var(--gap-m);
+  padding: var(--gap-m) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+
+.place .nb__rail {
+  grid-area: rail;
+  align-self: stretch;
+  width: var(--app-size-rail-w);
+  min-height: var(--app-size-rail-h);
+  border-radius: var(--app-radius-rail);
+  background: var(--app-notebook);
+}
+
+.place .nb__name {
+  grid-area: name;
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-recipe-name);
+  font-weight: 700;
+  letter-spacing: var(--app-tracking-name);
+  overflow-wrap: anywhere;
+}
+
+.place .nb__name a {
+  color: inherit;
+  border-radius: var(--app-radius-control);
+}
+
+.place .nb__desc {
+  grid-area: desc;
+  margin: var(--gap-xs) 0 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text-secondary);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.place .nb__meta {
+  grid-area: meta;
+  align-self: center;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.place .nb__dot {
+  display: none;
+}
+
+/* The Ingredients place (PLACE-01, sketch 012 ingredients-place.html): the two
+   filters, the count line, and one row per library entry; an open entry shows
+   its figures with basis and source. Read-only: no control here writes. */
+.place .ing__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--gap-s);
+  margin: var(--gap-m) 0 0;
+}
+
+.place .ing__field {
+  flex: 1 1 var(--measure-prose);
+  min-width: 0;
+  max-width: var(--measure-prose);
+}
+
+.place .ing__field--category {
+  flex: 0 0 auto;
+  max-width: none;
+}
+
+.place .ing__filters select.ink-field {
+  background-color: var(--app-background);
+  background-image: linear-gradient(45deg,transparent 50%,var(--app-text) 50%),linear-gradient(135deg,var(--app-text) 50%,transparent 50%);
+  background-position: calc(100% - var(--sheet-inset-select-chevron-x)) calc(50% - var(--sheet-inset-select-chevron-y)),calc(100% - var(--sheet-inset-select-chevron-x) + var(--sheet-size-select-chevron)) calc(50% - var(--sheet-inset-select-chevron-y));
+  background-size: var(--sheet-size-select-chevron) var(--sheet-size-select-chevron),var(--sheet-size-select-chevron) var(--sheet-size-select-chevron);
+  background-repeat: no-repeat;
+  padding-right: var(--gap-select-chevron-room);
+  min-width: var(--app-col-standing);
+}
+
+.place .ing__status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  margin: var(--gap-m) 0 var(--gap-s);
+}
+
+.place .ing__count {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.place .ing__clear {
+  border-radius: var(--app-radius-control);
+}
+
+.place .ing__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.place .ing__row {
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr);
+  column-gap: var(--gap-m);
+  padding: var(--gap-xs) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+
+.place .ing__rail {
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  width: var(--app-size-rail-w);
+  min-height: var(--touch-min);
+  margin: var(--gap-xs) 0;
+  border-radius: var(--app-radius-rail);
+  background: var(--app-ingredients);
+}
+
+.place .ing__head {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) var(--app-col-standing) minmax(0,1fr) auto;
+  column-gap: var(--gap-m);
+  align-items: center;
+  width: 100%;
+  min-height: var(--touch-min);
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--gap-xs) 0;
+  border: none;
+  border-radius: var(--app-radius-control);
+  background: none;
+  color: var(--app-text);
+  font-family: var(--face-grotesk);
+  text-align: left;
+  cursor: pointer;
+}
+
+.place .ing__head:hover {
+  border: none;
+  padding: var(--gap-xs) 0;
+}
+
+.place .ing__name {
+  font-size: var(--app-notebook-identity-size);
+  font-weight: 700;
+  letter-spacing: var(--app-tracking-name);
+  overflow-wrap: anywhere;
+}
+
+.place .ing__meta {
+  display: contents;
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+
+.place .ing__cat,
+.place .ing__sum {
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.place .ing__control {
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+}
+
+.place .ing__detail {
+  grid-column: 2;
+  padding: var(--gap-xs) 0 var(--gap-s);
+}
+
+.place .ing__figures {
+  width: 100%;
+  max-width: calc(var(--measure-prose) + var(--app-col-tally));
+  border-collapse: collapse;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  font-variant-numeric: tabular-nums;
+}
+
+.place .ing__figures th,
+.place .ing__figures td {
+  padding: var(--gap-xs) var(--gap-m) var(--gap-xs) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+  text-align: left;
+  vertical-align: baseline;
+  font-weight: 400;
+}
+
+.place .ing__figures thead th {
+  border-top: none;
+  padding-top: 0;
+  font-size: var(--app-size-label);
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-secondary);
+}
+
+.place .ing__figures tbody th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.place .ing__figures .ing__amount {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.place .ing__figures .ing__unsaid {
+  color: var(--app-text-secondary);
+}
+
+.place .ing__facts,
+.place .ing__helper {
+  margin: var(--gap-s) 0 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+
+.place .ing__note-cap {
+  margin: var(--gap-m) 0 var(--gap-xs);
+}
+
+.place .ing__note {
+  margin: 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+
+.place .ing__none {
+  margin: var(--gap-m) 0 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+
+/* Below 1100 the Ingredients row puts its category above the name (the
+   sketch's cut, Home's own first). */
+@media (max-width: 1099.98px) {
+  .place .ing__head {
+    grid-template-columns: minmax(0,1fr) auto;
+    grid-template-areas: 'cat cat' 'name control' 'sum sum';
+    row-gap: var(--gap-hair);
+  }
+
+  .place .ing__cat {
+    grid-area: cat;
+    font-size: var(--app-size-label);
+    font-weight: 500;
+    letter-spacing: var(--app-tracking-label);
+    text-transform: uppercase;
+  }
+
+  .place .ing__name {
+    grid-area: name;
+  }
+
+  .place .ing__sum {
+    grid-area: sum;
+  }
+
+  .place .ing__control {
+    grid-area: control;
+  }
+}
+
+/* Below 760 (Home's own second cut): the Notebook row stacks its counts under
+   the description, the Ingredients fields stack, and the figures table reads
+   as a list, figure and amount over basis and source, as the ingredient table
+   does below 724. */
+@media (max-width: 759.98px) {
+  .place .nb__row {
+    grid-template-columns: auto minmax(0,1fr);
+    grid-template-areas: 'rail name' 'rail desc' 'rail meta';
+  }
+
+  .place .nb__meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: var(--gap-xs);
+    margin-top: var(--gap-xs);
+  }
+
+  .place .nb__dot {
+    display: inline;
+  }
+
+  .place .ing__field {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+
+  .place .ing__field--category {
+    flex: 1 1 100%;
+  }
+
+  .place .ing__figures thead {
+    display: none;
+  }
+
+  .place .ing__figures,
+  .place .ing__figures tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .place .ing__figures tr {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    grid-template-areas: 'fig amt' 'basis src';
+    column-gap: var(--gap-m);
+    padding: var(--gap-xs) 0;
+    border-top: var(--app-rule-row) solid var(--app-divider);
+  }
+
+  .place .ing__figures th,
+  .place .ing__figures td {
+    display: block;
+    padding: 0;
+    border-top: none;
+  }
+
+  .place .ing__figures tbody th {
+    grid-area: fig;
+  }
+
+  .place .ing__figures .ing__amount {
+    grid-area: amt;
+  }
+
+  .place .ing__figures .ing__basis {
+    grid-area: basis;
+    color: var(--app-text-secondary);
+    font-size: var(--app-size-meta);
+  }
+
+  .place .ing__figures .ing__source {
+    grid-area: src;
+    color: var(--app-text-secondary);
+    font-size: var(--app-size-meta);
+    text-align: right;
+  }
+}
+
+/* Under a coarse pointer the places meet the touch floor: Home's own name
+   links meet it the same way (home.css), and the row heads, Name and Category
+   already hold it at every pointer. */
+@media (pointer: coarse) {
+  .place .nb__name a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-min);
+  }
+
+  .place .ing__clear {
+    min-height: var(--touch-min);
+  }
+
+  .place .ing__status {
+    min-height: var(--touch-min);
+  }
+}
+
 /* The radius sits on every place, not only the active one, so the focus ring
    (.shell__place:focus) is one shape down the rail and across the tab row
    (sketch 011 decision 38 B, Mark's answer 3). */

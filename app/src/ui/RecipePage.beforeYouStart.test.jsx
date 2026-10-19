@@ -53,6 +53,7 @@ vi.mock('../store/repository.js', async () => {
 });
 
 import { RecipePage } from './RecipePage.jsx';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { mexicanChocolateV3, mexicanChocolateRecipe } from '../data/mexican-chocolate.js';
 import { standardBaseV2, standardBaseRecipe } from '../data/standard-base.js';
@@ -125,11 +126,13 @@ async function mountVersion(version) {
   current = { container, root };
   await act(async () => {
     root.render(
-      <MemoryRouter initialEntries={[`/notebook/${version.recipeId}/${version.id}`]}>
-        <Routes>
-          <Route path="/notebook/:recipeId/:versionId" element={<Keyed />} />
-        </Routes>
-      </MemoryRouter>,
+      <CatalogFixture>
+        <MemoryRouter initialEntries={[`/notebook/${version.recipeId}/${version.id}`]}>
+          <Routes>
+            <Route path="/notebook/:recipeId/:versionId" element={<Keyed />} />
+          </Routes>
+        </MemoryRouter>
+      </CatalogFixture>,
     );
   });
   await flush(() => container.querySelector('article.recipe-page') !== null);

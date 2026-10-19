@@ -71,6 +71,7 @@ vi.mock('./BatchRow.jsx', async (importOriginal) => {
 });
 
 import { RecipePage } from './RecipePage.jsx';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
@@ -125,12 +126,14 @@ async function mountAt(path, batches) {
   current = { container, root };
   await act(async () => {
     root.render(
-      <MemoryRouter initialEntries={[path]}>
-        <Routes>
-          <Route path="/notebook/:recipeId/:versionId" element={<Keyed />} />
-          <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={<Keyed />} />
-        </Routes>
-      </MemoryRouter>,
+      <CatalogFixture>
+        <MemoryRouter initialEntries={[path]}>
+          <Routes>
+            <Route path="/notebook/:recipeId/:versionId" element={<Keyed />} />
+            <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={<Keyed />} />
+          </Routes>
+        </MemoryRouter>
+      </CatalogFixture>,
     );
   });
   await flush(() => band() !== null);

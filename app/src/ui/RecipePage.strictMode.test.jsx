@@ -54,6 +54,7 @@ vi.mock('../store/repository.js', async () => {
 });
 
 import { RecipePage, DRAFT_KEPT_STATUS } from './RecipePage.jsx';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 import { buildDraftRecord } from '../domain/draft.js';
 import { penDraftFromVersion } from '../domain/penDraft.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
@@ -122,13 +123,15 @@ async function mountStrict(path) {
   current = { container, root };
   await act(async () => {
     root.render(
-      <StrictMode>
-        <MemoryRouter initialEntries={[path]}>
-          <Routes>
-            <Route path="/notebook/:recipeId/:versionId" element={<Keyed onPageStatus={pageStatus} />} />
-          </Routes>
-        </MemoryRouter>
-      </StrictMode>,
+      <CatalogFixture>
+        <StrictMode>
+          <MemoryRouter initialEntries={[path]}>
+            <Routes>
+              <Route path="/notebook/:recipeId/:versionId" element={<Keyed onPageStatus={pageStatus} />} />
+            </Routes>
+          </MemoryRouter>
+        </StrictMode>
+      </CatalogFixture>,
     );
   });
   await flush(() => nextVersionPen() !== null);

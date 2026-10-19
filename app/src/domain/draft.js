@@ -13,7 +13,7 @@
 // A fourth kind, `create`, is the half-made first version of a new recipe
 // (Phase 9, D-18). It belongs to no stored version, so it has its own fit
 // check, draftMatchesCreate, which takes neither a version nor batches.
-import { AXES, STOPS, axesForVersion } from './axes.js';
+import { AXES, STOPS } from './axes.js';
 import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS, DEFECTS } from './battery.js';
 import { SCALE_KINDS, MAX_RECIPE_SCALES, MAX_RECIPE_PROBLEMS } from './catalog.js';
 import { RESERVED_ROW_IDS } from './versionRow.js';
@@ -176,10 +176,16 @@ function fitsRecordValues(candidate, declared) {
 
 // The declared problems and axis keys of `source`, a version or a batch's
 // snapshot, read without throwing when either list is absent or not a list.
+// axisKeys is the core scale keys (the AXES rows with group 'core') followed by
+// the key of each declared definition, because fitsRecordValues checks every
+// mark against that one list. It does not call axesForVersion: plan 09-11 gives
+// that function a catalog, and draft.js holds none until plan 09-15, which
+// replaces the AXES core rows here with the catalog's.
 function declaredOf(source) {
   const flaws = Array.isArray(source?.declaredFlaws) ? source.declaredFlaws : [];
   const declaredAxes = Array.isArray(source?.declaredAxes) ? source.declaredAxes : [];
-  return { flaws, axisKeys: axesForVersion({ declaredAxes }).map((axis) => axis.key) };
+  const coreKeys = AXES.filter((axis) => axis.group === 'core').map((axis) => axis.key);
+  return { flaws, axisKeys: [...coreKeys, ...declaredAxes.map((scale) => scale?.key)] };
 }
 
 function fitsMethodStep(step) {

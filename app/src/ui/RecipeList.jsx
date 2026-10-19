@@ -5,6 +5,7 @@ import { versionIdentity } from '../domain/lineage.js';
 import { newestDraft, draftMatchesVersion } from '../domain/draft.js';
 import { activeWork, NOT_YET_CHURNED, AWAITING_TASTING, TASTED, STANDING_WORDS } from '../domain/lastEvent.js';
 import { notebookPath } from './notebookPaths.js';
+import { batchCountWords } from './countWords.js';
 
 // Home — "Active work first" (.impeccable/surfaces/route.md, Home
 // direction amendment 2026-09-20; DESIGN.md "App marks"). The outer
@@ -179,14 +180,6 @@ export function HomeLead({ entry, draftVersion = null, draftPath = null }) {
 // markup.
 function placeNameFor() {
   return 'Notebook';
-}
-
-// batchCountWords(n) -> the batch tally's count in words (D-11, D-19,
-// UX1-03): the marks beside it are decorative, so the count is never
-// carried by marks alone.
-function batchCountWords(count) {
-  if (count === 0) return 'not yet made';
-  return `${count} batch${count === 1 ? '' : 'es'}`;
 }
 
 // The row's next action(s) (D-07, D-11): one filled action, and at most

@@ -13,7 +13,7 @@ import {
   coreScaleDefinitions,
   problemNames,
 } from './catalog.js';
-import { AXES } from './axes.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { freshId } from './id.js';
 
 const SEEDED_KEYS = ['hardness', 'scoopability', 'smoothness', 'sweetness', 'body', 'oil'];
@@ -38,8 +38,8 @@ describe('the contract’s constants', () => {
     expect(CORE_SCALE_COUNT).toBe(4);
   });
 
-  it('names the six seeded keys the axes module holds', () => {
-    expect(AXES.map((axis) => axis.key).sort()).toEqual([...SEEDED_KEYS].sort());
+  it('names the six seeded keys the scales table seed holds', () => {
+    expect(SEED_CATALOG.scales.map((row) => row.key).sort()).toEqual([...SEEDED_KEYS].sort());
   });
 });
 

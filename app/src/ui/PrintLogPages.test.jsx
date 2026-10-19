@@ -12,13 +12,13 @@ import { BatchLogPage, TastingLogPage, logFootText } from './PrintLogPages.jsx';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { sheetCode } from '../domain/sheetCode.js';
-import { AXES, CORE_AXIS_COUNT } from '../domain/axes.js';
-import { DEFECTS, PRINTED_MARK_ONE_OPTIONS, SEGMENT_OPTIONS } from '../domain/battery.js';
+import { PRINTED_MARK_ONE_OPTIONS, SEGMENT_OPTIONS } from '../domain/battery.js';
 import { coreScaleDefinitions, problemNames } from '../domain/catalog.js';
 import { SEED_CATALOG } from '../data/seed-catalog.js';
 
 const VERSIONS = seedRecipeGroups.flatMap((group) => group.versions);
-const CORE_AXIS_NAMES = AXES.slice(0, CORE_AXIS_COUNT).map((axis) => axis.name);
+const CORE_AXIS_NAMES = coreScaleDefinitions(SEED_CATALOG.scales).map((axis) => axis.name);
+const CORE_PROBLEM_WORDS = problemNames(SEED_CATALOG.problems);
 // How many core scales the tables hold (the log prints the catalog's, D-01).
 const CORE_COUNT = coreScaleDefinitions(SEED_CATALOG.scales).length;
 
@@ -93,14 +93,14 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
     const declaredAxes = version.declaredAxes ?? [];
     const declaredFlaws = version.declaredFlaws ?? [];
     expect(classCount(markup, 'lf-srow')).toBe(CORE_COUNT + declaredAxes.length);
-    expect(classCount(markup, 'lf-opt')).toBe(PRINTED_MARK_ONE_OPTIONS.length + SEGMENT_OPTIONS.meltStyle.length + DEFECTS.length + declaredFlaws.length);
-    expect(classCount(problemsRow(markup), 'lf-opt')).toBe(DEFECTS.length + declaredFlaws.length);
+    expect(classCount(markup, 'lf-opt')).toBe(PRINTED_MARK_ONE_OPTIONS.length + SEGMENT_OPTIONS.meltStyle.length + CORE_PROBLEM_WORDS.length + declaredFlaws.length);
+    expect(classCount(problemsRow(markup), 'lf-opt')).toBe(CORE_PROBLEM_WORDS.length + declaredFlaws.length);
     expect(classCount(markup, 'lf-mrow--plain')).toBe(1);
     expect(classCount(markup, 'lf-line')).toBe(5);
     expect(markup).not.toContain('Every recipe');
     expect(markup).not.toContain('This recipe only');
     // Core words, for every recipe.
-    for (const word of [...CORE_AXIS_NAMES, ...DEFECTS]) expect(markup, word).toContain(word);
+    for (const word of [...CORE_AXIS_NAMES, ...CORE_PROBLEM_WORDS]) expect(markup, word).toContain(word);
     // Declared words, from this version's own list.
     for (const scale of declaredAxes) expect(markup, scale.name).toContain(scale.name);
     for (const word of declaredFlaws) expect(problemsRow(markup), word).toContain(word);
@@ -132,14 +132,14 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
     expect(markup).toContain('faint');
     expect(markup).toContain('strong');
     const words = [...problemsRow(markup).matchAll(/<\/span>([^<]+)<\/span>/g)].map((m) => m[1]);
-    expect(words).toEqual([...DEFECTS, 'Bitter']);
+    expect(words).toEqual([...CORE_PROBLEM_WORDS, 'Bitter']);
   });
 
   it('a version that declares nothing prints no declared scale and no declared problem: four rows, four boxes', () => {
     const none = { ...oliveOilVersion, declaredAxes: [], declaredFlaws: [] };
     const markup = page2(none);
     expect(classCount(markup, 'lf-srow')).toBe(CORE_COUNT);
-    expect(classCount(problemsRow(markup), 'lf-opt')).toBe(DEFECTS.length);
+    expect(classCount(problemsRow(markup), 'lf-opt')).toBe(CORE_PROBLEM_WORDS.length);
   });
 
   it('a version with two declared problems (built from Olive Oil v1, not seed data) puts all six boxes in the one row', () => {

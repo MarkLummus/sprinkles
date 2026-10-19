@@ -1,13 +1,19 @@
-// The battery's fixed six-axis table, five whole stops, and the per-batch
-// axis list read from the batch's own snapshot (03.3.1-CONTEXT.md D-07,
-// the structural contract's "Axes spec"). Runs under Vitest's default
-// node environment — imports no store, no component, and no framework.
+// The five whole stops, the stop words, the mark readers and the axis lists
+// read from a batch's own snapshot or from a catalog (03.3.1-CONTEXT.md D-07,
+// the structural contract's "Axes spec"). The six seeded scales are rows of
+// SEED_CATALOG here, not a constant in axes.js (09-15, D-01); the words in
+// those rows are pinned in store/seedTables.test.js. Runs under Vitest's
+// default node environment — imports no store, no component, and no framework.
 import { describe, it, expect } from 'vitest';
-import { AXES, STOPS, CORE_AXIS_COUNT, stopWordsFor, axesForBatch, axesForVersion, markKeyFor, setMark, readMarkWord } from './axes.js';
+import { STOPS, stopWordsFor, axesForBatch, axesForVersion, markKeyFor, setMark, readMarkWord } from './axes.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { createBatch } from './batch.js';
+import { CORE_SCALE_COUNT, scaleDefinition } from './catalog.js';
+
+// The six seeded scales as definitions, in the table's order.
+const SEEDED_AXES = SEED_CATALOG.scales.map(scaleDefinition);
 
 // A batch built the way the app builds one, so its snapshot carries the core
 // scales; no case here hand-builds a snapshot.
@@ -15,74 +21,23 @@ function makeBatch(version, catalog = SEED_CATALOG) {
   return createBatch(version, { churnDate: '2026-08-02', asMade: {} }, null, { id: 'b-axes', now: 'x', catalog });
 }
 
-describe('AXES', () => {
-  it('has exactly six entries in the contract\'s fixed order', () => {
-    expect(AXES).toHaveLength(6);
-    expect(AXES.map((axis) => axis.name)).toEqual([
-      'Hardness',
-      'Scoopability',
-      'Smoothness',
-      'Sweetness',
-      'Body',
-      'Oil',
-    ]);
-  });
-
-  it('every entry carries key, name, low, high and group', () => {
-    for (const axis of AXES) {
-      expect(axis).toHaveProperty('key');
-      expect(axis).toHaveProperty('name');
-      expect(axis).toHaveProperty('low');
-      expect(axis).toHaveProperty('high');
-      expect(axis).toHaveProperty('group');
-    }
-  });
-
-  it('matches the contract\'s AXES table byte-for-byte: name, low, high, and the core/declared split', () => {
-    const byName = Object.fromEntries(AXES.map((axis) => [axis.name, axis]));
-    expect(byName.Hardness).toMatchObject({ low: 'soft', high: 'hard', group: 'core' });
-    expect(byName.Scoopability).toMatchObject({ low: 'crumbly', high: 'gummy', group: 'core' });
-    expect(byName.Smoothness).toMatchObject({ low: 'grainy', high: 'smooth', group: 'core' });
-    expect(byName.Sweetness).toMatchObject({ low: 'less', high: 'more', group: 'core' });
-    expect(byName.Body).toMatchObject({ low: 'thin', high: 'heavy', group: 'declared' });
-    expect(byName.Oil).toMatchObject({ low: 'faint', high: 'strong', group: 'declared' });
-  });
-
-  it('the first four are group core and the last two are group declared', () => {
-    expect(AXES.slice(0, 4).every((axis) => axis.group === 'core')).toBe(true);
-    expect(AXES.slice(4).every((axis) => axis.group === 'declared')).toBe(true);
-  });
-
-  it('every key is a fixed lowercase word, distinct across all six', () => {
-    const keys = AXES.map((axis) => axis.key);
-    expect(keys).toEqual(['hardness', 'scoopability', 'smoothness', 'sweetness', 'body', 'oil']);
-    expect(new Set(keys).size).toBe(6);
-  });
-});
-
 describe('STOPS', () => {
   it('is exactly the five whole stops from 1 to 5', () => {
     expect(STOPS).toEqual([1, 2, 3, 4, 5]);
   });
 });
 
-describe('CORE_AXIS_COUNT', () => {
-  it('is 4', () => {
-    expect(CORE_AXIS_COUNT).toBe(4);
-  });
-});
-
 describe('stopWordsFor', () => {
   it('returns the five words in order for Hardness: soft, leaning soft, right, leaning hard, hard', () => {
-    expect(stopWordsFor(AXES[0])).toEqual(['soft', 'leaning soft', 'right', 'leaning hard', 'hard']);
+    expect(stopWordsFor(SEEDED_AXES[0])).toEqual(['soft', 'leaning soft', 'right', 'leaning hard', 'hard']);
   });
 
   it('returns the five words in order for Oil: faint, leaning faint, right, leaning strong, strong', () => {
-    expect(stopWordsFor(AXES[5])).toEqual(['faint', 'leaning faint', 'right', 'leaning strong', 'strong']);
+    expect(stopWordsFor(SEEDED_AXES[5])).toEqual(['faint', 'leaning faint', 'right', 'leaning strong', 'strong']);
   });
 
   it('the middle word is always the fixed word "right"', () => {
-    for (const axis of AXES) {
+    for (const axis of SEEDED_AXES) {
       expect(stopWordsFor(axis)[2]).toBe('right');
     }
   });
@@ -148,14 +103,14 @@ describe('axesForVersion', () => {
   it('returns the four core axes for a version that declares none', () => {
     const axes = axesForVersion({ ...oliveOilVersion, declaredAxes: [] }, SEED_CATALOG);
     expect(axes.map((axis) => axis.key)).toEqual(['hardness', 'scoopability', 'smoothness', 'sweetness']);
-    expect(axes).toHaveLength(CORE_AXIS_COUNT);
+    expect(axes).toHaveLength(CORE_SCALE_COUNT);
   });
 
   it('returns the declared definitions as given, in the version\'s own order, resolving no name', () => {
     const [body, oil] = oliveOilVersion.declaredAxes;
     const mine = { key: 'scale-mine', name: 'Mystery', low: 'a', high: 'b', kind: 'magnitude', group: 'declared' };
     const axes = axesForVersion({ declaredAxes: [oil, mine, body] }, SEED_CATALOG);
-    expect(axes.slice(CORE_AXIS_COUNT)).toEqual([oil, mine, body]);
+    expect(axes.slice(CORE_SCALE_COUNT)).toEqual([oil, mine, body]);
   });
 
   it('agrees with axesForBatch for a batch snapshotting the same version, on the words and the order', () => {
@@ -164,7 +119,7 @@ describe('axesForVersion', () => {
   });
 
   it('reads a version with no declaredAxes field as declaring none', () => {
-    expect(axesForVersion({}, SEED_CATALOG)).toHaveLength(CORE_AXIS_COUNT);
+    expect(axesForVersion({}, SEED_CATALOG)).toHaveLength(CORE_SCALE_COUNT);
   });
 
   it('keeps the order it is handed and sorts nothing: a reversed scales list gives the core scales reversed', () => {
@@ -181,24 +136,24 @@ describe('axesForVersion', () => {
 // The read view's own "Soft (2)" rule (brief § 3, RESEARCH.md Assumption A2).
 describe('readMarkWord', () => {
   it('maps stop 1 or 2 of Hardness to the low anchor "soft"', () => {
-    expect(readMarkWord(AXES[0], 1)).toBe('soft');
-    expect(readMarkWord(AXES[0], 2)).toBe('soft');
+    expect(readMarkWord(SEEDED_AXES[0], 1)).toBe('soft');
+    expect(readMarkWord(SEEDED_AXES[0], 2)).toBe('soft');
   });
 
   it('maps stop 3 of any axis to the fixed middle word "right"', () => {
-    for (const axis of AXES) {
+    for (const axis of SEEDED_AXES) {
       expect(readMarkWord(axis, 3)).toBe('right');
     }
   });
 
   it('maps stop 4 or 5 of Hardness to the high anchor "hard"', () => {
-    expect(readMarkWord(AXES[0], 4)).toBe('hard');
-    expect(readMarkWord(AXES[0], 5)).toBe('hard');
+    expect(readMarkWord(SEEDED_AXES[0], 4)).toBe('hard');
+    expect(readMarkWord(SEEDED_AXES[0], 5)).toBe('hard');
   });
 
   it("reproduces the working case's own tokens: Sweetness at 4 reads \"more\", Oil at 4 reads \"strong\"", () => {
-    const sweetness = AXES.find((axis) => axis.key === 'sweetness');
-    const oil = AXES.find((axis) => axis.key === 'oil');
+    const sweetness = SEEDED_AXES.find((axis) => axis.key === 'sweetness');
+    const oil = SEEDED_AXES.find((axis) => axis.key === 'oil');
     expect(readMarkWord(sweetness, 4)).toBe('more');
     expect(readMarkWord(oil, 4)).toBe('strong');
   });
@@ -206,7 +161,7 @@ describe('readMarkWord', () => {
 
 describe('markKeyFor', () => {
   it('returns the axis\'s fixed key for every one of the six axes', () => {
-    for (const axis of AXES) {
+    for (const axis of SEEDED_AXES) {
       expect(markKeyFor(axis)).toBe(axis.key);
     }
   });

@@ -1,7 +1,7 @@
 // AxisMark — the five-stop goldilocks track (contract "Axes spec"): a
 // mark placed on an axis must be nameable, readable inline, and removable
 // before it is saved (G-02-6). Rebuilt in 03.3.1-03 Task 2 around the real
-// battery shape (domain/axes.js's AXES: { key, name, low, high, group })
+// battery shape (a scale definition: { key, name, low, high, kind, group })
 // and the five whole stops, with per-stop aria-labels, inline state text,
 // and a per-axis Clear that announces through the caller (never inside
 // this leaf — the announcement is a page-level live region, RecipePage's
@@ -13,9 +13,11 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { AxisMark } from './AxisMark.jsx';
-import { AXES, stopWordsFor } from '../domain/axes.js';
+import { stopWordsFor } from '../domain/axes.js';
+import { coreScaleDefinitions } from '../domain/catalog.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 
-const hardnessAxis = AXES.find((axis) => axis.key === 'hardness');
+const hardnessAxis = coreScaleDefinitions(SEED_CATALOG.scales).find((axis) => axis.key === 'hardness');
 const noop = () => {};
 
 describe('AxisMark — five stops, digits 1–5, per-stop aria-labels from stopWordsFor (contract "Axes spec")', () => {

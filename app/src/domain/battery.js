@@ -1,7 +1,12 @@
 // Pure. No imports at all — not even from axes.js or batch.js. The
-// battery's measured-field table, its segmented-control options, its
-// defect chips, the declared problems, and the numeric draft parser, all
-// verbatim from the structural contract's "Controls spec" (sketch 007).
+// battery's measured-field table, its segmented-control options, the readers
+// for a batch's declared and core problems, and the numeric draft parser, all
+// verbatim from the structural contract's "Controls spec" (sketch 007). The
+// core problem words are not here: they are rows of the problems table that
+// the app reads at boot and passes in as a catalog (D-01, D-02), and a batch
+// keeps its own copy in its snapshot (D-03). BATTERY_FIELDS, SEGMENT_OPTIONS
+// and the mark-one options stay constants because they are the battery's
+// controls, not scales or problems (D-03).
 // See 03.3.1-CONTEXT.md D-07, D-09, D-10.
 
 /**
@@ -41,9 +46,6 @@ export const SEGMENT_OPTIONS = {
  */
 export const MARK_ONE_OPTIONS = ['Nothing to note', 'Not evaluated'];
 export const PRINTED_MARK_ONE_OPTIONS = ['Nothing to note', 'Not evaluated', 'See below'];
-
-/** DEFECTS: the four defect chips, verbatim (comma-worded per the contract). */
-export const DEFECTS = ['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film'];
 
 /**
  * declaredProblemsForBatch(batch) -> the declared problems (0 to 2 words)

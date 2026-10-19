@@ -1,10 +1,14 @@
-// Pure. No framework, no DOM, no store import. The battery's fixed
-// six-axis table (sketch 007's settled AXES array), the five whole
-// goldilocks stops, and the per-batch axis list built from the batch's
-// own snapshot — see 03.3.1-CONTEXT.md D-07/D-10 and the structural
-// contract's "Axes spec". A version and a batch snapshot store their declared
-// scales as definitions { key, name, low, high, kind, group } (decision 3,
-// TASTE-03); the readers below take them as stored and resolve no names.
+// Pure. No framework, no DOM, no store import. The five whole goldilocks stops
+// and the readers for a scale's marks and words. The scales themselves are not
+// here: the core scales (and the declared pair Body and Oil) are rows of the
+// scales table that the app reads at boot and passes in as a catalog (D-01,
+// D-02), and a batch keeps its own copy of the definitions it was recorded with
+// in its snapshot (D-03). STOPS, stopWordsFor, readMarkWord and setMark stay
+// constants and functions because they are the battery's controls, not scales
+// (D-03). See 03.3.1-CONTEXT.md D-07/D-10 and the structural contract's "Axes
+// spec". A version and a batch snapshot store their declared scales as
+// definitions { key, name, low, high, kind, group } (decision 3, TASTE-03); the
+// readers below take them as stored and resolve no names.
 //
 // Storing a kind is not kind-aware presentation. Every scale definition now
 // carries its kind, but stopWordsFor, readMarkWord and AxisMark still treat each
@@ -14,28 +18,8 @@
 // shape, Phase 10 and Phase 12 the rest).
 import { coreScaleDefinitions } from './catalog.js';
 
-/**
- * AXES: the six fixed axes, verbatim from the contract's "Axes spec",
- * in order. The first four (group 'core') are always present in every
- * tasting; the last two (group 'declared', Body and Oil) are the pair a
- * recipe may declare for itself. `low`/`high` are the two anchor words;
- * the middle anchor is the fixed word "right" for every axis, so it is
- * not stored per row.
- */
-export const AXES = [
-  { key: 'hardness', name: 'Hardness', low: 'soft', high: 'hard', group: 'core' },
-  { key: 'scoopability', name: 'Scoopability', low: 'crumbly', high: 'gummy', group: 'core' },
-  { key: 'smoothness', name: 'Smoothness', low: 'grainy', high: 'smooth', group: 'core' },
-  { key: 'sweetness', name: 'Sweetness', low: 'less', high: 'more', group: 'core' },
-  { key: 'body', name: 'Body', low: 'thin', high: 'heavy', group: 'declared' },
-  { key: 'oil', name: 'Oil', low: 'faint', high: 'strong', group: 'declared' },
-];
-
 /** STOPS: the five whole stops a mark may take (D-07, sketch 007's goldilocks scale). */
 export const STOPS = [1, 2, 3, 4, 5];
-
-/** CORE_AXIS_COUNT: how many of AXES's leading rows are always present. */
-export const CORE_AXIS_COUNT = 4;
 
 /**
  * stopWordsFor(axis) -> the five stop words in order, per the contract:

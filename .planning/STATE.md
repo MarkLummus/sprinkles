@@ -6,10 +6,10 @@ current_phase: 09
 current_phase_name: The library and the stored shapes, plus the two places
 status: executing
 stopped_at: Phase 9 context updated
-last_updated: "2026-10-18T23:50:01.930Z"
+last_updated: "2026-10-19T00:03:59.497Z"
 last_activity: 2026-10-17
 last_activity_desc: Phase 08 complete, transitioned to Phase 09
-state_head: 2f3a9fbb49a088459b6e9021c3c1c521bf5e245c
+state_head: 710a528691e3924212309ee2039b77e591c63a94
 progress:
   total_phases: 5
   completed_phases: 1
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-16)
 Phase: 09 (The library and the stored shapes, plus the two places) — READY TO EXECUTE
 Plan: Not started
 Status: Ready to execute
-Last activity: 2026-10-17 — Phase 08 complete, transitioned to Phase 09
+Last activity: 2026-10-18 - Completed quick task 261018-rn9: Fix bug-stale-draft-survives-pen-opened-during-read: a pen opened during the draft read owns the stored draft
 
 Progress: [██░░░░░░░░] 20%
 
@@ -570,6 +570,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 171 | Equipment leaves the creation editor; add serving temperature to MAKE-09 | 2026-10-17 | 3be6827 | — |
 | 261017-ttf | Widen the Sweetness POD Balance rule from 0-30 to 0-40 (D30) | 2026-10-17 | 3f23c7f | [261017-ttf-widen-the-sweetness-pod-balance-rule-fro](./quick/261017-ttf-widen-the-sweetness-pod-balance-rule-fro/) |
 | 173 | docs(09): D-20 six per-ingredient coefficients; 2026-10-18 decisions recorded | 2026-10-18 | 163f008 | — |
+| 261018-rn9 | Fix bug-stale-draft-survives-pen-opened-during-read: a pen opened during the draft read owns the stored draft | 2026-10-18 | 710a5286 | [261018-rn9-fix-bug-stale-draft-survives-pen-opened-](./quick/261018-rn9-fix-bug-stale-draft-survives-pen-opened-/) |
 
 ### Roadmap Evolution
 

@@ -60,8 +60,9 @@ vi.mock('../store/repository.js', async () => {
   };
 });
 
-import { RecipePage, VERSION_BLOCKED_STATUS } from './RecipePage.jsx';
+import { RecipePage, VERSION_BLOCKED_STATUS, VERSION_SAVE_ERROR } from './RecipePage.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { SheetCodeError } from '../domain/sheetCode.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -571,6 +572,45 @@ describe('Next version on a saved version with a line out (Mark\'s List per-step
     expect(stepThreeShare.textContent).toBe('36.8%31.3%');
     expect(noteOf('remove Whole milk, Step 3')).toBe('250.4 g of 370.4 g · 46.3% in all');
     expect(rowOf('remove Whole milk, Step 3').getAttribute('aria-label')).toBe('Whole milk, 250.4 g, was 36.8%, now 46.3%, estimated');
+  });
+});
+
+// CODE-01, D-04, T-09-35: a creation the store refuses over a Sheet code is a failed
+// save, not a re-draw. The pen stays open with the maker's ink, nothing is stored, the
+// page does not move, and a second press stores what was typed.
+describe('a refused save keeps the pen and everything typed in it (CODE-01, D-04)', () => {
+  const statusText = () => [...current.container.querySelectorAll('.form-status')].map((el) => el.textContent).join('');
+  const field = (label) => current.container.querySelector(`input[aria-label="${label}"]`);
+
+  it('announces the save error, keeps the typed Version name and amount, stores nothing, and stores them on the next press', async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await setValue(field('Version name'), 'less milk');
+    await setValue(field('Whole milk, grams, portion 1'), '100');
+    store.createVersion.mockRejectedValueOnce(
+      new SheetCodeError([{ kind: 'clash', code: 'ZZZZ-0000', versionId: 'x', otherVersionId: 'y' }]),
+    );
+
+    await click(buttonByText(container, 'Save as a new version'));
+    await flush(() => statusText().includes(VERSION_SAVE_ERROR));
+
+    expect(statusText()).toContain(VERSION_SAVE_ERROR);
+    expect(store.createVersion).toHaveBeenCalledTimes(1);
+    expect(field('Version name').value).toBe('less milk');
+    expect(field('Whole milk, grams, portion 1').value).toBe('100');
+    expect(buttonByText(current.container, 'Save as a new version')).not.toBeNull();
+    expect(store.versions.map((version) => version.id)).toEqual([VERSION]);
+    expect(store.saveVersion).not.toHaveBeenCalled();
+
+    await click(buttonByText(current.container, 'Save as a new version'));
+    await flush(() => store.createVersion.mock.calls.length > 1);
+
+    expect(store.createVersion).toHaveBeenCalledTimes(2);
+    const retried = store.createVersion.mock.calls[1][0];
+    expect(retried.versionLabel).toBe('less milk');
+    expect(retried.rows.find((row) => row.id === 'row-01').portions[0].grams).toBe(100);
+    expect(store.versions).toHaveLength(2);
   });
 });
 

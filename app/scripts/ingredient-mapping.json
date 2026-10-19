@@ -1,0 +1,317 @@
+{
+  "same": {
+    "allulose": "allulose",
+    "cinnamon": "cinnamon",
+    "cocoa-powder": "cocoaPowder",
+    "coffee-beans": "coffeeBeans",
+    "dextrose": "dextrose",
+    "fructose": "fructose",
+    "guar-gum": "guarGum",
+    "heavy-cream-36": "heavyCream",
+    "lambda-carrageenan": "carrageenan",
+    "lecithin": "lecithin",
+    "locust-bean-gum": "locustBeanGum",
+    "pineapple": "pineapple",
+    "salt": "salt",
+    "skim-milk-powder": "skimMilkPowder",
+    "stabilizer-mix-4421": "stabilizerMix4421",
+    "strawberries": "strawberries",
+    "sucrose": "sucrose",
+    "vanilla-extract": "vanillaExtract"
+  },
+  "different": {
+    "coconut-milk": "coconutMilk208",
+    "whole-milk": "wholeMilk325"
+  },
+  "renamed": {},
+  "coefficients": {
+    "alcohol-40pct": {
+      "defaultStage": "before_churn"
+    },
+    "almond-paste-pure": {
+      "fatStructural": false
+    },
+    "atomized-glucose-40de": {
+      "defaultStage": "dry_blend"
+    },
+    "buffalo-milk": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "butter-unsalted": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "buttermilk": {
+      "fatStructural": true
+    },
+    "buttermilk-light": {
+      "fatStructural": true
+    },
+    "chocolate-dark": {
+      "fatStructural": true
+    },
+    "cmc": {
+      "defaultStage": "dry_blend"
+    },
+    "cocoa-butter": {
+      "fatStructural": true
+    },
+    "coconut-milk": {
+      "fatStructural": true
+    },
+    "corn-syrup-20de": {
+      "defaultStage": "combine"
+    },
+    "corn-syrup-32de": {
+      "defaultStage": "combine"
+    },
+    "corn-syrup-36de": {
+      "defaultStage": "combine"
+    },
+    "corn-syrup-42de": {
+      "defaultStage": "combine"
+    },
+    "corn-syrup-64de": {
+      "defaultStage": "combine"
+    },
+    "cream-30pct": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "dried-buttermilk-powder-sweet": {
+      "fatStructural": true,
+      "defaultStage": "dry_blend"
+    },
+    "egg-yolk": {
+      "fatStructural": false,
+      "ownEmulsifier": true,
+      "defaultStage": "combine",
+      "requiresHeat": true
+    },
+    "erythritol": {
+      "defaultStage": "dry_blend"
+    },
+    "ethanol": {
+      "defaultStage": "before_churn"
+    },
+    "evaporated-milk": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "glycerol": {
+      "defaultStage": "combine"
+    },
+    "goat-milk": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "half-and-half": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "hazelnut-paste-pure": {
+      "fatStructural": false
+    },
+    "heavy-cream-40": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "hfcs-42": {
+      "defaultStage": "combine"
+    },
+    "hfcs-55": {
+      "defaultStage": "combine"
+    },
+    "hfcs-90": {
+      "defaultStage": "combine"
+    },
+    "high-maltose-cs-55de": {
+      "defaultStage": "combine"
+    },
+    "honey": {
+      "defaultStage": "combine"
+    },
+    "inulin": {
+      "defaultStage": "dry_blend"
+    },
+    "invert-partial": {
+      "defaultStage": "combine"
+    },
+    "kappa-carrageenan": {
+      "defaultStage": "dry_blend"
+    },
+    "lactose": {
+      "defaultStage": "dry_blend"
+    },
+    "light-cream": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "maltodextrin-10de": {
+      "defaultStage": "dry_blend"
+    },
+    "maltodextrin-15de": {
+      "defaultStage": "dry_blend"
+    },
+    "maltodextrin-18de": {
+      "defaultStage": "dry_blend"
+    },
+    "maltodextrin-5de": {
+      "defaultStage": "dry_blend"
+    },
+    "maltose": {
+      "defaultStage": "dry_blend"
+    },
+    "milk-chocolate": {
+      "fatStructural": true
+    },
+    "mono-diglycerides": {
+      "ownEmulsifier": true,
+      "defaultStage": "dry_blend"
+    },
+    "pectin": {
+      "defaultStage": "dry_blend"
+    },
+    "pistachio-paste-pure": {
+      "fatStructural": false
+    },
+    "polydextrose": {
+      "defaultStage": "dry_blend"
+    },
+    "polysorbate-80": {
+      "ownEmulsifier": true,
+      "defaultStage": "dry_blend"
+    },
+    "rum-40pct": {
+      "defaultStage": "before_churn"
+    },
+    "skim-milk": {
+      "defaultStage": "combine"
+    },
+    "sodium-alginate": {
+      "defaultStage": "dry_blend"
+    },
+    "sorbitol": {
+      "defaultStage": "dry_blend"
+    },
+    "sour-cream": {
+      "fatStructural": true
+    },
+    "sweetened-condensed-milk": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "trehalose": {
+      "defaultStage": "dry_blend"
+    },
+    "trimoline-full": {
+      "defaultStage": "combine"
+    },
+    "vegetable-oil": {
+      "fatStructural": false,
+      "defaultStage": "before_churn"
+    },
+    "whole-egg": {
+      "fatStructural": false,
+      "ownEmulsifier": true,
+      "defaultStage": "combine",
+      "requiresHeat": true
+    },
+    "whole-milk": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "whole-milk-powder": {
+      "fatStructural": true,
+      "defaultStage": "dry_blend"
+    },
+    "xanthan": {
+      "defaultStage": "dry_blend"
+    },
+    "xylitol": {
+      "defaultStage": "dry_blend"
+    },
+    "yogurt-3.5pct": {
+      "fatStructural": true,
+      "defaultStage": "cool"
+    }
+  },
+  "existingCoefficients": {
+    "allulose": {
+      "defaultStage": "after_heat"
+    },
+    "carrageenan": {
+      "defaultStage": "dry_blend"
+    },
+    "cinnamon": {},
+    "cocoaPowder": {
+      "fatStructural": true
+    },
+    "coconutCream": {
+      "fatStructural": true
+    },
+    "coconutMilk": {
+      "fatStructural": true
+    },
+    "coffeeBeans": {},
+    "dextrose": {
+      "defaultStage": "dry_blend"
+    },
+    "driedStrawberry": {},
+    "fructose": {
+      "defaultStage": "dry_blend"
+    },
+    "guarGum": {
+      "defaultStage": "dry_blend"
+    },
+    "heavyCream": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "lecithin": {
+      "ownEmulsifier": true
+    },
+    "locustBeanGum": {
+      "defaultStage": "dry_blend"
+    },
+    "oliveOil": {
+      "fatStructural": false,
+      "defaultStage": "before_churn"
+    },
+    "pineapple": {},
+    "salt": {
+      "defaultStage": "dry_blend"
+    },
+    "shreddedCoconut": {
+      "fatStructural": true,
+      "defaultStage": "during_churn"
+    },
+    "skimMilkPowder": {
+      "fatStructural": true,
+      "defaultStage": "dry_blend"
+    },
+    "stabilizerMix4421": {
+      "defaultStage": "dry_blend"
+    },
+    "strawberries": {},
+    "sucrose": {
+      "defaultStage": "dry_blend"
+    },
+    "vanillaExtract": {
+      "defaultStage": "after_heat"
+    },
+    "wholeMilk": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "wholeMilk33": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    },
+    "wholeMilk37": {
+      "fatStructural": true,
+      "defaultStage": "combine"
+    }
+  }
+}

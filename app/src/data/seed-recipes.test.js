@@ -19,6 +19,9 @@ import { mochaV0, mochaV1, mochaV2, mochaV3 } from './mocha.js';
 import { standingFor, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
 import { railEntries } from '../domain/historyRail.js';
 import { rowGrams } from '../domain/rows.js';
+import { normaliseCode, sheetCode } from '../domain/sheetCode.js';
+import { oliveOilVersion } from './olive-oil.js';
+import { SEED_SHEET_CODES } from './seed-sheet-codes.js';
 
 function flatten(groups) {
   return {
@@ -36,9 +39,60 @@ function collectStrings(value, out = []) {
 }
 
 describe('seedRecipeGroups (plan 09): olive oil first, then transcribedRecipeGroups in order', () => {
-  it('places the olive oil group first, then transcribedRecipeGroups unchanged, in order', () => {
+  it('places the olive oil group first, then the transcribed groups follow, stamped, in order', () => {
     expect(seedRecipeGroups[0].recipe.id).toBe('olive-oil-ice-cream');
-    expect(seedRecipeGroups.slice(1)).toEqual(transcribedRecipeGroups);
+    expect(seedRecipeGroups.slice(1)).toEqual(
+      transcribedRecipeGroups.map((group) => ({
+        ...group,
+        versions: group.versions.map((version) => ({ ...version, sheetCode: SEED_SHEET_CODES[version.id] })),
+      })),
+    );
+  });
+});
+
+describe('every seeded version stores the Sheet code it prints today (Phase 9 D-05, CODE-01)', () => {
+  const seedVersions = seedRecipeGroups.flatMap((group) => group.versions);
+
+  it('carries a sheetCode equal to SEED_SHEET_CODES[id] on every version', () => {
+    for (const version of seedVersions) {
+      expect(version.sheetCode).toBe(SEED_SHEET_CODES[version.id]);
+    }
+  });
+
+  it('holds exactly the ids of the seed versions, 19 of them, with no orphan key', () => {
+    expect(Object.keys(SEED_SHEET_CODES).sort()).toEqual(seedVersions.map((version) => version.id).sort());
+    expect(Object.keys(SEED_SHEET_CODES)).toHaveLength(19);
+  });
+
+  it('holds 19 unique codes in the canonical XXXX-XXXX Crockford form', () => {
+    const codes = Object.values(SEED_SHEET_CODES);
+    expect(new Set(codes).size).toBe(19);
+    for (const code of codes) expect(normaliseCode(code)).toBe(code);
+  });
+
+  it('keeps Olive Oil v1 on 64JH-G408, the code on paper', () => {
+    expect(SEED_SHEET_CODES['olive-oil-ice-cream-v1']).toBe('64JH-G408');
+  });
+
+  it('equals the legacy sheetCode() over each seed version as it stands (no Phase 9 change moved a printed code)', () => {
+    for (const version of seedVersions) {
+      expect(SEED_SHEET_CODES[version.id]).toBe(sheetCode(version));
+    }
+  });
+
+  it('is a frozen literal, never rewritten at run time', () => {
+    expect(Object.isFrozen(SEED_SHEET_CODES)).toBe(true);
+  });
+
+  it('stamps copies: the direct exports keep no sheetCode and are not the stamped objects', () => {
+    expect(Object.hasOwn(oliveOilVersion, 'sheetCode')).toBe(false);
+    expect(seedRecipeGroups[0].versions[0]).not.toBe(oliveOilVersion);
+    expect(seedRecipeGroups[0].versions[0].sheetCode).toBe('64JH-G408');
+    for (const group of transcribedRecipeGroups) {
+      for (const version of group.versions) {
+        expect(Object.hasOwn(version, 'sheetCode')).toBe(false);
+      }
+    }
   });
 });
 

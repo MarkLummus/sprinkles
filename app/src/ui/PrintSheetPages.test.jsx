@@ -13,7 +13,6 @@ import { groupPortionsByStep } from './IngredientTable.jsx';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { layPages } from '../domain/sheetPages.js';
 import { OLIVE_OIL_V1_SAFARI, OLIVE_OIL_V1_CHROME } from '../domain/sheetPages.fixtures.js';
-import { oliveOilVersion } from '../data/olive-oil.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { activeRows, activeSteps, rowGrams } from '../domain/rows.js';
 import { sheetCode } from '../domain/sheetCode.js';
@@ -24,6 +23,9 @@ import { rowFromLibraryRecord } from '../domain/versionRow.js';
 import { library } from '../data/library.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
+// The stamped olive oil version the store holds: it carries its stored sheetCode.
+const oliveOilVersion = seedRecipeGroups[0].versions[0];
 
 function fragment(element) {
   const host = document.createElement('div');
@@ -351,7 +353,13 @@ describe('PrintClosingFoot and the Sheet’s foot text (04-08; D7, D28; PRINT-04
 
   it('reads the Sheet title, the version line and the version’s Sheet code, joined by a middle dot', () => {
     const forBlocks = sheetBlocks(oliveOilVersion, 'Version 1');
-    expect(forBlocks.footText).toBe(`${oliveOilVersion.sheetTitle} · Version 1 · ${sheetCode(oliveOilVersion)}`);
+    expect(forBlocks.footText).toBe(`${oliveOilVersion.sheetTitle} · Version 1 · ${oliveOilVersion.sheetCode}`);
+  });
+
+  it('prints a stored code that differs from sheetCode(version), never the content-derived one', () => {
+    const stored = { ...oliveOilVersion, sheetCode: 'ZZZZ-0000' };
+    expect(sheetCode(stored)).not.toBe('ZZZZ-0000');
+    expect(sheetBlocks(stored, 'Version 1').footText).toBe(`${stored.sheetTitle} · Version 1 · ZZZZ-0000`);
   });
 
   it('stands on the page the plan names, after the last step and inside the Instructions', () => {
@@ -561,7 +569,7 @@ describe('sheetBlocks — Balance reads the active formula (review 2026-10-11 P1
     it(`${name}: the band, the groups and the Sheet code still read the stored version`, () => {
       const forBlocks = sheetBlocks(version, 'Version 1');
       expect(forBlocks.version).toBe(version);
-      expect(forBlocks.footText).toBe([version.sheetTitle, 'Version 1', sheetCode(version)].join(' · '));
+      expect(forBlocks.footText).toBe([version.sheetTitle, 'Version 1', version.sheetCode].join(' · '));
     });
   }
 
@@ -586,10 +594,12 @@ describe('sheetBlocks — a recipe created from library records (Phase 7 D-02, D
       rowFromLibraryRecord({ id: 'heavyCream', entry: library.heavyCream }, { id: 'row-b', grams: grams[1] }),
       rowFromLibraryRecord({ id: 'sucrose', entry: library.sucrose }, { id: 'row-c', grams: grams[2] }),
     ];
-    return createRecipe(
+    const root = createRecipe(
       { name: 'Plain base', versionLabel: 'first try', rows },
       { recipeId: 'recipe-plain', versionId: 'version-plain-1', now: '2026-10-14T12:00:00.000Z' },
     ).version;
+    // createRecipe stores no code until Task 2 of this plan; stamp one here.
+    return { ...root, sheetCode: root.sheetCode ?? 'ZZZZ-0000' };
   }
 
   it("builds the root version's blocks: six figures, one group with no head, no notes or steps, and the Sheet code in the foot", () => {
@@ -601,7 +611,7 @@ describe('sheetBlocks — a recipe created from library records (Phase 7 D-02, D
     expect(created.notes).toEqual([]);
     expect(created.steps).toEqual([]);
     expect(created.totalText).toBe('850.0 g');
-    expect(created.footText).toBe(`Plain base · first try · ${sheetCode(version)}`);
+    expect(created.footText).toBe(`Plain base · first try · ${version.sheetCode}`);
   });
 
   it("builds an all-zero root version's blocks without throwing: no figures and a 0.0 g total", () => {

@@ -2,11 +2,16 @@
 // sheet's match-back handle (PRINT-04; D-08 to D-13): a maker holding paper
 // types the code and lands on the version it came from.
 //
-// It is computed, never stored: no field, index or cache holds one (D-08,
-// D-09). It is derived from the version id plus the recipe content both print
-// formats share, so an unchanged version always yields the same code and a
-// Save over that changes printed content yields a new one. There is no nonce:
-// the same input is the same code on every device and every day.
+// From Phase 9 the code is STORED on the version (version.sheetCode; decision
+// 19, amending Phase 4 D-08 and D-09): print and search read the stored field,
+// and no edit changes it. sheetCode(version) below remains only to compute the
+// seeded versions' codes once (data/seed-sheet-codes.js) and to keep the golden
+// vector; nothing recomputes a code from content at run time.
+//
+// The legacy derivation hashes the version id plus the recipe content both
+// print formats share, so an unchanged version always yields the same code.
+// There is no nonce: the same input is the same code on every device and every
+// day.
 //
 // ONE-WAY. Once a sheet is in the binder, its code is on paper. Changing the
 // canonical form below, the hash, or the encoding strands every printed code,
@@ -182,15 +187,16 @@ export function codeProblem(input) {
 }
 
 /**
- * findVersionsByCode(versions, code) -> every version whose sheetCode equals
- * the normalised `code`, newest createdAt first and then by id, so a 40-bit
- * collision never depends on store order. An unnormalisable code returns [].
+ * findVersionsByCode(versions, code) -> every version whose STORED sheetCode
+ * equals the normalised `code`, newest createdAt first and then by id, so a
+ * 40-bit collision never depends on store order. An unnormalisable code
+ * returns []; a version with no stored code is never found.
  */
 export function findVersionsByCode(versions, code) {
   const wanted = normaliseCode(code);
   if (wanted === null) return [];
   return versions
-    .filter((version) => sheetCode(version) === wanted)
+    .filter((version) => version.sheetCode === wanted)
     .sort((a, b) => {
       if (a.createdAt !== b.createdAt) return a.createdAt < b.createdAt ? 1 : -1;
       if (a.id === b.id) return 0;

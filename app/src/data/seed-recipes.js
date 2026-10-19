@@ -12,6 +12,7 @@ import {
   mexicanChocolateV4,
 } from './mexican-chocolate.js';
 import { oliveOilRecipe, oliveOilVersion } from './olive-oil.js';
+import { SEED_SHEET_CODES } from './seed-sheet-codes.js';
 import { augustSecondBatch } from './batch-2026-08-02.js';
 import { pineappleRecipe, pineappleV1, pineappleV1Batch } from './pineapple.js';
 import { coconutRecipe, coconutV1, coconutV1Batch, coconutV2, coconutV2Batch } from './coconut.js';
@@ -67,11 +68,23 @@ export const transcribedRecipeGroups = [
   },
 ];
 
+// A copy of the version carrying its stored Sheet code (Phase 9 D-05). The
+// data modules' own exports stay unstamped and unmutated. A version with no
+// entry in SEED_SHEET_CODES is a caller bug: it throws at load, never a blank.
+function stamped(version) {
+  const code = SEED_SHEET_CODES[version.id];
+  if (typeof code !== 'string') {
+    throw new TypeError(`No seeded Sheet code for version "${version.id}" (data/seed-sheet-codes.js)`);
+  }
+  return { ...version, sheetCode: code };
+}
+
 // The full seed order (plan 09, D-07 approved): olive oil leads so the
 // store's first-written records stay the working case, then every
 // transcribed group in transcribedRecipeGroups's own order. This is the
-// only array store/seed.js imports.
+// only array store/seed.js imports. Every version carries its stored
+// sheetCode (Phase 9 D-05); transcribedRecipeGroups itself stays as it is.
 export const seedRecipeGroups = [
-  { recipe: oliveOilRecipe, versions: [oliveOilVersion], batches: [augustSecondBatch] },
-  ...transcribedRecipeGroups,
+  { recipe: oliveOilRecipe, versions: [stamped(oliveOilVersion)], batches: [augustSecondBatch] },
+  ...transcribedRecipeGroups.map((group) => ({ ...group, versions: group.versions.map(stamped) })),
 ];

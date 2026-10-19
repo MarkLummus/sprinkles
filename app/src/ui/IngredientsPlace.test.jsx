@@ -280,6 +280,47 @@ describe('opening an entry', () => {
     expect(row.querySelector('.ing__note-cap')).toBeNull();
   });
 
+  it('shows the lactose line on an entry that holds milk solids but is not dairy', async () => {
+    const list = [
+      {
+        id: 'milkChocolate',
+        entry: {
+          name: 'Milk Chocolate',
+          category: 'flavor',
+          composition: { fat: 0.2966, msnf: 0.16, sugar: 0.4278, other: 0.1006, pac: 4.78, pod: 51.6048 },
+        },
+      },
+    ];
+    const container = await mountList(list);
+    await click(container.querySelector('button.ing__head'));
+    expect(container.querySelector('.ing__helper').textContent).toBe(
+      'Lactose counts as 54.5% of milk solids in Freezing and Sweetness.',
+    );
+  });
+
+  it('leaves the lactose line out of an entry that is not dairy and holds no milk solids', async () => {
+    const list = [
+      {
+        id: 'dark',
+        entry: { name: 'Dark chocolate', category: 'flavor', dairy: false, composition: { fat: 0.42, sugar: 0.29, other: 0.29 } },
+      },
+    ];
+    const container = await mountList(list);
+    await click(container.querySelector('button.ing__head'));
+    expect(container.querySelector('.ing__helper')).toBeNull();
+  });
+
+  it('still shows the lactose line on a dairy entry with no milk solids figure', async () => {
+    const list = [
+      { id: 'butter', entry: { name: 'Butter', category: 'dairy', dairy: true, composition: { fat: 0.82 } } },
+    ];
+    const container = await mountList(list);
+    await click(container.querySelector('button.ing__head'));
+    expect(container.querySelector('.ing__helper').textContent).toBe(
+      'Lactose counts as 54.5% of milk solids in Freezing and Sweetness.',
+    );
+  });
+
   it('Sucrose: density and packed state share one facts line, and PAC and POD read as plain numbers', async () => {
     const container = await mountList(records);
     const row = rowNamed(container, 'Sucrose');

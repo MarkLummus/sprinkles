@@ -268,7 +268,8 @@ function IngredientRow({ entry, isOpen, detailId, onToggle }) {
 }
 
 // An open entry: its figures with basis and source, then the lines it has
-// (facts, lactose for dairy, the Note), each only where the entry has it.
+// (facts, the lactose line for any entry with milk solids or marked dairy, the Note),
+// each only where the entry has it.
 // Nothing is drawn as a dash or "none".
 function IngredientDetail({ entry, fields, id }) {
   const facts = factsText(fields);
@@ -298,7 +299,7 @@ function IngredientDetail({ entry, fields, id }) {
         </tbody>
       </table>
       {facts !== '' && <p className="ing__facts">{facts}</p>}
-      {fields.dairy && (
+      {(fields.dairy || Number.isFinite(entry.composition.msnf)) && (
         <p className="ing__helper">Lactose counts as 54.5% of milk solids in Freezing and Sweetness.</p>
       )}
       {fields.note !== null && (

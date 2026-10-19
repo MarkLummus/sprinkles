@@ -420,6 +420,33 @@ describe('draftMatchesVersion: values Save could store (WR-04)', () => {
     expect(draftMatchesVersion(asRecord, bareVersion, [])).toBe(false);
   });
 
+  // The fit check reads a version's declared keys from the definitions themselves
+  // and keeps the core keys beside them (plan 09-08, until plan 09-15 passes the catalog).
+  it('fits a record draft marking only a core scale, only a declared scale, or both', () => {
+    expect(draftMatchesVersion(recordRecord({ marks: { sweetness: 3 } }), oliveOilVersion, [])).toBe(true);
+    expect(draftMatchesVersion(recordRecord({ marks: { oil: 4 } }), oliveOilVersion, [])).toBe(true);
+    expect(draftMatchesVersion(recordRecord({ marks: { hardness: 2, body: 5 } }), oliveOilVersion, [])).toBe(true);
+  });
+
+  it('refuses a mark on "mystery", and a mark on "body" for a version that declares no scales', () => {
+    expect(draftMatchesVersion(recordRecord({ marks: { mystery: 3 } }), oliveOilVersion, [])).toBe(false);
+    const bodyOnBare = buildDraftRecord({
+      versionId: bareVersion.id,
+      kind: 'record',
+      payload: { ...blankRecord(), marks: { body: 3 } },
+      now: NOW,
+    });
+    expect(draftMatchesVersion(bodyOnBare, bareVersion, [])).toBe(false);
+  });
+
+  it('reads a Correct draft against the snapshot: a declared key only the live version holds does not fit', () => {
+    const [body] = oliveOilVersion.declaredAxes;
+    const bodyOnlyBatch = { ...structuredClone(augustSecondBatch), snapshot: { ...structuredClone(augustSecondBatch.snapshot), declaredAxes: [body] } };
+    const correct = (marks) => amendRecord({ payload: { ...blankRecord(), churnDate: '2026-08-02', marks } });
+    expect(draftMatchesVersion(correct({ body: 3 }), oliveOilVersion, [bodyOnlyBatch])).toBe(true);
+    expect(draftMatchesVersion(correct({ oil: 3 }), oliveOilVersion, [bodyOnlyBatch])).toBe(false);
+  });
+
   it('does not throw, and refuses, a Correct draft ticking a problem on a batch with no snapshot', () => {
     const noSnapshot = { ...augustSecondBatch };
     delete noSnapshot.snapshot;

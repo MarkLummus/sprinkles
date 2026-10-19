@@ -21,6 +21,7 @@ import { sortedBatches } from './batch.js';
 import { codeFromVersionId } from './sheetCode.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { coconutV1 } from '../data/coconut.js';
+import { seedRecipeGroups } from '../data/seed-recipes.js';
 
 function makeVersion(overrides = {}) {
   return {
@@ -273,6 +274,50 @@ describe('createChildVersion', () => {
     expect(oliveOilVersion.declaredFlaws).toEqual(['Bitter']);
     expect(child.declaredAxes).toEqual(oliveOilVersion.declaredAxes);
     expect(child.declaredFlaws).toEqual(['Bitter']);
+  });
+
+  it('owns its declared definitions and problems: equal to the parent\'s, sharing no array and no object (D-03b, T-09-17)', () => {
+    const parent = structuredClone(oliveOilVersion);
+    const child = createChildVersion(parent, penFields, { id: 'v2', now: '2026-09-07T10:00:00.000Z' });
+    expect(child.declaredAxes).toEqual(parent.declaredAxes);
+    expect(child.declaredAxes).not.toBe(parent.declaredAxes);
+    expect(child.declaredAxes[0]).not.toBe(parent.declaredAxes[0]);
+    expect(child.declaredFlaws).toEqual(parent.declaredFlaws);
+    expect(child.declaredFlaws).not.toBe(parent.declaredFlaws);
+  });
+
+  it('mutating the child\'s declared definition or problem leaves the parent unchanged', () => {
+    const parent = structuredClone(oliveOilVersion);
+    const before = structuredClone(parent);
+    const child = createChildVersion(parent, penFields, { id: 'v2', now: '2026-09-07T10:00:00.000Z' });
+    child.declaredAxes[0].name = 'Changed';
+    child.declaredFlaws[0] = 'Changed';
+    expect(parent.declaredAxes).toEqual(before.declaredAxes);
+    expect(parent.declaredFlaws).toEqual(before.declaredFlaws);
+  });
+
+  it('keeps the parent\'s target serving temperature, a number or null (D-19)', () => {
+    const warm = createChildVersion({ ...oliveOilVersion, serveTempC: -14 }, penFields, { id: 'v2', now: '2026-09-07T10:00:00.000Z' });
+    expect(warm.serveTempC).toBe(-14);
+    const empty = createChildVersion(oliveOilVersion, penFields, { id: 'v3', now: '2026-09-07T10:00:00.000Z' });
+    expect(Object.hasOwn(empty, 'serveTempC')).toBe(true);
+    expect(empty.serveTempC).toBeNull();
+  });
+
+  it('a child of every seeded version owns serveTempC, equal to its parent\'s and never undefined (D-19)', () => {
+    const seeded = seedRecipeGroups.flatMap((group) => group.versions);
+    expect(seeded.length).toBeGreaterThan(0);
+    for (const parent of seeded) {
+      const child = createChildVersion(parent, penFields, { id: 'v-seeded-child', now: '2026-09-07T10:00:00.000Z' });
+      expect(Object.hasOwn(child, 'serveTempC'), parent.id).toBe(true);
+      expect(child.serveTempC, parent.id).toBe(parent.serveTempC);
+      expect(child.serveTempC, parent.id).not.toBeUndefined();
+    }
+  });
+
+  it('saveOverVersion keeps the version\'s own serveTempC (D-19)', () => {
+    const saved = saveOverVersion({ ...oliveOilVersion, serveTempC: -12.5 }, penFields);
+    expect(saved.serveTempC).toBe(-12.5);
   });
 
   it('a parent that declares no problems gives a child that declares none', () => {

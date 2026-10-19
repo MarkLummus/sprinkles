@@ -8,9 +8,12 @@ import path from 'node:path';
 import os from 'node:os';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const { library } = await import(pathToFileURL(path.join(HERE, '../../app/src/data/library.js')).href);
+// Sid, 2026-10-19: the reviewed dataset's entries as the store seeds them under the 26 (commit 7dde55d3), for the open-entry boards that need one (Milk Chocolate: not dairy, 16% milk solids)
+const { librarySeedDb } = await import(pathToFileURL(path.join(HERE, '../../app/src/data/library-seed-db.js')).href);
 const ds = JSON.parse(await readFile(path.join(os.homedir(), 'Downloads/sprinkles-ingredient-seed-db.json'), 'utf8'));
 const out = {
   library: Object.entries(library).map(([key, e]) => ({ key, ...e })),
+  seedDb: Object.entries(librarySeedDb).map(([key, e]) => ({ key, ...e })),
   dataset: ds.ingredients.map((x) => ({ id: x.id, name: x.name, category: x.category, fat: x.fat_pct, msnf: x.msnf_pct, sugar: x.sugars_pct, pac: x.pac, pod: x.pod })),
 };
 await writeFile(path.join(HERE, 'places-data.json'), JSON.stringify(out));

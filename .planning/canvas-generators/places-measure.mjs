@@ -3,7 +3,7 @@
 // Each variant: the snippet replaces .shell__main's content on /notebook or /ingredients, the new rules are added in a style tag, then rects of the data-m elements are read.
 import { readFileSync, writeFileSync } from 'node:fs'; import { fileURLToPath } from 'node:url'; import path from 'node:path';
 import { webkit } from '/Users/mark/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core/index.mjs';
-const HERE = path.dirname(fileURLToPath(import.meta.url)); const SN = JSON.parse(readFileSync(HERE + '/places-snippets.json', 'utf8')); const BASE = 'http://127.0.0.1:4173';
+const HERE = path.dirname(fileURLToPath(import.meta.url)); const SN = JSON.parse(readFileSync(HERE + '/places-snippets.json', 'utf8')); const BASE = process.env.BASE || 'http://127.0.0.1:4173';   // 2026-10-19: BASE=http://127.0.0.1:4199 for a scratch build served beside Mark's preview
 const WIDTHS = (process.env.WIDTHS || '1366,393').split(',').map(Number);
 const run = async (b, W, route, key, extraCoarse = true) => {
   const ctx = await b.newContext({ viewport: { width: W, height: W === 393 ? 852 : 1024 }, hasTouch: extraCoarse }); const p = await ctx.newPage();
@@ -31,7 +31,7 @@ for (const W of WIDTHS) {
   out.nb = out.nb || {}; out.ing = out.ing || {}; out.many = out.many || {}; out.opt = out.opt || {};
   out.nb[tag] = await run(b, W, '/notebook', 'nb_several'); out.nb['one' + W] = await run(b, W, '/notebook', 'nb_one'); out.nb['zero' + W] = await run(b, W, '/notebook', 'nb_zero');
   out.ing[tag] = await run(b, W, '/ingredients', 'ing_26'); out.ing['milk' + W] = await run(b, W, '/ingredients', 'ing_milk'); out.ing['sugar' + W] = await run(b, W, '/ingredients', 'ing_sugar'); out.ing['none' + W] = await run(b, W, '/ingredients', 'ing_none');
-  out.ing['cocoa' + W] = await run(b, W, '/ingredients', 'crop_cocoa'); out.ing['lbg' + W] = await run(b, W, '/ingredients', 'crop_lbg'); out.ing['heavy' + W] = await run(b, W, '/ingredients', 'crop_heavy');
+  out.ing['cocoa' + W] = await run(b, W, '/ingredients', 'crop_cocoa'); out.ing['lbg' + W] = await run(b, W, '/ingredients', 'crop_lbg'); out.ing['heavy' + W] = await run(b, W, '/ingredients', 'crop_heavy'); out.ing['milk' + W] = await run(b, W, '/ingredients', 'crop_milk');
   out.many[tag] = await run(b, W, '/ingredients', 'many'); out.many['fruit' + W] = await run(b, W, '/ingredients', 'many_fruit');
   out.opt['select' + W] = await run(b, W, '/ingredients', 'opt_select'); out.opt['chips' + W] = await run(b, W, '/ingredients', 'opt_chips');
 }
@@ -42,13 +42,13 @@ for (const W of [1366, 393]) {
   if (!out.nb['p' + W]) continue;
   M.nb['p' + W] = { docH: out.nb['p' + W].docH }; M.nb['one' + W] = { docH: out.nb['one' + W].docH }; M.nb['zero' + W] = { docH: out.nb['zero' + W].docH };
   M.ing['p' + W] = { docH: out.ing['p' + W].docH, openY: out.ing['p' + W].li ? out.ing['p' + W].li.y : 0 };
-  for (const k of ['cocoa', 'lbg']) { const r = out.ing[k + W]; M.ing['crop' + k + W] = { y0: Math.round(r.li.y - 12), h: Math.round(r.li.h + 24) }; }
+  for (const k of ['cocoa', 'lbg', 'milk']) { const r = out.ing[k + W]; M.ing['crop' + k + W] = { y0: Math.round(r.li.y - 12), h: Math.round(r.li.h + 24) }; }
   M.ing['f' + W] = { h: out.ing['milk' + W].docH }; M.ing['none' + W] = { h: out.ing['none' + W].docH };
   M.many['p' + W] = { docH: out.many['p' + W].docH }; M.many['win' + W] = { h: Math.min(out.many['p' + W].docH, 1500) };
   M.opt['h' + W] = { h: out.opt['select' + W].docH }; M.opt['c' + W] = { h: out.opt['chips' + W].docH };
 }
 // the keys places.py reads
-M.ing.crop1366 = { y0: M.ing.croppcocoa1366?.y0, h: M.ing.cropcocoa1366?.h }; M.ing.crop393 = { y0: M.ing.cropcocoa393?.y0, h: M.ing.cropcocoa393?.h }; M.ing.crop393b = { y0: M.ing.croplbg393?.y0, h: M.ing.croplbg393?.h };
+M.ing.crop1366 = { y0: M.ing.cropcocoa1366?.y0, h: M.ing.cropcocoa1366?.h }; M.ing.crop393 = { y0: M.ing.cropcocoa393?.y0, h: M.ing.cropcocoa393?.h }; M.ing.crop393b = { y0: M.ing.croplbg393?.y0, h: M.ing.croplbg393?.h };
 M.ing.f1366 = { h: M.ing.f1366?.h }; M.ing.f393 = { h: M.ing.f393?.h }; M.ing.none1366 = { h: M.ing.none1366?.h };
 M.opt.h1366 = { h: M.opt.h1366?.h }; M.opt.h393 = { h: M.opt.h393?.h }; M.opt.chipsExtra = out.opt.chips393 && out.opt.select393 ? out.opt.chips393.docH - out.opt.select393.docH : 160;
 M.many.win1366 = { h: M.many.win1366?.h }; M.many.p1366 = { docH: out.many.p1366?.docH }; M.many.p393 = { docH: out.many.p393?.docH };

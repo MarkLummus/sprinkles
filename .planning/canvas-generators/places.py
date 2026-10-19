@@ -3,6 +3,10 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 from cssscope import TOK, APPC, NBC, SHELLC, resolve_media, scope_css, unique_ids
 import printstart
 # Sid, 2026-10-17 (Phase 9 design gate; PLACE-01, PLACE-02; nothing approved yet): the two place boards, the Notebook place (the recipes) and the Ingredients place (the library, read-only).
+# Sid, 2026-10-19 (Mark's answers of 2026-10-19 on the built place): P9_Ingredients redrawn. (1) decide-p9-393-source-own-line = redraw: below 760 the source sits on its own line under the basis;
+#   (2) decide-p9-lactose-line-non-dairy = any-milk-solids: the lactose line shows for any entry holding milk solids (new crop: Milk Chocolate, flavor, 16% milk solids, from the seed dataset the store merges under the 26);
+#   (3) decide-p9-facts-line-shape = value-first: "Density 0.994 g/ml · Ultra-pasteurised · Granulated, loose · Hydrates at 82 °C", no labels, the hydration temperature as the stored number.
+#   The build (shell.css) now carries the 2026-10-17 rules under `.place`; the redraw rules below use the same selectors so they win as the later declaration, and are what the quick task changes in shell.css.
 #   Notebook place    P9_Notebook          several recipes (the seeded store's eight), one recipe, none; 1366 and 393
 #   Ingredients place P9_Ingredients       the 26 entries, one entry open (figures, basis, source), search and category, no match; 1366 and 393
 #                     P9_IngredientsMany   the same list at the size of the reviewed dataset (103 names, a stand-in for a few hundred), 1366 and 393
@@ -87,6 +91,9 @@ NEW_CSS = '''
 .ing__figures .ing__amount{grid-area:amt}
 .ing__figures .ing__basis{grid-area:basis;color:var(--app-text-secondary);font-size:var(--app-size-meta)}
 .ing__figures .ing__source{grid-area:src;color:var(--app-text-secondary);font-size:var(--app-size-meta);text-align:right}
+/* REDRAW 2026-10-19 (decide-p9-393-source-own-line): the source on its own line under the basis, left-aligned, so a long source never runs into the basis word. Same selectors as the build's shell.css rules, so these win as the later declaration. */
+.place .ing__figures tr{grid-template-areas:'fig amt' 'basis basis' 'src src'}
+.place .ing__figures .ing__source{text-align:left}
 }
 /* Category as chips (option B on the category board only): one radio per category, a chip each, wrapping. Picked = the subtle surface, ink edge, weight 600 (the nav's own pick, no colour). */
 .ing__field--chips{flex:1 1 100%;max-width:none}
@@ -165,15 +172,17 @@ def detail(e):
         src = s.get(k)
         rows += (f'<tr data-m="figrow"><th scope="row">{esc(FIG_WORD[k])}</th><td class="ing__amount">{amount(k, c[k])}</td><td class="ing__basis">{BASIS_WORD[b.get(k, "inherited")]}</td>'
                  + (f'<td class="ing__source">{esc(src)}</td>' if src else '<td class="ing__source ing__unsaid">not recorded</td>') + '</tr>')
+    # value-first (decide-p9-facts-line-shape, 2026-10-19): no labels; each value sentence-cased; the hydration temperature is the stored number, never the source's prose
+    cap = lambda t: t[:1].upper() + t[1:]
     facts = []
     if e.get('densityGPerMl'): facts.append('Density %s g/ml' % trim(e['densityGPerMl'], 3))
-    if e.get('heatTreatment'): facts.append('Heat treatment: %s' % e['heatTreatment'])
-    if e.get('packedState'): facts.append('Packed: %s' % e['packedState'])
-    if s.get('hydrationC'): facts.append('Hydrates at %s' % s['hydrationC'])
+    if e.get('heatTreatment'): facts.append(cap(e['heatTreatment']))
+    if e.get('packedState'): facts.append(cap(e['packedState']))
+    if e.get('hydrationC'): facts.append('Hydrates at %s °C' % trim(e['hydrationC'], 2))
     out = ('<div class="ing__detail" id="@@ID@@" data-m="detail"><table class="ing__figures" data-m="figures"><thead><tr><th scope="col">Figure</th><th scope="col" class="ing__amount">Amount</th><th scope="col">Basis</th><th scope="col">Source</th></tr></thead>'
            f'<tbody>{rows}</tbody></table>')
     if facts: out += '<p class="ing__facts" data-m="facts">%s</p>' % esc(' · '.join(facts))
-    if e.get('dairy'): out += '<p class="ing__helper" data-m="helper">Lactose counts as 54.5% of milk solids in Freezing and Sweetness.</p>'
+    if e.get('dairy') or c.get('msnf'): out += '<p class="ing__helper" data-m="helper">Lactose counts as 54.5% of milk solids in Freezing and Sweetness.</p>'
     if e.get('note'): out += '<p class="notebook-caption ing__note-cap">Note</p><p class="ing__note" data-m="note">%s</p>' % esc(e['note'])
     return out + '</div>'
 
@@ -194,6 +203,8 @@ def ing_main(items, total, name='', cat='All', cats=(), none=False):
 def ing_panel(W, main, vid): return unique_ids(clean(CAP['chrome_ingredients_%d' % W]).replace('@@MAIN@@', main), vid)
 
 LIB = sorted_lib(); CATS26 = sorted({CAT_WORD[e['category']] for e in LIB})
+SEED = {e['key']: e for e in DATA.get('seedDb', [])}   # the reviewed dataset's entries the store merges under the 26 (seed.js); the open-entry crops may draw one
+def entry(key): return next((e for e in LIB if e['key'] == key), None) or SEED[key]
 def lib_rows(open_key=None, name='', cat='All', vid='x'):
     out = []
     for e in LIB:
@@ -256,6 +267,7 @@ def m(key, *path, default=None):
     return default if v is None else v
 
 STAMP = ' (drawn 2026-10-17; for approval)'
+STAMP_REDRAW = ' (approved 2026-10-17; redrawn 2026-10-19 for the source line, the lactose line and the facts line; for approval)'
 LABH = 78; GAP = 80; S = 852
 def build(canvas_in, out):
     os.makedirs(out + '/project', exist_ok=True); c = json.load(open(canvas_in)); B = c['boards']; N = c['notes']; sizes = {}
@@ -282,17 +294,22 @@ def build(canvas_in, out):
     def lib(W, vid, **kw): return ing_panel(W, ing_main(lib_rows(OPEN, vid=vid, **kw), len(LIB), cats=CATS26, **{k: v for k, v in kw.items() if k in ('name', 'cat')}), vid)
     parts = [panel('pi1', 1366, True, lib(1366, 'pi1'), 0, 0, 1366, hI, 'Ingredients at 1366 · coarse pointer · the library, 26 entries, A to Z', 'one row per entry: name, category, the figures it holds, Show; Heavy cream is open'),
              panel('pi2', 393, True, lib(393, 'pi2'), 1366 + GAP, 0, 393, S, 'Ingredients at 393 · first screen', 'the Name and Category fields stack; a row is name and Show, then category and figures', shellh=S),
-             panel('pi3', 393, True, lib(393, 'pi3'), 1366 + 2 * GAP + 393, 0, 393, S, 'The same page, scrolled to the open entry', '393 · the figures read as a list: figure and amount, then basis and source', shellh=S, scroll=max(yOpen - 120, 0))]
+             panel('pi3', 393, True, lib(393, 'pi3'), 1366 + 2 * GAP + 393, 0, 393, S, 'The same page, scrolled to the open entry', '393 · the figures read as a list: figure and amount, then basis, then the source on its own line (redrawn 2026-10-19)', shellh=S, scroll=max(yOpen - 120, 0))]
     bw = 1366 + 2 * (GAP + 393); y1 = max(hI, S) + LABH + GAP
     # (2) two more open entries, cropped: one with five figures all estimated and a long source, one a stabilizer with no source
     def crop(key, W, vid):
-        rows = [row_closed(e, vid, open_=True, detail=detail(e)) for e in LIB if e['key'] == key]
+        e = entry(key); rows = [row_closed(e, vid, open_=True, detail=detail(e))]
         return ing_panel(W, '<div class="list-page place ing"><ul class="ing__list" data-m="list">' + ''.join(rows) + '</ul></div>', vid)
     hc1 = int(m('ing', 'crop1366', 'h', default=520)); hc3 = int(m('ing', 'crop393', 'h', default=620))
     parts += [panel('pi4', 1366, True, crop('cocoaPowder', 1366, 'pi4'), 0, y1, 1366, hc1, 'An open entry with five figures, all estimated', '1366 · Cocoa powder: the source is an export file name, so it wraps in its column', x0=0, y0=int(m('ing', 'crop1366', 'y0', default=0))),
               panel('pi5', 393, True, crop('cocoaPowder', 393, 'pi5'), 1366 + GAP, y1, 393, hc3, 'The same entry · 393', '', x0=0, y0=int(m('ing', 'crop393', 'y0', default=0))),
               panel('pi6', 393, True, crop('locustBeanGum', 393, 'pi6'), 1366 + 2 * GAP + 393, y1, 393, int(m('ing', 'crop393b', 'h', default=330)), 'No source recorded · Locust bean gum', '393 · the figure has no source text, so it says so; the hydration temperature comes from the entry', x0=0, y0=int(m('ing', 'crop393b', 'y0', default=0)))]
-    y2 = y1 + max(hc1, hc3, int(m('ing', 'crop393b', 'h', default=330))) + LABH + GAP
+    y1b = y1 + max(hc1, hc3, int(m('ing', 'crop393b', 'h', default=330))) + LABH + GAP
+    # (2b) REDRAW 2026-10-19: an entry that is not dairy but holds milk solids (Milk Chocolate, flavor, 16%), so the lactose line shows; every basis unreviewed; its Freezing source is long
+    hk1 = int(m('ing', 'cropmilk1366', 'h', default=520)); hk3 = int(m('ing', 'cropmilk393', 'h', default=700))
+    parts += [panel('pi12', 1366, True, crop('milkChocolate', 1366, 'pi12'), 0, y1b, 1366, hk1, 'Not dairy, but milk solids: the lactose line shows', '1366 · Milk Chocolate (flavor, 16% milk solids, from the reviewed dataset): every basis unreviewed; no facts line, the entry has none of the four', x0=0, y0=int(m('ing', 'cropmilk1366', 'y0', default=0))),
+              panel('pi13', 393, True, crop('milkChocolate', 393, 'pi13'), 1366 + GAP, y1b, 393, hk3, 'The same entry · 393', 'the source on its own line under the basis, so the long Freezing source never meets the basis word', x0=0, y0=int(m('ing', 'cropmilk393', 'y0', default=0)))]
+    y2 = y1b + max(hk1, hk3) + LABH + GAP
     # (3) search and category: name typed, category chosen, both with no match
     hs = int(m('ing', 'f1366', 'h', default=700)); hs3 = int(m('ing', 'f393', 'h', default=700))
     def filt(W, vid, **kw): return ing_panel(W, ing_main(lib_rows(vid=vid, **kw), len(LIB), cats=CATS26, **kw), vid)
@@ -304,7 +321,7 @@ def build(canvas_in, out):
     parts += [panel('pi10', 1366, True, none(1366, 'pi10'), 0, y3, 1366, hn, 'No match · name milk in the category Sugar · 1366', 'one sentence where the rows were; Clear filters is the way back'),
               panel('pi11', 393, True, none(393, 'pi11'), 1366 + GAP, y3, 393, S, 'No match · 393', '', shellh=S)]
     bh = y3 + max(hn, S) + LABH; sizes['P9_Ingredients'] = (bw, bh)
-    board('P9_Ingredients', 'Ingredients place · the library, read-only, with search by name and category, at 1366 and 393' + STAMP, bw, bh, parts, out)
+    board('P9_Ingredients', 'Ingredients place · the library, read-only, with search by name and category, at 1366 and 393' + STAMP_REDRAW, bw, bh, parts, out)
 
     # ---- a few hundred: the reviewed dataset's 103 names as a stand-in
     hm = int(m('many', 'p1366', 'docH', default=2400)); hm3 = int(m('many', 'p393', 'docH', default=2400))
@@ -359,7 +376,7 @@ def build(canvas_in, out):
         f"Measured in WebKit with a coarse pointer, on the build with this markup and these rules injected (Chromium not run): rows are {nb1.get('rowH', ['?', '?'])[0]} to {nb1.get('rowH', ['?', '?'])[1]} px at 1366 and {nb3.get('rowH', ['?', '?'])[0]} to {nb3.get('rowH', ['?', '?'])[1]} at 393; the name link is 44 px tall at both; no horizontal overflow at 393, 724, 834, 1024, 1100, 1366 or 1590. Not measured on the iPad or iPhone."))
     ig1, ig3 = R.get('ing', {}).get('p1366', {}), R.get('ing', {}).get('p393', {}); mn1, mn3 = R.get('many', {}).get('p1366', {}), R.get('many', {}).get('p393', {})
     note('p9-ingredients-note', 'P9_Ingredients', (
-        "Drawn 2026-10-17 on the built shell for your look; nothing approved yet. PLACE-01. The 26 entries of app/src/data/library.js as stored, A to Z by name; the rail is the Ingredients green. A row: name, category, the figures the entry holds (only those it holds), and Show; the row is the fold, so it opens in place and the page has no new route. "
+        "Approved 2026-10-17; redrawn 2026-10-19 after your three answers on the built place, for approval of the redraw only: below 760 the source sits on its own line under the basis (decide-p9-393-source-own-line, redraw), the lactose line shows for any entry with milk solids (decide-p9-lactose-line-non-dairy; the new Milk Chocolate crop), and the facts line is value-first with the hydration temperature as a number (decide-p9-facts-line-shape: Heavy cream reads Density 0.994 g/ml · Ultra-pasteurised; Locust bean gum reads Hydrates at 82 °C). PLACE-01. The 26 entries of app/src/data/library.js as stored, A to Z by name; the rail is the Ingredients green. A row: name, category, the figures the entry holds (only those it holds), and Show; the row is the fold, so it opens in place and the page has no new route. "
         "An open entry reads as a table: Figure, Amount, Basis (stated, derived, estimated, unreviewed: the app's own words), Source (the entry's own text for that figure, or not recorded), then density and heat treatment where the entry has them, one line on lactose for dairy, and the entry's note. Amounts are as stored: percent of the ingredient for fat, milk solids, sugar, other solids, emulsifier and stabilizer; PAC and POD as numbers on the sucrose = 100 basis. "
         "Read-only: nothing on the page adds, edits, duplicates or deletes. Search is the Name field (filtered as you type, no button); Category is a select with All first. The count line is a polite live region; Clear filters appears only while a filter is on. This list is the base Phase 10's picker reuses; the picker is not drawn.\n\n"
         f"Measured the same way: a closed row is {ig1.get('rowH', ['?'])[0]} px at 1366 and {ig3.get('rowH', ['?'])[0]} to 105 at 393; Heavy cream open is {ig1.get('li', {}).get('h')} px at 1366 and {ig3.get('li', {}).get('h')} at 393; the whole page of 26 is {ig1.get('docH')} px at 1366 and {ig3.get('docH')} at 393. Every row's head, both fields and Clear filters (78.6 x 44) meet the 44 px floor; nothing overflows sideways from 393 to 1590. "
@@ -376,13 +393,13 @@ def build(canvas_in, out):
 
 def snippets():
     """What the measurement injects into the live build: the new rules and each variant's main markup."""
-    crop = lambda key: '<div class="list-page place ing"><ul class="ing__list" data-m="list">' + ''.join(row_closed(e, 'x', open_=True, detail=detail(e)) for e in LIB if e['key'] == key) + '</ul></div>'
+    crop = lambda key: '<div class="list-page place ing"><ul class="ing__list" data-m="list">' + row_closed(entry(key), 'x', open_=True, detail=detail(entry(key))) + '</ul></div>'
     ing = lambda name='', cat='All', none=False: ing_main(lib_rows('heavyCream', name=name, cat=cat), len(LIB), name=name, cat=cat, cats=CATS26, none=none)
     chipsmain = '<div class="list-page place ing"><h1 class="place__title">Ingredients</h1>%s%s</div>' % (filters_chips(CATSDS), status(len(DS), len(DS), False))
     selmain = '<div class="list-page place ing"><h1 class="place__title">Ingredients</h1>%s%s</div>' % (filters(cats=CATSDS), status(len(DS), len(DS), False))
     return dict(css=NEW_CSS, coarse=COARSE_CSS, nb_several=nb_main(ORDER), nb_one=nb_main(OLIVE), nb_zero=nb_main([]),
                 ing_26=ing(), ing_milk=ing(name='milk'), ing_sugar=ing(cat='Sugar'), ing_none=ing_main([], len(LIB), name='milk', cat='Sugar', cats=CATS26, none=True),
-                crop_cocoa=crop('cocoaPowder'), crop_lbg=crop('locustBeanGum'), crop_heavy=crop('heavyCream'),
+                crop_cocoa=crop('cocoaPowder'), crop_lbg=crop('locustBeanGum'), crop_heavy=crop('heavyCream'), crop_milk=crop('milkChocolate'),
                 many=ing_main(ds_rows(), len(DS), cats=CATSDS), many_fruit=ing_main(ds_rows(cat='Fruit'), len(DS), cat='Fruit', cats=CATSDS), opt_chips=chipsmain, opt_select=selmain)
 
 if __name__ == '__main__':

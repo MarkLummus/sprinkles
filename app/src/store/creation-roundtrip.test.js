@@ -16,6 +16,7 @@ import { buildDiff } from '../domain/diff.js';
 import { createBatch } from '../domain/batch.js';
 import { sheetCode } from '../domain/sheetCode.js';
 import { library } from '../data/library.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 
 const NOW = '2026-10-14T12:00:00.000Z';
 
@@ -135,6 +136,7 @@ describe('a recipe created from library records — the rest of the app reads it
       const { recipe, version } = createdRecipe(grams);
       const batch = createBatch(version, { churnDate: '2026-10-14', asMade: { 'row-a': [500] } }, null, {
         id: 'batch-plain-1',
+        catalog: SEED_CATALOG,
         now: NOW,
       });
       expect(batch.snapshot.coefficientSetId).toBe('');
@@ -144,6 +146,8 @@ describe('a recipe created from library records — the rest of the app reads it
         'rows',
         'declaredAxes',
         'declaredFlaws',
+        'coreScales',
+        'coreProblems',
       ]);
       expect(batch.snapshot.rows).toEqual(version.rows);
 

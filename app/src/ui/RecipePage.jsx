@@ -143,7 +143,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     handleUndoRemove,
     handleSaveBatch,
     handleCancelRecording,
-  } = useBatchRecording({ version, batches, batchId, setBatches, setMode, announce, setFormStatus, setTastingStatus, setRecordStatus, onPageStatus, discardDraft, navigate });
+  } = useBatchRecording({ version, catalog, batches, batchId, setBatches, setMode, announce, setFormStatus, setTastingStatus, setRecordStatus, onPageStatus, discardDraft, navigate });
   const {
     penDraft,
     blockedMessage,

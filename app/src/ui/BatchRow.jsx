@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { formatRecordDate, readMeasured, recordDateWords, sortedBatches, tastingProvenance } from '../domain/batch.js';
-import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, declaredProblemsForBatch } from '../domain/battery.js';
+import { BATTERY_FIELDS, SEGMENT_OPTIONS, coreProblemsForBatch, declaredProblemsForBatch } from '../domain/battery.js';
 import { axesForBatch, axesForVersion, readMarkWord } from '../domain/axes.js';
 import { problemNames } from '../domain/catalog.js';
 import { SaveCeremony } from './PenFoot.jsx';
@@ -1044,10 +1044,11 @@ export function BatchRow({
                 {draft.fromFreezer === '' && (
                   <>
                     {/* axesForBatch's own contract (domain/axes.js) reads
-                        batch.snapshot.declaredAxes only, never a live version —
-                        the snapshot is what protects a stored mark from a
-                        later change to the recipe's declared pair (WR-04 code
-                        review). Amending an existing batch reads its own
+                        batch.snapshot.coreScales and declaredAxes only, never
+                        a live version or the catalog — the snapshot is what
+                        protects a stored mark from a later change to the
+                        scales table or the recipe's declared pair (WR-04 code
+                        review, D-03). Amending an existing batch reads its own
                         snapshot; a genuinely fresh record has no snapshot yet
                         (it is written at save time), so it reads the catalog
                         the page was handed and the live version's own declared
@@ -1069,8 +1070,8 @@ export function BatchRow({
                           order inventory"; 007 lines 263-281): the head
                           carries the caption and its lowercase helper on one
                           row, then "Every recipe" (a new pen's chips are the
-                          catalog's problem words, a Correct's the battery's
-                          four DEFECTS until its own snapshot carries them) and "This recipe only" (Bitter, a plain
+                          catalog's problem words, a Correct's the words its
+                          own snapshot carries) and "This recipe only" (Bitter, a plain
                           defect with no helper and no aria-label — the group
                           cue carries the meaning through aria-labelledby).
                           Picked state is aria-pressed, never colour alone
@@ -1094,7 +1095,7 @@ export function BatchRow({
                               button carrying its own aria-pressed — a picked
                               chip's own boolean, read fresh per chip from the
                               draft's defects list. */}
-                          {(openPen === 'amend' && openBatch ? DEFECTS : problemNames(catalog.problems)).map((defect) => (
+                          {(openPen === 'amend' && openBatch ? coreProblemsForBatch(openBatch) : problemNames(catalog.problems)).map((defect) => (
                             <Button
                               key={defect}
                               className="chip-toggle"

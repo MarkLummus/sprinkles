@@ -14,6 +14,7 @@ import { seedIfEmpty } from './seed.js';
 import { sortedBatches, createBatch } from '../domain/batch.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { exportStore, validateStoreFile, importStore } from './transfer.js';
 import { activeWork, AWAITING_TASTING, NOT_YET_CHURNED, TASTED } from '../domain/lastEvent.js';
 import { codeFromVersionId } from '../domain/sheetCode.js';
@@ -124,7 +125,11 @@ describe('declared problems round-trip through the store file', () => {
     const id = `rt-${declaredFlaws.length}`;
     const version = { ...oliveOilVersion, id, sheetCode: codeFromVersionId(id), declaredFlaws };
     const ticks = declaredFlaws.length > 0 ? [declaredFlaws[declaredFlaws.length - 1]] : null;
-    const batch = createBatch(version, NO_CHURN, { marks: {}, declaredDefects: ticks }, { id: `rt-batch-${declaredFlaws.length}`, now: '2026-10-11T09:00:00.000Z' });
+    const batch = createBatch(version, NO_CHURN, { marks: {}, declaredDefects: ticks }, {
+      id: `rt-batch-${declaredFlaws.length}`,
+      now: '2026-10-11T09:00:00.000Z',
+      catalog: SEED_CATALOG,
+    });
 
     const first = createRepository();
     await seedIfEmpty(first);

@@ -2104,6 +2104,7 @@ describe('BatchRow — the record pen draws only what each seeded version declar
   it('amending a batch reads the batch snapshot, not the live version', () => {
     const batch = createBatch({ ...oliveOilVersion, declaredFlaws: ['Salty'] }, { churnDate: '2026-10-01' }, null, {
       id: 'snap-1',
+      catalog: SEED_CATALOG,
       now: '2026-10-01T09:00:00.000Z',
     });
     const markup = renderBatchRow({
@@ -2115,6 +2116,69 @@ describe('BatchRow — the record pen draws only what each seeded version declar
       draft: { ...emptyRecordDraft, tastingOpen: true },
     });
     expect(declaredChips(markup)).toEqual(['Salty']);
+  });
+});
+
+// D-03, TASTE-03: a stored batch shows the core scales and problem words it was
+// recorded with. Each batch here is built through createBatch over a clone of
+// the seed catalog whose words differ; the shared SEED_CATALOG is never changed.
+describe('BatchRow — a batch shows the core words of its own snapshot (D-03)', () => {
+  const CHURN_ONLY = { churnDate: '2026-10-01' };
+
+  function catalogWith(change) {
+    const catalog = structuredClone(SEED_CATALOG);
+    change(catalog);
+    return catalog;
+  }
+
+  it('a Correct shows the fifth core problem its batch was recorded with, and a new record pen on the same version does not', () => {
+    const catalog = catalogWith((c) => c.problems.push({ id: 'problem-5', name: 'Salty crust', order: 5 }));
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'own-words', now: '2026-10-01T09:00:00.000Z', catalog });
+    const correct = renderBatchRow({
+      openBatch: batch,
+      batches: [batch],
+      openPen: 'amend',
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+    });
+    expect(correct).toContain('>Salty crust<');
+    expect(correct).toContain('>Greasy film<');
+
+    const fresh = renderBatchRow({
+      batches: [batch],
+      openPen: 'record',
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+    });
+    expect(fresh).not.toContain('Salty crust');
+    expect(fresh).toContain('>Greasy film<');
+  });
+
+  it('a Correct shows the scale words its batch was recorded with, not the catalog the page holds now', () => {
+    const catalog = catalogWith((c) => {
+      c.scales.find((row) => row.key === 'hardness').low = 'mushy';
+    });
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'own-scales', now: '2026-10-01T09:00:00.000Z', catalog });
+    const correct = renderBatchRow({
+      openBatch: batch,
+      batches: [batch],
+      openPen: 'amend',
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+    });
+    expect(correct).toContain('mushy');
+    const fresh = renderBatchRow({ batches: [batch], openPen: 'record', mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(fresh).not.toContain('mushy');
+  });
+
+  it('the reading shows the snapshot words, not the catalog words', () => {
+    const catalog = catalogWith((c) => {
+      c.scales.find((row) => row.key === 'hardness').low = 'mushy';
+    });
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, { marks: { hardness: 1 } }, { id: 'own-reading', now: '2026-10-01T09:00:00.000Z', catalog });
+    const markup = renderBatchRow({ openBatch: batch, batches: [batch], mode: 'reading' });
+    expect(markup).toContain('mushy (1)');
+    expect(markup).not.toContain('soft (1)');
   });
 });
 
@@ -2197,6 +2261,7 @@ describe('BatchRow — a tick made in the pen round-trips through save, the read
     };
     const batch = createBatch(version, buildChurnFieldsFromDraft(draft, parsed), buildTastingFieldsFromDraft(draft, parsed), {
       id: `inv-batch-${declaredFlaws.length}`,
+      catalog: SEED_CATALOG,
       now: '2026-10-01T09:00:00.000Z',
     });
     expect(batch.snapshot.declaredFlaws).toEqual(declaredFlaws);
@@ -2458,7 +2523,7 @@ describe('BatchRow — the reading follows the pen, for each of pen-reading.html
         fromFreezer: null,
         ...tasting,
       },
-      { id: 'reading-case', now: '2026-08-04T09:00:00.000Z' },
+      { id: 'reading-case', now: '2026-08-04T09:00:00.000Z', catalog: SEED_CATALOG },
     );
   }
 

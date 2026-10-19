@@ -12,11 +12,13 @@ import { IDBFactory } from 'fake-indexeddb';
 import { describe, it, beforeEach, expect } from 'vitest';
 import { createRepository } from './repository.js';
 import { seedIfEmpty } from './seed.js';
-import { exportStore, importStore, validateStoreFile, OLDER_EXPORT_MESSAGE, STORE_SCHEMA_VERSION } from './transfer.js';
+import { exportStore, importStore, validateStoreFile, OLDER_EXPORT_MESSAGE, STORE_SCHEMA_VERSION, IMPORT_STORAGE_ERROR } from './transfer.js';
+import { CatalogConflictError } from './seedTables.js';
 import { storeFileOf, stampedSeedVersions } from './storeFile.fixtures.js';
 import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { CORE_SCALE_COUNT } from '../domain/catalog.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
+import { createChildVersion } from '../domain/lineage.js';
 
 beforeEach(() => {
   globalThis.indexedDB = new IDBFactory();
@@ -235,5 +237,126 @@ describe('the import refuses a store a valid batch cannot be recorded against', 
     const renamed = structuredClone(SEED_CATALOG.problems).map((row) => (row.id === 'coarse-icy' ? { ...row, name: 'Coarse and icy' } : row));
     expect(await importStore(repository, serialised(storeFileOf({ problems: renamed })))).toEqual({ ok: true, errors: [] });
     expect((await repository.listProblems()).find((row) => row.id === 'coarse-icy').name).toBe('Coarse and icy');
+  });
+});
+
+// The arrays a file carries, as repository.importAll takes them.
+const arraysOf = (file) => ({
+  recipes: file.recipes,
+  versions: file.versions,
+  batches: file.batches,
+  library: file.library,
+  machines: file.machines,
+  styles: file.styles,
+  scales: file.scales,
+  problems: file.problems,
+});
+
+// A file that demotes sweetness and adds one new core row: four core rows after
+// its own merge into a seeded profile, so it passes importStore's pre-check.
+const swapSweetnessFor = (id, name) =>
+  serialised(
+    storeFileOf({
+      versions: [],
+      scales: [...demoteSweetness(structuredClone(SEED_CATALOG.scales)), { ...CREAMINESS, id, key: id, name }],
+    }),
+  );
+
+describe('two imports that each pass the pre-check cannot together commit a conflicting store (T-09-36, T-09-46)', () => {
+  const CORE_FIVE_MESSAGE = '$.scales: the scales table would hold 5 core scales after this import; Sprinkles reads exactly 4';
+
+  it('transaction level: after file B imports, a direct importAll of file A rejects with a core count of 5 and changes nothing', async () => {
+    const repository = await seededProfile();
+    const fileA = swapSweetnessFor('creaminess', 'Creaminess');
+    const fileB = swapSweetnessFor('chewiness', 'Chewiness');
+
+    expect(await importStore(repository, fileB)).toEqual({ ok: true, errors: [] });
+    const afterB = await repository.exportAll();
+
+    const error = await repository.importAll(arraysOf(fileA)).catch((caught) => caught);
+
+    expect(error).toBeInstanceOf(CatalogConflictError);
+    expect(error.conflicts).toEqual([{ kind: 'core-count', count: 5 }]);
+    expect(await repository.exportAll()).toEqual(afterB);
+  });
+
+  it('importStore level: the message names 5 core scales, not the storage error, and the stores hold exactly what B left', async () => {
+    const repository = await seededProfile();
+    const secondTab = createRepository();
+    const fileA = swapSweetnessFor('creaminess', 'Creaminess');
+    const fileB = swapSweetnessFor('chewiness', 'Chewiness');
+    let afterB;
+    const racing = {
+      ...repository,
+      async importAll(arrays) {
+        expect(await importStore(secondTab, fileB)).toEqual({ ok: true, errors: [] });
+        afterB = await repository.exportAll();
+        return repository.importAll(arrays);
+      },
+    };
+
+    const result = await importStore(racing, fileA);
+
+    expect(result).toEqual({ ok: false, errors: [CORE_FIVE_MESSAGE] });
+    expect(result.errors).not.toContain(IMPORT_STORAGE_ERROR);
+    expect((await repository.listScales()).some((row) => row.id === 'chewiness')).toBe(true);
+    expect((await repository.listScales()).some((row) => row.id === 'creaminess')).toBe(false);
+    expect(await repository.exportAll()).toEqual(afterB);
+  });
+
+  it('one five-core file gives the same count through importStore\'s pre-check and through a direct importAll', async () => {
+    const repository = await seededProfile();
+    const file = serialised(storeFileOf({ scales: [...structuredClone(SEED_CATALOG.scales), CREAMINESS] }));
+
+    const viaPreCheck = await importStore(repository, file);
+    const viaTransaction = await repository.importAll(arraysOf(file)).catch((caught) => caught);
+
+    expect(viaPreCheck.errors).toEqual([CORE_FIVE_MESSAGE]);
+    expect(viaTransaction).toBeInstanceOf(CatalogConflictError);
+    expect(viaTransaction.conflicts).toEqual([{ kind: 'core-count', count: 5 }]);
+  });
+
+  it('the declared-key race: a version another tab declares under a key the file makes core aborts the import with its message', async () => {
+    const repository = await seededProfile();
+    const secondTab = createRepository();
+    const fileC = swapSweetnessFor('creaminess', 'Creaminess');
+    const [oliveOil] = stampedSeedVersions();
+    const child = {
+      ...createChildVersion(
+        oliveOil,
+        {
+          versionLabel: 'Creamier',
+          reason: null,
+          citedBatchId: null,
+          rows: oliveOil.rows,
+          method: oliveOil.method,
+          sheetTitle: oliveOil.sheetTitle,
+          sheetDescription: oliveOil.sheetDescription,
+          authored: oliveOil.authored,
+        },
+        { id: 'olive-oil-creamier', now: '2026-10-19T09:00:00.000Z' },
+      ),
+      declaredAxes: [{ key: 'creaminess', name: 'Creaminess', low: 'thin', high: 'rich', kind: 'goldilocks', group: 'declared' }],
+    };
+    let afterCompetingWrite;
+    const racing = {
+      ...repository,
+      async importAll(arrays) {
+        await secondTab.createVersion(child);
+        afterCompetingWrite = await repository.exportAll();
+        return repository.importAll(arrays);
+      },
+    };
+
+    const result = await importStore(racing, fileC);
+
+    expect(result).toEqual({
+      ok: false,
+      errors: ['$.scales: "creaminess" would be a core scale after this import, but version "olive-oil-creamier" declares its own scale under that key'],
+    });
+    expect(result.errors).not.toContain(IMPORT_STORAGE_ERROR);
+    expect(afterCompetingWrite.versions.map((version) => version.id)).toContain('olive-oil-creamier');
+    expect(await repository.exportAll()).toEqual(afterCompetingWrite);
+    expect((await repository.listScales()).some((row) => row.id === 'creaminess')).toBe(false);
   });
 });

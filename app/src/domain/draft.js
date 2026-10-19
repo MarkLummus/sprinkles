@@ -9,8 +9,14 @@
 // (a new batch's record draft) or `amend` (Correct: a stored batch's draft
 // plus the baseline it was filled from). Tasting is a section of the record
 // draft, not a pen of its own (03.3.1-02).
+//
+// A fourth kind, `create`, is the half-made first version of a new recipe
+// (Phase 9, D-18). It belongs to no stored version, so it has its own fit
+// check, draftMatchesCreate, which takes neither a version nor batches.
 import { AXES, STOPS, axesForVersion } from './axes.js';
 import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS, DEFECTS } from './battery.js';
+import { SCALE_KINDS, MAX_RECIPE_SCALES, MAX_RECIPE_PROBLEMS } from './catalog.js';
+import { RESERVED_ROW_IDS } from './versionRow.js';
 
 export const DRAFT_SHAPE_VERSION = 1;
 
@@ -44,7 +50,7 @@ const RECORD_DRAFT_FIELD_TYPES = {
 
 export const RECORD_DRAFT_KEYS = Object.keys(RECORD_DRAFT_FIELD_TYPES);
 
-const KINDS = ['plan', 'record', 'amend'];
+const KINDS = ['plan', 'record', 'amend', 'create'];
 const AMEND_OPENERS = ['correct', 'record-a-tasting'];
 
 // The keys that change an object's prototype or reach its constructor when a
@@ -264,6 +270,11 @@ function fitsPlanShape(payload, version) {
 export function draftMatchesVersion(record, version, batches) {
   if (!isPlainObject(record) || !isPlainObject(version)) return false;
   if (record.shapeVersion !== DRAFT_SHAPE_VERSION) return false;
+  // A create draft belongs to no stored version: its own check is
+  // draftMatchesCreate. Refused here by name, so the recipe page's restore and
+  // Home's draft filter can never act on one, even when its versionId happens
+  // to equal a stored version's id.
+  if (record.kind === 'create') return false;
   if (!KINDS.includes(record.kind)) return false;
   if (record.versionId !== version.id) return false;
   if (carriesUnsafeKey(record)) return false;
@@ -286,4 +297,244 @@ export function draftMatchesVersion(record, version, batches) {
   // check reads and is never written, while WR-04 is about what Save writes.
   if (!fitsRecordShape(record.amendBaseline, version)) return false;
   return fitsRecordValues(record.payload, declaredOf(amended.snapshot));
+}
+
+// ---------------------------------------------------------------------------
+// The create kind (Phase 9, D-18).
+//
+// A create draft is the whole first version of a new recipe as typed, kept
+// before any version exists. Steps are in it because Phase 11 adds them before
+// the first Save while MAKE-11 keeps a half-made recipe across a closed tab in
+// both phases; settling the keys now means Phase 10 and Phase 11 fill fields
+// that exist and add none (criterion 2: nothing creation stores changes shape
+// after Phase 9). Machine and process are left out because the creation editor
+// offers neither (Mark, 2026-10-18: MAKE-09, decide-p9-pasteurise-fields;
+// equipment belongs to churning a batch). The version's equipment and process
+// slots stay stored; a later phase that wants them in creation adds an
+// optional key.
+//
+// The check accepts any half-made state. Saved-record validity (isScaleDefinition,
+// unique problem words, parsed grams, a scale key that is no core key, a
+// portion's step and a step's uses that resolve) is Save's job in Phase 11,
+// because a failed restore deletes the whole draft and a maker must never lose
+// one for being incomplete.
+//
+// A row keeps its library link and its grams as typed, never the copied
+// figures: the version copies the figures when it is stored (LIB-08).
+//
+// The method is the creation's own issued-key ledger, as a version's is
+// (stepKeys.js header): nextStepKey reads the highest n left, so a step
+// spliced out and then a step added would reissue its key. A step removed
+// while creating therefore stays in the method with removed: true and the
+// editor never shows it, unless Phase 11's discussion with Mark chooses a
+// watermark, which it adds as an optional key.
+//
+// The cost of a later change: draftMatchesCreate refuses an unknown key and a
+// value that fails its field's check, and the hook's restore deletes a draft
+// that does not fit. A new optional key leaves every kept create draft fitting
+// (an absent optional field reads as its blank value). A renamed, removed or
+// newly required key, or a narrowed check, makes every create draft kept
+// before the change fail at its next restore, and the restore deletes it. What
+// is lost is at most a half-made creation kept on that device, never a saved
+// recipe, version or batch. CREATE_DRAFT_KEYS is pinned by draft.test.js, so
+// a payload change is Mark's decision.
+
+function isNonEmptyString(value) {
+  return typeof value === 'string' && value !== '';
+}
+
+function isString(value) {
+  return typeof value === 'string';
+}
+
+function isSafeName(value) {
+  return isNonEmptyString(value) && !UNSAFE_KEYS.includes(value);
+}
+
+// The bands a version's targets can hold (the olive oil version's own keys,
+// plus sugar, which a sheet may leave without a band, D-10).
+const CREATE_BAND_KEYS = ['pac', 'pod', 'fat', 'msnf', 'sugar', 'solids'];
+
+function isUniqueBy(items, pick) {
+  const seen = new Set();
+  for (const item of items) {
+    const key = pick(item);
+    if (seen.has(key)) return false;
+    seen.add(key);
+  }
+  return true;
+}
+
+function hasExactKeys(value, keys) {
+  const own = ownKeys(value);
+  return own.length === keys.length && keys.every((key) => has(value, key));
+}
+
+function fitsCreateNotes(value) {
+  return Array.isArray(value) && value.every((note) => isPlainObject(note) && typeof note.text === 'string');
+}
+
+function fitsCreatePortion(portion) {
+  return (
+    isPlainObject(portion) &&
+    hasExactKeys(portion, ['step', 'grams']) &&
+    Number.isSafeInteger(portion.step) &&
+    portion.step > 0 &&
+    typeof portion.grams === 'string'
+  );
+}
+
+function fitsCreateRow(row) {
+  if (!isPlainObject(row) || !hasExactKeys(row, ['id', 'libraryId', 'portions'])) return false;
+  if (!isNonEmptyString(row.id) || RESERVED_ROW_IDS.has(row.id)) return false;
+  if (!isSafeName(row.libraryId)) return false;
+  return Array.isArray(row.portions) && row.portions.every(fitsCreatePortion) && isUniqueBy(row.portions, (portion) => portion.step);
+}
+
+function fitsCreateRows(value) {
+  return Array.isArray(value) && value.every(fitsCreateRow) && isUniqueBy(value, (row) => row.id);
+}
+
+function fitsCreateStep(step) {
+  if (!fitsMethodStep(step)) return false;
+  if (!Number.isSafeInteger(step.n) || step.n <= 0) return false;
+  return step.removed === undefined || typeof step.removed === 'boolean';
+}
+
+function fitsCreateMethod(value) {
+  return Array.isArray(value) && value.every(fitsCreateStep) && isUniqueBy(value, (step) => step.n);
+}
+
+// A scale draft has the definition's six keys, but its words may be blank and
+// its kind may be unchosen: isScaleDefinition is the saved record's check.
+function fitsCreateScale(scale) {
+  if (!isPlainObject(scale) || !hasExactKeys(scale, ['key', 'name', 'low', 'high', 'kind', 'group'])) return false;
+  if (!isSafeName(scale.key)) return false;
+  if (![scale.name, scale.low, scale.high].every(isString)) return false;
+  if (scale.kind !== '' && !SCALE_KINDS.includes(scale.kind)) return false;
+  return scale.group === 'declared';
+}
+
+function fitsCreateScales(value) {
+  return (
+    Array.isArray(value) && value.length <= MAX_RECIPE_SCALES && value.every(fitsCreateScale) && isUniqueBy(value, (scale) => scale.key)
+  );
+}
+
+function fitsCreateProblems(value) {
+  return Array.isArray(value) && value.length <= MAX_RECIPE_PROBLEMS && value.every(isString);
+}
+
+function fitsCreateStyle(value) {
+  return value === null || isNonEmptyString(value);
+}
+
+function fitsCreateTargets(value) {
+  if (!isPlainObject(value)) return false;
+  return ownKeys(value).every((band) => {
+    const range = value[band];
+    return CREATE_BAND_KEYS.includes(band) && Array.isArray(range) && range.length === 2 && range.every(isString);
+  });
+}
+
+// The create payload's field table: one check per field, in the order
+// blankCreateDraft builds them. draft.test.js pins CREATE_DRAFT_KEYS,
+// blankCreateDraft's keys and the payload contract's thirteen names equal.
+const CREATE_DRAFT_FIELD_CHECKS = {
+  recipeId: isNonEmptyString,
+  versionId: isNonEmptyString,
+  name: isString,
+  description: isString,
+  versionLabel: isString,
+  beforeYouStart: fitsCreateNotes,
+  rows: fitsCreateRows,
+  method: fitsCreateMethod,
+  scales: fitsCreateScales,
+  problems: fitsCreateProblems,
+  style: fitsCreateStyle,
+  targets: fitsCreateTargets,
+  // The target serving temperature in degrees C as typed, '' when empty. The
+  // picked style fills it and Clear empties it (D-19); Phase 11's Save parses
+  // it into the version's serveTempC.
+  serveTempC: isString,
+};
+
+export const CREATE_DRAFT_KEYS = Object.keys(CREATE_DRAFT_FIELD_CHECKS);
+
+const CREATE_REQUIRED_KEYS = ['recipeId', 'versionId', 'name'];
+
+/**
+ * draftMatchesCreate(record) -> whether a stored draft is a create draft the
+ * creation editor can restore. False unless the shape version matches, the
+ * kind is create, versionId is a non-empty string, updatedAt is a string, no
+ * object anywhere in the record has an own `__proto__`, `constructor` or
+ * `prototype` key, and the payload holds only CREATE_DRAFT_KEYS, each passing
+ * its check, with payload.versionId equal to the record's. A name alone fits.
+ * It needs no version and no batches.
+ */
+export function draftMatchesCreate(record) {
+  if (!isPlainObject(record)) return false;
+  if (record.shapeVersion !== DRAFT_SHAPE_VERSION) return false;
+  if (record.kind !== 'create') return false;
+  if (!isNonEmptyString(record.versionId)) return false;
+  if (typeof record.updatedAt !== 'string') return false;
+  if (carriesUnsafeKey(record)) return false;
+  const { payload } = record;
+  if (!isPlainObject(payload)) return false;
+  if (!CREATE_REQUIRED_KEYS.every((key) => has(payload, key))) return false;
+  for (const key of ownKeys(payload)) {
+    if (!has(CREATE_DRAFT_FIELD_CHECKS, key) || !CREATE_DRAFT_FIELD_CHECKS[key](payload[key])) return false;
+  }
+  return payload.versionId === record.versionId;
+}
+
+/**
+ * blankCreateDraft({ recipeId, versionId, name }) -> the creation's starting
+ * payload: Version name 'Version 1' (MAKE-05), every list empty, no style, no
+ * targets and no serve temperature.
+ */
+export function blankCreateDraft({ recipeId, versionId, name }) {
+  return {
+    recipeId,
+    versionId,
+    name,
+    description: '',
+    versionLabel: 'Version 1',
+    beforeYouStart: [],
+    rows: [],
+    method: [],
+    scales: [],
+    problems: [],
+    style: null,
+    targets: {},
+    serveTempC: '',
+  };
+}
+
+function hasInk(text) {
+  return typeof text === 'string' && text.trim() !== '';
+}
+
+function hasEntries(list) {
+  return Array.isArray(list) && list.length > 0;
+}
+
+/**
+ * isCreateDraftDirty(payload) -> whether the payload departs from
+ * blankCreateDraft: a non-blank name or description, a Version name other than
+ * 'Version 1' once trimmed (an emptied one included), any list entry, a style,
+ * a non-blank targets value or a non-blank serve temperature. An absent
+ * optional field reads as its blank default. A blank draft is not kept.
+ */
+export function isCreateDraftDirty(payload) {
+  if (hasInk(payload.name) || hasInk(payload.description)) return true;
+  if (payload.versionLabel !== undefined && !(typeof payload.versionLabel === 'string' && payload.versionLabel.trim() === 'Version 1')) {
+    return true;
+  }
+  if ([payload.beforeYouStart, payload.rows, payload.method, payload.scales, payload.problems].some(hasEntries)) return true;
+  if (payload.style !== null && payload.style !== undefined) return true;
+  if (isPlainObject(payload.targets) && Object.values(payload.targets).some((range) => Array.isArray(range) && range.some(hasInk))) {
+    return true;
+  }
+  return hasInk(payload.serveTempC);
 }

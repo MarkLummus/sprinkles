@@ -5,10 +5,16 @@ import { describe, it, expect } from 'vitest';
 import {
   DRAFT_SHAPE_VERSION,
   RECORD_DRAFT_KEYS,
+  CREATE_DRAFT_KEYS,
+  blankCreateDraft,
   buildDraftRecord,
+  draftMatchesCreate,
   draftMatchesVersion,
+  isCreateDraftDirty,
   newestDraft,
 } from './draft.js';
+import { isScaleDefinition } from './catalog.js';
+import { nextStepKey } from './stepKeys.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS, DEFECTS } from './battery.js';
@@ -447,5 +453,242 @@ describe('draftMatchesVersion: keys that reach a prototype (T-04-23)', () => {
     record.payload.method[0].targets = [{ label: 'a', value: 'b' }];
     record.payload.method[0].targets[0].self = record.payload.method[0].targets;
     expect(() => draftMatchesVersion(record, oliveOilVersion, [])).not.toThrow();
+  });
+});
+
+// Phase 9 plan 04 (D-18): the create kind. A create draft is a whole first
+// version as typed, kept before any version exists, so its check takes no
+// version and no batches.
+function createRecord(payloadOverrides = {}, recordOverrides = {}) {
+  return {
+    ...buildDraftRecord({
+      versionId: 'v-new',
+      kind: 'create',
+      payload: { recipeId: 'r-new', versionId: 'v-new', name: 'Lemon', ...payloadOverrides },
+      now: NOW,
+    }),
+    ...recordOverrides,
+  };
+}
+
+// The half-made scale draft: a name, no words yet, no kind yet.
+const HALF_SCALE = { key: 'scale-a', name: 'Bo', low: '', high: '', kind: '', group: 'declared' };
+
+describe('draftMatchesCreate: what a first version holds as typed (D-18)', () => {
+  it('accepts a payload holding only recipeId, versionId and a name', () => {
+    expect(draftMatchesCreate(createRecord())).toBe(true);
+  });
+
+  it('accepts blankCreateDraft with a name, and with the picked style’s serve temperature as typed text', () => {
+    const blank = blankCreateDraft({ recipeId: 'r-new', versionId: 'v-new', name: 'Lemon' });
+    expect(draftMatchesCreate(createRecord(blank))).toBe(true);
+    expect(draftMatchesCreate(createRecord({ ...blank, serveTempC: '-12.5' }))).toBe(true);
+  });
+
+  it('accepts a full first version: rows, portions, method, notes, scales, problems, style and targets', () => {
+    const payload = {
+      ...blankCreateDraft({ recipeId: 'r-new', versionId: 'v-new', name: 'Lemon' }),
+      description: 'Bright',
+      beforeYouStart: [{ text: 'Chill the base' }],
+      rows: [{ id: 'row-1', libraryId: 'whole-milk', portions: [{ step: 1, grams: '250' }] }],
+      method: [{ n: 1, leadIn: 'Heat', instruction: 'Warm the milk', uses: ['row-1'], targets: [{ label: 'Temp', value: '60' }] }],
+      scales: [{ key: 'scale-a', name: 'Tang', low: 'flat', high: 'sharp', kind: 'goldilocks', group: 'declared' }],
+      problems: ['icy', 'greasy'],
+      style: 'gelato',
+      targets: { fat: ['6', '9'] },
+      serveTempC: '-14',
+    };
+    expect(draftMatchesCreate(createRecord(payload))).toBe(true);
+  });
+
+  it('refuses a record of another shape version, kind, or a mismatched versionId', () => {
+    expect(draftMatchesCreate(createRecord({}, { shapeVersion: 99 }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({}, { kind: 'plan' }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ versionId: 'other' }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({}, { versionId: '' }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({}, { updatedAt: 5 }))).toBe(false);
+    expect(draftMatchesCreate(null)).toBe(false);
+  });
+
+  it('refuses a missing name, an unknown key, and an empty recipeId', () => {
+    const noName = createRecord();
+    delete noName.payload.name;
+    expect(draftMatchesCreate(noName)).toBe(false);
+    expect(draftMatchesCreate(createRecord({ colour: 'red' }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ recipeId: '' }))).toBe(false);
+  });
+
+  it('refuses an unsafe key anywhere in the record, however deep (T-09-08)', () => {
+    // Every other field check passes here, so only the unsafe-key scan can refuse it.
+    const unsafeStep = { n: 1, leadIn: '', instruction: '', targets: [JSON.parse('{"label":"x","__proto__":1}')] };
+    expect(draftMatchesCreate(createRecord({ method: [unsafeStep] }))).toBe(false);
+    const safeStep = { n: 1, leadIn: '', instruction: '', targets: [{ label: 'x' }] };
+    expect(draftMatchesCreate(createRecord({ method: [safeStep] }))).toBe(true);
+    const record = createRecord();
+    record.payload = JSON.parse('{"recipeId":"r-new","versionId":"v-new","name":"Lemon","targets":{"__proto__":{"a":1}}}');
+    expect(draftMatchesCreate(record)).toBe(false);
+  });
+
+  it('refuses three scales, a scale of kind stars, group core, or key __proto__, and two scales with one key', () => {
+    const scale = (key, overrides = {}) => ({ ...HALF_SCALE, key, ...overrides });
+    expect(draftMatchesCreate(createRecord({ scales: [scale('a'), scale('b'), scale('c')] }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ scales: [scale('a', { kind: 'stars' })] }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ scales: [scale('a', { group: 'core' })] }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ scales: [scale('__proto__')] }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ scales: [scale('a'), scale('a')] }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ scales: [{ ...HALF_SCALE, extra: 1 }] }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ scales: [scale('')] }))).toBe(false);
+  });
+
+  it('refuses a serveTempC that is a number rather than typed text', () => {
+    expect(draftMatchesCreate(createRecord({ serveTempC: -14 }))).toBe(false);
+  });
+
+  it('refuses a machine key and a process key: the editor authors neither (round 3)', () => {
+    expect(draftMatchesCreate(createRecord({ machine: { name: 'Whynter', minFillG: 700, maxFillG: null } }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ process: { pasteuriseC: '69' } }))).toBe(false);
+  });
+
+  it('refuses a portion whose step is 0, a method step without an n, and three problems', () => {
+    const row = (portions) => [{ id: 'row-1', libraryId: 'whole-milk', portions }];
+    expect(draftMatchesCreate(createRecord({ rows: row([{ step: 0, grams: '1' }]) }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ rows: row([{ step: 1.5, grams: '1' }]) }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ rows: row([{ step: 1, grams: 1 }]) }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ rows: row([{ step: 1, grams: '1' }, { step: 1, grams: '2' }]) }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ method: [{ leadIn: 'a', instruction: 'b' }] }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ problems: ['a', 'b', 'c'] }))).toBe(false);
+  });
+
+  it('refuses a reserved or repeated row id and an unsafe libraryId', () => {
+    const base = { id: 'row-1', libraryId: 'whole-milk', portions: [] };
+    expect(draftMatchesCreate(createRecord({ rows: [base] }))).toBe(true);
+    expect(draftMatchesCreate(createRecord({ rows: [{ ...base, id: '__proto__' }] }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ rows: [{ ...base, id: '' }] }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ rows: [base, { ...base }] }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ rows: [{ ...base, libraryId: 'prototype' }] }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ rows: [{ ...base, libraryId: '' }] }))).toBe(false);
+  });
+
+  it('refuses targets with an unknown band, a band of the wrong size, or a non-text value', () => {
+    expect(draftMatchesCreate(createRecord({ targets: { fat: ['1', '2'] } }))).toBe(true);
+    expect(draftMatchesCreate(createRecord({ targets: { colour: ['1', '2'] } }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ targets: { fat: ['1'] } }))).toBe(false);
+    expect(draftMatchesCreate(createRecord({ targets: { fat: [1, 2] } }))).toBe(false);
+  });
+
+  it('accepts a half-made draft that saved-record validity would refuse', () => {
+    const payload = {
+      ...blankCreateDraft({ recipeId: 'r-new', versionId: 'v-new', name: 'Lemon' }),
+      scales: [HALF_SCALE],
+      problems: ['', ''],
+      rows: [{ id: 'row-1', libraryId: 'whole-milk', portions: [{ step: 1, grams: '12.' }] }],
+      method: [],
+    };
+    expect(draftMatchesCreate(createRecord(payload))).toBe(true);
+    // A step whose uses names a row the rows lack still fits.
+    const withStep = { ...payload, method: [{ n: 1, leadIn: '', instruction: '', uses: ['row-gone'] }] };
+    expect(draftMatchesCreate(createRecord(withStep))).toBe(true);
+    // Draft acceptance and saved validity are two checks.
+    expect(isScaleDefinition(HALF_SCALE)).toBe(false);
+  });
+
+  it('keeps the method as its own issued-key ledger: a removed step fits and a non-boolean removed does not', () => {
+    const step = (n, extra = {}) => ({ n, leadIn: '', instruction: `step ${n}`, ...extra });
+    const ledger = [step(1), step(2), step(3, { removed: true })];
+    expect(draftMatchesCreate(createRecord({ method: ledger }))).toBe(true);
+    expect(draftMatchesCreate(createRecord({ method: [step(1, { removed: 'yes' })] }))).toBe(false);
+    expect(nextStepKey(ledger)).toBe(4);
+  });
+
+  it('is not draftMatchesVersion’s kind: a create record fails it even with a version of the same id', () => {
+    const record = createRecord({ versionId: oliveOilVersion.id }, { versionId: oliveOilVersion.id });
+    expect(draftMatchesCreate(record)).toBe(true);
+    expect(draftMatchesVersion(record, oliveOilVersion, [])).toBe(false);
+  });
+});
+
+describe('blankCreateDraft and isCreateDraftDirty (D-19, MAKE-05)', () => {
+  const blank = (name = '') => blankCreateDraft({ recipeId: 'r-new', versionId: 'v-new', name });
+
+  it('starts with Version name "Version 1", every list empty, no style, no targets and no serve temperature', () => {
+    expect(blank('Lemon')).toEqual({
+      recipeId: 'r-new',
+      versionId: 'v-new',
+      name: 'Lemon',
+      description: '',
+      versionLabel: 'Version 1',
+      beforeYouStart: [],
+      rows: [],
+      method: [],
+      scales: [],
+      problems: [],
+      style: null,
+      targets: {},
+      serveTempC: '',
+    });
+  });
+
+  it('is clean for the blank draft, a trimmed Version 1, and a blank serve temperature', () => {
+    expect(isCreateDraftDirty(blank())).toBe(false);
+    expect(isCreateDraftDirty({ ...blank(), versionLabel: 'Version 1 ' })).toBe(false);
+    expect(isCreateDraftDirty({ ...blank(), serveTempC: '  ' })).toBe(false);
+    expect(isCreateDraftDirty({ ...blank(), name: '   ' })).toBe(false);
+  });
+
+  it('reads an absent optional field as its blank value', () => {
+    expect(isCreateDraftDirty({ recipeId: 'r-new', versionId: 'v-new', name: '' })).toBe(false);
+    expect(isCreateDraftDirty({ recipeId: 'r-new', versionId: 'v-new', name: 'Lemon' })).toBe(true);
+  });
+
+  it('is dirty once any field departs from the blank draft', () => {
+    expect(isCreateDraftDirty({ ...blank(), name: 'Lemon' })).toBe(true);
+    expect(isCreateDraftDirty({ ...blank(), description: 'Bright' })).toBe(true);
+    expect(isCreateDraftDirty({ ...blank(), versionLabel: 'Version 2' })).toBe(true);
+    expect(isCreateDraftDirty({ ...blank(), versionLabel: '' })).toBe(true);
+    expect(isCreateDraftDirty({ ...blank(), beforeYouStart: [{ text: '' }] })).toBe(true);
+    expect(isCreateDraftDirty({ ...blank(), rows: [{ id: 'r', libraryId: 'x', portions: [] }] })).toBe(true);
+    expect(isCreateDraftDirty({ ...blank(), method: [{ n: 1, leadIn: '', instruction: '' }] })).toBe(true);
+    expect(isCreateDraftDirty({ ...blank(), scales: [HALF_SCALE] })).toBe(true);
+    expect(isCreateDraftDirty({ ...blank(), problems: [''] })).toBe(true);
+    expect(isCreateDraftDirty({ ...blank(), style: 'gelato' })).toBe(true);
+    expect(isCreateDraftDirty({ ...blank(), targets: { fat: ['', '12'] } })).toBe(true);
+    expect(isCreateDraftDirty({ ...blank(), serveTempC: '-14' })).toBe(true);
+  });
+});
+
+describe('CREATE_DRAFT_KEYS', () => {
+  // Round 3 (Mark, 2026-10-18, before any create draft existed): serveTempC
+  // joined (D-19) and machine and process left (the creation editor authors
+  // neither). A key changes only by Mark's decision from here on: a renamed,
+  // removed or newly required key, or a narrowed check, deletes the drafts
+  // kept before it at their next restore, while a new optional key keeps them
+  // fitting. The three lists below must stay equal.
+  const PAYLOAD_CONTRACT = [
+    'beforeYouStart',
+    'description',
+    'method',
+    'name',
+    'problems',
+    'recipeId',
+    'rows',
+    'scales',
+    'serveTempC',
+    'style',
+    'targets',
+    'versionId',
+    'versionLabel',
+  ];
+
+  it('equals blankCreateDraft’s keys and the payload contract’s thirteen names', () => {
+    const blankKeys = Object.keys(blankCreateDraft({ recipeId: 'r-new', versionId: 'v-new', name: '' })).sort();
+    expect([...CREATE_DRAFT_KEYS].sort()).toEqual(blankKeys);
+    expect(blankKeys).toEqual(PAYLOAD_CONTRACT);
+    expect(PAYLOAD_CONTRACT).toHaveLength(13);
+  });
+
+  it('holds no name twice and neither machine nor process', () => {
+    expect(new Set(CREATE_DRAFT_KEYS).size).toBe(CREATE_DRAFT_KEYS.length);
+    expect(CREATE_DRAFT_KEYS).not.toContain('machine');
+    expect(CREATE_DRAFT_KEYS).not.toContain('process');
   });
 });

@@ -37,6 +37,14 @@ const rules = readAllRules(shellCssSource);
 // the fly-out; from 1590 the rail (224 + 3 x 32 + 350 + 920 = 1590).
 const FLYOUT_MEDIA = '(max-width: 1589.98px)';
 const PHONE_MEDIA = '(max-width: 723.98px)';
+// The Notebook and Ingredients places' three conditions (plan 09-03, sketch
+// 012): Home's own two cuts, 1100 for the Ingredients row's category and 760
+// for both places' stacking, and the coarse-pointer touch floor. They are not
+// the shell's: only .place rules naming an nb__ or ing__ class may sit under
+// them (pinned below).
+const PLACES_COLUMN_MEDIA = '(max-width: 1099.98px)';
+const PLACES_PHONE_MEDIA = '(max-width: 759.98px)';
+const COARSE_MEDIA = '(pointer: coarse)';
 
 describe('shell.css — no visual literal, every value a var() read', () => {
   test('no declaration contains a hex colour', () => {
@@ -51,7 +59,8 @@ describe('shell.css — no visual literal, every value a var() read', () => {
 
   // Two documented roots: .shell (the shell's own chrome — head, rail,
   // routed-page column) and .place (the unbuilt-place page Placeholder.jsx
-  // renders inside .shell__main). Every selector in this file starts with
+  // renders inside .shell__main, which now also roots the Notebook and
+  // Ingredients places, plan 09-03). Every selector in this file starts with
   // one or the other, bar two named exceptions: the one root rule (html,
   // scroll-padding-top only; pinned below) and the one element-qualified
   // reset button.shell__place (sketch 011 decision 55). That reset is
@@ -76,11 +85,29 @@ describe('shell.css — no visual literal, every value a var() read', () => {
     expect(rule.declarations).toMatch(/background:\s*var\(--app-background\)/);
   });
 
-  // The two allowed conditions, the rail's cut (1589.98, derived) and the
-  // phone cut (723.98, a rung the ladder already has).
-  test('the only @media conditions allowed in shell.css are the fly-out cut and the phone cut', () => {
+  // The shell's two conditions, the rail's cut (1589.98, derived) and the
+  // phone cut (723.98, a rung the ladder already has), and the places' three.
+  test('the only @media conditions allowed in shell.css are the fly-out cut, the phone cut and the places\' three', () => {
     const mediaConditions = new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media));
-    expect([...mediaConditions].sort()).toEqual([FLYOUT_MEDIA, PHONE_MEDIA].sort());
+    expect([...mediaConditions].sort()).toEqual(
+      [FLYOUT_MEDIA, PHONE_MEDIA, PLACES_COLUMN_MEDIA, PLACES_PHONE_MEDIA, COARSE_MEDIA].sort(),
+    );
+  });
+
+  // The places' conditions are Home's own cuts and the touch floor, written for
+  // the Notebook and Ingredients places alone. A shell rule under one of them
+  // would move the chrome at a width the shell's ladder does not name.
+  test('every rule under the places\' three conditions is a .place rule naming an nb__ or ing__ class', () => {
+    const placeRules = rules.filter((rule) =>
+      [PLACES_COLUMN_MEDIA, PLACES_PHONE_MEDIA, COARSE_MEDIA].includes(rule.media),
+    );
+    expect(placeRules.length).toBeGreaterThan(0);
+    for (const rule of placeRules) {
+      for (const selector of rule.selector.split(',').map((part) => part.trim())) {
+        expect(selector.startsWith('.place '), `expected "${selector}" to start with .place`).toBe(true);
+        expect(selector, `expected "${selector}" to name an nb__ or ing__ class`).toMatch(/\.(nb|ing)__/);
+      }
+    }
   });
 });
 
@@ -111,12 +138,17 @@ describe('the rail reads board 170\'s own edge (G-03.4-7, board 170 line 30)', (
 });
 
 describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
-  test('shell.css carries exactly two @media blocks, the fly-out before the phone, so the narrower wins later', () => {
-    expect(shellCssSource.match(/@media/g)).toHaveLength(2);
+  test('shell.css carries exactly five @media blocks, the fly-out before the phone and 1099.98 before 759.98, so the narrower wins later', () => {
+    expect(shellCssSource.match(/@media/g)).toHaveLength(5);
     const flyoutAt = shellCssSource.indexOf(`@media ${FLYOUT_MEDIA}`);
     const phoneAt = shellCssSource.indexOf(`@media ${PHONE_MEDIA}`);
     expect(flyoutAt).toBeGreaterThan(-1);
     expect(phoneAt).toBeGreaterThan(flyoutAt);
+    const columnAt = shellCssSource.indexOf(`@media ${PLACES_COLUMN_MEDIA}`);
+    const placesPhoneAt = shellCssSource.indexOf(`@media ${PLACES_PHONE_MEDIA}`);
+    expect(columnAt).toBeGreaterThan(-1);
+    expect(placesPhoneAt).toBeGreaterThan(columnAt);
+    expect(shellCssSource.indexOf(`@media ${COARSE_MEDIA}`)).toBeGreaterThan(-1);
   });
 
   test('the fly-out block holds only the rail\'s hiding rule and the open panel', () => {
@@ -377,9 +409,26 @@ describe('one App radius on every place, the active rail place in weight 600 (sk
     expect(rule.declarations).not.toMatch(/font-weight/);
   });
 
-  test("only .shell__sprinkle, .shell__place, the menu button and the wordmark link declare a border-radius (the last two on the App control radius so their focus rings follow it, decision 47 (8)), nothing in the phone block declares a radius, and the phone block's one weight is the active tab's", () => {
+  test("only the places' rails, name link, Clear filters and row heads (plan 09-03: the boards round them), .shell__sprinkle, .shell__place, the menu button and the wordmark link declare a border-radius (the last two on the App control radius so their focus rings follow it, decision 47 (8)), nothing in the phone block declares a radius, and the phone block's one weight is the active tab's", () => {
     const radiused = rules.filter((r) => /(^|[\s;])border-radius\s*:/.test(r.declarations));
-    expect(radiused.map((r) => r.selector).sort()).toEqual(['.shell__brand a', '.shell__import-errors', '.shell__menu', '.shell__place', '.shell__sprinkle']);
+    expect(radiused.map((r) => r.selector).sort()).toEqual([
+      '.place .ing__clear',
+      '.place .ing__head',
+      '.place .ing__rail',
+      '.place .nb__name a',
+      '.place .nb__rail',
+      '.shell__brand a',
+      '.shell__import-errors',
+      '.shell__menu',
+      '.shell__place',
+      '.shell__sprinkle',
+    ]);
+    for (const selector of ['.place .ing__clear', '.place .ing__head', '.place .nb__name a']) {
+      expect(radiused.find((r) => r.selector === selector).declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
+    }
+    for (const selector of ['.place .ing__rail', '.place .nb__rail']) {
+      expect(radiused.find((r) => r.selector === selector).declarations).toMatch(/border-radius:\s*var\(--app-radius-rail\)/);
+    }
     expect(radiused.find((r) => r.selector === '.shell__import-errors').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
     expect(radiused.find((r) => r.selector === '.shell__brand a').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
     expect(radiused.find((r) => r.selector === '.shell__menu').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);

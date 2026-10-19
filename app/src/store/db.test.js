@@ -1,11 +1,13 @@
-// The D-10/D-11/D-16 proof against a real IndexedDB: DB_VERSION 9 holds
-// versions, batches, recipes, drafts and the ingredient library. Version 8
-// (phase 04: the shapes of 04-03 must reach every profile, and the drafts
-// store is new) set the reset line: a returning profile below 8 resets
-// (D-10, one-way, approved by Mark) rather than lifting. The reset is
-// bounded: a profile already at 8 keeps what it holds. DB_VERSION 9
-// (Phase 6) adds the library store, so a profile at 8 keeps everything it
-// holds and gains the store (D-01); a profile below 8 still resets. This
+// The D-10/D-11/D-16 proof against a real IndexedDB: DB_VERSION 10 holds
+// versions, batches, recipes, drafts, the ingredient library and the four seed
+// tables (machines, styles, scales, problems). Phase 9 (LIB-06, decisions 2
+// and 5) set the reset line: a returning profile below 10 resets (one-way,
+// approved by Mark) rather than lifting. The reset is bounded: a profile at
+// 10 or above keeps what it holds, and two ratchets below hold it there (the
+// version-10 profile that survives a later bump, and the scan that finds no
+// delete outside the reset block). No assertion pins a literal database
+// version: they read DB_VERSION, and the newer-version test opens
+// DB_VERSION + 1. This
 // file imports db.js only — never repository.js and never idb itself, so
 // the project's seam grep (only db.js under app/src imports 'idb') stays
 // exact. The fake-indexeddb setup mirrors app/tests/db-reset.test.js: a
@@ -13,6 +15,8 @@
 // assertion in one test would otherwise block a later test's delete/open
 // indefinitely.
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import {
   IDBFactory,
   IDBCursor,
@@ -26,7 +30,10 @@ import {
   IDBTransaction,
   IDBVersionChangeEvent,
 } from 'fake-indexeddb';
-import { DB_NAME, DB_VERSION, openStore } from './db.js';
+import { DB_NAME, DB_VERSION, openStore, upgradeStores } from './db.js';
+
+// Every store a profile at DB_VERSION holds.
+const ALL_STORES = ['versions', 'batches', 'recipes', 'drafts', 'library', 'machines', 'styles', 'scales', 'problems'];
 
 // idb's wrapper reaches for these IDB constructors on the global object,
 // not only `indexedDB` itself (Node has none of them natively) — set once,
@@ -79,19 +86,17 @@ beforeEach(() => {
 });
 
 describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
-  it('opens a fresh (deleted) database with versions, batches, recipes, drafts and library stores, at version 9', async () => {
+  it('opens a fresh (deleted) database with every store, at DB_VERSION', async () => {
     const db = await openStore();
-    expect(db.version).toBe(9);
     expect(db.version).toBe(DB_VERSION);
-    expect(db.objectStoreNames.contains('versions')).toBe(true);
-    expect(db.objectStoreNames.contains('batches')).toBe(true);
-    expect(db.objectStoreNames.contains('recipes')).toBe(true);
-    expect(db.objectStoreNames.contains('drafts')).toBe(true);
-    expect(db.objectStoreNames.contains('library')).toBe(true);
-    // D-02, D-03: the library store is keyed by id and holds no index.
-    const library = db.transaction('library').store;
-    expect(library.keyPath).toBe('id');
-    expect(library.indexNames.length).toBe(0);
+    for (const name of ALL_STORES) expect(db.objectStoreNames.contains(name), name).toBe(true);
+    // D-02, D-03: the library store is keyed by id and holds no index; so are
+    // the four seed tables (LIB-09).
+    for (const name of ['library', 'machines', 'styles', 'scales', 'problems']) {
+      const store = db.transaction(name).store;
+      expect(store.keyPath, name).toBe('id');
+      expect(store.indexNames.length, name).toBe(0);
+    }
     db.close();
   });
 
@@ -103,7 +108,7 @@ describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
     db.close();
   });
 
-  it('resets a database first opened at version 7 (one version, one batch) to all five stores, empty', async () => {
+  it('resets a database first opened at version 7 (one version, one batch) to every store, empty', async () => {
     await seedOldProfile(7, {
       stores: ['versions', 'batches', 'recipes'],
       records: [
@@ -113,15 +118,15 @@ describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
     });
 
     const db = await openStore();
-    expect(db.version).toBe(9);
-    for (const name of ['versions', 'batches', 'recipes', 'drafts', 'library']) {
+    expect(db.version).toBe(DB_VERSION);
+    for (const name of ALL_STORES) {
       expect(db.objectStoreNames.contains(name)).toBe(true);
       expect(await db.getAll(name)).toEqual([]);
     }
     db.close();
   });
 
-  it('already at 9 keeps its records: a version and a draft survive a second open', async () => {
+  it('already at DB_VERSION keeps its records: a version and a draft survive a second open', async () => {
     const first = await openStore();
     await first.put('versions', { id: 'kept-version' });
     await first.put('drafts', { versionId: 'kept-version', note: 'kept-draft' });
@@ -133,31 +138,24 @@ describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
     db.close();
   });
 
-  it('a profile left at version 8 (a recipe, a version, a batch and a draft) opens at 9 with all four records unchanged and an empty library store (D-01, D-01a)', async () => {
-    const recipe = { id: 'kept-recipe', name: 'Kept', description: '' };
-    const version = { id: 'kept-version', recipeId: 'kept-recipe' };
-    const batch = { id: 'kept-batch', versionId: 'kept-version' };
-    const draft = { versionId: 'kept-version', note: 'kept-draft' };
+  it('a profile left at version 8 (a recipe, a version, a batch and a draft) is reset at DB_VERSION: every store present and empty, the batches index kept (decisions 2 and 5)', async () => {
     await seedOldProfile(8, {
       stores: ['versions', 'batches', 'recipes', 'drafts'],
       records: [
-        ['recipes', recipe],
-        ['versions', version],
-        ['batches', batch],
-        ['drafts', draft],
+        ['recipes', { id: 'old-recipe', name: 'Old', description: '' }],
+        ['versions', { id: 'old-version', recipeId: 'old-recipe' }],
+        ['batches', { id: 'old-batch', versionId: 'old-version' }],
+        ['drafts', { versionId: 'old-version', note: 'old-draft' }],
       ],
     });
 
     const db = await openStore();
-    expect(db.version).toBe(9);
-    expect(await db.getAll('recipes')).toEqual([recipe]);
-    expect(await db.getAll('versions')).toEqual([version]);
-    expect(await db.getAll('batches')).toEqual([batch]);
-    expect(await db.getAll('drafts')).toEqual([draft]);
-    // The batches index survived the upgrade.
-    expect(await db.getAllFromIndex('batches', 'by-version', 'kept-version')).toEqual([batch]);
-    expect(db.objectStoreNames.contains('library')).toBe(true);
-    expect(await db.getAll('library')).toEqual([]);
+    expect(db.version).toBe(DB_VERSION);
+    for (const name of ALL_STORES) {
+      expect(await db.getAll(name), name).toEqual([]);
+    }
+    // The recreated batches store carries its by-version index.
+    expect(await db.getAllFromIndex('batches', 'by-version', 'old-version')).toEqual([]);
     db.close();
   });
 
@@ -221,7 +219,7 @@ describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
     oldDb.close();
 
     const db = await openStore();
-    expect(db.version).toBe(9);
+    expect(db.version).toBe(DB_VERSION);
     expect(db.objectStoreNames.contains('versions')).toBe(true);
     expect(db.objectStoreNames.contains('batches')).toBe(true);
     expect(db.objectStoreNames.contains('recipes')).toBe(true);
@@ -258,7 +256,7 @@ describe('openStore, when another tab holds the old version open (WR-08)', () =>
     vi.unstubAllGlobals();
   });
 
-  it('calls onBlocked once, then finishes the upgrade at version 9 when the other connection closes', async () => {
+  it('calls onBlocked once, then finishes the upgrade at DB_VERSION when the other connection closes', async () => {
     const held = await holdOpen(7);
     const onBlocked = vi.fn();
     const opening = openStore({ onBlocked });
@@ -267,8 +265,8 @@ describe('openStore, when another tab holds the old version open (WR-08)', () =>
 
     held.close();
     const db = await opening;
-    expect(db.version).toBe(9);
-    for (const name of ['versions', 'batches', 'recipes', 'drafts', 'library']) {
+    expect(db.version).toBe(DB_VERSION);
+    for (const name of ALL_STORES) {
       expect(db.objectStoreNames.contains(name)).toBe(true);
     }
     expect(onBlocked).toHaveBeenCalledTimes(1);
@@ -281,7 +279,7 @@ describe('openStore, when another tab holds the old version open (WR-08)', () =>
     const db = await openStore();
 
     const newer = await new Promise((resolve, reject) => {
-      const request = indexedDB.open(DB_NAME, 10);
+      const request = indexedDB.open(DB_NAME, DB_VERSION + 1);
       let blocked = false;
       request.onblocked = () => {
         blocked = true;
@@ -289,10 +287,126 @@ describe('openStore, when another tab holds the old version open (WR-08)', () =>
       request.onsuccess = () => (blocked ? reject(new Error('the upgrade was blocked')) : resolve(request.result));
       request.onerror = () => reject(request.error);
     });
-    expect(newer.version).toBe(10);
+    expect(newer.version).toBe(DB_VERSION + 1);
     expect(reload).toHaveBeenCalledTimes(1);
     newer.close();
     // A closed connection refuses a new transaction.
     expect(() => db.transaction('versions')).toThrow();
+  });
+});
+
+// The two ratchets that hold the reset at version 10 (LIB-06, threat T-09-18):
+// from Phase 11 the store holds recipes a maker made, so a later bump must
+// never reach the destructive block.
+
+// The historical version the reset may never reach: a literal 10, not
+// DB_VERSION, so the proof keeps covering a version-10 profile once DB_VERSION
+// moves past it.
+const RESET_BOUND = 10;
+
+// The stores a profile at version 10 held, written out here rather than read
+// from db.js, so this fixture does not move when db.js does.
+const VERSION_10_STORES = ['versions', 'batches', 'recipes', 'drafts', 'library', 'machines', 'styles', 'scales', 'problems'];
+
+describe('the reset never reaches a profile at version 10 or above (behavioural ratchet)', () => {
+  it('a version-10 profile with a record in every store survives an upgrade to DB_VERSION + 1, indexes included', async () => {
+    const records = [
+      ['versions', { id: 'kept-version', recipeId: 'kept-recipe' }],
+      ['batches', { id: 'kept-batch', versionId: 'kept-version' }],
+      ['recipes', { id: 'kept-recipe', name: 'Kept' }],
+      ['drafts', { versionId: 'kept-version', create: true, note: 'kept-draft' }],
+      ['library', { id: 'kept-library', entry: { name: 'Kept' } }],
+      ['machines', { id: 'kept-machine', name: 'Kept' }],
+      ['styles', { id: 'kept-style', name: 'Kept' }],
+      ['scales', { id: 'kept-scale', name: 'Kept' }],
+      ['problems', { id: 'kept-problem', name: 'Kept' }],
+    ];
+    await seedOldProfile(RESET_BOUND, { stores: VERSION_10_STORES, records });
+
+    const upgraded = await new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, DB_VERSION + 1);
+      request.onupgradeneeded = (event) => {
+        upgradeStores(request.result, event.oldVersion, event.newVersion, request.transaction);
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    expect(upgraded.version).toBe(DB_VERSION + 1);
+    for (const [name, record] of records) {
+      const stored = await new Promise((resolve, reject) => {
+        const request = upgraded.transaction(name).objectStore(name).getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      expect(stored, name).toEqual([record]);
+    }
+    const byVersion = await new Promise((resolve, reject) => {
+      const request = upgraded.transaction('batches').objectStore('batches').index('by-version').getAll('kept-version');
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    expect(byVersion).toEqual([{ id: 'kept-batch', versionId: 'kept-version' }]);
+    upgraded.close();
+  });
+});
+
+// A string is matched before a comment, so a // or /* inside one stays code.
+const STRING_OR_COMMENT = /('(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\[\s\S]|[^`\\])*`)|\/\*[\s\S]*?\*\/|\/\/[^\n]*/g;
+
+function stripComments(source) {
+  return source.replace(STRING_OR_COMMENT, (_match, literal) => literal ?? '');
+}
+
+const RESET_ANCHOR = 'if (oldVersion > 0 && oldVersion < 10) {';
+
+// The positions of every deleteObjectStore( and .clear( call in the source
+// (comments already stripped) that lies outside the anchored reset block, or
+// null when the anchor is missing.
+function destructiveCallsOutsideResetBlock(source) {
+  const anchor = source.indexOf(RESET_ANCHOR);
+  if (anchor === -1) return null;
+  const open = anchor + RESET_ANCHOR.length - 1;
+  let depth = 0;
+  let close = -1;
+  for (let i = open; i < source.length; i += 1) {
+    if (source[i] === '{') depth += 1;
+    if (source[i] === '}') {
+      depth -= 1;
+      if (depth === 0) {
+        close = i;
+        break;
+      }
+    }
+  }
+  if (close === -1) return null;
+  const outside = [];
+  for (const match of source.matchAll(/deleteObjectStore\(|\.clear\(/g)) {
+    if (match.index < open || match.index > close) outside.push(match.index);
+  }
+  return outside;
+}
+
+describe('no delete or clear lies outside the reset block (static ratchet)', () => {
+  const dbSource = stripComments(readFileSync(fileURLToPath(new URL('./db.js', import.meta.url)), 'utf8'));
+
+  it('db.js holds the anchored block, and every deleteObjectStore( and .clear( call is inside it', () => {
+    const outside = destructiveCallsOutsideResetBlock(dbSource);
+    expect(outside, `the anchor line ${RESET_ANCHOR} is missing or its block never closes`).not.toBeNull();
+    expect(outside).toEqual([]);
+    // The block does hold the drops: the scan is not passing on an empty file.
+    expect(dbSource.split('deleteObjectStore(').length - 1).toBeGreaterThanOrEqual(5);
+  });
+
+  it('the scan itself fails on a delete outside the block, a clear outside it, and a missing anchor', () => {
+    const block = `${RESET_ANCHOR}\n  db.deleteObjectStore('versions');\n}\n`;
+    expect(destructiveCallsOutsideResetBlock(block)).toEqual([]);
+    expect(destructiveCallsOutsideResetBlock(`${block}db.deleteObjectStore('x');\n`)).toHaveLength(1);
+    expect(destructiveCallsOutsideResetBlock(`${block}tx.store.clear();\n`)).toHaveLength(1);
+    expect(destructiveCallsOutsideResetBlock('db.deleteObjectStore(\'x\');\n')).toBeNull();
+  });
+
+  it('a comment naming either call cannot trip it', () => {
+    const source = stripComments(`// db.deleteObjectStore( and .clear( are named here\n${RESET_ANCHOR}\n}\n/* .clear( */`);
+    expect(destructiveCallsOutsideResetBlock(source)).toEqual([]);
   });
 });

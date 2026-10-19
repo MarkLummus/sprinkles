@@ -1,6 +1,7 @@
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { library } from '../data/library.js';
 import { librarySeedDb } from '../data/library-seed-db.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 
 // The library seed (D-08, LIB-04): the reviewed dataset's entries merged under
 // the 26 the app already held. The 26 are spread last, so a new entry can never
@@ -21,6 +22,11 @@ const seededLibrary = { ...librarySeedDb, ...library };
 // left alone. An empty library is refilled at boot whatever emptied it
 // (D-04a); a library holding any record is never topped up (D-05).
 //
+// The four seed tables (machines, ice cream styles, scales, problems; LIB-09,
+// D-17) are guarded the same way, each by its own one-transaction call, in that
+// order after the library: an empty table is refilled at every boot from its
+// committed seed, and a table holding any row is left alone.
+//
 // The other reads the versions store, so versions are written last: recipes
 // and batches go in first, each store in one transaction, and only the final
 // versions write flips the check. The library goes first. An interrupted seed
@@ -29,6 +35,10 @@ const seededLibrary = { ...librarySeedDb, ...library };
 // store's first-written records stay the working case).
 export async function seedIfEmpty(repository) {
   await repository.seedLibraryIfEmpty(Object.entries(seededLibrary).map(([id, entry]) => ({ id, entry })));
+  await repository.seedTableIfEmpty('machines', SEED_CATALOG.machines);
+  await repository.seedTableIfEmpty('styles', SEED_CATALOG.styles);
+  await repository.seedTableIfEmpty('scales', SEED_CATALOG.scales);
+  await repository.seedTableIfEmpty('problems', SEED_CATALOG.problems);
   const existing = await repository.listVersions();
   if (existing.length > 0) return;
   await repository.putAllRecipes(seedRecipeGroups.map((group) => group.recipe));

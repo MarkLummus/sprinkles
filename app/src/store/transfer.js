@@ -11,9 +11,12 @@
 import { AXES } from '../domain/axes.js';
 import { isScaleDefinition, MAX_RECIPE_SCALES } from '../domain/catalog.js';
 import { SEGMENT_OPTIONS, DEFECTS, MARK_ONE_OPTIONS } from '../domain/battery.js';
+import { UNSAFE_KEYS, isPlainObject, isFiniteNumber, isNonEmptyString, validateLibraryRecord } from './seedTables.js';
 
 // domain/versionRow.js RESERVED_ROW_IDS mirrors this set; transfer.test.js pins the two.
-export const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+// The set and the library validator moved to store/seedTables.js (plan 09-09),
+// where boot shares them; UNSAFE_KEYS is re-exported so its importers keep working.
+export { UNSAFE_KEYS };
 // The core scale keys a declared scale's key may not equal. Plan 09-10 replaces
 // this source with the file's own scales table (D-03a).
 const CORE_AXIS_KEYS = AXES.filter((axis) => axis.group === 'core').map((axis) => axis.key);
@@ -36,18 +39,6 @@ export const STORE_SCHEMA_VERSION = 8;
 // path-named `$.schemaVersion` error — whenever the file is from a
 // version of Sprinkles older than this one.
 export const OLDER_EXPORT_MESSAGE = 'This file is from an older version of Sprinkles and can’t be imported.';
-
-function isPlainObject(value) {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function isFiniteNumber(value) {
-  return typeof value === 'number' && Number.isFinite(value);
-}
-
-function isNonEmptyString(value) {
-  return typeof value === 'string' && value.length > 0;
-}
 
 function isStringOrNull(value) {
   return value === null || typeof value === 'string';
@@ -214,43 +205,6 @@ function validateRecipe(recipe, path, errors) {
   }
   if (typeof recipe.description !== 'string') {
     errors.push(`${path}.description: expected a string, got ${JSON.stringify(recipe.description)}`);
-  }
-}
-
-/**
- * validateLibraryRecord(record, path, errors) -> void, in validateRecipe's
- * own collect-all-errors, name-the-path style. It checks the { id, entry }
- * wrapper and no further (06-CONTEXT.md D-08), because ING-01 will change
- * the entry's shape: the id, the entry as an object, a non-empty name, and
- * a composition of finite numbers. The basis, source, density, category and
- * note of an entry are not checked. Unsafe keys inside a record are already
- * refused by scanForUnsafeKeys over the whole payload. A reserved name is
- * refused as an id's value too, as validateRow does for row ids, because a
- * library id is an object key in data/library.js and may key a map later
- * (D-08 as amended, 2026-10-14). Never throws.
- */
-function validateLibraryRecord(record, path, errors) {
-  if (!isPlainObject(record)) {
-    errors.push(`${path}: expected an object`);
-    return;
-  }
-  if (!isNonEmptyString(record.id)) errors.push(`${path}.id: expected a non-empty string`);
-  if (UNSAFE_KEYS.has(record.id)) errors.push(`${path}.id: prototype-mutating id is not allowed, got ${JSON.stringify(record.id)}`);
-  if (!isPlainObject(record.entry)) {
-    errors.push(`${path}.entry: expected an object`);
-    return;
-  }
-  if (!isNonEmptyString(record.entry.name)) {
-    errors.push(`${path}.entry.name: expected a non-empty string, got ${JSON.stringify(record.entry.name)}`);
-  }
-  if (!isPlainObject(record.entry.composition)) {
-    errors.push(`${path}.entry.composition: expected an object`);
-  } else {
-    for (const [field, value] of Object.entries(record.entry.composition)) {
-      if (!isFiniteNumber(value)) {
-        errors.push(`${path}.entry.composition.${field}: expected a finite number, got ${JSON.stringify(value)}`);
-      }
-    }
   }
 }
 

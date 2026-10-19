@@ -10,7 +10,7 @@
 // decision 20) — and refuses everything older rather than lifting it; there
 // is no ladder here.
 import { isScaleDefinition, CORE_SCALE_COUNT, MAX_RECIPE_SCALES } from '../domain/catalog.js';
-import { SEGMENT_OPTIONS, DEFECTS, MARK_ONE_OPTIONS } from '../domain/battery.js';
+import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS } from '../domain/battery.js';
 import { normaliseCode, sheetCodeProblems, SheetCodeError } from '../domain/sheetCode.js';
 import {
   UNSAFE_KEYS,
@@ -240,27 +240,53 @@ function isAbsentOrNull(value) {
 }
 
 /**
- * validateMarks(marks, path, errors) -> void. Every own value is a 1–5
- * integer — never 0, never a half — an unmarked axis holds no key at all
- * (D-10).
+ * validateMarks(marks, path, errors, allowedKeys) -> void. Every own value is a
+ * 1–5 integer — never 0, never a half — an unmarked axis holds no key at all
+ * (D-10). A mark sits only on a key of the batch's own snapshot (allowedKeys:
+ * its coreScales and declaredAxes keys, D-03a), never on a key only the
+ * receiving profile's tables hold (T-09-27).
  */
-function validateMarks(marks, path, errors) {
+function validateMarks(marks, path, errors, allowedKeys) {
   if (!isPlainObject(marks)) {
     errors.push(`${path}: expected an object`);
     return;
   }
   for (const [axis, value] of Object.entries(marks)) {
+    if (!allowedKeys.includes(axis)) {
+      errors.push(
+        `${path}.${axis}: expected a key of this batch's snapshot.coreScales or snapshot.declaredAxes ${JSON.stringify(allowedKeys)}`,
+      );
+    }
     if (!Number.isInteger(value) || value < 1 || value > 5) {
       errors.push(`${path}.${axis}: expected an integer from 1 to 5, got ${JSON.stringify(value)}`);
     }
   }
 }
 
+// The scale keys a snapshot's lists name, read without throwing: a list that is
+// not an array, or an element that is not a plain object with a non-empty string
+// key, contributes nothing. The lists' own errors are reported once, by
+// validateBatch, so a malformed snapshot never throws here.
+function snapshotKeys(list) {
+  if (!Array.isArray(list)) return [];
+  return list.filter((scale) => isPlainObject(scale) && isNonEmptyString(scale.key)).map((scale) => scale.key);
+}
+
+// The batch's own core problem words, read the same way: only the non-empty
+// strings of an array; anything else gives [], reported once by validateBatch.
+function snapshotCoreProblems(snapshot) {
+  if (!isPlainObject(snapshot) || !Array.isArray(snapshot.coreProblems)) return [];
+  return snapshot.coreProblems.filter(isNonEmptyString);
+}
+
 /**
- * validateTasting(tasting, path, errors) -> void, in the same
+ * validateTasting(tasting, snapshot, path, errors) -> void, in the same
  * collect-all-errors, name-the-path style as validateBatch. A batch
  * carries zero or one tasting (D-03); this validates the one object a
- * batch may hold at $.tasting.
+ * batch may hold at $.tasting. Its marks, defects and declared defects are
+ * judged by the batch's own snapshot — coreScales and declaredAxes keys,
+ * coreProblems words, declaredFlaws words — never by the receiving profile's
+ * tables (D-03a): a batch is valid by the definitions it carries.
  */
 function validateTasting(tasting, snapshot, path, errors) {
   if (!isPlainObject(tasting)) {
@@ -279,13 +305,21 @@ function validateTasting(tasting, snapshot, path, errors) {
   if (!isPlainObject(tasting.marks)) {
     errors.push(`${path}.marks: expected an object`);
   } else {
-    validateMarks(tasting.marks, `${path}.marks`, errors);
+    const markKeys = isPlainObject(snapshot)
+      ? [...snapshotKeys(snapshot.coreScales), ...snapshotKeys(snapshot.declaredAxes)]
+      : [];
+    validateMarks(tasting.marks, `${path}.marks`, errors, markKeys);
   }
   if (!isAbsentOrNull(tasting.note) && typeof tasting.note !== 'string') {
     errors.push(`${path}.note: expected a string or null`);
   }
-  if (!isAbsentOrNull(tasting.defects) && (!Array.isArray(tasting.defects) || !tasting.defects.every((chip) => DEFECTS.includes(chip)))) {
-    errors.push(`${path}.defects: expected an array of known defect chips or null, got ${JSON.stringify(tasting.defects)}`);
+  if (!isAbsentOrNull(tasting.defects)) {
+    const coreProblems = snapshotCoreProblems(snapshot);
+    if (!Array.isArray(tasting.defects) || !tasting.defects.every((chip) => coreProblems.includes(chip))) {
+      errors.push(
+        `${path}.defects: expected null or an array of words from this batch's snapshot.coreProblems ${JSON.stringify(coreProblems)}, got ${JSON.stringify(tasting.defects)}`,
+      );
+    }
   }
   if (!isAbsentOrNull(tasting.declaredDefects)) {
     const declared = isPlainObject(snapshot) && Array.isArray(snapshot.declaredFlaws) ? snapshot.declaredFlaws : [];
@@ -380,14 +414,62 @@ function validateDeclaredFlaws(declaredFlaws, path, errors) {
 }
 
 /**
+ * validateCoreScales(coreScales, path, errors) -> void. A batch snapshot's
+ * core scales (D-03, D-03a): exactly CORE_SCALE_COUNT scale definitions with
+ * group 'core', each key once. Four is the one supported core cardinality (the
+ * record pen's desktop grid places four, plan 09-04).
+ */
+function validateCoreScales(coreScales, path, errors) {
+  if (!Array.isArray(coreScales)) {
+    errors.push(`${path}: expected an array of ${CORE_SCALE_COUNT} core scale definitions`);
+    return;
+  }
+  coreScales.forEach((scale, index) => {
+    if (!isScaleDefinition(scale) || scale.group !== 'core') {
+      errors.push(`${path}[${index}]: expected a core scale definition { key, name, low, high, kind, group }`);
+    }
+  });
+  if (coreScales.length !== CORE_SCALE_COUNT) {
+    errors.push(`${path}: expected exactly ${CORE_SCALE_COUNT} core scales, got ${coreScales.length}`);
+  }
+  const keys = coreScales.map((scale) => scale?.key);
+  if (new Set(keys).size !== keys.length) {
+    errors.push(`${path}: expected each core scale once, got ${JSON.stringify(keys)}`);
+  }
+}
+
+/**
+ * validateCoreProblems(coreProblems, path, errors) -> void. The problem words a
+ * batch was recorded with (D-03): an array of unique non-empty strings.
+ */
+function validateCoreProblems(coreProblems, path, errors) {
+  if (!Array.isArray(coreProblems)) {
+    errors.push(`${path}: expected an array of problem words`);
+    return;
+  }
+  coreProblems.forEach((word, index) => {
+    if (!isNonEmptyString(word)) {
+      errors.push(`${path}[${index}]: expected a non-empty string, got ${JSON.stringify(word)}`);
+    }
+  });
+  if (new Set(coreProblems).size !== coreProblems.length) {
+    errors.push(`${path}: expected each problem word once, got ${JSON.stringify(coreProblems)}`);
+  }
+}
+
+/**
  * validateBatch(batch, path, errors) -> void, in the same collect-all-errors,
- * name-the-path style as validateVersion. Every absent-or-null check is
+ * name-the-path style as validateVersion. A batch is judged by its own snapshot,
+ * never by the receiving profile's catalog (D-03a): the snapshot must carry
+ * coreScales and coreProblems, a declared scale may not take a key of the
+ * batch's own coreScales, and the tasting's marks and defects are read against
+ * the snapshot's lists (validateTasting). Every absent-or-null check is
  * written as an explicit null test followed by isFiniteNumber, never as a
  * finite check falling back to truthiness (T-02-10) — a batch whose
  * skipped-row as-made is 0 and whose overrun is 0% must both pass, and both
  * are falsy.
  */
-function validateBatch(batch, path, errors, coreKeys) {
+function validateBatch(batch, path, errors) {
   if (!isPlainObject(batch)) {
     errors.push(`${path}: expected an object`);
     return;
@@ -411,7 +493,11 @@ function validateBatch(batch, path, errors, coreKeys) {
     if (typeof batch.snapshot.coefficientSetId !== 'string') {
       errors.push(`${path}.snapshot.coefficientSetId: expected a string`);
     }
-    validateDeclaredAxes(batch.snapshot.declaredAxes, `${path}.snapshot.declaredAxes`, errors, coreKeys);
+    validateCoreScales(batch.snapshot.coreScales, `${path}.snapshot.coreScales`, errors);
+    validateCoreProblems(batch.snapshot.coreProblems, `${path}.snapshot.coreProblems`, errors);
+    // A version keeps the file's own scales table for its core keys (plan 09-10);
+    // a batch keeps its own snapshot's.
+    validateDeclaredAxes(batch.snapshot.declaredAxes, `${path}.snapshot.declaredAxes`, errors, snapshotKeys(batch.snapshot.coreScales));
     validateDeclaredFlaws(batch.snapshot.declaredFlaws, `${path}.snapshot.declaredFlaws`, errors);
   }
 
@@ -615,8 +701,9 @@ export function validateStoreFile(parsed) {
   if (parsed.schemaVersion !== STORE_SCHEMA_VERSION) {
     errors.push(`$.schemaVersion: expected ${STORE_SCHEMA_VERSION}, got ${JSON.stringify(parsed.schemaVersion)}`);
   }
-  // A declared scale may not take a core key of the file's own scales table
-  // (D-03a), computed once for the versions and batches below.
+  // A version's declared scale may not take a core key of the file's own scales
+  // table (D-03a), computed once for the versions below; a batch is judged by its
+  // own snapshot (validateBatch).
   const coreKeys = fileCoreKeys(parsed.scales);
   if (!Array.isArray(parsed.versions)) {
     errors.push('$.versions: expected an array');
@@ -627,7 +714,7 @@ export function validateStoreFile(parsed) {
   if (!Array.isArray(parsed.batches)) {
     errors.push('$.batches: expected an array');
   } else {
-    parsed.batches.forEach((batch, index) => validateBatch(batch, `$.batches[${index}]`, errors, coreKeys));
+    parsed.batches.forEach((batch, index) => validateBatch(batch, `$.batches[${index}]`, errors));
   }
 
   if (!Array.isArray(parsed.recipes)) {

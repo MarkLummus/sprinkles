@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { asMadeForPortion, completeRecord, createBatch } from './batch.js';
 import { BATTERY_FIELDS } from './battery.js';
 import {
@@ -315,7 +316,11 @@ describe('a reserved row id through type, save, reload and reopen (WR-01)', () =
     expect(hasOwn(churnFields.asMade, name)).toBe(true);
     expect(churnFields.asMade[name]).toEqual([null, 12]);
 
-    const batch = createBatch(version, churnFields, null, { id: 'b-reserved', now: '2026-08-09T09:00:00.000Z' });
+    const batch = createBatch(version, churnFields, null, {
+      id: 'b-reserved',
+      now: '2026-08-09T09:00:00.000Z',
+      catalog: SEED_CATALOG,
+    });
     expect(hasOwn(batch.churn.asMade, name)).toBe(true);
     expect(asMadeForPortion(batch, name, 1)).toBe(12);
 

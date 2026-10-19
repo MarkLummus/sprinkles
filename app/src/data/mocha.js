@@ -12,6 +12,7 @@
 // page mark) — Mark 2026-09-25, "if not marked, then ignore".
 import { embedFromLibrary } from './library-embed.js';
 import { createBatch } from '../domain/batch.js';
+import { SEED_CATALOG } from './seed-catalog.js';
 import { KITCHEN_EQUIPMENT } from './mexican-chocolate.js';
 
 export const mochaRecipe = {
@@ -133,7 +134,7 @@ export const mochaV0Batch = createBatch(
   mochaV0,
   mochaV0ChurnFields,
   mochaV0TastingFields,
-  { id: MOCHA_V0_BATCH_ID, now: mochaV0.createdAt },
+  { id: MOCHA_V0_BATCH_ID, now: mochaV0.createdAt, catalog: SEED_CATALOG },
 );
 
 // v1 — Mocha v1.ier only; no binder page, no batch. Mark 2026-09-25 (open
@@ -281,7 +282,7 @@ export const mochaV2Batch = createBatch(
   mochaV2,
   mochaV2ChurnFields,
   null,
-  { id: MOCHA_V2_BATCH_ID, now: mochaV2.createdAt },
+  { id: MOCHA_V2_BATCH_ID, now: mochaV2.createdAt, catalog: SEED_CATALOG },
 );
 
 // v3 — Mocha v3.ier = IMG_2466.HEIC (no handwriting).
@@ -351,5 +352,5 @@ export const mochaV3Batch = createBatch(
   mochaV3,
   mochaV3ChurnFields,
   null,
-  { id: MOCHA_V3_BATCH_ID, now: mochaV3.createdAt },
+  { id: MOCHA_V3_BATCH_ID, now: mochaV3.createdAt, catalog: SEED_CATALOG },
 );

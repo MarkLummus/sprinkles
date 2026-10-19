@@ -10,6 +10,7 @@
 // (no page mark) — Mark 2026-09-25, "if not marked, then ignore".
 import { embedFromLibrary } from './library-embed.js';
 import { createBatch } from '../domain/batch.js';
+import { SEED_CATALOG } from './seed-catalog.js';
 import { KITCHEN_EQUIPMENT } from './mexican-chocolate.js';
 
 // The recipe's own fruit definitions below link to no library entry, so their
@@ -194,7 +195,7 @@ export const strawberryV1Batch = createBatch(
   strawberryV1,
   strawberryV1ChurnFields,
   strawberryV1TastingFields,
-  { id: STRAWBERRY_V1_BATCH_ID, now: strawberryV1.createdAt },
+  { id: STRAWBERRY_V1_BATCH_ID, now: strawberryV1.createdAt, catalog: SEED_CATALOG },
 );
 
 // V2 — IMG_2456.HEIC (no print timestamp) + Strawberry V2.ier. Parent: V1.
@@ -270,7 +271,7 @@ export const strawberryV2Batch = createBatch(
   strawberryV2,
   strawberryV2ChurnFields,
   null,
-  { id: STRAWBERRY_V2_BATCH_ID, now: strawberryV2.createdAt },
+  { id: STRAWBERRY_V2_BATCH_ID, now: strawberryV2.createdAt, catalog: SEED_CATALOG },
 );
 
 // V2.1 — IMG_2457.HEIC (printed 9/14/24, 12:04 PM) + Strawberry V2.1.ier.
@@ -351,5 +352,5 @@ export const strawberryV2_1Batch = createBatch(
   strawberryV2_1,
   strawberryV2_1ChurnFields,
   strawberryV2_1TastingFields,
-  { id: STRAWBERRY_V2_1_BATCH_ID, now: strawberryV2_1.createdAt },
+  { id: STRAWBERRY_V2_1_BATCH_ID, now: strawberryV2_1.createdAt, catalog: SEED_CATALOG },
 );

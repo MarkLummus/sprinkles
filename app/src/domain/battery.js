@@ -56,6 +56,16 @@ export function declaredProblemsForBatch(batch) {
 }
 
 /**
+ * coreProblemsForBatch(batch) -> the core problem words the batch's own
+ * snapshot holds, a copy. The core-problem twin of declaredProblemsForBatch:
+ * it reads batch.snapshot.coreProblems only, so a later edit to the problems
+ * table never changes the words a stored batch shows (D-03).
+ */
+export function coreProblemsForBatch(batch) {
+  return [...batch.snapshot.coreProblems];
+}
+
+/**
  * parseMeasuredDraft(raw, { signed }) -> { ok, value }. Per the contract's
  * "Controls spec": blank is always allowed; a Unicode minus is normalized
  * to ASCII; a decimal comma is accepted alongside a decimal point; a value

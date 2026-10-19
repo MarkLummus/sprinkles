@@ -7,6 +7,13 @@ import { AXES, STOPS, CORE_AXIS_COUNT, stopWordsFor, axesForBatch, axesForVersio
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { SEED_CATALOG } from '../data/seed-catalog.js';
+import { createBatch } from './batch.js';
+
+// A batch built the way the app builds one, so its snapshot carries the core
+// scales; no case here hand-builds a snapshot.
+function makeBatch(version, catalog = SEED_CATALOG) {
+  return createBatch(version, { churnDate: '2026-08-02', asMade: {} }, null, { id: 'b-axes', now: 'x', catalog });
+}
 
 describe('AXES', () => {
   it('has exactly six entries in the contract\'s fixed order', () => {
@@ -97,7 +104,7 @@ describe('axesForBatch', () => {
 
   it('reads declaredAxes only from batch.snapshot: a later edit to a live version record does not change the result', () => {
     const version = structuredClone(oliveOilVersion);
-    const batch = { snapshot: { declaredAxes: structuredClone(version.declaredAxes) } };
+    const batch = makeBatch(version);
     version.declaredAxes = [];
     const axes = axesForBatch(batch);
     expect(axes).toHaveLength(6);
@@ -105,16 +112,23 @@ describe('axesForBatch', () => {
 
   it('returns the snapshot\'s declared definitions as stored after the four core axes', () => {
     const mine = { key: 'scale-mine', name: 'Mystery', low: 'a', high: 'b', kind: 'magnitude', group: 'declared' };
-    const axes = axesForBatch({ snapshot: { declaredAxes: [mine] } });
+    const axes = axesForBatch(makeBatch({ ...oliveOilVersion, declaredAxes: [mine] }));
     expect(axes).toHaveLength(5);
     expect(axes[4]).toEqual(mine);
   });
 
   it('returns exactly the four core axes when the snapshot declares no axes', () => {
-    const batch = { snapshot: { declaredAxes: [] } };
-    const axes = axesForBatch(batch);
+    const axes = axesForBatch(makeBatch({ ...oliveOilVersion, declaredAxes: [] }));
     expect(axes).toHaveLength(4);
     expect(axes.map((axis) => axis.key)).toEqual(['hardness', 'scoopability', 'smoothness', 'sweetness']);
+  });
+
+  it('reads the core scales from snapshot.coreScales, as stored, and not from the catalog or a constant (D-03)', () => {
+    const catalog = structuredClone(SEED_CATALOG);
+    catalog.scales[0].low = 'mushy';
+    const axes = axesForBatch(makeBatch(oliveOilVersion, catalog));
+    expect(axes[0].low).toBe('mushy');
+    expect(axesForBatch(augustSecondBatch)[0].low).toBe('soft');
   });
 });
 

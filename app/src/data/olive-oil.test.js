@@ -4,6 +4,7 @@
 import { describe, it, expect } from 'vitest';
 import { oliveOilVersion, SEED_USES } from './olive-oil.js';
 import { rowGrams } from '../domain/rows.js';
+import { axesForBatch } from '../domain/axes.js';
 import { augustSecondBatch } from './batch-2026-08-02.js';
 
 function targetValue(step, label) {
@@ -128,6 +129,17 @@ describe('oliveOilVersion.declaredAxes and declaredFlaws (03.3.1-CONTEXT.md D-07
 
   it('its 2 Aug batch snapshot holds the same definitions', () => {
     expect(augustSecondBatch.snapshot.declaredAxes).toEqual(oliveOilVersion.declaredAxes);
+  });
+
+  it('its 2 Aug batch reads six scales, its marks sit on keys of that list, and its declared problem is in the snapshot (D-03)', () => {
+    const keys = axesForBatch(augustSecondBatch).map((axis) => axis.key);
+    expect(keys).toEqual(['hardness', 'scoopability', 'smoothness', 'sweetness', 'body', 'oil']);
+    expect(augustSecondBatch.tasting.marks).toEqual({ sweetness: 4, oil: 4 });
+    for (const markKey of Object.keys(augustSecondBatch.tasting.marks)) {
+      expect(keys).toContain(markKey);
+    }
+    expect(augustSecondBatch.tasting.declaredDefects).toEqual(['Bitter']);
+    expect(augustSecondBatch.snapshot.declaredFlaws).toContain('Bitter');
   });
 
   it('declares Bitter as the recipe\'s one declared problem', () => {

@@ -4,6 +4,7 @@
 // Nothing here is wired into store/seed.js (D-07).
 import { embedFromLibrary } from './library-embed.js';
 import { createBatch } from '../domain/batch.js';
+import { SEED_CATALOG } from './seed-catalog.js';
 import { KITCHEN_EQUIPMENT } from './mexican-chocolate.js';
 
 export const pineappleRecipe = {
@@ -116,5 +117,5 @@ export const pineappleV1Batch = createBatch(
   pineappleV1,
   pineappleV1ChurnFields,
   pineappleV1TastingFields,
-  { id: PINEAPPLE_V1_BATCH_ID, now: pineappleV1.createdAt },
+  { id: PINEAPPLE_V1_BATCH_ID, now: pineappleV1.createdAt, catalog: SEED_CATALOG },
 );

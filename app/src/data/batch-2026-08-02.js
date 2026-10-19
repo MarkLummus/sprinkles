@@ -8,6 +8,7 @@
 // handler that calls createBatch.
 import { createBatch } from '../domain/batch.js';
 import { oliveOilVersion } from './olive-oil.js';
+import { SEED_CATALOG } from './seed-catalog.js';
 
 const BATCH_ID = 'b8cc3566-48a4-4b23-b6e5-749a332afe89';
 
@@ -65,4 +66,5 @@ const tastingFields = {
 export const augustSecondBatch = createBatch(oliveOilVersion, churnFields, tastingFields, {
   id: BATCH_ID,
   now: '2026-08-04T00:00:00.000Z',
+  catalog: SEED_CATALOG,
 });

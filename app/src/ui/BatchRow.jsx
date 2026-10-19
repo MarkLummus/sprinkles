@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { formatRecordDate, readMeasured, recordDateWords, sortedBatches, tastingProvenance } from '../domain/batch.js';
 import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, declaredProblemsForBatch } from '../domain/battery.js';
-import { axesForBatch, readMarkWord } from '../domain/axes.js';
+import { axesForBatch, axesForVersion, readMarkWord } from '../domain/axes.js';
+import { problemNames } from '../domain/catalog.js';
 import { SaveCeremony } from './PenFoot.jsx';
 import { Segmented } from './Segmented.jsx';
 import { MarkOneField } from './MarkOneField.jsx';
@@ -448,6 +449,9 @@ export function batchListMeta(batch) {
 // controls, in that order.
 export function BatchRow({
   version,
+  // The catalog the recipe page read (D-02): a new record pen draws its core
+  // scales and Every recipe chips from it. This row reads no context.
+  catalog,
   batches = [],
   openBatch,
   mode,
@@ -1045,15 +1049,16 @@ export function BatchRow({
                         later change to the recipe's declared pair (WR-04 code
                         review). Amending an existing batch reads its own
                         snapshot; a genuinely fresh record has no snapshot yet
-                        (it is written at save time), so the live version is
-                        the only source available and is not the drift the
-                        contract guards against. */}
+                        (it is written at save time), so it reads the catalog
+                        the page was handed and the live version's own declared
+                        scales (axesForVersion) — not the drift the contract
+                        guards against (D-01, D-02). */}
                     <AxesGrid
-                      axes={axesForBatch(
+                      axes={
                         openPen === 'amend' && openBatch
-                          ? openBatch
-                          : { snapshot: { declaredAxes: version.declaredAxes } },
-                      )}
+                          ? axesForBatch(openBatch)
+                          : axesForVersion(version, catalog)
+                      }
                       marks={draft.marks}
                       below={below}
                       onChangeMark={onChangeRecordMark}
@@ -1063,8 +1068,9 @@ export function BatchRow({
                           labelled groups (contract "Controls spec", "DOM
                           order inventory"; 007 lines 263-281): the head
                           carries the caption and its lowercase helper on one
-                          row, then "Every recipe" (the four DEFECTS chips
-                          verbatim) and "This recipe only" (Bitter, a plain
+                          row, then "Every recipe" (a new pen's chips are the
+                          catalog's problem words, a Correct's the battery's
+                          four DEFECTS until its own snapshot carries them) and "This recipe only" (Bitter, a plain
                           defect with no helper and no aria-label — the group
                           cue carries the meaning through aria-labelledby).
                           Picked state is aria-pressed, never colour alone
@@ -1084,11 +1090,11 @@ export function BatchRow({
                           Every recipe
                         </p>
                         <div className="defects-row__chips">
-                          {/* Each of the four DEFECTS chips is a native
-                              toggle button carrying its own aria-pressed — a
-                              picked chip's own boolean, read fresh per chip
-                              from the draft's defects list. */}
-                          {DEFECTS.map((defect) => (
+                          {/* Each Every recipe chip is a native toggle
+                              button carrying its own aria-pressed — a picked
+                              chip's own boolean, read fresh per chip from the
+                              draft's defects list. */}
+                          {(openPen === 'amend' && openBatch ? DEFECTS : problemNames(catalog.problems)).map((defect) => (
                             <Button
                               key={defect}
                               className="chip-toggle"

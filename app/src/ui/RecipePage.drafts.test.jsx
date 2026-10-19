@@ -90,6 +90,7 @@ import {
   DRAFT_KEPT_STATUS,
   PAGE_LOAD_ERROR,
 } from './RecipePage.jsx';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 import { blankRecordDraft, draftFromBatch } from '../domain/recordDraft.js';
 import { RECORD_DRAFT_KEYS, buildDraftRecord } from '../domain/draft.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
@@ -162,13 +163,15 @@ async function mountAt(path) {
   current = { container, root };
   await act(async () => {
     root.render(
-      <MemoryRouter initialEntries={[path]}>
-        <Where />
-        <Routes>
-          <Route path="/notebook/:recipeId/:versionId" element={<Keyed onPageStatus={pageStatus} />} />
-          <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={<Keyed onPageStatus={pageStatus} />} />
-        </Routes>
-      </MemoryRouter>,
+      <CatalogFixture>
+        <MemoryRouter initialEntries={[path]}>
+          <Where />
+          <Routes>
+            <Route path="/notebook/:recipeId/:versionId" element={<Keyed onPageStatus={pageStatus} />} />
+            <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={<Keyed onPageStatus={pageStatus} />} />
+          </Routes>
+        </MemoryRouter>
+      </CatalogFixture>,
     );
   });
   await flush(() => current.container.querySelector('.notebook-version') !== null || nextVersionPen() !== null);

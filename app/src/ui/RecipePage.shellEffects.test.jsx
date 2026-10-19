@@ -46,6 +46,7 @@ vi.mock('../store/repository.js', async () => {
 });
 
 import { RecipePage } from './RecipePage.jsx';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 import { oliveOilRecipe, oliveOilVersion } from '../data/olive-oil.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -99,14 +100,16 @@ async function mountAt(path, onPenOpenChange) {
   current = { container, root };
   await act(async () => {
     root.render(
-      <MemoryRouter initialEntries={[path]}>
-        <Routes>
-          <Route
-            path="/notebook/:recipeId/:versionId"
-            element={<Keyed onPageStatus={vi.fn()} onPenOpenChange={onPenOpenChange} />}
-          />
-        </Routes>
-      </MemoryRouter>,
+      <CatalogFixture>
+        <MemoryRouter initialEntries={[path]}>
+          <Routes>
+            <Route
+              path="/notebook/:recipeId/:versionId"
+              element={<Keyed onPageStatus={vi.fn()} onPenOpenChange={onPenOpenChange} />}
+            />
+          </Routes>
+        </MemoryRouter>
+      </CatalogFixture>,
     );
   });
   await flush(() => buttonByText('Next version') !== null);

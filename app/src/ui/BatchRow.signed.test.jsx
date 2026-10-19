@@ -24,6 +24,7 @@ import { createRoot } from 'react-dom/client';
 import { MemoryRouter } from 'react-router';
 import { BatchRow, MALFORMED_NUMBER_ENTRY } from './BatchRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -68,6 +69,7 @@ function mount(draft) {
       <MemoryRouter>
         <BatchRow
           version={oliveOilVersion}
+          catalog={SEED_CATALOG}
           batches={[]}
           openBatch={null}
           mode="recording"

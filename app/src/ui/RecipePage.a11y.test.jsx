@@ -37,6 +37,7 @@ vi.mock('../store/repository.js', async () => {
 });
 
 import { RecipePage } from './RecipePage.jsx';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 import { oliveOilRecipe, oliveOilVersion } from '../data/olive-oil.js';
 import { buildFigures, figureLabelText } from '../domain/figures.js';
 
@@ -69,11 +70,13 @@ async function mount() {
   current = { container, root };
   await act(async () => {
     root.render(
-      <MemoryRouter initialEntries={[PATH]}>
-        <Routes>
-          <Route path="/notebook/:recipeId/:versionId" element={<Keyed />} />
-        </Routes>
-      </MemoryRouter>,
+      <CatalogFixture>
+        <MemoryRouter initialEntries={[PATH]}>
+          <Routes>
+            <Route path="/notebook/:recipeId/:versionId" element={<Keyed />} />
+          </Routes>
+        </MemoryRouter>
+      </CatalogFixture>,
     );
   });
   await flush(() => container.querySelector('.graduated-rule') !== null);

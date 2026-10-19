@@ -40,6 +40,7 @@ vi.mock('../store/repository.js', async () => {
 });
 
 import { RecipePage } from './RecipePage.jsx';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
@@ -127,11 +128,13 @@ async function mountAt(initialWidth) {
   current = { container, root };
   await act(async () => {
     root.render(
-      <MemoryRouter initialEntries={[PATH]}>
-        <Routes>
-          <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={<Keyed />} />
-        </Routes>
-      </MemoryRouter>,
+      <CatalogFixture>
+        <MemoryRouter initialEntries={[PATH]}>
+          <Routes>
+            <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={<Keyed />} />
+          </Routes>
+        </MemoryRouter>
+      </CatalogFixture>,
     );
   });
   await flush(() => row('fold-balance') !== null && row('fold-tasting') !== null);

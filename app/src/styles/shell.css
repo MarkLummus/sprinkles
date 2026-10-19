@@ -678,8 +678,9 @@ button.shell__place {
 
 /* Below 760 (Home's own second cut): the Notebook row stacks its counts under
    the description, the Ingredients fields stack, and the figures table reads
-   as a list, figure and amount over basis and source, as the ingredient table
-   does below 724. */
+   as a list, as the ingredient table does below 724: the figure and the
+   amount on one line, the basis under them, and the source on a line of its
+   own so a long one wraps under the basis (sketch 012 decision 5). */
 @media (max-width: 759.98px) {
   .place .nb__row {
     grid-template-columns: auto minmax(0,1fr);
@@ -719,7 +720,7 @@ button.shell__place {
   .place .ing__figures tr {
     display: grid;
     grid-template-columns: minmax(0,1fr) auto;
-    grid-template-areas: 'fig amt' 'basis src';
+    grid-template-areas: 'fig amt' 'basis basis' 'src src';
     column-gap: var(--gap-m);
     padding: var(--gap-xs) 0;
     border-top: var(--app-rule-row) solid var(--app-divider);
@@ -750,7 +751,7 @@ button.shell__place {
     grid-area: src;
     color: var(--app-text-secondary);
     font-size: var(--app-size-meta);
-    text-align: right;
+    text-align: left;
   }
 }
 

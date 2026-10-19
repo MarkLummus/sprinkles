@@ -492,7 +492,7 @@ describe('validateStoreFile', () => {
   });
 
   it('rejects a batch whose declaredAxes holds a name string, the earlier shape', () => {
-    const batch = makeBatch({ snapshot: { ...makeBatch().snapshot, declaredAxes: ['Body'] } });
+    const batch = makeBatch({ snapshot: { ...makeBatch().snapshot, declaredAxes: [BODY.name] } });
     const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('.snapshot.declaredAxes[0]'))).toBe(true);
@@ -1355,7 +1355,7 @@ describe('validateVersion, the fields', () => {
   });
 
   it('rejects a declaredAxes entry that is a name string, naming the path', () => {
-    const version = makeVersion({ declaredAxes: ['Body'] });
+    const version = makeVersion({ declaredAxes: [BODY.name] });
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('.declaredAxes[0]') && error.includes('declared scale definition'))).toBe(true);

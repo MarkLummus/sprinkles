@@ -15,7 +15,7 @@ import { layPages } from '../domain/sheetPages.js';
 import { OLIVE_OIL_V1_SAFARI, OLIVE_OIL_V1_CHROME } from '../domain/sheetPages.fixtures.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { activeRows, activeSteps, rowGrams } from '../domain/rows.js';
-import { sheetCode } from '../domain/sheetCode.js';
+import { codeFromVersionId, sheetCode } from '../domain/sheetCode.js';
 import { buildFigures } from '../domain/figures.js';
 import { BasisNote } from './BasisNote.jsx';
 import { createRecipe } from '../domain/newRecipe.js';
@@ -594,12 +594,10 @@ describe('sheetBlocks — a recipe created from library records (Phase 7 D-02, D
       rowFromLibraryRecord({ id: 'heavyCream', entry: library.heavyCream }, { id: 'row-b', grams: grams[1] }),
       rowFromLibraryRecord({ id: 'sucrose', entry: library.sucrose }, { id: 'row-c', grams: grams[2] }),
     ];
-    const root = createRecipe(
+    return createRecipe(
       { name: 'Plain base', versionLabel: 'first try', rows },
       { recipeId: 'recipe-plain', versionId: 'version-plain-1', now: '2026-10-14T12:00:00.000Z' },
     ).version;
-    // createRecipe stores no code until Task 2 of this plan; stamp one here.
-    return { ...root, sheetCode: root.sheetCode ?? 'ZZZZ-0000' };
   }
 
   it("builds the root version's blocks: six figures, one group with no head, no notes or steps, and the Sheet code in the foot", () => {
@@ -611,7 +609,7 @@ describe('sheetBlocks — a recipe created from library records (Phase 7 D-02, D
     expect(created.notes).toEqual([]);
     expect(created.steps).toEqual([]);
     expect(created.totalText).toBe('850.0 g');
-    expect(created.footText).toBe(`Plain base · first try · ${version.sheetCode}`);
+    expect(created.footText).toBe(`Plain base · first try · ${codeFromVersionId('version-plain-1')}`);
   });
 
   it("builds an all-zero root version's blocks without throwing: no figures and a 0.0 g total", () => {

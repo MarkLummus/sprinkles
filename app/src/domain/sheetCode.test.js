@@ -4,6 +4,8 @@
 import { describe, it, expect } from 'vitest';
 import {
   SHEET_CODE_DERIVATION,
+  SHEET_CODE_ID_DERIVATION,
+  codeFromVersionId,
   CROCKFORD_ALPHABET,
   printedContent,
   canonicalPrintedContent,
@@ -58,6 +60,42 @@ describe('sheetCode — the pinned derivation (D-08, one-way)', () => {
     const composed = { ...structuredClone(oliveOilVersion), sheetTitle: 'Café ice cream' };
     const decomposed = { ...structuredClone(oliveOilVersion), sheetTitle: 'Café ice cream' };
     expect(sheetCode(composed)).toBe(sheetCode(decomposed));
+  });
+});
+
+describe('codeFromVersionId — a new version\'s code, derived once from its id (D-04)', () => {
+  it('names the id derivation with its own tag, apart from the legacy content derivation', () => {
+    expect(SHEET_CODE_ID_DERIVATION).toBe('sprinkles-sheet-code-id:1');
+    expect(SHEET_CODE_ID_DERIVATION).not.toBe(SHEET_CODE_DERIVATION);
+  });
+
+  it("gives olive-oil-ice-cream-v1 a pinned code — THIS VALUE IS ON PAPER ONCE A CREATED SHEET IS PRINTED", () => {
+    // Computed once and cross-checked against an independent FNV-1a 64 over
+    // utf8('sprinkles-sheet-code-id:1:' + id). A change to the tag, the hash or
+    // the encoding is a NEW derivation tag, never an edit of this literal.
+    expect(codeFromVersionId('olive-oil-ice-cream-v1')).toBe('8MDQ-VWFY');
+  });
+
+  it("gives the walk's first child id a pinned code", () => {
+    expect(codeFromVersionId('00000000-0000-4000-8000-000000000001')).toBe('688G-BZQN');
+  });
+
+  it('is deterministic and has the format XXXX-XXXX over the Crockford alphabet', () => {
+    const first = codeFromVersionId('some-version-id');
+    expect(codeFromVersionId('some-version-id')).toBe(first);
+    expect(first).toMatch(CODE_SHAPE);
+    expect(codeFromVersionId('some-version-id-2')).not.toBe(first);
+  });
+
+  it('throws a TypeError for an empty string and for anything but a string', () => {
+    for (const bad of ['', 42, undefined, null]) {
+      expect(() => codeFromVersionId(bad)).toThrow(TypeError);
+      expect(() => codeFromVersionId(bad)).toThrow(/version id must be a non-empty string/);
+    }
+  });
+
+  it('leaves the legacy content derivation alone', () => {
+    expect(sheetCode(oliveOilVersion)).toBe('64JH-G408');
   });
 });
 

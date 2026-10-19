@@ -9,7 +9,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { createRepository } from './repository.js';
-import { DB_NAME } from './db.js';
+import { DB_NAME, DB_VERSION } from './db.js';
 import { seedIfEmpty } from './seed.js';
 import { exportStore, importStore, validateStoreFile, STORE_SCHEMA_VERSION } from './transfer.js';
 import { library } from '../data/library.js';
@@ -205,35 +205,44 @@ async function openVersion8Profile(records) {
   oldDb.close();
 }
 
-describe('a profile left at version 8, through the seed (D-01, D-01a, success criterion 2)', () => {
-  it('opens at 9 with its four records and figures unchanged, and gains the full library', async () => {
-    const draft = { versionId: oliveOilVersion.id, note: 'kept-draft' };
-    const figuresBefore = buildFigures(oliveOilVersion);
-    const balanceBefore = computeBalance(oliveOilVersion.rows);
-    const batchBalanceBefore = computeBalance(augustSecondBatch.snapshot.rows);
+describe('a profile left at version 8, through the seed (decisions 2 and 5, LIB-06, success criterion 2)', () => {
+  it('a profile left at version 8 is reset and reseeded at DB_VERSION (decisions 2 and 5)', async () => {
+    const draft = { versionId: oliveOilVersion.id, note: 'old-draft' };
+    // The version-8 record the old build stored: no Sheet code, no libraryId
+    // on its rows, no serveTempC.
+    const { sheetCode, serveTempC, ...bareVersion } = oliveOilVersion;
+    const oldVersion = { ...bareVersion, rows: oliveOilVersion.rows.map(({ libraryId, ...row }) => row) };
+    expect(Object.hasOwn(oldVersion, 'sheetCode')).toBe(false);
 
     await openVersion8Profile([
       ['recipes', oliveOilRecipe],
-      ['versions', oliveOilVersion],
+      ['versions', oldVersion],
       ['batches', augustSecondBatch],
       ['drafts', draft],
     ]);
     await seedIfEmpty(createRepository());
 
     const fresh = createRepository();
-    // Versions were present, so only the library guard ran (D-04): no other
-    // seed recipe or version was added.
-    expect(await fresh.listRecipes()).toEqual([oliveOilRecipe]);
-    expect(await fresh.listVersions()).toEqual([oliveOilVersion]);
-    expect(await fresh.getAllBatches()).toEqual([augustSecondBatch]);
-    expect(await fresh.listDrafts()).toEqual([draft]);
-    expect(await fresh.listLibrary()).toHaveLength(Object.keys(seededLibrary).length);
+    const db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    expect(db.version).toBe(DB_VERSION);
+    db.close();
 
-    const [version] = await fresh.listVersions();
-    const [batch] = await fresh.getAllBatches();
-    expect(buildFigures(version)).toEqual(figuresBefore);
-    expect(computeBalance(version.rows)).toEqual(balanceBefore);
-    expect(computeBalance(batch.snapshot.rows)).toEqual(batchBalanceBefore);
+    // The reset replaced the stored records with the seed: every seeded
+    // version, and the stored olive-oil-ice-cream-v1 is the reseeded one.
+    const versions = await fresh.listVersions();
+    expect(versions.map((version) => version.id).sort()).toEqual(
+      seedRecipeGroups.flatMap((group) => group.versions.map((version) => version.id)).sort(),
+    );
+    const reseeded = versions.find((version) => version.id === 'olive-oil-ice-cream-v1');
+    expect(reseeded.sheetCode).toBe('64JH-G408');
+    expect(reseeded.serveTempC).toBeNull();
+    for (const row of reseeded.rows) expect(typeof row.libraryId, row.id).toBe('string');
+    expect(await fresh.listDrafts()).toEqual([]);
+    expect(await fresh.listLibrary()).toHaveLength(Object.keys(seededLibrary).length);
   });
 });
 

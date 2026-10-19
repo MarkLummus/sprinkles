@@ -25,8 +25,12 @@ async function putVersionChecked(db, version) {
   }
 }
 
+// The five tables the app seeds when they are empty (D-17, LIB-09).
+const SEED_TABLE_NAMES = ['library', 'machines', 'styles', 'scales', 'problems'];
+
 // The repository seam D-06 and D-16 depend on — the only path to the store:
-// versions, batches, recipes, the ingredient library, and the drafts of unsaved pens.
+// versions, batches, recipes, the ingredient library, the four seed tables
+// (machines, styles, scales, problems), and the drafts of unsaved pens.
 // No component, no domain module, and no seed check may reach past it.
 export function createRepository() {
   // Boot waits on the open, and an older tab can hold the open up (WR-08):
@@ -40,6 +44,33 @@ export function createRepository() {
       if (blockedListener) blockedListener();
     },
   });
+
+  async function seedTable(storeName, records) {
+    if (!SEED_TABLE_NAMES.includes(storeName)) {
+      throw new TypeError(`${storeName} is not a seed table`);
+    }
+    const db = await dbPromise;
+    const tx = db.transaction(storeName, 'readwrite');
+    const done = tx.done;
+    const queued = [];
+    try {
+      if ((await tx.store.count()) > 0) {
+        await done;
+        return false;
+      }
+      for (const record of records) queued.push(tx.store.put(record));
+      await Promise.all([...queued, done]);
+      return true;
+    } catch (error) {
+      try {
+        tx.abort();
+      } catch {
+        // The transaction already finished or aborted itself.
+      }
+      for (const request of [...queued, done]) request.catch(() => {});
+      throw error;
+    }
+  }
 
   return {
     onBlocked(listener) {
@@ -169,27 +200,31 @@ export function createRepository() {
     // transaction, as in importAll, so a failed seed leaves the library empty
     // and the next boot seeds it again.
     async seedLibraryIfEmpty(records) {
+      return seedTable('library', records);
+    },
+    // The same one-transaction seed for each of the five tables the app
+    // seeds: the library and the four seed tables (LIB-09, D-17). Any other
+    // store name is a caller bug, refused before a transaction opens. Two tabs
+    // booting at once seed a table once, because the count and the puts are
+    // one transaction; a failed seed leaves the table empty for the next boot.
+    async seedTableIfEmpty(storeName, records) {
+      return seedTable(storeName, records);
+    },
+    async listMachines() {
       const db = await dbPromise;
-      const tx = db.transaction('library', 'readwrite');
-      const done = tx.done;
-      const queued = [];
-      try {
-        if ((await tx.store.count()) > 0) {
-          await done;
-          return false;
-        }
-        for (const record of records) queued.push(tx.store.put(record));
-        await Promise.all([...queued, done]);
-        return true;
-      } catch (error) {
-        try {
-          tx.abort();
-        } catch {
-          // The transaction already finished or aborted itself.
-        }
-        for (const request of [...queued, done]) request.catch(() => {});
-        throw error;
-      }
+      return db.getAll('machines');
+    },
+    async listStyles() {
+      const db = await dbPromise;
+      return db.getAll('styles');
+    },
+    async listScales() {
+      const db = await dbPromise;
+      return db.getAll('scales');
+    },
+    async listProblems() {
+      const db = await dbPromise;
+      return db.getAll('problems');
     },
     // An import is one readwrite transaction over the four stores it
     // writes: a failed put aborts it, so a storage failure part-way leaves

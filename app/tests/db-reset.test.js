@@ -22,7 +22,7 @@ import {
   IDBTransaction,
   IDBVersionChangeEvent,
 } from 'fake-indexeddb';
-import { DB_NAME, openStore } from '../src/store/db.js';
+import { DB_NAME, DB_VERSION, openStore } from '../src/store/db.js';
 import { seedIfEmpty } from '../src/store/seed.js';
 import { oliveOilVersion } from '../src/data/olive-oil.js';
 import { augustSecondBatch } from '../src/data/batch-2026-08-02.js';
@@ -95,7 +95,7 @@ describe('the D-05 reset, against a real IndexedDB', () => {
     preResetDb.close();
 
     const db = await openStore();
-    expect(db.version).toBe(9);
+    expect(db.version).toBe(DB_VERSION);
     expect(db.objectStoreNames.contains('versions')).toBe(true);
     expect(db.objectStoreNames.contains('batches')).toBe(true);
     expect(db.objectStoreNames.contains('drafts')).toBe(true);
@@ -164,9 +164,9 @@ describe('the D-05 reset, against a real IndexedDB', () => {
     expect(axes[5].name).toBe('Oil');
   });
 
-  it('a brand-new profile (no prior database) opens at version 9 with every store present and empty, and nothing was dropped', async () => {
+  it('a brand-new profile (no prior database) opens at DB_VERSION with every store present and empty, and nothing was dropped', async () => {
     const db = await openStore();
-    expect(db.version).toBe(9);
+    expect(db.version).toBe(DB_VERSION);
     expect(db.objectStoreNames.contains('drafts')).toBe(true);
     expect(db.objectStoreNames.contains('versions')).toBe(true);
     expect(db.objectStoreNames.contains('batches')).toBe(true);

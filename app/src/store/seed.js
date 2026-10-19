@@ -1,6 +1,7 @@
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { library } from '../data/library.js';
 import { librarySeedDb } from '../data/library-seed-db.js';
+import { MACHINE_ROWS } from '../data/machines.js';
 
 // The library seed (D-08, LIB-04): the reviewed dataset's entries merged under
 // the 26 the app already held. The 26 are spread last, so a new entry can never
@@ -29,6 +30,7 @@ const seededLibrary = { ...librarySeedDb, ...library };
 // store's first-written records stay the working case).
 export async function seedIfEmpty(repository) {
   await repository.seedLibraryIfEmpty(Object.entries(seededLibrary).map(([id, entry]) => ({ id, entry })));
+  await repository.seedTableIfEmpty('machines', MACHINE_ROWS);
   const existing = await repository.listVersions();
   if (existing.length > 0) return;
   await repository.putAllRecipes(seedRecipeGroups.map((group) => group.recipe));

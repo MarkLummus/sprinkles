@@ -13,6 +13,8 @@ import {
   catalogConflicts,
   mergeById,
   CatalogConflictError,
+  firstDamagedTable,
+  bootDamagedLine,
 } from './seedTables.js';
 import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { STYLE_ROWS } from '../data/styles.js';
@@ -326,5 +328,128 @@ describe('CatalogConflictError', () => {
     expect(error).toBeInstanceOf(Error);
     expect(error.name).toBe('CatalogConflictError');
     expect(error.conflicts).toBe(conflicts);
+  });
+});
+
+// The boot check (D-17): every row of the library and the four tables passes the
+// store file's own validator, and the scales and problems hold together.
+describe('firstDamagedTable, the boot check (D-17)', () => {
+  const libraryRecords = Object.entries(library).map(([id, entry]) => ({ id, entry }));
+  const lists = (over = {}) => ({
+    library: libraryRecords,
+    machines: structuredClone(MACHINE_ROWS),
+    styles: structuredClone(STYLE_ROWS),
+    scales: structuredClone(CORE_SCALE_ROWS),
+    problems: structuredClone(CORE_PROBLEM_ROWS),
+    ...over,
+  });
+  // The shape plan 09-03's shownFields renders: no basis, no source, its
+  // cosmetic fields malformed, and the six D-20 keys the validator requires.
+  const odd = {
+    id: 'odd',
+    entry: {
+      name: 'Odd',
+      category: { x: 1 },
+      note: 42,
+      densityGPerMl: 'heavy',
+      composition: { fat: 0.1 },
+      fatStructural: null,
+      ownEmulsifier: null,
+      titratableAcidity: null,
+      defaultStage: null,
+      prepNote: null,
+      requiresHeat: null,
+    },
+  };
+
+  it('returns null for the seed’s own lists', () => {
+    expect(firstDamagedTable(lists())).toBeNull();
+  });
+
+  it('returns null when the library, machines, styles or problems list is empty', () => {
+    for (const table of ['library', 'machines', 'styles', 'problems']) {
+      expect(firstDamagedTable(lists({ [table]: [] })), table).toBeNull();
+    }
+  });
+
+  it('reports an empty scales list as the scales table, by the core-count rule', () => {
+    expect(firstDamagedTable(lists({ scales: [] }))).toEqual({
+      table: 'scales',
+      word: 'scales',
+      errors: ['scales: expected exactly 4 core scales, found 0'],
+    });
+  });
+
+  it('reports one bad scale row with that row’s path-named errors', () => {
+    const scales = structuredClone(CORE_SCALE_ROWS);
+    scales[1].kind = 'stars';
+    const damaged = firstDamagedTable(lists({ scales }));
+    expect(damaged.table).toBe('scales');
+    expect(damaged.word).toBe('scales');
+    expect(damaged.errors).toHaveLength(1);
+    expect(damaged.errors[0]).toContain('scales[1].kind');
+  });
+
+  it('checks the tables in the order library, machines, styles, scales, problems', () => {
+    const badMachine = [{ ...structuredClone(MACHINE_ROWS[0]), minFillG: 'x' }];
+    const badScales = structuredClone(CORE_SCALE_ROWS).slice(0, 2);
+    const badLibrary = [{ id: 'bad', entry: { name: '' } }];
+    expect(firstDamagedTable(lists({ machines: badMachine, scales: badScales })).table).toBe('machines');
+    expect(firstDamagedTable(lists({ library: badLibrary, machines: badMachine })).table).toBe('library');
+    expect(firstDamagedTable(lists({ library: badLibrary })).word).toBe('ingredients');
+    expect(firstDamagedTable(lists({ styles: [{ id: 'x' }], scales: badScales })).table).toBe('styles');
+    expect(firstDamagedTable(lists({ styles: [{ id: 'x' }], scales: badScales })).word).toBe('ice cream styles');
+    expect(firstDamagedTable(lists({ scales: badScales, problems: [{ id: 'p' }] })).table).toBe('scales');
+  });
+
+  it('names a scales table with none, three or five core rows, and accepts exactly four', () => {
+    const withCore = (count) =>
+      CORE_SCALE_ROWS.map((row, index) => ({ ...row, group: index < count ? 'core' : 'declared' }));
+    for (const count of [0, 3, 5, 6]) {
+      expect(firstDamagedTable(lists({ scales: withCore(count) })), String(count)).toEqual({
+        table: 'scales',
+        word: 'scales',
+        errors: [`scales: expected exactly 4 core scales, found ${count}`],
+      });
+    }
+    expect(firstDamagedTable(lists({ scales: withCore(4) }))).toBeNull();
+  });
+
+  it('reports a problem name on two rows as the problems table', () => {
+    const problems = [...structuredClone(CORE_PROBLEM_ROWS), { id: 'icy', name: 'Coarse, icy', order: 5 }];
+    expect(firstDamagedTable(lists({ problems }))).toEqual({
+      table: 'problems',
+      word: 'problems',
+      errors: ['problems: "Coarse, icy" names more than one problem (coarse-icy, icy)'],
+    });
+  });
+
+  it('boots a library entry with odd display fields, since the store file’s own validator accepts it', () => {
+    expect(firstDamagedTable(lists({ library: [odd] }))).toBeNull();
+  });
+
+  it('refuses a library entry whose composition holds a string, naming that field only', () => {
+    const bad = structuredClone(odd);
+    bad.entry.composition = { fat: 'lots' };
+    const damaged = firstDamagedTable(lists({ library: [bad] }));
+    expect(damaged.table).toBe('library');
+    expect(damaged.word).toBe('ingredients');
+    expect(damaged.errors).toHaveLength(1);
+    expect(damaged.errors[0]).toContain('library[0].entry.composition.fat');
+  });
+
+  it('refuses a library entry without its defaultStage key', () => {
+    const bad = structuredClone(odd);
+    delete bad.entry.defaultStage;
+    const damaged = firstDamagedTable(lists({ library: [bad] }));
+    expect(damaged.table).toBe('library');
+    expect(damaged.word).toBe('ingredients');
+    expect(damaged.errors.join('\n')).toContain('library[0].entry.defaultStage');
+  });
+});
+
+describe('bootDamagedLine', () => {
+  it('names the table in the app’s own voice, with a curly apostrophe', () => {
+    expect(bootDamagedLine('ice cream styles')).toBe('Sprinkles can’t open: its list of ice cream styles has a damaged entry.');
   });
 });

@@ -4,9 +4,9 @@
 // declare for itself. Each row is the scale definition { key, name, low, high,
 // kind, group } plus id (equal to key) and order (domain/catalog.js).
 //
-// These are literals copied from domain/axes.js, not imported from it: plan
-// 09-15 retires that constant, and a case in store/seedTables.test.js asserts the
-// words are the same today. All six are goldilocks scales (the middle is right).
+// These rows are the only place the six scales live: the domain's AXES table was
+// retired in plan 09-15, and store/seedTables.test.js pins the words as
+// literals. All six are goldilocks scales (the middle is right).
 export const CORE_SCALE_ROWS = [
   { id: 'hardness', key: 'hardness', name: 'Hardness', low: 'soft', high: 'hard', kind: 'goldilocks', group: 'core', order: 1 },
   { id: 'scoopability', key: 'scoopability', name: 'Scoopability', low: 'crumbly', high: 'gummy', kind: 'goldilocks', group: 'core', order: 2 },

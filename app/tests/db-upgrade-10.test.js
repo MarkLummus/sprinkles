@@ -1,7 +1,13 @@
 // The 9-to-10 proof against a real IndexedDB (LIB-06, decisions 2 and 5): a
 // stored version-9 profile opens at DB_VERSION with every old store cleared and
 // reseeded, the library holds the larger seed, and an interrupted upgrade
-// leaves the profile at 9 for the next open to run again. Lives outside
+// leaves the profile at 9 for the next open to run again. It also proves, on the
+// database the bump produces, that the definitions land where they belong
+// (TASTE-03, criterion 2) and that a batch's marks survive a later change to the
+// scales and problems tables, to a later version's own definitions, and an
+// export, an import into a fresh profile and a reopen (TASTE-03, criterion 4).
+// The tables are edited through a raw IndexedDB transaction here, never through
+// app code. Lives outside
 // app/src like db-reset.test.js, because it opens the database directly to
 // build the version-9 fixture; it never imports idb itself.
 import 'fake-indexeddb/auto';
@@ -16,7 +22,14 @@ import { seedRecipeGroups } from '../src/data/seed-recipes.js';
 import { MACHINE_ROWS } from '../src/data/machines.js';
 import { SEED_CATALOG } from '../src/data/seed-catalog.js';
 import { validateLibraryRecord } from '../src/store/seedTables.js';
-import { isScaleDefinition } from '../src/domain/catalog.js';
+import { loadCatalog } from '../src/store/catalog.js';
+import { exportStore, importStore, validateStoreFile } from '../src/store/transfer.js';
+import { augustSecondBatch } from '../src/data/batch-2026-08-02.js';
+import { createBatch } from '../src/domain/batch.js';
+import { createChildVersion } from '../src/domain/lineage.js';
+import { axesForBatch, readMarkWord } from '../src/domain/axes.js';
+import { coreProblemsForBatch } from '../src/domain/battery.js';
+import { coreScaleDefinitions, isScaleDefinition, problemNames, scaleDefinition } from '../src/domain/catalog.js';
 
 // What a fresh profile's library holds: the reviewed dataset merged under the 26.
 const seededLibrary = { ...librarySeedDb, ...library };
@@ -226,5 +239,203 @@ describe('a stored version-9 profile opens at DB_VERSION reset and reseeded (LIB
     expect(await repository.listDrafts()).toEqual([]);
     expect(await repository.listMachines()).toEqual(MACHINE_ROWS);
     expect(await repository.listLibrary()).toHaveLength(Object.keys(seededLibrary).length);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Criterion 2 and criterion 4 on the bumped database (plan 09-15).
+
+const OLIVE_OIL_V1 = 'olive-oil-ice-cream-v1';
+const NOW = '2026-10-19T09:00:00.000Z';
+const serialised = (value) => JSON.parse(JSON.stringify(value));
+
+// A stored version-9 profile, upgraded and seeded: the database the bump produces.
+async function upgradedProfile() {
+  await storeVersion9Profile();
+  const repository = createRepository();
+  await seedIfEmpty(repository);
+  return repository;
+}
+
+// Puts rows into and deletes keys from a seed table through a raw readwrite
+// transaction, the way a later edit to the table would, never through app code.
+async function editTable(storeName, { put = [], remove = [] }) {
+  await inspect(
+    (db) =>
+      new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        for (const row of put) store.put(row);
+        for (const key of remove) store.delete(key);
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      }),
+  );
+}
+
+// What a stored batch shows: its scales with their words, what its marks read
+// as, its core problem words. Everything comes from the batch the store holds.
+function whatTheBatchShows(batch) {
+  const axes = axesForBatch(batch);
+  const axisOf = (key) => axes.find((axis) => axis.key === key);
+  return {
+    axes: axes.map(({ key, name, low, high }) => ({ key, name, low, high })),
+    marks: batch.tasting.marks,
+    sweetnessRead: readMarkWord(axisOf('sweetness'), batch.tasting.marks.sweetness),
+    oilRead: readMarkWord(axisOf('oil'), batch.tasting.marks.oil),
+    coreProblems: coreProblemsForBatch(batch),
+  };
+}
+
+const wordsOf = (shown, key) => shown.axes.find((axis) => axis.key === key);
+
+// The later change to the tables: Sweetness gets new words, Oil's row goes, and a
+// core problem is renamed. The 2 Aug batch marked sweetness 4 and oil 4.
+async function changeTheTables(repository) {
+  const scales = await repository.listScales();
+  const problems = await repository.listProblems();
+  const sweetness = scales.find((row) => row.key === 'sweetness');
+  const coarse = problems.find((row) => row.name === 'Coarse, icy');
+  await editTable('scales', { put: [{ ...sweetness, low: 'flat', high: 'cloying' }], remove: ['oil'] });
+  await editTable('problems', { put: [{ ...coarse, name: 'Icy' }] });
+  return loadCatalog(repository);
+}
+
+// A child of the stored olive oil v1 whose own Oil is renamed and rewritten.
+async function storeChildWithOwnOil(repository) {
+  const parent = await repository.getVersion(OLIVE_OIL_V1);
+  const child = createChildVersion(
+    parent,
+    {
+      versionLabel: 'v2 olive',
+      reason: 'a gentler oil',
+      citedBatchId: null,
+      rows: parent.rows,
+      method: parent.method,
+      sheetTitle: parent.sheetTitle,
+      sheetDescription: parent.sheetDescription,
+      authored: parent.authored,
+    },
+    { id: 'upgrade-child', now: NOW },
+  );
+  child.declaredAxes = child.declaredAxes.map((scale) =>
+    scale.key === 'oil' ? { ...scale, name: 'Olive', low: 'mild', high: 'peppery' } : scale,
+  );
+  await repository.createVersion(child);
+  return child;
+}
+
+describe('criterion 2: a stored version-9 profile lands the definitions where they belong (TASTE-03)', () => {
+  it('olive oil declares the scales table’s Body and Oil rows, and the 2 Aug batch holds the tables’ core scales and problems', async () => {
+    const repository = await upgradedProfile();
+    const catalog = await loadCatalog(repository);
+    const row = (key) => scaleDefinition(catalog.scales.find((candidate) => candidate.key === key));
+
+    const oliveOil = await repository.getVersion(OLIVE_OIL_V1);
+    expect(oliveOil.declaredAxes).toEqual([row('body'), row('oil')]);
+
+    const batch = await repository.getBatch(augustSecondBatch.id);
+    expect(batch.snapshot.coreScales).toEqual(coreScaleDefinitions(catalog.scales));
+    expect(batch.snapshot.coreScales).toHaveLength(4);
+    expect(batch.snapshot.coreProblems).toEqual(problemNames(catalog.problems));
+    expect(batch.snapshot.coreProblems).toHaveLength(4);
+  });
+});
+
+describe('criterion 4: a batch’s marks survive a later change to the tables, through export, import and a reopen (TASTE-03)', () => {
+  it('starts as the 2 Aug batch marks it: Sweetness less and more, Oil faint and strong, marks 4 and 4', async () => {
+    const repository = await upgradedProfile();
+    const shown = whatTheBatchShows(await repository.getBatch(augustSecondBatch.id));
+    expect(shown.marks).toEqual({ sweetness: 4, oil: 4 });
+    expect(wordsOf(shown, 'sweetness')).toEqual({ key: 'sweetness', name: 'Sweetness', low: 'less', high: 'more' });
+    expect(wordsOf(shown, 'oil')).toEqual({ key: 'oil', name: 'Oil', low: 'faint', high: 'strong' });
+    expect(shown.sweetnessRead).toBe('more');
+    expect(shown.oilRead).toBe('strong');
+    expect(shown.coreProblems[0]).toBe('Coarse, icy');
+  });
+
+  it('rewriting Sweetness, deleting Oil’s row and renaming a core problem moves nothing the batch shows', async () => {
+    const repository = await upgradedProfile();
+    const before = whatTheBatchShows(await repository.getBatch(augustSecondBatch.id));
+
+    const catalog = await changeTheTables(repository);
+
+    // The edit is real: the reloaded catalog holds the new words and no Oil row.
+    expect(catalog.scales.find((row) => row.key === 'sweetness')).toMatchObject({ low: 'flat', high: 'cloying' });
+    expect(catalog.scales.some((row) => row.key === 'oil')).toBe(false);
+    expect(problemNames(catalog.problems)).toContain('Icy');
+    expect(problemNames(catalog.problems)).not.toContain('Coarse, icy');
+
+    // A batch taken after the edit does read the new words, so the equality
+    // below could fail: the old batch is protected by its snapshot, not by
+    // the edit having done nothing.
+    const fresh = createBatch(
+      await repository.getVersion(OLIVE_OIL_V1),
+      { churnDate: '2026-10-19', asMade: {}, stepChanges: {} },
+      { tastedDate: '2026-10-20', marks: { sweetness: 4 } },
+      { id: 'after-the-edit', now: NOW, catalog },
+    );
+    expect(axesForBatch(fresh).find((axis) => axis.key === 'sweetness')).toMatchObject({ low: 'flat', high: 'cloying' });
+    expect(coreProblemsForBatch(fresh)).toContain('Icy');
+
+    // The 2 Aug batch, read again from the store (a second repository), is unmoved.
+    const after = whatTheBatchShows(await createRepository().getBatch(augustSecondBatch.id));
+    expect(after).toEqual(before);
+    expect(wordsOf(after, 'sweetness')).toMatchObject({ name: 'Sweetness', low: 'less', high: 'more' });
+    expect(wordsOf(after, 'oil')).toMatchObject({ name: 'Oil', low: 'faint', high: 'strong' });
+    expect(after.sweetnessRead).toBe('more');
+    expect(after.oilRead).toBe('strong');
+    expect(after.coreProblems[0]).toBe('Coarse, icy');
+    expect(Object.keys(after.marks).every((key) => after.axes.some((axis) => axis.key === key))).toBe(true);
+  });
+
+  it('a later version’s own renamed Oil leaves the batch’s Oil words and olive oil v1’s own definitions unmoved', async () => {
+    const repository = await upgradedProfile();
+    const before = whatTheBatchShows(await repository.getBatch(augustSecondBatch.id));
+    const parentBefore = (await repository.getVersion(OLIVE_OIL_V1)).declaredAxes;
+
+    const child = await storeChildWithOwnOil(repository);
+
+    // The edit landed: the stored child declares Olive, mild and peppery.
+    const storedChild = await repository.getVersion(child.id);
+    expect(storedChild.declaredAxes.find((scale) => scale.key === 'oil')).toMatchObject({ name: 'Olive', low: 'mild', high: 'peppery' });
+
+    const after = whatTheBatchShows(await repository.getBatch(augustSecondBatch.id));
+    expect(after).toEqual(before);
+    expect(wordsOf(after, 'oil')).toMatchObject({ name: 'Oil', low: 'faint', high: 'strong' });
+    expect((await repository.getVersion(OLIVE_OIL_V1)).declaredAxes).toEqual(parentBefore);
+  });
+
+  it('holds through export, a JSON round trip, import into a fresh profile and a reopen', async () => {
+    const source = await upgradedProfile();
+    const batchBefore = await source.getBatch(augustSecondBatch.id);
+    const before = whatTheBatchShows(batchBefore);
+    await changeTheTables(source);
+    const child = await storeChildWithOwnOil(source);
+
+    const file = serialised(await exportStore(source));
+    expect(validateStoreFile(file)).toEqual({ ok: true, errors: [] });
+    // The edits are in the file: no Oil row, Sweetness rewritten, the child's own Oil.
+    expect(file.scales.some((row) => row.key === 'oil')).toBe(false);
+    expect(file.scales.find((row) => row.key === 'sweetness')).toMatchObject({ low: 'flat', high: 'cloying' });
+    expect(file.problems.map((row) => row.name)).toContain('Icy');
+    expect(file.versions.find((version) => version.id === child.id).declaredAxes.find((scale) => scale.key === 'oil').name).toBe('Olive');
+
+    globalThis.indexedDB = new IDBFactory();
+    const target = createRepository();
+    expect(await importStore(target, file)).toEqual({ ok: true, errors: [] });
+
+    for (const repository of [target, createRepository()]) {
+      const batch = await repository.getBatch(augustSecondBatch.id);
+      expect(batch).toEqual(batchBefore);
+      expect(batch.snapshot).toEqual(batchBefore.snapshot);
+      expect(batch.tasting.marks).toEqual({ sweetness: 4, oil: 4 });
+      const after = whatTheBatchShows(batch);
+      expect(after).toEqual(before);
+      expect(wordsOf(after, 'sweetness')).toMatchObject({ low: 'less', high: 'more' });
+      expect(wordsOf(after, 'oil')).toMatchObject({ name: 'Oil', low: 'faint', high: 'strong' });
+      expect((await repository.getVersion(OLIVE_OIL_V1)).sheetCode).toBe('64JH-G408');
+    }
   });
 });

@@ -13,9 +13,9 @@
 // A fourth kind, `create`, is the half-made first version of a new recipe
 // (Phase 9, D-18). It belongs to no stored version, so it has its own fit
 // check, draftMatchesCreate, which takes neither a version nor batches.
-import { AXES, STOPS } from './axes.js';
-import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS, DEFECTS } from './battery.js';
-import { SCALE_KINDS, MAX_RECIPE_SCALES, MAX_RECIPE_PROBLEMS } from './catalog.js';
+import { STOPS } from './axes.js';
+import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS } from './battery.js';
+import { SCALE_KINDS, MAX_RECIPE_SCALES, MAX_RECIPE_PROBLEMS, coreScaleDefinitions, problemNames } from './catalog.js';
 import { RESERVED_ROW_IDS } from './versionRow.js';
 
 export const DRAFT_SHAPE_VERSION = 1;
@@ -129,8 +129,9 @@ function isStringArray(value) {
 
 // A record draft (or an amend baseline, which has the same shape) fits when
 // it has exactly the record draft's fields, each of the kind blankRecordDraft
-// gives it, and its keyed maps name only rows and axes this version has.
-function fitsRecordShape(candidate, version) {
+// gives it, and its keyed maps name only rows this version has and the mark
+// keys in `markKeys`.
+function fitsRecordShape(candidate, version, markKeys) {
   if (!isPlainObject(candidate)) return false;
   const keys = ownKeys(candidate);
   if (keys.length !== RECORD_DRAFT_KEYS.length) return false;
@@ -149,9 +150,8 @@ function fitsRecordShape(candidate, version) {
     const values = candidate.asMade[rowId];
     if (!row || !isStringArray(values) || values.length > row.portions.length) return false;
   }
-  const axisKeys = AXES.map((axis) => axis.key);
   for (const axisKey of ownKeys(candidate.marks)) {
-    if (!axisKeys.includes(axisKey) || !STOPS.includes(candidate.marks[axisKey])) return false;
+    if (!markKeys.includes(axisKey) || !STOPS.includes(candidate.marks[axisKey])) return false;
   }
   return ownKeys(candidate.stepChanges).every((stepKey) => isPlainObject(candidate.stepChanges[stepKey]));
 }
@@ -160,32 +160,52 @@ function fitsRecordShape(candidate, version) {
 // check (validateTasting, validateBatch in store/transfer.js) accepts: the
 // choice words, the defect chips, declared problems the recipe declares (each
 // once), and marks only on axes the pen shows. A blank string fits every
-// choice field. `declared` is { flaws, axisKeys }.
-function fitsRecordValues(candidate, declared) {
+// choice field. `allowed` is { flaws, markKeys, defects }: the declared
+// problems, every mark key the pen shows and the core problem words, which the
+// caller reads from the catalog (a record draft) or the batch's own snapshot
+// (a Correct draft).
+function fitsRecordValues(candidate, allowed) {
   for (const [field, options] of Object.entries(SEGMENT_OPTIONS)) {
     if (candidate[field] !== '' && !options.includes(candidate[field])) return false;
   }
   for (const field of ['atDraw', 'fromFreezer']) {
     if (candidate[field] !== '' && !MARK_ONE_OPTIONS.includes(candidate[field])) return false;
   }
-  if (!candidate.defects.every((chip) => DEFECTS.includes(chip))) return false;
-  if (!candidate.declaredDefects.every((word) => declared.flaws.includes(word))) return false;
+  if (!candidate.defects.every((chip) => allowed.defects.includes(chip))) return false;
+  if (!candidate.declaredDefects.every((word) => allowed.flaws.includes(word))) return false;
   if (new Set(candidate.declaredDefects).size !== candidate.declaredDefects.length) return false;
-  return ownKeys(candidate.marks).every((axisKey) => declared.axisKeys.includes(axisKey));
+  return ownKeys(candidate.marks).every((axisKey) => allowed.markKeys.includes(axisKey));
 }
 
-// The declared problems and axis keys of `source`, a version or a batch's
-// snapshot, read without throwing when either list is absent or not a list.
-// axisKeys is the core scale keys (the AXES rows with group 'core') followed by
-// the key of each declared definition, because fitsRecordValues checks every
-// mark against that one list. It does not call axesForVersion: plan 09-11 gives
-// that function a catalog, and draft.js holds none until plan 09-15, which
-// replaces the AXES core rows here with the catalog's.
+// The declared problems and declared scale keys of `source`, a version or a
+// batch's snapshot, read without throwing when either list is absent or not a
+// list.
 function declaredOf(source) {
   const flaws = Array.isArray(source?.declaredFlaws) ? source.declaredFlaws : [];
   const declaredAxes = Array.isArray(source?.declaredAxes) ? source.declaredAxes : [];
-  const coreKeys = AXES.filter((axis) => axis.group === 'core').map((axis) => axis.key);
-  return { flaws, axisKeys: [...coreKeys, ...declaredAxes.map((scale) => scale?.key)] };
+  return { flaws, declaredKeys: declaredAxes.map((scale) => scale?.key) };
+}
+
+// What a record draft may name: the catalog's core scale keys and problem words
+// plus the version's declared scales and problems (D-02). A record draft is the
+// one kind that reads the catalog, so a missing one is a caller bug.
+function allowedFromCatalog(version, catalog) {
+  if (!catalog || !Array.isArray(catalog.scales) || !Array.isArray(catalog.problems)) {
+    throw new TypeError('draftMatchesVersion needs the catalog (its scales and problems) to check a record draft');
+  }
+  const { flaws, declaredKeys } = declaredOf(version);
+  const coreKeys = coreScaleDefinitions(catalog.scales).map((scale) => scale.key);
+  return { flaws, markKeys: [...coreKeys, ...declaredKeys], defects: problemNames(catalog.problems) };
+}
+
+// What a Correct draft may name: only what the corrected batch's own snapshot
+// holds (D-03a), so a later change to the tables never makes a draft of that
+// batch stop fitting.
+function allowedFromSnapshot(snapshot) {
+  const { flaws, declaredKeys } = declaredOf(snapshot);
+  const coreScales = Array.isArray(snapshot?.coreScales) ? snapshot.coreScales : [];
+  const defects = Array.isArray(snapshot?.coreProblems) ? snapshot.coreProblems : [];
+  return { flaws, markKeys: [...coreScales.map((scale) => scale?.key), ...declaredKeys], defects };
 }
 
 function fitsMethodStep(step) {
@@ -256,8 +276,9 @@ function fitsPlanShape(payload, version) {
 }
 
 /**
- * draftMatchesVersion(record, version, batches) -> whether a stored draft can
- * be restored onto `version` (`batches` are that version's own). False unless
+ * draftMatchesVersion(record, version, batches, catalog) -> whether a stored
+ * draft can be restored onto `version` (`batches` are that version's own;
+ * `catalog` is the { scales, problems } the app read at boot). False unless
  * the shape version matches, the kind is plan, record or amend, no object
  * anywhere in the record has an own `__proto__`, `constructor` or `prototype`
  * key, and the payload fits the version: a plan payload holds exactly the
@@ -268,12 +289,17 @@ function fitsPlanShape(payload, version) {
  * version's rows and axes; an amend draft also names one of `batches` and
  * carries a baseline of the same shape.
  * The payload's values must also be ones the pen offers and Save could store
- * (WR-04): a record payload is read against the version's declared problems
- * and axes, a Correct payload against the corrected batch's own snapshot.
+ * (WR-04): a record payload is read against the catalog's core scales and
+ * problems plus the version's declared ones, a Correct payload against the
+ * corrected batch's own snapshot (its core scales, declared scales and core
+ * problems), never the catalog. A plan draft reads neither, so the catalog may
+ * be left out for a plan or Correct draft; a record draft with none throws a
+ * TypeError (a caller bug, not a draft that does not fit, so the restore's
+ * catch ends the restore and keeps the draft).
  * A draft saved before an import replaced its version fails here, and the page
  * deletes it quietly instead of throwing in isPenDraftDirty.
  */
-export function draftMatchesVersion(record, version, batches) {
+export function draftMatchesVersion(record, version, batches, catalog) {
   if (!isPlainObject(record) || !isPlainObject(version)) return false;
   if (record.shapeVersion !== DRAFT_SHAPE_VERSION) return false;
   // A create draft belongs to no stored version: its own check is
@@ -289,20 +315,23 @@ export function draftMatchesVersion(record, version, batches) {
 
   if (record.kind === 'plan') return fitsPlanShape(record.payload, version);
 
-  if (!fitsRecordShape(record.payload, version)) return false;
   if (record.kind === 'record') {
+    const allowed = allowedFromCatalog(version, catalog);
+    if (!fitsRecordShape(record.payload, version, allowed.markKeys)) return false;
     if (record.amendingBatchId !== null || record.amendBaseline !== null) return false;
-    return fitsRecordValues(record.payload, declaredOf(version));
+    return fitsRecordValues(record.payload, allowed);
   }
 
   if (!AMEND_OPENERS.includes(record.amendOpener)) return false;
   if (typeof record.amendingBatchId !== 'string') return false;
   const amended = batches.find((batch) => batch.id === record.amendingBatchId);
   if (!amended) return false;
+  const allowed = allowedFromSnapshot(amended.snapshot);
+  if (!fitsRecordShape(record.payload, version, allowed.markKeys)) return false;
   // The baseline keeps the shape-only check: it is the comparison the dirty
   // check reads and is never written, while WR-04 is about what Save writes.
-  if (!fitsRecordShape(record.amendBaseline, version)) return false;
-  return fitsRecordValues(record.payload, declaredOf(amended.snapshot));
+  if (!fitsRecordShape(record.amendBaseline, version, allowed.markKeys)) return false;
+  return fitsRecordValues(record.payload, allowed);
 }
 
 // ---------------------------------------------------------------------------

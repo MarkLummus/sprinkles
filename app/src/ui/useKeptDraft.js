@@ -52,7 +52,10 @@ export function useDraftWriter(versionId) {
   return { draftStoredRef, pendingDraftRef, draftTimerRef, flushPendingDraft, discardDraft };
 }
 
-// The kept-draft effects (Phase 8 cut 6, EDIT-05, D-08, D-10). Called after
+// The kept-draft effects (Phase 8 cut 6, EDIT-05, D-08, D-10). `catalog` is the
+// page's { scales, problems }: the restore checks a kept record draft against
+// it (a Correct draft against its batch's own snapshot, a plan draft against
+// neither). Called after
 // useVersionPen, above the early returns: the writer comes from useDraftWriter,
 // onRestorePlan is useVersionPen's restorePlan, and onRestoreRecord is the
 // record pen's half of a restore. Both callbacks run only after the restore
@@ -76,6 +79,7 @@ export function useKeptDraft({
   batchId,
   version,
   batches,
+  catalog,
   batchesLoaded,
   loadFailed,
   mode,
@@ -138,7 +142,7 @@ export function useKeptDraft({
           setDraftRestoreDone(true);
           return;
         }
-        if (!(creating ? draftMatchesCreate(record) : draftMatchesVersion(record, version, batches))) {
+        if (!(creating ? draftMatchesCreate(record) : draftMatchesVersion(record, version, batches, catalog))) {
           Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
           setDraftRestoreDone(true);
           return;

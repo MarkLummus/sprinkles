@@ -189,6 +189,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     batchId,
     version,
     batches,
+    catalog,
     batchesLoaded,
     loadFailed,
     mode,
@@ -316,6 +317,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
         record,
         draftVersion,
         allBatches.filter((batch) => batch.versionId === record.versionId),
+        catalog,
       );
     }),
   );

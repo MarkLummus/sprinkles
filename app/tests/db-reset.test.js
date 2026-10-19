@@ -146,7 +146,7 @@ describe('the D-05 reset, against a real IndexedDB', () => {
     // reset too, read back through the repository seam — whole milk's
     // as-made still reads the sheet's own two lines, both totals are
     // unmoved, and the reseeded batch's snapshot still names the declared
-    // pair axesForBatch resolves against the battery's fixed AXES table.
+    // pair axesForBatch reads from the batch's own snapshot.
     const batches = await repository.listBatchesForVersion(seeded.id);
     expect(batches).toHaveLength(1);
     const [seededBatch] = batches;

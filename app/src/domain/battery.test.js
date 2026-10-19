@@ -1,18 +1,19 @@
-// The battery's measured-field table, segmented options, defects, the
-// declared flaw, and the numeric draft parser (03.3.1-CONTEXT.md D-07,
+// The battery's measured-field table, segmented options, the core and declared
+// problem readers, and the numeric draft parser (03.3.1-CONTEXT.md D-07,
 // D-09; the structural contract's "Controls spec"). Runs under Vitest's
 // default node environment — battery.js imports nothing at all.
 import { describe, it, expect } from 'vitest';
 import {
   BATTERY_FIELDS,
   SEGMENT_OPTIONS,
-  DEFECTS,
   MARK_ONE_OPTIONS,
   PRINTED_MARK_ONE_OPTIONS,
   declaredProblemsForBatch,
   coreProblemsForBatch,
   parseMeasuredDraft,
 } from './battery.js';
+import { problemNames } from './catalog.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 
 describe('BATTERY_FIELDS', () => {
   it('has exactly five entries, none of them the retired Time to draw temp. (sketch 010 D17)', () => {
@@ -61,9 +62,11 @@ describe('SEGMENT_OPTIONS', () => {
   });
 });
 
-describe('DEFECTS', () => {
-  it('is the four comma-worded chips verbatim', () => {
-    expect(DEFECTS).toEqual(['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film']);
+// The four defect chips are rows of the problems table now, not a constant in
+// battery.js (09-15, D-01); the seeded words stay comma-worded and in order.
+describe('the seeded core problems', () => {
+  it('are the four comma-worded chips verbatim', () => {
+    expect(problemNames(SEED_CATALOG.problems)).toEqual(['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film']);
   });
 });
 

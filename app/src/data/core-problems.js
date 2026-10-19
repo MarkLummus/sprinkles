@@ -3,9 +3,9 @@
 // (09-RESEARCH A1): a tasting names it by its name, so the name is what a batch
 // copies. Each row is { id, name, order }.
 //
-// These are literals copied from domain/battery.js DEFECTS, not imported from
-// it: plan 09-15 retires that constant, and a case in store/seedTables.test.js
-// asserts the words are the same today.
+// These rows are the only place the four words live: the domain's DEFECTS list
+// was retired in plan 09-15, and store/seedTables.test.js pins the words as
+// literals.
 export const CORE_PROBLEM_ROWS = [
   { id: 'coarse-icy', name: 'Coarse, icy', order: 1 },
   { id: 'sandy-gritty', name: 'Sandy, gritty', order: 2 },

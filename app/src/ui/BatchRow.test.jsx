@@ -851,7 +851,7 @@ describe('BatchRow — the defects, two labelled groups inside the axes grid (co
     );
   });
 
-  it('renders the four DEFECTS chips character-for-character, comma-worded, inside the "Every recipe" group', () => {
+  it('renders the four core problem chips character-for-character, comma-worded, inside the "Every recipe" group', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     for (const label of ['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film']) {
       expect(markup).toContain(`>${label}<`);

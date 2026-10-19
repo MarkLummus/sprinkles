@@ -23,8 +23,6 @@ import { CORE_PROBLEM_ROWS } from '../data/core-problems.js';
 import { MACHINE_ROWS } from '../data/machines.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { library } from '../data/library.js';
-import { AXES } from '../domain/axes.js';
-import { DEFECTS } from '../domain/battery.js';
 
 function errorsOf(validate, row) {
   const errors = [];
@@ -65,11 +63,24 @@ describe('every seed row passes its validator', () => {
   });
 });
 
-describe('the seed rows carry the words of the domain constants (plan 09-15 re-pins this case to literal arrays)', () => {
-  it('the scale rows equal domain/axes.js AXES and the problem rows equal domain/battery.js DEFECTS', () => {
-    expect(CORE_SCALE_ROWS.map(({ key, name, low, high, group }) => ({ key, name, low, high, group }))).toEqual(AXES);
-    expect(CORE_SCALE_ROWS.map((row) => row.kind)).toEqual(AXES.map(() => 'goldilocks'));
-    expect(CORE_PROBLEM_ROWS.map((row) => row.name)).toEqual(DEFECTS);
+// The words are pinned as literals here, in the battery's order: the domain
+// holds no list of its own (plan 09-15, D-01), so a change to a seed word is a
+// change to this test as well.
+describe('the seed rows carry the battery’s scales and problems', () => {
+  it('the scale rows are the battery’s six goldilocks scales, the first four core', () => {
+    expect(CORE_SCALE_ROWS.map(({ key, name, low, high, group }) => ({ key, name, low, high, group }))).toEqual([
+      { key: 'hardness', name: 'Hardness', low: 'soft', high: 'hard', group: 'core' },
+      { key: 'scoopability', name: 'Scoopability', low: 'crumbly', high: 'gummy', group: 'core' },
+      { key: 'smoothness', name: 'Smoothness', low: 'grainy', high: 'smooth', group: 'core' },
+      { key: 'sweetness', name: 'Sweetness', low: 'less', high: 'more', group: 'core' },
+      { key: 'body', name: 'Body', low: 'thin', high: 'heavy', group: 'declared' },
+      { key: 'oil', name: 'Oil', low: 'faint', high: 'strong', group: 'declared' },
+    ]);
+    expect(CORE_SCALE_ROWS.map((row) => row.kind)).toEqual(Array(6).fill('goldilocks'));
+  });
+
+  it('the problem rows are the battery’s four core problems, comma-worded, in order', () => {
+    expect(CORE_PROBLEM_ROWS.map((row) => row.name)).toEqual(['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film']);
   });
 });
 

@@ -15,8 +15,8 @@ import { Radio } from './Radio.jsx';
 // line still holds (restyling the native inputs in tokens.css gets the
 // hairline-ink look without reimplementing arrow-key semantics).
 //
-// `axis` is one row of domain/axes.js's AXES: { key, name, low, high,
-// group }. `value` is the marked stop (1–5) or `undefined` for an
+// `axis` is one scale definition { key, name, low, high, kind, group }, as a
+// batch snapshot or a catalog's scales table gives it. `value` is the marked stop (1–5) or `undefined` for an
 // unmarked axis — matching no stop, so nothing renders checked (D-16 — a
 // half step is retired; an unmarked axis is not a three). `onChange(stop)`
 // fires on a stop click: a joined group is a radio (007 @ 2a212be line

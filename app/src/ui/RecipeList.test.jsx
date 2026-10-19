@@ -21,6 +21,8 @@ import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { versionIdentity } from '../domain/lineage.js';
 import { buildDraftRecord } from '../domain/draft.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 
 function makeVersion(overrides = {}) {
   return {
@@ -303,7 +305,7 @@ describe('HomeLead — the board\'s block (gap 5)', () => {
 function renderBody(versions, batches = [], recipes = []) {
   return renderToStaticMarkup(
     <MemoryRouter>
-      <HomeBody versions={versions} batches={batches} recipes={recipes} />
+      <HomeBody versions={versions} batches={batches} recipes={recipes} catalog={SEED_CATALOG} />
     </MemoryRouter>,
   );
 }
@@ -340,10 +342,10 @@ describe('HomeBody — Enter Sheet code (D-10)', () => {
 // recipe holding the newest draft takes the lead, whose version line names the
 // draft's version, with "Draft open on this version · Go to draft" beneath it;
 // the list below keeps its order.
-function renderBodyWithDrafts(versions, batches, drafts) {
+function renderBodyWithDrafts(versions, batches, drafts, catalog = SEED_CATALOG) {
   return renderToStaticMarkup(
     <MemoryRouter>
-      <HomeBody versions={versions} batches={batches} recipes={[]} drafts={drafts} />
+      <HomeBody versions={versions} batches={batches} recipes={[]} drafts={drafts} catalog={catalog} />
     </MemoryRouter>,
   );
 }
@@ -538,6 +540,30 @@ describe('HomeBody — an open draft takes the lead (D-18, 04-09)', () => {
     expect(draftHref(renderBodyWithDrafts(versions, [], [declared]))).toBe('/notebook/r2/v2');
   });
 
+  // The wiring: Home hands the catalog it was given to the fit check, so a mark
+  // on a core scale only that catalog holds decides whether the draft is named.
+  it('a record draft marking a core scale only the given catalog holds is named with that catalog and not with the seeded one', () => {
+    const withCreaminess = structuredClone(SEED_CATALOG);
+    withCreaminess.scales.push({
+      id: 'creaminess',
+      key: 'creaminess',
+      name: 'Creaminess',
+      low: 'thin',
+      high: 'rich',
+      kind: 'goldilocks',
+      group: 'core',
+      order: 7,
+    });
+    const record = buildDraftRecord({
+      versionId: 'v2',
+      kind: 'record',
+      payload: { ...blankRecordPayload(), marks: { creaminess: 3 } },
+      now: '2026-03-01T00:00:00.000Z',
+    });
+    expect(draftHref(renderBodyWithDrafts(versions, [], [record], withCreaminess))).toBe('/notebook/r2/v2');
+    expect(draftLine(renderBodyWithDrafts(versions, [], [record], SEED_CATALOG))).toBeNull();
+  });
+
   it('a draft whose version is not in the store is not named', () => {
     const markup = renderBodyWithDrafts(versions, [], [draftOn('gone')]);
     expect(markup).not.toContain('home__lead-draft');
@@ -645,9 +671,11 @@ describe('HomeBody — every link carries an explicit tabindex (G-03.4-r4-1, .pl
 describe('RecipeList — the loading state (03.4-13, G-03.4-1)', () => {
   it('renders the page title and a loading line, and no recipe row, before the store reads resolve', () => {
     const markup = renderToStaticMarkup(
-      <MemoryRouter>
-        <RecipeList />
-      </MemoryRouter>,
+      <CatalogFixture>
+        <MemoryRouter>
+          <RecipeList />
+        </MemoryRouter>
+      </CatalogFixture>,
     );
     expect(markup).toContain('Pick up where you left off');
     expect(markup).toContain('home__loading');

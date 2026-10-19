@@ -16,6 +16,7 @@ import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { exportStore, validateStoreFile, importStore } from './transfer.js';
 import { activeWork, AWAITING_TASTING, NOT_YET_CHURNED, TASTED } from '../domain/lastEvent.js';
+import { codeFromVersionId } from '../domain/sheetCode.js';
 
 beforeEach(() => {
   // A fresh database per test — the repository opens its connection when
@@ -118,7 +119,10 @@ describe('declared problems round-trip through the store file', () => {
     ['one declared problem', ['Bitter']],
     ['two declared problems', ['Bitter', 'Salty']],
   ])('%s: the snapshot list and the ticks come back equal', async (_label, declaredFlaws) => {
-    const version = { ...oliveOilVersion, id: `rt-${declaredFlaws.length}`, declaredFlaws };
+    // Its own code, from its own id: the stamped olive oil code is already the
+    // seeded olive oil v1's in this profile, and a second holder would clash.
+    const id = `rt-${declaredFlaws.length}`;
+    const version = { ...oliveOilVersion, id, sheetCode: codeFromVersionId(id), declaredFlaws };
     const ticks = declaredFlaws.length > 0 ? [declaredFlaws[declaredFlaws.length - 1]] : null;
     const batch = createBatch(version, NO_CHURN, { marks: {}, declaredDefects: ticks }, { id: `rt-batch-${declaredFlaws.length}`, now: '2026-10-11T09:00:00.000Z' });
 

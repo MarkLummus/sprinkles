@@ -46,6 +46,12 @@ describe('rowFromLibraryRecord — the seeded olive oil row (criterion 3, D-06)'
     expect(row.ingredient.composition).not.toBe(record.entry.composition);
   });
 
+  it('links the row to the library record it was copied from (LIB-08, decision 15)', () => {
+    const row = rowFromLibraryRecord(oliveOilRecord(), SEEDED);
+    expect(row.libraryId).toBe('oliveOil');
+    expect(oliveOilVersion.rows[2].libraryId).toBe('oliveOil');
+  });
+
   it('leaves the library record unchanged and keeps its id out of the embedded ingredient', () => {
     const record = oliveOilRecord();
     const snapshot = structuredClone(record);
@@ -68,7 +74,7 @@ describe('rowFromLibraryRecord — defaults (D-07, D-08)', () => {
 
   it('builds exactly the seeded row keys, with a portion that has no removed key', () => {
     const row = rowFromLibraryRecord(oliveOilRecord(), { id: 'row-a', grams: 120 });
-    expect(Object.keys(row)).toEqual(['id', 'ingredientName', 'ingredient', 'portions', 'removed']);
+    expect(Object.keys(row)).toEqual(['id', 'ingredientName', 'ingredient', 'libraryId', 'portions', 'removed']);
     expect(Object.keys(row.portions[0])).toEqual(['step', 'grams']);
     expect(row.removed).toBe(false);
   });
@@ -122,6 +128,17 @@ describe('rowFromLibraryRecord — refusals (D-07)', () => {
   it('refuses a blank entry name when no ingredientName is given', () => {
     const record = { id: 'oliveOil', entry: { ...structuredClone(library.oliveOil), name: '   ' } };
     refuses({ id: 'row-a', grams: 10 }, 'row ingredientName must not be blank', record);
+  });
+
+  it.each(['', 42, '__proto__', 'constructor', 'prototype', undefined, null])('refuses the library record id %j, which could not be a libraryId the importer accepts', (recordId) => {
+    let thrown;
+    try {
+      rowFromLibraryRecord({ id: recordId, entry: structuredClone(library.oliveOil) }, { id: 'row-a', grams: 10 });
+    } catch (error) {
+      thrown = error;
+    }
+    expect(thrown).toBeInstanceOf(TypeError);
+    expect(thrown.message).toMatch(/^library record id /);
   });
 
   it.each([

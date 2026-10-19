@@ -1,9 +1,10 @@
 // Pure. No framework, no DOM, no store import. Builds a version row from a
-// library record { id, entry } (Phase 6 D-02) the way data/olive-oil.js
-// embed() builds the seeded rows. The row embeds a structuredClone of the
-// entry, so a later edit to the library never moves a stored version's
-// figures (Phase 7 D-06). The record's id is the library's key and never
-// enters the row.
+// library record { id, entry } (Phase 6 D-02) the way data/library-embed.js
+// builds the seeded rows. The row embeds a structuredClone of the entry, so a
+// later edit to the library never moves a stored version's figures (Phase 7
+// D-06). The record's id is the library's key and enters the row as libraryId,
+// the link to where the copy came from (Phase 9 decision 15, LIB-08); the
+// figures still come from the copied entry and never from the link.
 //
 // The refusals throw. This is the first throw in app/src/domain: a
 // constructor's normal return is a record, so a null would travel on and
@@ -26,10 +27,18 @@ export const RESERVED_ROW_IDS = new Set(['__proto__', 'constructor', 'prototype'
  * finite (D-07), a record whose entry is missing or not a plain object, an
  * entry whose composition is not an object of finite numbers (the check
  * store/transfer.js validateRow and validateLibraryRecord make; an empty
- * composition passes both), or a resolved ingredientName that is not a string
- * or is blank.
+ * composition passes both), a record whose id is not a non-empty string or is
+ * a reserved name (the rule validateRow applies to libraryId), or a resolved
+ * ingredientName that is not a string or is blank.
  */
 export function rowFromLibraryRecord(record, { id, grams, step = 1, ingredientName }) {
+  const libraryId = record?.id;
+  if (typeof libraryId !== 'string' || libraryId === '') {
+    throw new TypeError(`library record id must be a non-empty string, got ${JSON.stringify(libraryId)}`);
+  }
+  if (RESERVED_ROW_IDS.has(libraryId)) {
+    throw new TypeError(`library record id ${JSON.stringify(libraryId)} is reserved`);
+  }
   if (typeof id !== 'string' || id === '') {
     throw new TypeError('row id must be a non-empty string');
   }
@@ -63,6 +72,7 @@ export function rowFromLibraryRecord(record, { id, grams, step = 1, ingredientNa
     id,
     ingredientName: name,
     ingredient: structuredClone(entry),
+    libraryId: record.id,
     portions: [{ step, grams }],
     removed: false,
   };

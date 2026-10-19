@@ -122,6 +122,14 @@ function validateRow(row, path, errors) {
   if (typeof row.removed !== 'boolean') {
     errors.push(`${path}.removed: expected a boolean, got ${JSON.stringify(row.removed)}`);
   }
+  // The link to the library entry the row's copy came from (LIB-08): null, or a
+  // key that can never reach a prototype. Nothing reads a figure through it.
+  if (Object.hasOwn(row, 'libraryId')) {
+    const link = row.libraryId;
+    if (link !== null && (!isNonEmptyString(link) || UNSAFE_KEYS.has(link))) {
+      errors.push(`${path}.libraryId: expected null or a non-empty string that is not a reserved name, got ${JSON.stringify(link)}`);
+    }
+  }
 }
 
 /**

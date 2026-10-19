@@ -228,7 +228,7 @@ describe('who reads data/library.js, and who imports idb (success criterion 1, D
     for (const label of libraryImporters) {
       expect(label === 'store/seed.js' || /^data\/[^/]+\.js$/.test(label), label).toBe(true);
     }
-    expect(libraryImporters).toEqual(expect.arrayContaining(['store/seed.js', 'data/olive-oil.js']));
+    expect(libraryImporters).toEqual(expect.arrayContaining(['store/seed.js', 'data/library-embed.js']));
     expect(libraryImporters).not.toContain('store/db.js');
 
     expect(importers(IDB_IMPORT)).toEqual(['store/db.js']);

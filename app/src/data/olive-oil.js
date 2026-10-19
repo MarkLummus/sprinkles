@@ -2,7 +2,7 @@
 // (olive-oil-ice-cream-800g_1.md) via the old-sprinkles slice's olive-oil.js
 // (read, not imported). Method and authored notes are added by plan 01-02;
 // this shape does not change when they arrive.
-import { library } from './library.js';
+import { embedFromLibrary } from './library-embed.js';
 
 // The version record's own bookkeeping number — distinct from DB_VERSION
 // (db.js) and from the store file's schemaVersion (transfer.js). Bumped to
@@ -48,17 +48,6 @@ export const oliveOilRecipe = {
     'Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath.',
 };
 
-// Deep-copy the ingredient record onto the row so a stored version is
-// self-contained (D-05): a later edit to the shared `library` must never
-// move a figure already computed from a version's own rows.
-function embed(ingredientName, ingredient, fields) {
-  return {
-    ingredientName,
-    ingredient: structuredClone(ingredient),
-    ...fields,
-  };
-}
-
 export const oliveOilVersion = {
   schemaVersion: VERSION_SCHEMA_VERSION,
   id: 'olive-oil-ice-cream-v1',
@@ -78,18 +67,18 @@ export const oliveOilVersion = {
   sheetDescription:
     'Silky and quietly savoury. Fresh olive oil adds a gentle fruitiness without overwhelming the cream, and a little more salt than you would think carries it. Serve it soft, with flaky salt.',
   rows: [
-    { id: 'row-01', ...embed('Whole milk', library.wholeMilk, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }], removed: false }) },
-    { id: 'row-02', ...embed('Heavy cream', library.heavyCream, { portions: [{ step: 3, grams: 252.8 }], removed: false }) },
-    { id: 'row-03', ...embed('Graza Drizzle', library.oliveOil, { portions: [{ step: 8, grams: 40 }], removed: false }) },
-    { id: 'row-04', ...embed('Skim milk powder', library.skimMilkPowder, { portions: [{ step: 3, grams: 22.4 }], removed: false }) },
-    { id: 'row-05', ...embed('Sucrose', library.sucrose, { portions: [{ step: 2, grams: 12 }, { step: 3, grams: 64 }], removed: false }) },
-    { id: 'row-06', ...embed('Allulose', library.allulose, { portions: [{ step: 6, grams: 20 }], removed: false }) },
-    { id: 'row-07', ...embed('Dextrose', library.dextrose, { portions: [{ step: 3, grams: 12 }], removed: false }) },
-    { id: 'row-08', ...embed('Fine sea salt', library.salt, { portions: [{ step: 3, grams: 3.2 }], removed: false }) },
-    { id: 'row-09', ...embed('Soy lecithin', library.lecithin, { portions: [{ step: 8, grams: 1.2 }], removed: false }) },
-    { id: 'row-10', ...embed('Locust bean gum', library.locustBeanGum, { portions: [{ step: 2, grams: 1.04 }], removed: false }) },
-    { id: 'row-11', ...embed('Guar gum', library.guarGum, { portions: [{ step: 2, grams: 0.48 }], removed: false }) },
-    { id: 'row-12', ...embed('Lambda carrageenan', library.carrageenan, { portions: [{ step: 2, grams: 0.16 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary('Whole milk', 'wholeMilk', { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Heavy cream', 'heavyCream', { portions: [{ step: 3, grams: 252.8 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Graza Drizzle', 'oliveOil', { portions: [{ step: 8, grams: 40 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Skim milk powder', 'skimMilkPowder', { portions: [{ step: 3, grams: 22.4 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 2, grams: 12 }, { step: 3, grams: 64 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Allulose', 'allulose', { portions: [{ step: 6, grams: 20 }], removed: false }) },
+    { id: 'row-07', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 3, grams: 12 }], removed: false }) },
+    { id: 'row-08', ...embedFromLibrary('Fine sea salt', 'salt', { portions: [{ step: 3, grams: 3.2 }], removed: false }) },
+    { id: 'row-09', ...embedFromLibrary('Soy lecithin', 'lecithin', { portions: [{ step: 8, grams: 1.2 }], removed: false }) },
+    { id: 'row-10', ...embedFromLibrary('Locust bean gum', 'locustBeanGum', { portions: [{ step: 2, grams: 1.04 }], removed: false }) },
+    { id: 'row-11', ...embedFromLibrary('Guar gum', 'guarGum', { portions: [{ step: 2, grams: 0.48 }], removed: false }) },
+    { id: 'row-12', ...embedFromLibrary('Lambda carrageenan', 'carrageenan', { portions: [{ step: 2, grams: 0.16 }], removed: false }) },
   ],
   // No `sugar` key: the sheet authored no band for sugar solids (D-10).
   targets: {

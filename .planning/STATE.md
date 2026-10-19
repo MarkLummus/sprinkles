@@ -6,10 +6,10 @@ current_phase: 09
 current_phase_name: The library and the stored shapes, plus the two places
 status: executing
 stopped_at: Phase 9 context updated
-last_updated: "2026-10-19T00:03:59.497Z"
-last_activity: 2026-10-17
-last_activity_desc: Phase 08 complete, transitioned to Phase 09
-state_head: 710a528691e3924212309ee2039b77e591c63a94
+last_updated: "2026-10-19T00:19:30.728Z"
+last_activity: 2026-10-18
+last_activity_desc: Phase 09 execution started
+state_head: b4691b335a2cde3abccf5872603194d8968ec678
 progress:
   total_phases: 5
   completed_phases: 1
@@ -25,14 +25,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-16)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 08 — Split the recipe page along its jobs
+**Current focus:** Phase 09 — The library and the stored shapes, plus the two places
 
 ## Current Position
 
-Phase: 09 (The library and the stored shapes, plus the two places) — READY TO EXECUTE
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-10-18 - Completed quick task 261018-rn9: Fix bug-stale-draft-survives-pen-opened-during-read: a pen opened during the draft read owns the stored draft
+Phase: 09 (The library and the stored shapes, plus the two places) — EXECUTING
+Plan: 1 of 17
+Status: Executing Phase 09
+Last activity: 2026-10-18 — Phase 09 execution started
 
 Progress: [██░░░░░░░░] 20%
 

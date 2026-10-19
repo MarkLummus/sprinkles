@@ -4,6 +4,7 @@
 import { describe, it, expect } from 'vitest';
 import { oliveOilVersion, SEED_USES } from './olive-oil.js';
 import { rowGrams } from '../domain/rows.js';
+import { augustSecondBatch } from './batch-2026-08-02.js';
 
 function targetValue(step, label) {
   return step.targets?.find((t) => t.label === label)?.value;
@@ -118,8 +119,15 @@ describe('oliveOilVersion.method uses (D-08)', () => {
 });
 
 describe('oliveOilVersion.declaredAxes and declaredFlaws (03.3.1-CONTEXT.md D-07; 04-03)', () => {
-  it('declares the battery\'s Body and Oil pair by name', () => {
-    expect(oliveOilVersion.declaredAxes).toEqual(['Body', 'Oil']);
+  it('declares Body and Oil as scale definitions carrying their kind (decision 3, TASTE-03)', () => {
+    expect(oliveOilVersion.declaredAxes).toEqual([
+      { key: 'body', name: 'Body', low: 'thin', high: 'heavy', kind: 'goldilocks', group: 'declared' },
+      { key: 'oil', name: 'Oil', low: 'faint', high: 'strong', kind: 'goldilocks', group: 'declared' },
+    ]);
+  });
+
+  it('its 2 Aug batch snapshot holds the same definitions', () => {
+    expect(augustSecondBatch.snapshot.declaredAxes).toEqual(oliveOilVersion.declaredAxes);
   });
 
   it('declares Bitter as the recipe\'s one declared problem', () => {

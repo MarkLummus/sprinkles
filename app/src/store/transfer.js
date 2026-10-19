@@ -9,12 +9,16 @@
 // D-06) — and refuses everything older rather than lifting it; there is
 // no ladder here.
 import { AXES } from '../domain/axes.js';
+import { isScaleDefinition, MAX_RECIPE_SCALES } from '../domain/catalog.js';
 import { SEGMENT_OPTIONS, DEFECTS, MARK_ONE_OPTIONS } from '../domain/battery.js';
 
 // domain/versionRow.js RESERVED_ROW_IDS mirrors this set; transfer.test.js pins the two.
 export const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
-const DECLARED_AXIS_NAMES = AXES.filter((axis) => axis.group === 'declared').map((axis) => axis.name);
-// A version declares up to two scales and up to two problems (sketch 010 D25, D26).
+// The core scale keys a declared scale's key may not equal. Plan 09-10 replaces
+// this source with the file's own scales table (D-03a).
+const CORE_AXIS_KEYS = AXES.filter((axis) => axis.group === 'core').map((axis) => axis.key);
+// A version declares up to two problems (sketch 010 D26); its scales are bounded
+// by MAX_RECIPE_SCALES.
 const MAX_DECLARED = 2;
 
 // The store file's own bookkeeping number (D-10) — distinct from
@@ -341,29 +345,32 @@ function validateTasting(tasting, snapshot, path, errors) {
 }
 
 /**
- * validateDeclaredAxes(declaredAxes, path, errors) -> void, in the same
- * collect-all-errors, name-the-path style as validateRow. Each entry is a
- * non-empty string naming one of the battery's declared-pair axes
- * (domain/axes.js's AXES, group 'declared') — refuses the pre-reset
- * `{ name, low, high }` object shape, which would otherwise reach
- * axesForBatch as a name that resolves to nothing. A recipe declares at
- * most two scales (sketch 010 D25), each name once.
+ * validateDeclaredAxes(declaredAxes, path, errors, coreKeys) -> void, in the
+ * same collect-all-errors, name-the-path style as validateRow. Each entry is
+ * a declared scale definition { key, name, low, high, kind, group } (decision
+ * 3, TASTE-03): isScaleDefinition with group 'declared' and a key that is
+ * none of coreKeys, so a mark written under it can neither reach a prototype
+ * nor overwrite a core mark (T-09-16). Refuses the name strings of the earlier
+ * shape. A recipe declares at most MAX_RECIPE_SCALES scales, each key once.
  */
-function validateDeclaredAxes(declaredAxes, path, errors) {
+function validateDeclaredAxes(declaredAxes, path, errors, coreKeys) {
   if (!Array.isArray(declaredAxes)) {
     errors.push(`${path}: expected an array`);
     return;
   }
-  declaredAxes.forEach((name, index) => {
-    if (!isNonEmptyString(name) || !DECLARED_AXIS_NAMES.includes(name)) {
-      errors.push(`${path}[${index}]: expected one of ${JSON.stringify(DECLARED_AXIS_NAMES)}, got ${JSON.stringify(name)}`);
+  declaredAxes.forEach((scale, index) => {
+    if (!isScaleDefinition(scale) || scale.group !== 'declared') {
+      errors.push(`${path}[${index}]: expected a declared scale definition { key, name, low, high, kind, group }`);
+    } else if (coreKeys.includes(scale.key)) {
+      errors.push(`${path}[${index}].key: expected a key that is not a core scale key, got ${JSON.stringify(scale.key)}`);
     }
   });
-  if (declaredAxes.length > MAX_DECLARED) {
-    errors.push(`${path}: expected at most ${MAX_DECLARED} declared scales, got ${declaredAxes.length}`);
+  if (declaredAxes.length > MAX_RECIPE_SCALES) {
+    errors.push(`${path}: expected at most ${MAX_RECIPE_SCALES} declared scales, got ${declaredAxes.length}`);
   }
-  if (new Set(declaredAxes).size !== declaredAxes.length) {
-    errors.push(`${path}: expected each declared scale once, got ${JSON.stringify(declaredAxes)}`);
+  const keys = declaredAxes.map((scale) => scale?.key);
+  if (new Set(keys).size !== keys.length) {
+    errors.push(`${path}: expected each declared scale once, got ${JSON.stringify(keys)}`);
   }
 }
 
@@ -423,7 +430,7 @@ function validateBatch(batch, path, errors) {
     if (typeof batch.snapshot.coefficientSetId !== 'string') {
       errors.push(`${path}.snapshot.coefficientSetId: expected a string`);
     }
-    validateDeclaredAxes(batch.snapshot.declaredAxes, `${path}.snapshot.declaredAxes`, errors);
+    validateDeclaredAxes(batch.snapshot.declaredAxes, `${path}.snapshot.declaredAxes`, errors, CORE_AXIS_KEYS);
     validateDeclaredFlaws(batch.snapshot.declaredFlaws, `${path}.snapshot.declaredFlaws`, errors);
   }
 
@@ -532,7 +539,7 @@ function validateVersion(version, path, errors) {
   if (!isNonEmptyString(version.createdAt)) {
     errors.push(`${path}.createdAt: expected a non-empty string, got ${JSON.stringify(version.createdAt)}`);
   }
-  validateDeclaredAxes(version.declaredAxes, `${path}.declaredAxes`, errors);
+  validateDeclaredAxes(version.declaredAxes, `${path}.declaredAxes`, errors, CORE_AXIS_KEYS);
   validateDeclaredFlaws(version.declaredFlaws, `${path}.declaredFlaws`, errors);
   // WR-01 (code review): all three fields are read directly by the UI
   // (the version-line uniqueness check, the Sheet title/description's own

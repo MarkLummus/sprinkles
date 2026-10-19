@@ -574,6 +574,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261018-x4s | Fix bug-home-record-tasting-opens-wrong-batch: Home's Record a tasting pairs the batch with its own version | 2026-10-19 | fe240415 | .planning/quick/261018-x4s-fix-bug-home-record-tasting-opens-wrong-batch-in-app-src-ui |
 | 261018-x4t | Boot line word for the problems table: tasting problems | 2026-10-19 | 82730c29 | .planning/quick/261018-x4t-boot-line-word-for-the-problems-table-decide-p9-boot-word-pr |
 | 261018-x4u | Facts line value-first in an open Ingredients entry | 2026-10-19 | 64169285 | .planning/quick/261018-x4u-facts-line-value-first-decide-p9-facts-line-shape-value-firs |
+| 261019-arq | Home's Record a tasting opens the tasting pen | 2026-10-19 | 638d9f77 | .planning/quick/261019-arq-home-s-record-a-tasting-opens-the-tasting-pen-decide-home-re |
+| 261019-arr | Ingredients place below 760: source on its own line | 2026-10-19 | 385c7bb6 | .planning/quick/261019-arr-ingredients-place-below-760-source-on-its-own-line-look-p9-0 |
+| 261019-ars | Ingredients place: lactose line on any entry with milk solids | 2026-10-19 | 55891a98 | .planning/quick/261019-ars-ingredients-place-lactose-line-on-any-entry-with-milk-solids |
 
 ### Roadmap Evolution
 

@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "batch_id": "261019-arp",
+  "created_at": "2026-10-19T11:45:14.430Z",
+  "options": {},
+  "base_revision": "5b09c58a1245ebb22b733e6d367aac6302b88ea4",
+  "items": [
+    {
+      "quick_id": "261019-arq",
+      "client_id": null,
+      "description": "Home's \"Record a tasting\" opens the tasting pen (decide-home-record-tasting-opens-pen, open-pen): in app/src/ui/RecipeList.jsx the AWAITING_TASTING \"Record a tasting\" Link (around line 209-214) navigates to tastingPath with no route state, so the batch log opens with the pen closed; pass state={{ startTasting: true }} on that Link so the batch page's useRouteIntents (startTastingOnMount reads location.state?.startTasting) opens the tasting pen on arrival, exactly as useBatchRecording.js line 328 does for the recipe page's band; the \"Keep developing\" link is unchanged; add a RecipeList test asserting the link carries that state (and update any test that pins the link without state). Own commit; full suite must pass (baseline 114 files, 3471 tests).",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/RecipeList.jsx",
+        "app/src/ui/RecipeList.nextVersion.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "638d9f77",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261019-arr",
+      "client_id": null,
+      "description": "Ingredients place below 760: source on its own line (look-p9-012-redraw approved; sketch 012 README decision 5, decide-p9-393-source-own-line): in app/src/styles/shell.css inside the existing @media (max-width: 759.98px) block, change `.place .ing__figures tr` (line ~722) grid-template-areas from `'fig amt' 'basis src'` to `'fig amt' 'basis basis' 'src src'`, and `.place .ing__figures .ing__source` (line ~753) text-align from right to left; nothing else moves, no new token; the authority is .planning/sketches/012-places/ingredients-place.html (the .pc393 .place rules at lines 6686-6687) and .planning/sketches/012-places/README.md decision 5; update any stylesheet test that pins the old areas. Own commit; full suite must pass.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/styles/shell.css"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "385c7bb6",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261019-ars",
+      "client_id": null,
+      "description": "Ingredients place: lactose line on any entry with milk solids (look-p9-012-redraw approved; sketch 012 README decision 6, decide-p9-lactose-line-non-dairy, any-milk-solids): in app/src/ui/IngredientsPlace.jsx the helper line \"Lactose counts as 54.5% of milk solids in Freezing and Sweetness.\" (line ~301) renders only when fields.dairy; it must render whenever the entry holds a Milk solids figure (Number.isFinite(entry.composition.msnf), the same test heldFigures uses) or dairy === true, so the Milk Chocolate entry (flavor, 16% milk solids, not dairy) shows it; keep the wording; add IngredientsPlace tests for a non-dairy entry with msnf (line shown) and a non-dairy entry without msnf (no line); update the 09-places-check expectations under .planning/phases/09-*/ only if they pin the old condition. Own commit; full suite must pass.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/IngredientsPlace.jsx",
+        "app/src/ui/IngredientsPlace.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "55891a98",
+      "failure_reason": null
+    }
+  ]
+}

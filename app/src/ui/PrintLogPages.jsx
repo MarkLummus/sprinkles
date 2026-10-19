@@ -1,5 +1,6 @@
 import { axesForVersion, stopWordsFor } from '../domain/axes.js';
-import { BATTERY_FIELDS, DEFECTS, PRINTED_MARK_ONE_OPTIONS, SEGMENT_OPTIONS } from '../domain/battery.js';
+import { problemNames } from '../domain/catalog.js';
+import { BATTERY_FIELDS, PRINTED_MARK_ONE_OPTIONS, SEGMENT_OPTIONS } from '../domain/battery.js';
 
 // The two blank log pages the print route lays ahead of the Sheet (D-07a):
 // the Batch log on side 1 and the Tasting log on side 2 of one sheet. Their
@@ -167,9 +168,10 @@ function LogScaleRow({ axis }) {
 // Page 2, the Tasting log (CONTRACT § 4): the four core scales then the
 // version's own declared ones (0 to 2), the four core problems then its own
 // declared ones in one row (0 to 2), five writing lines. Both lists come
-// from the version, read through axes.js and DEFECTS, never from a literal
-// here; no "Every recipe" or "This recipe only" cue is printed (D23).
-export function TastingLogPage({ version, footText }) {
+// from the catalog (the core scales and the core problems, read from their
+// tables) and the version (its declared ones), never from a literal here; no
+// "Every recipe" or "This recipe only" cue is printed (D23).
+export function TastingLogPage({ version, catalog, footText }) {
   return (
     <div className="lf">
       <div className="lf-body">
@@ -183,7 +185,7 @@ export function TastingLogPage({ version, footText }) {
         <div className="lf-group">
           <LogGroupHead name="From freezer" cue="mark one" />
           <LogVerdict />
-          {axesForVersion(version).map((axis) => (
+          {axesForVersion(version, catalog).map((axis) => (
             <LogScaleRow key={axis.key} axis={axis} />
           ))}
           <p className="lf-dhead lf-sub">
@@ -192,7 +194,7 @@ export function TastingLogPage({ version, footText }) {
           </p>
           <div className="lf-mrow lf-mrow--plain">
             <div className="lf-mark">
-              {[...DEFECTS, ...(version.declaredFlaws ?? [])].map((word) => (
+              {[...problemNames(catalog.problems), ...(version.declaredFlaws ?? [])].map((word) => (
                 <LogOption key={word} word={word} />
               ))}
             </div>

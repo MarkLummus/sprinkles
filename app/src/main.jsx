@@ -9,6 +9,8 @@ import './styles/notebook.css';
 import './styles/print.css';
 import { repository } from './store/repository.js';
 import { seedIfEmpty } from './store/seed.js';
+import { readSeedTables, catalogFrom } from './store/catalog.js';
+import { CatalogProvider } from './ui/CatalogContext.jsx';
 import { App } from './router.jsx';
 
 const root = createRoot(document.getElementById('root'));
@@ -24,8 +26,10 @@ repository.onBlocked(() => {
   root.render(<p className="app-boot">{STORE_BLOCKED_LINE}</p>);
 });
 
+let lists;
 try {
   await seedIfEmpty(repository);
+  lists = await readSeedTables(repository);
 } catch (err) {
   root.render(<p className="app-boot">Could not open the local store. Try reloading.</p>);
   throw err;
@@ -33,6 +37,8 @@ try {
 
 root.render(
   <StrictMode>
-    <App />
+    <CatalogProvider initialCatalog={catalogFrom(lists)}>
+      <App />
+    </CatalogProvider>
   </StrictMode>,
 );

@@ -6,6 +6,7 @@ import { describe, it, expect } from 'vitest';
 import { AXES, STOPS, CORE_AXIS_COUNT, stopWordsFor, axesForBatch, axesForVersion, markKeyFor, setMark, readMarkWord } from './axes.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 
 describe('AXES', () => {
   it('has exactly six entries in the contract\'s fixed order', () => {
@@ -120,7 +121,7 @@ describe('axesForBatch', () => {
 // The version-side twin: the blank Tasting log prints before any batch exists.
 describe('axesForVersion', () => {
   it('returns Olive Oil v1\'s six: the four core, then Body and Oil in the version\'s order', () => {
-    expect(axesForVersion(oliveOilVersion).map((axis) => axis.name)).toEqual([
+    expect(axesForVersion(oliveOilVersion, SEED_CATALOG).map((axis) => axis.name)).toEqual([
       'Hardness',
       'Scoopability',
       'Smoothness',
@@ -131,7 +132,7 @@ describe('axesForVersion', () => {
   });
 
   it('returns the four core axes for a version that declares none', () => {
-    const axes = axesForVersion({ ...oliveOilVersion, declaredAxes: [] });
+    const axes = axesForVersion({ ...oliveOilVersion, declaredAxes: [] }, SEED_CATALOG);
     expect(axes.map((axis) => axis.key)).toEqual(['hardness', 'scoopability', 'smoothness', 'sweetness']);
     expect(axes).toHaveLength(CORE_AXIS_COUNT);
   });
@@ -139,16 +140,27 @@ describe('axesForVersion', () => {
   it('returns the declared definitions as given, in the version\'s own order, resolving no name', () => {
     const [body, oil] = oliveOilVersion.declaredAxes;
     const mine = { key: 'scale-mine', name: 'Mystery', low: 'a', high: 'b', kind: 'magnitude', group: 'declared' };
-    const axes = axesForVersion({ declaredAxes: [oil, mine, body] });
+    const axes = axesForVersion({ declaredAxes: [oil, mine, body] }, SEED_CATALOG);
     expect(axes.slice(CORE_AXIS_COUNT)).toEqual([oil, mine, body]);
   });
 
-  it('agrees with axesForBatch for a batch snapshotting the same version', () => {
-    expect(axesForVersion(oliveOilVersion)).toEqual(axesForBatch(augustSecondBatch));
+  it('agrees with axesForBatch for a batch snapshotting the same version, on the words and the order', () => {
+    const words = ({ key, name, low, high, group }) => ({ key, name, low, high, group });
+    expect(axesForVersion(oliveOilVersion, SEED_CATALOG).map(words)).toEqual(axesForBatch(augustSecondBatch).map(words));
   });
 
   it('reads a version with no declaredAxes field as declaring none', () => {
-    expect(axesForVersion({})).toHaveLength(CORE_AXIS_COUNT);
+    expect(axesForVersion({}, SEED_CATALOG)).toHaveLength(CORE_AXIS_COUNT);
+  });
+
+  it('keeps the order it is handed and sorts nothing: a reversed scales list gives the core scales reversed', () => {
+    const reversed = { ...SEED_CATALOG, scales: [...SEED_CATALOG.scales].reverse() };
+    expect(axesForVersion({}, reversed).map((axis) => axis.key)).toEqual(['sweetness', 'smoothness', 'scoopability', 'hardness']);
+  });
+
+  it('reads its core scales from the catalog it is given, not from a constant', () => {
+    const renamed = { ...SEED_CATALOG, scales: SEED_CATALOG.scales.map((row) => (row.key === 'hardness' ? { ...row, low: 'mushy' } : row)) };
+    expect(axesForVersion({}, renamed)[0].low).toBe('mushy');
   });
 });
 

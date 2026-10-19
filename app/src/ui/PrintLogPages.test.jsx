@@ -14,9 +14,13 @@ import { oliveOilVersion } from '../data/olive-oil.js';
 import { sheetCode } from '../domain/sheetCode.js';
 import { AXES, CORE_AXIS_COUNT } from '../domain/axes.js';
 import { DEFECTS, PRINTED_MARK_ONE_OPTIONS, SEGMENT_OPTIONS } from '../domain/battery.js';
+import { coreScaleDefinitions, problemNames } from '../domain/catalog.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 
 const VERSIONS = seedRecipeGroups.flatMap((group) => group.versions);
 const CORE_AXIS_NAMES = AXES.slice(0, CORE_AXIS_COUNT).map((axis) => axis.name);
+// How many core scales the tables hold (the log prints the catalog's, D-01).
+const CORE_COUNT = coreScaleDefinitions(SEED_CATALOG.scales).length;
 
 const count = (markup, needle) => markup.split(needle).length - 1;
 const classCount = (markup, name) => (markup.match(new RegExp(`class="[^"]*\\b${name}\\b[^"]*"`, 'g')) ?? []).length;
@@ -25,7 +29,7 @@ function footFor(version, side) {
   return logFootText({ sheetTitle: version.sheetTitle, identity: 'Version 1 · test', code: sheetCode(version), side });
 }
 const page1 = (version) => renderToStaticMarkup(<BatchLogPage footText={footFor(version, 1)} />);
-const page2 = (version) => renderToStaticMarkup(<TastingLogPage version={version} footText={footFor(version, 2)} />);
+const page2 = (version, catalog = SEED_CATALOG) => renderToStaticMarkup(<TastingLogPage version={version} catalog={catalog} footText={footFor(version, 2)} />);
 
 // The markup of the problems row alone: from its opening div to the page's
 // next group (Notes).
@@ -88,7 +92,7 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
     const markup = page2(version);
     const declaredAxes = version.declaredAxes ?? [];
     const declaredFlaws = version.declaredFlaws ?? [];
-    expect(classCount(markup, 'lf-srow')).toBe(CORE_AXIS_COUNT + declaredAxes.length);
+    expect(classCount(markup, 'lf-srow')).toBe(CORE_COUNT + declaredAxes.length);
     expect(classCount(markup, 'lf-opt')).toBe(PRINTED_MARK_ONE_OPTIONS.length + SEGMENT_OPTIONS.meltStyle.length + DEFECTS.length + declaredFlaws.length);
     expect(classCount(problemsRow(markup), 'lf-opt')).toBe(DEFECTS.length + declaredFlaws.length);
     expect(classCount(markup, 'lf-mrow--plain')).toBe(1);
@@ -101,8 +105,8 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
     for (const scale of declaredAxes) expect(markup, scale.name).toContain(scale.name);
     for (const word of declaredFlaws) expect(problemsRow(markup), word).toContain(word);
     // Every scale row has its five ticks, the ends tall.
-    expect(classCount(markup, 'lf-tick')).toBe(5 * (CORE_AXIS_COUNT + declaredAxes.length));
-    expect(classCount(markup, 'lf-tick--end')).toBe(2 * (CORE_AXIS_COUNT + declaredAxes.length));
+    expect(classCount(markup, 'lf-tick')).toBe(5 * (CORE_COUNT + declaredAxes.length));
+    expect(classCount(markup, 'lf-tick--end')).toBe(2 * (CORE_COUNT + declaredAxes.length));
   });
 
   it.each(VERSIONS.map((version) => [version.id, version]))('%s: the page holds its fields, the foot says Side 2 of 2 with this version\'s code', (_id, version) => {
@@ -134,7 +138,7 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
   it('a version that declares nothing prints no declared scale and no declared problem: four rows, four boxes', () => {
     const none = { ...oliveOilVersion, declaredAxes: [], declaredFlaws: [] };
     const markup = page2(none);
-    expect(classCount(markup, 'lf-srow')).toBe(CORE_AXIS_COUNT);
+    expect(classCount(markup, 'lf-srow')).toBe(CORE_COUNT);
     expect(classCount(problemsRow(markup), 'lf-opt')).toBe(DEFECTS.length);
   });
 
@@ -146,7 +150,7 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
     expect(classCount(row, 'lf-opt')).toBe(6);
     expect(classCount(row, 'lf-mark')).toBe(1);
     expect(row).toContain('Waxy');
-    expect(classCount(markup, 'lf-srow')).toBe(CORE_AXIS_COUNT + 2);
+    expect(classCount(markup, 'lf-srow')).toBe(CORE_COUNT + 2);
   });
 });
 
@@ -162,14 +166,33 @@ describe('stored words render as text, never as markup (T-04-18)', () => {
 });
 
 describe('the pages import no literal list of scales or problems', () => {
-  it('PrintLogPages.jsx reads them from axes.js, DEFECTS and the version', async () => {
+  it('PrintLogPages.jsx reads them from the catalog and the version', async () => {
     const { readFileSync } = await import('node:fs');
     const { fileURLToPath } = await import('node:url');
     const src = readFileSync(fileURLToPath(new URL('./PrintLogPages.jsx', import.meta.url)), 'utf8').replace(/\/\/.*$/gm, '');
-    // The names come from the tables themselves, so no literal is repeated here.
-    const names = [...AXES.map((axis) => axis.name), ...DEFECTS, ...oliveOilVersion.declaredFlaws];
+    // The names come from the tables and the version themselves, so no literal is repeated here.
+    const names = [
+      ...coreScaleDefinitions(SEED_CATALOG.scales).map((axis) => axis.name),
+      ...oliveOilVersion.declaredAxes.map((axis) => axis.name),
+      ...problemNames(SEED_CATALOG.problems),
+      ...oliveOilVersion.declaredFlaws,
+    ];
     for (const word of names) expect(src, word).not.toContain(word);
-    expect(src).toContain('axesForVersion(version)');
-    expect(src).toContain('DEFECTS');
+    expect(src).toContain('axesForVersion(version, catalog)');
+    expect(src).toContain('problemNames(catalog.problems)');
+    expect(src).not.toContain('DEFECTS');
+  });
+
+  it('prints the scales and problems of the catalog it is given', () => {
+    const catalog = {
+      ...SEED_CATALOG,
+      scales: SEED_CATALOG.scales.map((row) => (row.key === 'hardness' ? { ...row, name: 'Firmness', low: 'mushy' } : row)),
+      problems: SEED_CATALOG.problems.map((row) => (row.id === 'greasy-film' ? { ...row, name: 'Slick' } : row)),
+    };
+    const markup = page2(oliveOilVersion, catalog);
+    expect(markup).toContain('Firmness');
+    expect(markup).toContain('mushy');
+    expect(problemsRow(markup)).toContain('Slick');
+    expect(problemsRow(markup)).not.toContain('Greasy film');
   });
 });

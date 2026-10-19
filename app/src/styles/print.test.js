@@ -14,6 +14,7 @@ import { BatchLogPage, TastingLogPage } from '../ui/PrintLogPages.jsx';
 import { SheetPage, sheetBlocks } from '../ui/PrintSheetPages.jsx';
 import { layPages } from '../domain/sheetPages.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const PRINT_SRC = readFileSync(path.join(STYLES_DIR, 'print.css'), 'utf8');
@@ -188,7 +189,7 @@ describe('the pages read no width and no pointer (CONTRACT § 1)', () => {
     'ps-frame',
     ...VERSIONS.flatMap((version) => [
       ...classesIn(renderToStaticMarkup(createElement(BatchLogPage, { footText: 'foot' }))),
-      ...classesIn(renderToStaticMarkup(createElement(TastingLogPage, { version, footText: 'foot' }))),
+      ...classesIn(renderToStaticMarkup(createElement(TastingLogPage, { version, catalog: SEED_CATALOG, footText: 'foot' }))),
       ...sheetClassesOf(version),
     ]),
   ]);

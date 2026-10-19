@@ -142,7 +142,7 @@ Plans:
   7. A version stores its Sheet code, assigned when the version is created (a first version and every Next version) and unique; no edit to the recipe name, the Version name, the Sheet title or description, or any row, step or note changes it; the seeded versions keep the codes they print today, so sheets already in the binder still find them
   8. The machines, the styles with their bands, and the core scales and problems travel in the store file with the library: the file validator checks them, the store file version changes, and an export from one profile imported into a fresh profile restores them
 
-**Plans:** 5/17 plans executed in 10 waves (09-01 stops for Mark's library review, D-16, and puts the four-core-scale rule on his list at that same stop; 09-09 records the one-way reset decision, decisions 2 and 5, before the bump, auto-selected rather than asked again, and fingerprints app/dist so 09-17 can check that no build reached it; no plan writes app/dist, so the device build is Mark's own step on 09-17's device check, whose reset step 09-17 first walks in WebKit)
+**Plans:** 8/17 plans executed in 10 waves (09-01 stops for Mark's library review, D-16, and puts the four-core-scale rule on his list at that same stop; 09-09 records the one-way reset decision, decisions 2 and 5, before the bump, auto-selected rather than asked again, and fingerprints app/dist so 09-17 can check that no build reached it; no plan writes app/dist, so the device build is Mark's own step on 09-17's device check, whose reset step 09-17 first walks in WebKit)
 
 Plans:
 **Wave 1**
@@ -153,9 +153,9 @@ Plans:
 - [x] 09-05-PLAN.md — rows keep libraryId; equipment stores maxFillG; every seeded version stores its serving temperature, copied from its Ice Ed figure (D-19); the strawberry recipe's own definitions carry the six D-20 keys at null
 
 **Wave 2** *(blocked on Wave 1 completion; 09-07 also on Mark's approval)*
-- [ ] 09-06-PLAN.md — the Sheet code enforced inside createVersion and saveVersion, two tabs included
-- [ ] 09-07-PLAN.md — the larger library seeded, every same-ingredient case recorded and gated, lactose once; the 26 entries carry the six D-20 coefficients
-- [ ] 09-08-PLAN.md — declared scales become definitions carrying their kind; a created root and a child carry the serving temperature (D-19)
+- [x] 09-06-PLAN.md — the Sheet code enforced inside createVersion and saveVersion, two tabs included
+- [x] 09-07-PLAN.md — the larger library seeded, every same-ingredient case recorded and gated, lactose once; the 26 entries carry the six D-20 coefficients
+- [x] 09-08-PLAN.md — declared scales become definitions carrying their kind; a created root and a child carry the serving temperature (D-19)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 09-09-PLAN.md — DB_VERSION 9 to 10: the bounded reset, the four seed tables, the library validator's D-20 checks, the upgrade proof and the ratchets, and the app/dist guard
@@ -243,7 +243,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 8. Split the recipe page along its jobs | v2.0 | 6/6 | Complete    | 2026-10-17 |
-| 9. The library and the stored shapes, plus the two places | v2.0 | 5/17 | In Progress | - |
+| 9. The library and the stored shapes, plus the two places | v2.0 | 8/17 | In Progress | - |
 | 10. The creation editor, without Save | v2.0 | 0/TBD | Not started | - |
 | 11. Steps, structure, save and print | v2.0 | 0/TBD | Not started | - |
 | 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/TBD | Not started | - |

@@ -219,6 +219,9 @@ describe('the seed tables, against a real IndexedDB', () => {
     globalThis.indexedDB = new IDBFactory();
   });
 
+  // The store reads rows back in key order (alphabetical by id), not seed order.
+  const byId = (rows) => [...rows].sort((a, b) => a.id.localeCompare(b.id));
+
   const TABLES = [
     ['machines', 'listMachines'],
     ['styles', 'listStyles'],
@@ -230,7 +233,7 @@ describe('the seed tables, against a real IndexedDB', () => {
     const repository = createRepository();
     await seedIfEmpty(repository);
     for (const [name, list] of TABLES) {
-      expect(await repository[list](), name).toEqual(SEED_CATALOG[name]);
+      expect(byId(await repository[list]()), name).toEqual(byId(SEED_CATALOG[name]));
     }
   });
 
@@ -256,7 +259,7 @@ describe('the seed tables, against a real IndexedDB', () => {
     const second = createRepository();
     expect(await second.listScales()).toEqual([]);
     await seedIfEmpty(second);
-    expect(await second.listScales()).toEqual(SEED_CATALOG.scales);
+    expect(byId(await second.listScales())).toEqual(byId(SEED_CATALOG.scales));
     expect((await second.listMachines())[0].name).toBe('Whynter, edited');
   });
 
@@ -274,7 +277,7 @@ describe('the seed tables, against a real IndexedDB', () => {
     for (const [name, list] of TABLES) {
       const results = await Promise.all([a.seedTableIfEmpty(name, SEED_CATALOG[name]), b.seedTableIfEmpty(name, SEED_CATALOG[name])]);
       expect(results.filter(Boolean), name).toHaveLength(1);
-      expect(await a[list](), name).toEqual(SEED_CATALOG[name]);
+      expect(byId(await a[list]()), name).toEqual(byId(SEED_CATALOG[name]));
     }
   });
 });

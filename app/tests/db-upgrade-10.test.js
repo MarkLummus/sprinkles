@@ -25,6 +25,9 @@ beforeEach(() => {
   globalThis.indexedDB = new IDBFactory();
 });
 
+// The store reads rows back in key order (alphabetical by id), not seed order.
+const byId = (rows) => [...rows].sort((a, b) => a.id.localeCompare(b.id));
+
 // The data a profile left at version 9 holds: a recipe, a version, a batch, a
 // draft, the 26 library records and one record an import wrote.
 const storedRecipe = { id: 'old-recipe', name: 'Old', description: '' };
@@ -116,9 +119,9 @@ describe('a stored version-9 profile opens at DB_VERSION reset and reseeded (LIB
 
     // All four seed tables hold their committed rows (LIB-09).
     expect(await repository.listMachines()).toEqual(SEED_CATALOG.machines);
-    expect(await repository.listStyles()).toEqual(SEED_CATALOG.styles);
-    expect(await repository.listScales()).toEqual(SEED_CATALOG.scales);
-    expect(await repository.listProblems()).toEqual(SEED_CATALOG.problems);
+    expect(byId(await repository.listStyles())).toEqual(byId(SEED_CATALOG.styles));
+    expect(byId(await repository.listScales())).toEqual(byId(SEED_CATALOG.scales));
+    expect(byId(await repository.listProblems())).toEqual(byId(SEED_CATALOG.problems));
 
     // Only the seeded versions: the stored version-9 one is gone.
     const versions = await repository.listVersions();

@@ -13,6 +13,8 @@ import {
   normaliseCode,
   codeProblem,
   findVersionsByCode,
+  sheetCodeProblems,
+  SheetCodeError,
 } from './sheetCode.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
@@ -31,6 +33,15 @@ const ID_COLLIDING_CODE = 'FMR5-FBR9';
 function idCollider(id, extra = {}) {
   return { id, versionLabel: 'x', rows: [], method: [], ...extra };
 }
+
+// Two version ids whose id-derived codes (codeFromVersionId) are equal: found
+// once by a birthday search over short ids, pinned here so the clash rule and
+// the repository's refusal are tested against the real derivation. If the id
+// derivation ever changes, this pair stops colliding and the test below fails.
+// (store/repository.test.js repeats the two ids: a test file cannot be imported.)
+const COLLIDING_ID_A = 'collide-1avm4ex8s';
+const COLLIDING_ID_B = 'collide-1p5a0rvy0';
+const COLLIDING_ID_CODE = 'XSRT-M4HJ';
 
 describe('sheetCode — the pinned derivation (D-08, one-way)', () => {
   it('names the canonical form with a tag that a change must bump', () => {
@@ -314,5 +325,73 @@ describe('findVersionsByCode (reads the stored sheetCode field, D-06)', () => {
     expect(sheetCode(b)).toBe(ID_COLLIDING_CODE);
     expect(findVersionsByCode([a, b], ID_COLLIDING_CODE)).toEqual([a, b]);
     expect(findVersionsByCode([b, a], ID_COLLIDING_CODE)).toEqual([a, b]);
+  });
+});
+
+describe('the committed colliding id pair (D-04a)', () => {
+  it('has two different version ids that derive the same code', () => {
+    expect(COLLIDING_ID_A).not.toBe(COLLIDING_ID_B);
+    expect(codeFromVersionId(COLLIDING_ID_A)).toBe(COLLIDING_ID_CODE);
+    expect(codeFromVersionId(COLLIDING_ID_B)).toBe(COLLIDING_ID_CODE);
+  });
+});
+
+describe('sheetCodeProblems (uniqueness and immutability, D-04a, D-04b)', () => {
+  const v = (id, code) => ({ id, sheetCode: code });
+
+  it('reports a clash between a stored and an incoming version', () => {
+    expect(sheetCodeProblems([v('a', 'AAAA-1111')], [v('b', 'AAAA-1111')])).toEqual([
+      { kind: 'clash', code: 'AAAA-1111', versionId: 'a', otherVersionId: 'b' },
+    ]);
+  });
+
+  it('reports a clash between two incoming versions', () => {
+    expect(sheetCodeProblems([], [v('b', 'AAAA-1111'), v('a', 'AAAA-1111')])).toEqual([
+      { kind: 'clash', code: 'AAAA-1111', versionId: 'a', otherVersionId: 'b' },
+    ]);
+  });
+
+  it('reports each pair once, in a stable order', () => {
+    const problems = sheetCodeProblems([v('c', 'AAAA-1111'), v('a', 'AAAA-1111')], [v('b', 'AAAA-1111')]);
+    expect(problems.map((p) => [p.versionId, p.otherVersionId])).toEqual([['a', 'b'], ['a', 'c'], ['b', 'c']]);
+  });
+
+  it('reports the committed colliding id pair', () => {
+    const code = codeFromVersionId(COLLIDING_ID_A);
+    const problems = sheetCodeProblems([v(COLLIDING_ID_A, code)], [v(COLLIDING_ID_B, codeFromVersionId(COLLIDING_ID_B))]);
+    expect(problems).toEqual([
+      { kind: 'clash', code, versionId: COLLIDING_ID_A, otherVersionId: COLLIDING_ID_B },
+    ]);
+  });
+
+  it('is no problem when a version replaces its own stored record with the same code', () => {
+    expect(sheetCodeProblems([v('a', 'AAAA-1111'), v('b', 'BBBB-2222')], [v('a', 'AAAA-1111')])).toEqual([]);
+  });
+
+  it('reports a replacement carrying a different code as changed', () => {
+    expect(sheetCodeProblems([v('a', 'AAAA-1111')], [v('a', 'BBBB-2222')])).toEqual([
+      { kind: 'changed', versionId: 'a', storedCode: 'AAAA-1111', incomingCode: 'BBBB-2222' },
+    ]);
+  });
+
+  it("frees a stored version's code when an incoming version replaces it", () => {
+    // 'a' moves from AAAA-1111 to BBBB-2222; 'b' takes AAAA-1111. The only
+    // problem is a's changed code, never a clash with its own old record.
+    expect(sheetCodeProblems([v('a', 'AAAA-1111')], [v('a', 'BBBB-2222'), v('b', 'AAAA-1111')])).toEqual([
+      { kind: 'changed', versionId: 'a', storedCode: 'AAAA-1111', incomingCode: 'BBBB-2222' },
+    ]);
+  });
+
+  it('finds nothing wrong with a new id that has no stored record, and ignores a version with no code', () => {
+    expect(sheetCodeProblems([v('a', 'AAAA-1111')], [v('b', 'BBBB-2222')])).toEqual([]);
+    expect(sheetCodeProblems([{ id: 'a' }], [{ id: 'b' }, { id: 'c' }])).toEqual([]);
+  });
+
+  it('carries its problems on a SheetCodeError', () => {
+    const problems = [{ kind: 'clash', code: 'AAAA-1111', versionId: 'a', otherVersionId: 'b' }];
+    const error = new SheetCodeError(problems);
+    expect(error).toBeInstanceOf(Error);
+    expect(error.name).toBe('SheetCodeError');
+    expect(error.problems).toBe(problems);
   });
 });

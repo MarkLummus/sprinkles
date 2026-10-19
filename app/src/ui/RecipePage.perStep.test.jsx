@@ -17,15 +17,17 @@ import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route, useParams } from 'react-router';
 
-const store = vi.hoisted(() => ({ versions: [], batches: [], saveVersion: null, saveBatch: null }));
+const store = vi.hoisted(() => ({ versions: [], batches: [], saveVersion: null, createVersion: null, saveBatch: null }));
 
 vi.mock('../store/repository.js', async () => {
   const { oliveOilRecipe } = await import('../data/olive-oil.js');
-  store.saveVersion = vi.fn(async (record) => {
+  const appendOrReplace = async (record) => {
     const at = store.versions.findIndex((version) => version.id === record.id);
     if (at >= 0) store.versions[at] = structuredClone(record);
     else store.versions.push(structuredClone(record));
-  });
+  };
+  store.saveVersion = vi.fn(appendOrReplace);
+  store.createVersion = vi.fn(appendOrReplace);
   store.saveBatch = vi.fn(async (record) => {
     const at = store.batches.findIndex((batch) => batch.id === record.id);
     if (at >= 0) store.batches[at] = structuredClone(record);
@@ -48,6 +50,7 @@ vi.mock('../store/repository.js', async () => {
       getRecipe: async () => oliveOilRecipe,
       saveBatch: store.saveBatch,
       saveVersion: store.saveVersion,
+      createVersion: store.createVersion,
       saveRecipe: vi.fn(async () => {}),
       getDraft: async () => undefined,
       saveDraft: vi.fn(async () => {}),
@@ -57,8 +60,9 @@ vi.mock('../store/repository.js', async () => {
   };
 });
 
-import { RecipePage, VERSION_BLOCKED_STATUS } from './RecipePage.jsx';
+import { RecipePage, VERSION_BLOCKED_STATUS, VERSION_SAVE_ERROR } from './RecipePage.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { SheetCodeError } from '../domain/sheetCode.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -104,6 +108,7 @@ async function mountAt(path) {
   store.versions = [structuredClone(oliveOilVersion)];
   store.batches = [];
   store.saveVersion.mockClear();
+  store.createVersion.mockClear();
   store.saveBatch.mockClear();
   const container = document.createElement('div');
   document.body.appendChild(container);
@@ -213,10 +218,10 @@ describe('a press survives Save as a boolean on the line alone (decision 51, pla
     await click(buttonByLabel('remove Whole milk, Step 2'));
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
     await click(buttonByText(container, 'Save as a new version'));
-    await flush(() => store.saveVersion.mock.calls.length > 0);
+    await flush(() => store.createVersion.mock.calls.length > 0);
 
-    expect(store.saveVersion).toHaveBeenCalledTimes(1);
-    const saved = store.saveVersion.mock.calls[0][0];
+    expect(store.createVersion).toHaveBeenCalledTimes(1);
+    const saved = store.createVersion.mock.calls[0][0];
     const milk = saved.rows.find((row) => row.id === 'row-01');
     expect(milk.portions[0].removed).toBe(true);
     expect(milk.portions[1].removed).toBe(false);
@@ -242,8 +247,8 @@ describe('a saved version with a line out reads without it (decision 51, plan 03
     await click(buttonByLabel('remove Whole milk, Step 2'));
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
     await click(buttonByText(container, 'Save as a new version'));
-    await flush(() => store.saveVersion.mock.calls.length > 0);
-    const savedId = store.saveVersion.mock.calls[0][0].id;
+    await flush(() => store.createVersion.mock.calls.length > 0);
+    const savedId = store.createVersion.mock.calls[0][0].id;
     // The MemoryRouter lands on the saved child's route; wait for the reading state.
     await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByLabel('remove Whole milk, Step 2') === null);
 
@@ -308,7 +313,7 @@ function struck(cell) {
 async function saveChildAndShowChanges(container) {
   await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
   await click(buttonByText(container, 'Save as a new version'));
-  await flush(() => store.saveVersion.mock.calls.length > 0);
+  await flush(() => store.createVersion.mock.calls.length > 0);
   await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
   await click(buttonByText(current.container, 'Show changes'));
 }
@@ -485,7 +490,7 @@ describe('Show changes strikes a removed step with its lines (decision 51, plan 
     );
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'no slurry');
     await click(buttonByText(container, 'Save as a new version'));
-    await flush(() => store.saveVersion.mock.calls.length > 0);
+    await flush(() => store.createVersion.mock.calls.length > 0);
     await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
     await click(buttonByText(current.container, 'Show changes'));
 
@@ -526,7 +531,7 @@ async function openPenOnChildWithStepTwoMilkOut() {
   await click(buttonByLabel('remove Whole milk, Step 2'));
   await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
   await click(buttonByText(container, 'Save as a new version'));
-  await flush(() => store.saveVersion.mock.calls.length > 0);
+  await flush(() => store.createVersion.mock.calls.length > 0);
   await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
   await click(buttonByText(current.container, 'Next version'));
   await flush(() => buttonByLabel('restore Whole milk, Step 2') !== null);
@@ -570,12 +575,52 @@ describe('Next version on a saved version with a line out (Mark\'s List per-step
   });
 });
 
+// CODE-01, D-04, T-09-35: a creation the store refuses over a Sheet code is a failed
+// save, not a re-draw. The pen stays open with the maker's ink, nothing is stored, the
+// page does not move, and a second press stores what was typed.
+describe('a refused save keeps the pen and everything typed in it (CODE-01, D-04)', () => {
+  const statusText = () => [...current.container.querySelectorAll('.form-status')].map((el) => el.textContent).join('');
+  const field = (label) => current.container.querySelector(`input[aria-label="${label}"]`);
+
+  it('announces the save error, keeps the typed Version name and amount, stores nothing, and stores them on the next press', async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await setValue(field('Version name'), 'less milk');
+    await setValue(field('Whole milk, grams, portion 1'), '100');
+    store.createVersion.mockRejectedValueOnce(
+      new SheetCodeError([{ kind: 'clash', code: 'ZZZZ-0000', versionId: 'x', otherVersionId: 'y' }]),
+    );
+
+    await click(buttonByText(container, 'Save as a new version'));
+    await flush(() => statusText().includes(VERSION_SAVE_ERROR));
+
+    expect(statusText()).toContain(VERSION_SAVE_ERROR);
+    expect(store.createVersion).toHaveBeenCalledTimes(1);
+    expect(field('Version name').value).toBe('less milk');
+    expect(field('Whole milk, grams, portion 1').value).toBe('100');
+    expect(buttonByText(current.container, 'Save as a new version')).not.toBeNull();
+    expect(store.versions.map((version) => version.id)).toEqual([VERSION]);
+    expect(store.saveVersion).not.toHaveBeenCalled();
+
+    await click(buttonByText(current.container, 'Save as a new version'));
+    await flush(() => store.createVersion.mock.calls.length > 1);
+
+    expect(store.createVersion).toHaveBeenCalledTimes(2);
+    const retried = store.createVersion.mock.calls[1][0];
+    expect(retried.versionLabel).toBe('less milk');
+    expect(retried.rows.find((row) => row.id === 'row-01').portions[0].grams).toBe(100);
+    expect(store.versions).toHaveLength(2);
+  });
+});
+
 // A blocked save names the first blocked line that is in: focus lands on its field and only
 // that line is marked (Mark's List row per-step-open-pen-with-line-out; 03.6-REVIEW.md WR-04).
 describe('A blocked save focuses and marks the blocked line (Mark\'s List per-step-open-pen-with-line-out: fix)', () => {
   it('on the saved child, a blank Step 3 amount focuses the Step 3 field and marks the Step 3 line alone', async () => {
     const container = await openPenOnChildWithStepTwoMilkOut();
     store.saveVersion.mockClear();
+    store.createVersion.mockClear();
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk again');
     await setValue(container.querySelector('input[aria-label="Whole milk, grams, portion 2"]'), '');
     await click(buttonByText(container, 'Save as a new version'));
@@ -584,6 +629,7 @@ describe('A blocked save focuses and marks the blocked line (Mark\'s List per-st
     expect(rowOf('remove Whole milk, Step 3').classList.contains('is-marked')).toBe(true);
     expect(rowOf('restore Whole milk, Step 2').classList.contains('is-marked')).toBe(false);
     expect(store.saveVersion).not.toHaveBeenCalled();
+    expect(store.createVersion).not.toHaveBeenCalled();
   });
 
   it('on v1, a blank Step 2 amount focuses the Step 2 field and marks the Step 2 line alone', async () => {
@@ -637,6 +683,7 @@ describe('A blocked save prints its sentence in the blocked line (sketch 011 dec
     expect(statusText()).toBe('');
     expect(container.querySelector('#version-field-error')).toBeNull();
     expect(store.saveVersion).not.toHaveBeenCalled();
+    expect(store.createVersion).not.toHaveBeenCalled();
   });
 
   it('on a one-line row, prints last in that row\'s name cell', async () => {
@@ -710,8 +757,8 @@ describe('Recording reads like the Sheet when one line is left (sketch 011 decis
     await click(buttonByLabel('remove Whole milk, Step 2'));
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
     await click(buttonByText(container, 'Save as a new version'));
-    await flush(() => store.saveVersion.mock.calls.length > 0);
-    const savedId = store.saveVersion.mock.calls[0][0].id;
+    await flush(() => store.createVersion.mock.calls.length > 0);
+    const savedId = store.createVersion.mock.calls[0][0].id;
     await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByLabel('remove Whole milk, Step 2') === null);
     return savedId;
   }

@@ -8,6 +8,7 @@ import { IDBFactory } from 'fake-indexeddb';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { createRepository } from './repository.js';
 import { library } from '../data/library.js';
+import { codeFromVersionId, SheetCodeError } from '../domain/sheetCode.js';
 
 beforeEach(() => {
   // A fresh database per test — the repository opens its connection when
@@ -284,6 +285,119 @@ describe('seedLibraryIfEmpty, one transaction for the check and the write (D-04)
 
     expect(await createRepository().seedLibraryIfEmpty(records)).toBe(true);
     expect(await createRepository().listLibrary()).toHaveLength(records.length);
+  });
+});
+
+// Two version ids whose id-derived codes are equal: the pair domain/sheetCode.test.js
+// pins (a test file cannot be imported here, so the ids are repeated and the first
+// case below proves they still collide).
+const COLLIDING_ID_A = 'collide-1avm4ex8s';
+const COLLIDING_ID_B = 'collide-1p5a0rvy0';
+
+// A version as createChildVersion and createRecipe give it: its code derived from its id.
+function makeVersion(id, overrides = {}) {
+  return { id, recipeId: 'r1', versionLabel: id, sheetCode: codeFromVersionId(id), rows: [], method: [], ...overrides };
+}
+
+describe('createVersion, through the repository seam (CODE-01, D-04, D-04a)', () => {
+  it('stands on a colliding pair of ids', () => {
+    expect(COLLIDING_ID_A).not.toBe(COLLIDING_ID_B);
+    expect(codeFromVersionId(COLLIDING_ID_A)).toBe(codeFromVersionId(COLLIDING_ID_B));
+  });
+
+  it('stores a version', async () => {
+    const repository = createRepository();
+    const version = makeVersion('v-new');
+    await repository.createVersion(version);
+    expect(await repository.getVersion('v-new')).toEqual(version);
+  });
+
+  it('refuses a second version whose code is the first one\'s, with a SheetCodeError, and keeps only the first', async () => {
+    const repository = createRepository();
+    const first = makeVersion(COLLIDING_ID_A);
+    await repository.createVersion(first);
+
+    const error = await repository.createVersion(makeVersion(COLLIDING_ID_B)).catch((e) => e);
+    expect(error).toBeInstanceOf(SheetCodeError);
+    expect(error.problems).toEqual([
+      { kind: 'clash', code: first.sheetCode, versionId: COLLIDING_ID_A, otherVersionId: COLLIDING_ID_B },
+    ]);
+    expect(await repository.listVersions()).toEqual([first]);
+  });
+
+  it('refuses a version with no sheetCode with a TypeError and stores nothing', async () => {
+    const repository = createRepository();
+    const { sheetCode: _dropped, ...codeless } = makeVersion('v-codeless');
+    await expect(repository.createVersion(codeless)).rejects.toThrow(TypeError);
+    expect(await repository.listVersions()).toEqual([]);
+  });
+
+  it('refuses a version whose sheetCode is the lower-case form of a canonical code with a TypeError and stores nothing', async () => {
+    const repository = createRepository();
+    const version = makeVersion('v-lower');
+    await expect(repository.createVersion({ ...version, sheetCode: version.sheetCode.toLowerCase() })).rejects.toThrow(TypeError);
+    expect(await repository.listVersions()).toEqual([]);
+  });
+});
+
+describe('saveVersion, through the repository seam (CODE-01, D-04b)', () => {
+  it('stores a version whose stored record has the same code: its own code is not a clash', async () => {
+    const repository = createRepository();
+    const version = makeVersion('v-own');
+    await repository.createVersion(version);
+    const edited = { ...version, versionLabel: 'edited' };
+    await repository.saveVersion(edited);
+    expect(await repository.getVersion('v-own')).toEqual(edited);
+  });
+
+  it('refuses a version whose stored record has a different code, and leaves the stored record as it was', async () => {
+    const repository = createRepository();
+    const version = makeVersion('v-fixed');
+    await repository.createVersion(version);
+
+    const error = await repository.saveVersion({ ...version, sheetCode: 'ZZZZ-0000' }).catch((e) => e);
+    expect(error).toBeInstanceOf(SheetCodeError);
+    expect(error.problems).toEqual([
+      { kind: 'changed', versionId: 'v-fixed', storedCode: version.sheetCode, incomingCode: 'ZZZZ-0000' },
+    ]);
+    expect(await repository.getVersion('v-fixed')).toEqual(version);
+  });
+
+  it('refuses a version whose code is another stored version\'s code', async () => {
+    const repository = createRepository();
+    const first = makeVersion(COLLIDING_ID_A);
+    await repository.createVersion(first);
+    // A different id with no stored record, carrying the first one's code.
+    const error = await repository.saveVersion(makeVersion(COLLIDING_ID_B)).catch((e) => e);
+    expect(error).toBeInstanceOf(SheetCodeError);
+    expect(error.problems.map((p) => p.kind)).toEqual(['clash']);
+    expect(await repository.listVersions()).toEqual([first]);
+  });
+
+  it('stores a version whose id has no stored record yet, with no changed problem', async () => {
+    const repository = createRepository();
+    const version = makeVersion('v-unseen');
+    await repository.saveVersion(version);
+    expect(await repository.getVersion('v-unseen')).toEqual(version);
+  });
+});
+
+describe('two tabs creating at once (D-04a)', () => {
+  it('stores exactly one of two versions whose ids derive the same code', async () => {
+    const tabOne = createRepository();
+    const tabTwo = createRepository();
+    const results = await Promise.allSettled([
+      tabOne.createVersion(makeVersion(COLLIDING_ID_A)),
+      tabTwo.createVersion(makeVersion(COLLIDING_ID_B)),
+    ]);
+
+    expect(results.filter((r) => r.status === 'fulfilled')).toHaveLength(1);
+    const rejected = results.filter((r) => r.status === 'rejected');
+    expect(rejected).toHaveLength(1);
+    expect(rejected[0].reason).toBeInstanceOf(SheetCodeError);
+    const stored = await tabOne.listVersions();
+    expect(stored).toHaveLength(1);
+    expect([COLLIDING_ID_A, COLLIDING_ID_B]).toContain(stored[0].id);
   });
 });
 

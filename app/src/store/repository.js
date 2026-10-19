@@ -1,4 +1,29 @@
 import { openStore } from './db.js';
+import { normaliseCode, sheetCodeProblems, SheetCodeError } from '../domain/sheetCode.js';
+
+// The one write both createVersion and saveVersion make: the read of every stored
+// version, the pure check and the put share one readwrite transaction. A problem
+// throws a SheetCodeError and aborts it by hand, as importAll does, so nothing is
+// written.
+async function putVersionChecked(db, version) {
+  const tx = db.transaction('versions', 'readwrite');
+  const done = tx.done;
+  const queued = [];
+  try {
+    const problems = sheetCodeProblems(await tx.store.getAll(), [version]);
+    if (problems.length > 0) throw new SheetCodeError(problems);
+    queued.push(tx.store.put(version));
+    await Promise.all([...queued, done]);
+  } catch (error) {
+    try {
+      tx.abort();
+    } catch {
+      // The transaction already finished or aborted itself.
+    }
+    for (const request of [...queued, done]) request.catch(() => {});
+    throw error;
+  }
+}
 
 // The repository seam D-06 and D-16 depend on — the only path to the store:
 // versions, batches, recipes, the ingredient library, and the drafts of unsaved pens.
@@ -29,9 +54,25 @@ export function createRepository() {
       const db = await dbPromise;
       return db.get('versions', id);
     },
+    // A save over a version, like a new one below, reads every stored version,
+    // runs the pure check and puts in ONE readwrite transaction (CODE-01,
+    // D-04b): a stored version's code is written once, so a save carrying a
+    // different code for the same id is refused, and a version's own code is
+    // never a clash with itself.
     async saveVersion(version) {
-      const db = await dbPromise;
-      return db.put('versions', version);
+      return putVersionChecked(await dbPromise, version);
+    },
+    // A new version is stored the same way. IndexedDB serialises the
+    // transaction against any other versions transaction, so two tabs creating
+    // at once cannot both store a code the other holds (CODE-01, D-04, D-04a).
+    // A clash is refused with a SheetCodeError and nothing is written: the code
+    // is never re-drawn. A version without a canonical code is a caller bug,
+    // refused before the transaction opens.
+    async createVersion(version) {
+      if (typeof version?.sheetCode !== 'string' || version.sheetCode !== normaliseCode(version.sheetCode)) {
+        throw new TypeError(`version ${version?.id} needs a sheetCode in the form XXXX-XXXX`);
+      }
+      return putVersionChecked(await dbPromise, version);
     },
     async getAll() {
       const db = await dbPromise;

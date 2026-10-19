@@ -28,6 +28,7 @@ const store = vi.hoisted(() => ({
   saveDraft: null,
   deleteDraft: null,
   saveVersion: null,
+  createVersion: null,
   saveBatch: null,
 }));
 
@@ -46,6 +47,7 @@ vi.mock('../store/repository.js', async () => {
     createdAt: '2026-09-01T00:00:00.000Z',
   };
   store.saveVersion = vi.fn(async () => {});
+  store.createVersion = vi.fn(async () => {});
   store.saveBatch = vi.fn(async (record) => {
     const at = store.batches.findIndex((batch) => batch.id === record.id);
     if (at >= 0) store.batches[at] = structuredClone(record);
@@ -69,6 +71,7 @@ vi.mock('../store/repository.js', async () => {
       getRecipe: async () => oliveOilRecipe,
       saveBatch: store.saveBatch,
       saveVersion: store.saveVersion,
+      createVersion: store.createVersion,
       saveRecipe: vi.fn(async () => {}),
       getDraft: async (versionId) => {
         const found = store.drafts.get(versionId);
@@ -150,6 +153,7 @@ async function mountAt(path) {
   store.saveDraft.mockClear();
   store.deleteDraft.mockClear();
   store.saveVersion.mockClear();
+  store.createVersion.mockClear();
   store.saveBatch.mockClear();
   pageStatus = vi.fn();
   const container = document.createElement('div');
@@ -291,6 +295,7 @@ describe('a Next version draft is kept through a reload (04-09, Task 1)', () => 
     expect(keptCalls[0]).toHaveLength(1);
 
     expect(store.saveVersion).not.toHaveBeenCalled();
+    expect(store.createVersion).not.toHaveBeenCalled();
     expect(store.saveBatch).not.toHaveBeenCalled();
     expect(confirm).not.toHaveBeenCalled();
     expect(alert).not.toHaveBeenCalled();
@@ -500,6 +505,7 @@ describe('the record pen keeps its draft, its tasting section included (04-09, T
     expect(pageStatus.mock.calls.filter(([message]) => message === DRAFT_KEPT_STATUS)).toHaveLength(1);
     expect(store.saveBatch).not.toHaveBeenCalled();
     expect(store.saveVersion).not.toHaveBeenCalled();
+    expect(store.createVersion).not.toHaveBeenCalled();
     expect(confirm).not.toHaveBeenCalled();
   });
 

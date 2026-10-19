@@ -20,6 +20,7 @@ import { useRouteIntents } from './useRouteIntents.js';
 import { useAnnouncer } from './useAnnouncer.js';
 import { useRecipeData } from './useRecipeData.js';
 import { sheetView } from './sheetView.js';
+import { useCatalog } from './CatalogContext.jsx';
 
 export { VERSION_SAVED_STATUS, VERSION_SAVE_ERROR, VERSION_BLOCKED_STATUS } from './useVersionPen.js';
 
@@ -69,6 +70,9 @@ function PageLoadFailed() {
 export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {} }) {
   const { recipeId, versionId, batchId } = useParams();
   const navigate = useNavigate();
+  // The catalog (the core scales and problems the tables hold) is read here,
+  // at the route level, and handed down to the record pen (D-02).
+  const { catalog } = useCatalog();
   // The fork's landing focus signal: read once here so the saved child
   // can identify itself before offering another Next version action.
   const location = useLocation();
@@ -461,6 +465,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
         <aside className="notebook-log" aria-label="Batch">
           <BatchRow
             version={version}
+            catalog={catalog}
             batches={batches}
             openBatch={openBatch}
             mode={mode}

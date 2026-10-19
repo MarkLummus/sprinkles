@@ -16,7 +16,7 @@
 // object through every real save (sketch 010 D17; 04-03): the pen never drew
 // it, and now the record holds no key for it either.
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { act } from 'react';
+import { act, Component } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route, useParams, useLocation } from 'react-router';
 
@@ -49,6 +49,8 @@ vi.mock('../store/repository.js', async () => {
 });
 
 import { RecipePage } from './RecipePage.jsx';
+import { CatalogFixture } from './catalog.fixtures.jsx';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
@@ -108,7 +110,7 @@ async function flush(until) {
   }
 }
 
-async function mountAt(path, batches) {
+async function mountAt(path, batches, catalog = SEED_CATALOG) {
   store.batches = batches.map((batch) => structuredClone(batch));
   store.saveBatch.mockClear();
   pageStatus = vi.fn();
@@ -118,13 +120,15 @@ async function mountAt(path, batches) {
   current = { container, root };
   await act(async () => {
     root.render(
-      <MemoryRouter initialEntries={[path]}>
-        <Where />
-        <Routes>
-          <Route path="/notebook/:recipeId/:versionId" element={<Keyed onPageStatus={pageStatus} />} />
-          <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={<Keyed onPageStatus={pageStatus} />} />
-        </Routes>
-      </MemoryRouter>,
+      <CatalogFixture catalog={catalog}>
+        <MemoryRouter initialEntries={[path]}>
+          <Where />
+          <Routes>
+            <Route path="/notebook/:recipeId/:versionId" element={<Keyed onPageStatus={pageStatus} />} />
+            <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={<Keyed onPageStatus={pageStatus} />} />
+          </Routes>
+        </MemoryRouter>
+      </CatalogFixture>,
     );
   });
   await flush(() => band() !== null);
@@ -525,5 +529,55 @@ describe('From freezer through the real pen and the real save (sketch 010 D6 to 
     expect(lead).toBeDefined();
     expect(lead.textContent).toBe('From freezerNot evaluated');
     expect(current.container.querySelector('.tasting-reading__axes')).toBeNull();
+  });
+});
+
+describe('the recipe page reads the catalog and hands it to the record pen (D-01, D-02)', () => {
+  it('Record another opens a pen whose Every recipe chips include a fifth problem the catalog holds', async () => {
+    installMatchMedia();
+    const catalog = structuredClone(SEED_CATALOG);
+    catalog.problems.push({ id: 'watery', name: 'Watery', order: 5 });
+    await mountAt(VERSION_PATH, [augustSecondBatch], catalog);
+    await click(current.container.querySelector('.batch-row__record'));
+    // The problem chips sit in the Tasting section, which a new pen opens on Add tasting.
+    await click(pen().querySelector('.save-ceremony__add-tasting'));
+
+    expect(buttonByText(pen(), 'Watery')).not.toBeNull();
+    for (const word of ['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film']) {
+      expect(buttonByText(pen(), word)).not.toBeNull();
+    }
+    expect(SEED_CATALOG.problems).toHaveLength(4);
+  });
+
+  it('mounted with no CatalogProvider above it, the page fails with the error that names CatalogProvider', async () => {
+    class CatchRenderError extends Component {
+      state = { error: null };
+
+      static getDerivedStateFromError(error) {
+        return { error };
+      }
+
+      render() {
+        return this.state.error ? <p data-caught>{this.state.error.message}</p> : this.props.children;
+      }
+    }
+    const quiet = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    current = { container, root };
+    await act(async () => {
+      root.render(
+        <CatchRenderError>
+          <MemoryRouter initialEntries={[VERSION_PATH]}>
+            <Routes>
+              <Route path="/notebook/:recipeId/:versionId" element={<RecipePage />} />
+            </Routes>
+          </MemoryRouter>
+        </CatchRenderError>,
+      );
+    });
+    quiet.mockRestore();
+    expect(container.querySelector('[data-caught]').textContent).toMatch(/CatalogProvider/);
   });
 });

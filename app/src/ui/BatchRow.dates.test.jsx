@@ -14,6 +14,7 @@ import { createRoot } from 'react-dom/client';
 import { MemoryRouter } from 'react-router';
 import { BatchRow } from './BatchRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -76,6 +77,7 @@ function rowElement(props) {
     <MemoryRouter>
       <BatchRow
         version={oliveOilVersion}
+        catalog={SEED_CATALOG}
         openBatch={untastedBatch}
         batches={[untastedBatch]}
         mode="reading"

@@ -23,7 +23,7 @@ import {
 } from './BatchRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
-import { axesForBatch } from '../domain/axes.js';
+import { axesForVersion } from '../domain/axes.js';
 import { createBatch } from '../domain/batch.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { oliveOilRecipe } from '../data/olive-oil.js';
@@ -39,10 +39,13 @@ const noop = () => {};
 const CUE = 'batch-row__group-label batch-row__group-label--cue';
 
 // The olive oil version's own declared pair (Body, Oil) resolved into the
-// six-axis list AxesGrid renders — the same reuse-of-axesForBatch trick
-// BatchRow.jsx itself takes for a version that has not been snapshotted
-// yet (03.3.1-03 Task 2).
-const batteryAxes = axesForBatch({ snapshot: { declaredAxes: oliveOilVersion.declaredAxes } });
+// six-axis list AxesGrid renders — axesForVersion over the seed catalog, the
+// new record pen's own source in BatchRow.jsx (D-01, D-02).
+const batteryAxes = axesForVersion(oliveOilVersion, SEED_CATALOG);
+
+// Taken before any case builds its own catalog: the cases below clone
+// SEED_CATALOG and must never edit it; the last case checks it against this.
+const SEED_CATALOG_BEFORE = structuredClone(SEED_CATALOG);
 
 const emptyRecordDraft = {
   churnDate: '',
@@ -78,6 +81,7 @@ function renderBatchRow(props) {
     <MemoryRouter>
       <BatchRow
         version={oliveOilVersion}
+        catalog={SEED_CATALOG}
         batches={[]}
         openBatch={null}
         mode="reading"
@@ -2042,7 +2046,7 @@ describe('BatchRow — the record pen draws only what each seeded version declar
     expect(markup.split('>This recipe only<').length - 1).toBe(expectedCueWords);
 
     // A declared scale appears as a mark control exactly when declared.
-    for (const axis of axesForBatch({ snapshot: { declaredAxes: version.declaredAxes } })) {
+    for (const axis of axesForVersion(version, SEED_CATALOG)) {
       expect(markup).toContain(`>${axis.name}</span>`);
     }
   });
@@ -2060,7 +2064,7 @@ describe('BatchRow — the record pen draws only what each seeded version declar
     for (const below of [false, true]) {
       const grid = renderToStaticMarkup(
         <AxesGrid
-          axes={axesForBatch({ snapshot: { declaredAxes: none.declaredAxes } })}
+          axes={axesForVersion(none, SEED_CATALOG)}
           marks={{}}
           below={below}
           onChangeMark={noop}
@@ -2078,7 +2082,7 @@ describe('BatchRow — the record pen draws only what each seeded version declar
 
   it('with no declared scale the row-major grid keeps the core scales in their two columns by holding the third column empty', () => {
     const grid = renderToStaticMarkup(
-      <AxesGrid axes={axesForBatch({ snapshot: { declaredAxes: [] } })} marks={{}} below={false} onChangeMark={noop} onClearMark={noop} />,
+      <AxesGrid axes={axesForVersion({ declaredAxes: [] }, SEED_CATALOG)} marks={{}} below={false} onChangeMark={noop} onClearMark={noop} />,
     );
     // Cue slot and the first declared slot: two empty, hidden cells.
     expect(grid.match(/class="axes-grid__void" aria-hidden="true"/g)).toHaveLength(2);
@@ -2548,5 +2552,65 @@ describe('BatchRow — the reading follows the pen, for each of pen-reading.html
     // A pick stored beside a mark is dropped by the domain, so the marks read.
     expect(word).not.toContain('>From freezer<');
     expect(word).toContain('Hardness');
+  });
+});
+
+describe('BatchRow — a new record pen reads its scales and Every recipe chips from the catalog it is handed (D-01, D-02)', () => {
+  // A copy of the seed catalog, never the shared one: the cases below change
+  // the copy only, and the last case checks SEED_CATALOG is as it was.
+  function catalogWith(change) {
+    const catalog = structuredClone(SEED_CATALOG);
+    change(catalog);
+    return catalog;
+  }
+
+  const RENAMED = [
+    { name: 'Firmness', low: 'loose', high: 'firm' },
+    { name: 'Scooping', low: 'flaky', high: 'sticky' },
+    { name: 'Silkiness', low: 'rough', high: 'silky' },
+    { name: 'Sugar', low: 'bland', high: 'sugary' },
+  ];
+  const renamedCatalog = catalogWith((catalog) => {
+    catalog.scales.filter((row) => row.group === 'core').forEach((row, index) => Object.assign(row, RENAMED[index]));
+  });
+  const SEED_CORE_NAMES = ['Hardness', 'Scoopability', 'Smoothness', 'Sweetness'];
+  const nameAt = (markup, name) => markup.indexOf(`>${name}</span>`);
+
+  it('draws a problem row the catalog holds beyond the four, as a chip in Every recipe', () => {
+    const catalog = catalogWith((copy) => copy.problems.push({ id: 'watery', name: 'Watery', order: 5 }));
+    const markup = renderBatchRow({ catalog, mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toContain('aria-pressed="false" tabindex="0">Watery</button>');
+    for (const label of ['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film']) {
+      expect(markup).toContain(`>${label}<`);
+    }
+    // Four core chips, the new one, and the recipe's own Bitter.
+    expect(markup.match(/<button[^>]*aria-pressed="[^"]*"[^>]*>/g)).toHaveLength(6);
+  });
+
+  it("draws the catalog's core scales in the pen, then the version's own declared two", () => {
+    const markup = renderBatchRow({ catalog: renamedCatalog, mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    for (const { name } of RENAMED) expect(markup).toContain(`>${name}</span>`);
+    for (const name of SEED_CORE_NAMES) expect(markup).not.toContain(`>${name}</span>`);
+    expect(markup).toContain('>Body</span>');
+    expect(markup).toContain('>Oil</span>');
+  });
+
+  it.each([
+    ['stacked list', true],
+    ['desktop grid', false],
+  ])("the %s shows all four renamed core scales and both declared scales, in the catalog's order", (_arrangement, below) => {
+    const markup = renderToStaticMarkup(
+      <AxesGrid axes={axesForVersion(oliveOilVersion, renamedCatalog)} marks={{}} below={below} onChangeMark={noop} onClearMark={noop} />,
+    );
+    const positions = RENAMED.map(({ name }) => nameAt(markup, name));
+    for (const position of positions) expect(position).toBeGreaterThan(-1);
+    expect([...positions].sort((a, b) => a - b)).toEqual(positions);
+    expect(nameAt(markup, 'Body')).toBeGreaterThan(-1);
+    expect(nameAt(markup, 'Oil')).toBeGreaterThan(-1);
+    for (const name of SEED_CORE_NAMES) expect(nameAt(markup, name)).toBe(-1);
+  });
+
+  it('leaves the shared SEED_CATALOG as it was', () => {
+    expect(SEED_CATALOG).toEqual(SEED_CATALOG_BEFORE);
   });
 });

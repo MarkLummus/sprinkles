@@ -340,6 +340,67 @@ describe('createVersion, through the repository seam (CODE-01, D-04, D-04a)', ()
   });
 });
 
+describe('saveVersion, through the repository seam (CODE-01, D-04b)', () => {
+  it('stores a version whose stored record has the same code: its own code is not a clash', async () => {
+    const repository = createRepository();
+    const version = makeVersion('v-own');
+    await repository.createVersion(version);
+    const edited = { ...version, versionLabel: 'edited' };
+    await repository.saveVersion(edited);
+    expect(await repository.getVersion('v-own')).toEqual(edited);
+  });
+
+  it('refuses a version whose stored record has a different code, and leaves the stored record as it was', async () => {
+    const repository = createRepository();
+    const version = makeVersion('v-fixed');
+    await repository.createVersion(version);
+
+    const error = await repository.saveVersion({ ...version, sheetCode: 'ZZZZ-0000' }).catch((e) => e);
+    expect(error).toBeInstanceOf(SheetCodeError);
+    expect(error.problems).toEqual([
+      { kind: 'changed', versionId: 'v-fixed', storedCode: version.sheetCode, incomingCode: 'ZZZZ-0000' },
+    ]);
+    expect(await repository.getVersion('v-fixed')).toEqual(version);
+  });
+
+  it('refuses a version whose code is another stored version\'s code', async () => {
+    const repository = createRepository();
+    const first = makeVersion(COLLIDING_ID_A);
+    await repository.createVersion(first);
+    // A different id with no stored record, carrying the first one's code.
+    const error = await repository.saveVersion(makeVersion(COLLIDING_ID_B)).catch((e) => e);
+    expect(error).toBeInstanceOf(SheetCodeError);
+    expect(error.problems.map((p) => p.kind)).toEqual(['clash']);
+    expect(await repository.listVersions()).toEqual([first]);
+  });
+
+  it('stores a version whose id has no stored record yet, with no changed problem', async () => {
+    const repository = createRepository();
+    const version = makeVersion('v-unseen');
+    await repository.saveVersion(version);
+    expect(await repository.getVersion('v-unseen')).toEqual(version);
+  });
+});
+
+describe('two tabs creating at once (D-04a)', () => {
+  it('stores exactly one of two versions whose ids derive the same code', async () => {
+    const tabOne = createRepository();
+    const tabTwo = createRepository();
+    const results = await Promise.allSettled([
+      tabOne.createVersion(makeVersion(COLLIDING_ID_A)),
+      tabTwo.createVersion(makeVersion(COLLIDING_ID_B)),
+    ]);
+
+    expect(results.filter((r) => r.status === 'fulfilled')).toHaveLength(1);
+    const rejected = results.filter((r) => r.status === 'rejected');
+    expect(rejected).toHaveLength(1);
+    expect(rejected[0].reason).toBeInstanceOf(SheetCodeError);
+    const stored = await tabOne.listVersions();
+    expect(stored).toHaveLength(1);
+    expect([COLLIDING_ID_A, COLLIDING_ID_B]).toContain(stored[0].id);
+  });
+});
+
 describe('onBlocked, through the repository seam (WR-08)', () => {
   function holdOpen(version) {
     return new Promise((resolve, reject) => {

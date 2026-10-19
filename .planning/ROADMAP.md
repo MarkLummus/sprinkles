@@ -142,11 +142,11 @@ Plans:
   7. A version stores its Sheet code, assigned when the version is created (a first version and every Next version) and unique; no edit to the recipe name, the Version name, the Sheet title or description, or any row, step or note changes it; the seeded versions keep the codes they print today, so sheets already in the binder still find them
   8. The machines, the styles with their bands, and the core scales and problems travel in the store file with the library: the file validator checks them, the store file version changes, and an export from one profile imported into a fresh profile restores them
 
-**Plans:** 4/17 plans executed in 10 waves (09-01 stops for Mark's library review, D-16, and puts the four-core-scale rule on his list at that same stop; 09-09 records the one-way reset decision, decisions 2 and 5, before the bump, auto-selected rather than asked again, and fingerprints app/dist so 09-17 can check that no build reached it; no plan writes app/dist, so the device build is Mark's own step on 09-17's device check, whose reset step 09-17 first walks in WebKit)
+**Plans:** 5/17 plans executed in 10 waves (09-01 stops for Mark's library review, D-16, and puts the four-core-scale rule on his list at that same stop; 09-09 records the one-way reset decision, decisions 2 and 5, before the bump, auto-selected rather than asked again, and fingerprints app/dist so 09-17 can check that no build reached it; no plan writes app/dist, so the device build is Mark's own step on 09-17's device check, whose reset step 09-17 first walks in WebKit)
 
 Plans:
 **Wave 1**
-- [ ] 09-01-PLAN.md — the converter and its reviewed mapping (the six D-20 coefficients and STAGE_IDS included), the before-walk at the base commit (tracer: the dataset converts end to end); stops for Mark on look-p9-library-mapping (the 26 existing entries' coefficients included), with decide-p9-boot-check-scope and decide-p9-version-style on the list beside it
+- [x] 09-01-PLAN.md — the converter and its reviewed mapping (the six D-20 coefficients and STAGE_IDS included), the before-walk at the base commit (tracer: the dataset converts end to end); stops for Mark on look-p9-library-mapping (the 26 existing entries' coefficients included), with decide-p9-boot-check-scope and decide-p9-version-style on the list beside it
 - [x] 09-02-PLAN.md — the stored Sheet code: seeded versions keep their printed codes, print and search read the field, children and created roots get id-derived codes
 - [x] 09-03-PLAN.md — the Notebook place and the Ingredients place as sketch 012 draws them, with filterLibrary and a WebKit measurement
 - [x] 09-04-PLAN.md — the create draft kind through useKeptDraft (D-18), its payload carrying the serving temperature (D-19) and no machine or process, and the scale definition contract
@@ -243,7 +243,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 8. Split the recipe page along its jobs | v2.0 | 6/6 | Complete    | 2026-10-17 |
-| 9. The library and the stored shapes, plus the two places | v2.0 | 4/17 | In Progress | - |
+| 9. The library and the stored shapes, plus the two places | v2.0 | 5/17 | In Progress | - |
 | 10. The creation editor, without Save | v2.0 | 0/TBD | Not started | - |
 | 11. Steps, structure, save and print | v2.0 | 0/TBD | Not started | - |
 | 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/TBD | Not started | - |

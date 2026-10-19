@@ -8,7 +8,8 @@
 import { describe, it, expect } from 'vitest';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { library } from '../data/library.js';
-import { validateStoreFile, STORE_SCHEMA_VERSION } from './transfer.js';
+import { validateStoreFile } from './transfer.js';
+import { storeFileOf } from './storeFile.fixtures.js';
 import { computeBalance } from '../domain/composition.js';
 import { buildFigures } from '../domain/figures.js';
 import { railEntries } from '../domain/historyRail.js';
@@ -70,14 +71,14 @@ describe('Standings coverage across the whole seed (D-05)', () => {
 
 describe('Store-file validation over the whole seed (D-07 gate closed)', () => {
   it('validateStoreFile returns ok with no errors', () => {
-    const result = validateStoreFile({
-      app: 'sprinkles',
-      schemaVersion: STORE_SCHEMA_VERSION,
-      recipes,
-      versions,
-      batches,
-      library: Object.entries(library).map(([id, entry]) => ({ id, entry })),
-    });
+    const result = validateStoreFile(
+      storeFileOf({
+        recipes,
+        versions,
+        batches,
+        library: Object.entries(library).map(([id, entry]) => ({ id, entry })),
+      }),
+    );
     expect(result.errors).toEqual([]);
     expect(result.ok).toBe(true);
   });

@@ -3,7 +3,8 @@
 // and computes its six figures. It calls the pure validator only and opens no
 // IndexedDB, because transfer.js imports no store module. Node environment.
 import { describe, it, expect } from 'vitest';
-import { validateStoreFile, STORE_SCHEMA_VERSION } from './transfer.js';
+import { validateStoreFile } from './transfer.js';
+import { storeFileOf } from './storeFile.fixtures.js';
 import { createRecipe } from '../domain/newRecipe.js';
 import { rowFromLibraryRecord } from '../domain/versionRow.js';
 import { nextStepKey } from '../domain/stepKeys.js';
@@ -31,14 +32,7 @@ function createdRecipe(grams = [500, 250, 100]) {
 }
 
 function storeFile({ recipes = [], versions = [], batches = [] }) {
-  return {
-    app: 'sprinkles',
-    schemaVersion: STORE_SCHEMA_VERSION,
-    versions,
-    batches,
-    recipes,
-    library: [],
-  };
+  return storeFileOf({ versions, batches, recipes });
 }
 
 describe('a recipe created from library records (criterion 1, MAKE-01)', () => {

@@ -11,7 +11,8 @@ import path from 'node:path';
 import { createRepository } from './repository.js';
 import { DB_NAME, DB_VERSION } from './db.js';
 import { seedIfEmpty } from './seed.js';
-import { exportStore, importStore, validateStoreFile, STORE_SCHEMA_VERSION } from './transfer.js';
+import { exportStore, importStore, validateStoreFile } from './transfer.js';
+import { storeFileOf, stampedSeedVersions } from './storeFile.fixtures.js';
 import { library } from '../data/library.js';
 import { librarySeedDb } from '../data/library-seed-db.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
@@ -352,22 +353,12 @@ describe('a change to a library entry moves no stored figure (LIB-02, success cr
 });
 
 describe('export and import carry the library (LIB-03, D-04a, D-07)', () => {
-  const fileOf = (parts) =>
-    JSON.parse(
-      JSON.stringify({
-        app: 'sprinkles',
-        schemaVersion: STORE_SCHEMA_VERSION,
-        exportedAt: '2026-10-14T00:00:00.000Z',
-        recipes: [],
-        versions: [],
-        batches: [],
-        library: [],
-        ...parts,
-      }),
-    );
+  const fileOf = (parts) => JSON.parse(JSON.stringify(storeFileOf(parts)));
+  // The olive oil version as the seed stores it, with its stored Sheet code.
+  const [stampedOliveOil] = stampedSeedVersions();
 
   it("a file whose library list is empty leaves an unseeded store's library empty, and the next boot refills it (D-04a)", async () => {
-    const file = fileOf({ recipes: [oliveOilRecipe], versions: [oliveOilVersion], batches: [augustSecondBatch] });
+    const file = fileOf({ recipes: [oliveOilRecipe], versions: [stampedOliveOil], batches: [augustSecondBatch] });
 
     expect(await importStore(createRepository(), file)).toEqual({ ok: true, errors: [] });
     expect(await createRepository().listLibrary()).toEqual([]);
@@ -377,7 +368,7 @@ describe('export and import carry the library (LIB-03, D-04a, D-07)', () => {
     const fresh = createRepository();
     expect(await fresh.listLibrary()).toHaveLength(Object.keys(seededLibrary).length);
     // Versions were present, so no seed recipe or version was added.
-    expect(await fresh.listVersions()).toEqual([oliveOilVersion]);
+    expect(await fresh.listVersions()).toEqual([stampedOliveOil]);
     expect(await fresh.listRecipes()).toEqual([oliveOilRecipe]);
   });
 

@@ -12,6 +12,9 @@ import { library } from '../data/library.js';
 import { RESERVED_ROW_IDS, rowFromLibraryRecord } from '../domain/versionRow.js';
 import { nextStepKey } from '../domain/stepKeys.js';
 import { buildDraftRecord, draftMatchesVersion } from '../domain/draft.js';
+import { codeFromVersionId } from '../domain/sheetCode.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
+import { storeFileOf, stampedSeedVersions } from './storeFile.fixtures.js';
 
 // Olive oil's two declared scale definitions (decision 3, TASTE-03), the shape a
 // version and a batch snapshot store.
@@ -20,14 +23,22 @@ const SALT = { key: 'scale-salt', name: 'Salt', low: 'bland', high: 'salty', kin
 
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. Mirrors createRepository's exportAll and
-// importAll over four stores: importAll upserts by id, never a wholesale
+// importAll over eight stores: importAll upserts by id, never a wholesale
 // replace. Counts importAll calls so a test can assert the write was never
-// invoked (the refuse-whole-file gate).
-function createInMemoryRepository(initialVersions = [], initialBatches = [], initialRecipes = [], initialLibrary = []) {
+// invoked (the refuse-whole-file gate). The four seed tables start as copies
+// of the seed catalog unless a case passes its own, so an export taken from it
+// carries four core scales and imports.
+function createInMemoryRepository(initialVersions = [], initialBatches = [], initialRecipes = [], initialLibrary = [], initialTables = {}) {
   const versions = [...initialVersions];
   const batches = [...initialBatches];
   const recipes = [...initialRecipes];
   const libraryRecords = [...initialLibrary];
+  const tables = {
+    machines: structuredClone(initialTables.machines ?? SEED_CATALOG.machines),
+    styles: structuredClone(initialTables.styles ?? SEED_CATALOG.styles),
+    scales: structuredClone(initialTables.scales ?? SEED_CATALOG.scales),
+    problems: structuredClone(initialTables.problems ?? SEED_CATALOG.problems),
+  };
   let importAllCalls = 0;
   return {
     get versions() {
@@ -42,6 +53,9 @@ function createInMemoryRepository(initialVersions = [], initialBatches = [], ini
     get library() {
       return libraryRecords;
     },
+    get tables() {
+      return tables;
+    },
     get importAllCalls() {
       return importAllCalls;
     },
@@ -51,15 +65,25 @@ function createInMemoryRepository(initialVersions = [], initialBatches = [], ini
     async listRecipes() {
       return [...recipes];
     },
+    async listScales() {
+      return [...tables.scales];
+    },
+    async listProblems() {
+      return [...tables.problems];
+    },
     async exportAll() {
       return {
         recipes: [...recipes],
         versions: [...versions],
         batches: [...batches],
         library: [...libraryRecords],
+        machines: [...tables.machines],
+        styles: [...tables.styles],
+        scales: [...tables.scales],
+        problems: [...tables.problems],
       };
     },
-    async importAll({ recipes: newRecipes, versions: newVersions, batches: newBatches, library: newLibrary }) {
+    async importAll({ recipes: newRecipes, versions: newVersions, batches: newBatches, library: newLibrary, machines, styles, scales, problems }) {
       importAllCalls += 1;
       const upsert = (list, items) => {
         for (const item of items) {
@@ -72,6 +96,10 @@ function createInMemoryRepository(initialVersions = [], initialBatches = [], ini
       upsert(versions, newVersions);
       upsert(batches, newBatches);
       upsert(libraryRecords, newLibrary);
+      upsert(tables.machines, machines);
+      upsert(tables.styles, styles);
+      upsert(tables.scales, scales);
+      upsert(tables.problems, problems);
     },
   };
 }
@@ -81,9 +109,12 @@ function createInMemoryRepository(initialVersions = [], initialBatches = [], ini
 // or the seed) — there is no lift branch left to fill these in on the way
 // in, so a well-formed fixture carries them from the start.
 function makeVersion(overrides = {}) {
+  const id = overrides.id ?? 'v1';
   return {
-    id: 'v1',
+    id,
     schemaVersion: 4,
+    sheetCode: codeFromVersionId(id),
+    serveTempC: null,
     recipeId: 'r1',
     coefficientSetId: 'set-1',
     parentVersionId: null,
@@ -200,23 +231,16 @@ function makeLibraryRecord(overrides = {}) {
   return { id: 'sucrose', entry: structuredClone(library.sucrose), ...overrides };
 }
 
-// The one accepted shape (D-06, D-10, D-11): schemaVersion 8, batches,
-// recipes and library always present (arrays, never absent).
+// The one accepted shape (D-06, D-10, D-11, decision 20): schemaVersion 9, the
+// eight arrays always present (never absent), the four seed tables from the
+// seed catalog (storeFileOf).
 function makeStoreFile(
   versions = [makeVersion()],
   batches = [],
   recipes = [makeRecipe()],
   libraryRecords = [makeLibraryRecord()],
 ) {
-  return {
-    app: 'sprinkles',
-    schemaVersion: STORE_SCHEMA_VERSION,
-    exportedAt: '2026-01-01T00:00:00.000Z',
-    versions,
-    batches,
-    recipes,
-    library: libraryRecords,
-  };
+  return storeFileOf({ exportedAt: '2026-01-01T00:00:00.000Z', versions, batches, recipes, library: libraryRecords });
 }
 
 // A fresh database per test for the tests that use a real repository.
@@ -235,15 +259,27 @@ describe('exportStore, drafts stay on the device (T-04-12)', () => {
 
     const exported = await exportStore(repository);
 
-    expect(Object.keys(exported).sort()).toEqual(['app', 'batches', 'exportedAt', 'library', 'recipes', 'schemaVersion', 'versions']);
-    expect(exported.schemaVersion).toBe(8);
+    expect(Object.keys(exported).sort()).toEqual([
+      'app',
+      'batches',
+      'exportedAt',
+      'library',
+      'machines',
+      'problems',
+      'recipes',
+      'scales',
+      'schemaVersion',
+      'styles',
+      'versions',
+    ]);
+    expect(exported.schemaVersion).toBe(9);
     expect(JSON.stringify(exported)).not.toContain('DRAFT-MARKER');
     expect(JSON.stringify(exported)).not.toContain('drafts');
   });
 });
 
 describe('exportStore', () => {
-  it('returns app sprinkles, schemaVersion 8, and every version, batch, recipe and library record the repository held', async () => {
+  it('returns app sprinkles, schemaVersion 9, and every version, batch, recipe, library record and table row the repository held', async () => {
     const repository = createInMemoryRepository(
       [makeVersion(), makeVersion({ id: 'v2' })],
       [makeBatch()],
@@ -252,8 +288,12 @@ describe('exportStore', () => {
     );
     const exported = await exportStore(repository);
     expect(exported.app).toBe('sprinkles');
-    expect(exported.schemaVersion).toBe(8);
+    expect(exported.schemaVersion).toBe(9);
     expect(exported.schemaVersion).toBe(STORE_SCHEMA_VERSION);
+    expect(exported.machines).toEqual(SEED_CATALOG.machines);
+    expect(exported.styles).toEqual(SEED_CATALOG.styles);
+    expect(exported.scales).toEqual(SEED_CATALOG.scales);
+    expect(exported.problems).toEqual(SEED_CATALOG.problems);
     expect(exported.versions).toHaveLength(2);
     expect(exported.batches).toHaveLength(1);
     expect(exported.recipes).toHaveLength(1);
@@ -288,7 +328,8 @@ describe('export then import round trip', () => {
   // rather than a live object graph the two repositories could share by
   // reference.
   it('carries the real seeded olive oil recipe, version and its 2 Aug batch intact', async () => {
-    const source = createInMemoryRepository([oliveOilVersion], [augustSecondBatch], [oliveOilRecipe]);
+    const [stampedOliveOil] = stampedSeedVersions();
+    const source = createInMemoryRepository([stampedOliveOil], [augustSecondBatch], [oliveOilRecipe]);
     const exported = await exportStore(source);
     const serialised = JSON.parse(JSON.stringify(exported));
 
@@ -296,7 +337,7 @@ describe('export then import round trip', () => {
     const result = await importStore(target, serialised);
 
     expect(result.ok).toBe(true);
-    expect(target.versions).toEqual([oliveOilVersion]);
+    expect(target.versions).toEqual([stampedOliveOil]);
     expect(target.batches).toEqual([augustSecondBatch]);
     expect(target.recipes).toEqual([oliveOilRecipe]);
   });
@@ -313,25 +354,25 @@ describe('validateStoreFile', () => {
     expect(result.errors.some((error) => error.includes('app'))).toBe(true);
   });
 
-  it('accepts a payload whose schemaVersion is 8 — the schema number flips from refused to accepted (D-10, D-11)', () => {
+  it('accepts a payload whose schemaVersion is 9 — the schema number flips from refused to accepted (D-10, D-11)', () => {
     const result = validateStoreFile(makeStoreFile());
     expect(result.errors.some((error) => error.includes('schemaVersion'))).toBe(false);
   });
 
-  it.each([1, 2, 3, 4, 5, 6, 7])(
+  it.each([1, 2, 3, 4, 5, 6, 7, 8])(
     'rejects a payload whose schemaVersion is %i, naming the path and both the expected and received value',
     (oldSchemaVersion) => {
       const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: oldSchemaVersion });
       expect(result.ok).toBe(false);
       const error = result.errors.find((message) => message.includes('$.schemaVersion'));
-      expect(error).toContain('expected 8');
+      expect(error).toContain('expected 9');
       expect(error).toContain(String(oldSchemaVersion));
     },
   );
 
   // D-10: a plain sentence goes first, before the path-named error, so an
   // older export's own maker sees words before a technical path.
-  it.each([1, 2, 3, 4, 5, 6, 7])(
+  it.each([1, 2, 3, 4, 5, 6, 7, 8])(
     'reports OLDER_EXPORT_MESSAGE as the first error for a payload whose schemaVersion is %i',
     (oldSchemaVersion) => {
       const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: oldSchemaVersion });
@@ -340,7 +381,7 @@ describe('validateStoreFile', () => {
     },
   );
 
-  it('does not report OLDER_EXPORT_MESSAGE for a well-formed schemaVersion 8 payload', () => {
+  it('does not report OLDER_EXPORT_MESSAGE for a well-formed schemaVersion 9 payload', () => {
     const result = validateStoreFile(makeStoreFile());
     expect(result.errors).not.toContain(OLDER_EXPORT_MESSAGE);
   });
@@ -1720,8 +1761,90 @@ describe('a version\'s equipment and serveTempC (D-13, D-19, T-09-42)', () => {
     expect(errors.some((error) => error.startsWith('$.versions[0].serveTempC'))).toBe(true);
   });
 
-  it('does not yet require serveTempC when the version does not own the key (plan 09-10 makes it required)', () => {
-    expect(Object.hasOwn(makeVersion(), 'serveTempC')).toBe(false);
-    expect(errorsFor({})).toEqual([]);
+  it('requires serveTempC as an own key (D-19): a version without it is refused at its path', () => {
+    const version = makeVersion();
+    delete version.serveTempC;
+    expect(Object.hasOwn(version, 'serveTempC')).toBe(false);
+    const errors = validateStoreFile(makeStoreFile([version])).errors;
+    expect(errors.some((error) => error.startsWith('$.versions[0].serveTempC'))).toBe(true);
+  });
+});
+
+describe('the four seed tables in the file (LIB-09, decision 20)', () => {
+  const withParts = (parts) => ({ ...makeStoreFile(), ...parts });
+
+  it.each(['library', 'machines', 'styles', 'scales', 'problems'])('requires %s as an array, naming its path', (table) => {
+    const file = makeStoreFile();
+    delete file[table];
+    const result = validateStoreFile(file);
+    expect(result.ok).toBe(false);
+    expect(result.errors).toContain(`$.${table}: expected an array`);
+  });
+
+  it('validates every table row with the table\'s own validator, naming the row path', () => {
+    const machines = structuredClone(SEED_CATALOG.machines);
+    machines[0] = { ...machines[0], id: '__proto__' };
+    expect(validateStoreFile(withParts({ machines })).errors.some((error) => error.startsWith('$.machines[0].id'))).toBe(true);
+
+    const styles = structuredClone(SEED_CATALOG.styles);
+    styles[0] = { ...styles[0], bands: { ...styles[0].bands, pac: [18, 14] } };
+    expect(validateStoreFile(withParts({ styles })).errors.some((error) => error.startsWith('$.styles[0].bands.pac'))).toBe(true);
+
+    const scales = structuredClone(SEED_CATALOG.scales);
+    scales[1] = { ...scales[1], kind: 'stars' };
+    expect(validateStoreFile(withParts({ scales })).errors.some((error) => error.startsWith('$.scales[1].kind'))).toBe(true);
+
+    const problems = structuredClone(SEED_CATALOG.problems);
+    problems[0] = { ...problems[0], name: '' };
+    expect(validateStoreFile(withParts({ problems })).errors.some((error) => error.startsWith('$.problems[0].name'))).toBe(true);
+  });
+
+  it('refuses a version declaring a scale whose key is a core key in the file\'s own scales table (D-03a)', () => {
+    const declared = { ...BODY, key: 'sweetness' };
+    const result = validateStoreFile(makeStoreFile([makeVersion({ declaredAxes: [declared] })]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.startsWith('$.versions[0].declaredAxes[0].key'))).toBe(true);
+  });
+
+  it('reads the core keys from the file\'s own scales, not from a constant: a key the file holds as declared is accepted', () => {
+    const scales = structuredClone(SEED_CATALOG.scales).map((row) =>
+      row.key === 'sweetness' ? { ...row, group: 'declared' } : row.key === 'body' ? { ...row, group: 'core' } : row,
+    );
+    const declaresSweetness = makeVersion({ declaredAxes: [{ ...BODY, key: 'sweetness' }] });
+    const declaresBody = makeVersion({ id: 'v2', declaredAxes: [BODY] });
+    const accepted = validateStoreFile(withParts({ scales, versions: [declaresSweetness] }));
+    expect(accepted.errors).toEqual([]);
+    const refused = validateStoreFile(withParts({ scales, versions: [declaresBody] }));
+    expect(refused.errors.some((error) => error.startsWith('$.versions[0].declaredAxes[0].key'))).toBe(true);
+  });
+
+  it.each([
+    ['scales missing', undefined, '$.scales: expected an array'],
+    ['scales a string', 'x', '$.scales: expected an array'],
+  ])('does not throw, and says so once, when %s beside a version that declares scales', (_label, scales, expected) => {
+    const file = makeStoreFile([makeVersion({ declaredAxes: [BODY, OIL] })]);
+    if (scales === undefined) delete file.scales;
+    else file.scales = scales;
+    let result;
+    expect(() => {
+      result = validateStoreFile(file);
+    }).not.toThrow();
+    expect(result.ok).toBe(false);
+    expect(result.errors).toContain(expected);
+    expect(result.errors.filter((error) => error.startsWith('$.scales'))).toHaveLength(1);
+  });
+
+  it('does not throw on a scales array holding null, a number and a row with a numeric key, and names each row', () => {
+    const file = makeStoreFile([makeVersion({ declaredAxes: [BODY, OIL] })]);
+    file.scales = [null, 42, { key: 7 }];
+    let result;
+    expect(() => {
+      result = validateStoreFile(file);
+    }).not.toThrow();
+    expect(result.ok).toBe(false);
+    for (const path of ['$.scales[0]', '$.scales[1]', '$.scales[2]']) {
+      expect(result.errors.some((error) => error.startsWith(path))).toBe(true);
+    }
+    expect(result.errors.some((error) => error.startsWith('$.versions'))).toBe(false);
   });
 });

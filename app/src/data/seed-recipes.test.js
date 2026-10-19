@@ -5,7 +5,8 @@
 import { describe, it, expect } from 'vitest';
 import { seedRecipeGroups, transcribedRecipeGroups } from './seed-recipes.js';
 import { mexicanChocolateV1, mexicanChocolateV2, mexicanChocolateV3, mexicanChocolateV4 } from './mexican-chocolate.js';
-import { validateStoreFile, STORE_SCHEMA_VERSION } from '../store/transfer.js';
+import { validateStoreFile } from '../store/transfer.js';
+import { storeFileOf } from '../store/storeFile.fixtures.js';
 import { isScaleDefinition } from '../domain/catalog.js';
 import { computeBalance } from '../domain/composition.js';
 import { buildFigures } from '../domain/figures.js';
@@ -123,15 +124,18 @@ describe('every seeded version declares at most two scales and two problems (ske
 
 describe('transcribedRecipeGroups validates as a store file (D-07 gate: not wired into seed.js)', () => {
   it('passes validateStoreFile at the current schema version with no errors', () => {
-    const { recipes, versions, batches } = flatten(transcribedRecipeGroups);
-    const result = validateStoreFile({
-      app: 'sprinkles',
-      schemaVersion: STORE_SCHEMA_VERSION,
-      recipes,
-      versions,
-      batches,
-      library: Object.entries(library).map(([id, entry]) => ({ id, entry })),
-    });
+    const { recipes, batches } = flatten(transcribedRecipeGroups);
+    // The direct exports carry no sheetCode, so the file holds the stamped
+    // copies the seed writes: seedRecipeGroups minus its leading olive oil group.
+    const versions = seedRecipeGroups.slice(1).flatMap((group) => group.versions);
+    const result = validateStoreFile(
+      storeFileOf({
+        recipes,
+        versions,
+        batches,
+        library: Object.entries(library).map(([id, entry]) => ({ id, entry })),
+      }),
+    );
     expect(result.errors).toEqual([]);
     expect(result.ok).toBe(true);
   });

@@ -28,6 +28,8 @@ import { createBatch } from '../domain/batch.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { oliveOilRecipe } from '../data/olive-oil.js';
 import { exportStore, importStore } from '../store/transfer.js';
+import { stampedSeedVersions } from '../store/storeFile.fixtures.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { buildChurnFieldsFromDraft, buildTastingFieldsFromDraft } from '../domain/recordDraft.js';
 
 const noop = () => {};
@@ -2114,7 +2116,18 @@ describe('BatchRow — the record pen draws only what each seeded version declar
 
 describe('BatchRow — a tick made in the pen round-trips through save, the reading, export and import (0, 1 and 2 declared problems)', () => {
   function memoryRepository() {
-    const state = { versions: [], batches: [], recipes: [], library: [] };
+    // The four seed tables start as copies of the seed catalog, so an export
+    // taken from here carries the four core scales an import must leave.
+    const state = {
+      versions: [],
+      batches: [],
+      recipes: [],
+      library: [],
+      machines: structuredClone(SEED_CATALOG.machines),
+      styles: structuredClone(SEED_CATALOG.styles),
+      scales: structuredClone(SEED_CATALOG.scales),
+      problems: structuredClone(SEED_CATALOG.problems),
+    };
     const merge = (list, items) => {
       for (const item of items) {
         const at = list.findIndex((entry) => entry.id === item.id);
@@ -2125,18 +2138,29 @@ describe('BatchRow — a tick made in the pen round-trips through save, the read
     return {
       state,
       getAll: async () => [...state.versions],
+      listVersions: async () => [...state.versions],
+      listScales: async () => [...state.scales],
+      listProblems: async () => [...state.problems],
       exportAll: async () => ({
         recipes: [...state.recipes],
         versions: [...state.versions],
         batches: [...state.batches],
         library: [...state.library],
+        machines: [...state.machines],
+        styles: [...state.styles],
+        scales: [...state.scales],
+        problems: [...state.problems],
       }),
       listRecipes: async () => [...state.recipes],
-      importAll: async ({ recipes, versions, batches, library }) => {
+      importAll: async ({ recipes, versions, batches, library, machines, styles, scales, problems }) => {
         merge(state.recipes, recipes);
         merge(state.versions, versions);
         merge(state.batches, batches);
         merge(state.library, library);
+        merge(state.machines, machines);
+        merge(state.styles, styles);
+        merge(state.scales, scales);
+        merge(state.problems, problems);
       },
     };
   }
@@ -2147,7 +2171,8 @@ describe('BatchRow — a tick made in the pen round-trips through save, the read
     ['one', ['Bitter']],
     ['two', ['Bitter', 'Salty']],
   ])('%s declared: the pen ticks, the reading shows, and the store file keeps', async (_label, declaredFlaws) => {
-    const version = { ...oliveOilVersion, id: `inv-${declaredFlaws.length}`, declaredFlaws };
+    const [stampedOliveOil] = stampedSeedVersions();
+    const version = { ...stampedOliveOil, id: `inv-${declaredFlaws.length}`, declaredFlaws };
     // Tick each declared word in turn, then the last one off, as the pen's
     // toggle does (membership in the draft's list).
     const ticked = declaredFlaws.length > 0 ? declaredFlaws.slice(0, declaredFlaws.length) : [];

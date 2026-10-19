@@ -9,6 +9,7 @@ import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { createRepository } from './repository.js';
 import { library } from '../data/library.js';
 import { codeFromVersionId, SheetCodeError } from '../domain/sheetCode.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 
 beforeEach(() => {
   // A fresh database per test — the repository opens its connection when
@@ -67,6 +68,9 @@ describe('importAll, through the repository seam', () => {
   const version = { id: 'v1', recipeId: 'r1' };
   const batch = { id: 'b1', versionId: 'v1' };
   const libraryRecord = { id: 'l1', entry: { name: 'Entry', composition: { fat: 1 } } };
+  // The four seed tables an import carries: the seed catalog, which holds the
+  // four core scales every import must leave (plan 09-10).
+  const tables = () => structuredClone(SEED_CATALOG);
 
   async function everything(repository) {
     return {
@@ -74,31 +78,47 @@ describe('importAll, through the repository seam', () => {
       versions: await repository.listVersions(),
       batches: await repository.getAllBatches(),
       library: await repository.listLibrary(),
+      machines: await repository.listMachines(),
+      styles: await repository.listStyles(),
+      scales: await repository.listScales(),
+      problems: await repository.listProblems(),
     };
   }
 
-  it('writes recipes, versions, batches and library together', async () => {
+  it('writes recipes, versions, batches, library, machines, styles, scales and problems together', async () => {
     const repository = createRepository();
-    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord] });
-    expect(await everything(repository)).toEqual({
-      recipes: [recipe],
-      versions: [version],
-      batches: [batch],
-      library: [libraryRecord],
-    });
+    const catalog = tables();
+    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord], ...catalog });
+    const held = await everything(repository);
+    const byId = (rows) => [...rows].sort((a, b) => (a.id < b.id ? -1 : 1));
+    expect(held.recipes).toEqual([recipe]);
+    expect(held.versions).toEqual([version]);
+    expect(held.batches).toEqual([batch]);
+    expect(held.library).toEqual([libraryRecord]);
+    expect(byId(held.machines)).toEqual(byId(catalog.machines));
+    expect(byId(held.styles)).toEqual(byId(catalog.styles));
+    expect(byId(held.scales)).toEqual(byId(catalog.scales));
+    expect(byId(held.problems)).toEqual(byId(catalog.problems));
     expect(await repository.listBatchesForVersion('v1')).toEqual([batch]);
   });
 
   it('upserts by id and leaves records the file does not name', async () => {
     const repository = createRepository();
-    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord] });
+    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord], ...tables() });
     const changed = { id: 'l1', entry: { name: 'Entry, changed', composition: { fat: 2 } } };
     const added = { id: 'l2', entry: { name: 'Second', composition: { fat: 3 } } };
+    const catalog = tables();
+    const renamedMachine = { ...catalog.machines[0], name: 'Renamed machine' };
+    const extraMachine = { ...catalog.machines[0], id: 'extra-machine', name: 'Extra machine' };
     await repository.importAll({
       recipes: [{ ...recipe, name: 'Renamed' }],
       versions: [],
       batches: [{ id: 'b2', versionId: 'v1' }],
       library: [changed, added],
+      machines: [renamedMachine, extraMachine],
+      styles: [],
+      scales: [],
+      problems: [],
     });
     const held = await everything(repository);
     expect(held.recipes).toEqual([{ ...recipe, name: 'Renamed' }]);
@@ -106,11 +126,19 @@ describe('importAll, through the repository seam', () => {
     expect(held.batches.map((entry) => entry.id).sort()).toEqual(['b1', 'b2']);
     expect(held.library.map((entry) => entry.id).sort()).toEqual(['l1', 'l2']);
     expect(await repository.getLibraryEntry('l1')).toEqual(changed);
+    // The file wins on a shared id, a new id is added beside the local rows, and
+    // a table the file leaves empty keeps every local row: import never deletes (D-14).
+    expect(held.machines.find((row) => row.id === renamedMachine.id)).toEqual(renamedMachine);
+    expect(held.machines.map((row) => row.id)).toContain('extra-machine');
+    expect(held.machines).toHaveLength(catalog.machines.length + 1);
+    expect(held.styles).toHaveLength(catalog.styles.length);
+    expect(held.scales).toHaveLength(catalog.scales.length);
+    expect(held.problems).toHaveLength(catalog.problems.length);
   });
 
-  it('rejects when a batch cannot be cloned, and all four stores hold exactly what they held before', async () => {
+  it('rejects when a batch cannot be cloned, and all eight stores hold exactly what they held before', async () => {
     const repository = createRepository();
-    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord] });
+    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord], ...tables() });
     const before = await everything(repository);
 
     // A function value cannot be structured-cloned: the batch put throws a
@@ -121,15 +149,16 @@ describe('importAll, through the repository seam', () => {
         versions: [{ id: 'v2', recipeId: 'r2' }],
         batches: [{ id: 'b2', versionId: 'v2', notClonable: () => {} }],
         library: [{ id: 'l2', entry: { name: 'Second', composition: { fat: 3 } } }],
+        ...tables(),
       }),
     ).rejects.toThrow();
 
     expect(await everything(repository)).toEqual(before);
   });
 
-  it('rejects when a library record cannot be cloned, and all four stores hold exactly what they held before (D-07)', async () => {
+  it('rejects when a library record cannot be cloned, and all eight stores hold exactly what they held before (D-07)', async () => {
     const repository = createRepository();
-    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord] });
+    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord], ...tables() });
     const before = await everything(repository);
 
     // The recipe, version and batch puts are all good and already queued when
@@ -140,6 +169,27 @@ describe('importAll, through the repository seam', () => {
         versions: [{ id: 'v2', recipeId: 'r2' }],
         batches: [{ id: 'b2', versionId: 'v2' }],
         library: [{ id: 'l2', entry: { name: 'Second', composition: { fat: 3 }, notClonable: () => {} } }],
+        ...tables(),
+      }),
+    ).rejects.toThrow();
+
+    expect(await everything(repository)).toEqual(before);
+  });
+
+  it('rejects when a table row cannot be cloned, and all eight stores hold exactly what they held before', async () => {
+    const repository = createRepository();
+    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord], ...tables() });
+    const before = await everything(repository);
+
+    // Every put before the problems put is good and already queued when it throws.
+    await expect(
+      repository.importAll({
+        recipes: [{ id: 'r2', name: 'New', description: '' }],
+        versions: [{ id: 'v2', recipeId: 'r2' }],
+        batches: [{ id: 'b2', versionId: 'v2' }],
+        library: [{ id: 'l2', entry: { name: 'Second', composition: { fat: 3 } } }],
+        ...tables(),
+        problems: [{ id: 'new-problem', name: 'New problem', order: 9, notClonable: () => {} }],
       }),
     ).rejects.toThrow();
 
@@ -148,13 +198,14 @@ describe('importAll, through the repository seam', () => {
 });
 
 describe('exportAll, through the repository seam (D-07a)', () => {
-  it('reads recipes, versions, batches and library in one readonly transaction, and never the drafts', async () => {
+  it('reads the eight stores a file carries in one readonly transaction, and never the drafts', async () => {
     const repository = createRepository();
     const recipe = { id: 'r1', name: 'Recipe', description: '' };
     const version = { id: 'v1', recipeId: 'r1' };
     const batch = { id: 'b1', versionId: 'v1' };
     const libraryRecord = { id: 'l1', entry: { name: 'Entry', composition: { fat: 1 } } };
-    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord] });
+    const catalog = structuredClone(SEED_CATALOG);
+    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord], ...catalog });
     await repository.saveDraft(makeDraft('v1'));
     // Read once so the connection is open before the spy goes on.
     await repository.listRecipes();
@@ -163,9 +214,17 @@ describe('exportAll, through the repository seam (D-07a)', () => {
     try {
       const exported = await repository.exportAll();
       expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(['recipes', 'versions', 'batches', 'library'], 'readonly');
-      expect(exported).toEqual({ recipes: [recipe], versions: [version], batches: [batch], library: [libraryRecord] });
-      expect(Object.keys(exported).sort()).toEqual(['batches', 'library', 'recipes', 'versions']);
+      expect(spy).toHaveBeenCalledWith(['recipes', 'versions', 'batches', 'library', 'machines', 'styles', 'scales', 'problems'], 'readonly');
+      const byId = (rows) => [...rows].sort((a, b) => (a.id < b.id ? -1 : 1));
+      expect(exported.recipes).toEqual([recipe]);
+      expect(exported.versions).toEqual([version]);
+      expect(exported.batches).toEqual([batch]);
+      expect(exported.library).toEqual([libraryRecord]);
+      expect(byId(exported.machines)).toEqual(byId(catalog.machines));
+      expect(byId(exported.styles)).toEqual(byId(catalog.styles));
+      expect(byId(exported.scales)).toEqual(byId(catalog.scales));
+      expect(byId(exported.problems)).toEqual(byId(catalog.problems));
+      expect(Object.keys(exported).sort()).toEqual(['batches', 'library', 'machines', 'problems', 'recipes', 'scales', 'styles', 'versions']);
     } finally {
       spy.mockRestore();
     }
@@ -178,7 +237,7 @@ describe('exportAll, through the repository seam (D-07a)', () => {
     const unhandled = [];
     const onUnhandled = (reason) => unhandled.push(reason);
     process.on('unhandledRejection', onUnhandled);
-    // Fails the last of the four reads, after the first three were queued.
+    // Fails the fourth of the eight reads, after the first three were queued.
     const original = globalThis.IDBObjectStore.prototype.getAll;
     const getAllSpy = vi.spyOn(globalThis.IDBObjectStore.prototype, 'getAll').mockImplementation(function (...args) {
       if (this.name === 'library') throw new Error('read failed');

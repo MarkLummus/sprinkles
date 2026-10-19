@@ -351,12 +351,12 @@ describe('The Import error panel (sketch 011 decision 52 B; Mark 2026-10-05)', (
     expect(panel().querySelectorAll('[style]')).toHaveLength(0);
   });
 
-  it("an older export shows four lines, exactly as the validator words them", async () => {
+  it("an older export shows eight lines, exactly as the validator words them", async () => {
     await mountAt(1024);
     await chooseFile(OLDER_EXPORT);
     const expected = validateStoreFile(JSON.parse(OLDER_EXPORT)).errors;
-    expect(expected).toHaveLength(4);
-    expect(panel().querySelector('p.shell__import-errors-count').textContent).toBe('4 problems found');
+    expect(expected).toHaveLength(8);
+    expect(panel().querySelector('p.shell__import-errors-count').textContent).toBe('8 problems found');
     expect(lineTexts()).toEqual(expected);
   });
 

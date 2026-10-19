@@ -4,22 +4,45 @@
 // write: a malformed file is refused with every error found, never
 // half-applied (T-04-01) and never used to reach past an object's own
 // properties into its prototype chain (T-04-02). It now knows exactly one
-// shape — schemaVersion 8, carrying recipes and the ingredient library
-// beside versions and batches (03.5-CONTEXT.md D-10, D-11; 06-CONTEXT.md
-// D-06) — and refuses everything older rather than lifting it; there is
-// no ladder here.
-import { AXES } from '../domain/axes.js';
-import { isScaleDefinition, MAX_RECIPE_SCALES } from '../domain/catalog.js';
+// shape — schemaVersion 9, carrying eight arrays: recipes, versions and
+// batches, the ingredient library, and the machines, styles, scales and
+// problems tables (03.5-CONTEXT.md D-10, D-11; 06-CONTEXT.md D-06; Phase 9
+// decision 20) — and refuses everything older rather than lifting it; there
+// is no ladder here.
+import { isScaleDefinition, CORE_SCALE_COUNT, MAX_RECIPE_SCALES } from '../domain/catalog.js';
 import { SEGMENT_OPTIONS, DEFECTS, MARK_ONE_OPTIONS } from '../domain/battery.js';
-import { UNSAFE_KEYS, isPlainObject, isFiniteNumber, isNonEmptyString, validateLibraryRecord } from './seedTables.js';
+import {
+  UNSAFE_KEYS,
+  SEED_TABLES,
+  catalogConflicts,
+  mergeById,
+  isPlainObject,
+  isFiniteNumber,
+  isNonEmptyString,
+} from './seedTables.js';
 
 // domain/versionRow.js RESERVED_ROW_IDS mirrors this set; transfer.test.js pins the two.
 // The set and the library validator moved to store/seedTables.js (plan 09-09),
 // where boot shares them; UNSAFE_KEYS is re-exported so its importers keep working.
 export { UNSAFE_KEYS };
-// The core scale keys a declared scale's key may not equal. Plan 09-10 replaces
-// this source with the file's own scales table (D-03a).
-const CORE_AXIS_KEYS = AXES.filter((axis) => axis.group === 'core').map((axis) => axis.key);
+// The tables a file carries beside recipes, versions and batches, in the order
+// their errors are reported. Each row is validated by the table's own validator
+// (store/seedTables.js), the one boot shares.
+const FILE_TABLES = ['library', 'machines', 'styles', 'scales', 'problems'];
+
+// The core scale keys of the FILE's own scales table: a declared scale's key may
+// not equal one (D-03a), whatever the receiving profile holds. The keys come from
+// unvalidated nested input, and versions are validated before the later arrays,
+// so this never throws: a scales value that is missing or not an array gives [],
+// and an element that is not a plain object, or whose key is not a non-empty
+// string, contributes nothing. The scales array's own errors are reported once,
+// at $.scales or $.scales[i], by the SEED_TABLES pass.
+function fileCoreKeys(scales) {
+  if (!Array.isArray(scales)) return [];
+  return scales
+    .filter((row) => isPlainObject(row) && row.group === 'core' && isNonEmptyString(row.key))
+    .map((row) => row.key);
+}
 // A version declares up to two problems (sketch 010 D26); its scales are bounded
 // by MAX_RECIPE_SCALES.
 const MAX_DECLARED = 2;
@@ -32,8 +55,10 @@ const MAX_DECLARED = 2;
 // 04 because declared problems became lists of 0 to 2 (`declaredFlaws`,
 // `declaredDefects`) and a batch gained At draw / From freezer picks.
 // Bumped to 8 in phase 06 because the file gained a `library` array
-// (06-CONTEXT.md D-06).
-export const STORE_SCHEMA_VERSION = 8;
+// (06-CONTEXT.md D-06). Bumped to 9 in phase 09 because the file gained
+// `machines`, `styles`, `scales` and `problems` (decision 20), and because every
+// version now carries a stored Sheet code and a target serving temperature.
+export const STORE_SCHEMA_VERSION = 9;
 
 // D-10: a plain sentence a maker can read, pushed first — before the
 // path-named `$.schemaVersion` error — whenever the file is from a
@@ -360,7 +385,7 @@ function validateDeclaredFlaws(declaredFlaws, path, errors) {
  * skipped-row as-made is 0 and whose overrun is 0% must both pass, and both
  * are falsy.
  */
-function validateBatch(batch, path, errors) {
+function validateBatch(batch, path, errors, coreKeys) {
   if (!isPlainObject(batch)) {
     errors.push(`${path}: expected an object`);
     return;
@@ -384,7 +409,7 @@ function validateBatch(batch, path, errors) {
     if (typeof batch.snapshot.coefficientSetId !== 'string') {
       errors.push(`${path}.snapshot.coefficientSetId: expected a string`);
     }
-    validateDeclaredAxes(batch.snapshot.declaredAxes, `${path}.snapshot.declaredAxes`, errors, CORE_AXIS_KEYS);
+    validateDeclaredAxes(batch.snapshot.declaredAxes, `${path}.snapshot.declaredAxes`, errors, coreKeys);
     validateDeclaredFlaws(batch.snapshot.declaredFlaws, `${path}.snapshot.declaredFlaws`, errors);
   }
 
@@ -456,7 +481,7 @@ function validateBatch(batch, path, errors) {
   }
 }
 
-function validateVersion(version, path, errors) {
+function validateVersion(version, path, errors, coreKeys) {
   if (!isPlainObject(version)) {
     errors.push(`${path}: expected an object`);
     return;
@@ -493,7 +518,7 @@ function validateVersion(version, path, errors) {
   if (!isNonEmptyString(version.createdAt)) {
     errors.push(`${path}.createdAt: expected a non-empty string, got ${JSON.stringify(version.createdAt)}`);
   }
-  validateDeclaredAxes(version.declaredAxes, `${path}.declaredAxes`, errors, CORE_AXIS_KEYS);
+  validateDeclaredAxes(version.declaredAxes, `${path}.declaredAxes`, errors, coreKeys);
   validateDeclaredFlaws(version.declaredFlaws, `${path}.declaredFlaws`, errors);
   // WR-01 (code review): all three fields are read directly by the UI
   // (the version-line uniqueness check, the Sheet title/description's own
@@ -529,10 +554,18 @@ function validateVersion(version, path, errors) {
       }
     }
   }
-  // D-19: the target serving temperature in degrees C. Checked whenever the
-  // version owns the key; plan 09-10 makes the key required. No range check:
-  // the creation editor owns any message about an unlikely value.
-  if (Object.hasOwn(version, 'serveTempC') && version.serveTempC !== null && !isFiniteNumber(version.serveTempC)) {
+  // D-19: the target serving temperature in degrees C, a required own key
+  // holding null or a finite number, kept as written. No range check: the
+  // creation editor owns any message about an unlikely value. No allowance is
+  // made for a missing key: a schema-8 file is refused before any version is
+  // read, and every schema-9 file comes from a build in which every version
+  // carries the field (plans 09-05 and 09-08), so this is the sheetCode rule,
+  // not the optional-field handling a later lift would need. The lift-later
+  // posture: this holds only until a schema-9 file has left a build of this
+  // phase (the device build, plan 09-17); from then on a version field added
+  // after this phase is optional on import, or arrives with a file-schema bump
+  // and a lift, and is never required the way serveTempC is here.
+  if (!Object.hasOwn(version, 'serveTempC') || (version.serveTempC !== null && !isFiniteNumber(version.serveTempC))) {
     errors.push(`${path}.serveTempC: expected null or a finite number, got ${JSON.stringify(version.serveTempC)}`);
   }
 }
@@ -546,13 +579,14 @@ function validateVersion(version, path, errors) {
  * know what the store already holds, live in importStore below, after
  * this gate and before any write.
  *
- * D-10, D-11 (03.5-CONTEXT.md), D-06 (06-CONTEXT.md): the accepted schema
- * is the single value STORE_SCHEMA_VERSION (8), carrying a `recipes` array
- * and a `library` array beside versions and batches. A store exported after this change imports after it; a
- * store exported before it is refused as old — with OLDER_EXPORT_MESSAGE
- * first, a plain sentence a maker can read — rather than silently read as
- * current or lifted. The store resets rather than migrates (D-10): there
- * is no lift branch here.
+ * D-10, D-11 (03.5-CONTEXT.md), D-06 (06-CONTEXT.md), decision 20: the
+ * accepted schema is the single value STORE_SCHEMA_VERSION (9), carrying a
+ * `recipes` array, a `library` array and the `machines`, `styles`, `scales` and
+ * `problems` tables beside versions and batches. A store exported after this
+ * change imports after it; a store exported before it is refused as old —
+ * with OLDER_EXPORT_MESSAGE first, a plain sentence a maker can read — rather
+ * than silently read as current or lifted. The store resets rather than
+ * migrates (D-10): there is no lift branch here.
  */
 export function validateStoreFile(parsed) {
   const errors = [];
@@ -572,16 +606,19 @@ export function validateStoreFile(parsed) {
   if (parsed.schemaVersion !== STORE_SCHEMA_VERSION) {
     errors.push(`$.schemaVersion: expected ${STORE_SCHEMA_VERSION}, got ${JSON.stringify(parsed.schemaVersion)}`);
   }
+  // A declared scale may not take a core key of the file's own scales table
+  // (D-03a), computed once for the versions and batches below.
+  const coreKeys = fileCoreKeys(parsed.scales);
   if (!Array.isArray(parsed.versions)) {
     errors.push('$.versions: expected an array');
   } else {
-    parsed.versions.forEach((version, index) => validateVersion(version, `$.versions[${index}]`, errors));
+    parsed.versions.forEach((version, index) => validateVersion(version, `$.versions[${index}]`, errors, coreKeys));
   }
 
   if (!Array.isArray(parsed.batches)) {
     errors.push('$.batches: expected an array');
   } else {
-    parsed.batches.forEach((batch, index) => validateBatch(batch, `$.batches[${index}]`, errors));
+    parsed.batches.forEach((batch, index) => validateBatch(batch, `$.batches[${index}]`, errors, coreKeys));
   }
 
   if (!Array.isArray(parsed.recipes)) {
@@ -590,10 +627,12 @@ export function validateStoreFile(parsed) {
     parsed.recipes.forEach((recipe, index) => validateRecipe(recipe, `$.recipes[${index}]`, errors));
   }
 
-  if (!Array.isArray(parsed.library)) {
-    errors.push('$.library: expected an array');
-  } else {
-    parsed.library.forEach((record, index) => validateLibraryRecord(record, `$.library[${index}]`, errors));
+  for (const table of FILE_TABLES) {
+    if (!Array.isArray(parsed[table])) {
+      errors.push(`$.${table}: expected an array`);
+    } else {
+      parsed[table].forEach((row, index) => SEED_TABLES[table].validate(row, `$.${table}[${index}]`, errors));
+    }
   }
 
   return { ok: errors.length === 0, errors };
@@ -604,13 +643,30 @@ export function validateStoreFile(parsed) {
 // and VERSION_SAVE_ERROR). Shell renders it as it renders every refusal.
 export const IMPORT_STORAGE_ERROR = 'Couldn’t save this file. Nothing was changed.';
 
+// The path-named line a maker reads for each way an import would leave a
+// catalog the next batch could not be recorded against (plan 09-09's
+// catalogConflicts). importStore's pre-check and the in-transaction check
+// (CatalogConflictError) both word their refusal through here, so the two
+// places cannot drift.
+function catalogConflictMessages(conflicts) {
+  return conflicts.map((conflict) => {
+    if (conflict.kind === 'core-count') {
+      return `$.scales: the scales table would hold ${conflict.count} core scales after this import; Sprinkles reads exactly ${CORE_SCALE_COUNT}`;
+    }
+    if (conflict.kind === 'declared-core-key') {
+      return `$.scales: ${JSON.stringify(conflict.key)} would be a core scale after this import, but version ${JSON.stringify(conflict.versionId)} declares its own scale under that key`;
+    }
+    return `$.problems: ${JSON.stringify(conflict.name)} would name more than one problem after this import (ids ${conflict.ids.join(', ')})`;
+  });
+}
+
 /**
  * exportStore(repository) -> the whole store as one JSON-serialisable object.
  * It reads the stores it carries in one transaction, so a backup is never
  * built from two moments (06-CONTEXT.md D-07a).
  */
 export async function exportStore(repository) {
-  const { recipes, versions, batches, library } = await repository.exportAll();
+  const { recipes, versions, batches, library, machines, styles, scales, problems } = await repository.exportAll();
   return {
     app: 'sprinkles',
     schemaVersion: STORE_SCHEMA_VERSION,
@@ -619,6 +675,10 @@ export async function exportStore(repository) {
     batches,
     recipes,
     library,
+    machines,
+    styles,
+    scales,
+    problems,
   };
 }
 
@@ -627,8 +687,11 @@ export async function exportStore(repository) {
  * directly — STORE_SCHEMA_VERSION is the only shape this function ever
  * sees, so there is no lift to run first. Writes nothing on failure — a
  * partially applied import is worse than a refused one (T-04-01, T-02-08):
- * the write is one repository.importAll transaction, and a storage failure
- * on any store call returns IMPORT_STORAGE_ERROR instead of throwing.
+ * the write is one repository.importAll transaction over all eight stores,
+ * and a storage failure on any store call returns IMPORT_STORAGE_ERROR
+ * instead of throwing. The file wins: a row with the same id replaces the
+ * local row in every table, local rows the file lacks stay, and import never
+ * deletes (D-14).
  * The D-09 parent-resolves gate and the D-11 recipe-resolves gate run
  * after validation and before any write, in the same two-step "validate
  * then write" shape: a version whose parentVersionId does not resolve to
@@ -683,11 +746,47 @@ export async function importStore(repository, parsed) {
   });
   if (recipeErrors.length > 0) return { ok: false, errors: recipeErrors };
 
-  // One transaction over recipes, versions, batches and library: all four
-  // land or none does (Mark, 2026-10-11; 06-CONTEXT.md D-07). The file's
-  // library is checked above with the rest (D-08).
+  // The store this import would leave must be one a valid batch can be
+  // recorded against: the file wins (a file row replaces the local row of the
+  // same id), local rows the file lacks stay, and import never deletes (D-14).
+  // So catalogConflicts runs over the merged scales and problems and the
+  // merged versions, retained local versions included. The four-core-scale
+  // rule is a deliberate design choice, not a CONTEXT decision (LIB-09 and
+  // D-14 bind no count): it follows from the record pen's desktop grid of four
+  // places, and decide-p9-boot-check-scope's lift-core-count option can remove
+  // it after the phase. The other two rules are what a batch's snapshot needs
+  // (plan 09-14). repository.importAll repeats this check inside its own
+  // transaction, because two imports, or an import and another tab's
+  // createVersion, can both pass it.
+  let storeScales;
+  let storeProblems;
   try {
-    await repository.importAll({ recipes: parsed.recipes, versions: parsed.versions, batches: parsed.batches, library: parsed.library });
+    storeScales = await repository.listScales();
+    storeProblems = await repository.listProblems();
+  } catch {
+    return storageFailure;
+  }
+  const conflicts = catalogConflicts({
+    scales: mergeById(storeScales, parsed.scales),
+    problems: mergeById(storeProblems, parsed.problems),
+    versions: mergeById(storeVersions, parsed.versions),
+  });
+  if (conflicts.length > 0) return { ok: false, errors: catalogConflictMessages(conflicts) };
+
+  // One transaction over all eight stores: every one lands or none does
+  // (Mark, 2026-10-11; 06-CONTEXT.md D-07). The file's library and tables are
+  // checked above with the rest (D-08).
+  try {
+    await repository.importAll({
+      recipes: parsed.recipes,
+      versions: parsed.versions,
+      batches: parsed.batches,
+      library: parsed.library,
+      machines: parsed.machines,
+      styles: parsed.styles,
+      scales: parsed.scales,
+      problems: parsed.problems,
+    });
   } catch {
     return storageFailure;
   }

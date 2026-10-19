@@ -2,17 +2,18 @@
 // entry it was copied from through the repository, the store file export and
 // an import into a fresh profile, and changing that entry afterwards moves no
 // stored figure, because a row's figures come from its own copy and never
-// from the link. The source profile is built by hand (library, recipe,
-// version), so it holds no seed tables; plan 09-10 makes a canonical sheet
-// code, an own serveTempC and the exported seed tables required on import and
-// its sweep updates this file.
+// from the link. The source profile is seeded (so its export carries the four
+// seed tables and four core scales) and then given one hand-built version, which
+// carries a canonical Sheet code of its own id and an own serveTempC, as an
+// import requires of every version.
 import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
 import { describe, it, beforeEach, expect } from 'vitest';
 import { createRepository } from './repository.js';
+import { seedIfEmpty } from './seed.js';
 import { exportStore, importStore, validateStoreFile } from './transfer.js';
-import { library } from '../data/library.js';
-import { oliveOilRecipe, oliveOilVersion } from '../data/olive-oil.js';
+import { oliveOilVersion } from '../data/olive-oil.js';
+import { codeFromVersionId } from '../domain/sheetCode.js';
 import { rowFromLibraryRecord } from '../domain/versionRow.js';
 import { computeBalance } from '../domain/composition.js';
 import { buildFigures } from '../domain/figures.js';
@@ -21,15 +22,18 @@ beforeEach(() => {
   globalThis.indexedDB = new IDBFactory();
 });
 
-// The olive oil version with its Graza Drizzle row rebuilt by
+// A copy of the olive oil version under its own id (the seeded olive oil v1
+// keeps its stored code), with its Graza Drizzle row rebuilt by
 // rowFromLibraryRecord from the olive oil record the store holds.
 async function profileWithLinkedVersion() {
   const repository = createRepository();
-  await repository.putAllLibrary(Object.entries(library).map(([id, entry]) => ({ id, entry })));
-  await repository.saveRecipe(oliveOilRecipe);
+  await seedIfEmpty(repository);
 
   const record = await repository.getLibraryEntry('oliveOil');
   const version = structuredClone(oliveOilVersion);
+  version.id = 'link-olive-oil-copy';
+  version.sheetCode = codeFromVersionId(version.id);
+  version.serveTempC = null;
   const at = version.rows.findIndex((row) => row.id === 'row-03');
   version.rows[at] = rowFromLibraryRecord(record, {
     id: 'row-03',

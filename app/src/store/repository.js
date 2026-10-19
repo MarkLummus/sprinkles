@@ -28,6 +28,10 @@ async function putVersionChecked(db, version) {
 // The five tables the app seeds when they are empty (D-17, LIB-09).
 const SEED_TABLE_NAMES = ['library', 'machines', 'styles', 'scales', 'problems'];
 
+// The eight stores a store file carries and an import writes (LIB-09, decision
+// 20). The drafts store is not among them: drafts stay on the device.
+const FILE_STORES = ['recipes', 'versions', 'batches', 'library', 'machines', 'styles', 'scales', 'problems'];
+
 // The repository seam D-06 and D-16 depend on — the only path to the store:
 // versions, batches, recipes, the ingredient library, the four seed tables
 // (machines, styles, scales, problems), and the drafts of unsaved pens.
@@ -226,23 +230,24 @@ export function createRepository() {
       const db = await dbPromise;
       return db.getAll('problems');
     },
-    // An import is one readwrite transaction over the four stores it
+    // An import is one readwrite transaction over the eight stores it
     // writes: a failed put aborts it, so a storage failure part-way leaves
-    // every store exactly as it was. A put the store cannot clone throws
-    // before it queues and leaves the transaction open, so the catch aborts
-    // it by hand or the puts already queued would commit.
-    async importAll({ recipes, versions, batches, library }) {
+    // every store exactly as it was. A put replaces the row of the same id and
+    // leaves the others, and nothing is ever deleted (D-14). A put the store
+    // cannot clone throws before it queues and leaves the transaction open, so
+    // the catch aborts it by hand or the puts already queued would commit.
+    async importAll({ recipes, versions, batches, library, machines, styles, scales, problems }) {
       const db = await dbPromise;
-      const tx = db.transaction(['recipes', 'versions', 'batches', 'library'], 'readwrite');
+      const tx = db.transaction(FILE_STORES, 'readwrite');
       const done = tx.done;
       // Every queued put is kept so a failure can quiet the ones the abort
       // rejects behind it.
       const queued = [];
       try {
-        for (const recipe of recipes) queued.push(tx.objectStore('recipes').put(recipe));
-        for (const version of versions) queued.push(tx.objectStore('versions').put(version));
-        for (const batch of batches) queued.push(tx.objectStore('batches').put(batch));
-        for (const record of library) queued.push(tx.objectStore('library').put(record));
+        const incoming = { recipes, versions, batches, library, machines, styles, scales, problems };
+        for (const name of FILE_STORES) {
+          for (const row of incoming[name]) queued.push(tx.objectStore(name).put(row));
+        }
         await Promise.all([...queued, done]);
       } catch (error) {
         try {
@@ -254,24 +259,22 @@ export function createRepository() {
         throw error;
       }
     },
-    // D-07a: an export reads the four stores it carries in one readonly
+    // D-07a: an export reads the eight stores it carries in one readonly
     // transaction, so a second tab writing mid-export cannot give a backup
     // built from two moments. The drafts store is not read: drafts stay on
     // the device.
     async exportAll() {
       const db = await dbPromise;
-      const tx = db.transaction(['recipes', 'versions', 'batches', 'library'], 'readonly');
+      const tx = db.transaction(FILE_STORES, 'readonly');
       const done = tx.done;
       // Every queued read is kept so a failure can quiet the ones the abort
       // rejects behind it.
       const queued = [];
       try {
-        for (const name of ['recipes', 'versions', 'batches', 'library']) {
-          queued.push(tx.objectStore(name).getAll());
-        }
-        const [recipes, versions, batches, library] = await Promise.all(queued);
+        for (const name of FILE_STORES) queued.push(tx.objectStore(name).getAll());
+        const rows = await Promise.all(queued);
         await done;
-        return { recipes, versions, batches, library };
+        return Object.fromEntries(FILE_STORES.map((name, index) => [name, rows[index]]));
       } catch (error) {
         try {
           tx.abort();

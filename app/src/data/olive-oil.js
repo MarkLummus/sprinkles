@@ -105,12 +105,15 @@ export const oliveOilVersion = {
   // than being filled with an invented midpoint.
   iceEd: { style: null, servingTemperatureC: null, hardness: null, overrunPercent: null },
   serveTempC: null, // target serving temperature in degrees C (D-19), copied from the iceEd block's servingTemperatureC above, which balanced this formulation; a new recipe's comes from its chosen style
-  // The declared pair this recipe names from the battery's fixed AXES
-  // table (domain/axes.js), plus the declared problems (a list of 0 to 2). D-07: this
-  // recipe declares Body and Oil, and Bitter as the problem the maker can
-  // toggle on a tasting. No anchors are authored here anymore — the six
-  // axes' anchor words are fixed on the battery, not on the version.
-  declaredAxes: ['Body', 'Oil'],
+  // The recipe declares its own scale definitions, each carrying its kind
+  // (decision 3): this recipe declares Body and Oil, and Bitter as the problem
+  // the maker can toggle on a tasting (a list of 0 to 2). The batch copies the
+  // definitions into its snapshot (TASTE-03), so a later change to the
+  // recipe's scales never moves a stored mark.
+  declaredAxes: [
+    { key: 'body', name: 'Body', low: 'thin', high: 'heavy', kind: 'goldilocks', group: 'declared' },
+    { key: 'oil', name: 'Oil', low: 'faint', high: 'strong', kind: 'goldilocks', group: 'declared' },
+  ],
   declaredFlaws: ['Bitter'],
   // Prose instruction with typed targets beside it. Purpose is why the step
   // exists — diagnostic input. Aside is what to watch while doing it. They

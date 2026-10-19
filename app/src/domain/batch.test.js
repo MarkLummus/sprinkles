@@ -78,7 +78,7 @@ describe('createBatch', () => {
     const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
     expect(batch.snapshot.rows).toHaveLength(12);
     expect(batch.snapshot.coefficientSetId).toBe('2026.1-slice-transcription');
-    expect(batch.snapshot.declaredAxes).toEqual(['Body', 'Oil']);
+    expect(batch.snapshot.declaredAxes).toEqual(oliveOilVersion.declaredAxes);
     expect(batch.snapshot.declaredFlaws).toEqual(['Bitter']);
   });
 
@@ -96,7 +96,7 @@ describe('createBatch', () => {
 
     expect(batch.snapshot.rows[0].portions[0].grams).toBe(originalGrams);
     expect(batch.snapshot.rows[0].ingredient.composition.fat).toBe(originalFat);
-    expect(batch.snapshot.declaredAxes).toEqual(['Body', 'Oil']);
+    expect(batch.snapshot.declaredAxes).toEqual(oliveOilVersion.declaredAxes);
     expect(batch.snapshot.declaredFlaws).toEqual(['Bitter']);
   });
 

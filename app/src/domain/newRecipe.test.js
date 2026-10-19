@@ -39,7 +39,7 @@ describe('createRecipe — the root version (D-01 to D-04)', () => {
     expect(create().version.sheetCode).not.toBe(codeFromVersionId('version-other'));
   });
 
-  it('carries exactly eighteen keys, and no equipment, process, iceEd, targets or coefficientSetName', () => {
+  it('carries exactly nineteen keys, and no equipment, process, iceEd, targets or coefficientSetName', () => {
     const { version } = create();
     expect(Object.keys(version).sort()).toEqual([
       'authored',
@@ -56,6 +56,7 @@ describe('createRecipe — the root version (D-01 to D-04)', () => {
       'recipeId',
       'rows',
       'schemaVersion',
+      'serveTempC',
       'sheetCode',
       'sheetDescription',
       'sheetTitle',
@@ -64,6 +65,12 @@ describe('createRecipe — the root version (D-01 to D-04)', () => {
     for (const key of ['equipment', 'process', 'iceEd', 'targets', 'coefficientSetName']) {
       expect(Object.hasOwn(version, key)).toBe(false);
     }
+  });
+
+  it('stores serveTempC empty: createRecipe is given none, and invents nothing (D-19)', () => {
+    const { version } = create();
+    expect(Object.hasOwn(version, 'serveTempC')).toBe(true);
+    expect(version.serveTempC).toBeNull();
   });
 
   it("has no parent and names its recipe, with the caller's id and clock", () => {

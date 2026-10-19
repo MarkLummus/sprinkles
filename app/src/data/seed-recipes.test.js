@@ -6,6 +6,7 @@ import { describe, it, expect } from 'vitest';
 import { seedRecipeGroups, transcribedRecipeGroups } from './seed-recipes.js';
 import { mexicanChocolateV1, mexicanChocolateV2, mexicanChocolateV3, mexicanChocolateV4 } from './mexican-chocolate.js';
 import { validateStoreFile, STORE_SCHEMA_VERSION } from '../store/transfer.js';
+import { isScaleDefinition } from '../domain/catalog.js';
 import { computeBalance } from '../domain/composition.js';
 import { buildFigures } from '../domain/figures.js';
 import { buildAdvisories } from '../domain/advisories.js';
@@ -103,6 +104,10 @@ describe('every seeded version declares at most two scales and two problems (ske
     expect(Array.isArray(version.declaredAxes)).toBe(true);
     expect(Array.isArray(version.declaredFlaws)).toBe(true);
     expect(version.declaredAxes.length).toBeLessThanOrEqual(2);
+    for (const scale of version.declaredAxes) {
+      expect(isScaleDefinition(scale)).toBe(true);
+      expect(scale.group).toBe('declared');
+    }
     expect(version.declaredFlaws.length).toBeLessThanOrEqual(2);
     expect(version).not.toHaveProperty('declaredFlaw');
   });

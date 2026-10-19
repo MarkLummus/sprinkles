@@ -98,7 +98,7 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
     // Core words, for every recipe.
     for (const word of [...CORE_AXIS_NAMES, ...DEFECTS]) expect(markup, word).toContain(word);
     // Declared words, from this version's own list.
-    for (const name of declaredAxes) expect(markup, name).toContain(name);
+    for (const scale of declaredAxes) expect(markup, scale.name).toContain(scale.name);
     for (const word of declaredFlaws) expect(problemsRow(markup), word).toContain(word);
     // Every scale row has its five ticks, the ends tall.
     expect(classCount(markup, 'lf-tick')).toBe(5 * (CORE_AXIS_COUNT + declaredAxes.length));

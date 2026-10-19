@@ -13,6 +13,11 @@ import { RESERVED_ROW_IDS, rowFromLibraryRecord } from '../domain/versionRow.js'
 import { nextStepKey } from '../domain/stepKeys.js';
 import { buildDraftRecord, draftMatchesVersion } from '../domain/draft.js';
 
+// Olive oil's two declared scale definitions (decision 3, TASTE-03), the shape a
+// version and a batch snapshot store.
+const [BODY, OIL] = oliveOilVersion.declaredAxes;
+const SALT = { key: 'scale-salt', name: 'Salt', low: 'bland', high: 'salty', kind: 'goldilocks', group: 'declared' };
+
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. Mirrors createRepository's exportAll and
 // importAll over four stores: importAll upserts by id, never a wholesale
@@ -98,7 +103,7 @@ function makeVersion(overrides = {}) {
     ],
     method: [],
     authored: { beforeYouStart: [] },
-    declaredAxes: ['Body', 'Oil'],
+    declaredAxes: [BODY, OIL],
     declaredFlaws: ['Bitter'],
     versionLabel: 'v1 label',
     sheetTitle: '',
@@ -152,7 +157,7 @@ function makeBatch(overrides = {}) {
           removed: false,
         },
       ],
-      declaredAxes: ['Body', 'Oil'],
+      declaredAxes: [BODY, OIL],
       declaredFlaws: ['Bitter'],
     },
     churn: {
@@ -486,11 +491,18 @@ describe('validateStoreFile', () => {
     expect(result.errors.some((error) => error.includes('.snapshot.declaredAxes[0]'))).toBe(true);
   });
 
-  it('rejects a batch whose declaredAxes names an axis outside the declared pair', () => {
-    const batch = makeBatch({ snapshot: { ...makeBatch().snapshot, declaredAxes: ['Hardness'] } });
+  it('rejects a batch whose declaredAxes holds a name string, the earlier shape', () => {
+    const batch = makeBatch({ snapshot: { ...makeBatch().snapshot, declaredAxes: [BODY.name] } });
     const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('.snapshot.declaredAxes[0]'))).toBe(true);
+  });
+
+  it('rejects a batch whose declaredAxes key equals a core key', () => {
+    const batch = makeBatch({ snapshot: { ...makeBatch().snapshot, declaredAxes: [{ ...BODY, key: 'hardness' }] } });
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.snapshot.declaredAxes[0].key'))).toBe(true);
   });
 
   it('rejects a batch carrying an own __proto__ key, and leaves a fresh object unpolluted', () => {
@@ -1228,8 +1240,8 @@ describe('validateVersion, the fields', () => {
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
 
-  it('accepts the battery\'s declared pair and declared problem', () => {
-    const version = makeVersion({ declaredAxes: ['Body', 'Oil'], declaredFlaws: ['Bitter'] });
+  it('accepts two declared scale definitions and a declared problem', () => {
+    const version = makeVersion({ declaredAxes: [BODY, OIL], declaredFlaws: ['Bitter'] });
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
 
@@ -1239,7 +1251,7 @@ describe('validateVersion, the fields', () => {
   });
 
   it('accepts two declared scales and two declared problems', () => {
-    const version = makeVersion({ declaredAxes: ['Body', 'Oil'], declaredFlaws: ['Bitter', 'Salty'] });
+    const version = makeVersion({ declaredAxes: [BODY, OIL], declaredFlaws: ['Bitter', 'Salty'] });
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
 
@@ -1266,10 +1278,10 @@ describe('validateVersion, the fields', () => {
   });
 
   it('rejects a third declared scale and a repeated declared scale, naming the path', () => {
-    const third = validateStoreFile(makeStoreFile([makeVersion({ declaredAxes: ['Body', 'Oil', 'Sweetness'] })]));
+    const third = validateStoreFile(makeStoreFile([makeVersion({ declaredAxes: [BODY, OIL, SALT] })]));
     expect(third.ok).toBe(false);
     expect(third.errors.some((error) => error.includes('$.versions[0].declaredAxes') && error.includes('at most 2'))).toBe(true);
-    const repeat = validateStoreFile(makeStoreFile([makeVersion({ declaredAxes: ['Body', 'Body'] })]));
+    const repeat = validateStoreFile(makeStoreFile([makeVersion({ declaredAxes: [BODY, { ...OIL, key: BODY.key }] })]));
     expect(repeat.ok).toBe(false);
     expect(repeat.errors.some((error) => error.includes('$.versions[0].declaredAxes'))).toBe(true);
   });
@@ -1342,18 +1354,42 @@ describe('validateVersion, the fields', () => {
     expect(result.errors.some((error) => error.includes('recipeName'))).toBe(false);
   });
 
-  it('rejects a declaredAxes entry naming an axis outside the declared pair, naming the path', () => {
-    const version = makeVersion({ declaredAxes: ['Sweetness'] });
+  it('rejects a declaredAxes entry that is a name string, naming the path', () => {
+    const version = makeVersion({ declaredAxes: [BODY.name] });
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('.declaredAxes[0]'))).toBe(true);
+    expect(result.errors.some((error) => error.includes('.declaredAxes[0]') && error.includes('declared scale definition'))).toBe(true);
+  });
+
+  it('rejects a declared definition with kind "stars", naming the path', () => {
+    const result = validateStoreFile(makeStoreFile([makeVersion({ declaredAxes: [{ ...BODY, kind: 'stars' }] })]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.versions[0].declaredAxes[0]'))).toBe(true);
+  });
+
+  it('rejects a declared definition with group "core", naming the path', () => {
+    const result = validateStoreFile(makeStoreFile([makeVersion({ declaredAxes: [{ ...BODY, group: 'core' }] })]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.versions[0].declaredAxes[0]'))).toBe(true);
+  });
+
+  it('rejects a declared definition whose key equals a core scale key', () => {
+    const result = validateStoreFile(makeStoreFile([makeVersion({ declaredAxes: [{ ...BODY, key: 'hardness' }] })]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.versions[0].declaredAxes[0].key'))).toBe(true);
+  });
+
+  it('rejects a declared definition keyed __proto__', () => {
+    const result = validateStoreFile(makeStoreFile([makeVersion({ declaredAxes: [{ ...BODY, key: '__proto__' }] })]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.versions[0].declaredAxes[0]'))).toBe(true);
   });
 
   it("rejects a file carrying __proto__ on a method step — the uses array's containing object — via the existing scanner", () => {
     const malicious = JSON.parse(
       '{"app":"sprinkles","schemaVersion":8,"versions":[{"id":"v1","schemaVersion":6,"recipeId":"r1","coefficientSetId":"c",' +
         '"parentVersionId":null,"parentVersionLabel":null,"reason":null,"citedBatchId":null,"createdAt":"2026-01-01T00:00:00.000Z",' +
-        '"declaredAxes":["Body","Oil"],"declaredFlaws":["Bitter"],"versionLabel":"v","sheetTitle":"","sheetDescription":"",' +
+        '"declaredAxes":[],"declaredFlaws":["Bitter"],"versionLabel":"v","sheetTitle":"","sheetDescription":"",' +
         '"rows":[{"id":"r1","ingredientName":"x","portions":[{"step":1,"grams":1}],"ingredient":{"composition":{"fat":1}},"removed":false}],' +
         '"method":[{"n":1,"leadIn":"x","instruction":"x","removed":false,"uses":[],"__proto__":{"polluted":true}}],' +
         '"authored":{"beforeYouStart":[]}}],"batches":[],"recipes":[],"library":[]}',

@@ -2,9 +2,9 @@
 // six-axis table (sketch 007's settled AXES array), the five whole
 // goldilocks stops, and the per-batch axis list built from the batch's
 // own snapshot — see 03.3.1-CONTEXT.md D-07/D-10 and the structural
-// contract's "Axes spec". Every axis is fixed now: there is no longer a
-// free-form declared axis authored on the version, only a declared name
-// naming one of these six rows (Pitfall 3).
+// contract's "Axes spec". A version and a batch snapshot store their declared
+// scales as definitions { key, name, low, high, kind, group } (decision 3,
+// TASTE-03); the readers below take them as stored and resolve no names.
 
 /**
  * AXES: the six fixed axes, verbatim from the contract's "Axes spec",
@@ -40,34 +40,28 @@ export function stopWordsFor(axis) {
 
 /**
  * axesForBatch(batch) -> the four core axes followed by the batch's
- * declared axes, resolved by name against AXES. Reads
- * batch.snapshot.declaredAxes only, and from nowhere else — the snapshot
- * is what protects a stored mark from a later change to the recipe's
- * declared pair, and reaching for a live version record here would be
- * exactly the drift this module exists to prevent.
+ * declared scale definitions, as stored and in the stored order; no name is
+ * resolved. Reads batch.snapshot.declaredAxes only, and from nowhere else —
+ * the snapshot is what protects a stored mark from a later change to the
+ * recipe's declared scales, and reaching for a live version record here
+ * would be exactly the drift this module exists to prevent.
  */
 export function axesForBatch(batch) {
   const core = AXES.slice(0, CORE_AXIS_COUNT);
-  const declared = batch.snapshot.declaredAxes
-    .map((name) => AXES.find((axis) => axis.name === name))
-    .filter((axis) => axis != null);
-  return [...core, ...declared];
+  return [...core, ...batch.snapshot.declaredAxes];
 }
 
 /**
  * axesForVersion(version) -> the four core axes followed by the version's
- * declared axes, resolved by name against AXES, in the version's own order;
- * a name that is no AXES row is dropped. The version-side twin of
- * axesForBatch: the blank Tasting log prints this list before any batch
- * exists, so it reads version.declaredAxes (the pen reads the same list to
- * open a new batch, and the batch then freezes it into its own snapshot).
+ * declared scale definitions, as stored and in the version's own order. The
+ * version-side twin of axesForBatch: the blank Tasting log prints this list
+ * before any batch exists, so it reads version.declaredAxes (the pen reads
+ * the same list to open a new batch, and the batch then freezes it into its
+ * own snapshot).
  */
 export function axesForVersion(version) {
   const core = AXES.slice(0, CORE_AXIS_COUNT);
-  const declared = (version.declaredAxes ?? [])
-    .map((name) => AXES.find((axis) => axis.name === name))
-    .filter((axis) => axis != null);
-  return [...core, ...declared];
+  return [...core, ...(version.declaredAxes ?? [])];
 }
 
 /** markKeyFor(axis) -> the axis's fixed key. Every axis is fixed now (D-07). */

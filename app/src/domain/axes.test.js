@@ -102,6 +102,13 @@ describe('axesForBatch', () => {
     expect(axes).toHaveLength(6);
   });
 
+  it('returns the snapshot\'s declared definitions as stored after the four core axes', () => {
+    const mine = { key: 'scale-mine', name: 'Mystery', low: 'a', high: 'b', kind: 'magnitude', group: 'declared' };
+    const axes = axesForBatch({ snapshot: { declaredAxes: [mine] } });
+    expect(axes).toHaveLength(5);
+    expect(axes[4]).toEqual(mine);
+  });
+
   it('returns exactly the four core axes when the snapshot declares no axes', () => {
     const batch = { snapshot: { declaredAxes: [] } };
     const axes = axesForBatch(batch);
@@ -129,9 +136,11 @@ describe('axesForVersion', () => {
     expect(axes).toHaveLength(CORE_AXIS_COUNT);
   });
 
-  it('keeps the declared names in the version\'s own order and drops a name that is no axis', () => {
-    const axes = axesForVersion({ declaredAxes: ['Oil', 'Mystery', 'Body'] });
-    expect(axes.slice(CORE_AXIS_COUNT).map((axis) => axis.name)).toEqual(['Oil', 'Body']);
+  it('returns the declared definitions as given, in the version\'s own order, resolving no name', () => {
+    const [body, oil] = oliveOilVersion.declaredAxes;
+    const mine = { key: 'scale-mine', name: 'Mystery', low: 'a', high: 'b', kind: 'magnitude', group: 'declared' };
+    const axes = axesForVersion({ declaredAxes: [oil, mine, body] });
+    expect(axes.slice(CORE_AXIS_COUNT)).toEqual([oil, mine, body]);
   });
 
   it('agrees with axesForBatch for a batch snapshotting the same version', () => {

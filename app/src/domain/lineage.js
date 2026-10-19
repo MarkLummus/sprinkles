@@ -123,7 +123,12 @@ const KEYS_COPIED_WHEN_OWNED = ['coefficientSetName', 'targets', 'equipment', 'p
  * (03.5-CONTEXT.md D-11). coefficientSetName, targets, equipment, process and
  * iceEd are copied only when the parent owns them, so the child of a created
  * root, or of a seed version with no targets, has no own key holding
- * undefined. The child's own sheetCode is derived once from its id
+ * undefined. declaredAxes and declaredFlaws are structuredClone copies, so a
+ * recipe's scale keeps its minted key through child versions and the child
+ * shares no definition object with its parent (D-03b). serveTempC, the target
+ * serving temperature, is copied as the parent's targets are (D-19); every
+ * parent owns the key (each seeded version, and createRecipe's root as null),
+ * so it is a plain copy and not one of the copied-when-owned keys. The child's own sheetCode is derived once from its id
  * (codeFromVersionId) and stored, never copied from the parent (D-04b).
  * Pure: id and now are supplied by the caller,
  * exactly as domain/batch.js's createBatch takes them — this function
@@ -141,8 +146,9 @@ export function createChildVersion(parent, penFields, { id, now }) {
     versionLabel: penFields.versionLabel,
     coefficientSetId: parent.coefficientSetId,
     ...Object.fromEntries(KEYS_COPIED_WHEN_OWNED.filter((key) => Object.hasOwn(parent, key)).map((key) => [key, parent[key]])),
-    declaredAxes: parent.declaredAxes,
-    declaredFlaws: parent.declaredFlaws,
+    declaredAxes: structuredClone(parent.declaredAxes),
+    declaredFlaws: structuredClone(parent.declaredFlaws),
+    serveTempC: parent.serveTempC,
     reason: penFields.reason,
     citedBatchId: penFields.citedBatchId,
     rows: structuredClone(penFields.rows),

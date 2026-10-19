@@ -4,7 +4,9 @@
 // random source (Phase 7 D-01). The root version leaves out equipment,
 // process, iceEd and targets: none is invented, as the seed leaves an unknown
 // slot null rather than a made-up value (D-02); there is no coefficientSetName
-// and coefficientSetId is '' (D-03). The rows arrive already built by
+// and coefficientSetId is '' (D-03). serveTempC, the target serving
+// temperature, is stored empty (null): createRecipe is given none, and invents
+// nothing (D-19). The rows arrive already built by
 // rowFromLibraryRecord and are copied (Phase 7, RESEARCH A2).
 //
 // The refusals throw (with versionRow.js and stepKeys.js, the first throws in
@@ -76,6 +78,7 @@ export function createRecipe({ name, versionLabel, rows }, { recipeId, versionId
     rows: structuredClone(rows),
     declaredAxes: [],
     declaredFlaws: [],
+    serveTempC: null,
     method: [],
     authored: { beforeYouStart: [] },
     sheetCode: codeFromVersionId(versionId),

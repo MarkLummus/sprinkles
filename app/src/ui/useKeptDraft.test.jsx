@@ -13,18 +13,37 @@ import { StrictMode, act, useRef, useState } from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createRoot } from 'react-dom/client';
 
+// The write methods past the three drafts ones exist only so the create
+// tests can prove a create draft never calls them (D-18, T-09-09).
 const repo = vi.hoisted(() => ({
   getDraft: vi.fn(),
   saveDraft: vi.fn(),
   deleteDraft: vi.fn(),
+  saveVersion: vi.fn(),
+  createVersion: vi.fn(),
+  saveRecipe: vi.fn(),
+  putAll: vi.fn(),
+  putAllRecipes: vi.fn(),
+  saveBatch: vi.fn(),
 }));
 
 vi.mock('../store/repository.js', () => ({
-  repository: { getDraft: repo.getDraft, saveDraft: repo.saveDraft, deleteDraft: repo.deleteDraft },
+  repository: {
+    getDraft: repo.getDraft,
+    saveDraft: repo.saveDraft,
+    deleteDraft: repo.deleteDraft,
+    saveVersion: repo.saveVersion,
+    createVersion: repo.createVersion,
+    saveRecipe: repo.saveRecipe,
+    putAll: repo.putAll,
+    putAllRecipes: repo.putAllRecipes,
+    saveBatch: repo.saveBatch,
+  },
 }));
 
 import { DRAFT_KEPT_STATUS, useDraftWriter, useKeptDraft } from './useKeptDraft.js';
-import { buildDraftRecord } from '../domain/draft.js';
+import { blankCreateDraft, buildDraftRecord } from '../domain/draft.js';
+import { nextStepKey } from '../domain/stepKeys.js';
 import { penDraftFromVersion } from '../domain/penDraft.js';
 import { draftFromBatch } from '../domain/recordDraft.js';
 import { notebookPath } from './notebookPaths.js';
@@ -38,6 +57,7 @@ const WRITTEN_AT = '2026-10-10T08:05:00.000Z';
 
 const restorePlanSpy = vi.fn();
 const onRestoreRecord = vi.fn();
+const onRestoreCreate = vi.fn();
 const onPageStatus = vi.fn();
 const navigate = vi.fn();
 
@@ -128,6 +148,10 @@ beforeEach(() => {
   repo.deleteDraft.mockReset();
   repo.saveDraft.mockResolvedValue(undefined);
   repo.deleteDraft.mockResolvedValue(undefined);
+  for (const name of ['saveVersion', 'createVersion', 'saveRecipe', 'putAll', 'putAllRecipes', 'saveBatch']) {
+    repo[name].mockReset();
+  }
+  onRestoreCreate.mockClear();
   restorePlanSpy.mockClear();
   onRestoreRecord.mockClear();
   onPageStatus.mockClear();
@@ -273,6 +297,305 @@ describe('a pen opened while the read is out owns the stored draft (bug-stale-dr
     expect(saved.kind).toBe('plan');
     expect(saved.payload).toEqual(typed);
     expect(saved.penOpenedAt).toBe(OPENED_DURING_READ);
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+  });
+});
+
+// Phase 9 plan 04 (D-18, RESEARCH Pitfall 12): a create draft is kept through
+// the same hook with no version and no batches. A harness that passed a
+// version would pass without exercising the creating path, so this one passes
+// version null and batchesLoaded false, like Phase 10's editor at mount.
+let createControls = null;
+let createRenders = [];
+
+function CreateHarness({ initial }) {
+  const writer = useDraftWriter('v-new');
+  const [createDraft, setCreateDraft] = useState(initial);
+  const penOpenedAtRef = useRef(null);
+  const { draftRestoreDone } = useKeptDraft({
+    writer,
+    versionId: 'v-new',
+    recipeId: 'r-new',
+    batchId: undefined,
+    version: null,
+    batches: [],
+    batchesLoaded: false,
+    loadFailed: false,
+    mode: 'reading',
+    amendingBatchId: null,
+    penDraft: null,
+    draft: null,
+    amendBaseline: null,
+    amendOpener: null,
+    penOpenedAtRef,
+    onRestorePlan: restorePlanSpy,
+    onRestoreRecord,
+    creating: true,
+    createDraft,
+    onRestoreCreate(payload) {
+      onRestoreCreate(payload);
+      setCreateDraft(payload);
+    },
+    onPageStatus,
+    navigate,
+  });
+  createControls = { setCreateDraft };
+  createRenders.push({ createDraft, draftRestoreDone });
+  return null;
+}
+
+async function mountCreate(initial) {
+  const container = document.createElement('div');
+  document.body.appendChild(container);
+  const root = createRoot(container);
+  current = { container, root };
+  await act(async () => {
+    root.render(
+      <StrictMode>
+        <CreateHarness initial={initial} />
+      </StrictMode>,
+    );
+  });
+  await flush();
+}
+
+async function unmountCurrent() {
+  await act(async () => current.root.unmount());
+  current.container.remove();
+  current = null;
+}
+
+function blankCreate(name = '') {
+  return blankCreateDraft({ recipeId: 'r-new', versionId: 'v-new', name });
+}
+
+function createRecordOf(payload) {
+  return buildDraftRecord({ versionId: 'v-new', kind: 'create', payload, now: WRITTEN_AT });
+}
+
+const HALF_SCALE = { key: 'scale-a', name: 'Bo', low: '', high: '', kind: '', group: 'declared' };
+
+function expectNoVersionRecipeOrBatchWrite() {
+  for (const name of ['saveVersion', 'createVersion', 'saveRecipe', 'putAll', 'putAllRecipes', 'saveBatch']) {
+    expect(repo[name]).not.toHaveBeenCalled();
+  }
+}
+
+describe('a create draft is kept through the same hook with no version (D-18)', () => {
+  beforeEach(() => {
+    createRenders = [];
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+  });
+
+  it('reads once under StrictMode and restores a name-only draft once, with version null and batches not loaded', async () => {
+    const payload = { recipeId: 'r-new', versionId: 'v-new', name: 'Lemon' };
+    repo.getDraft.mockResolvedValue(createRecordOf(payload));
+
+    await mountCreate(blankCreate());
+
+    expect(repo.getDraft).toHaveBeenCalledTimes(1);
+    expect(repo.getDraft).toHaveBeenCalledWith('v-new');
+    expect(onRestoreCreate).toHaveBeenCalledTimes(1);
+    expect(onRestoreCreate).toHaveBeenCalledWith(payload);
+    expect(onPageStatus).toHaveBeenCalledTimes(1);
+    expect(onPageStatus).toHaveBeenCalledWith(DRAFT_KEPT_STATUS);
+    expect(createRenders[createRenders.length - 1].draftRestoreDone).toBe(true);
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+    expectNoVersionRecipeOrBatchWrite();
+  });
+
+  it('restores a half-made draft, a scale with blank words included, and does not delete it', async () => {
+    const payload = { ...blankCreate('Lemon'), scales: [HALF_SCALE], problems: ['', ''] };
+    repo.getDraft.mockResolvedValue(createRecordOf(payload));
+
+    await mountCreate(blankCreate());
+
+    expect(onRestoreCreate).toHaveBeenCalledTimes(1);
+    expect(onRestoreCreate).toHaveBeenCalledWith(payload);
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it('deletes a stored create draft that does not fit and restores nothing', async () => {
+    repo.getDraft.mockResolvedValue(createRecordOf({ recipeId: 'r-new', versionId: 'v-new', name: 'Lemon', machine: {} }));
+
+    await mountCreate(blankCreate());
+
+    expect(onRestoreCreate).not.toHaveBeenCalled();
+    expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
+    expect(repo.deleteDraft).toHaveBeenCalledWith('v-new');
+    expect(createRenders[createRenders.length - 1].draftRestoreDone).toBe(true);
+  });
+
+  it('writes a create record 250 ms after the last change, and no version, recipe or batch', async () => {
+    repo.getDraft.mockResolvedValue(null);
+    await mountCreate(blankCreate());
+    expect(repo.saveDraft).not.toHaveBeenCalled();
+
+    await act(async () => {
+      createControls.setCreateDraft(blankCreate('Lem'));
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(200);
+    });
+    await act(async () => {
+      createControls.setCreateDraft(blankCreate('Lemon'));
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(249);
+    });
+    await flush();
+    expect(repo.saveDraft).not.toHaveBeenCalled();
+    await act(async () => {
+      vi.advanceTimersByTime(1);
+    });
+    await flush();
+
+    expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+    const saved = repo.saveDraft.mock.calls[0][0];
+    expect(saved.kind).toBe('create');
+    expect(saved.versionId).toBe('v-new');
+    expect(saved.payload.name).toBe('Lemon');
+    expectNoVersionRecipeOrBatchWrite();
+  });
+
+  it('writes the waiting record when the page unmounts inside the debounce', async () => {
+    repo.getDraft.mockResolvedValue(null);
+    await mountCreate(blankCreate());
+
+    await act(async () => {
+      createControls.setCreateDraft(blankCreate('Lemon'));
+    });
+    expect(repo.saveDraft).not.toHaveBeenCalled();
+    await unmountCurrent();
+    await flush();
+
+    expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+    expect(repo.saveDraft.mock.calls[0][0].kind).toBe('create');
+    expect(repo.saveDraft.mock.calls[0][0].payload.name).toBe('Lemon');
+  });
+
+  it('deletes the stored record when the draft is set back to blank', async () => {
+    repo.getDraft.mockResolvedValue(createRecordOf({ recipeId: 'r-new', versionId: 'v-new', name: 'Lemon' }));
+    await mountCreate(blankCreate());
+    expect(onRestoreCreate).toHaveBeenCalledTimes(1);
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+
+    await act(async () => {
+      createControls.setCreateDraft(blankCreate(''));
+    });
+    await flush();
+
+    expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
+    expect(repo.deleteDraft).toHaveBeenCalledWith('v-new');
+    expect(repo.saveDraft).not.toHaveBeenCalled();
+  });
+
+  describe('a read that resolves after the maker has typed (late read, T-09-45)', () => {
+    const stored = { recipeId: 'r-new', versionId: 'v-new', name: 'Lemon' };
+    let resolveRead;
+
+    async function mountWithDeferredRead() {
+      repo.getDraft.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveRead = resolve;
+          }),
+      );
+      await mountCreate(blankCreate());
+      expect(repo.getDraft).toHaveBeenCalledTimes(1);
+      expect(createRenders[createRenders.length - 1].draftRestoreDone).toBe(false);
+    }
+
+    async function resolveStored() {
+      await act(async () => {
+        resolveRead(createRecordOf(stored));
+      });
+      await flush();
+    }
+
+    it('keeps what was typed: no restore, no status, no delete, and the typed draft is written over the stored one', async () => {
+      await mountWithDeferredRead();
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Typed'));
+      });
+      await resolveStored();
+
+      expect(onRestoreCreate).not.toHaveBeenCalled();
+      expect(onPageStatus).not.toHaveBeenCalled();
+      expect(repo.deleteDraft).not.toHaveBeenCalled();
+      expect(createRenders[createRenders.length - 1].draftRestoreDone).toBe(true);
+
+      await act(async () => {
+        vi.advanceTimersByTime(250);
+      });
+      await flush();
+      expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+      const saved = repo.saveDraft.mock.calls[0][0];
+      expect(saved.kind).toBe('create');
+      expect(saved.payload.name).toBe('Typed');
+    });
+
+    it('restores the stored draft when the maker typed nothing while the read was out', async () => {
+      await mountWithDeferredRead();
+      await resolveStored();
+
+      expect(onRestoreCreate).toHaveBeenCalledTimes(1);
+      expect(onRestoreCreate).toHaveBeenCalledWith(stored);
+      expect(onPageStatus).toHaveBeenCalledWith(DRAFT_KEPT_STATUS);
+    });
+
+    it('typed, then cleared back to blank: nothing restored, nothing written, the stored record deleted once', async () => {
+      await mountWithDeferredRead();
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Typed'));
+      });
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate(''));
+      });
+      await resolveStored();
+
+      expect(onRestoreCreate).not.toHaveBeenCalled();
+      expect(repo.saveDraft).not.toHaveBeenCalled();
+      expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
+      expect(repo.deleteDraft).toHaveBeenCalledWith('v-new');
+
+      // The next visit finds a store without the record and restores nothing.
+      await unmountCurrent();
+      repo.getDraft.mockReset();
+      repo.getDraft.mockResolvedValue(null);
+      onRestoreCreate.mockClear();
+      await mountCreate(blankCreate());
+      expect(repo.getDraft).toHaveBeenCalledTimes(1);
+      expect(onRestoreCreate).not.toHaveBeenCalled();
+    });
+  });
+
+  it('keeps the method as its own issued-key ledger across a closed tab: the next step key is 4, not 3', async () => {
+    const step = (n, extra = {}) => ({ n, leadIn: `lead ${n}`, instruction: `do ${n}`, ...extra });
+    const method = [step(1), step(2), step(3, { removed: true })];
+    repo.getDraft.mockResolvedValue(null);
+    await mountCreate(blankCreate('Lemon'));
+
+    await act(async () => {
+      createControls.setCreateDraft({ ...blankCreate('Lemon'), method });
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+    });
+    await flush();
+    expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+    const written = repo.saveDraft.mock.calls[0][0];
+
+    await unmountCurrent();
+    repo.getDraft.mockReset();
+    repo.getDraft.mockResolvedValue(structuredClone(written));
+    onRestoreCreate.mockClear();
+    await mountCreate(blankCreate());
+
+    expect(onRestoreCreate).toHaveBeenCalledTimes(1);
+    const restored = onRestoreCreate.mock.calls[0][0];
+    expect(restored.method).toEqual(method);
+    expect(nextStepKey(restored.method)).toBe(4);
     expect(repo.deleteDraft).not.toHaveBeenCalled();
   });
 });

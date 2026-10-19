@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { repository } from '../store/repository.js';
-import { buildDraftRecord, draftMatchesVersion } from '../domain/draft.js';
+import { buildDraftRecord, draftMatchesCreate, draftMatchesVersion, isCreateDraftDirty } from '../domain/draft.js';
 import { derivePenState, isPenDraftDirty } from '../domain/penDraft.js';
 import { isDraftDirty } from '../domain/recordDraft.js';
 import { notebookPath } from './notebookPaths.js';
@@ -58,6 +58,17 @@ export function useDraftWriter(versionId) {
 // record pen's half of a restore. Both callbacks run only after the restore
 // guard has seen the version and its batches, so they are safe while records
 // are still loading.
+//
+// A creation (Phase 9, D-18) goes through the same hook and the same restore
+// path. With `creating` true there is no stored version yet, so the restore
+// waits for neither a version nor its batches, a stored draft is checked with
+// the create kind's own fit check, onRestoreCreate receives its payload, and
+// the persist effect keeps `createDraft` as a draft of kind create. Nothing is
+// written to versions, recipes or batches. The creation editor must hold
+// createDraft as state: a new object on every change and the same object
+// across renders when nothing changed, never a payload rebuilt during render.
+// The late-read rule below compares object identity, so a rebuilt payload
+// would read as typed on every render and skip every restore.
 export function useKeptDraft({
   writer,
   versionId,
@@ -76,6 +87,9 @@ export function useKeptDraft({
   penOpenedAtRef,
   onRestorePlan,
   onRestoreRecord,
+  creating = false,
+  createDraft,
+  onRestoreCreate,
   onPageStatus,
   navigate,
 }) {
@@ -100,6 +114,11 @@ export function useKeptDraft({
   const draftRestoreStartedRef = useRef(false);
   const modeRef = useRef(mode);
   modeRef.current = mode;
+  // The creation's counterpart of modeRef: the payload the editor holds now,
+  // compared with the one it held when the read began (a changed one means the
+  // maker typed while the read was out).
+  const createDraftRef = useRef(createDraft);
+  createDraftRef.current = createDraft;
 
   // Restore (D-15): once the version and its batches are read, look for this
   // version's draft. A record that no longer fits (an import replaced the
@@ -109,8 +128,9 @@ export function useKeptDraft({
   // batches until the maker presses Save, and nothing is asked (no dialog).
   useEffect(() => {
     if (draftRestoreStartedRef.current) return;
-    if (!version || version.recipeId !== recipeId || !batchesLoaded || loadFailed) return;
+    if (!creating && (!version || version.recipeId !== recipeId || !batchesLoaded || loadFailed)) return;
     draftRestoreStartedRef.current = true;
+    const createDraftAtRead = createDraftRef.current;
     Promise.resolve()
       .then(() => repository.getDraft(versionId))
       .then((record) => {
@@ -118,7 +138,7 @@ export function useKeptDraft({
           setDraftRestoreDone(true);
           return;
         }
-        if (!draftMatchesVersion(record, version, batches)) {
+        if (!(creating ? draftMatchesCreate(record) : draftMatchesVersion(record, version, batches))) {
           Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
           setDraftRestoreDone(true);
           return;
@@ -126,8 +146,12 @@ export function useKeptDraft({
         // A pen the maker opened while the read was out wins over the stored
         // one; the persist effect then keeps whichever is open. The stored
         // record is still there, so a pen that goes clean deletes it and one
-        // that stays dirty writes over it.
-        if (modeRef.current !== 'reading') {
+        // that stays dirty writes over it. A creation is the same: a payload
+        // the editor replaced while the read was out is what the maker typed,
+        // and it wins. The record is still in the store, so it is marked as
+        // present: the persist effect writes the typed draft over it, or, when
+        // the maker cleared it back to blank, deletes it.
+        if (creating ? createDraftRef.current !== createDraftAtRead : modeRef.current !== 'reading') {
           draftStoredRef.current = true;
           setDraftRestoreDone(true);
           return;
@@ -139,12 +163,14 @@ export function useKeptDraft({
         // batch's own and nothing is restored here. The persist effect stays
         // off on this instance (draftRestoreDone is not set), so it cannot
         // delete the draft the next instance, keyed by that batch, reads.
-        if (record.kind === 'amend' && batchId !== record.amendingBatchId) {
+        if (!creating && record.kind === 'amend' && batchId !== record.amendingBatchId) {
           navigate(notebookPath(version.recipeId, version.id, record.amendingBatchId), { replace: true });
           return;
         }
         draftStoredRef.current = true;
-        if (record.kind === 'plan') {
+        if (creating) {
+          onRestoreCreate(record.payload);
+        } else if (record.kind === 'plan') {
           onRestorePlan(record.payload, record.penOpenedAt);
         } else {
           // A new batch's record ('record') opens on any of the version's
@@ -156,7 +182,7 @@ export function useKeptDraft({
         setDraftRestoreDone(true);
       })
       .catch(() => setDraftRestoreDone(true));
-  }, [version, batchesLoaded, loadFailed]);
+  }, [version, batchesLoaded, loadFailed, creating]);
 
   // Persist: while a pen is open and holds ink, its draft is written 250 ms
   // after the last change; when no pen is open, or the open pen is clean
@@ -166,7 +192,16 @@ export function useKeptDraft({
     if (!draftRestoreDone) return undefined;
     const { openPen: persistedPen } = derivePenState({ mode, amendingBatchId });
     let record = null;
-    if (persistedPen === 'plan' && isPenDraftDirty(mode, penDraft, version)) {
+    if (creating) {
+      if (isCreateDraftDirty(createDraft)) {
+        record = buildDraftRecord({
+          versionId,
+          kind: 'create',
+          payload: createDraft,
+          now: new Date().toISOString(),
+        });
+      }
+    } else if (persistedPen === 'plan' && isPenDraftDirty(mode, penDraft, version)) {
       record = buildDraftRecord({
         versionId,
         kind: 'plan',
@@ -201,7 +236,7 @@ export function useKeptDraft({
     return () => {
       if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
     };
-  }, [draftRestoreDone, mode, amendingBatchId, penDraft, draft, amendBaseline, amendOpener, version]);
+  }, [draftRestoreDone, mode, amendingBatchId, penDraft, draft, amendBaseline, amendOpener, version, creating, createDraft]);
 
   // A page going away inside the debounce window must not lose the last
   // keystrokes: pagehide and a tab going hidden write the waiting record at

@@ -4,6 +4,7 @@
 // 03.5-SEED-REVIEW.md. Nothing here is wired into store/seed.js (D-07).
 import { embedFromLibrary } from './library-embed.js';
 import { createBatch } from '../domain/batch.js';
+import { SEED_CATALOG } from './seed-catalog.js';
 import { KITCHEN_EQUIPMENT } from './mexican-chocolate.js';
 
 export const coconutRecipe = {
@@ -96,7 +97,7 @@ export const coconutV1Batch = createBatch(
   coconutV1,
   coconutV1ChurnFields,
   coconutV1TastingFields,
-  { id: COCONUT_V1_BATCH_ID, now: coconutV1.createdAt },
+  { id: COCONUT_V1_BATCH_ID, now: coconutV1.createdAt, catalog: SEED_CATALOG },
 );
 
 // v2 — the direct fix for v1's failure (coconut cream -> coconut milk),
@@ -175,4 +176,5 @@ const coconutV2ChurnFields = {
 export const coconutV2Batch = createBatch(coconutV2, coconutV2ChurnFields, null, {
   id: COCONUT_V2_BATCH_ID,
   now: coconutV2.createdAt,
+  catalog: SEED_CATALOG,
 });

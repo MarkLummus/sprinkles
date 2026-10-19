@@ -56,6 +56,7 @@ export const TASTING_RESTORED_STATUS = 'Tasting restored.';
 // new Date().toISOString() calls, so nothing impure runs at render.
 export function useBatchRecording({
   version,
+  catalog,
   batches,
   batchId,
   setBatches,
@@ -465,7 +466,7 @@ export function useBatchRecording({
 
     let record;
     try {
-      record = createBatch(version, churnFields, tasting, { id: freshId(), now });
+      record = createBatch(version, churnFields, tasting, { id: freshId(), now, catalog });
     } catch {
       batchSaveLockRef.current = false;
       setBatchSaveAction(null);

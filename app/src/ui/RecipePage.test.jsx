@@ -51,6 +51,7 @@ import {
 import { VersionRow } from './VersionRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { createBatch, completeRecord } from '../domain/batch.js';
 import { BATTERY_FIELDS } from '../domain/battery.js';
 
@@ -546,7 +547,7 @@ describe('draftFromBatch — Correct reopens everything the record holds (D-03, 
       oliveOilVersion,
       { churnDate: '2026-09-01', atDraw: 'Nothing to note' },
       { marks: {}, fromFreezer: 'Not evaluated' },
-      { id: 'pick-1', now: '2026-09-01T00:00:00.000Z' },
+      { id: 'pick-1', now: '2026-09-01T00:00:00.000Z', catalog: SEED_CATALOG },
     );
     const draft = draftFromBatch(batch);
     expect(draft.atDraw).toBe('Nothing to note');
@@ -558,7 +559,7 @@ describe('draftFromBatch — Correct reopens everything the record holds (D-03, 
       oliveOilVersion,
       { churnDate: '2026-09-01', asMade: {}, stepChanges: {} },
       null,
-      { id: 'blank-1', now: '2026-09-01T00:00:00.000Z' },
+      { id: 'blank-1', now: '2026-09-01T00:00:00.000Z', catalog: SEED_CATALOG },
     );
     const draft = draftFromBatch(blankChurnBatch);
     expect(draft).not.toHaveProperty('timeToDrawTempMinutes');
@@ -1020,7 +1021,11 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
     // The churn fields name no Time to draw temp. (sketch 010 D17): a new
     // batch stores none.
     expect(churnFields).not.toHaveProperty('timeToDrawTempMinutes');
-    const newBatch = createBatch(oliveOilVersion, churnFields, null, { id: 'new-1', now: '2026-08-09T00:00:00.000Z' });
+    const newBatch = createBatch(oliveOilVersion, churnFields, null, {
+      id: 'new-1',
+      now: '2026-08-09T00:00:00.000Z',
+      catalog: SEED_CATALOG,
+    });
     expect(newBatch.churn).not.toHaveProperty('timeToDrawTempMinutes');
     expect(churnFields.atDraw).toBe(null);
     expect(churnFields.outOfMachineTempC).toBe(null);
@@ -1064,7 +1069,7 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
     const tastingFields = buildTastingFieldsFromDraft(draft, parsed);
     expect(churnFields.atDraw).toBe('Nothing to note');
     expect(tastingFields.fromFreezer).toBe('Not evaluated');
-    const stored = createBatch(oliveOilVersion, churnFields, tastingFields, { id: 'p-1', now: 'x' });
+    const stored = createBatch(oliveOilVersion, churnFields, tastingFields, { id: 'p-1', now: 'x', catalog: SEED_CATALOG });
     expect(stored.churn.atDraw).toBe('Nothing to note');
     expect(stored.tasting.fromFreezer).toBe('Not evaluated');
 
@@ -1073,7 +1078,7 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
       oliveOilVersion,
       buildChurnFieldsFromDraft(marked, parsed),
       buildTastingFieldsFromDraft(marked, parsed),
-      { id: 'p-2', now: 'x' },
+      { id: 'p-2', now: 'x', catalog: SEED_CATALOG },
     );
     expect(markedStored.churn.atDraw).toBe(null);
     expect(markedStored.tasting.fromFreezer).toBe(null);
@@ -1090,6 +1095,7 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
         : null;
     const churnOnlyBatch = createBatch(oliveOilVersion, buildChurnFieldsFromDraft(churnOnlyDraft, churnOnlyParsed), churnOnlyTasting, {
       id: 'churn-only-1',
+      catalog: SEED_CATALOG,
       now: '2026-08-09T00:00:00.000Z',
     });
     expect(churnOnlyBatch.tasting).toBe(null);
@@ -1102,6 +1108,7 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
         : null;
     const withTastingBatch = createBatch(oliveOilVersion, buildChurnFieldsFromDraft(withTastingDraft, withTastingParsed), withTasting, {
       id: 'with-tasting-1',
+      catalog: SEED_CATALOG,
       now: '2026-08-09T00:00:00.000Z',
     });
     expect(withTastingBatch.tasting.tastingTempC).toBe(-12);

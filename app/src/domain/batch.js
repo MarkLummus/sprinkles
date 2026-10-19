@@ -16,6 +16,7 @@
 // here.
 import { rowGrams } from './rows.js';
 import { MARK_ONE_OPTIONS } from './battery.js';
+import { coreScaleDefinitions, problemNames } from './catalog.js';
 
 export const BATCH_SCHEMA_VERSION = 4;
 
@@ -165,16 +166,25 @@ function buildTasting(tastingFields) {
 }
 
 /**
- * createBatch(version, churnFields, tastingFields, { id, now }) -> a new
- * batch record. Pure: id and now are supplied by the caller — this
+ * createBatch(version, churnFields, tastingFields, { id, now, catalog }) -> a
+ * new batch record. Pure: id and now are supplied by the caller — this
  * function never reaches for crypto.randomUUID() or new Date() itself
  * (that impurity lives in the one save handler that calls this). The
- * snapshot is a structuredClone of the version's rows, declaredAxes and
- * declaredFlaws, taken once here and never retaken by any later function
- * (BATCH2-01). tastingFields is zero-or-one: pass null for a fresh
- * churn-only record.
+ * snapshot is taken once here and never retaken by any later function
+ * (BATCH2-01): a structuredClone of the version's rows, declaredAxes and
+ * declaredFlaws, and, from the catalog the caller holds, a copy of the core
+ * scale definitions (coreScales) and the core problem words (coreProblems).
+ * The batch keeps the definitions it was recorded with, core ones included,
+ * so a later edit to the tables never moves a stored mark (D-03, TASTE-03);
+ * completeRecord never retakes them. The catalog is an argument because the
+ * domain never reads the store (D-02); a missing one is a caller bug and
+ * throws. tastingFields is zero-or-one: pass null for a fresh churn-only
+ * record.
  */
-export function createBatch(version, churnFields, tastingFields, { id, now }) {
+export function createBatch(version, churnFields, tastingFields, { id, now, catalog }) {
+  if (!catalog || !Array.isArray(catalog.scales) || !Array.isArray(catalog.problems)) {
+    throw new TypeError('createBatch needs a catalog with scales and problems arrays');
+  }
   return {
     schemaVersion: BATCH_SCHEMA_VERSION,
     id,
@@ -187,6 +197,8 @@ export function createBatch(version, churnFields, tastingFields, { id, now }) {
       rows: structuredClone(version.rows),
       declaredAxes: structuredClone(version.declaredAxes),
       declaredFlaws: structuredClone(version.declaredFlaws ?? []),
+      coreScales: coreScaleDefinitions(catalog.scales),
+      coreProblems: problemNames(catalog.problems),
     },
     churn: buildChurn(churnFields),
     tasting: buildTasting(tastingFields),

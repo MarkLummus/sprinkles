@@ -10,6 +10,7 @@ import {
   MARK_ONE_OPTIONS,
   PRINTED_MARK_ONE_OPTIONS,
   declaredProblemsForBatch,
+  coreProblemsForBatch,
   parseMeasuredDraft,
 } from './battery.js';
 
@@ -91,6 +92,21 @@ describe('declaredProblemsForBatch', () => {
 
   it('reads an absent list as no declared problems', () => {
     expect(declaredProblemsForBatch({ snapshot: {} })).toEqual([]);
+  });
+});
+
+describe('coreProblemsForBatch', () => {
+  it('reads the batch snapshot only: the words come back in order', () => {
+    const coreProblems = ['Coarse, icy', 'Salty crust', 'Greasy film'];
+    expect(coreProblemsForBatch({ snapshot: { coreProblems } })).toEqual(coreProblems);
+  });
+
+  it('returns a copy, so a caller cannot move the stored snapshot', () => {
+    const batch = { snapshot: { coreProblems: ['Coarse, icy'] } };
+    const words = coreProblemsForBatch(batch);
+    expect(words).not.toBe(batch.snapshot.coreProblems);
+    words.push('Salty');
+    expect(batch.snapshot.coreProblems).toEqual(['Coarse, icy']);
   });
 });
 

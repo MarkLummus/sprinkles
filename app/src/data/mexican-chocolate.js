@@ -8,6 +8,7 @@
 // rather than repeat. Nothing here is wired into store/seed.js (D-07).
 import { embedFromLibrary } from './library-embed.js';
 import { createBatch } from '../domain/batch.js';
+import { SEED_CATALOG } from './seed-catalog.js';
 
 // This transcription's own bookkeeping number, matching olive-oil.js's
 // VERSION_SCHEMA_VERSION (5) plus the recipes-store split it already
@@ -244,7 +245,7 @@ export const mexicanChocolateV1Batch = createBatch(
   mexicanChocolateV1,
   mexicanChocolateV1ChurnFields,
   mexicanChocolateV1TastingFields,
-  { id: MEXICAN_CHOCOLATE_V1_BATCH_ID, now: '2025-12-13T00:00:00.000Z' },
+  { id: MEXICAN_CHOCOLATE_V1_BATCH_ID, now: '2025-12-13T00:00:00.000Z', catalog: SEED_CATALOG },
 );
 
 // v2 — ~/Documents/Mexican Chocolate v2-2.ier (Ice Ed export, Recipe.Name
@@ -422,5 +423,5 @@ export const mexicanChocolateV3Batch = createBatch(
   mexicanChocolateV3,
   mexicanChocolateV3ChurnFields,
   null,
-  { id: MEXICAN_CHOCOLATE_V3_BATCH_ID, now: '2026-01-13T19:06:00.000Z' },
+  { id: MEXICAN_CHOCOLATE_V3_BATCH_ID, now: '2026-01-13T19:06:00.000Z', catalog: SEED_CATALOG },
 );

@@ -5,6 +5,13 @@
 // contract's "Axes spec". A version and a batch snapshot store their declared
 // scales as definitions { key, name, low, high, kind, group } (decision 3,
 // TASTE-03); the readers below take them as stored and resolve no names.
+//
+// Storing a kind is not kind-aware presentation. Every scale definition now
+// carries its kind, but stopWordsFor, readMarkWord and AxisMark still treat each
+// scale as goldilocks, with "right" as the middle stop; no Phase 9 scale is a
+// magnitude scale. How a magnitude scale reads (its stop words, its read-back
+// word, its middle) is Phase 12's work (decision 3: Phase 9 the definition's
+// shape, Phase 10 and Phase 12 the rest).
 import { coreScaleDefinitions } from './catalog.js';
 
 /**
@@ -40,16 +47,16 @@ export function stopWordsFor(axis) {
 }
 
 /**
- * axesForBatch(batch) -> the four core axes followed by the batch's
- * declared scale definitions, as stored and in the stored order; no name is
- * resolved. Reads batch.snapshot.declaredAxes only, and from nowhere else —
- * the snapshot is what protects a stored mark from a later change to the
- * recipe's declared scales, and reaching for a live version record here
- * would be exactly the drift this module exists to prevent.
+ * axesForBatch(batch) -> the core scale definitions the batch was recorded
+ * with followed by its declared scale definitions, as stored and in the stored
+ * order; no name is resolved. Reads batch.snapshot.coreScales and
+ * batch.snapshot.declaredAxes only, and from nowhere else — the snapshot is
+ * what protects a stored mark from a later change to the scales table or to
+ * the recipe's declared scales, and reaching for a live version record or the
+ * catalog here would be exactly the drift this module exists to prevent (D-03).
  */
 export function axesForBatch(batch) {
-  const core = AXES.slice(0, CORE_AXIS_COUNT);
-  return [...core, ...batch.snapshot.declaredAxes];
+  return [...batch.snapshot.coreScales, ...batch.snapshot.declaredAxes];
 }
 
 /**

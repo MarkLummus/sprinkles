@@ -4,7 +4,7 @@
 // component, and no framework.
 import { describe, it, expect } from 'vitest';
 import {
-  createBatch,
+  createBatch as createBatchRaw,
   completeRecord,
   formatRecordDate,
   recordDateWords,
@@ -25,6 +25,8 @@ import {
 } from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
+import { coreScaleDefinitions } from './catalog.js';
 import { activeRows, rowGrams } from './rows.js';
 
 // A plain in-memory double for the repository seam's batch methods — the
@@ -42,6 +44,11 @@ function createRepositoryDouble() {
       return [...batches.values()].filter((batch) => batch.versionId === versionId);
     },
   };
+}
+
+// Every call below builds against the seed catalog unless a case passes its own.
+function createBatch(version, churnFields, tastingFields, options) {
+  return createBatchRaw(version, churnFields, tastingFields, { catalog: SEED_CATALOG, ...options });
 }
 
 const CHURN_ONLY = { churnDate: '2026-08-02', asMade: { 'row-01': [383] } };
@@ -80,6 +87,58 @@ describe('createBatch', () => {
     expect(batch.snapshot.coefficientSetId).toBe('2026.1-slice-transcription');
     expect(batch.snapshot.declaredAxes).toEqual(oliveOilVersion.declaredAxes);
     expect(batch.snapshot.declaredFlaws).toEqual(['Bitter']);
+  });
+
+  it("snapshots the catalog's core scale definitions and its four core problem words (D-03)", () => {
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
+    expect(batch.snapshot.coreScales).toEqual(coreScaleDefinitions(SEED_CATALOG.scales));
+    expect(batch.snapshot.coreScales.map((scale) => scale.key)).toEqual([
+      'hardness',
+      'scoopability',
+      'smoothness',
+      'sweetness',
+    ]);
+    expect(batch.snapshot.coreProblems).toEqual(['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film']);
+    expect(Object.keys(batch.snapshot)).toEqual([
+      'coefficientSetId',
+      'versionLabel',
+      'rows',
+      'declaredAxes',
+      'declaredFlaws',
+      'coreScales',
+      'coreProblems',
+    ]);
+  });
+
+  it('the core snapshot is a copy: a later change to the catalog it was taken from moves nothing (T-09-38)', () => {
+    const catalog = structuredClone(SEED_CATALOG);
+    const batch = createBatchRaw(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: 'x', catalog });
+    const lowBefore = batch.snapshot.coreScales[0].low;
+    const problemBefore = batch.snapshot.coreProblems[0];
+
+    catalog.scales[0].low = 'changed later';
+    catalog.problems[0].name = 'Renamed later';
+
+    expect(batch.snapshot.coreScales[0].low).toBe(lowBefore);
+    expect(batch.snapshot.coreScales[0].low).not.toBe('changed later');
+    expect(batch.snapshot.coreProblems[0]).toBe(problemBefore);
+    expect(batch.snapshot.coreProblems[0]).not.toBe('Renamed later');
+  });
+
+  it('completeRecord never retakes the core snapshot', () => {
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: 'x' });
+    const updated = completeRecord(batch, CHURN_ONLY, { marks: { sweetness: 4 } }, { now: 'y' });
+    expect(updated.snapshot.coreScales).toBe(batch.snapshot.coreScales);
+    expect(updated.snapshot.coreProblems).toBe(batch.snapshot.coreProblems);
+  });
+
+  it('throws a TypeError when the catalog is missing or malformed (a caller bug)', () => {
+    const options = { id: 'b-1', now: 'x' };
+    expect(() => createBatchRaw(oliveOilVersion, CHURN_ONLY, null, options)).toThrow(TypeError);
+    expect(() => createBatchRaw(oliveOilVersion, CHURN_ONLY, null, { ...options, catalog: {} })).toThrow(TypeError);
+    expect(() =>
+      createBatchRaw(oliveOilVersion, CHURN_ONLY, null, { ...options, catalog: { scales: [], problems: 'no' } }),
+    ).toThrow(TypeError);
   });
 
   it('the snapshot does not move when the version is edited afterwards (BATCH2-01)', () => {

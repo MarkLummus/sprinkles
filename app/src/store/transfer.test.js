@@ -14,6 +14,7 @@ import { nextStepKey } from '../domain/stepKeys.js';
 import { buildDraftRecord, draftMatchesVersion } from '../domain/draft.js';
 import { codeFromVersionId } from '../domain/sheetCode.js';
 import { SEED_CATALOG } from '../data/seed-catalog.js';
+import { coreScaleDefinitions, problemNames } from '../domain/catalog.js';
 import { storeFileOf, stampedSeedVersions } from './storeFile.fixtures.js';
 
 // Olive oil's two declared scale definitions (decision 3, TASTE-03), the shape a
@@ -190,6 +191,10 @@ function makeBatch(overrides = {}) {
       ],
       declaredAxes: [BODY, OIL],
       declaredFlaws: ['Bitter'],
+      // The definitions the batch was recorded with (D-03), fresh per fixture so no
+      // case mutates SEED_CATALOG.
+      coreScales: coreScaleDefinitions(structuredClone(SEED_CATALOG.scales)),
+      coreProblems: problemNames(structuredClone(SEED_CATALOG.problems)),
     },
     churn: {
       churnDate: '2026-08-02',
@@ -1846,5 +1851,133 @@ describe('the four seed tables in the file (LIB-09, decision 20)', () => {
       expect(result.errors.some((error) => error.startsWith(path))).toBe(true);
     }
     expect(result.errors.some((error) => error.startsWith('$.versions'))).toBe(false);
+  });
+});
+
+// D-03a: a batch is valid by the definitions its own snapshot carries, never by
+// the receiving profile's tables (T-09-27, T-09-28).
+describe('a batch is judged by its own snapshot (D-03a)', () => {
+  const check = (batch, version = makeVersion()) => validateStoreFile(makeStoreFile([version], [batch]));
+  const withSnapshot = (patch, tasting = null) => makeBatch({ snapshot: { ...makeBatch().snapshot, ...patch }, tasting });
+  const OUR_FIFTH = { key: 'creaminess', name: 'Creaminess', low: 'thin', high: 'rich', kind: 'goldilocks', group: 'core' };
+
+  it.each(['coreScales', 'coreProblems'])('refuses a batch whose snapshot lacks %s, naming its path', (field) => {
+    const batch = makeBatch();
+    delete batch.snapshot[field];
+    const result = check(batch);
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.startsWith(`$.batches[0].snapshot.${field}`))).toBe(true);
+  });
+
+  it('refuses a coreScales element that is not a core scale definition, at its indexed path', () => {
+    const base = makeBatch().snapshot.coreScales;
+    for (const bad of ['hardness', { key: 'x', name: 'X', low: 'a', high: 'b' }, { ...base[0], group: 'declared' }, { ...base[0], kind: 'wavy' }]) {
+      const result = check(withSnapshot({ coreScales: [bad, ...base.slice(1)] }));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.startsWith('$.batches[0].snapshot.coreScales[0]'))).toBe(true);
+    }
+  });
+
+  it('refuses two core scales with one key', () => {
+    const base = makeBatch().snapshot.coreScales;
+    const result = check(withSnapshot({ coreScales: [base[0], base[1], base[2], { ...base[3], key: base[0].key }] }));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.startsWith('$.batches[0].snapshot.coreScales:') && error.includes('once'))).toBe(true);
+  });
+
+  it('refuses a coreScales list of three or five definitions, and accepts four', () => {
+    const base = makeBatch().snapshot.coreScales;
+    for (const list of [base.slice(0, 3), [...base, OUR_FIFTH]]) {
+      const result = check(withSnapshot({ coreScales: list }));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('snapshot.coreScales') && error.includes('exactly 4'))).toBe(true);
+    }
+    expect(check(withSnapshot({ coreScales: base }))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('refuses a coreProblems list with a blank word or a repeated word', () => {
+    for (const coreProblems of [['Coarse, icy', ''], ['Coarse, icy', 'Coarse, icy']]) {
+      const result = check(withSnapshot({ coreProblems }));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('$.batches[0].snapshot.coreProblems'))).toBe(true);
+    }
+  });
+
+  it.each([null, 7])('refuses a snapshot whose coreProblems is %s beside a tasting with a defect, with errors and no throw', (coreProblems) => {
+    const batch = withSnapshot({ coreProblems }, makeTasting({ defects: ['Coarse, icy'] }));
+    let result;
+    expect(() => {
+      result = check(batch);
+    }).not.toThrow();
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.startsWith('$.batches[0].snapshot.coreProblems'))).toBe(true);
+  });
+
+  it('does not throw when coreScales is null beside a tasting with a mark', () => {
+    let result;
+    expect(() => {
+      result = check(withSnapshot({ coreScales: null }, makeTasting({ marks: { sweetness: 3 } })));
+    }).not.toThrow();
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.startsWith('$.batches[0].snapshot.coreScales'))).toBe(true);
+  });
+
+  it("refuses a mark on a key outside the snapshot's coreScales and declaredAxes, though the receiving tables hold it", () => {
+    // 'body' is a row of the seed scales table the file carries, but this batch declares no Body.
+    const noBody = withSnapshot({ declaredAxes: [OIL] }, makeTasting({ marks: { body: 3 } }));
+    const result = check(noBody);
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.startsWith('$.batches[0].tasting.marks.body'))).toBe(true);
+    const mystery = check(makeBatch({ tasting: makeTasting({ marks: { mystery: 3 } }) }));
+    expect(mystery.ok).toBe(false);
+    expect(mystery.errors.some((error) => error.startsWith('$.batches[0].tasting.marks.mystery'))).toBe(true);
+  });
+
+  it("accepts marks on the snapshot's core keys and declared keys, including a minted one", () => {
+    const tang = { key: 'scale-t1', name: 'Tang', low: 'faint', high: 'sharp', kind: 'magnitude', group: 'declared' };
+    const batch = withSnapshot({ declaredAxes: [tang, OIL] }, makeTasting({ marks: { 'scale-t1': 2, oil: 5, hardness: 3 } }));
+    expect(check(batch)).toEqual({ ok: true, errors: [] });
+  });
+
+  it("accepts a mark on the snapshot's own fourth core key though the receiving scales table holds another", () => {
+    // The receiving file's scales table is the seed's; this batch was recorded where Creaminess was core.
+    const base = makeBatch().snapshot.coreScales;
+    const batch = withSnapshot({ coreScales: [base[0], base[1], base[2], OUR_FIFTH] }, makeTasting({ marks: { creaminess: 3 } }));
+    expect(check(batch)).toEqual({ ok: true, errors: [] });
+  });
+
+  it("refuses a defect outside the snapshot's coreProblems, and accepts one inside it though the receiving table lacks it", () => {
+    const outside = check(makeBatch({ tasting: makeTasting({ defects: ['Watery mess'] }) }));
+    expect(outside.ok).toBe(false);
+    expect(outside.errors.some((error) => error.startsWith('$.batches[0].tasting.defects'))).toBe(true);
+    const batch = withSnapshot({ coreProblems: ['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Too salty'] }, makeTasting({ defects: ['Too salty'] }));
+    const file = makeStoreFile([makeVersion()], [batch]);
+    expect(file.problems.some((row) => row.name === 'Too salty')).toBe(false);
+    expect(validateStoreFile(file)).toEqual({ ok: true, errors: [] });
+  });
+
+  it("holds a declared scale to the batch's own core keys, not the file's table", () => {
+    // The seed table's core keys include sweetness; this batch's snapshot does not.
+    const base = makeBatch().snapshot.coreScales;
+    const coreScales = [base[0], base[1], base[2], OUR_FIFTH];
+    const sweetDeclared = { key: 'sweetness', name: 'Sweet', low: 'less', high: 'more', kind: 'goldilocks', group: 'declared' };
+    expect(check(withSnapshot({ coreScales, declaredAxes: [sweetDeclared] })).ok).toBe(true);
+    const clash = check(withSnapshot({ declaredAxes: [sweetDeclared] }));
+    expect(clash.ok).toBe(false);
+    expect(clash.errors.some((error) => error.startsWith('$.batches[0].snapshot.declaredAxes[0].key'))).toBe(true);
+  });
+
+  describe("From freezer's exclusion reads the tasting's own marks and words (T-04-08)", () => {
+    it('refuses fromFreezer beside a mark, a defect or a declared defect', () => {
+      for (const beside of [{ marks: { sweetness: 3 } }, { defects: ['Coarse, icy'] }, { declaredDefects: ['Bitter'] }]) {
+        const result = check(makeBatch({ tasting: makeTasting({ fromFreezer: 'Nothing to note', ...beside }) }));
+        expect(result.ok).toBe(false);
+        expect(result.errors.some((error) => error.includes('tasting.fromFreezer'))).toBe(true);
+      }
+    });
+
+    it('accepts fromFreezer alone', () => {
+      expect(check(makeBatch({ tasting: makeTasting({ fromFreezer: 'Not evaluated' }) }))).toEqual({ ok: true, errors: [] });
+    });
   });
 });

@@ -52,3 +52,26 @@ export function isScaleDefinition(value) {
   if (UNSAFE_KEYS.includes(value.key)) return false;
   return SCALE_KINDS.includes(value.kind) && SCALE_GROUPS.includes(value.group);
 }
+
+/**
+ * scaleDefinition(row) -> a new { key, name, low, high, kind, group } copied
+ * from a table row (which also holds id and order). A version and a batch
+ * snapshot keep this bare definition.
+ */
+export function scaleDefinition(row) {
+  const { key, name, low, high, kind, group } = row;
+  return { key, name, low, high, kind, group };
+}
+
+/**
+ * mintScaleKey(id) -> 'scale-' + id (D-03b). A recipe's own scale key is
+ * minted once at creation, survives renames and child versions, and never
+ * equals a core key (hardness, scoopability, smoothness, sweetness, body,
+ * oil) or an unsafe name, because the prefix is on every minted key. Phase 10
+ * mints with freshId(). Throws a TypeError for anything but a non-empty
+ * string.
+ */
+export function mintScaleKey(id) {
+  if (!isNonEmptyString(id)) throw new TypeError('scale key id must be a non-empty string');
+  return `scale-${id}`;
+}

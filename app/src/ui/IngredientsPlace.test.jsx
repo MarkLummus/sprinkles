@@ -260,7 +260,7 @@ describe('opening an entry', () => {
       ['Milk solids · MSNF', '5.4%', 'estimated', 'not recorded'],
     ]);
     expect(row.querySelector('tbody tr:nth-child(2) .ing__source').classList.contains('ing__unsaid')).toBe(true);
-    expect(row.querySelector('.ing__facts').textContent).toBe('Density 0.994 g/ml · Heat treatment: ultra-pasteurised');
+    expect(row.querySelector('.ing__facts').textContent).toBe('Density 0.994 g/ml · Ultra-pasteurised');
     expect(row.querySelector('.ing__helper').textContent).toBe(
       'Lactose counts as 54.5% of milk solids in Freezing and Sweetness.',
     );
@@ -274,7 +274,7 @@ describe('opening an entry', () => {
     await click(row.querySelector('button.ing__head'));
     const cells = [...row.querySelectorAll('tbody tr')].map((tr) => [...tr.children].map((cell) => cell.textContent));
     expect(cells).toEqual([['Stabilizer', '100%', 'stated', 'not recorded']]);
-    expect(row.querySelector('.ing__facts').textContent).toBe('Hydrates at commonly cited 80–85 °C, varies by grade');
+    expect(row.querySelector('.ing__facts').textContent).toBe('Hydrates at 82 °C');
     expect(row.querySelector('.ing__helper')).toBeNull();
     expect(row.querySelector('.ing__note')).toBeNull();
     expect(row.querySelector('.ing__note-cap')).toBeNull();
@@ -284,7 +284,7 @@ describe('opening an entry', () => {
     const container = await mountList(records);
     const row = rowNamed(container, 'Sucrose');
     await click(row.querySelector('button.ing__head'));
-    expect(row.querySelector('.ing__facts').textContent).toBe('Density 0.85 g/ml · Packed state: granulated, loose');
+    expect(row.querySelector('.ing__facts').textContent).toBe('Density 0.85 g/ml · Granulated, loose');
     const cells = [...row.querySelectorAll('tbody tr')].map((tr) => [...tr.children].map((cell) => cell.textContent));
     expect(cells).toEqual([
       ['Sugar', '100%', 'stated', 'not recorded'],
@@ -308,6 +308,29 @@ describe('opening an entry', () => {
     const container = await mountList(list);
     await click(container.querySelector('button.ing__head'));
     expect(container.querySelector('.ing__facts').textContent).toBe('Hydrates at 82 °C');
+  });
+
+  it('reads all four facts value-first in their order, with the stored hydration figure and not its source prose', async () => {
+    const list = [
+      {
+        id: 'every',
+        entry: {
+          name: 'Every fact',
+          category: 'other',
+          densityGPerMl: 0.994,
+          heatTreatment: 'ultra-pasteurised',
+          packedState: 'granulated, loose',
+          hydrationC: 82,
+          composition: { other: 1 },
+          source: { hydrationC: 'commonly cited 80–85 °C, varies by grade' },
+        },
+      },
+    ];
+    const container = await mountList(list);
+    await click(container.querySelector('button.ing__head'));
+    expect(container.querySelector('.ing__facts').textContent).toBe(
+      'Density 0.994 g/ml · Ultra-pasteurised · Granulated, loose · Hydrates at 82 °C',
+    );
   });
 
   it('reads a basis the entry never states as unreviewed, the Sheet’s word for inherited', async () => {
@@ -416,7 +439,7 @@ describe('stored text renders as text (T-09-06)', () => {
     await click(container.querySelector('button.ing__head'));
     expect(container.querySelector('.ing__note').innerHTML).toBe('a &lt;b&gt;bold&lt;/b&gt; note');
     expect(container.querySelector('.ing__source').innerHTML).toBe('&lt;s&gt;src&lt;/s&gt;');
-    expect(container.querySelector('.ing__facts').innerHTML).toBe('Heat treatment: &lt;u&gt;hot&lt;/u&gt;');
+    expect(container.querySelector('.ing__facts').innerHTML).toBe('&lt;u&gt;hot&lt;/u&gt;');
     expect(container.querySelector('b, s, u')).toBeNull();
   });
 });

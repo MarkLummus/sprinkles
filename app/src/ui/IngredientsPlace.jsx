@@ -69,7 +69,6 @@ function shownFields(entry) {
     note: text(entry.note),
     density: number(entry.densityGPerMl),
     hydrationC: number(entry.hydrationC),
-    hydrationSource: text(source.hydrationC),
     dairy: entry.dairy === true,
     // A basis the entry never states was never reviewed ('inherited', as the
     // Sheet's table reads it); a stated value outside the four words is not
@@ -95,17 +94,16 @@ function summaryText(entry) {
     .join(' · ');
 }
 
-// The facts line: density, heat treatment, packed state and the hydration
-// temperature, joined by a middle dot in that order, each only where the
-// entry has it.
+// The facts line, value first: density with its word, then the heat-treatment
+// and packed-state values on their own with the first letter capitalised, then
+// the stored hydration temperature in °C. A middle dot joins them in that
+// order, each only where the entry has it.
 function factsText(fields) {
   const facts = [];
   if (fields.density !== null) facts.push(`Density ${trimmed(fields.density, 3)} g/ml`);
-  if (fields.heatTreatment !== null) facts.push(`Heat treatment: ${fields.heatTreatment}`);
-  if (fields.packedState !== null) facts.push(`Packed state: ${fields.packedState}`);
-  if (fields.hydrationC !== null) {
-    facts.push(`Hydrates at ${fields.hydrationSource ?? `${trimmed(fields.hydrationC, 2)} °C`}`);
-  }
+  if (fields.heatTreatment !== null) facts.push(capitalised(fields.heatTreatment));
+  if (fields.packedState !== null) facts.push(capitalised(fields.packedState));
+  if (fields.hydrationC !== null) facts.push(`Hydrates at ${trimmed(fields.hydrationC, 2)} °C`);
   return facts.join(' · ');
 }
 

@@ -571,6 +571,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261017-ttf | Widen the Sweetness POD Balance rule from 0-30 to 0-40 (D30) | 2026-10-17 | 3f23c7f | [261017-ttf-widen-the-sweetness-pod-balance-rule-fro](./quick/261017-ttf-widen-the-sweetness-pod-balance-rule-fro/) |
 | 173 | docs(09): D-20 six per-ingredient coefficients; 2026-10-18 decisions recorded | 2026-10-18 | 163f008 | — |
 | 261018-rn9 | Fix bug-stale-draft-survives-pen-opened-during-read: a pen opened during the draft read owns the stored draft | 2026-10-18 | 710a5286 | [261018-rn9-fix-bug-stale-draft-survives-pen-opened-](./quick/261018-rn9-fix-bug-stale-draft-survives-pen-opened-/) |
+| 261018-x4s | Fix bug-home-record-tasting-opens-wrong-batch: Home's Record a tasting pairs the batch with its own version | 2026-10-19 | fe240415 | .planning/quick/261018-x4s-fix-bug-home-record-tasting-opens-wrong-batch-in-app-src-ui |
+| 261018-x4t | Boot line word for the problems table: tasting problems | 2026-10-19 | 82730c29 | .planning/quick/261018-x4t-boot-line-word-for-the-problems-table-decide-p9-boot-word-pr |
+| 261018-x4u | Facts line value-first in an open Ingredients entry | 2026-10-19 | 64169285 | .planning/quick/261018-x4u-facts-line-value-first-decide-p9-facts-line-shape-value-firs |
 
 ### Roadmap Evolution
 

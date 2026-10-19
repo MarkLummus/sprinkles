@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "batch_id": "261018-x4r",
+  "created_at": "2026-10-19T03:51:18.948Z",
+  "options": {},
+  "base_revision": "79e540f5951b173fdf2034b8a1450468b8f9faa0",
+  "items": [
+    {
+      "quick_id": "261018-x4s",
+      "client_id": null,
+      "description": "Fix bug-home-record-tasting-opens-wrong-batch: in app/src/ui/RecipeList.jsx the AWAITING_TASTING action builds tastingPath from entry.latestVersion.id and entry.batches[0].id without checking the batch belongs to that version, so Home's Record a tasting on Mexican Chocolate lands on /notebook/mexican-chocolate/mexican-chocolate-v4/batch/mexican-chocolate-v3-batch-01 with no pen open; pair the batch with its own version (the version the batch was recorded against), and add a test that reproduces the v4/v3 case.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/RecipeList.jsx",
+        "app/src/ui/RecipeList.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "fe240415",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261018-x4t",
+      "client_id": null,
+      "description": "Boot line word for the problems table (decide-p9-boot-word-problems = tasting-problems): in app/src/store/seedTables.js SEED_TABLES.problems.word becomes 'tasting problems' so the boot line reads \"Sprinkles can’t open: its list of tasting problems has a damaged entry.\"; update the tests that pin the word; the line stays one sentence.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/store/seedTables.js",
+        "app/src/store/seedTables.test.js"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "82730c29",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261018-x4u",
+      "client_id": null,
+      "description": "Facts line value-first (decide-p9-facts-line-shape = value-first): in app/src/ui/IngredientsPlace.jsx factsText drops the labels where the value speaks and shows the hydration temperature as a number: \"Density 0.994 g/ml · Ultra-pasteurised · Granulated, loose · Hydrates at 80–85 °C\" (heat treatment and packed state values capitalised as the first word of their fact; the hydration source's prose no longer replaces the figure, which is shown as a number with the unit; keep the middle-dot join and order; update IngredientsPlace tests and 09-places-check expectations only if they pin the old words).",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/IngredientsPlace.jsx",
+        "app/src/ui/IngredientsPlace.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "64169285",
+      "failure_reason": null
+    }
+  ]
+}

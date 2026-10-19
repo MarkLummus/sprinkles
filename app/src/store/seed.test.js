@@ -2,6 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { seedIfEmpty } from './seed.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { library } from '../data/library.js';
+import { librarySeedDb } from '../data/library-seed-db.js';
+
+// The library a fresh profile is seeded with: the reviewed dataset's entries
+// merged under the 26 (LIB-04). The 26 win a clash.
+const seededLibrary = { ...librarySeedDb, ...library };
 
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. This is why seedIfEmpty takes its
@@ -117,10 +122,10 @@ describe('seedIfEmpty', () => {
 
 describe('seedIfEmpty, the two independent guards (D-04)', () => {
   const expectSeededLibrary = (repository) => {
-    expect(repository.library).toHaveLength(Object.keys(library).length);
+    expect(repository.library).toHaveLength(Object.keys(seededLibrary).length);
     for (const record of repository.library) {
       expect(Object.keys(record).sort()).toEqual(['entry', 'id']);
-      expect(record.entry).toEqual(library[record.id]);
+      expect(record.entry).toEqual(seededLibrary[record.id]);
     }
   };
 
@@ -178,8 +183,8 @@ describe('seedIfEmpty, the two independent guards (D-04)', () => {
     await seedIfEmpty(repository);
     expect(repository.writes).toEqual(['recipes', 'batches', 'versions']);
 
-    expect(repository.library.map((record) => record.id)).toEqual(Object.keys(library));
-    for (const record of repository.library) expect(record.entry).toEqual(library[record.id]);
+    expect(repository.library.map((record) => record.id)).toEqual(Object.keys(seededLibrary));
+    for (const record of repository.library) expect(record.entry).toEqual(seededLibrary[record.id]);
     expect(repository.recipes).toEqual(seedRecipeGroups.map((g) => g.recipe));
     expect(repository.batches).toEqual(seedRecipeGroups.flatMap((g) => g.batches));
     expect(repository.versions).toEqual(seedRecipeGroups.flatMap((g) => g.versions));

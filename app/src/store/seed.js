@@ -1,5 +1,14 @@
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { library } from '../data/library.js';
+import { librarySeedDb } from '../data/library-seed-db.js';
+
+// The library seed (D-08, LIB-04): the reviewed dataset's entries merged under
+// the 26 the app already held. The 26 are spread last, so a new entry can never
+// overwrite one of them even if a key were to clash (library-seed-db.test.js
+// fails first on a clash). It fills an empty library only (Phase 6 D-04); the
+// database version bump of plan 09-09 clears every profile's library so the
+// larger seed reaches it (decision 2, amending Phase 6 D-05).
+const seededLibrary = { ...librarySeedDb, ...library };
 
 // Seed-on-empty-store (seed open questions approved 2026-09-28, D-07). There
 // are two independent guards, both through the repository seam, never a
@@ -19,7 +28,7 @@ import { library } from '../data/library.js';
 // is harmless. Groups keep seedRecipeGroups order (olive oil first, so the
 // store's first-written records stay the working case).
 export async function seedIfEmpty(repository) {
-  await repository.seedLibraryIfEmpty(Object.entries(library).map(([id, entry]) => ({ id, entry })));
+  await repository.seedLibraryIfEmpty(Object.entries(seededLibrary).map(([id, entry]) => ({ id, entry })));
   const existing = await repository.listVersions();
   if (existing.length > 0) return;
   await repository.putAllRecipes(seedRecipeGroups.map((group) => group.recipe));

@@ -142,7 +142,7 @@ Plans:
   7. A version stores its Sheet code, assigned when the version is created (a first version and every Next version) and unique; no edit to the recipe name, the Version name, the Sheet title or description, or any row, step or note changes it; the seeded versions keep the codes they print today, so sheets already in the binder still find them
   8. The machines, the styles with their bands, and the core scales and problems travel in the store file with the library: the file validator checks them, the store file version changes, and an export from one profile imported into a fresh profile restores them
 
-**Plans:** 10/17 plans executed in 10 waves (09-01 stops for Mark's library review, D-16, and puts the four-core-scale rule on his list at that same stop; 09-09 records the one-way reset decision, decisions 2 and 5, before the bump, auto-selected rather than asked again, and fingerprints app/dist so 09-17 can check that no build reached it; no plan writes app/dist, so the device build is Mark's own step on 09-17's device check, whose reset step 09-17 first walks in WebKit)
+**Plans:** 11/17 plans executed in 10 waves (09-01 stops for Mark's library review, D-16, and puts the four-core-scale rule on his list at that same stop; 09-09 records the one-way reset decision, decisions 2 and 5, before the bump, auto-selected rather than asked again, and fingerprints app/dist so 09-17 can check that no build reached it; no plan writes app/dist, so the device build is Mark's own step on 09-17's device check, whose reset step 09-17 first walks in WebKit)
 
 Plans:
 **Wave 1**
@@ -162,7 +162,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 - [x] 09-10-PLAN.md — store file schema 9: the tables travel; import keeps the Sheet code rule and requires the serving temperature
-- [ ] 09-11-PLAN.md — boot validates the tables and loads the catalog; the printed log reads it; import reloads it
+- [x] 09-11-PLAN.md — boot validates the tables and loads the catalog; the printed log reads it; import reloads it
 
 **Wave 5** *(blocked on Wave 4 completion)*
 - [ ] 09-12-PLAN.md — the recipe page reads the catalog and a new batch's record pen draws its scales and problem chips from it
@@ -243,7 +243,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 8. Split the recipe page along its jobs | v2.0 | 6/6 | Complete    | 2026-10-17 |
-| 9. The library and the stored shapes, plus the two places | v2.0 | 10/17 | In Progress | - |
+| 9. The library and the stored shapes, plus the two places | v2.0 | 11/17 | In Progress | - |
 | 10. The creation editor, without Save | v2.0 | 0/TBD | Not started | - |
 | 11. Steps, structure, save and print | v2.0 | 0/TBD | Not started | - |
 | 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/TBD | Not started | - |

@@ -1,0 +1,776 @@
+{
+  "dataset": {
+    "version": "0.2-draft (as-is PAC + legacy merge)",
+    "count": 103
+  },
+  "rows": {
+    "buffalo-milk": {
+      "key": "buffaloMilk",
+      "pac": 5,
+      "pod": 0,
+      "solidsPct": 16.61,
+      "msnfPct": 9.71
+    },
+    "butter-unsalted": {
+      "key": "butterUnsalted",
+      "pac": 0.3,
+      "pod": 0,
+      "solidsPct": 83,
+      "msnfPct": 0.5
+    },
+    "buttermilk": {
+      "key": "buttermilk",
+      "pac": 3.5,
+      "pod": 0.56,
+      "solidsPct": 12.09,
+      "msnfPct": 8.79
+    },
+    "buttermilk-light": {
+      "key": "buttermilkLight",
+      "pac": 3.5,
+      "pod": 0.56,
+      "solidsPct": 9.87,
+      "msnfPct": 9
+    },
+    "cream-30pct": {
+      "key": "cream30pct",
+      "pac": 3,
+      "pod": 0.48,
+      "solidsPct": 36.3,
+      "msnfPct": 6.3
+    },
+    "dried-buttermilk-powder-sweet": {
+      "key": "driedButtermilkPowderSweet",
+      "pac": 49,
+      "pod": 7.8,
+      "solidsPct": 97.03,
+      "msnfPct": 96
+    },
+    "ethanol": {
+      "key": "ethanol",
+      "pac": 744,
+      "pod": 0,
+      "solidsPct": 0,
+      "msnfPct": 0
+    },
+    "evaporated-milk": {
+      "key": "evaporatedMilk",
+      "pac": 12.5,
+      "pod": 2,
+      "solidsPct": 33,
+      "msnfPct": 23
+    },
+    "goat-milk": {
+      "key": "goatMilk",
+      "pac": 4,
+      "pod": 5.1,
+      "solidsPct": 12.97,
+      "msnfPct": 8.84
+    },
+    "half-and-half": {
+      "key": "halfAndHalf",
+      "pac": 4.3,
+      "pod": 0.7,
+      "solidsPct": 19.4,
+      "msnfPct": 7.93
+    },
+    "heavy-cream-36": {
+      "key": "heavyCream",
+      "pac": 3,
+      "pod": 0.5,
+      "solidsPct": 41.6,
+      "msnfPct": 5.6
+    },
+    "heavy-cream-40": {
+      "key": "heavyCream40",
+      "pac": 2.9,
+      "pod": 0.5,
+      "solidsPct": 45.4,
+      "msnfPct": 5.35
+    },
+    "light-cream": {
+      "key": "lightCream",
+      "pac": 4,
+      "pod": 0.6,
+      "solidsPct": 25.3,
+      "msnfPct": 7.31
+    },
+    "milk-chocolate": {
+      "key": "milkChocolate",
+      "pac": 13.5,
+      "pod": 53,
+      "solidsPct": 98.5,
+      "msnfPct": 16
+    },
+    "skim-milk": {
+      "key": "skimMilk",
+      "pac": 4.7,
+      "pod": 0.8,
+      "solidsPct": 8.6,
+      "msnfPct": 8.6
+    },
+    "skim-milk-powder": {
+      "key": "skimMilkPowder",
+      "pac": 52.5,
+      "pod": 8.4,
+      "solidsPct": 97,
+      "msnfPct": 96.3
+    },
+    "sour-cream": {
+      "key": "sourCream",
+      "pac": 3.2,
+      "pod": 0.51,
+      "solidsPct": 26.93,
+      "msnfPct": 7.5
+    },
+    "sweetened-condensed-milk": {
+      "key": "sweetenedCondensedMilk",
+      "pac": 54.5,
+      "pod": 44,
+      "solidsPct": 73,
+      "msnfPct": 23
+    },
+    "whole-milk": {
+      "key": "wholeMilk325",
+      "pac": 4.6,
+      "pod": 0.7,
+      "solidsPct": 11.7,
+      "msnfPct": 8.45
+    },
+    "whole-milk-powder": {
+      "key": "wholeMilkPowder",
+      "pac": 39.2,
+      "pod": 6.3,
+      "solidsPct": 98,
+      "msnfPct": 72
+    },
+    "yogurt-3.5pct": {
+      "key": "yogurt35pct",
+      "pac": 7.1,
+      "pod": 0.48,
+      "solidsPct": 14,
+      "msnfPct": 14.2
+    }
+  },
+  "samePairs": {
+    "allulose": {
+      "libraryId": "allulose",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "sugar": 1,
+          "pac": 190,
+          "pod": 70
+        }
+      },
+      "differs": []
+    },
+    "cinnamon": {
+      "libraryId": "cinnamon",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "other": 1
+        }
+      },
+      "differs": []
+    },
+    "cocoa-powder": {
+      "libraryId": "cocoaPowder",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "fat": 0.137,
+          "sugar": 0.005,
+          "other": 0.828,
+          "pac": -160,
+          "pod": 0.5
+        }
+      },
+      "differs": []
+    },
+    "coffee-beans": {
+      "libraryId": "coffeeBeans",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "other": 1
+        }
+      },
+      "differs": []
+    },
+    "dextrose": {
+      "libraryId": "dextrose",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "sugar": 0.92,
+          "pac": 174.8,
+          "pod": 74
+        }
+      },
+      "differs": [
+        {
+          "field": "pac",
+          "app": 190,
+          "converted": 174.8
+        },
+        {
+          "field": "pod",
+          "app": 70,
+          "converted": 74
+        },
+        {
+          "field": "sugar",
+          "app": 1,
+          "converted": 0.92
+        }
+      ]
+    },
+    "fructose": {
+      "libraryId": "fructose",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "sugar": 1,
+          "pac": 190,
+          "pod": 173
+        }
+      },
+      "differs": [
+        {
+          "field": "pod",
+          "app": 170,
+          "converted": 173
+        }
+      ]
+    },
+    "guar-gum": {
+      "libraryId": "guarGum",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "stabilizer": 0.89
+        }
+      },
+      "differs": [
+        {
+          "field": "stabilizer",
+          "app": 1,
+          "converted": 0.89
+        }
+      ]
+    },
+    "heavy-cream-36": {
+      "libraryId": "heavyCream",
+      "converted": {
+        "dairy": true,
+        "composition": {
+          "fat": 0.36,
+          "msnf": 0.056
+        }
+      },
+      "differs": [
+        {
+          "field": "msnf",
+          "app": 0.054,
+          "converted": 0.056
+        }
+      ]
+    },
+    "lambda-carrageenan": {
+      "libraryId": "carrageenan",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "stabilizer": 0.88
+        }
+      },
+      "differs": [
+        {
+          "field": "stabilizer",
+          "app": 1,
+          "converted": 0.88
+        }
+      ]
+    },
+    "lecithin": {
+      "libraryId": "lecithin",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "emulsifier": 0.99
+        }
+      },
+      "differs": [
+        {
+          "field": "emulsifier",
+          "app": 1,
+          "converted": 0.99
+        }
+      ]
+    },
+    "locust-bean-gum": {
+      "libraryId": "locustBeanGum",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "stabilizer": 0.89
+        }
+      },
+      "differs": [
+        {
+          "field": "stabilizer",
+          "app": 1,
+          "converted": 0.89
+        }
+      ]
+    },
+    "pineapple": {
+      "libraryId": "pineapple",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "fat": 0.0012,
+          "sugar": 0.0985,
+          "other": 0.0403,
+          "pac": 13.31,
+          "pod": 10.8
+        }
+      },
+      "differs": []
+    },
+    "salt": {
+      "libraryId": "salt",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "other": 1,
+          "pac": 586
+        }
+      },
+      "differs": [
+        {
+          "field": "pac",
+          "app": 580,
+          "converted": 586
+        }
+      ]
+    },
+    "skim-milk-powder": {
+      "libraryId": "skimMilkPowder",
+      "converted": {
+        "dairy": true,
+        "composition": {
+          "fat": 0.007,
+          "msnf": 0.963,
+          "sugar": 0.000165
+        }
+      },
+      "differs": [
+        {
+          "field": "fat",
+          "app": 0.01,
+          "converted": 0.007
+        },
+        {
+          "field": "msnf",
+          "app": 0.97,
+          "converted": 0.963
+        }
+      ]
+    },
+    "stabilizer-mix-4421": {
+      "libraryId": "stabilizerMix4421",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "fat": 0.0027,
+          "other": 0.9155,
+          "pod": 0.91
+        }
+      },
+      "differs": [
+        {
+          "field": "other",
+          "app": 0.361,
+          "converted": 0.9155
+        },
+        {
+          "field": "stabilizer",
+          "app": 0.5545,
+          "converted": 0
+        }
+      ]
+    },
+    "strawberries": {
+      "libraryId": "strawberries",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "fat": 0.0022,
+          "sugar": 0.0534,
+          "other": 0.0334,
+          "pac": 10.06,
+          "pod": 9.8
+        }
+      },
+      "differs": [
+        {
+          "field": "other",
+          "app": 0.0378,
+          "converted": 0.0334
+        },
+        {
+          "field": "pac",
+          "app": 8.5,
+          "converted": 10.06
+        },
+        {
+          "field": "pod",
+          "app": 6.1,
+          "converted": 9.8
+        },
+        {
+          "field": "sugar",
+          "app": 0.049,
+          "converted": 0.0534
+        }
+      ]
+    },
+    "sucrose": {
+      "libraryId": "sucrose",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "sugar": 0.999,
+          "pac": 99.9,
+          "pod": 100
+        }
+      },
+      "differs": [
+        {
+          "field": "pac",
+          "app": 100,
+          "converted": 99.9
+        },
+        {
+          "field": "sugar",
+          "app": 1,
+          "converted": 0.999
+        }
+      ]
+    },
+    "vanilla-extract": {
+      "libraryId": "vanillaExtract",
+      "converted": {
+        "dairy": false,
+        "composition": {
+          "fat": 0.0006,
+          "sugar": 0.1265,
+          "other": 0.0031,
+          "pac": 12.7,
+          "pod": 12.7
+        }
+      },
+      "differs": []
+    }
+  },
+  "entries": {
+    "alcohol-40pct": "alcohol40pct",
+    "almond-paste-pure": "almondPastePure",
+    "apple": "apple",
+    "apricot": "apricot",
+    "atomized-glucose-40de": "atomizedGlucose40de",
+    "banana": "banana",
+    "black-cherry": "blackCherry",
+    "blackberries": "blackberries",
+    "blueberries": "blueberries",
+    "buffalo-milk": "buffaloMilk",
+    "butter-unsalted": "butterUnsalted",
+    "buttermilk": "buttermilk",
+    "buttermilk-light": "buttermilkLight",
+    "chocolate-dark": "chocolateDark",
+    "cmc": "cmc",
+    "cocoa-butter": "cocoaButter",
+    "coconut-milk": "coconutMilk208",
+    "corn-starch": "cornStarch",
+    "corn-syrup-20de": "cornSyrup20de",
+    "corn-syrup-32de": "cornSyrup32de",
+    "corn-syrup-36de": "cornSyrup36de",
+    "corn-syrup-42de": "cornSyrup42de",
+    "corn-syrup-64de": "cornSyrup64de",
+    "cream-30pct": "cream30pct",
+    "dried-buttermilk-powder-sweet": "driedButtermilkPowderSweet",
+    "egg-yolk": "eggYolk",
+    "erythritol": "erythritol",
+    "ethanol": "ethanol",
+    "evaporated-milk": "evaporatedMilk",
+    "glycerol": "glycerol",
+    "goat-milk": "goatMilk",
+    "grapefruit": "grapefruit",
+    "grapes": "grapes",
+    "half-and-half": "halfAndHalf",
+    "hazelnut-paste-pure": "hazelnutPastePure",
+    "heavy-cream-40": "heavyCream40",
+    "hfcs-42": "hfcs42",
+    "hfcs-55": "hfcs55",
+    "hfcs-90": "hfcs90",
+    "high-maltose-cs-55de": "highMaltoseCs55de",
+    "honey": "honey",
+    "inulin": "inulin",
+    "invert-partial": "invertPartial",
+    "kappa-carrageenan": "kappaCarrageenan",
+    "kiwi": "kiwi",
+    "lactose": "lactose",
+    "lemon": "lemon",
+    "lemon-juice": "lemonJuice",
+    "light-cream": "lightCream",
+    "lime": "lime",
+    "litchis": "litchis",
+    "maltodextrin-10de": "maltodextrin10de",
+    "maltodextrin-15de": "maltodextrin15de",
+    "maltodextrin-18de": "maltodextrin18de",
+    "maltodextrin-5de": "maltodextrin5de",
+    "maltose": "maltose",
+    "mango": "mango",
+    "maple-syrup": "mapleSyrup",
+    "milk-chocolate": "milkChocolate",
+    "mono-diglycerides": "monoDiglycerides",
+    "oranges": "oranges",
+    "papaya": "papaya",
+    "passion-fruit": "passionFruit",
+    "peach": "peach",
+    "pectin": "pectin",
+    "pistachio-paste-pure": "pistachioPastePure",
+    "polydextrose": "polydextrose",
+    "polysorbate-80": "polysorbate80",
+    "raspberries": "raspberries",
+    "rum-40pct": "rum40pct",
+    "skim-milk": "skimMilk",
+    "sodium-alginate": "sodiumAlginate",
+    "sorbitol": "sorbitol",
+    "sour-cream": "sourCream",
+    "sweetened-condensed-milk": "sweetenedCondensedMilk",
+    "trehalose": "trehalose",
+    "trimoline-full": "trimolineFull",
+    "vegetable-oil": "vegetableOil",
+    "water": "water",
+    "whole-egg": "wholeEgg",
+    "whole-milk": "wholeMilk325",
+    "whole-milk-powder": "wholeMilkPowder",
+    "xanthan": "xanthan",
+    "xylitol": "xylitol",
+    "yogurt-3.5pct": "yogurt35pct"
+  },
+  "existing": {
+    "allulose": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": "after_heat",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "carrageenan": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": "dry_blend",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "cinnamon": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": null,
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "cocoaPowder": {
+      "titratableAcidity": null,
+      "fatStructural": true,
+      "ownEmulsifier": null,
+      "defaultStage": null,
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "coconutCream": {
+      "titratableAcidity": null,
+      "fatStructural": true,
+      "ownEmulsifier": null,
+      "defaultStage": null,
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "coconutMilk": {
+      "titratableAcidity": null,
+      "fatStructural": true,
+      "ownEmulsifier": null,
+      "defaultStage": null,
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "coffeeBeans": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": null,
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "dextrose": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": "dry_blend",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "driedStrawberry": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": null,
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "fructose": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": "dry_blend",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "guarGum": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": "dry_blend",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "heavyCream": {
+      "titratableAcidity": 0.000918,
+      "fatStructural": true,
+      "ownEmulsifier": null,
+      "defaultStage": "combine",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "lecithin": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": true,
+      "defaultStage": null,
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "locustBeanGum": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": "dry_blend",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "oliveOil": {
+      "titratableAcidity": null,
+      "fatStructural": false,
+      "ownEmulsifier": null,
+      "defaultStage": "before_churn",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "pineapple": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": null,
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "salt": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": "dry_blend",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "shreddedCoconut": {
+      "titratableAcidity": null,
+      "fatStructural": true,
+      "ownEmulsifier": null,
+      "defaultStage": "during_churn",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "skimMilkPowder": {
+      "titratableAcidity": 0.01649,
+      "fatStructural": true,
+      "ownEmulsifier": null,
+      "defaultStage": "dry_blend",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "stabilizerMix4421": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": "dry_blend",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "strawberries": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": null,
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "sucrose": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": "dry_blend",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "vanillaExtract": {
+      "titratableAcidity": null,
+      "fatStructural": null,
+      "ownEmulsifier": null,
+      "defaultStage": "after_heat",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "wholeMilk": {
+      "titratableAcidity": 0.001496,
+      "fatStructural": true,
+      "ownEmulsifier": null,
+      "defaultStage": "combine",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "wholeMilk33": {
+      "titratableAcidity": 0.001479,
+      "fatStructural": true,
+      "ownEmulsifier": null,
+      "defaultStage": "combine",
+      "prepNote": null,
+      "requiresHeat": null
+    },
+    "wholeMilk37": {
+      "titratableAcidity": 0.001471,
+      "fatStructural": true,
+      "ownEmulsifier": null,
+      "defaultStage": "combine",
+      "prepNote": null,
+      "requiresHeat": null
+    }
+  }
+}

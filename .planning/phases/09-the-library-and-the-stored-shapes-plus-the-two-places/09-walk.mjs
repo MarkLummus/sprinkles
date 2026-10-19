@@ -1,5 +1,14 @@
 // 09-01: the before/after WebKit walk for Phase 9 (D-15), re-recorded at the base commit
-// (copied from 08-walk.mjs; the walk body is unchanged, plan 09-16 adds the allow-list compare).
+// (copied from 08-walk.mjs; the walk body is unchanged).
+//
+// Plan 09-16 changes only the compare and the mode switch after it (D-15). The
+// compare allows a store difference only on ALLOWED_STORE_PATHS, each path
+// checking the exact value the phase's seed modules say it must hold, and never
+// skips a whole snapshot; then REQUIRED_STORE_FIELDS asserts every addition on
+// every after-dump, because a field missing from both files makes no difference
+// to compare. Two more modes, neither of which opens a browser:
+//   node 09-walk.mjs expected <before.json>            run FIRST: the expected-value functions against the seed
+//   node 09-walk.mjs selftest <before.json> <after.json>   doctored after-files the compare must refuse
 //
 // Usage (from the repo root; the one-command form builds to scratch and compares):
 //   sh .planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/09-walk-check.sh
@@ -45,6 +54,17 @@ import { existsSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+// The compare computes each expected added value from the app's seed modules.
+// The walk now runs the data modules' graph in node: seed-recipes.js builds its
+// batches with createBatch at load (plan 09-13), so a framework or browser-only
+// import reaching that graph would break the walk harness, not only a test.
+import { library } from '../../../app/src/data/library.js';
+import { CORE_PROBLEM_ROWS } from '../../../app/src/data/core-problems.js';
+import { CORE_SCALE_ROWS } from '../../../app/src/data/core-scales.js';
+import { seedRecipeGroups } from '../../../app/src/data/seed-recipes.js';
+import { SEED_SHEET_CODES } from '../../../app/src/data/seed-sheet-codes.js';
+import { coreScaleDefinitions, isScaleDefinition, problemNames, scaleDefinition } from '../../../app/src/domain/catalog.js';
+import { codeFromVersionId } from '../../../app/src/domain/sheetCode.js';
 
 // playwright-core: the one place the walk names a Playwright path. Override it
 // with PLAYWRIGHT_CORE; refill the default with
@@ -838,7 +858,13 @@ async function record(outPath) {
 }
 
 // ---------------------------------------------------------------------------
-// compare: every leaf that differs, by scenario, step and JSON path.
+// compare: every leaf that differs, by scenario, step and JSON path (D-15).
+//
+// A difference under `stores.` is allowed only when it is on ALLOWED_STORE_PATHS
+// and its after-value is exactly the one the phase's seed modules say it must
+// be; any other difference, and everything outside `stores.`, is a DIFF. The
+// allow-list checks only differences, and a field missing from both files makes
+// none, so REQUIRED_STORE_FIELDS then asserts every addition on every after-dump.
 // ---------------------------------------------------------------------------
 function diffLeaves(before, after, where, out) {
   const bothObjects = before && after && typeof before === 'object' && typeof after === 'object';
@@ -855,18 +881,331 @@ function diffLeaves(before, after, where, out) {
   if (JSON.stringify(before) !== JSON.stringify(after)) out.push([where, before, after]);
 }
 
-async function compare(pathA, pathB) {
-  const [a, b] = await Promise.all([pathA, pathB].map(async (p) => JSON.parse(await readFile(p, 'utf8'))));
-  const lines = [];
+// ---------------------------------------------------------------------------
+// The expected values. Each is defined ONCE, here: the allow-list, the
+// required-additions pass and the `expected` mode all call these functions.
+// Nothing below reads an expected value from the after-file, or through a
+// row's own dumped libraryId, so a wrong link cannot justify a wrong value.
+// ---------------------------------------------------------------------------
+const D20_KEYS = ['fatStructural', 'ownEmulsifier', 'titratableAcidity', 'defaultStage', 'prepNote', 'requiresHeat'];
+
+const has = (object, key) => object !== null && typeof object === 'object' && Object.hasOwn(object, key);
+
+function deepEqual(a, b) {
+  if (a === b) return true;
+  if (a === null || b === null || typeof a !== 'object' || typeof b !== 'object') return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  const left = Object.keys(a);
+  const right = Object.keys(b);
+  return left.length === right.length && left.every((key) => has(b, key) && deepEqual(a[key], b[key]));
+}
+
+const SEEDED_VERSIONS = new Map();
+const SEEDED_BATCHES = new Map();
+for (const group of seedRecipeGroups) {
+  for (const version of group.versions) SEEDED_VERSIONS.set(version.id, version);
+  for (const batch of group.batches) SEEDED_BATCHES.set(batch.id, batch);
+}
+
+// The core words, as a stored batch snapshot carries them (D-03).
+const EXPECTED_CORE_SCALES = coreScaleDefinitions(CORE_SCALE_ROWS);
+const EXPECTED_CORE_PROBLEMS = problemNames(CORE_PROBLEM_ROWS);
+
+// A declared scale was a name and is now the scales table's definition with
+// that name (decisions 3 and 5). undefined when the table has no such name.
+function expectedDefinitionForName(name) {
+  const row = CORE_SCALE_ROWS.find((candidate) => candidate.name === name);
+  return row ? scaleDefinition(row) : undefined;
+}
+function expectedDefinitionForKey(key) {
+  const row = CORE_SCALE_ROWS.find((candidate) => candidate.key === key);
+  return row ? scaleDefinition(row) : undefined;
+}
+
+// The seeded version a dumped version descends from: itself when its id is a
+// seeded id, else through parentVersionId (the walk's children descend from olive
+// oil v1). versionsById is the same dump's versions, for the chain.
+function seededAncestor(record, versionsById) {
+  const seen = new Set();
+  let current = record;
+  while (current && typeof current === 'object' && !seen.has(current.id)) {
+    seen.add(current.id);
+    const seeded = SEEDED_VERSIONS.get(current.id);
+    if (seeded) return seeded;
+    current = versionsById.get(current.parentVersionId);
+  }
+  return undefined;
+}
+
+// The version a dumped batch was recorded on, as a seeded ancestor.
+function seededAncestorOfBatch(batch, versionsById) {
+  const version = versionsById.get(batch.versionId) ?? SEEDED_VERSIONS.get(batch.versionId);
+  return version ? seededAncestor(version, versionsById) : undefined;
+}
+
+// A version's code: the stored seed code for a seeded id (D-05), else the code
+// derived from the id the dumped record carries (D-04); the id is never a
+// counter value assumed here.
+function expectedSheetCode(record) {
+  if (SEEDED_VERSIONS.has(record.id)) return SEED_SHEET_CODES[record.id];
+  return typeof record.id === 'string' && record.id !== '' ? codeFromVersionId(record.id) : undefined;
+}
+
+// D-19 as amended: a seeded version's own copied Ice Ed figure; a version the
+// walk created has its parent's.
+function expectedServeTempC(record, versionsById) {
+  const seeded = seededAncestor(record, versionsById);
+  return seeded && has(seeded, 'serveTempC') ? seeded.serveTempC : undefined;
+}
+
+// D-13: every version's equipment gains maxFillG, null where nothing is known.
+const EXPECTED_MAX_FILL_G = null;
+
+// LIB-08: the seeded row's libraryId for a row id: a library id, or null for the
+// strawberry recipe's two own definitions; undefined when the seed has no such row.
+function expectedLibraryId(seededVersion, rowId) {
+  const row = seededVersion?.rows.find((candidate) => candidate.id === rowId);
+  return row && has(row, 'libraryId') ? row.libraryId : undefined;
+}
+
+// D-20: the library entry's value for one of the six keys; null when the link is
+// null; undefined when the link names no entry or the entry lacks the key.
+function expectedCoefficient(libraryIdValue, key) {
+  if (libraryIdValue === null) return null;
+  if (typeof libraryIdValue !== 'string' || !Object.hasOwn(library, libraryIdValue)) return undefined;
+  const entry = library[libraryIdValue];
+  return has(entry, key) ? entry[key] : undefined;
+}
+
+// D-20: the acidity's basis or source word, only the dairy entries hold one;
+// undefined means the key must be absent from the stored ingredient.
+function expectedAcidityProvenance(libraryIdValue, field) {
+  if (typeof libraryIdValue !== 'string' || !Object.hasOwn(library, libraryIdValue)) return undefined;
+  const group = library[libraryIdValue][field];
+  return has(group, 'titratableAcidity') ? group.titratableAcidity : undefined;
+}
+
+// ---------------------------------------------------------------------------
+// ALLOWED_STORE_PATHS: one entry per allowed path. `pattern` is a regular
+// expression over diffLeaves' `where`; check(was, now, m, context) is true only
+// when the before value is absent (a name string for a declared scale) and the
+// after value is the expected one. Numbers captured by the pattern are indexes
+// into the after-dump's lists.
+// ---------------------------------------------------------------------------
+const absent = (value) => value === undefined;
+
+const ALLOWED_STORE_PATHS = [
+  {
+    path: 'versions[i].sheetCode',
+    pattern: /^stores\.versions\[(\d+)\]\.sheetCode$/,
+    check: (was, now, [i], { stores }) => absent(was) && now !== undefined && deepEqual(now, expectedSheetCode(stores.versions[i])),
+  },
+  {
+    path: 'versions[i].serveTempC',
+    pattern: /^stores\.versions\[(\d+)\]\.serveTempC$/,
+    check: (was, now, [i], { stores, versionsById }) => {
+      const expected = expectedServeTempC(stores.versions[i], versionsById);
+      return absent(was) && expected !== undefined && deepEqual(now, expected);
+    },
+  },
+  {
+    path: 'versions[i].equipment.maxFillG',
+    pattern: /^stores\.versions\[(\d+)\]\.equipment\.maxFillG$/,
+    check: (was, now) => absent(was) && now === EXPECTED_MAX_FILL_G,
+  },
+  {
+    path: 'versions[i].declaredAxes[k]',
+    pattern: /^stores\.versions\[(\d+)\]\.declaredAxes\[(\d+)\]$/,
+    check: (was, now) => typeof was === 'string' && deepEqual(now, expectedDefinitionForName(was)),
+  },
+  {
+    path: 'batches[i].snapshot.declaredAxes[k]',
+    pattern: /^stores\.batches\[(\d+)\]\.snapshot\.declaredAxes\[(\d+)\]$/,
+    check: (was, now) => typeof was === 'string' && deepEqual(now, expectedDefinitionForName(was)),
+  },
+  {
+    path: 'batches[i].snapshot.coreScales',
+    pattern: /^stores\.batches\[(\d+)\]\.snapshot\.coreScales$/,
+    check: (was, now) => absent(was) && deepEqual(now, EXPECTED_CORE_SCALES),
+  },
+  {
+    path: 'batches[i].snapshot.coreProblems',
+    pattern: /^stores\.batches\[(\d+)\]\.snapshot\.coreProblems$/,
+    check: (was, now) => absent(was) && deepEqual(now, EXPECTED_CORE_PROBLEMS),
+  },
+];
+
+// The row-level paths come in pairs, one under a version's rows and one under a
+// batch snapshot's rows. The row's expected libraryId is the seeded counterpart's
+// (version or its parent, or the batch's versionId, and the row id); the
+// coefficients are the library entry's for that id. No other ingredient path is
+// allowed: a changed composition figure, a note, or an existing basis or source
+// entry still fails.
+const ROW_OWNERS = [
+  {
+    pattern: String.raw`versions\[(\d+)\]\.rows\[(\d+)\]`,
+    row: ({ stores, versionsById }, i, j) => {
+      const version = stores.versions[i];
+      return { row: version?.rows?.[j], seeded: seededAncestor(version, versionsById) };
+    },
+  },
+  {
+    pattern: String.raw`batches\[(\d+)\]\.snapshot\.rows\[(\d+)\]`,
+    row: ({ stores, versionsById }, i, j) => {
+      const batch = stores.batches[i];
+      return { row: batch?.snapshot?.rows?.[j], seeded: seededAncestorOfBatch(batch, versionsById) };
+    },
+  },
+];
+
+const expectedLinkOf = (context, owner, i, j) => {
+  const { row, seeded } = owner.row(context, i, j);
+  return row ? expectedLibraryId(seeded, row.id) : undefined;
+};
+
+for (const owner of ROW_OWNERS) {
+  ALLOWED_STORE_PATHS.push({
+    path: `${owner.pattern}.libraryId`,
+    pattern: new RegExp(`^stores\\.${owner.pattern}\\.libraryId$`),
+    check: (was, now, [i, j], context) => {
+      const expected = expectedLinkOf(context, owner, i, j);
+      return absent(was) && expected !== undefined && now === expected;
+    },
+  });
+  for (const key of D20_KEYS) {
+    ALLOWED_STORE_PATHS.push({
+      path: `${owner.pattern}.ingredient.${key}`,
+      pattern: new RegExp(`^stores\\.${owner.pattern}\\.ingredient\\.${key}$`),
+      check: (was, now, [i, j], context) => {
+        const expected = expectedCoefficient(expectedLinkOf(context, owner, i, j), key);
+        return absent(was) && expected !== undefined && deepEqual(now, expected);
+      },
+    });
+  }
+  for (const field of ['basis', 'source']) {
+    ALLOWED_STORE_PATHS.push({
+      path: `${owner.pattern}.ingredient.${field}.titratableAcidity`,
+      pattern: new RegExp(`^stores\\.${owner.pattern}\\.ingredient\\.${field}\\.titratableAcidity$`),
+      check: (was, now, [i, j], context) => {
+        const expected = expectedAcidityProvenance(expectedLinkOf(context, owner, i, j), field);
+        return absent(was) && expected !== undefined && deepEqual(now, expected);
+      },
+    });
+  }
+}
+
+// What an after-step's dump lets the checks resolve: its versions by id.
+function storeContext(step) {
+  const stores = step?.stores;
+  if (!stores || !Array.isArray(stores.versions) || !Array.isArray(stores.batches)) return undefined;
+  return { stores, versionsById: new Map(stores.versions.map((version) => [version.id, version])) };
+}
+
+// ---------------------------------------------------------------------------
+// REQUIRED_STORE_FIELDS: over one after-dump, every addition is an own key with
+// its expected value. Returns how many were present; each miss is a FAIL line
+// with its path, pushed to `fails`.
+// ---------------------------------------------------------------------------
+function requiredRowFields(row, link, where, fail) {
+  let present = 0;
+  if (!has(row, 'libraryId')) fail(`${where}.libraryId`, 'missing own libraryId');
+  else if (link === undefined) fail(`${where}.libraryId`, 'no seeded counterpart for this row');
+  else if (row.libraryId !== link) fail(`${where}.libraryId`, `libraryId ${JSON.stringify(row.libraryId)}, expected ${JSON.stringify(link)}`);
+  else present += 1;
+
+  const ingredient = row?.ingredient;
+  for (const key of D20_KEYS) {
+    const expected = expectedCoefficient(link, key);
+    if (!has(ingredient, key)) fail(`${where}.ingredient.${key}`, 'missing own key');
+    else if (expected === undefined || !deepEqual(ingredient[key], expected)) {
+      fail(`${where}.ingredient.${key}`, `${JSON.stringify(ingredient[key])}, expected ${JSON.stringify(expected)}`);
+    } else present += 1;
+  }
+  for (const field of ['basis', 'source']) {
+    const expected = expectedAcidityProvenance(link, field);
+    const stored = has(ingredient?.[field], 'titratableAcidity');
+    if (expected === undefined) {
+      if (stored) fail(`${where}.ingredient.${field}.titratableAcidity`, 'present, expected absent');
+    } else if (!stored) fail(`${where}.ingredient.${field}.titratableAcidity`, 'missing own key');
+    else if (!deepEqual(ingredient[field].titratableAcidity, expected)) {
+      fail(`${where}.ingredient.${field}.titratableAcidity`, `${JSON.stringify(ingredient[field].titratableAcidity)}, expected ${JSON.stringify(expected)}`);
+    } else present += 1;
+  }
+  return present;
+}
+
+function requiredDeclared(list, where, fail) {
+  let present = 0;
+  (Array.isArray(list) ? list : []).forEach((element, k) => {
+    const expected = isScaleDefinition(element) ? expectedDefinitionForKey(element.key) : undefined;
+    if (expected === undefined || !deepEqual(element, expected)) {
+      fail(`${where}[${k}]`, `${JSON.stringify(element)} is not a definition the scales table holds`);
+    } else present += 1;
+  });
+  return present;
+}
+
+function requiredStoreFields(context, fail) {
+  const { stores, versionsById } = context;
+  let present = 0;
+  stores.versions.forEach((version, i) => {
+    const where = `stores.versions[${i}]`;
+    const seeded = seededAncestor(version, versionsById);
+    const code = expectedSheetCode(version);
+    if (!has(version, 'sheetCode')) fail(`${where}.sheetCode`, 'missing own sheetCode');
+    else if (code === undefined || version.sheetCode !== code) fail(`${where}.sheetCode`, `${JSON.stringify(version.sheetCode)}, expected ${JSON.stringify(code)}`);
+    else present += 1;
+
+    const serve = expectedServeTempC(version, versionsById);
+    if (!has(version, 'serveTempC')) fail(`${where}.serveTempC`, 'missing own serveTempC');
+    else if (serve === undefined || !deepEqual(version.serveTempC, serve)) fail(`${where}.serveTempC`, `${JSON.stringify(version.serveTempC)}, expected ${JSON.stringify(serve)}`);
+    else present += 1;
+
+    if (version.equipment && typeof version.equipment === 'object') {
+      if (!has(version.equipment, 'maxFillG')) fail(`${where}.equipment.maxFillG`, 'missing own maxFillG');
+      else if (version.equipment.maxFillG !== EXPECTED_MAX_FILL_G) fail(`${where}.equipment.maxFillG`, `${JSON.stringify(version.equipment.maxFillG)}, expected null`);
+      else present += 1;
+    }
+    present += requiredDeclared(version.declaredAxes, `${where}.declaredAxes`, fail);
+    (version.rows ?? []).forEach((row, j) => {
+      present += requiredRowFields(row, expectedLibraryId(seeded, row?.id), `${where}.rows[${j}]`, fail);
+    });
+  });
+  stores.batches.forEach((batch, i) => {
+    const where = `stores.batches[${i}].snapshot`;
+    const snapshot = batch.snapshot ?? {};
+    const seeded = seededAncestorOfBatch(batch, versionsById);
+    if (!has(snapshot, 'coreScales')) fail(`${where}.coreScales`, 'missing own coreScales');
+    else if (!deepEqual(snapshot.coreScales, EXPECTED_CORE_SCALES)) fail(`${where}.coreScales`, 'not the four core definitions');
+    else present += 1;
+    if (!has(snapshot, 'coreProblems')) fail(`${where}.coreProblems`, 'missing own coreProblems');
+    else if (!deepEqual(snapshot.coreProblems, EXPECTED_CORE_PROBLEMS)) fail(`${where}.coreProblems`, 'not the four core words');
+    else present += 1;
+    present += requiredDeclared(snapshot.declaredAxes, `${where}.declaredAxes`, fail);
+    (snapshot.rows ?? []).forEach((row, j) => {
+      present += requiredRowFields(row, expectedLibraryId(seeded, row?.id), `${where}.rows[${j}]`, fail);
+    });
+  });
+  return present;
+}
+
+// compareResult(before, after): prints nothing. diffs and fails are lines ready
+// to print; allowed counts the store differences the allow-list passed; required
+// counts the additions found present; count is the snapshots compared.
+function compareResult(a, b) {
+  const diffs = [];
+  const fails = [];
   const show = (value) => (value === undefined ? 'absent' : JSON.stringify(value));
   const emit = (scenario, step, where, before, after) =>
-    lines.push(`DIFF ${scenario} / ${step} / ${where}: before=${show(before)} after=${show(after)}`);
+    diffs.push(`DIFF ${scenario} / ${step} / ${where}: before=${show(before)} after=${show(after)}`);
 
   for (const key of ['walk', 'engine', 'width']) {
     if (a[key] !== b[key]) emit('(file)', key, key, a[key], b[key]);
   }
   const names = [...new Set([...a.scenarios.map((s) => s.name), ...b.scenarios.map((s) => s.name)])];
   let count = 0;
+  let allowed = 0;
+  let required = 0;
   for (const name of names) {
     const left = a.scenarios.find((s) => s.name === name);
     const right = b.scenarios.find((s) => s.name === name);
@@ -883,16 +1222,311 @@ async function compare(pathA, pathB) {
         continue;
       }
       count += 1;
+      const context = storeContext(after);
       const found = [];
       diffLeaves(before, after, '', found);
-      for (const [where, was, now] of found) emit(name, label, where, was, now);
+      for (const [where, was, now] of found) {
+        let passed = false;
+        if (context && where.startsWith('stores.')) {
+          for (const entry of ALLOWED_STORE_PATHS) {
+            const match = entry.pattern.exec(where);
+            if (match && entry.check(was, now, match.slice(1).map(Number), context)) {
+              passed = true;
+              break;
+            }
+          }
+        }
+        if (passed) allowed += 1;
+        else emit(name, label, where, was, now);
+      }
+      if (context) {
+        required += requiredStoreFields(context, (where, message) => fails.push(`FAIL ${name} / ${label} / ${where}: ${message}`));
+      }
     }
   }
-  if (lines.length > 0) {
-    for (const line of lines) console.log(line);
+  return { diffs, fails, allowed, required, count };
+}
+
+async function readWalk(p) {
+  return JSON.parse(await readFile(p, 'utf8'));
+}
+
+async function compare(pathA, pathB) {
+  const [a, b] = await Promise.all([pathA, pathB].map(readWalk));
+  const { diffs, fails, allowed, required, count } = compareResult(a, b);
+  if (diffs.length > 0 || fails.length > 0) {
+    for (const line of [...diffs, ...fails]) console.log(line);
     process.exit(1);
   }
+  console.log(`ALLOWED ${allowed} store differences, each checked`);
+  console.log(`REQUIRED ${required} additions present`);
   console.log(`MATCH ${count} snapshots`);
+}
+
+// ---------------------------------------------------------------------------
+// selftest: doctored copies of the after-file, each of which the compare must
+// refuse, with a line that names the path that was doctored; and the real pair,
+// which it must pass. Exits 1 on any FAIL.
+// ---------------------------------------------------------------------------
+function* dumpedSteps(file) {
+  for (const scenario of file.scenarios) {
+    for (const step of scenario.steps) if (step.stores) yield { scenario: scenario.name, step };
+  }
+}
+
+function* dumpedRows(file) {
+  for (const { scenario, step } of dumpedSteps(file)) {
+    for (const [i, version] of step.stores.versions.entries()) {
+      for (const [j, row] of (version.rows ?? []).entries()) {
+        yield { scenario, step, row, where: `stores.versions[${i}].rows[${j}]`, version };
+      }
+    }
+    for (const [i, batch] of step.stores.batches.entries()) {
+      for (const [j, row] of (batch.snapshot?.rows ?? []).entries()) {
+        yield { scenario, step, row, where: `stores.batches[${i}].snapshot.rows[${j}]`, batch };
+      }
+    }
+  }
+}
+
+// Each doctoring changes `file` in place and returns { scenario, step, where }
+// for the path it changed, or undefined when it found nothing to change.
+const DOCTORINGS = [
+  [
+    'name',
+    'a recipe name changed (a path outside the allow-list)',
+    (file) => {
+      for (const { scenario, step } of dumpedSteps(file)) {
+        const index = step.stores.recipes.findIndex((recipe) => typeof recipe.name === 'string');
+        if (index < 0) continue;
+        step.stores.recipes[index].name += ' (doctored)';
+        return { scenario, step: step.step, where: `stores.recipes[${index}].name` };
+      }
+      return undefined;
+    },
+  ],
+  [
+    'nulllink',
+    'a null libraryId set to strawberries (a wrong value at a permitted path)',
+    (file) => {
+      for (const found of dumpedRows(file)) {
+        if (found.row.libraryId !== null) continue;
+        found.row.libraryId = 'strawberries';
+        return { scenario: found.scenario, step: found.step.step, where: `${found.where}.libraryId` };
+      }
+      return undefined;
+    },
+  ],
+  [
+    'code',
+    'a seeded version\'s sheetCode replaced by another canonical code (a wrong value at a permitted path)',
+    (file) => {
+      for (const { scenario, step } of dumpedSteps(file)) {
+        const index = step.stores.versions.findIndex((version) => SEEDED_VERSIONS.has(version.id) && typeof version.sheetCode === 'string');
+        if (index < 0) continue;
+        const version = step.stores.versions[index];
+        version.sheetCode = version.sheetCode === 'ZZZZ-0000' ? 'ZZZZ-0001' : 'ZZZZ-0000';
+        return { scenario, step: step.step, where: `stores.versions[${index}].sheetCode` };
+      }
+      return undefined;
+    },
+  ],
+  [
+    'nocode',
+    'a version\'s sheetCode deleted (a missing required addition)',
+    (file) => {
+      for (const { scenario, step } of dumpedSteps(file)) {
+        const index = step.stores.versions.findIndex((version) => has(version, 'sheetCode'));
+        if (index < 0) continue;
+        delete step.stores.versions[index].sheetCode;
+        return { scenario, step: step.step, where: `stores.versions[${index}].sheetCode` };
+      }
+      return undefined;
+    },
+  ],
+  [
+    'servetemp',
+    'a seeded version\'s numeric serveTempC moved by one degree (a wrong value at a permitted path, D-19 as amended)',
+    (file) => {
+      for (const { scenario, step } of dumpedSteps(file)) {
+        const index = step.stores.versions.findIndex((version) => SEEDED_VERSIONS.has(version.id) && typeof version.serveTempC === 'number');
+        if (index < 0) continue;
+        step.stores.versions[index].serveTempC += 1;
+        return { scenario, step: step.step, where: `stores.versions[${index}].serveTempC` };
+      }
+      return undefined;
+    },
+  ],
+  [
+    'wrongcoef',
+    'a row\'s numeric ingredient.titratableAcidity moved by 0.001 (a wrong coefficient at a permitted path, D-20)',
+    (file) => {
+      for (const found of dumpedRows(file)) {
+        if (typeof found.row.ingredient?.titratableAcidity !== 'number') continue;
+        found.row.ingredient.titratableAcidity += 0.001;
+        return { scenario: found.scenario, step: found.step.step, where: `${found.where}.ingredient.titratableAcidity` };
+      }
+      return undefined;
+    },
+  ],
+  [
+    'nocoef',
+    'a version row\'s ingredient.defaultStage key deleted (a missing coefficient, D-20)',
+    (file) => {
+      for (const found of dumpedRows(file)) {
+        if (!found.version || !has(found.row.ingredient, 'defaultStage')) continue;
+        delete found.row.ingredient.defaultStage;
+        return { scenario: found.scenario, step: found.step.step, where: `${found.where}.ingredient.defaultStage` };
+      }
+      return undefined;
+    },
+  ],
+];
+
+async function selftest(pathBefore, pathAfter) {
+  const [before, after] = await Promise.all([pathBefore, pathAfter].map(readWalk));
+  let failed = 0;
+  for (const [name, what, doctor] of DOCTORINGS) {
+    const doctored = structuredClone(after);
+    const changed = doctor(doctored);
+    if (!changed) {
+      console.log(`FAIL selftest ${name}: found nothing to change (${what})`);
+      failed += 1;
+      continue;
+    }
+    const { diffs, fails } = compareResult(before, doctored);
+    const named = `${changed.scenario} / ${changed.step} / ${changed.where}`;
+    const refused = [...diffs, ...fails].some((line) => line.startsWith(`DIFF ${named}:`) || line.startsWith(`FAIL ${named}:`));
+    if (refused) console.log(`PASS selftest ${name}: refused at ${changed.where} (${what})`);
+    else {
+      console.log(`FAIL selftest ${name}: not refused at ${named} (${what})`);
+      failed += 1;
+    }
+  }
+  const real = compareResult(before, after);
+  if (real.diffs.length === 0 && real.fails.length === 0) console.log('PASS selftest real: the real pair passes, null strawberry links and coefficients included');
+  else {
+    console.log(`FAIL selftest real: the real pair is refused (${real.diffs.length} DIFF, ${real.fails.length} FAIL)`);
+    failed += 1;
+  }
+  if (failed > 0) process.exit(1);
+}
+
+// ---------------------------------------------------------------------------
+// expected: with no browser and no build, check the expected-value functions
+// above against what the seed modules stored and against the before-walk's
+// dumps, using the same functions the allow-list uses. When it fails, either an
+// expected function misreads the table or the seed and the table disagree: stop
+// and report which; never change a function to match a stored value without
+// saying why in the summary, and never widen the allow-list.
+// ---------------------------------------------------------------------------
+async function expectedMode(pathBefore) {
+  const before = await readWalk(pathBefore);
+  const results = new Map();
+  const note = (check, ok, message) => {
+    const entry = results.get(check) ?? { checked: 0, failed: 0 };
+    entry.checked += 1;
+    if (!ok) {
+      entry.failed += 1;
+      console.log(`FAIL (${check}) ${message}`);
+    }
+    results.set(check, entry);
+  };
+  const seededById = new Map(SEEDED_VERSIONS);
+
+  // (a) every seeded declaredAxes element is the expected definition for its name.
+  for (const version of SEEDED_VERSIONS.values()) {
+    version.declaredAxes.forEach((element, k) => {
+      const expected = expectedDefinitionForName(element?.name);
+      note('a', expected !== undefined && deepEqual(element, expected), `version ${version.id} declaredAxes[${k}] is ${JSON.stringify(element)}, expected ${JSON.stringify(expected)}`);
+    });
+  }
+  for (const batch of SEEDED_BATCHES.values()) {
+    batch.snapshot.declaredAxes.forEach((element, k) => {
+      const expected = expectedDefinitionForName(element?.name);
+      note('a', expected !== undefined && deepEqual(element, expected), `batch ${batch.id} snapshot.declaredAxes[${k}] is ${JSON.stringify(element)}, expected ${JSON.stringify(expected)}`);
+    });
+    note('a', deepEqual(batch.snapshot.coreScales, EXPECTED_CORE_SCALES), `batch ${batch.id} snapshot.coreScales is not the four core definitions`);
+    note('a', deepEqual(batch.snapshot.coreProblems, EXPECTED_CORE_PROBLEMS), `batch ${batch.id} snapshot.coreProblems is not the four core words`);
+  }
+
+  // (b) every declared-scale name in the before-walk's dumps resolves to a definition.
+  for (const { scenario, step } of dumpedSteps(before)) {
+    const place = (path) => `before-walk ${scenario} / ${step.step} / ${path}`;
+    step.stores.versions.forEach((version, i) => {
+      (version.declaredAxes ?? []).forEach((name, k) => {
+        note('b', typeof name === 'string' && expectedDefinitionForName(name) !== undefined, `${place(`stores.versions[${i}].declaredAxes[${k}]`)} = ${JSON.stringify(name)} names no scale in the scales table`);
+      });
+    });
+    step.stores.batches.forEach((batch, i) => {
+      (batch.snapshot?.declaredAxes ?? []).forEach((name, k) => {
+        note('b', typeof name === 'string' && expectedDefinitionForName(name) !== undefined, `${place(`stores.batches[${i}].snapshot.declaredAxes[${k}]`)} = ${JSON.stringify(name)} names no scale in the scales table`);
+      });
+    });
+  }
+
+  // (c) codes, serving temperatures and links are defined and equal the seed's own.
+  for (const version of SEEDED_VERSIONS.values()) {
+    const code = expectedSheetCode(version);
+    note('c', code !== undefined && code === version.sheetCode, `version ${version.id} expected sheetCode ${JSON.stringify(code)}, stamped ${JSON.stringify(version.sheetCode)}`);
+    const serve = expectedServeTempC(version, seededById);
+    const ice = version.iceEd?.servingTemperatureC ?? null;
+    note('c', serve !== undefined && serve === version.serveTempC && serve === ice, `version ${version.id} expected serveTempC ${JSON.stringify(serve)}, own ${JSON.stringify(version.serveTempC)}, iceEd.servingTemperatureC ${JSON.stringify(ice)}`);
+    for (const row of version.rows) {
+      const link = expectedLibraryId(version, row.id);
+      note('c', (typeof link === 'string' || link === null) && link === row.libraryId, `version ${version.id} row ${row.id} expected libraryId ${JSON.stringify(link)}, own ${JSON.stringify(row.libraryId)}`);
+    }
+  }
+  for (const batch of SEEDED_BATCHES.values()) {
+    const seeded = seededAncestorOfBatch(batch, seededById);
+    for (const row of batch.snapshot.rows) {
+      const link = expectedLibraryId(seeded, row.id);
+      note('c', (typeof link === 'string' || link === null) && link === row.libraryId, `batch ${batch.id} snapshot row ${row.id} expected libraryId ${JSON.stringify(link)}, own ${JSON.stringify(row.libraryId)}`);
+    }
+  }
+
+  // (d) the six coefficients and the acidity provenance, per seeded row.
+  const checkCoefficients = (owner, row, link) => {
+    for (const key of D20_KEYS) {
+      const expected = expectedCoefficient(link, key);
+      note('d', expected !== undefined && has(row.ingredient, key) && deepEqual(row.ingredient[key], expected), `${owner} row ${row.id} expected ${key} ${JSON.stringify(expected)}, own ${JSON.stringify(row.ingredient?.[key])}`);
+    }
+    for (const field of ['basis', 'source']) {
+      const expected = expectedAcidityProvenance(link, field);
+      const stored = has(row.ingredient?.[field], 'titratableAcidity');
+      const ok = expected === undefined ? !stored : stored && deepEqual(row.ingredient[field].titratableAcidity, expected);
+      note('d', ok, `${owner} row ${row.id} expected ${field}.titratableAcidity ${JSON.stringify(expected)}, own ${stored ? JSON.stringify(row.ingredient[field].titratableAcidity) : 'absent'}`);
+    }
+    if (link === null) {
+      note('d', D20_KEYS.every((key) => row.ingredient?.[key] === null), `${owner} row ${row.id} is an own definition and must own the six at null`);
+    }
+  };
+  for (const version of SEEDED_VERSIONS.values()) {
+    for (const row of version.rows) checkCoefficients(`version ${version.id}`, row, expectedLibraryId(version, row.id));
+  }
+  for (const batch of SEEDED_BATCHES.values()) {
+    const seeded = seededAncestorOfBatch(batch, seededById);
+    for (const row of batch.snapshot.rows) checkCoefficients(`batch ${batch.id}`, row, expectedLibraryId(seeded, row.id));
+  }
+
+  let failed = 0;
+  const titles = {
+    a: 'seeded declared definitions and core words equal the expected ones',
+    b: 'every declared-scale name in the before-walk resolves to a definition',
+    c: 'expected sheetCode, serveTempC and libraryId are defined and equal the seed\'s own',
+    d: 'expected coefficients and acidity provenance are defined and equal the seed rows\' own',
+  };
+  for (const check of ['a', 'b', 'c', 'd']) {
+    const entry = results.get(check) ?? { checked: 0, failed: 0 };
+    if (entry.checked === 0) {
+      console.log(`FAIL (${check}) nothing was checked: ${titles[check]}`);
+      failed += 1;
+    } else if (entry.failed > 0) {
+      console.log(`FAIL (${check}) ${entry.failed} of ${entry.checked}: ${titles[check]}`);
+      failed += 1;
+    } else console.log(`PASS (${check}) ${entry.checked} checked: ${titles[check]}`);
+  }
+  if (failed > 0) process.exit(1);
 }
 
 const [, , mode, first, second] = process.argv;
@@ -900,7 +1534,11 @@ if (mode === 'record' && first) {
   await record(first);
 } else if (mode === 'compare' && first && second) {
   await compare(first, second);
+} else if (mode === 'selftest' && first && second) {
+  await selftest(first, second);
+} else if (mode === 'expected' && first) {
+  await expectedMode(first);
 } else {
-  console.error('Usage: node 05-walk.mjs record <out.json> | compare <a.json> <b.json>');
+  console.error('Usage: node 09-walk.mjs record <out.json> | compare <a.json> <b.json> | selftest <before.json> <after.json> | expected <before.json>');
   process.exit(1);
 }

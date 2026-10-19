@@ -4,6 +4,7 @@ import { repository } from '../store/repository.js';
 import { exportStore, importStore } from '../store/transfer.js';
 import { useBelow724, useBelowRail } from './useBelowDesktop.js';
 import { Button } from './Button.jsx';
+import { useCatalog } from './CatalogContext.jsx';
 
 // One source of truth for the App's five destinations (DESIGN.md "App
 // marks", D-09, D-10, D-16): the rail, the bottom tab row, and router.jsx's
@@ -21,6 +22,12 @@ export const PLACES = [
 // decide-import-refreshes-open-recipe-pens = refuse). The one home of the sentence.
 // Wording approved by Mark (2026-10-11): decide-new-lines-import-block-and-too-long.
 export const IMPORT_BLOCKED_STATUS = 'Close the open pen before importing.';
+
+// The one line of the recovery page the Shell shows when the catalog could not be
+// reloaded after an import had committed (D-03a): the file did land, so the
+// Import panel's "Nothing was changed" would be false. Claude's wording, on
+// plan 09-17's look row for Mark.
+export const IMPORT_RELOAD_LINE = 'The file was imported. Reload the page to see it.';
 
 // A routed page with a pen open registers its page-notice function here
 // through guardImport(announce) and gets back a release function. The Shell
@@ -180,6 +187,12 @@ function RailPlace({ place }) {
 export function Shell() {
   const [importErrors, setImportErrors] = useState([]);
   const [storeRevision, setStoreRevision] = useState(0);
+  const { reloadCatalog } = useCatalog();
+  // True once an import has committed but the catalog could not be reloaded. The
+  // routed page is then withheld (see the main element) and nothing in the app
+  // clears it: only a page reload does, because the next boot reads and
+  // validates the imported tables.
+  const [catalogStale, setCatalogStale] = useState(false);
   const fileInputRef = useRef(null);
   const importGuardRef = useRef(null);
   const importRef = useRef(null);
@@ -349,6 +362,24 @@ export function Shell() {
       setImportErrors(result.errors);
       return;
     }
+    // The catalog is reloaded before any routed page re-renders for the new
+    // store revision, so no page renders a scale or problem from the old
+    // catalog (D-03a).
+    try {
+      await reloadCatalog();
+    } catch {
+      // The import has committed, so the old catalog no longer matches the
+      // store, and the rail, the tab row and the address bar all stay live: a
+      // different version route would mount a new RecipePage that reads the
+      // imported records against the old catalog. Holding storeRevision would
+      // stop one refresh and no navigation, so the routed page itself is
+      // withheld until a page reload. The Import panel's title says the file
+      // can't be imported, which is no longer true, so its lines are cleared
+      // and the line goes on the recovery page instead.
+      setImportErrors([]);
+      setCatalogStale(true);
+      return;
+    }
     setImportErrors([]);
     setStoreRevision((revision) => revision + 1);
   }
@@ -457,9 +488,19 @@ export function Shell() {
         </nav>
         {open && <div className="shell__scrim" aria-hidden="true" onClick={closePlaces} />}
         <main className="shell__main" inert={open}>
-          <ImportGuardContext value={guardImport}>
-            <Outlet context={storeRevision} />
-          </ImportGuardContext>
+          {catalogStale ? (
+            // The placeholder page's own pattern (Placeholder.jsx): the place's
+            // name as its title and one sentence naming its status. The rail is
+            // the way out, and every route it reaches shows this page too.
+            <div className="list-page place">
+              <h1 className="place__title">Import</h1>
+              <p className="place__note">{IMPORT_RELOAD_LINE}</p>
+            </div>
+          ) : (
+            <ImportGuardContext value={guardImport}>
+              <Outlet context={storeRevision} />
+            </ImportGuardContext>
+          )}
         </main>
       </div>
       {/* D-16: below the phone step the rail becomes a bottom tab row of

@@ -60,6 +60,7 @@ import { Shell, IMPORT_BLOCKED_STATUS } from './Shell.jsx';
 import { RecipePageForRoute } from '../router.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -110,14 +111,16 @@ async function mountAt(path) {
   current = { container, root };
   await act(async () => {
     root.render(
-      <MemoryRouter initialEntries={[path]}>
-        <Routes>
-          <Route element={<Shell />}>
-            <Route path="/notebook/:recipeId/:versionId" element={<Routed />} />
-            <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={<Routed />} />
-          </Route>
-        </Routes>
-      </MemoryRouter>,
+      <CatalogFixture>
+        <MemoryRouter initialEntries={[path]}>
+          <Routes>
+            <Route element={<Shell />}>
+              <Route path="/notebook/:recipeId/:versionId" element={<Routed />} />
+              <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={<Routed />} />
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </CatalogFixture>,
     );
   });
   await flush(() => buttonByText('Next version') !== null);

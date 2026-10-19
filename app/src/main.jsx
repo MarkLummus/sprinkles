@@ -9,6 +9,7 @@ import './styles/notebook.css';
 import './styles/print.css';
 import { repository } from './store/repository.js';
 import { seedIfEmpty } from './store/seed.js';
+import { firstDamagedTable, bootDamagedLine } from './store/seedTables.js';
 import { readSeedTables, catalogFrom } from './store/catalog.js';
 import { CatalogProvider } from './ui/CatalogContext.jsx';
 import { App } from './router.jsx';
@@ -35,10 +36,19 @@ try {
   throw err;
 }
 
-root.render(
-  <StrictMode>
-    <CatalogProvider initialCatalog={catalogFrom(lists)}>
-      <App />
-    </CatalogProvider>
-  </StrictMode>,
-);
+// A seed table with a damaged row stops the app opening (D-17): one plain line
+// naming the table, and the rows logged for whoever has to look. No half-working
+// catalog is mounted.
+const damaged = firstDamagedTable(lists);
+if (damaged) {
+  console.error(`The ${damaged.table} table has a damaged entry:`, damaged.errors);
+  root.render(<p className="app-boot">{bootDamagedLine(damaged.word)}</p>);
+} else {
+  root.render(
+    <StrictMode>
+      <CatalogProvider initialCatalog={catalogFrom(lists)}>
+        <App />
+      </CatalogProvider>
+    </StrictMode>,
+  );
+}

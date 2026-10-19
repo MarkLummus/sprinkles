@@ -180,7 +180,8 @@ describe('a catalog reload that fails after a committed import (T-09-37)', () =>
     const expectRecovery = () => {
       expect(main().querySelector('h1.place__title').textContent).toBe('Import');
       expect(main().querySelector('p.place__note').textContent).toBe(IMPORT_RELOAD_LINE);
-      expect(main().textContent).not.toContain('page');
+      // Nothing of any routed page: the main area holds the recovery page alone.
+      expect(main().textContent).toBe(`Import${IMPORT_RELOAD_LINE}`);
       expect(current.container.querySelector('.shell__import-errors')).toBeNull();
       expect(current.container.textContent).not.toContain('This file can’t be imported');
       expect(current.container.textContent).not.toContain(IMPORT_STORAGE_ERROR);

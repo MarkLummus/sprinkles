@@ -23,6 +23,7 @@ vi.mock('../store/transfer.js', async (importOriginal) => {
 });
 import { importStore, OLDER_EXPORT_MESSAGE, validateStoreFile } from '../store/transfer.js';
 import { Shell } from './Shell.jsx';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 
 // A mutable window width behind window.matchMedia: every list keeps its
 // 'change' listeners, and setWidth recomputes each query and fires 'change'
@@ -101,14 +102,16 @@ async function mountAt(initialWidth, path = '/') {
   current = { container, root };
   await act(async () => {
     root.render(
-      <MemoryRouter initialEntries={[path]}>
-        <Routes>
-          <Route element={<Shell />}>
-            <Route path="/" element={<EscapeProbe />} />
-            <Route path="/notebook" element={<p>Notebook page</p>} />
-          </Route>
-        </Routes>
-      </MemoryRouter>,
+      <CatalogFixture>
+        <MemoryRouter initialEntries={[path]}>
+          <Routes>
+            <Route element={<Shell />}>
+              <Route path="/" element={<EscapeProbe />} />
+              <Route path="/notebook" element={<p>Notebook page</p>} />
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </CatalogFixture>,
     );
   });
   return container;

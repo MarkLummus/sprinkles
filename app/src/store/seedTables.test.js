@@ -54,7 +54,7 @@ describe('every seed row passes its validator', () => {
       'machines',
       'ice cream styles',
       'scales',
-      'problems',
+      'tasting problems',
     ]);
   });
 
@@ -430,7 +430,7 @@ describe('firstDamagedTable, the boot check (D-17)', () => {
     const problems = [...structuredClone(CORE_PROBLEM_ROWS), { id: 'icy', name: 'Coarse, icy', order: 5 }];
     expect(firstDamagedTable(lists({ problems }))).toEqual({
       table: 'problems',
-      word: 'problems',
+      word: 'tasting problems',
       errors: ['problems: "Coarse, icy" names more than one problem (coarse-icy, icy)'],
     });
   });
@@ -462,5 +462,9 @@ describe('firstDamagedTable, the boot check (D-17)', () => {
 describe('bootDamagedLine', () => {
   it('names the table in the app’s own voice, with a curly apostrophe', () => {
     expect(bootDamagedLine('ice cream styles')).toBe('Sprinkles can’t open: its list of ice cream styles has a damaged entry.');
+  });
+
+  it('names the problems table as tasting problems, in one sentence', () => {
+    expect(bootDamagedLine(SEED_TABLES.problems.word)).toBe('Sprinkles can’t open: its list of tasting problems has a damaged entry.');
   });
 });

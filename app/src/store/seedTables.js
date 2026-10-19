@@ -245,13 +245,13 @@ export function validateProblemRow(row, path, errors) {
 }
 
 // The five seed tables: the validator for a row and the plain word a maker
-// reads for the table (ingredients, machines, ice cream styles, scales, problems).
+// reads for the table (ingredients, machines, ice cream styles, scales, tasting problems).
 export const SEED_TABLES = {
   library: { validate: validateLibraryRecord, word: 'ingredients' },
   machines: { validate: validateMachineRow, word: 'machines' },
   styles: { validate: validateStyleRow, word: 'ice cream styles' },
   scales: { validate: validateScaleRow, word: 'scales' },
-  problems: { validate: validateProblemRow, word: 'problems' },
+  problems: { validate: validateProblemRow, word: 'tasting problems' },
 };
 
 /**

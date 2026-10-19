@@ -369,6 +369,72 @@ async function checkOverflow(route, widths) {
 }
 
 // ---------------------------------------------------------------------------
+// 09-17, current mode: the steps of Mark's List row check-p9-places-and-reset-on-ipad,
+// walked at 1366 with a coarse pointer so each is proven reachable before Mark
+// is handed it: Home's eight recipes, /notebook in Home's order, an entry's Basis
+// and Source, a tap in Name then Tab reaching the Category select, and the olive
+// oil 2 Aug batch reading Sweetness 4 and Oil 4.
+// ---------------------------------------------------------------------------
+const AUG_BATCH_ROUTE = '/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89';
+
+async function checkDeviceSteps() {
+  const tag = 'Device row 1366';
+  const context = await newContext(1366);
+  const page = await context.newPage();
+  await page.goto(servers.appUrl + '/', { waitUntil: 'networkidle' });
+  await page.waitForSelector('.home__row');
+  const homeNames = await page.evaluate(() => [...document.querySelectorAll('.home__row .home__name')].map((node) => node.textContent.trim()));
+  report(homeNames.length === 8, `${tag}: Home lists eight recipes`, `${homeNames.length}`);
+
+  await page.goto(servers.appUrl + '/notebook', { waitUntil: 'networkidle' });
+  await page.waitForSelector('.nb__row');
+  const notebookNames = await page.evaluate(() => [...document.querySelectorAll('.nb__row .nb__name')].map((node) => node.textContent.trim()));
+  report(
+    notebookNames.length === homeNames.length && notebookNames.every((name, i) => name === homeNames[i]),
+    `${tag}: /notebook lists the same recipes in Home's order`,
+    notebookNames.join(' | '),
+  );
+
+  await page.goto(servers.appUrl + '/ingredients', { waitUntil: 'networkidle' });
+  await page.waitForSelector('.ing__row');
+  // A tap in Name, then Tab, reaches the Category select.
+  await page.tap('input.ink-field');
+  await page.keyboard.press('Tab');
+  const tabbedTo = await page.evaluate(() => document.activeElement?.tagName);
+  report(tabbedTo === 'SELECT', `${tag}: Tab after a tap in Name reaches the Category select`, `${tabbedTo}`);
+
+  // Typing milk and choosing a category filter, then an entry's Basis and Source.
+  await page.fill('input.ink-field', 'milk');
+  await page.selectOption('select', 'dairy');
+  const filtered = await page.evaluate(() => document.querySelector('p.ing__count')?.textContent);
+  report(/^\d+ of \d+ ingredients$/.test(filtered ?? ''), `${tag}: typing milk and choosing Dairy narrows the list`, `${filtered}`);
+  await page.fill('input.ink-field', '');
+  await page.selectOption('select', 'All');
+  await openHeavyCream(page);
+  const detail = await page.evaluate(() => ({
+    heads: [...document.querySelectorAll('.ing__detail th[scope="col"]')].map((node) => node.textContent.trim()),
+    basis: [...document.querySelectorAll('.ing__detail .ing__basis')].map((node) => node.textContent.trim()),
+    source: [...document.querySelectorAll('.ing__detail .ing__source')].map((node) => node.textContent.trim()),
+  }));
+  report(
+    detail.heads.includes('Basis') && detail.heads.includes('Source') && detail.basis.length > 0 && detail.basis.every((text) => text !== '') && detail.source.length === detail.basis.length && detail.source.every((text) => text !== ''),
+    `${tag}: an open entry shows its Basis and Source`,
+    `${detail.basis.length} figures, first basis "${detail.basis[0]}"`,
+  );
+
+  // The olive oil 2 Aug batch reads Sweetness 4 and Oil 4.
+  await page.goto(servers.appUrl + AUG_BATCH_ROUTE, { waitUntil: 'networkidle' });
+  await page.waitForSelector('.tasting-reading__axes');
+  const cells = await page.evaluate(() => [...document.querySelectorAll('.tasting-reading__axes .batch-row__cell')].map((node) => node.textContent.trim()));
+  report(
+    cells.includes('Sweetnessmore (4)') && cells.includes('Oilstrong (4)'),
+    `${tag}: the olive oil 2 Aug batch reads Sweetness 4 and Oil 4`,
+    cells.join(' | '),
+  );
+  await context.close();
+}
+
+// ---------------------------------------------------------------------------
 // --evidence: the built place and the board panel, side by side, at one width.
 // ---------------------------------------------------------------------------
 const BOARD_FILE = { notebook: 'notebook-place.html', ingredients: 'ingredients-place.html' };
@@ -527,6 +593,7 @@ try {
   const widths = [393, 724, 834, 1024, 1100, 1366, 1590];
   await checkOverflow('/notebook', widths);
   await checkOverflow('/ingredients', widths);
+  if (LIBRARY_MODE === 'current') await checkDeviceSteps();
   if (EVIDENCE_DIR) await evidence(path.resolve(EVIDENCE_DIR));
 } finally {
   await browser.close();

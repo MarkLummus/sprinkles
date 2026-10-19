@@ -10,6 +10,8 @@ import {
   isScaleDefinition,
   scaleDefinition,
   mintScaleKey,
+  coreScaleDefinitions,
+  problemNames,
 } from './catalog.js';
 import { AXES } from './axes.js';
 import { freshId } from './id.js';
@@ -101,5 +103,34 @@ describe('mintScaleKey (D-03b)', () => {
     expect(() => mintScaleKey('')).toThrow(TypeError);
     expect(() => mintScaleKey(undefined)).toThrow(TypeError);
     expect(() => mintScaleKey(7)).toThrow(TypeError);
+  });
+});
+
+describe('coreScaleDefinitions and problemNames (D-01)', () => {
+  const rows = [
+    { id: 'sweetness', key: 'sweetness', name: 'Sweetness', low: 'less', high: 'more', kind: 'goldilocks', group: 'core', order: 4 },
+    bodyRow,
+    { id: 'hardness', key: 'hardness', name: 'Hardness', low: 'soft', high: 'hard', kind: 'goldilocks', group: 'core', order: 1 },
+  ];
+
+  it('returns the bare definition of each core row, in the order given, and leaves the declared rows out', () => {
+    expect(coreScaleDefinitions(rows)).toEqual([
+      { key: 'sweetness', name: 'Sweetness', low: 'less', high: 'more', kind: 'goldilocks', group: 'core' },
+      { key: 'hardness', name: 'Hardness', low: 'soft', high: 'hard', kind: 'goldilocks', group: 'core' },
+    ]);
+  });
+
+  it('sorts nothing: a reversed list comes back reversed', () => {
+    expect(coreScaleDefinitions([...rows].reverse()).map((definition) => definition.key)).toEqual(['hardness', 'sweetness']);
+  });
+
+  it('names each problem in the order given', () => {
+    expect(
+      problemNames([
+        { id: 'b', name: 'Second', order: 2 },
+        { id: 'a', name: 'First', order: 1 },
+      ]),
+    ).toEqual(['Second', 'First']);
+    expect(problemNames([])).toEqual([]);
   });
 });

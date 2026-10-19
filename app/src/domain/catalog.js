@@ -75,3 +75,18 @@ export function mintScaleKey(id) {
   if (!isNonEmptyString(id)) throw new TypeError('scale key id must be a non-empty string');
   return `scale-${id}`;
 }
+
+/**
+ * coreScaleDefinitions(scales) -> the scaleDefinition of each row with group
+ * 'core', in the order the rows are given. The domain sorts nothing: the
+ * catalog arrives already in its order (store/catalog.js sorts at its one
+ * boundary).
+ */
+export function coreScaleDefinitions(scales) {
+  return scales.filter((row) => row.group === 'core').map(scaleDefinition);
+}
+
+/** problemNames(problems) -> the name of each problem row, in the order given. */
+export function problemNames(problems) {
+  return problems.map((row) => row.name);
+}

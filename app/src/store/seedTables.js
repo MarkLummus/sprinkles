@@ -294,6 +294,71 @@ export function catalogConflicts({ scales, problems, versions = [] } = {}) {
   return conflicts;
 }
 
+// The tables the boot check reads, in the order it checks them. The library
+// goes through SEED_TABLES.library.validate exactly, the store file's own
+// validator and nothing stricter: boot is as strict as import on an entry's
+// structure and as tolerant as the Ingredients place on its display fields, so
+// a store an import accepted or the seed wrote always opens (see
+// firstDamagedTable below).
+const BOOT_TABLES = ['library', 'machines', 'styles', 'scales', 'problems'];
+
+// The words boot gives for the table-level conflicts catalogConflicts reports;
+// a conflict kind not named here (declared-core-key) needs versions, which boot
+// does not read: only an import could make a version declare a core key, and
+// plan 09-10 refuses that import.
+function bootConflictLine(conflict) {
+  if (conflict.kind === 'core-count') {
+    return { table: 'scales', line: `scales: expected exactly ${CORE_SCALE_COUNT} core scales, found ${conflict.count}` };
+  }
+  if (conflict.kind === 'problem-name') {
+    return { table: 'problems', line: `problems: ${JSON.stringify(conflict.name)} names more than one problem (${conflict.ids.join(', ')})` };
+  }
+  return null;
+}
+
+/**
+ * firstDamagedTable({ library, machines, styles, scales, problems }) -> the
+ * first table, in that order, with a row that fails its validator or with a
+ * table-level conflict, as { table, word, errors }; or null when every table
+ * is sound (D-17). `word` is the plain word a maker reads for the table. An
+ * empty list holds no bad row, so the library, machines, styles and problems
+ * lists may be empty; an empty scales list holds no core scale and is reported
+ * by the core-count rule (boot never meets one: seedIfEmpty refills an empty
+ * table first).
+ *
+ * The table-level errors come from catalogConflicts, the check import shares
+ * (plan 09-10), so boot and import hold one rule: the scales table must hold
+ * exactly CORE_SCALE_COUNT core rows (the record pen's desktop grid places
+ * four; a design choice of this phase, not a CONTEXT decision, shown to Mark on
+ * decide-p9-boot-check-scope, whose lift-core-count option removes it), and no
+ * two problem rows may share a name (a batch would copy the word twice and its
+ * export would be refused).
+ *
+ * Boot holds the library to exactly SEED_TABLES.library.validate, the store
+ * file's own validator, and no stricter check (decide-p9-boot-check-scope =
+ * keep): it is as strict as import on an entry's structure (id, name, a
+ * composition of finite numbers, which the balance needs, and the six D-20
+ * coefficient keys) and as tolerant as the Ingredients place on its display
+ * fields, so a store an import accepted or the seed wrote always opens. A later
+ * tightening of validateLibraryRecord tightens boot too.
+ */
+export function firstDamagedTable(lists) {
+  const conflicts = catalogConflicts({ scales: lists.scales, problems: lists.problems }).map(bootConflictLine).filter(Boolean);
+  for (const table of BOOT_TABLES) {
+    const errors = [];
+    const rows = Array.isArray(lists[table]) ? lists[table] : [];
+    rows.forEach((row, index) => SEED_TABLES[table].validate(row, `${table}[${index}]`, errors));
+    for (const conflict of conflicts) if (conflict.table === table) errors.push(conflict.line);
+    if (errors.length > 0) return { table, word: SEED_TABLES[table].word, errors };
+  }
+  return null;
+}
+
+/** bootDamagedLine(word) -> the one line the app shows in place of itself (D-17). */
+export function bootDamagedLine(word) {
+  return `Sprinkles can’t open: its list of ${word} has a damaged entry.`;
+}
+
 /**
  * mergeById(stored, incoming) -> the table an import would leave: an incoming
  * row replacing a stored row of the same id, stored rows the incoming list

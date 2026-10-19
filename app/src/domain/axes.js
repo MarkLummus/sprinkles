@@ -5,6 +5,7 @@
 // contract's "Axes spec". A version and a batch snapshot store their declared
 // scales as definitions { key, name, low, high, kind, group } (decision 3,
 // TASTE-03); the readers below take them as stored and resolve no names.
+import { coreScaleDefinitions } from './catalog.js';
 
 /**
  * AXES: the six fixed axes, verbatim from the contract's "Axes spec",
@@ -52,16 +53,17 @@ export function axesForBatch(batch) {
 }
 
 /**
- * axesForVersion(version) -> the four core axes followed by the version's
- * declared scale definitions, as stored and in the version's own order. The
- * version-side twin of axesForBatch: the blank Tasting log prints this list
- * before any batch exists, so it reads version.declaredAxes (the pen reads
- * the same list to open a new batch, and the batch then freezes it into its
- * own snapshot).
+ * axesForVersion(version, catalog) -> the catalog's core scale definitions
+ * followed by the version's declared scale definitions, as stored and in the
+ * version's own order. The catalog is an argument (D-02): the domain never
+ * reads the store, and it keeps the order it is given, sorting nothing (the
+ * catalog is sorted once, where it is built). The version-side twin of
+ * axesForBatch: the blank Tasting log prints this list before any batch
+ * exists, so it reads version.declaredAxes (the pen reads the same list to
+ * open a new batch, and the batch then freezes it into its own snapshot).
  */
-export function axesForVersion(version) {
-  const core = AXES.slice(0, CORE_AXIS_COUNT);
-  return [...core, ...(version.declaredAxes ?? [])];
+export function axesForVersion(version, catalog) {
+  return [...coreScaleDefinitions(catalog.scales), ...(version.declaredAxes ?? [])];
 }
 
 /** markKeyFor(axis) -> the axis's fixed key. Every axis is fixed now (D-07). */

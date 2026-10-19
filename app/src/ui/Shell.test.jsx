@@ -17,6 +17,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter, Routes, Route } from 'react-router';
 import { Shell, PLACES } from './Shell.jsx';
 import { Placeholder } from './Placeholder.jsx';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 
 const UI_DIR = path.dirname(fileURLToPath(import.meta.url));
 const SHELL_JSX_PATH = path.join(UI_DIR, 'Shell.jsx');
@@ -24,15 +25,17 @@ const shellJsxSource = readFileSync(SHELL_JSX_PATH, 'utf8');
 
 function renderAt(path) {
   return renderToStaticMarkup(
-    <MemoryRouter initialEntries={[path]}>
-      <Routes>
-        <Route element={<Shell />}>
-          <Route path="/" element={<p>Home page</p>} />
-          <Route path="/notebook" element={<Placeholder name="Notebook" />} />
-          <Route path="/notebook/:recipeId/:versionId" element={<p>Recipe page</p>} />
-        </Route>
-      </Routes>
-    </MemoryRouter>,
+    <CatalogFixture>
+      <MemoryRouter initialEntries={[path]}>
+        <Routes>
+          <Route element={<Shell />}>
+            <Route path="/" element={<p>Home page</p>} />
+            <Route path="/notebook" element={<Placeholder name="Notebook" />} />
+            <Route path="/notebook/:recipeId/:versionId" element={<p>Recipe page</p>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
+    </CatalogFixture>,
   );
 }
 

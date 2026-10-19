@@ -8,6 +8,7 @@ import { BatchLogPage, TastingLogPage, logFootText } from './PrintLogPages.jsx';
 import { SheetPage, useSheetPages } from './PrintSheetPages.jsx';
 import { notebookPath } from './notebookPaths.js';
 import { RecipeNotFound } from './RecipePage.jsx';
+import { useCatalog } from './CatalogContext.jsx';
 
 // Wording approved by Mark (2026-10-11): decide-new-lines-import-block-and-too-long
 // (decide-print-oversized-text-policy = visible state). The one home of the sentence.
@@ -33,6 +34,9 @@ export function PrintSheetForRoute() {
 // method. So it prints a version and never creates a batch (PRINT-05, by
 // construction), and unsaved work cannot reach paper (T-04-16).
 export function PrintSheet({ recipeId, versionId }) {
+  // The core scales and problems the Tasting log prints come from the catalog,
+  // read once at boot and again after an import (D-02, D-03a).
+  const { catalog } = useCatalog();
   const [version, setVersion] = useState(undefined);
   const [recipe, setRecipe] = useState(undefined);
   const [versions, setVersions] = useState(undefined);
@@ -160,7 +164,7 @@ export function PrintSheet({ recipeId, versionId }) {
         </div>
         <div className="print-route__picture" role="img" aria-label="Tasting log">
           <div className="print-page print-page--log">
-            <TastingLogPage version={version} footText={footFor(2)} />
+            <TastingLogPage version={version} catalog={catalog} footText={footFor(2)} />
           </div>
         </div>
         {sheet.pages &&

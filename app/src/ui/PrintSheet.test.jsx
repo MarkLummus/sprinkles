@@ -39,6 +39,7 @@ import { oliveOilRecipe } from '../data/olive-oil.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { sheetCode } from '../domain/sheetCode.js';
 import { printPath } from './notebookPaths.js';
+import { CatalogFixture } from './catalog.fixtures.jsx';
 
 // The stamped olive oil version the store holds: it carries its stored sheetCode.
 const oliveOilVersion = seedRecipeGroups[0].versions[0];
@@ -69,14 +70,16 @@ async function mount(path, { versions = [oliveOilVersion], recipes = [oliveOilRe
   root = createRoot(host);
   await act(async () => {
     root.render(
-      <MemoryRouter initialEntries={[path]}>
-        <Routes>
-          <Route element={<RevisionOutlet />}>
-            <Route path="/notebook/:recipeId/:versionId/print" element={<PrintSheetForRoute />} />
-            <Route path="/notebook/:recipeId/:versionId" element={<p>the version</p>} />
-          </Route>
-        </Routes>
-      </MemoryRouter>,
+      <CatalogFixture>
+        <MemoryRouter initialEntries={[path]}>
+          <Routes>
+            <Route element={<RevisionOutlet />}>
+              <Route path="/notebook/:recipeId/:versionId/print" element={<PrintSheetForRoute />} />
+              <Route path="/notebook/:recipeId/:versionId" element={<p>the version</p>} />
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </CatalogFixture>,
     );
   });
 }

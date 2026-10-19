@@ -7,6 +7,7 @@ import { Shell, ImportGuardContext } from './ui/Shell.jsx';
 import { Placeholder } from './ui/Placeholder.jsx';
 import { SheetCodeSearch } from './ui/SheetCodeSearch.jsx';
 import { NotebookPlace } from './ui/NotebookPlace.jsx';
+import { IngredientsPlace } from './ui/IngredientsPlace.jsx';
 import { PrintSheetForRoute } from './ui/PrintSheet.jsx';
 import { NotebookLatestRedirect, LegacyRecipeRedirect } from './ui/NotebookRedirects.jsx';
 
@@ -124,7 +125,7 @@ export const router = createBrowserRouter([
       { path: '/notebook', Component: NotebookPlace },
       { path: '/recipe-book', element: <Placeholder name="Recipe book" /> },
       { path: '/idea-log', element: <Placeholder name="Idea log" /> },
-      { path: '/ingredients', element: <Placeholder name="Ingredients" /> },
+      { path: '/ingredients', Component: IngredientsPlace },
       { path: '/kitchen', element: <Placeholder name="Kitchen" /> },
       { path: '/search', Component: SheetCodeSearch },
     ],

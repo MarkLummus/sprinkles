@@ -94,11 +94,16 @@ function weakestRowBasis(row) {
   return worst;
 }
 
+// The app's word for a basis: 'inherited' (seed data, never reviewed) reads
+// 'unreviewed'; the other three read as themselves. The Ingredients place's
+// Basis column reads through this too, so the vocabulary stays one.
+export function basisWord(basis) {
+  return basis === 'inherited' ? 'unreviewed' : basis;
+}
+
 export function dataFlagFor(row) {
-  const basis = weakestRowBasis(row);
-  if (basis === 'estimated') return 'estimated';
-  if (basis === 'inherited') return 'unreviewed';
-  return '';
+  const word = basisWord(weakestRowBasis(row));
+  return word === 'estimated' || word === 'unreviewed' ? word : '';
 }
 
 // changedGrams/changedShare carry the pen's current values when they differ

@@ -190,9 +190,9 @@ function placeNameFor() {
 // under the version that batch was recorded against, which can be older than
 // the latest version (the batch awaiting a tasting, per the Home brief's
 // "return to a tasting"); every other action opens the recipe at its latest
-// version. Next version
-// also asks the recipe page to open its Next version pen, through route state
-// that RecipePage uses once.
+// version. Record a tasting asks the batch page to open its tasting pen, and
+// Next version asks the recipe page to open its Next version pen, each through
+// route state the page uses once.
 function RowActions({ entry }) {
   const latestPath = notebookPath(entry.id, entry.latestVersion.id);
   if (entry.standing === NOT_YET_CHURNED) {
@@ -209,7 +209,7 @@ function RowActions({ entry }) {
     const tastingPath = notebookPath(entry.id, awaiting.versionId, awaiting.id);
     return (
       <span className="home__actions">
-        <Link to={tastingPath} className="home__action" tabIndex={0}>
+        <Link to={tastingPath} state={{ startTasting: true }} className="home__action" tabIndex={0}>
           Record a tasting
         </Link>
         <Link to={latestPath} className="home__action home__action--secondary" tabIndex={0}>

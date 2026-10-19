@@ -2,17 +2,9 @@
 // (Ice Cream Log Pages/IMG_2471.HEIC, IMG_2472.HEIC). v1 churned and
 // tasted ("EPIC FAIL"); v2 churned, not yet tasted (D-05). See
 // 03.5-SEED-REVIEW.md. Nothing here is wired into store/seed.js (D-07).
-import { library } from './library.js';
+import { embedFromLibrary } from './library-embed.js';
 import { createBatch } from '../domain/batch.js';
 import { KITCHEN_EQUIPMENT } from './mexican-chocolate.js';
-
-function embed(ingredientName, ingredient, fields) {
-  return {
-    ingredientName,
-    ingredient: structuredClone(ingredient),
-    ...fields,
-  };
-}
 
 export const coconutRecipe = {
   id: 'coconut',
@@ -43,23 +35,24 @@ export const coconutV1 = {
   // 11 rows, printed table order (a 12th blank row on the printout is not
   // a real ingredient).
   rows: [
-    { id: 'row-01', ...embed("Coconut Cream, Trader Joe's", library.coconutCream, { portions: [{ step: 1, grams: 400 }], removed: false }) },
-    { id: 'row-02', ...embed('Whole Milk 3.3%', library.wholeMilk33, { portions: [{ step: 1, grams: 500 }], removed: false }) },
-    { id: 'row-03', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 88 }], removed: false }) },
-    { id: 'row-04', ...embed('Coconut, Shredded', library.shreddedCoconut, { portions: [{ step: 1, grams: 72 }], removed: false }) },
-    { id: 'row-05', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 90 }], removed: false }) },
-    { id: 'row-06', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 95 }], removed: false }) },
-    { id: 'row-07', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 13 }], removed: false }) },
-    { id: 'row-08', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 30 }], removed: false }) },
-    { id: 'row-09', ...embed('Lecithin', library.lecithin, { portions: [{ step: 1, grams: 2 }], removed: false }) },
-    { id: 'row-10', ...embed('Guar', library.guarGum, { portions: [{ step: 1, grams: 0.5 }], removed: false }) },
-    { id: 'row-11', ...embed('Salt', library.salt, { portions: [{ step: 1, grams: 1 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary("Coconut Cream, Trader Joe's", 'coconutCream', { portions: [{ step: 1, grams: 400 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Whole Milk 3.3%', 'wholeMilk33', { portions: [{ step: 1, grams: 500 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Cream, heavy', 'heavyCream', { portions: [{ step: 1, grams: 88 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Coconut, Shredded', 'shreddedCoconut', { portions: [{ step: 1, grams: 72 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 1, grams: 90 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 1, grams: 95 }], removed: false }) },
+    { id: 'row-07', ...embedFromLibrary('Fructose', 'fructose', { portions: [{ step: 1, grams: 13 }], removed: false }) },
+    { id: 'row-08', ...embedFromLibrary('Dried Skimmed Milk Powder', 'skimMilkPowder', { portions: [{ step: 1, grams: 30 }], removed: false }) },
+    { id: 'row-09', ...embedFromLibrary('Lecithin', 'lecithin', { portions: [{ step: 1, grams: 2 }], removed: false }) },
+    { id: 'row-10', ...embedFromLibrary('Guar', 'guarGum', { portions: [{ step: 1, grams: 0.5 }], removed: false }) },
+    { id: 'row-11', ...embedFromLibrary('Salt', 'salt', { portions: [{ step: 1, grams: 1 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   // "Process: none written" (binder audit) — no plan-level process text on
   // this page.
   process: {},
   iceEd: { style: 'Super-Premium', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.3 },
+  serveTempC: -15, // target serving temperature in degrees C (D-19), copied from the iceEd block's servingTemperatureC above, which balanced this formulation; a new recipe's comes from its chosen style
   declaredAxes: [],
   declaredFlaws: [],
   // No process text on this page — an empty method, not an invented step.
@@ -135,20 +128,21 @@ export const coconutV2 = {
   sheetDescription: '',
   // 10 rows, printed table order.
   rows: [
-    { id: 'row-01', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 190 }], removed: false }) },
-    { id: 'row-02', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 37 }], removed: false }) },
-    { id: 'row-03', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 81 }], removed: false }) },
-    { id: 'row-04', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 8 }], removed: false }) },
-    { id: 'row-05', ...embed('Lecithin', library.lecithin, { portions: [{ step: 1, grams: 2 }], removed: false }) },
-    { id: 'row-06', ...embed('Guar', library.guarGum, { portions: [{ step: 1, grams: 0.5 }], removed: false }) },
-    { id: 'row-07', ...embed('Salt', library.salt, { portions: [{ step: 1, grams: 1 }], removed: false }) },
-    { id: 'row-08', ...embed("Coconut Milk, Trader Joe's", library.coconutMilk, { portions: [{ step: 1, grams: 200 }], removed: false }) },
-    { id: 'row-09', ...embed('Whole Milk 3.3%', library.wholeMilk33, { portions: [{ step: 1, grams: 250 }], removed: false }) },
-    { id: 'row-10', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 31 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary('Cream, heavy', 'heavyCream', { portions: [{ step: 1, grams: 190 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 1, grams: 37 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 1, grams: 81 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Fructose', 'fructose', { portions: [{ step: 1, grams: 8 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Lecithin', 'lecithin', { portions: [{ step: 1, grams: 2 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Guar', 'guarGum', { portions: [{ step: 1, grams: 0.5 }], removed: false }) },
+    { id: 'row-07', ...embedFromLibrary('Salt', 'salt', { portions: [{ step: 1, grams: 1 }], removed: false }) },
+    { id: 'row-08', ...embedFromLibrary("Coconut Milk, Trader Joe's", 'coconutMilk', { portions: [{ step: 1, grams: 200 }], removed: false }) },
+    { id: 'row-09', ...embedFromLibrary('Whole Milk 3.3%', 'wholeMilk33', { portions: [{ step: 1, grams: 250 }], removed: false }) },
+    { id: 'row-10', ...embedFromLibrary('Dried Skimmed Milk Powder', 'skimMilkPowder', { portions: [{ step: 1, grams: 31 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   process: {},
   iceEd: { style: 'Super-Premium', servingTemperatureC: -16, hardness: 0.75, overrunPercent: 0.3 },
+  serveTempC: -16,
   declaredAxes: [],
   declaredFlaws: [],
   method: [],

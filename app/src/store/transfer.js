@@ -122,13 +122,12 @@ function validateRow(row, path, errors) {
   if (typeof row.removed !== 'boolean') {
     errors.push(`${path}.removed: expected a boolean, got ${JSON.stringify(row.removed)}`);
   }
-  // The link to the library entry the row's copy came from (LIB-08): null, or a
-  // key that can never reach a prototype. Nothing reads a figure through it.
-  if (Object.hasOwn(row, 'libraryId')) {
-    const link = row.libraryId;
-    if (link !== null && (!isNonEmptyString(link) || UNSAFE_KEYS.has(link))) {
-      errors.push(`${path}.libraryId: expected null or a non-empty string that is not a reserved name, got ${JSON.stringify(link)}`);
-    }
+  // The link to the library entry the row's copy came from (LIB-08): required,
+  // null or a key that can never reach a prototype. Nothing reads a figure
+  // through it.
+  const link = row.libraryId;
+  if (!Object.hasOwn(row, 'libraryId') || (link !== null && (!isNonEmptyString(link) || UNSAFE_KEYS.has(link)))) {
+    errors.push(`${path}.libraryId: expected null or a non-empty string that is not a reserved name, got ${JSON.stringify(link)}`);
   }
 }
 
@@ -550,6 +549,30 @@ function validateVersion(version, path, errors) {
   }
   if (typeof version.sheetDescription !== 'string') {
     errors.push(`${path}.sheetDescription: expected a string, got ${JSON.stringify(version.sheetDescription)}`);
+  }
+  // D-13: a version that carries equipment stores the machine's name and both
+  // fill limits; a limit not yet known is null, never absent.
+  if (version.equipment !== undefined) {
+    const equipment = version.equipment;
+    if (!isPlainObject(equipment)) {
+      errors.push(`${path}.equipment: expected an object, got ${JSON.stringify(equipment)}`);
+    } else {
+      if (!isStringOrNull(equipment.machine)) {
+        errors.push(`${path}.equipment.machine: expected a string or null, got ${JSON.stringify(equipment.machine)}`);
+      }
+      for (const field of ['minFillG', 'maxFillG']) {
+        const grams = equipment[field];
+        if (!Object.hasOwn(equipment, field) || (grams !== null && (!isFiniteNumber(grams) || grams < 0))) {
+          errors.push(`${path}.equipment.${field}: expected null or a finite number of at least zero, got ${JSON.stringify(grams)}`);
+        }
+      }
+    }
+  }
+  // D-19: the target serving temperature in degrees C. Checked whenever the
+  // version owns the key; plan 09-10 makes the key required. No range check:
+  // the creation editor owns any message about an unlikely value.
+  if (Object.hasOwn(version, 'serveTempC') && version.serveTempC !== null && !isFiniteNumber(version.serveTempC)) {
+    errors.push(`${path}.serveTempC: expected null or a finite number, got ${JSON.stringify(version.serveTempC)}`);
   }
 }
 

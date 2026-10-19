@@ -95,12 +95,16 @@ export const oliveOilVersion = {
     batchesAhead: 4,
     machine: 'Whynter',
     minFillG: 700,
+    // Seeded empty until Mark fills in the Whynter's maximum fill
+    // (decide-whynter-max-fill); see KITCHEN_EQUIPMENT in mexican-chocolate.js.
+    maxFillG: null,
   },
   process: { pasteuriseC: 69, holdMinutes: 40 },
   // D-08: every Ice Ed export field has a home. The sheet states serve and
   // overrun as ranges (method targets); these scalar slots stay null rather
   // than being filled with an invented midpoint.
   iceEd: { style: null, servingTemperatureC: null, hardness: null, overrunPercent: null },
+  serveTempC: null, // target serving temperature in degrees C (D-19), copied from the iceEd block's servingTemperatureC above, which balanced this formulation; a new recipe's comes from its chosen style
   // The declared pair this recipe names from the battery's fixed AXES
   // table (domain/axes.js), plus the declared problems (a list of 0 to 2). D-07: this
   // recipe declares Body and Oil, and Bitter as the problem the maker can

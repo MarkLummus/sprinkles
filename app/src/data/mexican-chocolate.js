@@ -6,7 +6,7 @@
 // ~/Downloads/recipe-Mexican Chocolate v4.json. Every judgement call is
 // flagged in 03.5-SEED-REVIEW.md, which this file's own comments point at
 // rather than repeat. Nothing here is wired into store/seed.js (D-07).
-import { library } from './library.js';
+import { embedFromLibrary } from './library-embed.js';
 import { createBatch } from '../domain/batch.js';
 
 // This transcription's own bookkeeping number, matching olive-oil.js's
@@ -14,16 +14,6 @@ import { createBatch } from '../domain/batch.js';
 // reflects — these are new versions authored after that split, so they
 // start at the same number olive-oil.js's version record carries.
 export const MEXICAN_CHOCOLATE_SCHEMA_VERSION = 5;
-
-// Deep-copy the ingredient record onto the row so a stored version is
-// self-contained — matching olive-oil.js's own embed() exactly.
-function embed(ingredientName, ingredient, fields) {
-  return {
-    ingredientName,
-    ingredient: structuredClone(ingredient),
-    ...fields,
-  };
-}
 
 // D-11: reached only through the repository seam's recipes methods. Name is
 // the Ice Ed recipe name without its version suffix (D-01: the version
@@ -50,6 +40,11 @@ export const KITCHEN_EQUIPMENT = {
   batchesAhead: 4,
   machine: 'Whynter',
   minFillG: 700,
+  // The Whynter's maximum fill is seeded empty until Mark fills it in
+  // (decide-whynter-max-fill). A version copies a machine row's name, minimum
+  // and maximum fill when the maker picks it (D-13), which the creation editor
+  // does not offer (Mark, 2026-10-18), so a created version has no equipment yet.
+  maxFillG: null,
 };
 
 export const mexicanChocolateV4 = {
@@ -75,18 +70,18 @@ export const mexicanChocolateV4 = {
   // is edited (T-03.5-11) — per-ingredient reasoning in
   // 03.5-SEED-REVIEW.md's ingredient mapping table.
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.3%', library.wholeMilk33, { portions: [{ step: 1, grams: 563 }], removed: false }) },
-    { id: 'row-02', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 85.6 }], removed: false }) },
-    { id: 'row-03', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 43.7 }], removed: false }) },
-    { id: 'row-04', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 33.4 }], removed: false }) },
-    { id: 'row-05', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 41 }], removed: false }) },
-    { id: 'row-06', ...embed('Allulose', library.allulose, { portions: [{ step: 1, grams: 85.3 }], removed: false }) },
-    { id: 'row-07', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 5.32 }], removed: false }) },
-    { id: 'row-08', ...embed('Salt', library.salt, { portions: [{ step: 1, grams: 1.07 }], removed: false }) },
-    { id: 'row-09', ...embed('Stabilizer Mix 4421', library.stabilizerMix4421, { portions: [{ step: 1, grams: 2.33 }], removed: false }) },
-    { id: 'row-10', ...embed('Cocoa Powder', library.cocoaPowder, { portions: [{ step: 1, grams: 40.8 }], removed: false }) },
-    { id: 'row-11', ...embed('Vanilla Extract', library.vanillaExtract, { portions: [{ step: 1, grams: 7.45 }], removed: false }) },
-    { id: 'row-12', ...embed('Cinnamon', library.cinnamon, { portions: [{ step: 1, grams: 2.77 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary('Whole Milk 3.3%', 'wholeMilk33', { portions: [{ step: 1, grams: 563 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Cream, heavy', 'heavyCream', { portions: [{ step: 1, grams: 85.6 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Dried Skimmed Milk Powder', 'skimMilkPowder', { portions: [{ step: 1, grams: 43.7 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 1, grams: 33.4 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 1, grams: 41 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Allulose', 'allulose', { portions: [{ step: 1, grams: 85.3 }], removed: false }) },
+    { id: 'row-07', ...embedFromLibrary('Fructose', 'fructose', { portions: [{ step: 1, grams: 5.32 }], removed: false }) },
+    { id: 'row-08', ...embedFromLibrary('Salt', 'salt', { portions: [{ step: 1, grams: 1.07 }], removed: false }) },
+    { id: 'row-09', ...embedFromLibrary('Stabilizer Mix 4421', 'stabilizerMix4421', { portions: [{ step: 1, grams: 2.33 }], removed: false }) },
+    { id: 'row-10', ...embedFromLibrary('Cocoa Powder', 'cocoaPowder', { portions: [{ step: 1, grams: 40.8 }], removed: false }) },
+    { id: 'row-11', ...embedFromLibrary('Vanilla Extract', 'vanillaExtract', { portions: [{ step: 1, grams: 7.45 }], removed: false }) },
+    { id: 'row-12', ...embedFromLibrary('Cinnamon', 'cinnamon', { portions: [{ step: 1, grams: 2.77 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   // pasteuriseC/holdMinutes read directly from the Notes text's own process
@@ -96,6 +91,7 @@ export const mexicanChocolateV4 = {
   // D-08: the export's Type/ServingTemperature/Hardness/Overrun each has a
   // home here (decisions_recorded 3).
   iceEd: { style: 'Gelato', servingTemperatureC: -17, hardness: 0.75, overrunPercent: 0.2017 },
+  serveTempC: -17, // target serving temperature in degrees C (D-19), copied from the iceEd block's servingTemperatureC above, which balanced this formulation; a new recipe's comes from its chosen style
   declaredAxes: [],
   declaredFlaws: [],
   // The Notes field mixes a process line with observations and next-version
@@ -154,23 +150,24 @@ export const mexicanChocolateV1 = {
   sheetTitle: 'Mexican Chocolate',
   sheetDescription: '',
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.3%', library.wholeMilk33, { portions: [{ step: 1, grams: 500 }], removed: false }) },
-    { id: 'row-02', ...embed('Cocoa Powder', library.cocoaPowder, { portions: [{ step: 1, grams: 30 }], removed: false }) },
-    { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 50 }], removed: false }) },
-    { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 86 }], removed: false }) },
-    { id: 'row-05', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 5 }], removed: false }) },
-    { id: 'row-06', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 39 }], removed: false }) },
-    { id: 'row-07', ...embed('Salt', library.salt, { portions: [{ step: 1, grams: 1 }], removed: false }) },
-    { id: 'row-08', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 67 }], removed: false }) },
-    { id: 'row-09', ...embed('Vanilla Extract', library.vanillaExtract, { portions: [{ step: 1, grams: 7 }], removed: false }) },
-    { id: 'row-10', ...embed('Stabilizer Mix 4421', library.stabilizerMix4421, { portions: [{ step: 1, grams: 5 }], removed: false }) },
-    { id: 'row-11', ...embed('Cinnamon', library.cinnamon, { portions: [{ step: 1, grams: 2.6 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary('Whole Milk 3.3%', 'wholeMilk33', { portions: [{ step: 1, grams: 500 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Cocoa Powder', 'cocoaPowder', { portions: [{ step: 1, grams: 30 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 1, grams: 50 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 1, grams: 86 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Fructose', 'fructose', { portions: [{ step: 1, grams: 5 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Dried Skimmed Milk Powder', 'skimMilkPowder', { portions: [{ step: 1, grams: 39 }], removed: false }) },
+    { id: 'row-07', ...embedFromLibrary('Salt', 'salt', { portions: [{ step: 1, grams: 1 }], removed: false }) },
+    { id: 'row-08', ...embedFromLibrary('Cream, heavy', 'heavyCream', { portions: [{ step: 1, grams: 67 }], removed: false }) },
+    { id: 'row-09', ...embedFromLibrary('Vanilla Extract', 'vanillaExtract', { portions: [{ step: 1, grams: 7 }], removed: false }) },
+    { id: 'row-10', ...embedFromLibrary('Stabilizer Mix 4421', 'stabilizerMix4421', { portions: [{ step: 1, grams: 5 }], removed: false }) },
+    { id: 'row-11', ...embedFromLibrary('Cinnamon', 'cinnamon', { portions: [{ step: 1, grams: 2.6 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   // The .ier's own typed plan — 45 min, 75 °C. The ink overwrite (60 min,
   // 176 °F) is the batch's, not the plan's (judgement call 8).
   process: { pasteuriseC: 75, holdMinutes: 45 },
   iceEd: { style: 'Gelato', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.2993 },
+  serveTempC: -15,
   declaredAxes: [],
   declaredFlaws: [],
   method: [
@@ -283,24 +280,25 @@ export const mexicanChocolateV2 = {
   // added or edited — every name maps to the entry v1, v3 and v4 already
   // use for it.
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.3%', library.wholeMilk33, { portions: [{ step: 1, grams: 427 }], removed: false }) },
-    { id: 'row-02', ...embed('Cocoa Powder', library.cocoaPowder, { portions: [{ step: 1, grams: 30 }], removed: false }) },
-    { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 50 }], removed: false }) },
-    { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 35 }], removed: false }) },
-    { id: 'row-05', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 5 }], removed: false }) },
-    { id: 'row-06', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 39 }], removed: false }) },
-    { id: 'row-07', ...embed('Salt', library.salt, { portions: [{ step: 1, grams: 1 }], removed: false }) },
-    { id: 'row-08', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 140 }], removed: false }) },
-    { id: 'row-09', ...embed('Vanilla Extract', library.vanillaExtract, { portions: [{ step: 1, grams: 7 }], removed: false }) },
-    { id: 'row-10', ...embed('Stabilizer Mix 4421', library.stabilizerMix4421, { portions: [{ step: 1, grams: 2.2 }], removed: false }) },
-    { id: 'row-11', ...embed('Cinnamon', library.cinnamon, { portions: [{ step: 1, grams: 2.6 }], removed: false }) },
-    { id: 'row-12', ...embed('Allulose', library.allulose, { portions: [{ step: 1, grams: 50 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary('Whole Milk 3.3%', 'wholeMilk33', { portions: [{ step: 1, grams: 427 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Cocoa Powder', 'cocoaPowder', { portions: [{ step: 1, grams: 30 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 1, grams: 50 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 1, grams: 35 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Fructose', 'fructose', { portions: [{ step: 1, grams: 5 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Dried Skimmed Milk Powder', 'skimMilkPowder', { portions: [{ step: 1, grams: 39 }], removed: false }) },
+    { id: 'row-07', ...embedFromLibrary('Salt', 'salt', { portions: [{ step: 1, grams: 1 }], removed: false }) },
+    { id: 'row-08', ...embedFromLibrary('Cream, heavy', 'heavyCream', { portions: [{ step: 1, grams: 140 }], removed: false }) },
+    { id: 'row-09', ...embedFromLibrary('Vanilla Extract', 'vanillaExtract', { portions: [{ step: 1, grams: 7 }], removed: false }) },
+    { id: 'row-10', ...embedFromLibrary('Stabilizer Mix 4421', 'stabilizerMix4421', { portions: [{ step: 1, grams: 2.2 }], removed: false }) },
+    { id: 'row-11', ...embedFromLibrary('Cinnamon', 'cinnamon', { portions: [{ step: 1, grams: 2.6 }], removed: false }) },
+    { id: 'row-12', ...embedFromLibrary('Allulose', 'allulose', { portions: [{ step: 1, grams: 50 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   // Read directly from the Notes text's own process line, same as v3/v4.
   process: { pasteuriseC: 75, holdMinutes: 60 },
   // Recipe.Overrun 0.2992666666666666 rounded to 4 decimals, as v1 and v4.
   iceEd: { style: 'Gelato', servingTemperatureC: -16, hardness: 0.75, overrunPercent: 0.2993 },
+  serveTempC: -16,
   declaredAxes: [],
   declaredFlaws: [],
   // Written out literally (not shared by reference with v4) — the v4
@@ -365,22 +363,23 @@ export const mexicanChocolateV3 = {
   sheetTitle: 'Mexican Chocolate',
   sheetDescription: '',
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.3%', library.wholeMilk33, { portions: [{ step: 1, grams: 500 }], removed: false }) },
-    { id: 'row-02', ...embed('Cocoa Powder', library.cocoaPowder, { portions: [{ step: 1, grams: 16.1 }], removed: false }) },
-    { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 46.2 }], removed: false }) },
-    { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 45 }], removed: false }) },
-    { id: 'row-05', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 4.48 }], removed: false }) },
-    { id: 'row-06', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 34.6 }], removed: false }) },
-    { id: 'row-07', ...embed('Salt', library.salt, { portions: [{ step: 1, grams: 0.9 }], removed: false }) },
-    { id: 'row-08', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 77.4 }], removed: false }) },
-    { id: 'row-09', ...embed('Vanilla Extract', library.vanillaExtract, { portions: [{ step: 1, grams: 6.28 }], removed: false }) },
-    { id: 'row-10', ...embed('Stabilizer Mix 4421', library.stabilizerMix4421, { portions: [{ step: 1, grams: 1.96 }], removed: false }) },
-    { id: 'row-11', ...embed('Cinnamon', library.cinnamon, { portions: [{ step: 1, grams: 2.33 }], removed: false }) },
-    { id: 'row-12', ...embed('Allulose', library.allulose, { portions: [{ step: 1, grams: 36.8 }], removed: false }) },
+    { id: 'row-01', ...embedFromLibrary('Whole Milk 3.3%', 'wholeMilk33', { portions: [{ step: 1, grams: 500 }], removed: false }) },
+    { id: 'row-02', ...embedFromLibrary('Cocoa Powder', 'cocoaPowder', { portions: [{ step: 1, grams: 16.1 }], removed: false }) },
+    { id: 'row-03', ...embedFromLibrary('Sucrose', 'sucrose', { portions: [{ step: 1, grams: 46.2 }], removed: false }) },
+    { id: 'row-04', ...embedFromLibrary('Dextrose', 'dextrose', { portions: [{ step: 1, grams: 45 }], removed: false }) },
+    { id: 'row-05', ...embedFromLibrary('Fructose', 'fructose', { portions: [{ step: 1, grams: 4.48 }], removed: false }) },
+    { id: 'row-06', ...embedFromLibrary('Dried Skimmed Milk Powder', 'skimMilkPowder', { portions: [{ step: 1, grams: 34.6 }], removed: false }) },
+    { id: 'row-07', ...embedFromLibrary('Salt', 'salt', { portions: [{ step: 1, grams: 0.9 }], removed: false }) },
+    { id: 'row-08', ...embedFromLibrary('Cream, heavy', 'heavyCream', { portions: [{ step: 1, grams: 77.4 }], removed: false }) },
+    { id: 'row-09', ...embedFromLibrary('Vanilla Extract', 'vanillaExtract', { portions: [{ step: 1, grams: 6.28 }], removed: false }) },
+    { id: 'row-10', ...embedFromLibrary('Stabilizer Mix 4421', 'stabilizerMix4421', { portions: [{ step: 1, grams: 1.96 }], removed: false }) },
+    { id: 'row-11', ...embedFromLibrary('Cinnamon', 'cinnamon', { portions: [{ step: 1, grams: 2.33 }], removed: false }) },
+    { id: 'row-12', ...embedFromLibrary('Allulose', 'allulose', { portions: [{ step: 1, grams: 36.8 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   process: { pasteuriseC: 75, holdMinutes: 60 },
   iceEd: { style: 'Gelato', servingTemperatureC: -16, hardness: 0.75, overrunPercent: 0.2 },
+  serveTempC: -16,
   declaredAxes: [],
   declaredFlaws: [],
   method: [

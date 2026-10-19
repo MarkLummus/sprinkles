@@ -886,10 +886,33 @@ describe('validateLibraryRecord / $.library (D-08)', () => {
     expect(result.errors).toEqual(['$.library[0].entry.composition.pac: expected a finite number, got "100"']);
   });
 
-  it('checks the wrapper only: an entry of just name and composition validates, and so does a category that is a number', () => {
-    const bare = { id: 'bare', entry: { name: 'Bare', composition: { fat: 1 } } };
+  it('checks the wrapper and the six coefficient keys only: an entry of just name, composition and the six keys, each null, validates, and so does a category that is a number', () => {
+    const bare = {
+      id: 'bare',
+      entry: {
+        name: 'Bare',
+        composition: { fat: 1 },
+        fatStructural: null,
+        ownEmulsifier: null,
+        titratableAcidity: null,
+        defaultStage: null,
+        prepNote: null,
+        requiresHeat: null,
+      },
+    };
     const odd = makeLibraryRecord({ id: 'odd', entry: { ...structuredClone(library.sucrose), category: 42 } });
     expect(validateStoreFile(fileWith(bare, odd))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('refuses the old bare entry, name and composition without the six coefficient keys, with one error per missing key', () => {
+    const oldBare = { id: 'bare', entry: { name: 'Bare', composition: { fat: 1 } } };
+    const result = validateStoreFile(fileWith(oldBare));
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual(
+      ['fatStructural', 'ownEmulsifier', 'titratableAcidity', 'defaultStage', 'prepNote', 'requiresHeat'].map(
+        (key) => `$.library[0].entry.${key}: expected an own key, null when unknown`,
+      ),
+    );
   });
 
   it('names the second record by its index when the first is good', () => {

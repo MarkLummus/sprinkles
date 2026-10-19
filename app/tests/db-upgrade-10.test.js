@@ -14,6 +14,8 @@ import { library } from '../src/data/library.js';
 import { librarySeedDb } from '../src/data/library-seed-db.js';
 import { seedRecipeGroups } from '../src/data/seed-recipes.js';
 import { MACHINE_ROWS } from '../src/data/machines.js';
+import { SEED_CATALOG } from '../src/data/seed-catalog.js';
+import { validateLibraryRecord } from '../src/store/seedTables.js';
 import { isScaleDefinition } from '../src/domain/catalog.js';
 
 // What a fresh profile's library holds: the reviewed dataset merged under the 26.
@@ -105,7 +107,18 @@ describe('a stored version-9 profile opens at DB_VERSION reset and reseeded (LIB
     expect(records.map((record) => record.id).sort()).toEqual(Object.keys(seededLibrary).sort());
     expect(records.some((record) => record.id === 'importedThing')).toBe(false);
 
-    expect(await repository.listMachines()).toEqual(MACHINE_ROWS);
+    // Every reseeded library record passes the shared validator, six D-20 keys included.
+    for (const record of records) {
+      const errors = [];
+      validateLibraryRecord(record, `$.library.${record.id}`, errors);
+      expect(errors, record.id).toEqual([]);
+    }
+
+    // All four seed tables hold their committed rows (LIB-09).
+    expect(await repository.listMachines()).toEqual(SEED_CATALOG.machines);
+    expect(await repository.listStyles()).toEqual(SEED_CATALOG.styles);
+    expect(await repository.listScales()).toEqual(SEED_CATALOG.scales);
+    expect(await repository.listProblems()).toEqual(SEED_CATALOG.problems);
 
     // Only the seeded versions: the stored version-9 one is gone.
     const versions = await repository.listVersions();
@@ -124,6 +137,13 @@ describe('a stored version-9 profile opens at DB_VERSION reset and reseeded (LIB
     for (const axis of oliveOil.declaredAxes) expect(isScaleDefinition(axis), axis.key).toBe(true);
     expect(oliveOil.serveTempC).toBeNull();
     expect(oliveOil.iceEd.servingTemperatureC).toBeNull();
+
+    // The embedded copies carry the D-20 coefficients through the reset.
+    const oilRow = oliveOil.rows.find((row) => row.libraryId === 'oliveOil');
+    expect(oilRow.ingredient.fatStructural).toBe(false);
+    const milkRow = oliveOil.rows.find((row) => row.libraryId === 'wholeMilk');
+    expect(milkRow.ingredient.titratableAcidity).toBe(0.001496);
+    expect(milkRow.ingredient.basis.titratableAcidity).toBe('derived');
 
     // A copied Ice Ed figure reads back from the reset store as a number.
     const mexican = versions.find((version) => version.id === 'mexican-chocolate-v1');

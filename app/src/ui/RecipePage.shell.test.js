@@ -230,14 +230,15 @@ const JOBS = [
     hook: true,
     markers: [
       ['usePenDraft()', 1],
-      ['repository.saveVersion(', 2],
+      ['repository.saveVersion(', 1],
+      ['repository.createVersion(', 1],
       ['createChildVersion(', 1],
       ['saveOverVersion(', 1],
       ['function restorePlan(', 1],
       ['announce(VERSION_BLOCKED_STATUS)', 1],
       ['onPageStatus(VERSION_SAVED_STATUS)', 2],
     ],
-    shellLacks: ['usePenDraft', 'saveVersion', 'createChildVersion', 'versionPen.', 'versionSaveLockRef', 'function handleStartDeveloping('],
+    shellLacks: ['usePenDraft', 'saveVersion', 'createVersion', 'createChildVersion', 'versionPen.', 'versionSaveLockRef', 'function handleStartDeveloping('],
     allow: ['react', '../store/repository.js', '../domain/', './usePenDraft.js', './notebookPaths.js'],
   },
   {

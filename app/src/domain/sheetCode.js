@@ -216,6 +216,69 @@ export function codeProblem(input) {
 }
 
 /**
+ * sheetCodeProblems(storedVersions, incomingVersions) -> the ways the store would
+ * break the Sheet code's two rules (D-04a, D-04b) once `incomingVersions` replace
+ * the stored versions of the same ids:
+ *   { kind: 'clash', code, versionId, otherVersionId }   two different ids share
+ *       a code in the resulting store; each pair once, in code then id order
+ *   { kind: 'changed', versionId, storedCode, incomingCode }   an incoming
+ *       version's stored record of the same id carries a different code
+ * A version is never a clash with its own stored record, and a version with no
+ * string sheetCode takes part in no clash. Pure: the repository reads the
+ * stored versions and calls this inside its write transaction.
+ */
+export function sheetCodeProblems(storedVersions, incomingVersions) {
+  const incomingIds = new Set(incomingVersions.map((version) => version.id));
+  const resulting = [
+    ...storedVersions.filter((version) => !incomingIds.has(version.id)),
+    ...incomingVersions,
+  ];
+
+  const problems = [];
+  const idsByCode = new Map();
+  for (const version of resulting) {
+    if (typeof version.sheetCode !== 'string') continue;
+    if (!idsByCode.has(version.sheetCode)) idsByCode.set(version.sheetCode, []);
+    idsByCode.get(version.sheetCode).push(version.id);
+  }
+  for (const code of [...idsByCode.keys()].sort()) {
+    const ids = [...new Set(idsByCode.get(code))].sort();
+    for (let i = 0; i < ids.length; i += 1) {
+      for (let j = i + 1; j < ids.length; j += 1) {
+        problems.push({ kind: 'clash', code, versionId: ids[i], otherVersionId: ids[j] });
+      }
+    }
+  }
+
+  const storedById = new Map(storedVersions.map((version) => [version.id, version]));
+  for (const incoming of incomingVersions) {
+    const stored = storedById.get(incoming.id);
+    if (stored && typeof stored.sheetCode === 'string' && stored.sheetCode !== incoming.sheetCode) {
+      problems.push({
+        kind: 'changed',
+        versionId: incoming.id,
+        storedCode: stored.sheetCode,
+        incomingCode: incoming.sheetCode,
+      });
+    }
+  }
+  return problems;
+}
+
+/**
+ * SheetCodeError -> what the repository throws when a write would store a
+ * clashing or changed Sheet code (CODE-01). `problems` is the list
+ * sheetCodeProblems returned. Nothing is written and no code is re-drawn.
+ */
+export class SheetCodeError extends Error {
+  constructor(problems) {
+    super('The Sheet code rule would be broken, so the version was not stored.');
+    this.name = 'SheetCodeError';
+    this.problems = problems;
+  }
+}
+
+/**
  * findVersionsByCode(versions, code) -> every version whose STORED sheetCode
  * equals the normalised `code`, newest createdAt first and then by id, so a
  * 40-bit collision never depends on store order. An unnormalisable code

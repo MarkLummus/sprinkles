@@ -1,4 +1,5 @@
 import { openStore } from './db.js';
+import { normaliseCode, sheetCodeProblems, SheetCodeError } from '../domain/sheetCode.js';
 
 // The repository seam D-06 and D-16 depend on — the only path to the store:
 // versions, batches, recipes, the ingredient library, and the drafts of unsaved pens.
@@ -32,6 +33,36 @@ export function createRepository() {
     async saveVersion(version) {
       const db = await dbPromise;
       return db.put('versions', version);
+    },
+    // A new version is stored by the read of every stored version, the pure
+    // check and the put in ONE readwrite transaction, which IndexedDB
+    // serialises against any other versions transaction, so two tabs creating
+    // at once cannot both store a code the other holds (CODE-01, D-04, D-04a).
+    // A clash is refused with a SheetCodeError and nothing is written: the code
+    // is never re-drawn. A version without a canonical code is a caller bug,
+    // refused before the transaction opens. Aborts by hand as importAll does.
+    async createVersion(version) {
+      if (typeof version?.sheetCode !== 'string' || version.sheetCode !== normaliseCode(version.sheetCode)) {
+        throw new TypeError(`version ${version?.id} needs a sheetCode in the form XXXX-XXXX`);
+      }
+      const db = await dbPromise;
+      const tx = db.transaction('versions', 'readwrite');
+      const done = tx.done;
+      const queued = [];
+      try {
+        const problems = sheetCodeProblems(await tx.store.getAll(), [version]);
+        if (problems.length > 0) throw new SheetCodeError(problems);
+        queued.push(tx.store.put(version));
+        await Promise.all([...queued, done]);
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
     },
     async getAll() {
       const db = await dbPromise;

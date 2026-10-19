@@ -178,7 +178,10 @@ export function useVersionPen({ version, versions, batches, setMode, setVersion,
 
   // The two impure calls (a fresh id, the current instant) live here, in
   // the one save handler — createChildVersion stays deterministic. The
-  // parent is never passed to repository.saveVersion (D04, T-03-03).
+  // parent is never written (D04, T-03-03). The child is stored through
+  // repository.createVersion, which refuses a Sheet code another version holds
+  // and writes nothing (CODE-01, D-04); the catch below then announces the
+  // failed save and keeps the pen, with no re-drawn code.
   function handleSaveAsNewVersion() {
     if (versionSaveLockRef.current) return;
     const penFields = buildPenFields(null);
@@ -196,7 +199,7 @@ export function useVersionPen({ version, versions, batches, setMode, setVersion,
       announce(VERSION_SAVE_ERROR);
       return;
     }
-    Promise.resolve().then(() => repository.saveVersion(child)).then(() => {
+    Promise.resolve().then(() => repository.createVersion(child)).then(() => {
       // The parent's draft: this page's own version id, deleted before the
       // navigation that unmounts the page.
       discardDraft();

@@ -16,14 +16,16 @@ import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route, useParams } from 'react-router';
 
-const store = vi.hoisted(() => ({ versions: [], recipes: [], saveVersion: null }));
+const store = vi.hoisted(() => ({ versions: [], recipes: [], saveVersion: null, createVersion: null }));
 
 vi.mock('../store/repository.js', async () => {
-  store.saveVersion = vi.fn(async (record) => {
+  const appendOrReplace = async (record) => {
     const at = store.versions.findIndex((version) => version.id === record.id);
     if (at >= 0) store.versions[at] = structuredClone(record);
     else store.versions.push(structuredClone(record));
-  });
+  };
+  store.saveVersion = vi.fn(appendOrReplace);
+  store.createVersion = vi.fn(appendOrReplace);
   return {
     repository: {
       getVersion: async (id) => {
@@ -40,6 +42,7 @@ vi.mock('../store/repository.js', async () => {
       },
       saveBatch: vi.fn(async () => {}),
       saveVersion: store.saveVersion,
+      createVersion: store.createVersion,
       saveRecipe: vi.fn(async () => {}),
       getDraft: async () => undefined,
       saveDraft: vi.fn(async () => {}),
@@ -115,6 +118,7 @@ async function mountVersion(version) {
   ];
   store.recipes = [oliveOilRecipe, mexicanChocolateRecipe, standardBaseRecipe];
   store.saveVersion.mockClear();
+  store.createVersion.mockClear();
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
@@ -256,7 +260,7 @@ describe('the Next version pen: the section is always drawn, and its notes are e
     expect(article.querySelector('section.method-region').querySelector('textarea[aria-label^="beforeYouStart"]')).toBeNull();
   });
 
-  it('Olive Oil v1: an edited note reaches saveVersion, and a removed note leaves one field', async () => {
+  it('Olive Oil v1: an edited note reaches createVersion, and a removed note leaves one field', async () => {
     await mountVersion(oliveOilVersion);
     const container = current.container;
     const article = () => container.querySelector('article.recipe-page');
@@ -265,10 +269,10 @@ describe('the Next version pen: the section is always drawn, and its notes are e
     await setField(article().querySelector('textarea[aria-label="beforeYouStart note 1"]'), 'Taste the Graza first.');
     await setField(container.querySelector('input[aria-label="Version name"]'), 'taste first');
     await click(buttonByText(container, 'Save as a new version'));
-    await flush(() => store.saveVersion.mock.calls.length > 0);
+    await flush(() => store.createVersion.mock.calls.length > 0);
 
-    expect(store.saveVersion).toHaveBeenCalledTimes(1);
-    const saved = store.saveVersion.mock.calls[0][0];
+    expect(store.createVersion).toHaveBeenCalledTimes(1);
+    const saved = store.createVersion.mock.calls[0][0];
     expect(saved.authored.beforeYouStart[0].text).toBe('Taste the Graza first.');
   });
 

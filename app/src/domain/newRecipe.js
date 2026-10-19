@@ -13,6 +13,7 @@
 // message is added here (RESEARCH A1, reversible).
 
 import { RESERVED_ROW_IDS } from './versionRow.js';
+import { codeFromVersionId } from './sheetCode.js';
 
 // Mirrors data/olive-oil.js's constant of the same name, which newRecipe.test.js
 // pins, so app/src/domain imports no seed module (RESEARCH A3).
@@ -22,7 +23,7 @@ const VERSION_SCHEMA_VERSION = 6;
  * createRecipe({ name, versionLabel, rows }, { recipeId, versionId, now }) ->
  * { recipe, version }. The recipe is { id, name (trimmed), description: '' };
  * the version is its root, with the label stored trimmed as the name is: no parent, no reason, no cited batch, an empty
- * method, and a copy of the starting rows (structuredClone). Refuses, with a
+ * method, a sheetCode derived once from its id (codeFromVersionId, D-04), and a copy of the starting rows (structuredClone). Refuses, with a
  * TypeError, a blank name, a blank label (on its trimmed value, as lineage.js
  * blockedSaveMessage does), no rows, two rows with the same id, a row id that
  * is a reserved name, or a recipeId, versionId or now that is not a
@@ -77,6 +78,7 @@ export function createRecipe({ name, versionLabel, rows }, { recipeId, versionId
     declaredFlaws: [],
     method: [],
     authored: { beforeYouStart: [] },
+    sheetCode: codeFromVersionId(versionId),
   };
 
   return { recipe, version };

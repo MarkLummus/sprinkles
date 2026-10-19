@@ -124,8 +124,11 @@ export function useKeptDraft({
           return;
         }
         // A pen the maker opened while the read was out wins over the stored
-        // one; the persist effect then keeps whichever is open.
+        // one; the persist effect then keeps whichever is open. The stored
+        // record is still there, so a pen that goes clean deletes it and one
+        // that stays dirty writes over it.
         if (modeRef.current !== 'reading') {
+          draftStoredRef.current = true;
           setDraftRestoreDone(true);
           return;
         }

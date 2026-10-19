@@ -43,6 +43,7 @@ const navigate = vi.fn();
 
 let renders = [];
 let current = null;
+let controls = null;
 
 function Harness(props) {
   const writer = useDraftWriter(props.versionId);
@@ -75,6 +76,15 @@ function Harness(props) {
     onPageStatus,
     navigate,
   });
+  controls = {
+    // Stands in for the shell's Develop opener: the same three writes onRestorePlan makes.
+    openPlanPen(payload, openedAt) {
+      penOpenedAtRef.current = openedAt;
+      setPenDraft(payload);
+      setMode('developing');
+    },
+    setPenDraft,
+  };
   renders.push({ mode, penDraft, draftRestoreDone });
   return null;
 }
@@ -130,6 +140,7 @@ afterEach(async () => {
     current.container.remove();
     current = null;
   }
+  vi.useRealTimers();
 });
 
 describe('useKeptDraft restores once under React.StrictMode (D-10)', () => {
@@ -189,5 +200,79 @@ describe('useKeptDraft restores once under React.StrictMode (D-10)', () => {
     const last = renders[renders.length - 1];
     expect(last.draftRestoreDone).toBe(false);
     expect(last.mode).toBe('reading');
+  });
+});
+
+describe('a pen opened while the read is out owns the stored draft (bug-stale-draft-survives-pen-opened-during-read)', () => {
+  const OPENED_DURING_READ = '2026-10-10T09:00:00.000Z';
+  const typed = { ...penDraftFromVersion(oliveOilVersion), versionLabel: 'typed during the read' };
+  const stored = buildDraftRecord({
+    versionId: oliveOilVersion.id,
+    kind: 'plan',
+    payload: { ...penDraftFromVersion(oliveOilVersion), versionLabel: 'kept from last visit' },
+    penOpenedAt: OPENED_AT,
+    now: WRITTEN_AT,
+  });
+
+  async function openPenDuringRead() {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    let resolveRead;
+    repo.getDraft.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveRead = resolve;
+        }),
+    );
+
+    await mountStrict([]);
+    expect(repo.getDraft).toHaveBeenCalledTimes(1);
+    expect(renders[renders.length - 1].draftRestoreDone).toBe(false);
+
+    await act(async () => {
+      controls.openPlanPen(typed, OPENED_DURING_READ);
+    });
+    await act(async () => {
+      resolveRead(structuredClone(stored));
+    });
+    await flush();
+
+    const last = renders[renders.length - 1];
+    expect(last.draftRestoreDone).toBe(true);
+    expect(last.mode).toBe('developing');
+    expect(last.penDraft).toEqual(typed);
+    expect(restorePlanSpy).not.toHaveBeenCalled();
+    expect(onPageStatus).not.toHaveBeenCalled();
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+    expect(repo.saveDraft).not.toHaveBeenCalled();
+  }
+
+  it('deletes the stored draft once when that pen is cleared back to clean', async () => {
+    await openPenDuringRead();
+
+    await act(async () => {
+      controls.setPenDraft(penDraftFromVersion(oliveOilVersion));
+    });
+    await flush();
+
+    expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
+    expect(repo.deleteDraft).toHaveBeenCalledWith(oliveOilVersion.id);
+    expect(repo.saveDraft).not.toHaveBeenCalled();
+  });
+
+  it('writes that pen over the stored draft after the debounce while it stays dirty', async () => {
+    await openPenDuringRead();
+
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+    });
+    await flush();
+
+    expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+    const saved = repo.saveDraft.mock.calls[0][0];
+    expect(saved.versionId).toBe(oliveOilVersion.id);
+    expect(saved.kind).toBe('plan');
+    expect(saved.payload).toEqual(typed);
+    expect(saved.penOpenedAt).toBe(OPENED_DURING_READ);
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
   });
 });

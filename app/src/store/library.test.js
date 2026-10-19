@@ -13,32 +13,58 @@ import { DB_NAME } from './db.js';
 import { seedIfEmpty } from './seed.js';
 import { exportStore, importStore, validateStoreFile, STORE_SCHEMA_VERSION } from './transfer.js';
 import { library } from '../data/library.js';
+import { librarySeedDb } from '../data/library-seed-db.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { oliveOilRecipe, oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { computeBalance } from '../domain/composition.js';
 import { buildFigures } from '../domain/figures.js';
+import { STAGE_IDS } from '../domain/stages.js';
+
+// What a fresh profile's library holds: the reviewed dataset's entries merged
+// under the 26 (LIB-04), the 26 winning a clash.
+const seededLibrary = { ...librarySeedDb, ...library };
 
 beforeEach(() => {
   globalThis.indexedDB = new IDBFactory();
 });
 
 describe('the library store, seeded on an empty database (LIB-01)', () => {
-  it('holds every data/library.js entry as { id, entry } and nothing else, read through a fresh connection', async () => {
+  it('holds every seeded entry, the reviewed dataset and data/library.js, as { id, entry } and nothing else, read through a fresh connection', async () => {
     await seedIfEmpty(createRepository());
 
     const repository = createRepository();
     const records = await repository.listLibrary();
-    const ids = Object.keys(library);
+    const ids = Object.keys(seededLibrary);
 
     expect(records).toHaveLength(ids.length);
     expect(records.map((record) => record.id).sort()).toEqual([...ids].sort());
     for (const record of records) {
       expect(Object.keys(record).sort()).toEqual(['entry', 'id']);
-      expect(record.entry).toEqual(library[record.id]);
+      expect(record.entry).toEqual(seededLibrary[record.id]);
       expect(Object.hasOwn(record.entry, 'id')).toBe(false);
     }
     expect(await repository.getLibraryEntry('wholeMilk')).toEqual({ id: 'wholeMilk', entry: library.wholeMilk });
+  });
+
+  it('keeps the 26 existing entries as data/library.js has them and adds the reviewed dataset beside them (LIB-04, D-09)', async () => {
+    await seedIfEmpty(createRepository());
+
+    const repository = createRepository();
+    const records = await repository.listLibrary();
+    const stored = Object.fromEntries(records.map((record) => [record.id, record.entry]));
+
+    for (const key of Object.keys(library)) expect(stored[key], key).toEqual(library[key]);
+
+    const newKeys = Object.keys(librarySeedDb);
+    expect(newKeys.length).toBeGreaterThan(0);
+    expect(records).toHaveLength(Object.keys(library).length + newKeys.length);
+    // One new entry, read back from the store: its composition basis is inherited (D-08).
+    const [newKey] = newKeys;
+    expect(stored[newKey]).toEqual(librarySeedDb[newKey]);
+    for (const field of Object.keys(stored[newKey].composition)) {
+      expect(stored[newKey].basis[field], `${newKey}.${field}`).toBe('inherited');
+    }
   });
 });
 
@@ -100,7 +126,7 @@ describe('seeding twice and in parallel (LIB-01 edges)', () => {
     const fresh = createRepository();
     const afterSecond = await fresh.listLibrary();
 
-    expect(afterSecond).toHaveLength(Object.keys(library).length);
+    expect(afterSecond).toHaveLength(Object.keys(seededLibrary).length);
     expect(afterSecond).toEqual(afterFirst);
     expect(await fresh.listVersions()).toHaveLength(seedCounts.versions);
   });
@@ -110,7 +136,7 @@ describe('seeding twice and in parallel (LIB-01 edges)', () => {
 
     const fresh = createRepository();
     const records = await fresh.listLibrary();
-    expect(records).toHaveLength(Object.keys(library).length);
+    expect(records).toHaveLength(Object.keys(seededLibrary).length);
     expect(new Set(records.map((record) => record.id)).size).toBe(records.length);
     await expectOneRecordPerSeedId(fresh);
   });
@@ -145,9 +171,9 @@ describe('seeding twice and in parallel (LIB-01 edges)', () => {
     const fresh = createRepository();
     expect(await fresh.getLibraryEntry('sucrose')).toEqual(changed);
     const records = await fresh.listLibrary();
-    expect(records).toHaveLength(Object.keys(library).length);
+    expect(records).toHaveLength(Object.keys(seededLibrary).length);
     for (const record of records) {
-      if (record.id !== 'sucrose') expect(record.entry).toEqual(library[record.id]);
+      if (record.id !== 'sucrose') expect(record.entry).toEqual(seededLibrary[record.id]);
     }
     await expectOneRecordPerSeedId(fresh);
   });
@@ -201,7 +227,7 @@ describe('a profile left at version 8, through the seed (D-01, D-01a, success cr
     expect(await fresh.listVersions()).toEqual([oliveOilVersion]);
     expect(await fresh.getAllBatches()).toEqual([augustSecondBatch]);
     expect(await fresh.listDrafts()).toEqual([draft]);
-    expect(await fresh.listLibrary()).toHaveLength(Object.keys(library).length);
+    expect(await fresh.listLibrary()).toHaveLength(Object.keys(seededLibrary).length);
 
     const [version] = await fresh.listVersions();
     const [batch] = await fresh.getAllBatches();
@@ -301,7 +327,7 @@ describe('a change to a library entry moves no stored figure (LIB-02, success cr
 
     const file = JSON.parse(JSON.stringify(await exportStore(createRepository())));
     expect(validateStoreFile(file)).toEqual({ ok: true, errors: [] });
-    expect(file.library).toHaveLength(Object.keys(library).length);
+    expect(file.library).toHaveLength(Object.keys(seededLibrary).length);
     expect(Object.hasOwn(file, 'drafts')).toBe(false);
 
     globalThis.indexedDB = new IDBFactory();
@@ -312,7 +338,7 @@ describe('a change to a library entry moves no stored figure (LIB-02, success cr
     const fresh = createRepository();
     expect(await fresh.getLibraryEntry('sucrose')).toEqual(changed);
     expect((await fresh.getLibraryEntry('sucrose')).entry.composition.pac).toBe(library.sucrose.composition.pac * 2);
-    expect(await fresh.listLibrary()).toHaveLength(Object.keys(library).length);
+    expect(await fresh.listLibrary()).toHaveLength(Object.keys(seededLibrary).length);
   });
 });
 
@@ -340,7 +366,7 @@ describe('export and import carry the library (LIB-03, D-04a, D-07)', () => {
     await seedIfEmpty(createRepository());
 
     const fresh = createRepository();
-    expect(await fresh.listLibrary()).toHaveLength(Object.keys(library).length);
+    expect(await fresh.listLibrary()).toHaveLength(Object.keys(seededLibrary).length);
     // Versions were present, so no seed recipe or version was added.
     expect(await fresh.listVersions()).toEqual([oliveOilVersion]);
     expect(await fresh.listRecipes()).toEqual([oliveOilRecipe]);
@@ -353,7 +379,7 @@ describe('export and import carry the library (LIB-03, D-04a, D-07)', () => {
     expect(await importStore(createRepository(), file)).toEqual({ ok: true, errors: [] });
 
     const fresh = createRepository();
-    expect(await fresh.listLibrary()).toHaveLength(Object.keys(library).length);
+    expect(await fresh.listLibrary()).toHaveLength(Object.keys(seededLibrary).length);
     expect((await fresh.getLibraryEntry('sucrose')).entry.name).toBe('Sucrose, renamed');
     expect((await fresh.getLibraryEntry('wholeMilk')).entry).toEqual(library.wholeMilk);
   });
@@ -389,6 +415,133 @@ describe('export and import carry the library (LIB-03, D-04a, D-07)', () => {
     const sucrose = await fresh.getLibraryEntry('sucrose');
     expect(sucrose.entry.composition.pac).toBe(library.sucrose.composition.pac * 2);
     expect(sucrose.entry).toEqual(file.library[0].entry);
-    expect(await fresh.listLibrary()).toHaveLength(Object.keys(library).length);
+    expect(await fresh.listLibrary()).toHaveLength(Object.keys(seededLibrary).length);
+  });
+});
+
+// D-20: every library entry owns the six coefficient keys, null allowed. The
+// values of the 26 are pinned here by hand, not read back from the checks file
+// alone, so a wrong value cannot ride in with a wrong approval record.
+describe('the six D-20 coefficient keys on every library entry', () => {
+  const SIX = ['titratableAcidity', 'fatStructural', 'ownEmulsifier', 'defaultStage', 'prepNote', 'requiresHeat'];
+  const DAIRY_SOURCE = 'MSNF × 0.017, Goff pp. 142, 407';
+  const checksPath = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '../../scripts/ingredient-seed-checks.json',
+  );
+  const checks = JSON.parse(readFileSync(checksPath, 'utf8'));
+
+  it('a fresh profile holds the six keys on every entry, the 26 and every new one, and each stage is a known stage', async () => {
+    await seedIfEmpty(createRepository());
+    const records = await createRepository().listLibrary();
+
+    expect(records).toHaveLength(Object.keys(seededLibrary).length);
+    for (const { id, entry } of records) {
+      for (const key of SIX) expect(Object.hasOwn(entry, key), `${id}.${key}`).toBe(true);
+      expect(entry.defaultStage === null || STAGE_IDS.includes(entry.defaultStage), `${id}.defaultStage`).toBe(true);
+      if (entry.titratableAcidity !== null) {
+        expect(entry.basis.titratableAcidity, `${id} basis`).toBe('derived');
+        expect(typeof entry.source.titratableAcidity, `${id} source`).toBe('string');
+        expect(entry.source.titratableAcidity.length, `${id} source`).toBeGreaterThan(0);
+      } else {
+        expect(Object.hasOwn(entry.basis, 'titratableAcidity'), `${id} basis`).toBe(false);
+        expect(Object.hasOwn(entry.source ?? {}, 'titratableAcidity'), `${id} source`).toBe(false);
+      }
+    }
+  });
+
+  it('the five dairy entries carry acidity as MSNF x 0.017 to six places, derived, with the Goff source', () => {
+    const literals = {
+      wholeMilk: 0.001496,
+      heavyCream: 0.000918,
+      skimMilkPowder: 0.01649,
+      wholeMilk33: 0.001479,
+      wholeMilk37: 0.001471,
+    };
+    for (const [key, value] of Object.entries(literals)) {
+      const entry = library[key];
+      expect(entry.titratableAcidity, key).toBe(value);
+      expect(entry.titratableAcidity, key).toBe(Number((entry.composition.msnf * 0.017).toFixed(6)));
+      expect(entry.basis.titratableAcidity, key).toBe('derived');
+      expect(entry.source.titratableAcidity, key).toBe(DAIRY_SOURCE);
+    }
+    expect(library.sucrose.titratableAcidity).toBeNull();
+    expect(Object.hasOwn(library.sucrose.basis, 'titratableAcidity')).toBe(false);
+    expect(Object.hasOwn(library.sucrose.source, 'titratableAcidity')).toBe(false);
+  });
+
+  it('pins the flags and stages the notes and D-20 give', () => {
+    expect(library.oliveOil.fatStructural).toBe(false);
+    expect(library.oliveOil.defaultStage).toBe('before_churn');
+    expect(library.heavyCream.fatStructural).toBe(true);
+    expect(library.heavyCream.defaultStage).toBe('combine');
+    expect(library.coconutCream.fatStructural).toBe(true);
+    expect(library.lecithin.ownEmulsifier).toBe(true);
+    expect(library.carrageenan.defaultStage).toBe('dry_blend');
+    expect(library.allulose.defaultStage).toBe('after_heat');
+    expect(library.vanillaExtract.defaultStage).toBe('after_heat');
+    expect(library.shreddedCoconut.defaultStage).toBe('during_churn');
+
+    const fatStructural = [
+      'wholeMilk',
+      'heavyCream',
+      'skimMilkPowder',
+      'wholeMilk33',
+      'wholeMilk37',
+      'cocoaPowder',
+      'coconutCream',
+      'shreddedCoconut',
+      'coconutMilk',
+    ];
+    const dryBlend = [
+      'sucrose',
+      'dextrose',
+      'fructose',
+      'skimMilkPowder',
+      'salt',
+      'locustBeanGum',
+      'guarGum',
+      'carrageenan',
+      'stabilizerMix4421',
+    ];
+    const combine = ['wholeMilk', 'wholeMilk33', 'wholeMilk37', 'heavyCream'];
+    const otherStages = {
+      allulose: 'after_heat',
+      vanillaExtract: 'after_heat',
+      oliveOil: 'before_churn',
+      shreddedCoconut: 'during_churn',
+    };
+    for (const [key, entry] of Object.entries(library)) {
+      const expectedFat = fatStructural.includes(key) ? true : key === 'oliveOil' ? false : null;
+      expect(entry.fatStructural, `${key}.fatStructural`).toBe(expectedFat);
+      expect(entry.ownEmulsifier, `${key}.ownEmulsifier`).toBe(key === 'lecithin' ? true : null);
+      const expectedStage = dryBlend.includes(key)
+        ? 'dry_blend'
+        : combine.includes(key)
+          ? 'combine'
+          : (otherStages[key] ?? null);
+      expect(entry.defaultStage, `${key}.defaultStage`).toBe(expectedStage);
+      expect(entry.prepNote, `${key}.prepNote`).toBeNull();
+      expect(entry.requiresHeat, `${key}.requiresHeat`).toBeNull();
+    }
+  });
+
+  it('every entry of data/library.js holds exactly the six values Mark approved in the mapping (checks file existing)', () => {
+    expect(Object.keys(checks.existing).sort()).toEqual(Object.keys(library).sort());
+    for (const key of Object.keys(library)) {
+      const six = Object.fromEntries(SIX.map((field) => [field, library[key][field]]));
+      expect(six, key).toEqual(checks.existing[key]);
+    }
+  });
+
+  it('every version row and batch snapshot row in the seed recipes embeds an ingredient owning the six keys', () => {
+    const rows = seedRecipeGroups.flatMap((group) => [
+      ...group.versions.flatMap((version) => version.rows),
+      ...group.batches.flatMap((batch) => batch.snapshot.rows),
+    ]);
+    expect(rows.length).toBeGreaterThan(0);
+    for (const row of rows) {
+      for (const key of SIX) expect(Object.hasOwn(row.ingredient, key), `${row.ingredient.name}.${key}`).toBe(true);
+    }
   });
 });

@@ -320,6 +320,52 @@ describe('HomeBody — the recipe record is the name\'s source (D-11)', () => {
   });
 });
 
+// A recipe's standing is recipe-wide: the newest batch across ALL its versions
+// decides it, so the batch awaiting a tasting can belong to an older version
+// than the latest. Record a tasting must open that batch under the version it
+// was recorded against, not under the latest version.
+describe("Home's Record a tasting opens the awaiting batch under its own version (bug-home-record-tasting-opens-wrong-batch)", () => {
+  const v3 = makeVersion({ id: 'mexican-chocolate-v3', recipeId: 'mexican-chocolate', createdAt: '2026-01-01T00:00:00.000Z' });
+  const v4 = makeVersion({ id: 'mexican-chocolate-v4', recipeId: 'mexican-chocolate', createdAt: '2026-02-01T00:00:00.000Z' });
+
+  it('links the lead and the row to the older version\'s batch, and Keep developing to the latest version', () => {
+    const batches = [
+      makeBatch({
+        id: 'mexican-chocolate-v3-batch-01',
+        versionId: 'mexican-chocolate-v3',
+        churn: { churnDate: '2026-01-10' },
+        tasting: null,
+      }),
+    ];
+    const markup = renderBody([v3, v4], batches);
+    expect(markup).toContain('Record a tasting');
+    const corrected = 'href="/notebook/mexican-chocolate/mexican-chocolate-v3/batch/mexican-chocolate-v3-batch-01"';
+    expect(markup.split(corrected)).toHaveLength(3);
+    expect(markup).not.toContain('href="/notebook/mexican-chocolate/mexican-chocolate-v4/batch/');
+    expect(markup).toContain('href="/notebook/mexican-chocolate/mexican-chocolate-v4"');
+  });
+
+  it('follows the newest batch to its own version when that batch is on the latest version', () => {
+    const batches = [
+      makeBatch({
+        id: 'mexican-chocolate-v3-batch-01',
+        versionId: 'mexican-chocolate-v3',
+        churn: { churnDate: '2026-01-10' },
+        tasting: { tastedDate: '2026-01-11' },
+      }),
+      makeBatch({
+        id: 'mexican-chocolate-v4-batch-01',
+        versionId: 'mexican-chocolate-v4',
+        churn: { churnDate: '2026-02-10' },
+        tasting: null,
+      }),
+    ];
+    const markup = renderRows([v3, v4], batches);
+    expect(markup).toContain('href="/notebook/mexican-chocolate/mexican-chocolate-v4/batch/mexican-chocolate-v4-batch-01"');
+    expect(markup).not.toContain('/batch/mexican-chocolate-v3-batch-01');
+  });
+});
+
 // D-10: the short link to the Search page's Sheet code field sits at the
 // right of the Recipes row (sketch 010 screen-home.html).
 describe('HomeBody — Enter Sheet code (D-10)', () => {

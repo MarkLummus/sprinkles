@@ -6,10 +6,10 @@ current_phase: 10
 current_phase_name: The creation editor, without Save
 status: executing
 stopped_at: Phase 10 context gathered
-last_updated: "2026-10-20T05:12:24.388Z"
+last_updated: "2026-10-20T13:00:21.903Z"
 last_activity: 2026-10-19
 last_activity_desc: Phase 09 complete, transitioned to Phase 10
-state_head: 4b435c5a05361dd01c881400a86dca9e6fdc1f4a
+state_head: 24b8009fc9df814dc5e2eae624f08012aca0a146
 progress:
   total_phases: 5
   completed_phases: 2
@@ -580,6 +580,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261019-arr | Ingredients place below 760: source on its own line | 2026-10-19 | 385c7bb6 | .planning/quick/261019-arr-ingredients-place-below-760-source-on-its-own-line-look-p9-0 |
 | 261019-ars | Ingredients place: lactose line on any entry with milk solids | 2026-10-19 | 55891a98 | .planning/quick/261019-ars-ingredients-place-lactose-line-on-any-entry-with-milk-solids |
 | 181 | Sketch 012 README decision 6: name the built lactose-line condition (55891a98) | 2026-10-19 | 30a5727d | — |
+| 182 | Fold D-04b (Start reuses an existing create draft) into Phase 10 plans 10-02, 10-03, 10-04, 10-11 and 10-CONTEXT.md | 2026-10-20 | 24b8009f | — |
 
 ### Roadmap Evolution
 

@@ -942,12 +942,104 @@ async function compare(pathA, pathB) {
   console.log(`MATCH ${count} snapshots`);
 }
 
+// ---------------------------------------------------------------------------
+// selftest: doctored copies of the before-file, each of which the compare must
+// refuse with a DIFF that names the doctored path; and the real pair (the file
+// against a clone of itself), which it must pass. Exits 1 on any FAIL.
+// ---------------------------------------------------------------------------
+function firstDumpedStep(file) {
+  for (const scenario of file.scenarios) {
+    for (const step of scenario.steps) if (step.stores) return { scenario: scenario.name, step };
+  }
+  return undefined;
+}
+
+// Each doctoring changes `file` in place and returns { scenario, step, where }
+// for the path it changed, or undefined when it found nothing to change.
+const DOCTORINGS = [
+  [
+    'store leaf',
+    'a recipe name in a store dump changed',
+    (file) => {
+      const found = firstDumpedStep(file);
+      if (!found || !found.step.stores.recipes?.[0]) return undefined;
+      found.step.stores.recipes[0].name = 'Doctored recipe name';
+      return { scenario: found.scenario, step: found.step.step, where: 'stores.recipes[0].name' };
+    },
+  ],
+  [
+    'snapshot leaf',
+    "the first step's pageStatus changed",
+    (file) => {
+      const scenario = file.scenarios[0];
+      const step = scenario?.steps[0];
+      if (!step) return undefined;
+      step.snapshot.pageStatus = 'Doctored status.';
+      return { scenario: scenario.name, step: step.step, where: 'snapshot.pageStatus' };
+    },
+  ],
+  [
+    'added key',
+    'a store key present after and absent before',
+    (file) => {
+      const found = firstDumpedStep(file);
+      if (!found || !found.step.stores.versions?.[0]) return undefined;
+      found.step.stores.versions[0].doctoredField = 'extra';
+      return { scenario: found.scenario, step: found.step.step, where: 'stores.versions[0].doctoredField' };
+    },
+  ],
+  [
+    'repeated step',
+    'the first step appended again under the same name with a changed leaf',
+    (file) => {
+      const scenario = file.scenarios[0];
+      const step = scenario?.steps[0];
+      if (!step) return undefined;
+      const again = structuredClone(step);
+      again.snapshot.pageStatus = 'Doctored status.';
+      scenario.steps.push(again);
+      return { scenario: scenario.name, step: '(duplicate)', where: `after: step ${step.step}` };
+    },
+  ],
+];
+
+async function selftest(pathBefore) {
+  const before = await readWalk(pathBefore);
+  let failed = 0;
+  const real = compareResult(before, structuredClone(before));
+  if (real.diffs.length === 0 && real.count > 0) console.log('PASS selftest real: the file against a clone of itself passes');
+  else {
+    console.log(`FAIL selftest real: the real pair is refused (${real.diffs.length} DIFF, ${real.count} compared)`);
+    failed += 1;
+  }
+  for (const [name, what, doctor] of DOCTORINGS) {
+    const doctored = structuredClone(before);
+    const changed = doctor(doctored);
+    if (!changed) {
+      console.log(`FAIL selftest ${name}: found nothing to change (${what})`);
+      failed += 1;
+      continue;
+    }
+    const { diffs } = compareResult(before, doctored);
+    const named = `${changed.scenario} / ${changed.step} / ${changed.where}`;
+    if (diffs.some((line) => line.startsWith(`DIFF ${named}:`))) {
+      console.log(`PASS selftest ${name}: refused at ${changed.step === '(duplicate)' ? `${changed.step} ${changed.where}` : changed.where} (${what})`);
+    } else {
+      console.log(`FAIL selftest ${name}: not refused at ${named} (${what})`);
+      failed += 1;
+    }
+  }
+  if (failed > 0) process.exit(1);
+}
+
 const [, , mode, first, second] = process.argv;
 if (mode === 'record' && first) {
   await record(first);
 } else if (mode === 'compare' && first && second) {
   await compare(first, second);
+} else if (mode === 'selftest' && first) {
+  await selftest(first);
 } else {
-  console.error('Usage: node 10-walk.mjs record <out.json> | compare <a.json> <b.json>');
+  console.error('Usage: node 10-walk.mjs record <out.json> | compare <a.json> <b.json> | selftest <before.json>');
   process.exit(1);
 }

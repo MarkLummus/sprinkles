@@ -138,7 +138,7 @@ describe('RecipeSheet in creating mode (T-01, D-08a)', () => {
   const rowDraft = (grams) =>
     draftOf({ rows: [{ id: 'row-a', libraryId: 'wholeMilk', portions: [{ step: 1, grams }] }] });
 
-  function renderCreating(draft, beforeFoot = <p className="test-before-foot">add here</p>) {
+  function renderCreating(draft, beforeFoot = <p className="test-before-foot">add here</p>, extra = {}) {
     const version = creationSheetVersion(draft, records);
     const view = sheetView({
       version,
@@ -152,7 +152,7 @@ describe('RecipeSheet in creating mode (T-01, D-08a)', () => {
     });
     return renderToStaticMarkup(
       <MemoryRouter>
-        <RecipeSheet view={view} version={version} mode="creating" penDraft={null} beforeFoot={beforeFoot} />
+        <RecipeSheet view={view} version={version} mode="creating" penDraft={null} beforeFoot={beforeFoot} {...extra} />
       </MemoryRouter>,
     );
   }
@@ -195,6 +195,42 @@ describe('RecipeSheet in creating mode (T-01, D-08a)', () => {
     const rules = markup.match(/<button[^>]*class="graduated-rule"[^>]*>/g) ?? [];
     expect(rules.length).toBeGreaterThan(0);
     for (const rule of rules) expect(rule).toContain('tabindex="-1"');
+  });
+
+  const creationRowsOf = (grams) => ({
+    gramsByRow: new Map([['row-a', grams]]),
+    focusRowId: null,
+    onChangeGrams() {},
+    onBlurGrams() {},
+    onRemoveRow() {},
+  });
+
+  it('draws ingredientsFoot as the last child of the ingredient-table-region', () => {
+    const markup = renderCreating(rowDraft('600'), null, {
+      creationRows: creationRowsOf('600'),
+      ingredientsFoot: <p className="test-ingredients-foot">add ingredient here</p>,
+    });
+    const start = markup.indexOf('<section class="ingredient-table-region"');
+    const section = markup.slice(start, markup.indexOf('</section>', start));
+    expect(section.endsWith('<p class="test-ingredients-foot">add ingredient here</p>')).toBe(true);
+    expect(section.indexOf('</table>')).toBeLessThan(section.indexOf('test-ingredients-foot'));
+  });
+
+  it('draws a creating row from creationRows: the raw grams in one field, one remove, no struck value', () => {
+    const markup = renderCreating(rowDraft('60'), null, { creationRows: creationRowsOf('60') });
+    expect(markup.match(/<input[^>]*aria-label="Whole milk, 3.5% fat, grams"[^>]*>/g)).toHaveLength(1);
+    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, 3.5% fat, grams"[^>]*value="60"/);
+    expect(markup.match(/>remove<\/button>/g)).toHaveLength(1);
+    expect(markup).not.toContain('restore');
+    expect(markup).not.toContain('struck-value');
+    expect(markup).not.toContain('ingredient-table__step-head');
+    expect(markup.match(/<tbody/g)).toHaveLength(1);
+  });
+
+  it('draws a creating row with an empty field when the maker has typed nothing', () => {
+    const markup = renderCreating(rowDraft(''), null, { creationRows: creationRowsOf('') });
+    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, 3.5% fat, grams"[^>]*value=""/);
+    expect(markup).toContain('aria-label="Whole milk, 3.5% fat, 0 g, estimated"');
   });
 
   it('shows a note holding angle brackets escaped, in a field and in a reading Sheet', () => {

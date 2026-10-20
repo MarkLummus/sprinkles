@@ -1062,3 +1062,83 @@ describe('Add ingredient, pick, type grams (MAKE-06, D-07, D-08)', () => {
     }
   });
 });
+
+describe('remove deletes a creation row outright (MAKE-06, decision 5, T-01)', () => {
+  const MILK = 'Whole milk, 3.5% fat';
+  const CREAM = 'Heavy cream, 36% fat';
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-add');
+  const pickerCancel = () => root().querySelector('.ingredient-table-region .pick__head button');
+  const gramsField = (name) => field(`${name}, grams`);
+  const tableNames = () =>
+    [...root().querySelectorAll('.ingredient-table tbody td.ingredient-table__col-name')].map((cell) => cell.firstChild.textContent);
+  const removeOf = (name) => root().querySelector(`tr[aria-label^="${name},"] button.text-control`);
+  const noStruckOrStepHeads = () => {
+    expect(root().querySelectorAll('.ingredient-table tbody').length).toBeLessThanOrEqual(1);
+    expect(root().querySelector('.ingredient-table__step-head')).toBeNull();
+    expect(root().querySelector('.struck-value')).toBeNull();
+  };
+
+  async function pickAt(name, grams) {
+    await click(addButton());
+    const row = [...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === name);
+    await click(row);
+    await type(gramsField(name), grams);
+  }
+
+  it('removes Heavy cream from the table and the saved draft, the figures follow, and focus is on Add ingredient', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await pickAt(MILK, '600');
+    await pickAt(CREAM, '250');
+    const withCream = root().querySelector('.side-region').textContent;
+    noStruckOrStepHeads();
+
+    expect(removeOf(CREAM).textContent).toBe('remove');
+    await click(removeOf(CREAM));
+    expect(tableNames()).toEqual([MILK]);
+    expect(root().querySelector('.side-region').textContent).not.toBe(withCream);
+    expect(document.activeElement).toBe(addButton());
+    noStruckOrStepHeads();
+
+    await advance();
+    const rows = lastSaved().payload.rows;
+    expect(rows).toHaveLength(1);
+    expect(rows[0].libraryId).toBe('wholeMilk');
+    for (const row of rows) {
+      expect(Object.keys(row).sort()).toEqual(['id', 'libraryId', 'portions']);
+      for (const portion of row.portions) expect(Object.keys(portion).sort()).toEqual(['grams', 'step']);
+    }
+    expectNoRecordWrites();
+  });
+
+  it('with the picker open, remove deletes the row, leaves the picker open and focuses its Cancel', async () => {
+    await startVanilla();
+    await pickAt(MILK, '600');
+    await click(addButton());
+    expect(root().querySelector('div.pick')).not.toBeNull();
+    await click(removeOf(MILK));
+    expect(tableNames()).toEqual([]);
+    expect(root().querySelector('div.pick')).not.toBeNull();
+    expect(document.activeElement).toBe(pickerCancel());
+  });
+
+  it('removing the last row with grams hides the side-region again', async () => {
+    await startVanilla();
+    await pickAt(MILK, '600');
+    expect(root().querySelector('.side-region')).not.toBeNull();
+    await click(removeOf(MILK));
+    expect(root().querySelector('.side-region')).toBeNull();
+    expect(root().querySelector('.ingredient-table-region p').textContent).toBe('This version has no ingredient rows.');
+  });
+
+  it('removes the row whose field has focus, and its control goes with it', async () => {
+    await startVanilla();
+    await click(addButton());
+    await click([...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === 'Sucrose'));
+    expect(document.activeElement).toBe(gramsField('Sucrose'));
+    await click(removeOf('Sucrose'));
+    expect(tableNames()).toEqual([]);
+    expect(removeOf('Sucrose')).toBeNull();
+    expect(document.activeElement).toBe(addButton());
+  });
+});

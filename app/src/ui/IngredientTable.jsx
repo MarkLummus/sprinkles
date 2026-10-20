@@ -652,6 +652,7 @@ export function IngredientTable({
               <span className="target-chip__value">{dataFlag}</span>
             </span>
           )}
+          <RemoveRowControl removed={false} onToggle={() => creationRows.onRemoveRow(row.id)} />
         </td>
         <td className="ingredient-table__col-numeric">{formatShareOfBatch(portion.grams, baselineMass)}</td>
       </tr>

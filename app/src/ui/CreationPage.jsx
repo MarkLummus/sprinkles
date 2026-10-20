@@ -19,6 +19,7 @@ import {
   creationTitle,
   normalizeCreateDraft,
   removeNote,
+  removeRow,
   setRowGrams,
   updateNote,
 } from '../domain/creation.js';
@@ -194,6 +195,16 @@ export function CreationPage({ record, justStarted = false }) {
     focusRequestRef.current = 'ingredient-target';
   };
 
+  // Remove deletes the row outright (decision 5): its control goes with it, so
+  // a row is never removed twice. Focus lands, after the render, on the table
+  // region's add control: Add ingredient, or the picker's Cancel while the
+  // picker is open in its place.
+  const handleRemoveRow = (rowId) => {
+    setCreateDraft((prev) => removeRow(prev, rowId));
+    setFocusRowId((prev) => (prev === rowId ? null : prev));
+    focusRequestRef.current = 'ingredient-target';
+  };
+
   const handleChangeGrams = (rowId, value) => {
     setCreateDraft((prev) => setRowGrams(prev, rowId, value));
   };
@@ -299,6 +310,7 @@ export function CreationPage({ record, justStarted = false }) {
                   focusRowId,
                   onChangeGrams: handleChangeGrams,
                   onBlurGrams: handleBlurGrams,
+                  onRemoveRow: handleRemoveRow,
                 }}
                 onChangePenNoteText={handleChangeNote}
                 onRemovePenNote={handleRemoveNote}

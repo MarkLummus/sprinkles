@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { repository } from '../store/repository.js';
-import { buildDraftRecord, draftMatchesCreate, draftMatchesVersion, isCreateDraftDirty } from '../domain/draft.js';
+import { buildDraftRecord, draftMatchesCreate, draftMatchesVersion } from '../domain/draft.js';
 import { derivePenState, isPenDraftDirty } from '../domain/penDraft.js';
 import { isDraftDirty } from '../domain/recordDraft.js';
 import { notebookPath } from './notebookPaths.js';
@@ -25,10 +25,15 @@ export function useDraftWriter(versionId) {
   const draftStoredRef = useRef(false);
   const pendingDraftRef = useRef(null);
   const draftTimerRef = useRef(null);
+  //  - endedRef: set by a final discard (Cancel on a creation) while its
+  //    delete is out and left set once the delete has succeeded, so nothing
+  //    writes the record back; a failed delete clears it.
+  const endedRef = useRef(false);
 
   // Writes the record waiting out the debounce at once. Reads refs only, so
   // the listener below can hold the first render's copy for the page's life.
   function flushPendingDraft() {
+    if (endedRef.current) return;
     if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
     draftTimerRef.current = null;
     const record = pendingDraftRef.current;
@@ -40,16 +45,44 @@ export function useDraftWriter(versionId) {
 
   // Save and Cancel end a draft: drop whatever is waiting to be written, so a
   // keystroke typed just before Save cannot write the draft back after it
-  // was deleted, then delete the stored record.
-  function discardDraft() {
+  // was deleted, then delete the stored record. Returns the delete's promise.
+  //
+  // A final discard (Cancel on a creation) also holds every write while its
+  // delete is out: the restore, the persist effect and the flushes write
+  // nothing, so no late read or edit can put the record back. It ends the kept
+  // draft for good only once the delete has succeeded. When the delete fails
+  // the record is still in the store, so persistence comes back: the ink that
+  // was waiting at Cancel, or the newest record held since, is written at
+  // once, and later edits are debounced as before. A plain discard (the pens')
+  // never touches endedRef. The returned promise carries the delete's own
+  // rejection to a caller that awaits it; the handled branch keeps a caller
+  // that does not await it from raising an unhandled rejection.
+  function discardDraft({ final = false } = {}) {
+    const held = pendingDraftRef.current;
     if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
     draftTimerRef.current = null;
     pendingDraftRef.current = null;
     draftStoredRef.current = false;
-    Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
+    if (final) endedRef.current = true;
+    const deleted = Promise.resolve().then(() => repository.deleteDraft(versionId));
+    if (final) {
+      deleted.then(
+        () => {
+          pendingDraftRef.current = null;
+        },
+        () => {
+          endedRef.current = false;
+          draftStoredRef.current = true;
+          pendingDraftRef.current = pendingDraftRef.current ?? held;
+          flushPendingDraft();
+        },
+      );
+    }
+    deleted.catch(() => {});
+    return deleted;
   }
 
-  return { draftStoredRef, pendingDraftRef, draftTimerRef, flushPendingDraft, discardDraft };
+  return { draftStoredRef, pendingDraftRef, draftTimerRef, endedRef, flushPendingDraft, discardDraft };
 }
 
 // The kept-draft effects (Phase 8 cut 6, EDIT-05, D-08, D-10). `catalog` is the
@@ -97,7 +130,7 @@ export function useKeptDraft({
   onPageStatus,
   navigate,
 }) {
-  const { draftStoredRef, pendingDraftRef, draftTimerRef, flushPendingDraft } = writer;
+  const { draftStoredRef, pendingDraftRef, draftTimerRef, endedRef, flushPendingDraft } = writer;
 
   // Kept drafts (04-09, D-14 to D-17). A pen's draft lives in the drafts store,
   // through the repository seam, from its first keystroke until Save or
@@ -138,6 +171,12 @@ export function useKeptDraft({
     Promise.resolve()
       .then(() => repository.getDraft(versionId))
       .then((record) => {
+        // A final discard is out or done: restore nothing and announce
+        // nothing, but let the persist effect run if the delete then fails.
+        if (endedRef.current) {
+          setDraftRestoreDone(true);
+          return;
+        }
         if (!record) {
           setDraftRestoreDone(true);
           return;
@@ -197,14 +236,14 @@ export function useKeptDraft({
     const { openPen: persistedPen } = derivePenState({ mode, amendingBatchId });
     let record = null;
     if (creating) {
-      if (isCreateDraftDirty(createDraft)) {
-        record = buildDraftRecord({
-          versionId,
-          kind: 'create',
-          payload: createDraft,
-          now: new Date().toISOString(),
-        });
-      }
+      // A creation is kept until Cancel, even when every field is blank
+      // (D-04a): its draft is overwritten, never deleted, by an edit.
+      record = buildDraftRecord({
+        versionId,
+        kind: 'create',
+        payload: createDraft,
+        now: new Date().toISOString(),
+      });
     } else if (persistedPen === 'plan' && isPenDraftDirty(mode, penDraft, version)) {
       record = buildDraftRecord({
         versionId,
@@ -235,6 +274,9 @@ export function useKeptDraft({
       return undefined;
     }
     pendingDraftRef.current = record;
+    // A final discard is out: hold the newest record, schedule nothing. A
+    // failed delete writes it back at once; a successful one drops it.
+    if (endedRef.current) return undefined;
     if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
     draftTimerRef.current = setTimeout(flushPendingDraft, 250);
     return () => {

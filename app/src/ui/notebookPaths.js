@@ -5,6 +5,12 @@
 // never drift between call sites.
 import { sortedVersions, versionsForRecipe } from '../domain/lineage.js';
 
+// The Notebook place and the creation editor's one fixed address: one creation
+// is kept at a time, so the address carries no id (Phase 10 D-01, sketch 013
+// decision 10).
+export const NOTEBOOK_PLACE_PATH = '/notebook';
+export const NEW_RECIPE_PATH = '/notebook/new';
+
 /**
  * notebookPath(recipeId, versionId, batchId = null) -> '/notebook/:recipeId/:versionId'
  * or, when batchId is given, '/notebook/:recipeId/:versionId/batch/:batchId'.

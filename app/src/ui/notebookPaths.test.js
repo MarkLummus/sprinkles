@@ -3,7 +3,14 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { notebookPath, printPath, legacyRecipePath, latestVersionPath } from './notebookPaths.js';
+import {
+  notebookPath,
+  printPath,
+  legacyRecipePath,
+  latestVersionPath,
+  NOTEBOOK_PLACE_PATH,
+  NEW_RECIPE_PATH,
+} from './notebookPaths.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 describe('notebookPath — the one address builder every recipe link uses (D-17)', () => {
@@ -93,5 +100,15 @@ describe('router.jsx routes /notebook/:recipeId to NotebookLatestRedirect (03.5-
     expect(routerSource).toMatch(
       /\{\s*path:\s*'\/notebook\/:recipeId',\s*Component:\s*NotebookLatestRedirect\s*\}/,
     );
+  });
+
+  it("declares '/notebook/new' before '/notebook/:recipeId' so 'new' is never a recipe id (Phase 10 D-01)", () => {
+    const newAt = routerSource.indexOf("{ path: '/notebook/new', Component: CreationRoute }");
+    const recipeAt = routerSource.indexOf("'/notebook/:recipeId'");
+    expect(newAt).toBeGreaterThan(-1);
+    expect(recipeAt).toBeGreaterThan(-1);
+    expect(newAt).toBeLessThan(recipeAt);
+    expect(NEW_RECIPE_PATH).toBe('/notebook/new');
+    expect(NOTEBOOK_PLACE_PATH).toBe('/notebook');
   });
 });

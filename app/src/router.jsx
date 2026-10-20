@@ -10,6 +10,7 @@ import { NotebookPlace } from './ui/NotebookPlace.jsx';
 import { IngredientsPlace } from './ui/IngredientsPlace.jsx';
 import { PrintSheetForRoute } from './ui/PrintSheet.jsx';
 import { NotebookLatestRedirect, LegacyRecipeRedirect } from './ui/NotebookRedirects.jsx';
+import { CreationRoute } from './ui/CreationRoute.jsx';
 
 // A different version, or a different batch of the same version, must be a
 // different page instance (one-pen-rule-leaks.md Evidence 8-9). React
@@ -112,6 +113,8 @@ export const router = createBrowserRouter([
     Component: Shell,
     children: [
       { path: '/', Component: RecipeList },
+      // Declared first so 'new' is never read as a recipe id (Phase 10 D-01).
+      { path: '/notebook/new', Component: CreationRoute },
       { path: '/notebook/:recipeId', Component: NotebookLatestRedirect },
       { path: '/notebook/:recipeId/:versionId', Component: RecipePageForRoute },
       { path: '/notebook/:recipeId/:versionId/batch/:batchId', Component: RecipePageForRoute },

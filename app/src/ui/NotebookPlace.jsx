@@ -21,16 +21,20 @@ export function NotebookPlace() {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [failed, setFailed] = useState(false);
-  // The kept create draft the place draws as a row (null for none). Start's
-  // re-read sets it when a creation is already kept.
+  // The kept create draft the place draws as a row (null for none). The read
+  // at load sets it, and so does Start's re-read when a creation is kept.
   const [draft, setDraft] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
     setFailed(false);
-    Promise.all([repository.getAll(), repository.getAllBatches(), repository.listRecipes()])
-      .then(([versions, batches, recipes]) => {
-        if (!cancelled) setData({ versions, batches, recipes });
+    Promise.all([repository.getAll(), repository.getAllBatches(), repository.listRecipes(), repository.listDrafts()])
+      .then(([versions, batches, recipes, drafts]) => {
+        if (cancelled) return;
+        // One create draft is kept at a time (decision 10): the newest is the
+        // row. A plan or record draft is not a creation and shows no row.
+        setDraft(newestDraft(drafts.filter(draftMatchesCreate)) ?? null);
+        setData({ versions, batches, recipes });
       })
       .catch(() => {
         if (!cancelled) setFailed(true);

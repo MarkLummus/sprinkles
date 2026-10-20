@@ -522,3 +522,165 @@ describe('what the editor opens over (T-10-09)', () => {
     expect(field('Recipe name').value).toBe('Slow');
   });
 });
+
+// Two create drafts: Vanilla older, Lemon newer.
+function twoDrafts() {
+  const make = (versionId, name, now) =>
+    buildDraftRecord({
+      versionId,
+      kind: 'create',
+      payload: blankCreateDraft({ recipeId: 'r-' + versionId, versionId, name }),
+      now,
+    });
+  return {
+    old: make('v-old', 'Vanilla', '2026-10-20T08:00:00.000Z'),
+    newer: make('v-new', 'Lemon', '2026-10-20T09:00:00.000Z'),
+  };
+}
+
+// Leave the page the way a maker does, then open the Notebook fresh.
+async function closeAndOpen(path) {
+  await act(async () => current.root.unmount());
+  current.container.remove();
+  current = null;
+  return mountAt(path);
+}
+
+async function expectResumeKeepsDescription(description) {
+  await closeAndOpen('/notebook');
+  const row = root().querySelector('ul.nb__drafts > li.nb__draft');
+  expect(row.textContent).toContain('Vanilla');
+  expect([...row.querySelectorAll('button')].map((button) => button.textContent)).toEqual(['Resume']);
+  await click(buttonByText('Resume'));
+  await flush(() => field('Recipe description') !== null);
+  expect(location.pathname).toBe('/notebook/new');
+  expect(field('Recipe description').value).toBe(description);
+}
+
+describe('a creation survives a closed tab (MAKE-11, D-18)', () => {
+  // jsdom proves the flush attempt: saveDraft is called at once. Whether
+  // IndexedDB finishes during a real browser shutdown is best effort
+  // (useKeptDraft.js, the pagehide effect).
+  it('pagehide inside the debounce starts the waiting write at once', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    repository.saveDraft.mockClear();
+    await type(field('Recipe description'), 'Plain and cold.');
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    await act(async () => {
+      window.dispatchEvent(new Event('pagehide'));
+    });
+    expect(repository.saveDraft).toHaveBeenCalledTimes(1);
+    expect(lastSaved().payload.description).toBe('Plain and cold.');
+    await flush();
+    await expectResumeKeepsDescription('Plain and cold.');
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+    expectNoRecordWrites();
+  });
+
+  it('a tab turning hidden starts the waiting write at once', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    repository.saveDraft.mockClear();
+    await type(field('Recipe description'), 'Plain and cold.');
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' });
+    try {
+      await act(async () => {
+        document.dispatchEvent(new Event('visibilitychange'));
+      });
+      expect(repository.saveDraft).toHaveBeenCalledTimes(1);
+      expect(lastSaved().payload.description).toBe('Plain and cold.');
+    } finally {
+      delete document.visibilityState;
+    }
+    await flush();
+    await expectResumeKeepsDescription('Plain and cold.');
+    expectNoRecordWrites();
+  });
+
+  it('unmounting inside the debounce starts the waiting write at once', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    repository.saveDraft.mockClear();
+    await type(field('Recipe description'), 'Plain and cold.');
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    await act(async () => current.root.unmount());
+    expect(repository.saveDraft).toHaveBeenCalledTimes(1);
+    expect(lastSaved().payload.description).toBe('Plain and cold.');
+    current.container.remove();
+    current = null;
+    await mountAt('/notebook');
+    await expectResumeKeepsDescription('Plain and cold.');
+    expectNoRecordWrites();
+  });
+
+  it('leaving while the restore read is out writes and deletes nothing, and the stored draft is unchanged', async () => {
+    store.drafts.set('v-kept', createDraftRecord('Vanilla'));
+    const before = structuredClone(store.drafts.get('v-kept'));
+    const gate = deferred();
+    repository.getDraft.mockImplementationOnce(async (versionId) => {
+      await gate.promise;
+      return structuredClone(store.drafts.get(versionId));
+    });
+    await mountAt('/notebook/new');
+    await flush();
+    expect(field('Recipe name')).toBeNull();
+
+    await act(async () => {
+      navigateTo('/notebook');
+    });
+    await flush();
+    expect(location.pathname).toBe('/notebook');
+    await act(async () => {
+      gate.resolve();
+    });
+    await flush();
+
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+    expect(store.drafts.get('v-kept')).toEqual(before);
+  });
+});
+
+describe('a kept creation shows on the Notebook at load (MAKE-11, D-04b)', () => {
+  it('draws the kept draft with Resume and no New recipe, so no entry can be opened', async () => {
+    store.drafts.set('v-kept', createDraftRecord('Lemon'));
+    await mountAt('/notebook');
+    const row = root().querySelector('ul.nb__drafts > li.nb__draft');
+    expect(row.textContent).toContain('Lemon');
+    expect(buttonByText('New recipe')).toBeNull();
+    expect(root().querySelector('p.nb__count').textContent).toBe('8 recipes');
+    await click(buttonByText('Resume'));
+    await flush(() => field('Recipe name') !== null);
+    expect(location.pathname).toBe('/notebook/new');
+    expect(field('Recipe name').value).toBe('Lemon');
+    expectNoRecordWrites();
+  });
+
+  // Defensive: the store can hold two create drafts when two Starts' writes
+  // overlap (plan 10-04's accepted residual). The newest is on screen.
+  it('with two create drafts stored the Notebook and /notebook/new take the newest; Cancel deletes only it', async () => {
+    store.drafts.set('v-old', twoDrafts().old);
+    store.drafts.set('v-new', twoDrafts().newer);
+    await mountAt('/notebook');
+    const rows = root().querySelectorAll('li.nb__draft');
+    expect(rows).toHaveLength(1);
+    expect(rows[0].textContent).toContain('Lemon');
+
+    await click(buttonByText('Resume'));
+    await flush(() => field('Recipe name') !== null);
+    expect(field('Recipe name').value).toBe('Lemon');
+
+    await click(buttonByText('Cancel'));
+    await flush(() => location.pathname === '/notebook' && root().querySelector('li.nb__draft') !== null);
+    expect(repository.deleteDraft).toHaveBeenCalledTimes(1);
+    expect(repository.deleteDraft).toHaveBeenCalledWith('v-new');
+    expect([...store.drafts.keys()]).toEqual(['v-old']);
+    const resurfaced = root().querySelectorAll('li.nb__draft');
+    expect(resurfaced).toHaveLength(1);
+    expect(resurfaced[0].textContent).toContain('Vanilla');
+    expect(buttonByText('Resume')).not.toBeNull();
+    expect(buttonByText('New recipe')).toBeNull();
+  });
+});

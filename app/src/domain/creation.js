@@ -5,6 +5,7 @@
 // new values and copies what it takes from its arguments.
 
 import { blankCreateDraft } from './draft.js';
+import { FIGURE_SPECS } from './figures.js';
 import { parseGramsDraft } from './lineage.js';
 import { rowFromLibraryRecord } from './versionRow.js';
 
@@ -52,7 +53,8 @@ function finiteGrams(raw) {
  * creationSheetVersion(draft, libraryById = new Map()) -> the version-shaped
  * object the Sheet reads. One description box fills both descriptions (the
  * Sheet's prose and the recipe's), the method is empty until Phase 11 (D-05),
- * and targets are empty until the bands are drawn (D-08b). A row is projected
+ * and its targets are the bands both of whose ends read (creationTargets,
+ * D-08b). A row is projected
  * through rowFromLibraryRecord from its first portion, its grams parsed with
  * parseGramsDraft and read as 0 g when they do not parse or are not finite (D-08), so a row the
  * maker is still typing stays on the Sheet. A row whose library entry is gone
@@ -80,7 +82,7 @@ export function creationSheetVersion(draft, libraryById = new Map()) {
     rows,
     method: [],
     authored: { beforeYouStart: draft.beforeYouStart },
-    targets: {},
+    targets: creationTargets(draft),
   };
 }
 
@@ -160,4 +162,75 @@ export function setRowGrams(draft, rowId, grams) {
 export function removeRow(draft, rowId) {
   assertRowId(draft, rowId);
   return { ...draft, rows: draft.rows.filter((row) => row.id !== rowId) };
+}
+
+// The six band keys, in the Balance's order. A typed band key is only ever a
+// value: setBandEnd accepts these and nothing else (T-10-21).
+const BAND_KEYS = FIGURE_SPECS.map((spec) => spec.targetKey);
+
+/**
+ * creationTargets(draft) -> the targets the Balance reads: a band whose two
+ * typed ends both parse through parseGramsDraft to finite numbers with low at
+ * or below high, as [lowNumber, highNumber]. Any other band is left out, so its
+ * figure reads 'no target set' (D-08b). The finite check is needed: a
+ * 309-digit end parses to Infinity, and two Infinity ends satisfy low <= high.
+ */
+export function creationTargets(draft) {
+  const targets = {};
+  for (const key of BAND_KEYS) {
+    const ends = draft.targets[key];
+    if (!ends) continue;
+    const low = parseGramsDraft(ends[0]);
+    const high = parseGramsDraft(ends[1]);
+    if (low === null || high === null) continue;
+    if (!Number.isFinite(low) || !Number.isFinite(high) || low > high) continue;
+    targets[key] = [low, high];
+  }
+  return targets;
+}
+
+/**
+ * applyStyle(draft, style) -> a new draft holding the style row's id, exactly
+ * the style's own bands (a band the style leaves out is gone) as the strings
+ * the fields show, and the style's default serving temperature as a string,
+ * '' when that is not a finite number (decisions 6, 9, 14).
+ */
+export function applyStyle(draft, style) {
+  const targets = {};
+  for (const key of BAND_KEYS) {
+    const band = style.bands[key];
+    if (band) targets[key] = [String(band[0]), String(band[1])];
+  }
+  const temperature = style.serveTempC?.default;
+  return {
+    ...draft,
+    style: style.id,
+    targets,
+    serveTempC: Number.isFinite(temperature) ? String(temperature) : '',
+  };
+}
+
+/**
+ * clearStyle(draft) -> a new draft with no style and no serving temperature;
+ * the bands stay as they stand (decisions 14 and 17).
+ */
+export function clearStyle(draft) {
+  return { ...draft, style: null, serveTempC: '' };
+}
+
+/**
+ * setBandEnd(draft, bandKey, endIndex, raw) -> a new draft with one end of one
+ * band kept as typed. A band left with two blank ends is removed. The style
+ * stays picked. A key outside the six bands, or an end other than 0 or 1, is a
+ * caller bug and throws a RangeError.
+ */
+export function setBandEnd(draft, bandKey, endIndex, raw) {
+  if (!BAND_KEYS.includes(bandKey)) throw new RangeError(`no band ${String(bandKey)}`);
+  if (endIndex !== 0 && endIndex !== 1) throw new RangeError(`no band end ${endIndex}`);
+  const ends = [...(draft.targets[bandKey] ?? ['', ''])];
+  ends[endIndex] = raw;
+  const targets = { ...draft.targets };
+  if (ends[0] === '' && ends[1] === '') delete targets[bandKey];
+  else targets[bandKey] = ends;
+  return { ...draft, targets };
 }

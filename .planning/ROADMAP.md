@@ -198,7 +198,33 @@ Plans:
   4. While creating, the maker defines 0 to 2 scales, each with a name, a label for each end and its kind (goldilocks, with the fixed middle word "right", or plain magnitude), and 0 to 2 problems; chooses an ice cream style, so the balance bands fill in, then edits them or leaves them blank; and sees an empty target reading in the editor with no gap or error
   5. A half-made recipe survives a closed tab: the Notebook offers Resume and reopens it as it was left, scales, problems and targets included, and abandoning it leaves no record behind; there is no Save: however far a creation goes, the Notebook lists no new recipe, and the only record a creation writes is its draft
 
-**Plans**: TBD
+**Plans:** 10 plans in 7 waves (10-10 stops for the orchestrator to put the one iPad check on Mark's List)
+
+Plans:
+**Wave 1**
+- [ ] 10-01-PLAN.md — the strict walk recorded at the base commit (no allowance at all) and the side-by-side WebKit board engine, proven on sketch 012; no app change
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 10-02-PLAN.md — New recipe, Start, the /notebook/new editor over the kept create draft (kept until Cancel), Resume and Cancel with their page notices (tracer: Start opens the editor end to end)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 10-03-PLAN.md — the Notebook entry's words (Enter a recipe name, the same-name warning), one draft per Start, and its look against sketch 013
+- [ ] 10-04-PLAN.md — Import refused on every route while a creation is kept, each page saying so in its own notice; recipe routes unchanged
+- [ ] 10-05-PLAN.md — Before you start, the headnote and the Balance in the Sheet's creating mode, and the editor band against the board
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 10-06-PLAN.md — rows from the library through the picker, grams, Remove outright and the live Balance; the picker against the board
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [ ] 10-07-PLAN.md — each row's grams message on blur, and the creation table and Remove against the board
+- [ ] 10-08-PLAN.md — the style menu, its six bands and the serving temperature, read live by the Balance
+
+**Wave 6** *(blocked on Wave 5 completion)*
+- [ ] 10-09-PLAN.md — the recipe's own scales (with their kind) and problems, 0 to 2 of each
+
+**Wave 7** *(blocked on Wave 6 completion)*
+- [ ] 10-10-PLAN.md — the proof on the final build: strict walk, every board with evidence, the iPad steps walked in WebKit first; stops for the Mark's List row
+
 **Design gate**: Approved and snapshotted boards for the creation editor (name and its one description, Version name, Before you start, rows and the live Balance, a row's Remove included, since this phase removes a row), the ingredient picker (its "Not in the library yet" included), the Notebook's New recipe, its same-name warning and Resume, authoring scales and problems (each scale's kind included), and choosing a style with its balance bands. None is drawn yet. The style board shows the four styles with the bands Mark approved (decision 17).
 **UI hint**: yes
 **Notes**: No Save, by design: Save lands in Phase 11, once steps exist (see its Notes). Scales and problems, the style and balance targets are authored here, before Save: they moved from Phase 12 after the Codex review found that Phase 11 enables Save while Phase 12 added authoring that exists only at creation, so a recipe saved in Phase 11 could never gain it (Mark, 2026-10-16). A creation in this phase is only its `create` draft (Phase 9's kind, which Resume reads), so nothing real is stored, the reset window stays open through this phase, and no device build from it can save a recipe. The New recipe entry on the Notebook place is added here; Phase 9 built the list. Scale authoring writes Phase 9's definition shape, each scale carrying its kind. The seeded versions carry an `iceEd.style` field (null on olive oil), but the root version `createRecipe` builds leaves out `iceEd`, targets, equipment and process (Phase 7 D-02; process stays out of the editor, see Open questions (a)), so this phase adds them to the creation; the maker picks from four styles (decision 17), whose bands Mark approved (`look-style-bands`) and Phase 9 seeds. The machine is not authored in the editor (Mark, 2026-10-18): the machines table is still seeded in Phase 9 (LIB-09) and the version keeps its existing equipment slot, empty at creation; how a batch is steered with known equipment is the todo `todo-rethink-batch-equipment` on Mark's List. The research's slice order for this phase: a `creating` mode on the shared Sheet with no baseline, then the picker and rows, then Resume. The root version `createRecipe` builds has no steps (`method: []`), while `rowFromLibraryRecord` gives a row's one portion `step: 1`, so until Phase 11 adds steps a creation row's portion names a step that does not exist; discussion settles what the editor shows for such a row, and Phase 11's allocation settles the reference before anything is saved. Removing a row here deletes it outright and prunes nothing, because no step uses a row yet; STRUCT-01's cleanup takes over in Phase 11. The picker reuses Phase 9's search and is measured at 393 and 1366 with the larger library. Import is refused while creation holds ink. Every new button, checkbox and radio renders through `ui/Button.jsx`, `Checkbox.jsx` or `Radio.jsx`, every link carries `tabIndex={0}`, and every visual value reads a token. Device checks run from the production build (`npm --prefix app run build && npm --prefix app run preview -- --host`), never the dev server.

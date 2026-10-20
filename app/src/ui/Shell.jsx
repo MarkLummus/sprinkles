@@ -5,6 +5,10 @@ import { exportStore, importStore } from '../store/transfer.js';
 import { useBelow724, useBelowRail } from './useBelowDesktop.js';
 import { Button } from './Button.jsx';
 import { useCatalog } from './CatalogContext.jsx';
+import { draftMatchesCreate } from '../domain/draft.js';
+import { NEW_RECIPE_PATH } from './notebookPaths.js';
+import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
+import { PageNotice, PageNoticeContext, usePageNotice } from './PageNotice.jsx';
 
 // One source of truth for the App's five destinations (DESIGN.md "App
 // marks", D-09, D-10, D-16): the rail, the bottom tab row, and router.jsx's
@@ -22,6 +26,34 @@ export const PLACES = [
 // decide-import-refreshes-open-recipe-pens = refuse). The one home of the sentence.
 // Wording approved by Mark (2026-10-11): decide-new-lines-import-block-and-too-long.
 export const IMPORT_BLOCKED_STATUS = 'Close the open pen before importing.';
+
+// The page notice for Import while a new recipe draft is kept (Phase 10 D-10,
+// decide-import-refreshes-open-recipe-pens = refuse): an import replaces the
+// library a kept creation's rows link to. The one home of the sentence. Claude's
+// wording within the shape of IMPORT_BLOCKED_STATUS; it names the creation and
+// points at Cancel, which Resume reaches.
+export const CREATION_IMPORT_BLOCKED_STATUS = 'Cancel the new recipe draft before importing.';
+
+// What the address and the route state alone say about a kept creation (D-10a):
+// 'present' on the creation editor's address, and on Cancel's landing when
+// another creation remains (createKept true); 'absent' when none remains
+// (createKept false); 'unknown' when Cancel's own drafts read failed (createKept
+// left out), never absent on `discarded` alone. null: the route says nothing.
+function creationStateFromRoute(pathname, state) {
+  if (pathname === NEW_RECIPE_PATH) return 'present';
+  if (state?.discarded === true) {
+    if (state.createKept === true) return 'present';
+    if (state.createKept === false) return 'absent';
+    return 'unknown';
+  }
+  return null;
+}
+
+// One drafts read for the Shell. Wrapped so a repository stub without
+// listDrafts rejects instead of throwing.
+function readDrafts() {
+  return Promise.resolve().then(() => repository.listDrafts());
+}
 
 // The one line of the recovery page the Shell shows when the catalog could not be
 // reloaded after an import had committed (D-03a): the file did land, so the
@@ -200,7 +232,19 @@ export function Shell() {
 
   const [moreOpen, setMoreOpen] = useState(false);
   const moreSummaryRef = useRef(null);
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname } = location;
+
+  // Whether a create draft is kept, known at the click without awaiting
+  // (D-10a): 'unknown' (no read has settled since boot), 'absent' or 'present'.
+  // Only the newest read counts; a rejected read leaves the state as it was.
+  const creationStateRef = useRef('unknown');
+  const creationReadRef = useRef(0);
+  // The routed page's own notice announcer, when it has registered one; until
+  // then the Shell shows the notice itself.
+  const pageNoticeRef = useRef(null);
+  const [routeOwnsNotice, setRouteOwnsNotice] = useState(false);
+  const [shellNotice, announceShellNotice] = usePageNotice();
 
   const belowRail = useBelowRail();
   const below724 = useBelow724();
@@ -216,6 +260,29 @@ export function Shell() {
     setPlacesOpen(false);
     setImportErrors([]);
   }, [pathname]);
+
+  function readCreationState() {
+    creationReadRef.current += 1;
+    const mine = creationReadRef.current;
+    readDrafts()
+      .then((records) => {
+        if (mine !== creationReadRef.current) return;
+        creationStateRef.current = records.some(draftMatchesCreate) ? 'present' : 'absent';
+      })
+      .catch(() => {});
+  }
+
+  // Start and Cancel reach the Shell through the address and the route state they
+  // land with: that word is written at the route's commit, bumping the counter so
+  // no read started earlier can overwrite it, then a fresh read follows.
+  useEffect(() => {
+    const fromRoute = creationStateFromRoute(pathname, location.state);
+    if (fromRoute) {
+      creationReadRef.current += 1;
+      creationStateRef.current = fromRoute;
+    }
+    readCreationState();
+  }, [pathname, location.state]);
 
   useEffect(() => {
     if (!flyout) setPlacesOpen(false);
@@ -326,12 +393,44 @@ export function Shell() {
     };
   }, []);
 
+  // The routed page's registrar for its own page notice (D-10a), the same
+  // pattern: the release clears the registration only if it still holds that
+  // same function.
+  const registerPageNotice = useCallback((announce) => {
+    pageNoticeRef.current = announce;
+    setRouteOwnsNotice(true);
+    return () => {
+      if (pageNoticeRef.current === announce) {
+        pageNoticeRef.current = null;
+        setRouteOwnsNotice(false);
+      }
+    };
+  }, []);
+
+  function refuseImport(message) {
+    (pageNoticeRef.current ?? announceShellNotice)(message);
+  }
+
   // Both Import buttons open the one hidden file input through here. A pen
   // open on the routed page refuses the click (decide-import-refreshes-open-
-  // recipe-pens = refuse): no chooser, no file read, a notice instead.
+  // recipe-pens = refuse): no chooser, no file read, a notice instead. So does a
+  // kept new recipe draft (D-10): only the state 'absent' opens the chooser. The
+  // route's own word for this render comes before the ref, so it is never a
+  // commit late. 'unknown' says the store sentence and reads again. Nothing here
+  // awaits.
   function chooseImportFile() {
     if (importGuardRef.current) {
       importGuardRef.current(IMPORT_BLOCKED_STATUS);
+      return;
+    }
+    const creationState = creationStateFromRoute(pathname, location.state) ?? creationStateRef.current;
+    if (creationState === 'present') {
+      refuseImport(CREATION_IMPORT_BLOCKED_STATUS);
+      return;
+    }
+    if (creationState === 'unknown') {
+      refuseImport(PAGE_LOAD_ERROR);
+      readCreationState();
       return;
     }
     fileInputRef.current?.click();
@@ -354,6 +453,22 @@ export function Shell() {
       parsed = JSON.parse(await file.text());
     } catch {
       setImportErrors(['$: the file is not valid JSON']);
+      return;
+    }
+
+    // A creation may have started while the file was read (between Start's write
+    // and its arrival at /notebook/new, or in another tab), and an older sight of
+    // none cannot say none exists now: read the drafts again, and refuse when
+    // one is kept or when the read fails.
+    let records;
+    try {
+      records = await readDrafts();
+    } catch {
+      refuseImport(PAGE_LOAD_ERROR);
+      return;
+    }
+    if (creationStateRef.current === 'present' || records.some(draftMatchesCreate)) {
+      refuseImport(CREATION_IMPORT_BLOCKED_STATUS);
       return;
     }
 
@@ -497,9 +612,16 @@ export function Shell() {
               <p className="place__note">{IMPORT_RELOAD_LINE}</p>
             </div>
           ) : (
-            <ImportGuardContext value={guardImport}>
-              <Outlet context={storeRevision} />
-            </ImportGuardContext>
+            <>
+              {/* The Shell's own notice, drawn only while no routed page has
+                  registered one, so each page holds exactly one .page-status. */}
+              {!routeOwnsNotice && <PageNotice message={shellNotice} />}
+              <ImportGuardContext value={guardImport}>
+                <PageNoticeContext value={registerPageNotice}>
+                  <Outlet context={storeRevision} />
+                </PageNoticeContext>
+              </ImportGuardContext>
+            </>
           )}
         </main>
       </div>

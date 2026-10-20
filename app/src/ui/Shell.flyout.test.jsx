@@ -14,7 +14,7 @@ import { act, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route } from 'react-router';
 
-vi.mock('../store/repository.js', () => ({ repository: {} }));
+vi.mock('../store/repository.js', () => ({ repository: { listDrafts: () => Promise.resolve([]) } }));
 // importStore calls through by default; the panel's tests set a result with
 // mockResolvedValueOnce. The fly-out tests never import.
 vi.mock('../store/transfer.js', async (importOriginal) => {

@@ -10,7 +10,14 @@ import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { repository } from '../store/repository.js';
 import { draftMatchesCreate } from '../domain/draft.js';
 import { NOTEBOOK_PLACE_PATH } from './notebookPaths.js';
-import { creationSheetVersion, creationTitle, normalizeCreateDraft } from '../domain/creation.js';
+import {
+  addNote,
+  creationSheetVersion,
+  creationTitle,
+  normalizeCreateDraft,
+  removeNote,
+  updateNote,
+} from '../domain/creation.js';
 
 function doNothing() {}
 
@@ -31,6 +38,11 @@ export function CreationPage({ record, justStarted = false }) {
   // restore lay the payload over the blank one.
   const [createDraft, setCreateDraft] = useState(() => normalizeCreateDraft(record.payload));
   const penOpenedAtRef = useRef(null);
+  // Focus follows an add or a remove (MAKE-08): a handler leaves a request, and
+  // the effect below acts on it after the render that drew its target, so focus
+  // never goes to a control that is not there yet.
+  const pageRef = useRef(null);
+  const focusRequestRef = useRef(null);
   const { draftRestoreDone } = useKeptDraft({
     writer,
     versionId: record.versionId,
@@ -89,6 +101,18 @@ export function CreationPage({ record, justStarted = false }) {
     };
   }, [title]);
 
+  useEffect(() => {
+    const request = focusRequestRef.current;
+    const page = pageRef.current;
+    if (!request || !page) return;
+    focusRequestRef.current = null;
+    const target =
+      request === 'new-note'
+        ? page.querySelector(`textarea[aria-label="beforeYouStart note ${createDraft.beforeYouStart.length}"]`)
+        : page.querySelector('.mk-add');
+    target?.focus();
+  });
+
   // Nothing is drawn until the kept-draft hook's own restore read has settled,
   // so nothing can be typed into a read still out and no keystroke is lost to a
   // page left before it resolves. The read is one IndexedDB get.
@@ -99,6 +123,23 @@ export function CreationPage({ record, justStarted = false }) {
   function setField(field, value) {
     setCreateDraft((prev) => ({ ...prev, [field]: value }));
   }
+
+  // Before you start (MAKE-08). The Sheet's NoteList calls a change as
+  // (listKey, index, text) and a remove as (listKey, index); every change is a
+  // functional update over the previous draft.
+  const handleChangeNote = (_listKey, index, text) => {
+    setCreateDraft((prev) => updateNote(prev, index, text));
+  };
+
+  const handleRemoveNote = (_listKey, index) => {
+    setCreateDraft((prev) => removeNote(prev, index));
+    focusRequestRef.current = 'add-note';
+  };
+
+  const handleAddNote = () => {
+    setCreateDraft((prev) => addNote(prev));
+    focusRequestRef.current = 'new-note';
+  };
 
   // Cancel ends the creation for good, and only once the delete has succeeded
   // (RESEARCH Pitfall 6): the Notebook must not read 'discarded' over a draft
@@ -128,7 +169,7 @@ export function CreationPage({ record, justStarted = false }) {
   return (
     <>
       <PageNotice message={notice} />
-      <div className="notebook mk-page">
+      <div className="notebook mk-page" ref={pageRef}>
         <header className="notebook-band">
           <div className="notebook-band__grid">
             <section className="notebook-recipe" aria-label="Recipe">
@@ -179,7 +220,21 @@ export function CreationPage({ record, justStarted = false }) {
         </header>
         <div className="notebook-body">
           <div className="notebook-body__sheet">
-            <RecipeSheet view={view} version={version} mode="creating" penDraft={null} />
+            <RecipeSheet
+              view={view}
+              version={version}
+              mode="creating"
+              penDraft={null}
+              onChangePenNoteText={handleChangeNote}
+              onRemovePenNote={handleRemoveNote}
+              beforeFoot={
+                <p className="mk-add-row">
+                  <Button className="text-control mk-add" onClick={handleAddNote}>
+                    Add note
+                  </Button>
+                </p>
+              }
+            />
           </div>
           <aside className="notebook-log" aria-label="Setup" />
         </div>

@@ -810,3 +810,101 @@ describe('the page notices (D-10a, MAKE-11)', () => {
     expect(root().textContent).not.toContain('Attacker words');
   });
 });
+
+describe('Before you start while creating (MAKE-08, decision 19, T-01)', () => {
+  const noteField = (n) => field(`beforeYouStart note ${n}`);
+  const noteTexts = () => [...root().querySelectorAll('.authored__notes textarea')].map((area) => area.value);
+  const removeButtons = () => [...root().querySelectorAll('.authored__note-field button')];
+
+  it('draws the heading and Add note alone on arrival, with no list', async () => {
+    await startVanilla();
+    const region = root().querySelector('section.before-region');
+    expect(region.querySelector('h2.region-name').textContent).toBe('Before you start');
+    expect(region.querySelector('.authored__notes')).toBeNull();
+    const add = region.querySelector('p.mk-add-row > button.text-control.mk-add');
+    expect(add.textContent).toBe('Add note');
+    expect(add.getAttribute('tabindex')).toBe('0');
+    expect(root().querySelector('.method-region')).toBeNull();
+  });
+
+  it('Add note puts focus in the new note; two notes keep their order; editing the second changes only the second', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await click(buttonByText('Add note'));
+    expect(noteTexts()).toEqual(['']);
+    expect(document.activeElement).toBe(noteField(1));
+
+    await type(noteField(1), 'Chill the mix overnight before churning.');
+    await click(buttonByText('Add note'));
+    expect(noteTexts()).toEqual(['Chill the mix overnight before churning.', '']);
+    expect(document.activeElement).toBe(noteField(2));
+
+    repository.saveDraft.mockClear();
+    await type(noteField(2), 'Keep the cream cold until it goes in.');
+    expect(noteTexts()).toEqual(['Chill the mix overnight before churning.', 'Keep the cream cold until it goes in.']);
+    await advance();
+    expect(lastSaved().payload.beforeYouStart).toEqual([
+      { text: 'Chill the mix overnight before churning.' },
+      { text: 'Keep the cream cold until it goes in.' },
+    ]);
+    expectNoRecordWrites();
+  });
+
+  it('remove on note 1 deletes it outright, the second note becomes note 1, and focus goes to Add note', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await click(buttonByText('Add note'));
+    await type(noteField(1), 'First.');
+    await click(buttonByText('Add note'));
+    await type(noteField(2), 'Second.');
+
+    expect(removeButtons().map((button) => button.textContent)).toEqual(['remove', 'remove']);
+    await click(removeButtons()[0]);
+    expect(noteTexts()).toEqual(['Second.']);
+    expect(noteField(2)).toBeNull();
+    expect(document.activeElement).toBe(buttonByText('Add note'));
+
+    await advance();
+    expect(lastSaved().payload.beforeYouStart).toEqual([{ text: 'Second.' }]);
+
+    await click(removeButtons()[0]);
+    expect(root().querySelector('.authored__notes')).toBeNull();
+    expect(document.activeElement).toBe(buttonByText('Add note'));
+  });
+
+  it('keeps an empty note in the draft', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await click(buttonByText('Add note'));
+    await advance();
+    expect(lastSaved().payload.beforeYouStart).toEqual([{ text: '' }]);
+  });
+
+  it('closing the tab inside the debounce, then Resume, brings the notes back', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await click(buttonByText('Add note'));
+    await type(noteField(1), 'Chill the mix overnight before churning.');
+    repository.saveDraft.mockClear();
+    await click(buttonByText('Add note'));
+    await type(noteField(2), 'Keep the cream cold until it goes in.');
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    await act(async () => {
+      window.dispatchEvent(new Event('pagehide'));
+    });
+    await flush();
+    await closeAndOpen('/notebook');
+    await click(buttonByText('Resume'));
+    await flush(() => noteField(2) !== null);
+    expect(noteTexts()).toEqual(['Chill the mix overnight before churning.', 'Keep the cream cold until it goes in.']);
+  });
+
+  it('shows a note holding angle brackets as text in its field, never as markup', async () => {
+    await startVanilla();
+    await click(buttonByText('Add note'));
+    await type(noteField(1), '<b>Bold</b>');
+    expect(noteField(1).value).toBe('<b>Bold</b>');
+    expect(root().querySelector('.authored__notes b')).toBeNull();
+    expect(root().querySelector('.before-region b')).toBeNull();
+  });
+});

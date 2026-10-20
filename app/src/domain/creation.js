@@ -75,3 +75,40 @@ export function creationSheetVersion(draft, libraryById = new Map()) {
     targets: {},
   };
 }
+
+function assertNoteIndex(draft, index) {
+  if (!Number.isInteger(index) || index < 0 || index >= draft.beforeYouStart.length) {
+    throw new RangeError(`no Before you start note at index ${index}`);
+  }
+}
+
+/**
+ * addNote(draft) -> a new draft whose Before you start list ends with an empty
+ * note (MAKE-08). An empty note stays in the draft; Save's check is Phase 11's.
+ */
+export function addNote(draft) {
+  return { ...draft, beforeYouStart: [...draft.beforeYouStart, { text: '' }] };
+}
+
+/**
+ * updateNote(draft, index, text) -> a new draft with note `index` reading
+ * `text`; every other note is untouched. An index outside the list is a
+ * caller bug and throws a RangeError.
+ */
+export function updateNote(draft, index, text) {
+  assertNoteIndex(draft, index);
+  return {
+    ...draft,
+    beforeYouStart: draft.beforeYouStart.map((note, at) => (at === index ? { ...note, text } : note)),
+  };
+}
+
+/**
+ * removeNote(draft, index) -> a new draft without note `index`; the others
+ * keep their order. An index outside the list is a caller bug and throws a
+ * RangeError.
+ */
+export function removeNote(draft, index) {
+  assertNoteIndex(draft, index);
+  return { ...draft, beforeYouStart: draft.beforeYouStart.filter((_note, at) => at !== index) };
+}

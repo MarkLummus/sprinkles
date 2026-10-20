@@ -11,6 +11,9 @@ import { RecipeSheet } from './RecipeSheet.jsx';
 import { sheetView } from './sheetView.js';
 import { penDraftFromVersion } from '../domain/penDraft.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { library } from '../data/library.js';
+import { blankCreateDraft } from '../domain/draft.js';
+import { creationSheetVersion } from '../domain/creation.js';
 
 const empty = { id: 'v-empty', recipeId: 'r-empty', rows: [], method: [], authored: { beforeYouStart: [] }, declaredAxes: [] };
 
@@ -124,5 +127,89 @@ describe('RecipeSheet in recording mode with no draft (WR-02)', () => {
     expect(markup).toContain('aria-label="Step 1, skipped"');
     expect(markup).toContain('This version has no ingredient rows.');
     expect(markup).not.toContain('method-step__skipped-label');
+  });
+});
+
+// The creation Sheet (Phase 10, T-01, D-08a): the shared Sheet in mode creating
+// over a version-shaped create draft, no baseline, no stored version.
+describe('RecipeSheet in creating mode (T-01, D-08a)', () => {
+  const records = new Map(Object.entries(library).map(([id, entry]) => [id, { id, entry }]));
+  const draftOf = (extra = {}) => ({ ...blankCreateDraft({ recipeId: 'r1', versionId: 'v1', name: 'Vanilla' }), ...extra });
+  const rowDraft = (grams) =>
+    draftOf({ rows: [{ id: 'row-a', libraryId: 'wholeMilk', portions: [{ step: 1, grams }] }] });
+
+  function renderCreating(draft, beforeFoot = <p className="test-before-foot">add here</p>) {
+    const version = creationSheetVersion(draft, records);
+    const view = sheetView({
+      version,
+      baseline: null,
+      mode: 'creating',
+      penDraft: null,
+      parentVersion: null,
+      showingChanges: false,
+      batches: [],
+      batchId: undefined,
+    });
+    return renderToStaticMarkup(
+      <MemoryRouter>
+        <RecipeSheet view={view} version={version} mode="creating" penDraft={null} beforeFoot={beforeFoot} />
+      </MemoryRouter>,
+    );
+  }
+
+  it('draws the article without a method, and Before you start with its heading and the foot it is given inside the section', () => {
+    const markup = renderCreating(draftOf());
+    expect(markup).toContain('class="recipe-page recipe-page--no-method"');
+    const section = markup.slice(markup.indexOf('<section class="before-region"'), markup.indexOf('</section>', markup.indexOf('<section class="before-region"')));
+    expect(section).toContain('<h2 class="region-name">Before you start</h2>');
+    expect(section).toContain('test-before-foot');
+    expect(section).not.toContain('authored__notes');
+  });
+
+  it('draws no Instructions, step head or Sheet code', () => {
+    const markup = renderCreating(draftOf());
+    expect(markup).not.toContain('method-region');
+    expect(markup).not.toContain('aria-label="Instructions"');
+    expect(markup).not.toContain('Sheet code');
+  });
+
+  it('reads the name as the h1 and draws no headnote prose for an empty or blank description', () => {
+    const markup = renderCreating(draftOf());
+    expect(markup).toContain('<h1>Vanilla</h1>');
+    expect(markup).not.toContain('headnote__prose');
+    expect(renderCreating(draftOf({ description: '   ' }))).not.toContain('headnote__prose');
+  });
+
+  it('draws a written description as prose', () => {
+    expect(renderCreating(draftOf({ description: 'Plain and cold.' }))).toContain('<p class="headnote__prose">Plain and cold.</p>');
+  });
+
+  it('draws no Balance region with no rows, nor with one row at no grams', () => {
+    expect(renderCreating(draftOf())).not.toContain('side-region');
+    expect(renderCreating(rowDraft(''))).not.toContain('side-region');
+  });
+
+  it('draws the Balance region once a row has grams, with every graduated rule off the tab order', () => {
+    const markup = renderCreating(rowDraft('600'));
+    expect(markup).toContain('class="side-region"');
+    const rules = markup.match(/<button[^>]*class="graduated-rule"[^>]*>/g) ?? [];
+    expect(rules.length).toBeGreaterThan(0);
+    for (const rule of rules) expect(rule).toContain('tabindex="-1"');
+  });
+
+  it('shows a note holding angle brackets escaped, in a field and in a reading Sheet', () => {
+    const draft = draftOf({ beforeYouStart: [{ text: '<b>Bold</b>' }] });
+    const creating = renderCreating(draft);
+    expect(creating).toContain('&lt;b&gt;Bold&lt;/b&gt;');
+    expect(creating).not.toContain('<b>Bold</b>');
+    const version = creationSheetVersion(draft, records);
+    const view = sheetView({ version, baseline: null, mode: 'reading', penDraft: null, parentVersion: null, showingChanges: false, batches: [], batchId: undefined });
+    const reading = renderToStaticMarkup(
+      <MemoryRouter>
+        <RecipeSheet view={view} version={version} mode="reading" penDraft={null} />
+      </MemoryRouter>,
+    );
+    expect(reading).toContain('&lt;b&gt;Bold&lt;/b&gt;');
+    expect(reading).not.toContain('<b>Bold</b>');
   });
 });

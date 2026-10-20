@@ -20,12 +20,12 @@ import { Button } from './Button.jsx';
 // instant the note's text differs from the text it was inherited with
 // (route-recipe-version.md, "Inherited notes").
 export function NoteList({ listKey, notes, mode, onChangeNoteText, onRemoveNote }) {
-  const isDeveloping = mode === 'developing';
+  const editable = mode === 'developing' || mode === 'creating';
   return (
     <ul className="authored__notes">
       {notes.map((note, index) => (
         <li key={index}>
-          {isDeveloping ? (
+          {editable ? (
             <span className="authored__note-field">
               <textarea
                 className="prose-field"

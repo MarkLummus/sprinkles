@@ -16,7 +16,7 @@ export function FormulationNote({ version, mode, diff = null, onFocusFigure, onB
   // way (critique P1 #2, D-28): while developing, the pen's own fields are
   // the tab path and the six rules are reachable only by click, exactly as
   // they already are while recording a batch.
-  const tabIndex = mode === 'recording' || mode === 'developing' ? -1 : undefined;
+  const tabIndex = mode === 'recording' || mode === 'developing' || mode === 'creating' ? -1 : undefined;
 
   return (
     <div className="formulation-note">

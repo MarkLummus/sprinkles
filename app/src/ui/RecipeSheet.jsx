@@ -195,41 +195,45 @@ export function RecipeSheet({
 
       {/* Column two, what the sheet does not print: the formulation
           note beside the table, then the margin beneath it. One
-          flow, so the method's height never separates the two. */}
-      <div className="side-region">
-        {/* Balance and Watch for fold apart, each through its own
-            full-row control inside its own h2 (decision 18): this
-            region's own control lives here, since the region itself
-            renders here; Watch for's own control lives inside
-            DerivedAdvisories, reading the same sheetTwoColumns. One
-            branch at every width — the fold wrapper and its hidden
-            attribute always exist; they simply never hide anything from
-            984 up, where both panels are open by default (decision 33,
-            useFold's own default). */}
-        <section className="formulation-note-region" aria-label="Balance">
-          <h2 className="region-name">
-            <FoldRow label="Balance" open={balanceOpen} onToggle={toggleBalance} controls="fold-balance" />
-          </h2>
-          <div id="fold-balance" hidden={!balanceOpen}>
-            <FormulationNote
-              version={liveVersion}
-              mode={mode}
-              diff={mode === 'developing' ? penDiff : changeDiff}
-              onFocusFigure={setFocusedFigureKey}
-              onBlurFigure={() => setFocusedFigureKey(null)}
-              showHeading={false}
-            />
-            <BasisNote version={liveVersion} />
-          </div>
-          <p className="visually-hidden" role="status" aria-live="polite">
-            {markedAnnouncement}
-          </p>
-        </section>
+          flow, so the method's height never separates the two. A
+          creation with no figures draws none of it: a first row at 0 g
+          has no balance, so a bare heading would stand alone (D-08a). */}
+      {(mode !== 'creating' || view.figures.length > 0) && (
+        <div className="side-region">
+          {/* Balance and Watch for fold apart, each through its own
+              full-row control inside its own h2 (decision 18): this
+              region's own control lives here, since the region itself
+              renders here; Watch for's own control lives inside
+              DerivedAdvisories, reading the same sheetTwoColumns. One
+              branch at every width — the fold wrapper and its hidden
+              attribute always exist; they simply never hide anything from
+              984 up, where both panels are open by default (decision 33,
+              useFold's own default). */}
+          <section className="formulation-note-region" aria-label="Balance">
+            <h2 className="region-name">
+              <FoldRow label="Balance" open={balanceOpen} onToggle={toggleBalance} controls="fold-balance" />
+            </h2>
+            <div id="fold-balance" hidden={!balanceOpen}>
+              <FormulationNote
+                version={liveVersion}
+                mode={mode}
+                diff={mode === 'developing' ? penDiff : changeDiff}
+                onFocusFigure={setFocusedFigureKey}
+                onBlurFigure={() => setFocusedFigureKey(null)}
+                showHeading={false}
+              />
+              <BasisNote version={liveVersion} />
+            </div>
+            <p className="visually-hidden" role="status" aria-live="polite">
+              {markedAnnouncement}
+            </p>
+          </section>
 
-        <div className="margin-region">
-          <DerivedAdvisories version={liveVersion} foldsOpen={sheetTwoColumns} />
+          <div className="margin-region">
+            <DerivedAdvisories version={liveVersion} foldsOpen={sheetTwoColumns} />
+          </div>
         </div>
-      </div>
+      )}
 
       {foot}
     </article>

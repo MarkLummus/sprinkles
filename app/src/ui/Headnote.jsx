@@ -71,7 +71,10 @@ export function Headnote({ version, mode, penDraft, onChangePenField, isSaving =
       ) : (
         <>
           <h1>{version.sheetTitle}</h1>
-          <p className="headnote__prose">{version.sheetDescription}</p>
+          {/* The creation board draws no empty paragraph (T-01). */}
+          {!(mode === 'creating' && version.sheetDescription.trim() === '') && (
+            <p className="headnote__prose">{version.sheetDescription}</p>
+          )}
         </>
       )}
     </header>

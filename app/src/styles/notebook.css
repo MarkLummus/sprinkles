@@ -134,6 +134,28 @@
   gap: var(--gap-s);
 }
 
+/* The creation editor's band (Phase 10, sketch 013 creation-editor.html): the
+   recipe fields keep the prose measure, and the log column starts at the top of
+   the body. Both read the page root's mk-page class, so no other place moves. */
+.notebook.mk-page .notebook-recipe__form {
+  max-width: var(--measure-prose);
+}
+
+.notebook.mk-page .notebook-log {
+  padding-top: 0;
+}
+
+/* The add controls (Add note; Add ingredient, plan 10-06 reuses them): the row
+   sits under its list, and the control is a text link that centres its line. */
+.notebook .mk-add-row {
+  margin: var(--gap-xs) 0 0;
+}
+
+.notebook .mk-add {
+  display: inline-flex;
+  align-items: center;
+}
+
 .notebook-recipe__form-actions {
   display: flex;
   gap: var(--gap-s);
@@ -1232,6 +1254,13 @@
     padding: 0 0 var(--app-notebook-frame-pad-b-phone);
   }
 
+  /* The creation band stacks and stretches (sketch 013 writes this at 759.98;
+     the pinned media list carries it at 723.98, RESEARCH Open Question 6). */
+  .notebook.mk-page .notebook-recipe,
+  .notebook.mk-page .notebook-ceremony {
+    align-self: stretch;
+  }
+
   .notebook-band {
     padding: var(--app-notebook-band-pad-t-narrow) var(--gap-m) var(--gap-m);
   }
@@ -1296,6 +1325,10 @@
    sits after every base rule, at the file's foot. It reads app.css's own touch-floor token,
    so the zoom threshold stays one value across the app. */
 @media (pointer: coarse) {
+  .notebook .mk-add {
+    min-height: var(--touch-min);
+  }
+
   .notebook-field .ink-field,
   .notebook-field input,
   .notebook-field textarea {

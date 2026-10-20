@@ -15,6 +15,7 @@ import {
   blockedSaveRowId,
   blockedSaveLineIndex,
   parseGramsDraft,
+  gramsDraftMessage,
   descendantVersions,
 } from './lineage.js';
 import { sortedBatches } from './batch.js';
@@ -746,6 +747,20 @@ describe('blockedSaveMessage', () => {
         const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride(value, false) }) };
         expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toMatch(/'s amount is not a number$/);
       }
+    });
+  });
+
+  describe('gramsDraftMessage', () => {
+    it.each([[''], [undefined]])('names a missing amount for %j', (raw) => {
+      expect(gramsDraftMessage('Sucrose', raw)).toBe('Sucrose needs an amount, or remove it');
+    });
+
+    it.each([['abc'], ['1.234'], [' 5'], ['-5']])("names an unreadable amount for %j", (raw) => {
+      expect(gramsDraftMessage('Sucrose', raw)).toBe("Sucrose's amount is not a number");
+    });
+
+    it.each([['150'], ['1.5'], ['0']])('is null for the readable %j', (raw) => {
+      expect(gramsDraftMessage('Sucrose', raw)).toBeNull();
     });
   });
 });

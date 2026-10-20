@@ -147,6 +147,31 @@ Seven findings, none a scope contradiction. F-01, F-02, F-05, F-06, F-07 were wo
 | While typing | | |
 | Never, Balance only | | |
 
+## Argon review (2026-10-19, after the Codex revisions)
+
+Seven findings (4 HIGH, 2 MEDIUM, 1 LOW), all "which existing test or pin does this break"; folded as T-01 to T-06 and amendments to D-01, D-04a and D-10a. Argon's report: `.review-diagnostics/argon-context-review-2026-10-19.md`. Four needed Mark:
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| Each row its own | Per-row grams message and outline; several at once | ✓ |
+| One at a time, the latest | | |
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| Once any row has grams above 0 | Balance hidden until figures exist | ✓ |
+| Once a row exists, at 0 g | | |
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| Live only when both ends parse | Bad band reads "no target set", no field error; style stored by id | ✓ |
+| Field error on a bad band | | |
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| Trimmed, case-insensitive; entry only; Untitled | | ✓ |
+| Trimmed, case-sensitive; entry only; blank heading | | |
+| Also warn in the editor | | |
+
 ## Claude's Discretion
 
 Plan slicing within the research's order; module homes and names; `RecipeSheet` creating props; the import-refusal wording for a kept creation.

@@ -3,7 +3,15 @@
 // version-shaped view of a draft. Runs in the node environment: the module
 // imports no framework, DOM or store.
 import { describe, it, expect } from 'vitest';
-import { UNTITLED, creationTitle, normalizeCreateDraft, creationSheetVersion } from './creation.js';
+import {
+  UNTITLED,
+  creationTitle,
+  normalizeCreateDraft,
+  creationSheetVersion,
+  addNote,
+  updateNote,
+  removeNote,
+} from './creation.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate } from './draft.js';
 import { rowFromLibraryRecord } from './versionRow.js';
 import { library } from '../data/library.js';
@@ -107,5 +115,51 @@ describe('creationSheetVersion (D-05, D-08)', () => {
     const version = creationSheetVersion(draft, records);
     expect(draft).toEqual(before);
     expect(JSON.stringify(version.rows)).not.toContain('"600"');
+  });
+});
+
+describe('note operations on a create draft (MAKE-08)', () => {
+  const noted = (...texts) => ({ ...blank(), beforeYouStart: texts.map((text) => ({ text })) });
+
+  it('addNote ends the list with an empty note and leaves its argument alone', () => {
+    const draft = noted('Chill the mix.');
+    const before = structuredClone(draft);
+    const next = addNote(draft);
+    expect(next.beforeYouStart).toEqual([{ text: 'Chill the mix.' }, { text: '' }]);
+    expect(next).not.toBe(draft);
+    expect(next.beforeYouStart).not.toBe(draft.beforeYouStart);
+    expect(draft).toEqual(before);
+  });
+
+  it('addNote on a draft with no notes gives one empty note', () => {
+    expect(addNote(blank()).beforeYouStart).toEqual([{ text: '' }]);
+  });
+
+  it('updateNote changes only the named note, in a new array and a new draft', () => {
+    const draft = noted('One.', 'Two.');
+    const next = updateNote(draft, 1, 'Keep the cream cold until it goes in.');
+    expect(next.beforeYouStart).toEqual([{ text: 'One.' }, { text: 'Keep the cream cold until it goes in.' }]);
+    expect(next).not.toBe(draft);
+    expect(next.beforeYouStart).not.toBe(draft.beforeYouStart);
+    expect(draft.beforeYouStart[1].text).toBe('Two.');
+  });
+
+  it('removeNote drops the named note and keeps the others in order', () => {
+    const draft = noted('One.', 'Two.', 'Three.');
+    expect(removeNote(draft, 0).beforeYouStart).toEqual([{ text: 'Two.' }, { text: 'Three.' }]);
+    expect(removeNote(draft, 1).beforeYouStart).toEqual([{ text: 'One.' }, { text: 'Three.' }]);
+    expect(draft.beforeYouStart).toHaveLength(3);
+  });
+
+  it('keeps an empty note as an empty note', () => {
+    const draft = noted('One.', '');
+    expect(updateNote(draft, 0, '').beforeYouStart).toEqual([{ text: '' }, { text: '' }]);
+    expect(removeNote(draft, 0).beforeYouStart).toEqual([{ text: '' }]);
+  });
+
+  it.each([-1, 2, 1.5, Number.NaN])('updateNote and removeNote throw a RangeError for index %s', (index) => {
+    const draft = noted('One.', 'Two.');
+    expect(() => updateNote(draft, index, 'x')).toThrow(RangeError);
+    expect(() => removeNote(draft, index)).toThrow(RangeError);
   });
 });

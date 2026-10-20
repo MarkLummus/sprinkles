@@ -33,6 +33,7 @@ export function RecipeSheet({
   versionSaveAction = null,
   batchSaveAction = null,
   foot = null,
+  beforeFoot = null,
   onChangePenField,
   onChangePenNoteText,
   onRemovePenNote,
@@ -85,7 +86,7 @@ export function RecipeSheet({
   // answers 1, 3 and 5, 2026-10-04).
   const methodSteps = mode === 'developing' || showingChanges ? version.method : readingVersion.method;
   const beforeNotes = mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart;
-  const beforeRegionShown = mode === 'developing' || beforeNotes.length > 0;
+  const beforeRegionShown = mode === 'developing' || mode === 'creating' || beforeNotes.length > 0;
   const methodRegionShown = showsMethodRegion({ mode, steps: methodSteps });
   // An explicit grid row with no item keeps its gutters, so each absent section
   // drops its row through a modifier (app.css).
@@ -119,6 +120,7 @@ export function RecipeSheet({
               onRemoveNote={onRemovePenNote}
             />
           )}
+          {beforeFoot}
         </section>
       )}
 

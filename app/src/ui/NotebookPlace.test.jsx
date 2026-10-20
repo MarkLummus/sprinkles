@@ -20,6 +20,7 @@ import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { notebookPath } from './notebookPaths.js';
 import { activeWork } from '../domain/lastEvent.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
+import { blankCreateDraft, buildDraftRecord } from '../domain/draft.js';
 
 const recipes = seedRecipeGroups.map((group) => group.recipe);
 const versions = seedRecipeGroups.flatMap((group) => group.versions);
@@ -242,6 +243,7 @@ describe('NotebookPlace reading the store', () => {
     repository.getAll = vi.fn().mockRejectedValue(new Error('read failed'));
     repository.getAllBatches = vi.fn().mockResolvedValue([]);
     repository.listRecipes = vi.fn().mockResolvedValue([]);
+    repository.listDrafts = vi.fn().mockResolvedValue([]);
     const container = await mount();
     expect(container.querySelector('h1.place__title').textContent).toBe('Notebook');
     expect(container.querySelector('p.place__note').textContent).toBe(PAGE_LOAD_ERROR);
@@ -251,8 +253,98 @@ describe('NotebookPlace reading the store', () => {
     repository.getAll = vi.fn().mockResolvedValue(versions);
     repository.getAllBatches = vi.fn().mockResolvedValue(batches);
     repository.listRecipes = vi.fn().mockResolvedValue(recipes);
+    repository.listDrafts = vi.fn().mockResolvedValue([]);
     const container = await mount();
     expect(container.querySelector('p.nb__count').textContent).toBe('8 recipes');
     expect(container.querySelectorAll('li.nb__row')).toHaveLength(8);
+  });
+
+  // A kept creation shows on every visit: the place itself reads the drafts at
+  // load (MAKE-11), with no Start pressed.
+  function stubStore({ withRecipes = true, drafts }) {
+    repository.getAll = vi.fn().mockResolvedValue(withRecipes ? versions : []);
+    repository.getAllBatches = vi.fn().mockResolvedValue(withRecipes ? batches : []);
+    repository.listRecipes = vi.fn().mockResolvedValue(withRecipes ? recipes : []);
+    repository.listDrafts = vi.fn().mockResolvedValue(drafts);
+  }
+  const keptRecord = (name, versionId = 'v-new') =>
+    buildDraftRecord({
+      versionId,
+      kind: 'create',
+      payload: blankCreateDraft({ recipeId: 'r-new', versionId, name }),
+      now: '2026-10-20T08:00:00.000Z',
+    });
+  const buttonTexts = (container) => [...container.querySelectorAll('button')].map((button) => button.textContent);
+
+  it('draws a kept creation as the draft row with Resume before the count, and offers no New recipe', async () => {
+    stubStore({ drafts: [keptRecord('Vanilla')] });
+    const container = await mount();
+    const row = container.querySelector('ul.nb__drafts > li.nb__draft');
+    expect(row.textContent).toContain('Vanilla');
+    expect(buttonTexts(row)).toEqual(['Resume']);
+    const count = container.querySelector('p.nb__count');
+    expect(row.compareDocumentPosition(count) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(count.textContent).toBe('8 recipes');
+    expect(buttonTexts(container)).not.toContain('New recipe');
+  });
+
+  it('renders a stored draft named with angle brackets as text', async () => {
+    stubStore({ drafts: [keptRecord('<b>Vanilla</b>')] });
+    const container = await mount();
+    expect(container.querySelector('li.nb__draft .nb__name').textContent).toBe('<b>Vanilla</b>');
+    expect(container.querySelector('li.nb__draft b')).toBeNull();
+  });
+
+  it('draws the head, the draft row and No recipes yet. when no recipe is stored', async () => {
+    stubStore({ withRecipes: false, drafts: [keptRecord('Vanilla')] });
+    const container = await mount();
+    expect(container.querySelector('div.nb__head h1').textContent).toBe('Notebook');
+    expect(container.querySelectorAll('li.nb__draft')).toHaveLength(1);
+    expect(container.querySelector('p.place__note').textContent).toBe('No recipes yet.');
+  });
+
+  // D-10a: exactly one page notice, before the page's own root, in every branch.
+  function expectOneNoticeBeforeRoot(container) {
+    const notices = container.querySelectorAll('.page-status');
+    expect(notices).toHaveLength(1);
+    const anchor = notices[0].parentElement;
+    expect(anchor.className).toBe('page-status-anchor');
+    expect(anchor.nextElementSibling.className).toBe('list-page place nb');
+  }
+
+  it('renders one page notice before the root in the failed, loading, list and empty branches', async () => {
+    stubStore({ drafts: [] });
+    repository.getAll = vi.fn().mockRejectedValue(new Error('read failed'));
+    expectOneNoticeBeforeRoot(await mount());
+    await act(async () => mounted.root.unmount());
+    mounted.container.remove();
+    mounted = null;
+
+    stubStore({ drafts: [] });
+    repository.getAll = vi.fn(() => new Promise(() => {}));
+    expectOneNoticeBeforeRoot(await mount());
+    await act(async () => mounted.root.unmount());
+    mounted.container.remove();
+    mounted = null;
+
+    stubStore({ drafts: [] });
+    expectOneNoticeBeforeRoot(await mount());
+    await act(async () => mounted.root.unmount());
+    mounted.container.remove();
+    mounted = null;
+
+    stubStore({ withRecipes: false, drafts: [] });
+    expectOneNoticeBeforeRoot(await mount());
+  });
+
+  it('shows no draft row and offers New recipe when the only draft is not a creation', async () => {
+    stubStore({
+      drafts: [
+        buildDraftRecord({ versionId: 'v-plan', kind: 'plan', payload: {}, now: '2026-10-20T08:00:00.000Z' }),
+      ],
+    });
+    const container = await mount();
+    expect(container.querySelector('li.nb__draft')).toBeNull();
+    expect(buttonTexts(container)).toContain('New recipe');
   });
 });

@@ -437,6 +437,81 @@ button.shell__place {
   display: none;
 }
 
+/* The Notebook's New recipe entry and the kept draft (Phase 10, sketch 013
+   notebook-new-recipe.html, panels nA1 to nE1). Ported from the board's own
+   rules with .place in place of its panel wrapper; every value is a token. */
+.place .nb__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  flex-wrap: wrap;
+  row-gap: var(--gap-s);
+}
+
+.place .nb__head .place__title {
+  margin: 0;
+}
+
+.place .nb__new {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+  max-width: var(--measure-prose);
+  margin: var(--gap-m) 0;
+}
+
+.place .nb__new .notebook-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.place .nb__new-actions {
+  display: flex;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+}
+
+.place .nb__draft {
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  grid-template-areas: 'rail name act' 'rail meta act';
+  column-gap: var(--gap-m);
+  align-items: center;
+  padding: var(--gap-m) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+
+.place .nb__draft .nb__rail {
+  grid-area: rail;
+}
+
+.place .nb__draft .nb__name {
+  grid-area: name;
+}
+
+.place .nb__draft .nb__meta {
+  grid-area: meta;
+  flex-direction: row;
+}
+
+.place .nb__draft-act {
+  grid-area: act;
+}
+
+/* The board draws the list's reset inline on the element; the build puts it here. */
+.place .nb__drafts {
+  list-style: none;
+  padding: 0;
+  margin: var(--gap-m) 0 0;
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+}
+
+.place .nb__drafts .nb__draft:first-child {
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+
 /* The Ingredients place (PLACE-01, sketch 012 ingredients-place.html): the two
    filters, the count line, and one row per library entry; an open entry shows
    its figures with basis and source. Read-only: no control here writes. */
@@ -696,6 +771,16 @@ button.shell__place {
 
   .place .nb__dot {
     display: inline;
+  }
+
+  .place .nb__draft {
+    grid-template-columns: auto minmax(0,1fr);
+    grid-template-areas: 'rail name' 'rail meta' 'rail act';
+  }
+
+  .place .nb__draft-act {
+    justify-self: start;
+    margin-top: var(--gap-xs);
   }
 
   .place .ing__field {

@@ -53,8 +53,8 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 
 ### Custom scales and problems
 
-- [ ] **TASTE-01**: A maker can define 0 to 2 scales for a recipe, each with a name, a label for each end, and its kind: goldilocks, with the fixed middle word "right", or plain magnitude.
-- [ ] **TASTE-02**: A maker can define 0 to 2 problems for a recipe.
+- [x] **TASTE-01**: A maker can define 0 to 2 scales for a recipe, each with a name, a label for each end, and its kind: goldilocks, with the fixed middle word "right", or plain magnitude.
+- [x] **TASTE-02**: A maker can define 0 to 2 problems for a recipe.
 - [x] **TASTE-03**: A batch snapshots the recipe's definitions, a scale's kind included, so a later change never moves a stored mark.
 - [ ] **TASTE-04**: The record pen, the reading and the printed log show a recipe's own scales, each in its kind, and its problems, and "This recipe only" shows only when it has any.
 
@@ -122,8 +122,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRUCT-02 | Phase 11 | Pending |
 | STRUCT-03 | Phase 11 | Pending |
 | STRUCT-04 | Phase 11 | Pending |
-| TASTE-01 | Phase 10 | Pending |
-| TASTE-02 | Phase 10 | Pending |
+| TASTE-01 | Phase 10 | Complete |
+| TASTE-02 | Phase 10 | Complete |
 | TASTE-03 | Phase 9 | Complete |
 | TASTE-04 | Phase 12 | Pending |
 | PROOF-01 | Phase 12 | Pending |

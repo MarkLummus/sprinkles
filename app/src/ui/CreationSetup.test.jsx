@@ -79,11 +79,10 @@ function choose(value) {
 }
 
 describe('CreationSetup (MAKE-09)', () => {
-  it('opens with one region, Style, and no field for equipment or process', () => {
+  it('opens with exactly the regions Style, Scales and Problems, and no field for equipment or process', () => {
     mount();
     const regions = current.container.querySelectorAll('section');
-    expect(regions).toHaveLength(1);
-    expect(regions[0].getAttribute('aria-label')).toBe('Style');
+    expect([...regions].map((region) => region.getAttribute('aria-label'))).toEqual(['Style', 'Scales', 'Problems']);
     expect(regions[0].querySelector('h2.region-name').textContent).toBe('Style');
     expect(current.container.textContent).not.toMatch(/machine|equipment|pasteuri|hold time|process/i);
   });
@@ -178,5 +177,222 @@ describe('CreationSetup (MAKE-09)', () => {
     const both = second(first(start()));
     expect(both.targets.fat).toEqual(['', '16']);
     expect(both.targets.msnf).toEqual(['9', '']);
+  });
+});
+
+describe('CreationSetup, the Scales and Problems regions (TASTE-01, TASTE-02, decision 12, T-04)', () => {
+  const region = (name) => q(`section[aria-label="${name}"]`);
+  const inRegion = (name, label, at = 0) => region(name).querySelectorAll(`[aria-label="${label}"]`)[at];
+  const cards = (name) => [...region(name).querySelectorAll('.mk-card')];
+  const cues = (name) => [...region(name).querySelectorAll('.mk-cue')].map((node) => node.textContent);
+  const addControl = (name) => region(name).querySelector('.mk-add');
+  const required = (name) => region(name).querySelectorAll('.field-requirement');
+  const cardButton = (card) => card.querySelector('.mk-card__head button');
+  const radios = (card) => [...card.querySelectorAll('input[type="radio"]')];
+
+  function press(element) {
+    act(() => {
+      element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    });
+  }
+
+  function pickKind(card, word) {
+    press(radios(card).find((radio) => radio.value === word));
+  }
+
+  function fillScale(card, name, low, high) {
+    type(card.querySelector('[aria-label="Name"]'), name);
+    type(card.querySelector('[aria-label="Low end"]'), low);
+    type(card.querySelector('[aria-label="High end"]'), high);
+  }
+
+  it('reads the core scales and the core problems from the catalog', () => {
+    mount();
+    expect(cues('Scales')).toEqual(['Every recipe']);
+    expect(cues('Problems')).toEqual(['Every recipe']);
+    expect(region('Scales').querySelector('.mk-core').textContent).toBe('Hardness, Scoopability, Smoothness, Sweetness');
+    expect(region('Problems').querySelector('.mk-core').textContent).toBe(
+      'Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film',
+    );
+    expect(cards('Scales')).toHaveLength(0);
+    expect(cards('Problems')).toHaveLength(0);
+    expect(addControl('Scales').textContent).toBe('Add scale');
+    expect(addControl('Problems').textContent).toBe('Add problem');
+  });
+
+  it('a just-added scale has blank words, three Required lines, no kind picked and no stops line', () => {
+    mount();
+    press(addControl('Scales'));
+    expect(cues('Scales')).toEqual(['Every recipe', 'This recipe only']);
+    expect(cues('Problems')).toEqual(['Every recipe']);
+    const [card] = cards('Scales');
+    expect(card.querySelector('.mk-card__head .notebook-caption').textContent).toBe('Scale 1');
+    expect(required('Scales')).toHaveLength(3);
+    expect([...required('Scales')].map((node) => node.textContent)).toEqual(['Required', 'Required', 'Required']);
+    expect(radios(card)).toHaveLength(2);
+    expect(radios(card).filter((radio) => radio.checked)).toHaveLength(0);
+    expect(card.querySelector('.mk-stops')).toBeNull();
+    expect(card.querySelector('.segmented-field__clear')).toBeNull();
+    expect(held.scales).toHaveLength(1);
+    expect(held.scales[0].kind).toBe('');
+    expect(held.scales[0].key.startsWith('scale-')).toBe(true);
+  });
+
+  it('Required leaves a field once it holds words and returns for whitespace', () => {
+    mount();
+    press(addControl('Scales'));
+    const [card] = cards('Scales');
+    type(card.querySelector('[aria-label="Name"]'), 'Creaminess');
+    expect(required('Scales')).toHaveLength(2);
+    type(card.querySelector('[aria-label="Name"]'), '   ');
+    expect(required('Scales')).toHaveLength(3);
+  });
+
+  it('picking Right in the middle stores goldilocks and Low to high stores magnitude, and nothing offers Clear', () => {
+    mount();
+    press(addControl('Scales'));
+    const [card] = cards('Scales');
+    pickKind(card, 'Right in the middle');
+    expect(held.scales[0].kind).toBe('goldilocks');
+    expect(radios(card).find((radio) => radio.value === 'Right in the middle').checked).toBe(true);
+    pickKind(card, 'Low to high');
+    expect(held.scales[0].kind).toBe('magnitude');
+    expect(card.querySelector('.segmented-field__clear')).toBeNull();
+  });
+
+  it('the stops line shows only once both ends and the kind are set', () => {
+    mount();
+    press(addControl('Scales'));
+    const [card] = cards('Scales');
+    type(card.querySelector('[aria-label="Low end"]'), 'thin');
+    pickKind(card, 'Right in the middle');
+    expect(card.querySelector('.mk-stops')).toBeNull();
+    type(card.querySelector('[aria-label="High end"]'), 'rich');
+    expect(card.querySelector('.mk-stops').textContent).toBe('thin · leaning thin · right · leaning rich · rich');
+    pickKind(card, 'Low to high');
+    expect(card.querySelector('.mk-stops').textContent).toBe('thin to rich');
+  });
+
+  it('a second scale takes Add scale away, its radios carry a different name from the first, and its pick leaves the first alone', () => {
+    mount();
+    press(addControl('Scales'));
+    press(addControl('Scales'));
+    expect(addControl('Scales')).toBeNull();
+    const [one, two] = cards('Scales');
+    const nameOf = (card) => new Set(radios(card).map((radio) => radio.name));
+    expect(nameOf(one).size).toBe(1);
+    expect(nameOf(two).size).toBe(1);
+    expect([...nameOf(one)][0]).not.toBe([...nameOf(two)][0]);
+    pickKind(one, 'Right in the middle');
+    pickKind(two, 'Low to high');
+    expect(radios(one).filter((radio) => radio.checked).map((radio) => radio.value)).toEqual(['Right in the middle']);
+    expect(radios(two).filter((radio) => radio.checked).map((radio) => radio.value)).toEqual(['Low to high']);
+    expect(held.scales.map((scale) => scale.kind)).toEqual(['goldilocks', 'magnitude']);
+    expect(held.scales[0].key).not.toBe(held.scales[1].key);
+  });
+
+  it('each card is a group named by its place', () => {
+    mount();
+    press(addControl('Scales'));
+    press(addControl('Scales'));
+    press(addControl('Problems'));
+    press(addControl('Problems'));
+    const named = (name) => cards(name).map((card) => [card.getAttribute('role'), card.getAttribute('aria-label')]);
+    expect(named('Scales')).toEqual([['group', 'Scale 1'], ['group', 'Scale 2']]);
+    expect(named('Problems')).toEqual([['group', 'Problem 1'], ['group', 'Problem 2']]);
+  });
+
+  it('removing Scale 1 renames the other Scale 1 with its key unchanged, and focus goes to the Add scale that remove brought back', () => {
+    mount();
+    press(addControl('Scales'));
+    press(addControl('Scales'));
+    const [one, two] = cards('Scales');
+    fillScale(one, 'Creaminess', 'thin', 'rich');
+    fillScale(two, 'Cinnamon', 'faint', 'strong');
+    const secondKey = held.scales[1].key;
+    expect(addControl('Scales')).toBeNull();
+    press(cardButton(cards('Scales')[0]));
+    const [left] = cards('Scales');
+    expect(cards('Scales')).toHaveLength(1);
+    expect(left.getAttribute('aria-label')).toBe('Scale 1');
+    expect(left.querySelector('.mk-card__head .notebook-caption').textContent).toBe('Scale 1');
+    expect(left.querySelector('[aria-label="Name"]').value).toBe('Cinnamon');
+    expect(held.scales.map((scale) => scale.key)).toEqual([secondKey]);
+    expect(addControl('Scales')).not.toBeNull();
+    expect(document.activeElement).toBe(addControl('Scales'));
+  });
+
+  it('Add problem with a scale already on the page focuses the new problem Name, not a scale', () => {
+    mount();
+    press(addControl('Scales'));
+    press(addControl('Problems'));
+    expect(document.activeElement).toBe(inRegion('Problems', 'Name'));
+    expect(region('Problems').contains(document.activeElement)).toBe(true);
+    press(addControl('Scales'));
+    expect(document.activeElement).toBe(inRegion('Scales', 'Name', 1));
+  });
+
+  it('a just-added problem is empty with Required, and Add problem goes at two', () => {
+    mount();
+    press(addControl('Problems'));
+    expect(cues('Problems')).toEqual(['Every recipe', 'This recipe only']);
+    const [card] = cards('Problems');
+    expect(card.querySelector('.mk-card__head .notebook-caption').textContent).toBe('Problem 1');
+    expect(card.querySelector('[aria-label="Name"]').value).toBe('');
+    expect(required('Problems')).toHaveLength(1);
+    type(card.querySelector('[aria-label="Name"]'), 'Bitter');
+    expect(required('Problems')).toHaveLength(0);
+    expect(held.problems).toEqual(['Bitter']);
+    press(addControl('Problems'));
+    expect(addControl('Problems')).toBeNull();
+    expect(cards('Problems')).toHaveLength(2);
+    expect(required('Problems')).toHaveLength(1);
+  });
+
+  it('removing a problem at two deletes it outright and focuses the Add problem that remove brought back', () => {
+    mount();
+    press(addControl('Problems'));
+    press(addControl('Problems'));
+    type(inRegion('Problems', 'Name', 0), 'Bitter');
+    type(inRegion('Problems', 'Name', 1), 'Greasy');
+    press(cardButton(cards('Problems')[0]));
+    expect(held.problems).toEqual(['Greasy']);
+    expect(cards('Problems')).toHaveLength(1);
+    expect(cards('Problems')[0].getAttribute('aria-label')).toBe('Problem 1');
+    expect(addControl('Problems')).not.toBeNull();
+    expect(document.activeElement).toBe(addControl('Problems'));
+    press(cardButton(cards('Problems')[0]));
+    expect(held.problems).toEqual([]);
+    expect(cues('Problems')).toEqual(['Every recipe']);
+    expect(document.activeElement).toBe(addControl('Problems'));
+  });
+
+  it('words holding markup render as text in the fields and in the stops line', () => {
+    mount();
+    press(addControl('Scales'));
+    press(addControl('Problems'));
+    const [card] = cards('Scales');
+    fillScale(card, '<b>Body</b>', '<i>thin', 'rich</i>');
+    pickKind(card, 'Low to high');
+    type(inRegion('Problems', 'Name'), '<b>Bitter</b>');
+    expect(card.querySelector('[aria-label="Name"]').value).toBe('<b>Body</b>');
+    expect(card.querySelector('.mk-stops').textContent).toBe('<i>thin to rich</i>');
+    expect(current.container.querySelector('aside b, section b, i')).toBeNull();
+    expect(held.problems).toEqual(['<b>Bitter</b>']);
+  });
+
+  it('two scales may share a name and two problems the same words, with distinct scale keys', () => {
+    mount();
+    press(addControl('Scales'));
+    press(addControl('Scales'));
+    press(addControl('Problems'));
+    press(addControl('Problems'));
+    type(inRegion('Scales', 'Name', 0), 'Body');
+    type(inRegion('Scales', 'Name', 1), 'Body');
+    type(inRegion('Problems', 'Name', 0), 'Icy');
+    type(inRegion('Problems', 'Name', 1), 'Icy');
+    expect(held.scales.map((scale) => scale.name)).toEqual(['Body', 'Body']);
+    expect(held.problems).toEqual(['Icy', 'Icy']);
+    expect(new Set(held.scales.map((scale) => scale.key)).size).toBe(2);
   });
 });

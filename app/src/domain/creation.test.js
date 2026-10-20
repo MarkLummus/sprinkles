@@ -18,6 +18,13 @@ import {
   applyStyle,
   clearStyle,
   setBandEnd,
+  addScale,
+  updateScale,
+  removeScale,
+  scaleStopsLine,
+  addProblem,
+  updateProblem,
+  removeProblem,
 } from './creation.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate } from './draft.js';
 import { rowFromLibraryRecord } from './versionRow.js';
@@ -321,5 +328,121 @@ describe('applyStyle, clearStyle and setBandEnd (MAKE-09, decisions 6, 9, 14, 17
   it('creationSheetVersion carries creationTargets(draft)', () => {
     const draft = { ...blank(), targets: { pod: ['14', '18'], fat: ['9', '1'] } };
     expect(creationSheetVersion(draft).targets).toEqual({ pod: [14, 18] });
+  });
+});
+
+describe("the recipe's own scales (TASTE-01, decision 12, T-04)", () => {
+  const asRecord = (payload) => buildDraftRecord({ versionId: 'v1', kind: 'create', payload, now: '2026-10-20T08:00:00.000Z' });
+
+  it('addScale appends an empty declared scale that still fits a create record', () => {
+    const next = addScale(blank(), 'scale-a');
+    expect(next.scales).toEqual([{ key: 'scale-a', name: '', low: '', high: '', kind: '', group: 'declared' }]);
+    expect(draftMatchesCreate(asRecord(next))).toBe(true);
+  });
+
+  it('addScale refuses a third scale, a repeated key and an empty key', () => {
+    const two = addScale(addScale(blank(), 'scale-a'), 'scale-b');
+    expect(() => addScale(two, 'scale-c')).toThrow(RangeError);
+    expect(() => addScale(addScale(blank(), 'scale-a'), 'scale-a')).toThrow(RangeError);
+    expect(() => addScale(blank(), '')).toThrow(TypeError);
+    expect(() => addScale(blank(), 7)).toThrow(TypeError);
+  });
+
+  it('updateScale sets a word or the kind and never moves the key', () => {
+    const base = addScale(blank(), 'scale-a');
+    expect(updateScale(base, 'scale-a', 'name', 'Creaminess').scales[0].name).toBe('Creaminess');
+    expect(updateScale(base, 'scale-a', 'low', ' thin ').scales[0].low).toBe(' thin ');
+    const typed = updateScale(base, 'scale-a', 'kind', 'magnitude');
+    expect(typed.scales[0].kind).toBe('magnitude');
+    expect(typed.scales[0].key).toBe('scale-a');
+    expect(updateScale(typed, 'scale-a', 'kind', '').scales[0].kind).toBe('');
+  });
+
+  it('updateScale throws a RangeError for a kind outside the two, a field outside the four or an unknown key', () => {
+    const base = addScale(blank(), 'scale-a');
+    expect(() => updateScale(base, 'scale-a', 'kind', 'both')).toThrow(RangeError);
+    expect(() => updateScale(base, 'scale-a', 'key', 'scale-z')).toThrow(RangeError);
+    expect(() => updateScale(base, 'scale-a', 'group', 'core')).toThrow(RangeError);
+    expect(() => updateScale(base, 'scale-z', 'name', 'x')).toThrow(RangeError);
+  });
+
+  it('removeScale drops one scale and the other keeps its key', () => {
+    const two = addScale(addScale(blank(), 'scale-a'), 'scale-b');
+    expect(removeScale(two, 'scale-a').scales.map((scale) => scale.key)).toEqual(['scale-b']);
+    expect(() => removeScale(two, 'scale-z')).toThrow(RangeError);
+  });
+
+  it('two scales may share a name; nothing refuses it before Save', () => {
+    const two = addScale(addScale(blank(), 'scale-a'), 'scale-b');
+    const same = updateScale(updateScale(two, 'scale-a', 'name', 'Body'), 'scale-b', 'name', 'Body');
+    expect(same.scales.map((scale) => scale.name)).toEqual(['Body', 'Body']);
+  });
+
+  it('does not change the draft it is given', () => {
+    const base = addScale(blank(), 'scale-a');
+    const before = structuredClone(base);
+    updateScale(base, 'scale-a', 'name', 'x');
+    removeScale(base, 'scale-a');
+    addScale(base, 'scale-b');
+    expect(base).toEqual(before);
+  });
+
+  it('scaleStopsLine joins five stops for a middle scale and two ends for a low-to-high one', () => {
+    expect(scaleStopsLine({ low: 'thin', high: 'rich', kind: 'goldilocks' })).toBe(
+      'thin · leaning thin · right · leaning rich · rich',
+    );
+    expect(scaleStopsLine({ low: 'faint', high: 'strong', kind: 'magnitude' })).toBe('faint to strong');
+  });
+
+  it('scaleStopsLine is null until both ends (trimmed) and the kind are set, and uses the words as typed', () => {
+    expect(scaleStopsLine({ low: 'thin', high: '  ', kind: 'goldilocks' })).toBeNull();
+    expect(scaleStopsLine({ low: '', high: 'rich', kind: 'goldilocks' })).toBeNull();
+    expect(scaleStopsLine({ low: 'thin', high: 'rich', kind: '' })).toBeNull();
+    expect(scaleStopsLine({ low: '<b>x', high: 'y', kind: 'magnitude' })).toBe('<b>x to y');
+  });
+});
+
+describe("the recipe's own problems (TASTE-02)", () => {
+  const asRecord = (payload) => buildDraftRecord({ versionId: 'v1', kind: 'create', payload, now: '2026-10-20T08:00:00.000Z' });
+
+  it('addProblem appends an empty problem that still fits a create record', () => {
+    const next = addProblem(blank());
+    expect(next.problems).toEqual(['']);
+    expect(draftMatchesCreate(asRecord(next))).toBe(true);
+  });
+
+  it('addProblem refuses a third problem with a RangeError', () => {
+    expect(() => addProblem(addProblem(addProblem(blank())))).toThrow(RangeError);
+  });
+
+  it('updateProblem and removeProblem change only that entry', () => {
+    const two = updateProblem(addProblem(addProblem(blank())), 1, 'Greasy');
+    expect(two.problems).toEqual(['', 'Greasy']);
+    expect(updateProblem(two, 0, 'Bitter').problems).toEqual(['Bitter', 'Greasy']);
+    expect(removeProblem(two, 0).problems).toEqual(['Greasy']);
+    expect(removeProblem(two, 1).problems).toEqual(['']);
+  });
+
+  it('an index out of range throws a RangeError', () => {
+    const one = addProblem(blank());
+    expect(() => updateProblem(one, 1, 'x')).toThrow(RangeError);
+    expect(() => updateProblem(one, -1, 'x')).toThrow(RangeError);
+    expect(() => updateProblem(one, 0.5, 'x')).toThrow(RangeError);
+    expect(() => removeProblem(one, 1)).toThrow(RangeError);
+    expect(() => removeProblem(blank(), 0)).toThrow(RangeError);
+  });
+
+  it('two problems may hold the same words; nothing refuses it before Save', () => {
+    const same = updateProblem(updateProblem(addProblem(addProblem(blank())), 0, 'Bitter'), 1, 'Bitter');
+    expect(same.problems).toEqual(['Bitter', 'Bitter']);
+  });
+
+  it('does not change the draft it is given', () => {
+    const base = addProblem(blank());
+    const before = structuredClone(base);
+    updateProblem(base, 0, 'x');
+    removeProblem(base, 0);
+    addProblem(base);
+    expect(base).toEqual(before);
   });
 });

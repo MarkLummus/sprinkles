@@ -134,3 +134,40 @@ describe('Segmented — the caption line with its Clear (007 lines 220, 228, 289
     expect(clearMatch.index).toBeLessThan(radiogroupIndex);
   });
 });
+
+describe('Segmented — an optional radio name and an optional Clear (Phase 10 plan 09, T-04)', () => {
+  it('uses the given name for every radio and the caption id, and the label-derived one otherwise', () => {
+    const named = renderToStaticMarkup(
+      <Segmented groupLabel="Kind" name="kind-scale-a" options={['A', 'B']} value="" onChange={noop} />,
+    );
+    const names = [...named.matchAll(/<input[^>]*name="([^"]+)"/g)].map((match) => match[1]);
+    expect(names).toEqual(['kind-scale-a', 'kind-scale-a']);
+    expect(named).toContain('id="kind-scale-a-caption"');
+    expect(named).toContain('aria-label="Kind"');
+    const derived = renderToStaticMarkup(<Segmented groupLabel="Kind" options={['A', 'B']} value="" onChange={noop} />);
+    expect(derived).toContain('name="segment-kind"');
+    expect(derived).toContain('id="segment-kind-caption"');
+  });
+
+  it('two groups with the same label and different names never share a radio group', () => {
+    const one = renderToStaticMarkup(<Segmented groupLabel="Kind" name="kind-1" options={['A', 'B']} value="" onChange={noop} />);
+    const two = renderToStaticMarkup(<Segmented groupLabel="Kind" name="kind-2" options={['A', 'B']} value="" onChange={noop} />);
+    expect(one).not.toContain('kind-2');
+    expect(two).not.toContain('kind-1');
+  });
+
+  it('draws no Clear when clearable is false, even with an option picked', () => {
+    const markup = renderToStaticMarkup(
+      <Segmented groupLabel="Kind" options={['A', 'B']} value="A" clearable={false} onChange={noop} />,
+    );
+    expect(markup).not.toContain('segmented-field__clear');
+    expect(markup).not.toContain('<button');
+  });
+
+  it('still draws Clear once picked when clearable is left out', () => {
+    const markup = renderToStaticMarkup(
+      <Segmented groupLabel="Kind" options={['A', 'B']} value="A" onChange={noop} onClear={noop} />,
+    );
+    expect(markup).toContain('segmented-field__clear');
+  });
+});

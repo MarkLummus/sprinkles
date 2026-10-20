@@ -4,6 +4,8 @@
 // shared Sheet reads. The draft is never changed here: every function returns
 // new values and copies what it takes from its arguments.
 
+import { stopWordsFor } from './axes.js';
+import { MAX_RECIPE_PROBLEMS, MAX_RECIPE_SCALES, SCALE_KINDS } from './catalog.js';
 import { blankCreateDraft } from './draft.js';
 import { FIGURE_SPECS } from './figures.js';
 import { parseGramsDraft } from './lineage.js';
@@ -233,4 +235,97 @@ export function setBandEnd(draft, bandKey, endIndex, raw) {
   if (ends[0] === '' && ends[1] === '') delete targets[bandKey];
   else targets[bandKey] = ends;
   return { ...draft, targets };
+}
+
+const SCALE_FIELDS = ['name', 'low', 'high', 'kind'];
+
+function assertScaleKey(draft, key) {
+  if (!draft.scales.some((scale) => scale.key === key)) throw new RangeError(`no scale ${String(key)} on the draft`);
+}
+
+/**
+ * addScale(draft, key) -> a new draft whose scales end with an empty declared
+ * scale of that key (TASTE-01, decision 12): blank words and no kind, nothing
+ * pre-picked. The caller mints the key (mintScaleKey(freshId()) in the click
+ * handler, D-03b). An empty key is a TypeError; a third scale, or a key
+ * already on the draft, is a RangeError. Two scales may share a name: refusing
+ * that is Phase 11's Save.
+ */
+export function addScale(draft, key) {
+  if (typeof key !== 'string' || key === '') throw new TypeError('scale key must be a non-empty string');
+  if (draft.scales.length >= MAX_RECIPE_SCALES) throw new RangeError(`a recipe holds at most ${MAX_RECIPE_SCALES} scales`);
+  if (draft.scales.some((scale) => scale.key === key)) throw new RangeError(`scale ${key} is already on the draft`);
+  return { ...draft, scales: [...draft.scales, { key, name: '', low: '', high: '', kind: '', group: 'declared' }] };
+}
+
+/**
+ * updateScale(draft, key, field, value) -> a new draft with that scale's
+ * name, low, high or kind set as given; the key never changes. A field
+ * outside those four, a kind outside '' and SCALE_KINDS, or an unknown key is
+ * a caller bug and throws a RangeError.
+ */
+export function updateScale(draft, key, field, value) {
+  assertScaleKey(draft, key);
+  if (!SCALE_FIELDS.includes(field)) throw new RangeError(`a scale has no field ${String(field)} to change`);
+  if (field === 'kind' && value !== '' && !SCALE_KINDS.includes(value)) throw new RangeError(`no scale kind ${String(value)}`);
+  return { ...draft, scales: draft.scales.map((scale) => (scale.key === key ? { ...scale, [field]: value } : scale)) };
+}
+
+/**
+ * removeScale(draft, key) -> a new draft without that scale; the other keeps
+ * its key and its place. An unknown key throws a RangeError.
+ */
+export function removeScale(draft, key) {
+  assertScaleKey(draft, key);
+  return { ...draft, scales: draft.scales.filter((scale) => scale.key !== key) };
+}
+
+/**
+ * scaleStopsLine(scale) -> the line under a scale's Kind: the five stop words
+ * joined by ' · ' for a goldilocks scale, 'low to high' for a magnitude one,
+ * the typed words verbatim. null until both ends (trimmed) and the kind are
+ * set.
+ */
+export function scaleStopsLine(scale) {
+  if (scale.low.trim() === '' || scale.high.trim() === '') return null;
+  if (scale.kind === 'goldilocks') return stopWordsFor(scale).join(' · ');
+  if (scale.kind === 'magnitude') return `${scale.low} to ${scale.high}`;
+  return null;
+}
+
+function assertProblemIndex(draft, index) {
+  if (!Number.isInteger(index) || index < 0 || index >= draft.problems.length) {
+    throw new RangeError(`no problem at index ${index}`);
+  }
+}
+
+/**
+ * addProblem(draft) -> a new draft whose problems end with an empty one
+ * (TASTE-02). A third problem is a caller bug and throws a RangeError. Two
+ * problems may hold the same words: refusing that is Phase 11's Save.
+ */
+export function addProblem(draft) {
+  if (draft.problems.length >= MAX_RECIPE_PROBLEMS) {
+    throw new RangeError(`a recipe holds at most ${MAX_RECIPE_PROBLEMS} problems`);
+  }
+  return { ...draft, problems: [...draft.problems, ''] };
+}
+
+/**
+ * updateProblem(draft, index, text) -> a new draft with problem `index`
+ * reading `text` as typed; the other is untouched. An index outside the list
+ * throws a RangeError.
+ */
+export function updateProblem(draft, index, text) {
+  assertProblemIndex(draft, index);
+  return { ...draft, problems: draft.problems.map((problem, at) => (at === index ? text : problem)) };
+}
+
+/**
+ * removeProblem(draft, index) -> a new draft without problem `index`. An index
+ * outside the list throws a RangeError.
+ */
+export function removeProblem(draft, index) {
+  assertProblemIndex(draft, index);
+  return { ...draft, problems: draft.problems.filter((_problem, at) => at !== index) };
 }

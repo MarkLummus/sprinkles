@@ -25,8 +25,12 @@ import { Radio } from './Radio.jsx';
 // re-fire for a click that leaves its value unchanged, so onClick is the
 // one path that always fires. No option is ever pre-picked: `value` is
 // expected to be '' (or any string matching no option) for a fresh field.
-export function Segmented({ groupLabel, options, value, onChange, onClear }) {
-  const groupName = `segment-${groupLabel.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`;
+// Two optional props change nothing for a caller that omits them: `name` is the
+// radio group's name and the caption id's stem (two groups with one label, as
+// the creation editor's scale cards both read Kind, must not share a DOM radio
+// group), and `clearable` false draws no Clear.
+export function Segmented({ groupLabel, options, value, onChange, onClear, name, clearable = true }) {
+  const groupName = name ?? `segment-${groupLabel.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`;
   const captionId = `${groupName}-caption`;
   const picked = options.includes(value);
   const firstOptionRef = useRef(null);
@@ -42,7 +46,7 @@ export function Segmented({ groupLabel, options, value, onChange, onClear }) {
         <span className="segmented-field__caption pen-caption" id={captionId}>
           {groupLabel}
         </span>
-        {picked && (
+        {picked && clearable && (
           <Button
             className="text-control segmented-field__clear"
             aria-label={`Clear ${groupLabel}`}

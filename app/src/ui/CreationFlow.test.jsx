@@ -1185,7 +1185,8 @@ describe('the Style region fills the bands and the temperature (MAKE-09, decisio
 
   it('opens with No style, an empty temperature, twelve blank band fields and no Clear', async () => {
     await startVanilla();
-    expect(root().querySelectorAll('aside.notebook-log .mk-region')).toHaveLength(1);
+    expect(root().querySelectorAll('aside.notebook-log .mk-region')).toHaveLength(3);
+    expect([...root().querySelectorAll('aside.notebook-log .mk-region')].map((node) => node.getAttribute('aria-label'))).toEqual(['Style', 'Scales', 'Problems']);
     expect(menu().value).toBe('');
     expect(menu().options[menu().selectedIndex].textContent).toBe('No style');
     expect(temperature().value).toBe('');
@@ -1278,7 +1279,7 @@ describe('the Style region fills the bands and the temperature (MAKE-09, decisio
     await startVanilla();
     const text = root().querySelector('aside.notebook-log').textContent;
     expect(text).not.toMatch(/machine|equipment|pasteur|hold/i);
-    expect(root().querySelectorAll('aside.notebook-log .mk-region')).toHaveLength(1);
+    expect(root().querySelectorAll('aside.notebook-log .mk-region')).toHaveLength(3);
   });
 
   it('two band edits in one React batch both land', async () => {
@@ -1317,5 +1318,67 @@ describe('the Style region fills the bands and the temperature (MAKE-09, decisio
     await advance();
     expect(lastSaved().payload.style).toBeNull();
     expect(lastSaved().payload.serveTempC).toBe('-16');
+  });
+});
+
+describe('the recipe\'s own scales (TASTE-01, decision 12, T-04)', () => {
+  const scalesRegion = () => root().querySelector('section[aria-label="Scales"]');
+  const inScales = (label) => scalesRegion().querySelector(`[aria-label="${label}"]`);
+  const addScaleButton = () => scalesRegion().querySelector('.mk-add');
+  const kindRadio = (word) =>
+    [...scalesRegion().querySelectorAll('.segmented__option')].find((option) => option.textContent === word).querySelector('input');
+  const cueTexts = () => [...scalesRegion().querySelectorAll('.mk-cue')].map((node) => node.textContent);
+
+  it('opens with Every recipe over the four core scales and only Add scale', async () => {
+    await startVanilla();
+    expect(cueTexts()).toEqual(['Every recipe']);
+    expect(scalesRegion().querySelector('.mk-core').textContent).toBe('Hardness, Scoopability, Smoothness, Sweetness');
+    expect(scalesRegion().querySelector('.mk-card')).toBeNull();
+    expect(addScaleButton().textContent).toBe('Add scale');
+  });
+
+  it('Add scale draws This recipe only and Scale 1 with focus in its Name; typed words and a kind show the stops line', async () => {
+    await startVanilla();
+    await click(addScaleButton());
+    expect(cueTexts()).toEqual(['Every recipe', 'This recipe only']);
+    expect(scalesRegion().querySelector('.mk-card__head .notebook-caption').textContent).toBe('Scale 1');
+    expect(document.activeElement).toBe(inScales('Name'));
+    expect(scalesRegion().querySelector('.mk-stops')).toBeNull();
+    await type(inScales('Name'), 'Creaminess');
+    await type(inScales('Low end'), 'thin');
+    await type(inScales('High end'), 'rich');
+    expect(scalesRegion().querySelector('.mk-stops')).toBeNull();
+    await click(kindRadio('Right in the middle'));
+    expect(scalesRegion().querySelector('.mk-stops').textContent).toBe('thin · leaning thin · right · leaning rich · rich');
+    expect(kindRadio('Right in the middle').checked).toBe(true);
+  });
+
+  it('keeps the scale in the saved draft, and closing the tab and Resume bring it back with the same key', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await click(addScaleButton());
+    await type(inScales('Name'), 'Creaminess');
+    await type(inScales('Low end'), 'thin');
+    await type(inScales('High end'), 'rich');
+    await click(kindRadio('Right in the middle'));
+    await advance();
+    const [saved] = lastSaved().payload.scales;
+    expect(saved).toEqual({ key: saved.key, name: 'Creaminess', low: 'thin', high: 'rich', kind: 'goldilocks', group: 'declared' });
+    expect(saved.key.startsWith('scale-')).toBe(true);
+    expectNoRecordWrites();
+
+    await act(async () => current.root.unmount());
+    current.container.remove();
+    current = null;
+    await mountAt('/notebook');
+    await click(buttonByText('Resume'));
+    await flush(() => field('Recipe name') !== null);
+    expect(inScales('Name').value).toBe('Creaminess');
+    expect(inScales('Low end').value).toBe('thin');
+    expect(kindRadio('Right in the middle').checked).toBe(true);
+    await advance();
+    await click(addScaleButton());
+    await advance();
+    expect(lastSaved().payload.scales[0].key).toBe(saved.key);
   });
 });

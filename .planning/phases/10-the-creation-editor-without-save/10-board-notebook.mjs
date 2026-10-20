@@ -72,7 +72,7 @@ const kept = [
 export default {
   board: BOARD,
   panels: [
-    panel('nA1', 1366, { elements: titleRow }),
+    panel('nA1', 1366, { extraWidths: [744, 768, 1024], elements: titleRow }),
     panel('nA2', 393, { elements: titleRow }),
     panel('nB1', 1366, { steps: openEntry, elements: entry, absent: ['.nb__head .notebook-action'] }),
     panel('nB2', 393, { steps: openEntry, elements: entry, absent: ['.nb__head .notebook-action'] }),

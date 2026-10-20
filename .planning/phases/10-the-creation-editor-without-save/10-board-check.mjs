@@ -13,7 +13,7 @@
 // and a panel is
 //   { id, label?, width, route, library: 'current' | 'original', draft?, ready?, visitLinks?,
 //     steps?, anchor?, scope?, against?: { board, id }, refuses?, elements: [{ selector, checks }],
-//     absent?, frame?: { from, to }, overflow?, pageHeight? }
+//     absent?, frame?: { from, to }, overflow?, pageHeight?, extraWidths? }
 // checks is a list drawn from: count, box, size, font, color, border, outline, text, value, focus.
 //
 // Two kinds of panel. The engine reads the kind from the board: a full-page panel's root holds
@@ -39,6 +39,10 @@
 // the app than on the board names a frame { from, to }: the band from the `from` element's top
 // edge to the `to` element's bottom edge, across the scope's width, is compared on both sides
 // within 1 px in every run, and the evidence pair pictures that band.
+//
+// extraWidths (plan 10-10) is a list of widths the boards do not draw: for each, the panel's app state
+// is loaded at that width (coarse pointer, height 1024) and the only check is that the document does
+// not scroll sideways (documentElement.scrollWidth not above innerWidth), one PASS or FAIL per width.
 //
 // Self-test stand-ins: a panel with `against: { board, id }` takes that board's panel root as its
 // app side, so it needs no build and no route. A panel with `refuses` is a negative check: its
@@ -328,9 +332,9 @@ async function openBoard(boardPath) {
   return boardPages.get(file);
 }
 
-async function newAppContext(width) {
+async function newAppContext(width, height = width <= 760 ? 852 : 1024) {
   const context = await browser.newContext({
-    viewport: { width, height: width <= 760 ? 852 : 1024 },
+    viewport: { width, height },
     hasTouch: true,
   });
   // Nothing leaves the machine: abort every request to another host.
@@ -344,7 +348,7 @@ async function newAppContext(width) {
 // written, and only then does the page go to the panel's route, so /notebook/new finds its
 // draft and the creation route does not redirect.
 async function arrive(panel, rep) {
-  const context = await newAppContext(panel.width);
+  const context = await newAppContext(panel.width, panel.height);
   const page = await context.newPage();
   await page.goto(`${servers.appUrl}/`, { waitUntil: 'networkidle' });
   await page.waitForSelector('.shell');
@@ -430,6 +434,23 @@ async function arrive(panel, rep) {
   if (panel.steps) await panel.steps(page);
   await page.evaluate(() => window.scrollTo(0, 0));
   return { page, context };
+}
+
+// The panel's app state at each width the boards do not draw: only sideways overflow is checked.
+async function checkExtraWidths(panel, rep) {
+  for (const width of panel.extraWidths ?? []) {
+    const arrived = await arrive({ ...panel, width, height: 1024 }, rep);
+    if (!arrived) continue;
+    try {
+      const { scroll, inner } = await arrived.page.evaluate(() => ({
+        scroll: document.documentElement.scrollWidth,
+        inner: window.innerWidth,
+      }));
+      rep.check(scroll <= inner, `overflow at ${width}`, scroll <= inner ? '' : `scrollWidth ${scroll} is above innerWidth ${inner}`, 'box');
+    } finally {
+      await arrived.context.close();
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -524,6 +545,7 @@ async function processPanel(spec, panel) {
     const read = async () => [await boardPage.evaluate(GATHER, cfg('panel', panel.id)), await other.page.evaluate(GATHER, cfg(other.mode, other.panelId))];
     const [b, a] = await read();
     const ok = compareData(rep, panel, kind, b, a);
+    if (!panel.against) await checkExtraWidths(panel, rep);
 
     if (ok && EVIDENCE_DIR && !panel.refuses && !(panel.frame && (b.frameError || a.frameError || kind === 'full'))) {
       await pictures(spec, panel, label, kind, boardPage, other, b, a, rep);

@@ -92,9 +92,52 @@ describe('NotebookList over the seed', () => {
     expect(page.textContent).toContain('not yet made');
   });
 
-  it('offers nothing to start: no button, no New recipe, no Resume', () => {
-    expect(page.querySelector('button')).toBeNull();
-    expect(page.textContent).not.toMatch(/New recipe|Resume/);
+  it('offers New recipe at the end of the title row and no Resume while nothing is kept', () => {
+    const head = page.querySelector('div.nb__head');
+    expect([...head.children].map((child) => child.tagName)).toEqual(['H1', 'BUTTON']);
+    expect(head.querySelector('h1.place__title').textContent).toBe('Notebook');
+    expect(head.querySelector('button').textContent).toBe('New recipe');
+    expect(page.querySelectorAll('button')).toHaveLength(1);
+    expect(page.textContent).not.toContain('Resume');
+    expect(page.querySelector('form')).toBeNull();
+  });
+});
+
+describe('NotebookList with a kept creation (sketch 013 nE1, nD2)', () => {
+  const kept = (name) => ({ versionId: 'v-new', kind: 'create', payload: { recipeId: 'r-new', versionId: 'v-new', name } });
+
+  it('draws the draft row above the count, not counted, with Resume and no New recipe', () => {
+    const page = render({ versions, batches, recipes, draft: kept('Vanilla') });
+    const list = page.querySelector('ul');
+    expect(list.className).toBe('nb__drafts');
+    const rows = list.querySelectorAll('li.nb__draft');
+    expect(rows).toHaveLength(1);
+    expect(rows[0].textContent).toContain('Vanilla');
+    expect(rows[0].querySelector('span.nb__rail').getAttribute('aria-hidden')).toBe('true');
+    expect(rows[0].querySelector('p.nb__meta > span').textContent).toBe('draft');
+    expect([...rows[0].querySelectorAll('button')].map((button) => button.textContent)).toEqual(['Resume']);
+    const count = page.querySelector('p.nb__count');
+    expect(list.compareDocumentPosition(count) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(count.textContent).toBe('8 recipes');
+    expect([...page.querySelectorAll('button')].map((button) => button.textContent)).not.toContain('New recipe');
+  });
+
+  it('draws the head, the draft row and No recipes yet. for a store with no recipes', () => {
+    const page = render({ versions: [], batches: [], recipes: [], draft: kept('Vanilla') });
+    expect(page.querySelector('div.nb__head h1').textContent).toBe('Notebook');
+    expect(page.querySelectorAll('ul.nb__drafts > li.nb__draft')).toHaveLength(1);
+    expect(page.querySelector('p.place__note').textContent).toBe('No recipes yet.');
+    expect(page.querySelector('.nb__count')).toBeNull();
+  });
+
+  it('renders a draft name holding angle brackets as text', () => {
+    const markup = renderToStaticMarkup(
+      <MemoryRouter>
+        <NotebookList versions={[]} draft={kept('<b>Bold</b>')} />
+      </MemoryRouter>,
+    );
+    expect(markup).toContain('&lt;b&gt;Bold&lt;/b&gt;');
+    expect(markup).not.toContain('<b>');
   });
 });
 

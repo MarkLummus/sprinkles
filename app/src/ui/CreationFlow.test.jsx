@@ -9,7 +9,7 @@
 import { StrictMode, act } from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { createRoot } from 'react-dom/client';
-import { MemoryRouter, Outlet, Route, Routes, useLocation } from 'react-router';
+import { MemoryRouter, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router';
 
 const store = vi.hoisted(() => ({ drafts: new Map() }));
 
@@ -69,10 +69,12 @@ const WRITE_SPIES = [
 
 let current = null;
 let location = null;
+let navigateTo = null;
 let originalMatchMedia = null;
 
 function Probe() {
   location = useLocation();
+  navigateTo = useNavigate();
   return null;
 }
 
@@ -294,5 +296,229 @@ describe('/notebook/new with nothing kept', () => {
     expect(root().querySelector('h1.place__title').textContent).toBe('Notebook');
     expect(repository.saveDraft).not.toHaveBeenCalled();
     expectNoRecordWrites();
+  });
+});
+
+async function advance(ms = 250) {
+  await act(async () => {
+    vi.advanceTimersByTime(ms);
+  });
+  await flush();
+}
+
+function deferred() {
+  const handle = {};
+  handle.promise = new Promise((resolve, reject) => {
+    handle.resolve = resolve;
+    handle.reject = reject;
+  });
+  return handle;
+}
+
+const heading = () => root().querySelector('.headnote h1');
+const lastSaved = () => repository.saveDraft.mock.calls.at(-1)[0];
+
+describe('the Sheet reads the creation (MAKE-05, D-08c)', () => {
+  it('shows the recipe name as the Sheet heading and the one description as its prose', async () => {
+    await startVanilla();
+    expect(heading().textContent).toBe('Vanilla');
+    await type(field('Recipe description'), 'Plain and cold.');
+    expect(root().querySelector('.headnote__prose').textContent).toBe('Plain and cold.');
+  });
+
+  it('reads Untitled in the heading and the tab title while the name is blank', async () => {
+    await startVanilla();
+    expect(document.title).toBe('Vanilla · Sprinkles');
+    await type(field('Recipe name'), '');
+    expect(heading().textContent).toBe('Untitled');
+    expect(document.title).toBe('Untitled · Sprinkles');
+  });
+
+  it('renders a name holding angle brackets as text, never markup', async () => {
+    await mountAt('/notebook');
+    await click(buttonByText('New recipe'));
+    await type(field('Name'), '<b>Bold</b>');
+    await click(buttonByText('Start'));
+    await flush(() => field('Recipe name') !== null);
+    expect(heading().textContent).toBe('<b>Bold</b>');
+    expect(heading().querySelector('b')).toBeNull();
+    expect(field('Recipe name').value).toBe('<b>Bold</b>');
+  });
+
+  it('keeps the name exactly as typed after Start, spaces included', async () => {
+    await startVanilla();
+    await type(field('Recipe name'), '  Vanilla  ');
+    expect(field('Recipe name').value).toBe('  Vanilla  ');
+    expect(heading().textContent).toBe('  Vanilla  ');
+  });
+});
+
+describe('a creation stays kept until Cancel (D-04a, D-09, D-09a)', () => {
+  it('writes the cleared name over the stored draft 250 ms after the change, and never deletes it', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    repository.saveDraft.mockClear();
+    await type(field('Recipe name'), '');
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    await advance();
+
+    expect(repository.saveDraft).toHaveBeenCalledTimes(1);
+    expect(lastSaved().payload.name).toBe('');
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+    expect(store.drafts.size).toBe(1);
+  });
+
+  it('keeps an emptied Version name in the draft with Required under the field', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await type(field('Version name'), '');
+    expect(root().querySelector('.field-requirement').textContent).toBe('Required');
+    await advance();
+    expect(lastSaved().payload.versionLabel).toBe('');
+  });
+
+  it('writes the waiting edit when the maker leaves by a link or Back', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    repository.saveDraft.mockClear();
+    await type(field('Recipe description'), 'Plain');
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    await act(async () => {
+      navigateTo('/notebook');
+    });
+    await flush();
+
+    expect(repository.saveDraft).toHaveBeenCalledTimes(1);
+    expect(lastSaved().payload.description).toBe('Plain');
+    expect(store.drafts.get(lastSaved().versionId).payload.description).toBe('Plain');
+  });
+
+  it('registers no page-unload warning, asks nothing and offers no Undo', async () => {
+    const added = vi.spyOn(window, 'addEventListener');
+    const confirmSpy = vi.fn(() => true);
+    vi.stubGlobal('confirm', confirmSpy);
+    try {
+      await startVanilla();
+      await click(buttonByText('Cancel'));
+      await flush(() => location.pathname === '/notebook');
+      expect(added.mock.calls.map(([name]) => name)).not.toContain('beforeunload');
+      expect(confirmSpy).not.toHaveBeenCalled();
+      expect(root().querySelector('[role="dialog"], dialog')).toBeNull();
+      expect(root().textContent).not.toContain('Undo');
+    } finally {
+      added.mockRestore();
+      vi.unstubAllGlobals();
+    }
+  });
+});
+
+describe('Cancel waits for the delete (Pitfall 6, D-03)', () => {
+  it('does not navigate before the delete resolves, then lands on the Notebook with { discarded: true }', async () => {
+    await startVanilla();
+    const gate = deferred();
+    repository.deleteDraft.mockImplementationOnce(async (versionId) => {
+      await gate.promise;
+      store.drafts.delete(versionId);
+    });
+    await click(buttonByText('Cancel'));
+    expect(location.pathname).toBe('/notebook/new');
+
+    await act(async () => {
+      gate.resolve();
+    });
+    await flush(() => location.pathname === '/notebook');
+    expect(location.pathname).toBe('/notebook');
+    expect(location.state).toEqual({ discarded: true });
+    expect(store.drafts.size).toBe(0);
+  });
+
+  it('stays on /notebook/new with the draft still kept and no discarded state when the delete fails', async () => {
+    await startVanilla();
+    repository.deleteDraft.mockRejectedValueOnce(new Error('store gone'));
+    await click(buttonByText('Cancel'));
+    await flush();
+
+    expect(location.pathname).toBe('/notebook/new');
+    expect(location.state).toEqual({ started: true });
+    expect(store.drafts.size).toBe(1);
+    expect(field('Recipe name').value).toBe('Vanilla');
+  });
+
+  it('failed Cancel, edit, debounce, leave, Resume: the edit is kept', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    repository.deleteDraft.mockRejectedValueOnce(new Error('store gone'));
+    await click(buttonByText('Cancel'));
+    await flush();
+    expect(location.pathname).toBe('/notebook/new');
+
+    await type(field('Recipe description'), ' Still kept.');
+    await advance();
+    expect(lastSaved().payload.description).toBe(' Still kept.');
+
+    await act(async () => {
+      navigateTo('/notebook');
+    });
+    await flush(() => buttonByText('Resume') !== null || location.pathname === '/notebook');
+    await act(async () => {
+      navigateTo('/notebook/new');
+    });
+    await flush(() => field('Recipe description') !== null);
+    expect(field('Recipe description').value).toBe(' Still kept.');
+  });
+
+  it('writes the ink waiting at Cancel at once when the delete fails', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    repository.saveDraft.mockClear();
+    await type(field('Recipe name'), 'Lemon');
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    repository.deleteDraft.mockRejectedValueOnce(new Error('store gone'));
+    await click(buttonByText('Cancel'));
+    await flush();
+
+    expect(location.pathname).toBe('/notebook/new');
+    expect([...store.drafts.values()][0].payload.name).toBe('Lemon');
+  });
+});
+
+describe('what the editor opens over (T-10-09)', () => {
+  it('opens a stored draft holding only recipeId, versionId and name, every other field blank', async () => {
+    store.drafts.set(
+      'v-min',
+      buildDraftRecord({
+        versionId: 'v-min',
+        kind: 'create',
+        payload: { recipeId: 'r-min', versionId: 'v-min', name: 'Minimal' },
+        now: '2026-10-20T08:00:00.000Z',
+      }),
+    );
+    await mountAt('/notebook/new');
+    await flush(() => field('Recipe name') !== null);
+
+    expect(location.pathname).toBe('/notebook/new');
+    expect(field('Recipe name').value).toBe('Minimal');
+    expect(field('Version name').value).toBe('Version 1');
+    expect(field('Recipe description').value).toBe('');
+    expect(heading().textContent).toBe('Minimal');
+  });
+
+  it('draws no field until the draft restore read has settled, then draws it', async () => {
+    store.drafts.set('v-slow', createDraftRecord('Slow', { recipeId: 'r-slow', versionId: 'v-slow' }));
+    const gate = deferred();
+    repository.getDraft.mockImplementationOnce(async (versionId) => {
+      await gate.promise;
+      return structuredClone(store.drafts.get(versionId));
+    });
+    await mountAt('/notebook/new');
+    await flush();
+    expect(repository.getDraft).toHaveBeenCalledTimes(1);
+    expect(field('Recipe name')).toBeNull();
+
+    await act(async () => {
+      gate.resolve();
+    });
+    await flush(() => field('Recipe name') !== null);
+    expect(field('Recipe name').value).toBe('Slow');
   });
 });

@@ -3,6 +3,7 @@ import { Link, useNavigate, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
 import { activeWork } from '../domain/lastEvent.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate, newestDraft } from '../domain/draft.js';
+import { creationTitle } from '../domain/creation.js';
 import { freshId } from '../domain/id.js';
 import { notebookPath, NEW_RECIPE_PATH } from './notebookPaths.js';
 import { batchCountWords, recipeCountWords, versionCountWords } from './countWords.js';
@@ -164,15 +165,15 @@ function NotebookHead({ draft, onStart }) {
 }
 
 // The kept creation's row (sketch 013 panels nE1 and nD2): the rail, the name
-// as text, 'draft' and Resume. It is not a recipe, so the count never counts
-// it. The name is a React text child: stored text never reaches the page as
-// markup.
+// as text ('Untitled' while blank, D-08c), 'draft' and Resume. It is not a
+// recipe, so the count never counts it. The name is a React text child: stored
+// text never reaches the page as markup.
 function NotebookDraftRow({ draft, onResume }) {
   return (
     <ul className="nb__drafts">
       <li className="nb__draft">
         <span className="nb__rail" aria-hidden="true" />
-        <h2 className="nb__name">{draft.payload.name}</h2>
+        <h2 className="nb__name">{creationTitle(draft.payload.name)}</h2>
         <p className="nb__meta">
           <span>draft</span>
         </p>

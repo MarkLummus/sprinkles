@@ -356,7 +356,7 @@ function CreateHarness({ initial }) {
     onPageStatus,
     navigate,
   });
-  createControls = { setCreateDraft };
+  createControls = { setCreateDraft, discardDraft: writer.discardDraft };
   createRenders.push({ createDraft, draftRestoreDone });
   return null;
 }
@@ -441,6 +441,16 @@ describe('a create draft is kept through the same hook with no version (D-18)', 
     expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
     expect(repo.deleteDraft).toHaveBeenCalledWith('v-new');
     expect(createRenders[createRenders.length - 1].draftRestoreDone).toBe(true);
+
+    // A mounted creation is always kept (D-04a): once the restore has settled
+    // the harness's own payload is written 250 ms later. Production never
+    // mounts an unfit draft; CreationRoute filters with draftMatchesCreate.
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+    });
+    await flush();
+    expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+    expect(repo.saveDraft.mock.calls[0][0].payload).toEqual(blankCreate());
   });
 
   it('writes a create record 250 ms after the last change, and no version, recipe or batch', async () => {
@@ -491,7 +501,7 @@ describe('a create draft is kept through the same hook with no version (D-18)', 
     expect(repo.saveDraft.mock.calls[0][0].payload.name).toBe('Lemon');
   });
 
-  it('deletes the stored record when the draft is set back to blank', async () => {
+  it('overwrites the stored record with the cleared payload when a creation is set back to blank, and never deletes it', async () => {
     repo.getDraft.mockResolvedValue(createRecordOf({ recipeId: 'r-new', versionId: 'v-new', name: 'Lemon' }));
     await mountCreate(blankCreate());
     expect(onRestoreCreate).toHaveBeenCalledTimes(1);
@@ -500,11 +510,14 @@ describe('a create draft is kept through the same hook with no version (D-18)', 
     await act(async () => {
       createControls.setCreateDraft(blankCreate(''));
     });
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+    });
     await flush();
 
-    expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
-    expect(repo.deleteDraft).toHaveBeenCalledWith('v-new');
-    expect(repo.saveDraft).not.toHaveBeenCalled();
+    expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+    expect(repo.saveDraft.mock.calls[0][0].payload).toEqual(blankCreate(''));
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
   });
 
   describe('a read that resolves after the maker has typed (late read, T-09-45)', () => {
@@ -561,7 +574,7 @@ describe('a create draft is kept through the same hook with no version (D-18)', 
       expect(onPageStatus).toHaveBeenCalledWith(DRAFT_KEPT_STATUS);
     });
 
-    it('typed, then cleared back to blank: nothing restored, nothing written, the stored record deleted once', async () => {
+    it('typed, then cleared back to blank: nothing restored, the cleared payload written over the stored record, no delete', async () => {
       await mountWithDeferredRead();
       await act(async () => {
         createControls.setCreateDraft(blankCreate('Typed'));
@@ -570,20 +583,230 @@ describe('a create draft is kept through the same hook with no version (D-18)', 
         createControls.setCreateDraft(blankCreate(''));
       });
       await resolveStored();
+      await act(async () => {
+        vi.advanceTimersByTime(250);
+      });
+      await flush();
 
       expect(onRestoreCreate).not.toHaveBeenCalled();
-      expect(repo.saveDraft).not.toHaveBeenCalled();
-      expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
-      expect(repo.deleteDraft).toHaveBeenCalledWith('v-new');
+      expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+      const saved = repo.saveDraft.mock.calls[0][0];
+      expect(saved.payload).toEqual(blankCreate(''));
+      expect(repo.deleteDraft).not.toHaveBeenCalled();
 
-      // The next visit finds a store without the record and restores nothing.
+      // The next visit finds the cleared draft in the store and restores it.
       await unmountCurrent();
       repo.getDraft.mockReset();
-      repo.getDraft.mockResolvedValue(null);
+      repo.getDraft.mockResolvedValue(structuredClone(saved));
       onRestoreCreate.mockClear();
       await mountCreate(blankCreate());
       expect(repo.getDraft).toHaveBeenCalledTimes(1);
+      expect(onRestoreCreate).toHaveBeenCalledTimes(1);
+      expect(onRestoreCreate).toHaveBeenCalledWith(blankCreate(''));
+    });
+  });
+
+  describe('a final discard (Cancel on a creation)', () => {
+    async function advance(ms = 250) {
+      await act(async () => {
+        vi.advanceTimersByTime(ms);
+      });
+      await flush();
+    }
+
+    function deferredDelete() {
+      const handle = {};
+      repo.deleteDraft.mockImplementation(
+        () =>
+          new Promise((resolve, reject) => {
+            handle.resolve = resolve;
+            handle.reject = reject;
+          }),
+      );
+      return handle;
+    }
+
+    async function discardFinal() {
+      let outcome = 'pending';
+      let promise;
+      await act(async () => {
+        promise = createControls.discardDraft({ final: true });
+        promise.then(
+          () => {
+            outcome = 'resolved';
+          },
+          () => {
+            outcome = 'rejected';
+          },
+        );
+      });
+      await flush();
+      return { promise, outcome: () => outcome };
+    }
+
+    it('is terminal: a restore read that resolves after it restores nothing, announces nothing and writes nothing', async () => {
+      let resolveRead;
+      repo.getDraft.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveRead = resolve;
+          }),
+      );
+      await mountCreate(blankCreate());
+      await discardFinal();
+      await act(async () => {
+        resolveRead(createRecordOf({ recipeId: 'r-new', versionId: 'v-new', name: 'Lemon' }));
+      });
+      await flush();
+      await advance();
+      expect(createRenders[createRenders.length - 1].draftRestoreDone).toBe(true);
+      await unmountCurrent();
+      await flush();
+
       expect(onRestoreCreate).not.toHaveBeenCalled();
+      expect(onPageStatus).not.toHaveBeenCalled();
+      expect(repo.saveDraft).not.toHaveBeenCalled();
+      expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
+      expect(repo.deleteDraft).toHaveBeenCalledWith('v-new');
+    });
+
+    it('schedules no write for an edit made after it', async () => {
+      repo.getDraft.mockResolvedValue(null);
+      await mountCreate(blankCreate());
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Lemon'));
+      });
+      await discardFinal();
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Lemons'));
+      });
+      await advance();
+      await unmountCurrent();
+      await flush();
+
+      expect(repo.saveDraft).not.toHaveBeenCalled();
+    });
+
+    it('is not what a plain discard does: the pens’ discard leaves an edit to be written', async () => {
+      repo.getDraft.mockResolvedValue(null);
+      await mountCreate(blankCreate());
+      await act(async () => {
+        createControls.discardDraft();
+      });
+      await flush();
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Lemon'));
+      });
+      await advance();
+
+      expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
+      expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+      expect(repo.saveDraft.mock.calls[0][0].payload.name).toBe('Lemon');
+    });
+
+    it('resolves only once the delete resolves', async () => {
+      repo.getDraft.mockResolvedValue(null);
+      await mountCreate(blankCreate());
+      const handle = deferredDelete();
+      const discard = await discardFinal();
+      expect(discard.outcome()).toBe('pending');
+
+      await act(async () => {
+        handle.resolve();
+      });
+      await flush();
+      expect(discard.outcome()).toBe('resolved');
+    });
+
+    it('rejects when the delete fails, while a plain discard over a failing delete raises nothing', async () => {
+      repo.getDraft.mockResolvedValue(null);
+      await mountCreate(blankCreate());
+      repo.deleteDraft.mockRejectedValue(new Error('store gone'));
+      const discard = await discardFinal();
+      expect(discard.outcome()).toBe('rejected');
+      await expect(discard.promise).rejects.toThrow('store gone');
+
+      await act(async () => {
+        createControls.discardDraft();
+      });
+      await flush();
+      expect(repo.deleteDraft).toHaveBeenCalledTimes(2);
+    });
+
+    it('gives back the ink that was waiting at Cancel at once when the delete fails', async () => {
+      repo.getDraft.mockResolvedValue(null);
+      await mountCreate(blankCreate());
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Lemon'));
+      });
+      expect(repo.saveDraft).not.toHaveBeenCalled();
+      repo.deleteDraft.mockRejectedValue(new Error('store gone'));
+      await discardFinal();
+
+      expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+      expect(repo.saveDraft.mock.calls[0][0].payload.name).toBe('Lemon');
+    });
+
+    it('writes an edit made after a failed final discard once the debounce has run', async () => {
+      repo.getDraft.mockResolvedValue(null);
+      await mountCreate(blankCreate());
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Lemon'));
+      });
+      repo.deleteDraft.mockRejectedValue(new Error('store gone'));
+      await discardFinal();
+      repo.saveDraft.mockClear();
+
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Lemons'));
+      });
+      expect(repo.saveDraft).not.toHaveBeenCalled();
+      await advance();
+
+      expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+      expect(repo.saveDraft.mock.calls[0][0].payload.name).toBe('Lemons');
+    });
+
+    it('holds an edit made while the delete is out, and writes it when the delete fails', async () => {
+      repo.getDraft.mockResolvedValue(null);
+      await mountCreate(blankCreate());
+      const handle = deferredDelete();
+      await discardFinal();
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Lemons'));
+      });
+      await advance();
+      await act(async () => {
+        window.dispatchEvent(new Event('pagehide'));
+      });
+      await flush();
+      expect(repo.saveDraft).not.toHaveBeenCalled();
+
+      await act(async () => {
+        handle.reject(new Error('store gone'));
+      });
+      await flush();
+      expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+      expect(repo.saveDraft.mock.calls[0][0].payload.name).toBe('Lemons');
+    });
+
+    it('drops an edit made while the delete is out when the delete succeeds', async () => {
+      repo.getDraft.mockResolvedValue(null);
+      await mountCreate(blankCreate());
+      const handle = deferredDelete();
+      await discardFinal();
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Lemons'));
+      });
+      await act(async () => {
+        handle.resolve();
+      });
+      await flush();
+      await advance();
+      await unmountCurrent();
+      await flush();
+
+      expect(repo.saveDraft).not.toHaveBeenCalled();
     });
   });
 

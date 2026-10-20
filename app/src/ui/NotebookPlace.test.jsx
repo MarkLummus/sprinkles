@@ -130,6 +130,13 @@ describe('NotebookList with a kept creation (sketch 013 nE1, nD2)', () => {
     expect(page.querySelector('.nb__count')).toBeNull();
   });
 
+  it('reads Untitled for a draft whose name is blank (D-08c)', () => {
+    const page = render({ versions, batches, recipes, draft: kept('') });
+    expect(page.querySelector('li.nb__draft .nb__name').textContent).toBe('Untitled');
+    const spaces = render({ versions, batches, recipes, draft: kept('   ') });
+    expect(spaces.querySelector('li.nb__draft .nb__name').textContent).toBe('Untitled');
+  });
+
   it('renders a draft name holding angle brackets as text', () => {
     const markup = renderToStaticMarkup(
       <MemoryRouter>

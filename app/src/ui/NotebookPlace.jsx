@@ -4,12 +4,14 @@ import { repository } from '../store/repository.js';
 import { activeWork } from '../domain/lastEvent.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate, newestDraft } from '../domain/draft.js';
 import { creationTitle } from '../domain/creation.js';
+import { RECIPE_NAME_TAKEN, recipeNameMessage, recipeNameTaken } from '../domain/recipe.js';
 import { freshId } from '../domain/id.js';
 import { notebookPath, NEW_RECIPE_PATH } from './notebookPaths.js';
 import { batchCountWords, recipeCountWords, versionCountWords } from './countWords.js';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { Button } from './Button.jsx';
 import { PageNotice, usePageNotice } from './PageNotice.jsx';
+import { FieldFeedback } from './FieldFeedback.jsx';
 
 export const DRAFT_DISCARDED_STATUS = 'Draft discarded.';
 
@@ -29,6 +31,20 @@ export function NotebookPlace() {
   // The kept create draft the place draws as a row (null for none). The read
   // at load sets it, and so does Start's re-read when a creation is kept.
   const [draft, setDraft] = useState(null);
+  // Start's lifetime. startingRef is set while a Start is out, so a second
+  // press writes nothing. withdrawnRef is set by the entry's Cancel, and
+  // mountedRef is cleared when the place is left: either one stops the move
+  // into the editor when the write resolves (D-04: the write itself stands).
+  const startingRef = useRef(false);
+  const withdrawnRef = useRef(false);
+  const mountedRef = useRef(false);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -87,23 +103,36 @@ export function NotebookPlace() {
   // Start (D-04, D-04b): one create draft is kept at a time. Re-read the
   // drafts first; when one exists, write nothing and draw its row with Resume
   // in place of the entry. Otherwise mint the ids, write a name-only create
-  // draft, wait for the write, and only then open the editor.
+  // draft, wait for the write, and only then open the editor. The write is
+  // never withdrawn: a Cancel on the entry or a departure while it is out stops
+  // only the move, and a place still shown draws the draft it wrote.
   async function handleStart(name) {
-    const kept = newestDraft((await repository.listDrafts()).filter(draftMatchesCreate));
-    if (kept) {
-      setDraft(kept);
-      return;
+    if (startingRef.current) return;
+    startingRef.current = true;
+    withdrawnRef.current = false;
+    try {
+      const kept = newestDraft((await repository.listDrafts()).filter(draftMatchesCreate));
+      if (kept) {
+        setDraft(kept);
+        return;
+      }
+      const recipeId = freshId();
+      const versionId = freshId();
+      const record = buildDraftRecord({
+        versionId,
+        kind: 'create',
+        payload: blankCreateDraft({ recipeId, versionId, name: name.trim() }),
+        now: new Date().toISOString(),
+      });
+      await repository.saveDraft(record);
+      if (!mountedRef.current) return;
+      if (withdrawnRef.current) setDraft(record);
+      else navigate(NEW_RECIPE_PATH, { state: { started: true } });
+    } catch {
+      if (mountedRef.current) announce(PAGE_LOAD_ERROR);
+    } finally {
+      startingRef.current = false;
     }
-    const recipeId = freshId();
-    const versionId = freshId();
-    const record = buildDraftRecord({
-      versionId,
-      kind: 'create',
-      payload: blankCreateDraft({ recipeId, versionId, name: name.trim() }),
-      now: new Date().toISOString(),
-    });
-    await repository.saveDraft(record);
-    navigate(NEW_RECIPE_PATH, { state: { started: true } });
   }
 
   return (
@@ -115,6 +144,9 @@ export function NotebookPlace() {
         recipes={data.recipes}
         draft={draft}
         onStart={handleStart}
+        onCancel={() => {
+          withdrawnRef.current = true;
+        }}
         onResume={() => navigate(NEW_RECIPE_PATH)}
       />
     </>
@@ -126,9 +158,11 @@ export function NotebookPlace() {
 // offered only while no draft is kept and the entry is closed; opening moves
 // focus to Name, and the entry's Cancel returns it to New recipe. Start is the
 // form's submit button, so a click and Enter take the one path.
-function NotebookHead({ draft, onStart }) {
+function NotebookHead({ draft, recipes, onStart, onCancel }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
+  // Set when Start is pressed over a blank name; the next keystroke clears it.
+  const [required, setRequired] = useState(false);
   const nameRef = useRef(null);
   const newRef = useRef(null);
   const returnFocusRef = useRef(false);
@@ -145,15 +179,27 @@ function NotebookHead({ draft, onStart }) {
   function handleCancel() {
     returnFocusRef.current = true;
     setName('');
+    setRequired(false);
     setOpen(false);
+    onCancel?.();
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (name.trim() === '') return;
-    // A failed read or write is plan 10-03's to say; until then it stays quiet.
-    Promise.resolve(onStart?.(name)).catch(() => {});
+    if (recipeNameMessage(name)) {
+      setRequired(true);
+      return;
+    }
+    onStart?.(name);
   }
+
+  // The one line under the field: the required sentence after a refused Start,
+  // else the same-name warning (decisions 1 and 11), which never blocks.
+  const line = required
+    ? recipeNameMessage(name)
+    : recipeNameTaken(recipes, name)
+      ? RECIPE_NAME_TAKEN
+      : null;
 
   return (
     <>
@@ -176,8 +222,14 @@ function NotebookHead({ draft, onStart }) {
               autoComplete="off"
               value={name}
               aria-label="Name"
-              onChange={(event) => setName(event.target.value)}
+              aria-invalid={required ? 'true' : undefined}
+              aria-describedby={line ? 'nb-new-name-error' : undefined}
+              onChange={(event) => {
+                setName(event.target.value);
+                setRequired(false);
+              }}
             />
+            <FieldFeedback error={line} errorId="nb-new-name-error" />
           </label>
           <div className="nb__new-actions">
             <Button className="notebook-action--outline" onClick={handleCancel}>
@@ -220,12 +272,12 @@ function NotebookDraftRow({ draft, onResume }) {
 // effect (the convention RecipeRows and HomeBody set). Every name and
 // description is a React text child: stored text never reaches the page as
 // markup (T-09-06).
-export function NotebookList({ versions, batches = [], recipes = [], draft = null, onStart, onResume }) {
+export function NotebookList({ versions, batches = [], recipes = [], draft = null, onStart, onCancel, onResume }) {
   const work = activeWork(versions, batches, recipes);
   if (work.length === 0) {
     return (
       <div className="list-page place nb">
-        <NotebookHead draft={draft} onStart={onStart} />
+        <NotebookHead draft={draft} recipes={recipes} onStart={onStart} onCancel={onCancel} />
         {draft && <NotebookDraftRow draft={draft} onResume={onResume} />}
         <p className="place__note">No recipes yet.</p>
       </div>
@@ -234,7 +286,7 @@ export function NotebookList({ versions, batches = [], recipes = [], draft = nul
   const descriptions = new Map(recipes.map((recipe) => [recipe.id, recipe.description]));
   return (
     <div className="list-page place nb">
-      <NotebookHead draft={draft} onStart={onStart} />
+      <NotebookHead draft={draft} recipes={recipes} onStart={onStart} onCancel={onCancel} />
       {draft && <NotebookDraftRow draft={draft} onResume={onResume} />}
       <p className="nb__count">{recipeCountWords(work.length)}</p>
       <ul className="nb__list">

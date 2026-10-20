@@ -997,6 +997,20 @@ describe('Add ingredient, pick, type grams (MAKE-06, D-07, D-08)', () => {
     expect(tableNames()).toEqual([]);
   });
 
+  it('an entry already on the recipe reads Added in the picker, and pressing it adds nothing', async () => {
+    await startVanilla();
+    await pick('Sucrose');
+    await click(addButton());
+    const added = [...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === 'Sucrose');
+    expect(added.querySelector('.pick__act').textContent).toBe('Added');
+    expect(added.getAttribute('aria-disabled')).toBe('true');
+    await click(added);
+    expect(tableNames()).toEqual(['Sucrose']);
+    expect(root().querySelector('div.pick')).not.toBeNull();
+    const other = [...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === MILK);
+    expect(other.querySelector('.pick__act').textContent).toBe('Add');
+  });
+
   it('a 309-digit amount leaves the row on the table at 0 g and throws nothing', async () => {
     await startVanilla();
     await pick(MILK);

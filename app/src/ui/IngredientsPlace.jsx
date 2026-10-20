@@ -47,7 +47,7 @@ function amountText(figure, value) {
   return figure.percent ? `${trimmed(value * 100, 2)}%` : trimmed(value, 2);
 }
 
-function capitalised(word) {
+export function capitalised(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
@@ -88,7 +88,7 @@ function heldFigures(entry) {
   return FIGURES.filter((figure) => Number.isFinite(entry.composition[figure.key]));
 }
 
-function summaryText(entry) {
+export function summaryText(entry) {
   return FIGURES.filter((figure) => entry.composition[figure.key])
     .map((figure) => `${figure.word} ${amountText(figure, entry.composition[figure.key])}`)
     .join(' · ');

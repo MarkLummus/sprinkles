@@ -17,3 +17,6 @@ design/
 # graphify build output — regenerable
 graphify-out/
 .planning/graphs/
+
+# Local site copies (a served dist) — never committed
+sites/

@@ -519,18 +519,27 @@ Skipped: `workflow.nyquist_validation` is `false` in `.planning/config.json`. Te
 | A5 | Two tabs can each Start a `create` draft (store keyed by versionId) | Pitfall 12 | Orphan draft; `newestDraft` handles display |
 | A6 | React Router ranks the static `/notebook/new` above `/notebook/:recipeId` regardless of order; the plan still declares it first as D-01 requires | Pins | none; order is declared anyway |
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+Each question below is settled in the plans (planner, 2026-10-20); the RESOLVED line names the plan and the choice.
 
 1. **Where do the Shell-level import-refusal notice and the Notebook's "Draft discarded" appear (D-10a)?**
    - Known: one `.page-status` per page; recipe routes keep theirs first; PageStatus is defined in router.jsx; router text pins; Shell test mocks.
    - Unclear: a Shell-owned anchor in `.shell__main` rendered only when the routed page has not supplied its own, versus each place (`/notebook`, `/notebook/new`) rendering its own anchor and Shell refusals on other routes using a Shell-owned one.
    - Recommendation: give `/notebook` and `/notebook/new` their own `page-status-anchor` + status via a small shared component placed in its own module (not router.jsx); give the Shell a lazily rendered anchor used only when the current route has none; run RecipePage.test.jsx:926-954 and the walk to prove the recipe routes are unchanged. Planner should state the choice in its plan.
+   - RESOLVED (plans 10-11 and 10-04): the recommendation, as planned. ui/PageNotice.jsx gives `/notebook` and `/notebook/new` their own anchor and status (10-11); RecipePageForRoute registers its existing announcer and the Shell renders its own fallback notice only while no routed page has registered one (10-04); router.jsx's anchor does not move; "Draft discarded." reaches `/notebook` as route state `{ discarded: true }`, a flag read once.
 2. **"Draft kept" right after Start.** `onPageStatus(DRAFT_KEPT_STATUS)` fires on every restore. Recommendation: the page drops it when the route state says it was just started; announce it on Resume only.
+   - RESOLVED (plan 10-11): the recommendation; the route state `{ started: true }` is read once and replaced with null, so Resume, a reload and a direct visit announce it and a fresh Start does not.
 3. **Serving temperature unreadable entry.** Recommendation: follow the BatchRow precedent (`readSignedInput`/`shownSignedValue`, exported at BatchRow.jsx:85-96) or accept `event.target.value` and let Save validate; either way test a lone minus. Phase 11's Save must treat any non-numeric string as invalid.
+   - RESOLVED (plan 10-08): the BatchRow precedent; an unreadable entry is kept as MALFORMED_NUMBER_ENTRY and shows blank, a test types a lone minus, and Phase 11's Save must refuse it.
 4. **Same-name warning timing.** Board shows it under the field while typing; decide whether it updates per keystroke (recipes list already loaded) — recommended, since no write is involved.
+   - RESOLVED (plan 10-03): per keystroke, the recommendation.
 5. **Band parser.** `parseGramsDraft` rejects negatives and more than two decimals; bands like `9.25` pass, `-` fails. D-08b says "finite non-negative numbers with low at or below high"; recommend reusing `parseGramsDraft` for the two ends so there is one numeric rule, and add a test for `'10'`/`'10.5'`/`''`/`'x'`.
+   - RESOLVED (plan 10-08): `parseGramsDraft` for both ends, the recommendation; tests cover equal ends, low above high, blank, '-1', '1.234', 'x' and '9.25'.
 6. **724 to 759 px.** The board's `.mk-page` stretch rule is `max-width: 759.98px`; the pinned media list allows `723.98px` only. The boards draw 393 and 1366, so the gap is undrawn; confirm nothing odd at 744/768 in the WebKit pass.
+   - RESOLVED (plans 10-05, 10-12 and 10-10): the board's 759.98 rules sit in notebook.css's pinned 723.98 block (10-05 for the band, 10-12 for the picker's filters), and 10-10 checks /notebook and /notebook/new for sideways overflow at 744 and 768 (and 393, 1024, 1366) on the final build.
 7. **Row id and note keys.** Notes are index-keyed (`key={index}`, Authored.jsx:26); adding/removing notes with controlled textareas is fine, but focus after "Add note" is undrawn — recommend focusing the new textarea only if Mark asks.
+   - RESOLVED (plans 10-05, 10-06 and 10-09), a discretion call that departs from the recommendation: every add moves focus into the item it added (the new note's textarea, the new row's grams field as the picker board draws it, the new scale's or problem's Name) and every remove moves focus to that list's add control. Rationale: Add scale and Add problem disappear at two and every remove button disappears with its row or card, so leaving focus in place would drop it to the page on iPad WebKit; the picker board already draws focus landing in the new row; one rule for every add is simpler than one for the picker alone. Undrawn, no visual change; it is listed for Mark in the phase summary and is cheap to reverse (one effect per list).
 
 ## Sources
 

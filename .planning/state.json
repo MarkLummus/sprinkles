@@ -11,7 +11,7 @@
     {
       "number": "9",
       "name": "The library and the stored shapes, plus the two places",
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "number": "10",
@@ -31,8 +31,8 @@
   ],
   "next": {
     "command": "/gsd-progress --next",
-    "label": "Advance to the next step",
-    "reason": "Phase 2 of 5 · 20% · executing"
+    "label": "Advance to the next step (plan phase 10)",
+    "reason": "Phase 3 of 5 — needs a plan"
   },
-  "updated_at": "2026-10-19T00:19:30.743Z"
+  "updated_at": "2026-10-20T02:44:58.761Z"
 }

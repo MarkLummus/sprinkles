@@ -45,16 +45,16 @@ Shipped v1.1 Groundwork for creation (2026-10-15): the code is ready for recipe 
 - ✓ `RecipePage.jsx` split so creating and editing can share one editor: pure helpers in `domain/`, the pen's changes as pure operations behind `usePenDraft`, recording and tasting behind `useRecordDraft`, `RecipePage` left as the route shell, the maker seeing no change (94-snapshot WebKit walk matches) — EDIT-01 to EDIT-04 — Phase 5 (v1.1)
 - ✓ Framework-free creation primitives: `createRecipe` (recipe plus root version, no store), `nextStepKey` (never reuses a key), `rowFromLibraryRecord` (embeds a `structuredClone` of the entry) — MAKE-01 to MAKE-03 — Phase 7 (v1.1)
 
+- ✓ `RecipePage` split along its jobs with no visible change — EDIT-05, EDIT-06 — Phase 8
+- ✓ The reviewed ingredient library (111 entries, with provenance and six nullable per-ingredient coefficients) reaches every profile through the one-way reset at database version 10; a recipe's own scale definitions carry their kind into the batches made from it; the read-only Ingredients place (search by name and category, open entry with Basis and Source) and the Notebook place listing the recipes — LIB-04 to LIB-09, CODE-01, TASTE-03, PLACE-01, PLACE-02 — Phase 9
+
 ### Active
 
 v2.0 Recipe creation (see Current Milestone). Requirement IDs are assigned in `REQUIREMENTS.md`:
 
-- [ ] `RecipePage` split into its separate jobs, no visible change
 - [ ] Notebook starts a new recipe
 - [ ] Create a recipe and author every section of its first version
 - [ ] Add, remove and reorder steps and rows at creation
-- [ ] Ingredient library seeded beyond the current recipes, with provenance
-- [ ] Read-only Ingredients place
 - [ ] Custom scales and problems for a new recipe (SEED-261001-iq4)
 
 ### Out of Scope
@@ -166,6 +166,11 @@ Boundaries come from the accepted decisions; reasons are recorded so they are no
 | `nextStepKey` is the highest key over every step, removed ones included, plus one, with no stored counter; `createRecipe` takes the caller's ids and clock | A removed step's key must never come back; the primitives stay pure and testable | ✓ Good — Phase 7 |
 | `importAll` replaces a local library entry with the imported one without asking | Stored versions embed clones so no figure moves; no library editing UI exists yet | ⚠️ Revisit — decide before v2 library editing |
 
+| The reset window: database version 9 to 10 drops and reseeds every store once (`oldVersion < 10`), reaching every profile with the 111-entry library; nothing resets on a second open | Phase 9 settles every stored shape while a reset is still free; Phase 11's first Save closes the window | ✓ Good — Phase 9, walked in WebKit and on the iPad |
+| A recipe's own scale definitions carry their `kind` and travel into batches; `isScaleDefinition` lives in `domain/catalog.js` | A batch must read its tasting against the scale shape the recipe had when it was made | ✓ Good — Phase 9 |
+| The Ingredients place is read-only: the lactose line shows on any entry with milk solids, not only dairy; below 760 px the source sits on its own line under the figure; facts lines are value-first | Mark's answers on Mark's List, 2026-10-19, drawn into sketch 012 (decisions 5 to 7) before quick batch 261019-arp built them | ✓ Good — Phase 9 |
+| After an import whose reload fails, every route shows the recovery page titled Import with one line and no button; the browser's reload is the way out | No board drew it; Mark approved it as rendered (look-p9-new-lines-live) | ✓ Good — Phase 9 |
+
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
@@ -184,4 +189,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-16 after starting milestone v2.0*
+*Last updated: 2026-10-19 after Phase 9*

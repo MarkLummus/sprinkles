@@ -2,45 +2,45 @@
 gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Recipe creation
-current_phase: 09
-current_phase_name: The library and the stored shapes, plus the two places
-status: executing
-stopped_at: Phase 9 context updated
-last_updated: "2026-10-20T02:35:25.994Z"
-last_activity: 2026-10-18
-last_activity_desc: Phase 09 execution started
-state_head: 30a5727d0e3eecdf73a05549409e97423ba9e438
+current_phase: 10
+current_phase_name: The creation editor, without Save
+status: planning
+stopped_at: Phase 09 complete, ready to plan Phase 10
+last_updated: "2026-10-20T02:44:58.645Z"
+last_activity: 2026-10-19
+last_activity_desc: Phase 09 complete, transitioned to Phase 10
+state_head: 136da1865f322571948475518b847700e8c46fb6
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 23
-  completed_plans: 6
-  percent: 20
+  completed_plans: 23
+  percent: 40
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-16)
+See: .planning/PROJECT.md (updated 2026-10-19)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 09 — The library and the stored shapes, plus the two places
+**Current focus:** Phase 10 — The creation editor, without Save
 
 ## Current Position
 
-Phase: 09 (The library and the stored shapes, plus the two places) — EXECUTING
-Plan: 1 of 17
-Status: Executing Phase 09
-Last activity: 2026-10-18 — Phase 09 execution started
+Phase: 10 — The creation editor, without Save
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-10-19 — Phase 09 complete, transitioned to Phase 10
 
-Progress: [██░░░░░░░░] 20%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 138
+- Total plans completed: 155
 - Average duration: —
 - Total execution time: —
 
@@ -66,6 +66,7 @@ Progress: [██░░░░░░░░] 20%
 | 06 | 3 | - | - |
 | 07 | 3 | - | - |
 | 08 | 6 | - | - |
+| 09 | 17 | - | - |
 
 **Recent Trend:**
 
@@ -175,6 +176,7 @@ Progress: [██░░░░░░░░] 20%
 
 Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–D16 live in `product-requirements/03-decision-register.md` and are accepted.
 
+- [Phase 09, 2026-10-19]: Phase 9 verified and closed: one-way reset at database version 10, 111-entry library with provenance, scale definitions carry kind into batches, Ingredients and Notebook places open read-only. Open from its reviews: WR-01, WR-02, IN-01 to IN-05 in 09-REVIEW-DISPOSITION.md; decide-p9-boot-word-problems and decide-p9-facts-line-shape on Mark's List.
 - [Phase 09, 2026-10-18]: D-20 adds six nullable per-ingredient coefficients to the library seed in the 9 to 10 bump; the other 2026-10-18 decisions (approved style values stand, Guelph method with a calibrated target, Balance tiers in v2.1, stage model at Phase 11, menus for the Phase 10 style and machine pickers) are in `.planning/notes/2026-10-18-balance-and-process-decisions.md`.
 - Roadmap: Milestone 1 is four vertical slices on the olive oil working case (read → record → develop → print), not technical layers.
 - Roadmap: No storage/backend phase — D16 stays open, milestone 1 uses a provisional local store behind a repository seam.
@@ -614,9 +616,9 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-18T19:42:35.000Z
-Stopped at: Session resumed; Phase 9 execution waits on four Mark's List decide rows
-Resume file: .planning/phases/09-the-library-and-the-stored-shapes-plus-the-two-places/.continue-here.md
+Last session: 2026-10-20T02:45:00.000Z
+Stopped at: Phase 09 complete, ready to plan Phase 10
+Resume file: None
 
 ## Operator Next Steps
 

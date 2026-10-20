@@ -16,17 +16,17 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 
 ### Ingredient library (continues LIB-03)
 
-- [ ] **LIB-04**: The library is seeded beyond the current 26 entries from the reviewed dataset, each entry with provenance.
-- [ ] **LIB-05**: Every existing library entry keeps its current values, and each of the seven conflicts with the dataset (dextrose basis, salt, fructose POD, strawberries, skim milk powder, coconut milk, heavy cream) is recorded as decided: the app's value stays.
-- [ ] **LIB-06**: A profile at database version 9 opens at version 10 with the larger library: the library is cleared and reseeded (amending Phase 6 D-05), the store resets to the new shapes, and the seeded recipes are rewritten in them. Nothing the maker made is lost, because none exists yet.
-- [ ] **LIB-07**: Dairy rows from the dataset do not count lactose twice in PAC or POD.
-- [ ] **LIB-08**: A row keeps a link to the library entry it was copied from, and its figures still do not move when the library changes.
-- [ ] **LIB-09**: Every seed dataset is rows in a store table that an empty store is seeded with: the library, the machines (name, minimum fill, maximum fill), the ice cream styles (their balance bands, plus egg yolk, overrun, stabilizer and emulsifier ranges, default serve temperature, default equipment class and calibration family, stored and not read in v2.0), and the core scales and problems. No seed dataset is read from a code constant at run time, so a later version can let the maker add rows. Those tables travel in the store file with the library: the file validator checks them, the store file version changes, and an import into a fresh profile restores them.
+- [x] **LIB-04**: The library is seeded beyond the current 26 entries from the reviewed dataset, each entry with provenance.
+- [x] **LIB-05**: Every existing library entry keeps its current values, and each of the seven conflicts with the dataset (dextrose basis, salt, fructose POD, strawberries, skim milk powder, coconut milk, heavy cream) is recorded as decided: the app's value stays.
+- [x] **LIB-06**: A profile at database version 9 opens at version 10 with the larger library: the library is cleared and reseeded (amending Phase 6 D-05), the store resets to the new shapes, and the seeded recipes are rewritten in them. Nothing the maker made is lost, because none exists yet.
+- [x] **LIB-07**: Dairy rows from the dataset do not count lactose twice in PAC or POD.
+- [x] **LIB-08**: A row keeps a link to the library entry it was copied from, and its figures still do not move when the library changes.
+- [x] **LIB-09**: Every seed dataset is rows in a store table that an empty store is seeded with: the library, the machines (name, minimum fill, maximum fill), the ice cream styles (their balance bands, plus egg yolk, overrun, stabilizer and emulsifier ranges, default serve temperature, default equipment class and calibration family, stored and not read in v2.0), and the core scales and problems. No seed dataset is read from a code constant at run time, so a later version can let the maker add rows. Those tables travel in the store file with the library: the file validator checks them, the store file version changes, and an import into a fresh profile restores them.
 
 ### Places
 
-- [ ] **PLACE-01**: The Ingredients place lists the library, with search by name and category, read-only.
-- [ ] **PLACE-02**: The Notebook place lists the recipes.
+- [x] **PLACE-01**: The Ingredients place lists the library, with search by name and category, read-only.
+- [x] **PLACE-02**: The Notebook place lists the recipes.
 
 ### Creating a recipe (continues MAKE-03)
 
@@ -49,13 +49,13 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 
 ### Sheet code
 
-- [ ] **CODE-01**: A version's Sheet code is assigned when the version is created, a first version and every Next version alike, and is unique. It is stored with the version and never changes afterwards, whatever is edited: the recipe name, the Version name, the Sheet title or description, or any row, step or note.
+- [x] **CODE-01**: A version's Sheet code is assigned when the version is created, a first version and every Next version alike, and is unique. It is stored with the version and never changes afterwards, whatever is edited: the recipe name, the Version name, the Sheet title or description, or any row, step or note.
 
 ### Custom scales and problems
 
 - [ ] **TASTE-01**: A maker can define 0 to 2 scales for a recipe, each with a name, a label for each end, and its kind: goldilocks, with the fixed middle word "right", or plain magnitude.
 - [ ] **TASTE-02**: A maker can define 0 to 2 problems for a recipe.
-- [ ] **TASTE-03**: A batch snapshots the recipe's definitions, a scale's kind included, so a later change never moves a stored mark.
+- [x] **TASTE-03**: A batch snapshots the recipe's definitions, a scale's kind included, so a later change never moves a stored mark.
 - [ ] **TASTE-04**: The record pen, the reading and the printed log show a recipe's own scales, each in its kind, and its problems, and "This recipe only" shows only when it has any.
 
 ### Proof
@@ -100,15 +100,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | EDIT-05 | Phase 8 | Complete |
 | EDIT-06 | Phase 8 | Complete |
-| LIB-04 | Phase 9 | Pending |
-| LIB-05 | Phase 9 | Pending |
-| LIB-06 | Phase 9 | Pending |
-| LIB-07 | Phase 9 | Pending |
-| LIB-08 | Phase 9 | Pending |
-| LIB-09 | Phase 9 | Pending |
-| PLACE-01 | Phase 9 | Pending |
-| PLACE-02 | Phase 9 | Pending |
-| CODE-01 | Phase 9 | Pending |
+| LIB-04 | Phase 9 | Complete |
+| LIB-05 | Phase 9 | Complete |
+| LIB-06 | Phase 9 | Complete |
+| LIB-07 | Phase 9 | Complete |
+| LIB-08 | Phase 9 | Complete |
+| LIB-09 | Phase 9 | Complete |
+| PLACE-01 | Phase 9 | Complete |
+| PLACE-02 | Phase 9 | Complete |
+| CODE-01 | Phase 9 | Complete |
 | MAKE-04 | Phase 10 | Pending |
 | MAKE-05 | Phase 10 | Pending |
 | MAKE-06 | Phase 10 | Pending |
@@ -124,7 +124,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRUCT-04 | Phase 11 | Pending |
 | TASTE-01 | Phase 10 | Pending |
 | TASTE-02 | Phase 10 | Pending |
-| TASTE-03 | Phase 9 | Pending |
+| TASTE-03 | Phase 9 | Complete |
 | TASTE-04 | Phase 12 | Pending |
 | PROOF-01 | Phase 12 | Pending |
 | PROOF-02 | Phase 12 | Pending |

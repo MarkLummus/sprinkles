@@ -202,7 +202,7 @@ Plans:
 
 Plans:
 **Wave 1**
-- [ ] 10-01-PLAN.md — the strict walk recorded at the base commit (no allowance at all) and the side-by-side WebKit board engine, proven on sketch 012; no app change
+- [ ] 10-01-PLAN.md — the strict walk recorded at the base commit (no allowance at all) and the side-by-side WebKit board engine (full-page and anchored cropped panels), proven on sketch 012 and on cropped sketch 013 panels; no app change
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 10-02-PLAN.md — New recipe, Start, the /notebook/new editor over the kept create draft (kept as typed until Cancel) and Cancel (tracer: Start opens the editor end to end)

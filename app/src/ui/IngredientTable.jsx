@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue, formatPortionLine } from '../domain/composition.js';
 import { asMadeForPortion, asMadeTotals } from '../domain/batch.js';
 import { activeRows, isLineRemoved, isStepRemoved, rowGrams } from '../domain/rows.js';
 import { orphanedRows } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
-import { parseGramsDraft } from '../domain/lineage.js';
+import { gramsDraftMessage, parseGramsDraft } from '../domain/lineage.js';
 import { penDraftRow } from '../domain/penDraft.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { Button } from './Button.jsx';
@@ -501,6 +501,29 @@ export function IngredientTable({
     if (creationFocusRowId) gramsInputsRef.current.get(`${creationFocusRowId}:0`)?.focus();
   }, [creationFocusRowId]);
 
+  // The creation rows whose grams field was left empty or unreadable (D-08): a
+  // blur fills it, a readable change empties it, and a row's line is derived
+  // from the field's current text at render. A Set keyed by row id, never a
+  // bare object, so typing alone never raises a line.
+  const [leftUnreadable, setLeftUnreadable] = useState(() => new Set());
+  function handleCreatingGramsBlur(row, raw) {
+    if (gramsDraftMessage(row.ingredientName, raw) !== null) {
+      setLeftUnreadable((prev) => new Set(prev).add(row.id));
+    }
+    creationRows.onBlurGrams(row.id);
+  }
+  function handleCreatingGramsChange(row, value) {
+    if (gramsDraftMessage(row.ingredientName, value) === null) {
+      setLeftUnreadable((prev) => {
+        if (!prev.has(row.id)) return prev;
+        const next = new Set(prev);
+        next.delete(row.id);
+        return next;
+      });
+    }
+    creationRows.onChangeGrams(row.id, value);
+  }
+
   const activeRowsOnly = activeRows({ rows, method: steps });
   const baselineBalance = computeBalance(activeRowsOnly);
   const baselineMass = baselineBalance ? baselineBalance.mass : 0;
@@ -628,8 +651,11 @@ export function IngredientTable({
     const dataFlag = dataFlagFor(row);
     const isMarked = markedRowIds.includes(row.id);
     const ariaLabel = rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, null);
+    const raw = creationRows.gramsByRow.get(row.id) ?? '';
+    const message = leftUnreadable.has(row.id) ? gramsDraftMessage(row.ingredientName, raw) : null;
+    const messageId = message ? `create-grams-error-${row.id}` : null;
     return (
-      <tr key={`${row.id}:${portionIndex}`} className={isMarked ? 'is-marked' : undefined} aria-label={ariaLabel}>
+      <tr key={`${row.id}:${portionIndex}`} className={isMarked || message ? 'is-marked' : undefined} aria-label={ariaLabel}>
         <td className="ingredient-table__col-grams">
           <span className="ingredient-table__plan-grams">
             <input
@@ -637,10 +663,12 @@ export function IngredientTable({
               type="text"
               inputMode="decimal"
               className={row.id === creationRows.focusRowId ? 'ink-field mk-focus' : 'ink-field'}
-              value={creationRows.gramsByRow.get(row.id) ?? ''}
+              value={raw}
               aria-label={`${row.ingredientName}, grams`}
-              onChange={(event) => creationRows.onChangeGrams(row.id, event.target.value)}
-              onBlur={() => creationRows.onBlurGrams(row.id)}
+              aria-invalid={messageId ? 'true' : undefined}
+              aria-describedby={messageId ?? undefined}
+              onChange={(event) => handleCreatingGramsChange(row, event.target.value)}
+              onBlur={() => handleCreatingGramsBlur(row, raw)}
             />
             {' g'}
           </span>
@@ -653,6 +681,7 @@ export function IngredientTable({
             </span>
           )}
           <RemoveRowControl removed={false} onToggle={() => creationRows.onRemoveRow(row.id)} />
+          <FieldFeedback error={message} errorId={messageId} />
         </td>
         <td className="ingredient-table__col-numeric">{formatShareOfBatch(portion.grams, baselineMass)}</td>
       </tr>

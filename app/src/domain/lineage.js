@@ -214,6 +214,20 @@ export function parseGramsDraft(value) {
 }
 
 /**
+ * gramsDraftMessage(ingredientName, raw) -> the sentence a grams field's
+ * draft earns, or `null` when it reads: the needs-an-amount sentence for a
+ * blank or undefined value, the not-a-number sentence for one
+ * parseGramsDraft rejects. The one source of both sentences: the version pen's
+ * save gate (findBlockedRow) and the creation table's per-row line read it, so
+ * the two pens can never word the same fault differently (D-08).
+ */
+export function gramsDraftMessage(ingredientName, raw) {
+  if (raw === undefined || raw === '') return `${ingredientName} needs an amount, or remove it`;
+  if (parseGramsDraft(raw) === null) return `${ingredientName}'s amount is not a number`;
+  return null;
+}
+
+/**
  * findBlockedRow(penFields, version) -> { row, index, message } for the first
  * row (in the version's own authored order) with a line in whose grams
  * field blocks the save, or `null` when no row does. `index` is the stored
@@ -239,12 +253,8 @@ function findBlockedRow(penFields, version) {
       if (draftPortion.removed) continue;
       const storedPortion = row.portions[index];
       if (storedPortion && isStepRemoved(method, storedPortion.step)) continue;
-      if (draftPortion.grams === undefined || draftPortion.grams === '') {
-        return { row, index, message: `${row.ingredientName} needs an amount, or remove it` };
-      }
-      if (parseGramsDraft(draftPortion.grams) === null) {
-        return { row, index, message: `${row.ingredientName}'s amount is not a number` };
-      }
+      const message = gramsDraftMessage(row.ingredientName, draftPortion.grams);
+      if (message !== null) return { row, index, message };
     }
   }
   return null;

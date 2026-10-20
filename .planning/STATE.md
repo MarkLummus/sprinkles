@@ -6,10 +6,10 @@ current_phase: 09
 current_phase_name: The library and the stored shapes, plus the two places
 status: executing
 stopped_at: Phase 9 context updated
-last_updated: "2026-10-19T00:19:30.728Z"
+last_updated: "2026-10-20T02:35:25.994Z"
 last_activity: 2026-10-18
 last_activity_desc: Phase 09 execution started
-state_head: b4691b335a2cde3abccf5872603194d8968ec678
+state_head: 30a5727d0e3eecdf73a05549409e97423ba9e438
 progress:
   total_phases: 5
   completed_phases: 1
@@ -577,6 +577,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261019-arq | Home's Record a tasting opens the tasting pen | 2026-10-19 | 638d9f77 | .planning/quick/261019-arq-home-s-record-a-tasting-opens-the-tasting-pen-decide-home-re |
 | 261019-arr | Ingredients place below 760: source on its own line | 2026-10-19 | 385c7bb6 | .planning/quick/261019-arr-ingredients-place-below-760-source-on-its-own-line-look-p9-0 |
 | 261019-ars | Ingredients place: lactose line on any entry with milk solids | 2026-10-19 | 55891a98 | .planning/quick/261019-ars-ingredients-place-lactose-line-on-any-entry-with-milk-solids |
+| 181 | Sketch 012 README decision 6: name the built lactose-line condition (55891a98) | 2026-10-19 | 30a5727d | — |
 
 ### Roadmap Evolution
 

@@ -171,8 +171,8 @@ def head(title, clear=False):
     return f'<div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">{esc(title)}</h2></div>{cl}</div>'
 def region(title, body, clear=False): return f'<section class="batch-row mk-region" aria-label="{esc(title)}">{head(title, clear)}<div class="mk-body">{body}</div></section>'
 
-def segmented(label, options, picked, caption=True):
-    gn = 'segment-' + re.sub(r'[^a-z0-9]+', '-', label.lower())
+def segmented(label, options, picked, caption=True, name=None):
+    gn = name or 'segment-' + re.sub(r'[^a-z0-9]+', '-', label.lower())   # name: two groups with one label (the scale cards' Kind) must not share a radio group
     cl = ''
     opts = ''.join(f'<label class="segmented__option"><input type="radio" name="{gn}" value="{esc(o)}"{" checked" if o == picked else ""} tabindex="0"><span>{esc(o)}</span></label>' for o in options)
     hd = f'<div class="segmented-field__head"><span class="segmented-field__caption pen-caption">{esc(label)}</span>{cl}</div>' if caption else ''
@@ -232,7 +232,7 @@ def scale_card(n, name, lo, hi, kind, required_hints=False):
     nm = field('Name', name, required=required_hints and not name)
     ends = '<div class="mk-pair">' + field('Low end', lo, required=required_hints and not lo) + field('High end', hi, required=required_hints and not hi) + '</div>'
     return (f'<div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Scale {n}</span><button type="button" class="text-control" tabindex="0">remove</button></div>'
-            + nm + ends + segmented('Kind', KINDS, kind) + stops(lo, hi, kind) + '</div>')
+            + nm + ends + segmented('Kind', KINDS, kind, name='segment-kind-%d' % n) + stops(lo, hi, kind) + '</div>')
 def scales_region(cards, add=True):
     core = '<p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p>'
     mine = ('<p class="pen-caption mk-cue">This recipe only</p>' + ''.join(cards)) if cards else ''

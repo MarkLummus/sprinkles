@@ -420,6 +420,55 @@
   color: var(--app-text);
 }
 
+/* The Scales and Problems regions (Phase 10, sketch 013
+   scales-and-problems.html), ported from the board's own rules like the Style
+   region above: the cue lines, the core names, a card and its head, the
+   paired end words and the stops line. */
+.notebook .mk-cue {
+  margin: 0;
+}
+
+.notebook .mk-core {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+
+.notebook .mk-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: var(--gap-s);
+}
+
+.notebook .mk-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+  padding: var(--gap-s) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+
+.notebook .mk-cue + .mk-card {
+  border-top: none;
+  padding-top: 0;
+}
+
+.notebook .mk-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+}
+
+.notebook .mk-stops {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+
 .notebook-recipe__form-actions {
   display: flex;
   gap: var(--gap-s);

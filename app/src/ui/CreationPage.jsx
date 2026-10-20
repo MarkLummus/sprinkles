@@ -8,6 +8,7 @@ import { DRAFT_KEPT_STATUS, useDraftWriter, useKeptDraft } from './useKeptDraft.
 import { PageNotice, usePageNotice } from './PageNotice.jsx';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { IngredientPicker } from './IngredientPicker.jsx';
+import { CreationSetup } from './CreationSetup.jsx';
 import { repository } from '../store/repository.js';
 import { draftMatchesCreate } from '../domain/draft.js';
 import { NOTEBOOK_PLACE_PATH } from './notebookPaths.js';
@@ -339,7 +340,9 @@ export function CreationPage({ record, justStarted = false }) {
                 }
               />
             </div>
-            <aside className="notebook-log" aria-label="Setup" />
+            <aside className="notebook-log" aria-label="Setup">
+              <CreationSetup createDraft={createDraft} onChange={setCreateDraft} />
+            </aside>
           </div>
         )}
       </div>

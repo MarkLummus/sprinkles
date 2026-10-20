@@ -14,10 +14,15 @@ import {
   addRow,
   setRowGrams,
   removeRow,
+  creationTargets,
+  applyStyle,
+  clearStyle,
+  setBandEnd,
 } from './creation.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate } from './draft.js';
 import { rowFromLibraryRecord } from './versionRow.js';
 import { library } from '../data/library.js';
+import { STYLE_ROWS } from '../data/styles.js';
 
 const records = new Map(Object.entries(library).map(([id, entry]) => [id, { id, entry }]));
 const blank = (name = 'Vanilla') => blankCreateDraft({ recipeId: 'r1', versionId: 'v1', name });
@@ -213,5 +218,108 @@ describe('row operations on a create draft (MAKE-06, D-05, D-07)', () => {
     setRowGrams(draft, 'row-1', '5');
     removeRow(draft, 'row-1');
     expect(draft).toEqual(before);
+  });
+});
+
+describe('creationTargets (D-08b)', () => {
+  const targetsOf = (targets) => creationTargets({ ...blank(), targets });
+  const bigEnd = `1${'0'.repeat(309)}`;
+
+  it('reads a band when both ends parse and low is at or below high', () => {
+    expect(targetsOf({ pod: ['14', '18'] })).toEqual({ pod: [14, 18] });
+    expect(targetsOf({ pod: ['14', '14'] })).toEqual({ pod: [14, 14] });
+    expect(targetsOf({ pod: ['9.25', '12'] })).toEqual({ pod: [9.25, 12] });
+  });
+
+  it('gives no key for low above high, a blank end, a negative, three decimals or text', () => {
+    expect(targetsOf({ pod: ['18', '14'] })).toEqual({});
+    expect(targetsOf({ pod: ['', '18'] })).toEqual({});
+    expect(targetsOf({ pod: ['5', ''] })).toEqual({});
+    expect(targetsOf({ pod: ['-1', '5'] })).toEqual({});
+    expect(targetsOf({ pod: ['x', '5'] })).toEqual({});
+    expect(targetsOf({ pod: ['1.234', '5'] })).toEqual({});
+  });
+
+  it('gives no key for an end that reads as Infinity, even when both are Infinity', () => {
+    expect(targetsOf({ pod: ['0', bigEnd] })).toEqual({});
+    expect(targetsOf({ pod: [bigEnd, bigEnd] })).toEqual({});
+  });
+
+  it('reads each band on its own', () => {
+    expect(targetsOf({ pod: ['14', '18'], fat: ['x', '2'], solids: ['36', '42'] })).toEqual({
+      pod: [14, 18],
+      solids: [36, 42],
+    });
+  });
+});
+
+describe('applyStyle, clearStyle and setBandEnd (MAKE-09, decisions 6, 9, 14, 17)', () => {
+  const style = (id) => STYLE_ROWS.find((row) => row.id === id);
+
+  it('applyStyle writes the id, exactly the style bands as strings, and the default temperature', () => {
+    const next = applyStyle(blank(), style('philadelphia'));
+    expect(next.style).toBe('philadelphia');
+    expect(next.targets).toEqual({ pod: ['14', '18'], fat: ['10', '18'], msnf: ['8', '12'], solids: ['36', '42'] });
+    expect(next.serveTempC).toBe('-14');
+    expect(applyStyle(blank(), style('gelato')).serveTempC).toBe('-12.5');
+  });
+
+  it('applyStyle drops a band the style leaves blank', () => {
+    const typed = { ...blank(), targets: { fat: ['1', '2'], msnf: ['3', '4'] } };
+    expect(applyStyle(typed, style('sorbet')).targets).toEqual({ pod: ['24', '32'], solids: ['26', '36'] });
+  });
+
+  it('applying the same style twice gives its own values again', () => {
+    const once = applyStyle(blank(), style('french'));
+    const edited = setBandEnd(once, 'fat', 1, '99');
+    expect(applyStyle(edited, style('french'))).toEqual(once);
+  });
+
+  it('a style whose default temperature is not a finite number gives an empty temperature', () => {
+    const odd = { ...style('french'), serveTempC: { default: null, min: -16, max: -12 } };
+    expect(applyStyle(blank(), odd).serveTempC).toBe('');
+  });
+
+  it('clearStyle empties the style and the temperature and leaves the bands', () => {
+    const picked = applyStyle(blank(), style('philadelphia'));
+    const next = clearStyle(picked);
+    expect(next.style).toBeNull();
+    expect(next.serveTempC).toBe('');
+    expect(next.targets).toEqual(picked.targets);
+  });
+
+  it('setBandEnd changes one end, keeps the style, and removes a band left with two blank ends', () => {
+    const picked = applyStyle(blank(), style('philadelphia'));
+    const next = setBandEnd(picked, 'fat', 1, '16');
+    expect(next.targets.fat).toEqual(['10', '16']);
+    expect(next.style).toBe('philadelphia');
+    const blanked = setBandEnd(setBandEnd(picked, 'fat', 0, ''), 'fat', 1, '');
+    expect('fat' in blanked.targets).toBe(false);
+  });
+
+  it('setBandEnd starts a band from blank ends and keeps what was typed', () => {
+    expect(setBandEnd(blank(), 'sugar', 0, '1.')).toEqual({ ...blank(), targets: { sugar: ['1.', ''] } });
+  });
+
+  it('setBandEnd throws a RangeError for a key outside the six bands', () => {
+    expect(() => setBandEnd(blank(), 'protein', 0, '1')).toThrow(RangeError);
+    expect(() => setBandEnd(blank(), '__proto__', 0, '1')).toThrow(RangeError);
+    expect(() => setBandEnd(blank(), 'fat', 2, '1')).toThrow(RangeError);
+  });
+
+  it('mutates neither the draft nor the style row', () => {
+    const picked = applyStyle(blank(), style('philadelphia'));
+    const before = structuredClone(picked);
+    const styleBefore = structuredClone(style('philadelphia'));
+    setBandEnd(picked, 'fat', 0, '1');
+    clearStyle(picked);
+    applyStyle(picked, style('gelato'));
+    expect(picked).toEqual(before);
+    expect(style('philadelphia')).toEqual(styleBefore);
+  });
+
+  it('creationSheetVersion carries creationTargets(draft)', () => {
+    const draft = { ...blank(), targets: { pod: ['14', '18'], fat: ['9', '1'] } };
+    expect(creationSheetVersion(draft).targets).toEqual({ pod: [14, 18] });
   });
 });

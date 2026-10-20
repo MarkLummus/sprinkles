@@ -1156,3 +1156,166 @@ describe('remove deletes a creation row outright (MAKE-06, decision 5, T-01)', (
     expect(document.activeElement).toBe(addButton());
   });
 });
+
+describe('the Style region fills the bands and the temperature (MAKE-09, decisions 6, 9, 14, 17)', () => {
+  const MILK = 'Whole milk, 3.5% fat';
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-add');
+  const gramsField = (name) => field(`${name}, grams`);
+  const menu = () => root().querySelector('select.mk-menu');
+  const clearButton = () => root().querySelector('.mk-region .batch-row__head-acts button');
+  const temperature = () => field('Serving temperature, degrees Celsius');
+  const BANDS = ['Freezing · PAC', 'Sweetness · POD', 'Fat', 'Milk solids · MSNF', 'Sugar', 'Solids'];
+  const ends = (label) => [field(`${label}, target low`).value, field(`${label}, target high`).value];
+  const rule = (word) => root().querySelector(`.graduated-rule[aria-label^="${word},"]`);
+
+  async function pickAt(name, grams) {
+    await click(addButton());
+    const row = [...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === name);
+    await click(row);
+    await type(gramsField(name), grams);
+  }
+
+  async function chooseStyle(value) {
+    await act(async () => {
+      menu().value = value;
+      menu().dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    await flush();
+  }
+
+  it('opens with No style, an empty temperature, twelve blank band fields and no Clear', async () => {
+    await startVanilla();
+    expect(root().querySelectorAll('aside.notebook-log .mk-region')).toHaveLength(1);
+    expect(menu().value).toBe('');
+    expect(menu().options[menu().selectedIndex].textContent).toBe('No style');
+    expect(temperature().value).toBe('');
+    for (const label of BANDS) expect(ends(label)).toEqual(['', '']);
+    expect(clearButton()).toBeNull();
+  });
+
+  it('choosing Philadelphia fills the bands and -14, shows Clear, and the Balance reads a target on Sweetness only', async () => {
+    await startVanilla();
+    await pickAt(MILK, '600');
+    await pickAt('Sucrose', '150');
+    expect(rule('Sweetness · POD').getAttribute('aria-label')).toContain('no target set');
+    await chooseStyle('philadelphia');
+    expect(menu().value).toBe('philadelphia');
+    expect(temperature().value).toBe('-14');
+    expect(ends('Sweetness · POD')).toEqual(['14', '18']);
+    expect(ends('Fat')).toEqual(['10', '18']);
+    expect(ends('Milk solids · MSNF')).toEqual(['8', '12']);
+    expect(ends('Solids')).toEqual(['36', '42']);
+    expect(ends('Freezing · PAC')).toEqual(['', '']);
+    expect(ends('Sugar')).toEqual(['', '']);
+    expect(clearButton().textContent).toBe('Clear');
+    expect(rule('Sweetness · POD').getAttribute('aria-label')).toContain('target 14–18');
+    expect(rule('Freezing · PAC').getAttribute('aria-label')).toContain('no target set');
+  });
+
+  it('editing Fat keeps Philadelphia and -14; Clear keeps the bands and empties the temperature; Gelato then fills -12.5', async () => {
+    await startVanilla();
+    await chooseStyle('philadelphia');
+    await type(field('Fat, target high'), '16');
+    expect(menu().value).toBe('philadelphia');
+    expect(temperature().value).toBe('-14');
+    expect(ends('Fat')).toEqual(['10', '16']);
+    await click(clearButton());
+    expect(menu().value).toBe('');
+    expect(temperature().value).toBe('');
+    expect(ends('Fat')).toEqual(['10', '16']);
+    expect(ends('Sweetness · POD')).toEqual(['14', '18']);
+    expect(clearButton()).toBeNull();
+    await chooseStyle('gelato');
+    expect(temperature().value).toBe('-12.5');
+    expect(ends('Fat')).toEqual(['4', '9']);
+  });
+
+  it('choosing No style leaves the bands and empties the temperature', async () => {
+    await startVanilla();
+    await chooseStyle('french');
+    await chooseStyle('');
+    expect(menu().value).toBe('');
+    expect(temperature().value).toBe('');
+    expect(ends('Fat')).toEqual(['10', '14']);
+  });
+
+  it('a band that does not read shows no error, and its figure reads no target set', async () => {
+    await startVanilla();
+    await pickAt(MILK, '600');
+    await pickAt('Sucrose', '150');
+    await type(field('Sweetness · POD, target low'), '20');
+    await type(field('Sweetness · POD, target high'), '10');
+    expect(rule('Sweetness · POD').getAttribute('aria-label')).toContain('no target set');
+    expect(root().querySelector('aside.notebook-log [aria-invalid]')).toBeNull();
+    expect(root().querySelector('aside.notebook-log .field-error')).toBeNull();
+  });
+
+  it('keeps the style, the bands and the temperature in the saved draft, and Resume brings them back', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await chooseStyle('gelato');
+    await type(field('Sugar, target low'), '1.5');
+    await advance();
+    const saved = lastSaved().payload;
+    expect(saved.style).toBe('gelato');
+    expect(saved.serveTempC).toBe('-12.5');
+    expect(saved.targets.fat).toEqual(['4', '9']);
+    expect(saved.targets.sugar).toEqual(['1.5', '']);
+    expectNoRecordWrites();
+
+    await act(async () => current.root.unmount());
+    current.container.remove();
+    current = null;
+    await mountAt('/notebook/new');
+    await flush(() => field('Recipe name') !== null);
+    expect(menu().value).toBe('gelato');
+    expect(temperature().value).toBe('-12.5');
+    expect(ends('Fat')).toEqual(['4', '9']);
+    expect(ends('Sugar')).toEqual(['1.5', '']);
+  });
+
+  it('offers no field for equipment or process', async () => {
+    await startVanilla();
+    const text = root().querySelector('aside.notebook-log').textContent;
+    expect(text).not.toMatch(/machine|equipment|pasteur|hold/i);
+    expect(root().querySelectorAll('aside.notebook-log .mk-region')).toHaveLength(1);
+  });
+
+  it('two band edits in one React batch both land', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await chooseStyle('philadelphia');
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+    await act(async () => {
+      const fatHigh = field('Fat, target high');
+      setter.call(fatHigh, '16');
+      fatHigh.dispatchEvent(new Event('input', { bubbles: true }));
+      const msnfLow = field('Milk solids · MSNF, target low');
+      setter.call(msnfLow, '9');
+      msnfLow.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    expect(field('Fat, target high').value).toBe('16');
+    expect(field('Milk solids · MSNF, target low').value).toBe('9');
+    await advance();
+    const { targets } = lastSaved().payload;
+    expect(targets.fat).toEqual(['10', '16']);
+    expect(targets.msnf).toEqual(['9', '12']);
+  });
+
+  it('Clear and a temperature edit in one React batch both land', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await chooseStyle('philadelphia');
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+    await act(async () => {
+      clearButton().dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      setter.call(temperature(), '-16');
+      temperature().dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    expect(menu().value).toBe('');
+    expect(temperature().value).toBe('-16');
+    await advance();
+    expect(lastSaved().payload.style).toBeNull();
+    expect(lastSaved().payload.serveTempC).toBe('-16');
+  });
+});

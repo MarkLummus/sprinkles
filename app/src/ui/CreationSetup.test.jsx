@@ -79,11 +79,10 @@ function choose(value) {
 }
 
 describe('CreationSetup (MAKE-09)', () => {
-  it('opens with one region, Style, and no field for equipment or process', () => {
+  it('opens with the regions Style and Scales, and no field for equipment or process', () => {
     mount();
     const regions = current.container.querySelectorAll('section');
-    expect(regions).toHaveLength(1);
-    expect(regions[0].getAttribute('aria-label')).toBe('Style');
+    expect([...regions].map((region) => region.getAttribute('aria-label'))).toEqual(['Style', 'Scales']);
     expect(regions[0].querySelector('h2.region-name').textContent).toBe('Style');
     expect(current.container.textContent).not.toMatch(/machine|equipment|pasteuri|hold time|process/i);
   });

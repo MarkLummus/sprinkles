@@ -316,6 +316,110 @@
   color: var(--app-text);
 }
 
+/* The Style region, the creation editor's log column (Phase 10, sketch 013
+   style-menu-and-bands.html). Ported from the board's own rules with .notebook
+   in place of its panel wrapper; every value is a token. The board's drawn open
+   list is a stand-in for the browser's own, so it has no rule here. */
+.notebook .mk-region {
+  padding: var(--gap-m) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+
+.notebook .mk-region .batch-row__head {
+  min-height: var(--sheet-text-control-min);
+  align-items: center;
+}
+
+.notebook .mk-region:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.notebook .mk-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+
+.notebook .mk-field-row {
+  display: flex;
+  align-items: center;
+  column-gap: var(--gap-field-unit);
+}
+
+.notebook .mk-field-row .ink-field {
+  width: var(--sheet-field-w-figure);
+  flex: none;
+}
+
+/* The signed one-decimal field: -12.5 does not fit the figure width (WebKit:
+   63 px of text in 54), so it is half again as wide. */
+.notebook .mk-field-row .ink-field[type='number'] {
+  width: calc(var(--sheet-field-w-figure) * 1.5);
+}
+
+.notebook .mk-unit {
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  color: var(--app-text);
+}
+
+/* The menu: the app's select (app.css: appearance none, the chevron) in the
+   log's field chrome, the chosen style on it. */
+.notebook .mk-menu-wrap {
+  position: relative;
+}
+
+.notebook .notebook-log .mk-menu {
+  display: block;
+  width: 100%;
+  padding: var(--app-notebook-gap-tight) var(--gap-select-chevron-room) var(--app-notebook-gap-tight)
+    var(--app-notebook-field-pad-x);
+  border: var(--app-rule-row) solid var(--app-divider);
+  border-radius: var(--app-radius-control);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--sheet-leading-field);
+  color: var(--app-text);
+}
+
+/* Targets: one row per figure, its label and the two ends of its band. */
+.notebook .mk-band {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--gap-s);
+  min-height: var(--touch-min);
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+
+.notebook .mk-band__label {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  color: var(--app-text);
+}
+
+.notebook .mk-band__label small {
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
+}
+
+.notebook .mk-band__ends {
+  display: flex;
+  align-items: center;
+  column-gap: var(--gap-field-unit);
+}
+
+.notebook .mk-band__ends .ink-field {
+  width: var(--sheet-field-w-figure);
+}
+
+.notebook .mk-band__unit {
+  min-width: var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  color: var(--app-text);
+}
+
 .notebook-recipe__form-actions {
   display: flex;
   gap: var(--gap-s);
@@ -1502,6 +1606,10 @@
 
   .notebook .pick__head .text-control,
   .notebook .pick .ing__clear {
+    min-height: var(--touch-min);
+  }
+
+  .notebook .mk-band .ink-field {
     min-height: var(--touch-min);
   }
 

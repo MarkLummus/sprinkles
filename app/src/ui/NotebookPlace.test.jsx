@@ -303,6 +303,40 @@ describe('NotebookPlace reading the store', () => {
     expect(container.querySelector('p.place__note').textContent).toBe('No recipes yet.');
   });
 
+  // D-10a: exactly one page notice, before the page's own root, in every branch.
+  function expectOneNoticeBeforeRoot(container) {
+    const notices = container.querySelectorAll('.page-status');
+    expect(notices).toHaveLength(1);
+    const anchor = notices[0].parentElement;
+    expect(anchor.className).toBe('page-status-anchor');
+    expect(anchor.nextElementSibling.className).toBe('list-page place nb');
+  }
+
+  it('renders one page notice before the root in the failed, loading, list and empty branches', async () => {
+    stubStore({ drafts: [] });
+    repository.getAll = vi.fn().mockRejectedValue(new Error('read failed'));
+    expectOneNoticeBeforeRoot(await mount());
+    await act(async () => mounted.root.unmount());
+    mounted.container.remove();
+    mounted = null;
+
+    stubStore({ drafts: [] });
+    repository.getAll = vi.fn(() => new Promise(() => {}));
+    expectOneNoticeBeforeRoot(await mount());
+    await act(async () => mounted.root.unmount());
+    mounted.container.remove();
+    mounted = null;
+
+    stubStore({ drafts: [] });
+    expectOneNoticeBeforeRoot(await mount());
+    await act(async () => mounted.root.unmount());
+    mounted.container.remove();
+    mounted = null;
+
+    stubStore({ withRecipes: false, drafts: [] });
+    expectOneNoticeBeforeRoot(await mount());
+  });
+
   it('shows no draft row and offers New recipe when the only draft is not a creation', async () => {
     stubStore({
       drafts: [

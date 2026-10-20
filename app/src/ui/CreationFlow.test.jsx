@@ -48,6 +48,7 @@ vi.mock('../store/repository.js', async () => {
 });
 
 import { repository } from '../store/repository.js';
+import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { NotebookPlace } from './NotebookPlace.jsx';
 import { CreationRoute } from './CreationRoute.jsx';
 import { CatalogFixture } from './catalog.fixtures.jsx';
@@ -71,9 +72,13 @@ let current = null;
 let location = null;
 let navigateTo = null;
 let originalMatchMedia = null;
+// Every route state the page has been at, in order: the flags are read once and
+// replaced with null, so the final state alone no longer shows them.
+let stateTrail = [];
 
 function Probe() {
   location = useLocation();
+  stateTrail.push(location.state);
   navigateTo = useNavigate();
   return null;
 }
@@ -140,6 +145,7 @@ afterEach(async () => {
   originalMatchMedia = null;
   delete Element.prototype.scrollIntoView;
   store.drafts.clear();
+  stateTrail = [];
   vi.clearAllMocks();
 });
 
@@ -238,7 +244,8 @@ describe('New recipe, a name and Start open the creation editor (MAKE-04)', () =
 
     expect(location.pathname).toBe('/notebook/new');
     expect(location.pathname).not.toContain(record.versionId);
-    expect(location.state).toEqual({ started: true });
+    expect(stateTrail).toContainEqual({ started: true });
+    expect(location.state).toBeNull();
     expect(field('Recipe name').value).toBe('Vanilla');
     expect(field('Version name').value).toBe('Version 1');
     expect(root().textContent).toContain('New recipe · draft');
@@ -428,7 +435,7 @@ describe('Cancel waits for the delete (Pitfall 6, D-03)', () => {
     });
     await flush(() => location.pathname === '/notebook');
     expect(location.pathname).toBe('/notebook');
-    expect(location.state).toEqual({ discarded: true });
+    expect(stateTrail).toContainEqual({ discarded: true, createKept: false });
     expect(store.drafts.size).toBe(0);
   });
 
@@ -439,7 +446,7 @@ describe('Cancel waits for the delete (Pitfall 6, D-03)', () => {
     await flush();
 
     expect(location.pathname).toBe('/notebook/new');
-    expect(location.state).toEqual({ started: true });
+    expect(stateTrail.some((state) => state?.discarded)).toBe(false);
     expect(store.drafts.size).toBe(1);
     expect(field('Recipe name').value).toBe('Vanilla');
   });
@@ -459,10 +466,9 @@ describe('Cancel waits for the delete (Pitfall 6, D-03)', () => {
     await act(async () => {
       navigateTo('/notebook');
     });
-    await flush(() => buttonByText('Resume') !== null || location.pathname === '/notebook');
-    await act(async () => {
-      navigateTo('/notebook/new');
-    });
+    await flush(() => buttonByText('Resume') !== null);
+    expect(root().querySelector('li.nb__draft').textContent).toContain('Vanilla');
+    await click(buttonByText('Resume'));
     await flush(() => field('Recipe description') !== null);
     expect(field('Recipe description').value).toBe(' Still kept.');
   });
@@ -682,5 +688,125 @@ describe('a kept creation shows on the Notebook at load (MAKE-11, D-04b)', () =>
     expect(resurfaced[0].textContent).toContain('Vanilla');
     expect(buttonByText('Resume')).not.toBeNull();
     expect(buttonByText('New recipe')).toBeNull();
+  });
+});
+
+const statusTexts = () => [...root().querySelectorAll('.page-status')].map((node) => node.textContent);
+
+describe('the page notices (D-10a, MAKE-11)', () => {
+  it('Resume announces "Draft kept. Cancel discards it." once, in the one notice before the editor', async () => {
+    store.drafts.set('v-kept', createDraftRecord('Vanilla'));
+    await mountAt('/notebook');
+    await click(buttonByText('Resume'));
+    await flush(() => field('Recipe name') !== null);
+
+    expect(location.pathname).toBe('/notebook/new');
+    expect(repository.getDraft).toHaveBeenCalledTimes(1);
+    expect(statusTexts()).toEqual(['Draft kept. Cancel discards it.']);
+    const status = root().querySelector('.page-status');
+    expect(status.getAttribute('role')).toBe('status');
+    expect(status.getAttribute('aria-live')).toBe('polite');
+    const anchor = status.parentElement;
+    expect(anchor.className).toBe('page-status-anchor');
+    expect(anchor.nextElementSibling.className).toBe('notebook mk-page');
+  });
+
+  it('a direct visit or reload at /notebook/new with a kept draft announces it too', async () => {
+    store.drafts.set('v-kept', createDraftRecord('Vanilla'));
+    await mountAt('/notebook/new');
+    await flush(() => field('Recipe name') !== null);
+    expect(statusTexts()).toEqual(['Draft kept. Cancel discards it.']);
+  });
+
+  it('right after Start the editor announces nothing, and the started flag is replaced with null', async () => {
+    await startVanilla();
+    expect(statusTexts()).toEqual(['']);
+    expect(stateTrail).toContainEqual({ started: true });
+    expect(location.state).toBeNull();
+  });
+
+  it('keeps the one notice in every branch of the Notebook', async () => {
+    await mountAt('/notebook');
+    expect(statusTexts()).toEqual(['']);
+    const anchor = root().querySelector('.page-status-anchor');
+    expect(anchor.nextElementSibling.className).toBe('list-page place nb');
+  });
+
+  it('Cancel lands on the Notebook, which announces "Draft discarded." once and offers New recipe', async () => {
+    await startVanilla();
+    await click(buttonByText('Cancel'));
+    await flush(() => location.pathname === '/notebook' && buttonByText('New recipe') !== null);
+
+    expect(statusTexts()).toEqual(['Draft discarded.']);
+    expect(root().querySelector('li.nb__draft')).toBeNull();
+    expect(buttonByText('New recipe')).not.toBeNull();
+    expect(stateTrail).toContainEqual({ discarded: true, createKept: false });
+    // The flag is read once: the entry's state is replaced, so Back or a reload
+    // never repeats the notice.
+    expect(location.state).toBeNull();
+    await closeAndOpen('/notebook');
+    expect(statusTexts()).toEqual(['']);
+  });
+
+  it('clears "Draft discarded." after 5 s', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await click(buttonByText('Cancel'));
+    await flush(() => location.pathname === '/notebook');
+    expect(statusTexts()).toEqual(['Draft discarded.']);
+    await advance(5000);
+    expect(statusTexts()).toEqual(['']);
+  });
+
+  it('with two create drafts stored, Cancel lands with createKept true and the Notebook announces over the older row', async () => {
+    store.drafts.set('v-old', twoDrafts().old);
+    store.drafts.set('v-new', twoDrafts().newer);
+    await mountAt('/notebook/new');
+    await flush(() => field('Recipe name') !== null);
+    expect(field('Recipe name').value).toBe('Lemon');
+    await click(buttonByText('Cancel'));
+    await flush(() => location.pathname === '/notebook' && root().querySelector('li.nb__draft') !== null);
+
+    expect(stateTrail).toContainEqual({ discarded: true, createKept: true });
+    expect(statusTexts()).toEqual(['Draft discarded.']);
+    expect(root().querySelector('li.nb__draft').textContent).toContain('Vanilla');
+  });
+
+  it('leaves createKept out when the drafts read after the delete fails, and still announces', async () => {
+    await startVanilla();
+    repository.listDrafts.mockRejectedValueOnce(new Error('store gone'));
+    await click(buttonByText('Cancel'));
+    await flush(() => location.pathname === '/notebook' && buttonByText('New recipe') !== null);
+
+    expect(stateTrail).toContainEqual({ discarded: true });
+    expect(stateTrail.some((state) => state && 'createKept' in state)).toBe(false);
+    expect(statusTexts()).toEqual(['Draft discarded.']);
+  });
+
+  it('a delete that fails says so in the editor and never announces "Draft discarded."', async () => {
+    await startVanilla();
+    repository.deleteDraft.mockRejectedValueOnce(new Error('store gone'));
+    await click(buttonByText('Cancel'));
+    await flush();
+
+    expect(location.pathname).toBe('/notebook/new');
+    expect(statusTexts()).toEqual([PAGE_LOAD_ERROR]);
+    expect(store.drafts.size).toBe(1);
+  });
+
+  it('carries no text from route state onto either notice', async () => {
+    store.drafts.set('v-kept', createDraftRecord('Vanilla'));
+    await mountAt('/notebook');
+    await act(async () => {
+      navigateTo('/notebook', { replace: true, state: { discarded: 'Attacker words', started: 'Attacker words' } });
+    });
+    await flush();
+    expect(statusTexts()).toEqual(['']);
+    await act(async () => {
+      navigateTo('/notebook', { replace: true, state: { discarded: true, text: 'Attacker words' } });
+    });
+    await flush();
+    expect(statusTexts()).toEqual(['Draft discarded.']);
+    expect(root().textContent).not.toContain('Attacker words');
   });
 });

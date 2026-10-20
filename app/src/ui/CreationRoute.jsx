@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import { repository } from '../store/repository.js';
 import { draftMatchesCreate, newestDraft } from '../domain/draft.js';
 import { NOTEBOOK_PLACE_PATH } from './notebookPaths.js';
@@ -12,9 +12,25 @@ import { CreationPage } from './CreationPage.jsx';
 // NotebookRedirects.jsx gives), keeps the newest record the create check
 // accepts, and mounts the editor keyed by that record's versionId. With none,
 // or when the read fails, it replaces the address with the Notebook, silently.
+//
+// Start opens the editor with the route state { started: true } (a flag, never
+// text). It is read once, at first render, and passed on as justStarted so the
+// editor does not announce 'Draft kept' right after Start; the entry's state is
+// then replaced with null, so a reload announces it. This does not read the
+// drafts again: that effect's dependency list stays empty.
 export function CreationRoute() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [record, setRecord] = useState(null);
+  const startedRef = useRef(null);
+  if (startedRef.current === null) startedRef.current = location.state?.started === true;
+  const startedClearedRef = useRef(false);
+
+  useEffect(() => {
+    if (!startedRef.current || startedClearedRef.current) return;
+    startedClearedRef.current = true;
+    navigate({ pathname: location.pathname }, { replace: true, state: null });
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -35,5 +51,5 @@ export function CreationRoute() {
   }, []);
 
   if (record === null) return null;
-  return <CreationPage key={record.versionId} record={record} />;
+  return <CreationPage key={record.versionId} record={record} justStarted={startedRef.current} />;
 }

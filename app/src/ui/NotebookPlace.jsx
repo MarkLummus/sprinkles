@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useOutletContext } from 'react-router';
+import { Link, useLocation, useNavigate, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
 import { activeWork } from '../domain/lastEvent.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate, newestDraft } from '../domain/draft.js';
@@ -9,6 +9,9 @@ import { notebookPath, NEW_RECIPE_PATH } from './notebookPaths.js';
 import { batchCountWords, recipeCountWords, versionCountWords } from './countWords.js';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { Button } from './Button.jsx';
+import { PageNotice, usePageNotice } from './PageNotice.jsx';
+
+export const DRAFT_DISCARDED_STATUS = 'Draft discarded.';
 
 // The Notebook place (PLACE-02, sketch 012 notebook-place.html): the recipes,
 // one row each, in Home's own order. Since Phase 10 it also starts a recipe:
@@ -19,6 +22,8 @@ export function NotebookPlace() {
   // what the import just wrote (the same context Home and Search read).
   const storeRevision = useOutletContext();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [notice, announce] = usePageNotice();
   const [data, setData] = useState(null);
   const [failed, setFailed] = useState(false);
   // The kept create draft the place draws as a row (null for none). The read
@@ -44,21 +49,38 @@ export function NotebookPlace() {
     };
   }, [storeRevision]);
 
+  // Cancel in the creation editor lands here with the flag { discarded: true }
+  // (a flag, never text: the words are this file's own constant). It is read
+  // once and the entry's state replaced with null, so Back or a reload never
+  // repeats the notice (the useRouteIntents pattern). The effect depends on the
+  // state alone, so once it is null the effect has nothing left to read.
+  useEffect(() => {
+    if (location.state?.discarded !== true) return;
+    announce(DRAFT_DISCARDED_STATUS);
+    navigate({ pathname: location.pathname }, { replace: true, state: null });
+  }, [location.state]);
+
   if (failed) {
     return (
-      <div className="list-page place nb">
-        <h1 className="place__title">Notebook</h1>
-        <p className="place__note">{PAGE_LOAD_ERROR}</p>
-      </div>
+      <>
+        <PageNotice message={notice} />
+        <div className="list-page place nb">
+          <h1 className="place__title">Notebook</h1>
+          <p className="place__note">{PAGE_LOAD_ERROR}</p>
+        </div>
+      </>
     );
   }
   // Until the read settles the page shows nothing but its title, so the
   // empty panel's words never flash over a store that holds recipes.
   if (data === null) {
     return (
-      <div className="list-page place nb">
-        <h1 className="place__title">Notebook</h1>
-      </div>
+      <>
+        <PageNotice message={notice} />
+        <div className="list-page place nb">
+          <h1 className="place__title">Notebook</h1>
+        </div>
+      </>
     );
   }
 
@@ -85,14 +107,17 @@ export function NotebookPlace() {
   }
 
   return (
-    <NotebookList
-      versions={data.versions}
-      batches={data.batches}
-      recipes={data.recipes}
-      draft={draft}
-      onStart={handleStart}
-      onResume={() => navigate(NEW_RECIPE_PATH)}
-    />
+    <>
+      <PageNotice message={notice} />
+      <NotebookList
+        versions={data.versions}
+        batches={data.batches}
+        recipes={data.recipes}
+        draft={draft}
+        onStart={handleStart}
+        onResume={() => navigate(NEW_RECIPE_PATH)}
+      />
+    </>
   );
 }
 

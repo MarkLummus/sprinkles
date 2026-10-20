@@ -1185,7 +1185,8 @@ describe('the Style region fills the bands and the temperature (MAKE-09, decisio
 
   it('opens with No style, an empty temperature, twelve blank band fields and no Clear', async () => {
     await startVanilla();
-    expect(root().querySelectorAll('aside.notebook-log .mk-region')).toHaveLength(2);
+    expect(root().querySelectorAll('aside.notebook-log .mk-region')).toHaveLength(3);
+    expect([...root().querySelectorAll('aside.notebook-log .mk-region')].map((node) => node.getAttribute('aria-label'))).toEqual(['Style', 'Scales', 'Problems']);
     expect(menu().value).toBe('');
     expect(menu().options[menu().selectedIndex].textContent).toBe('No style');
     expect(temperature().value).toBe('');
@@ -1278,7 +1279,7 @@ describe('the Style region fills the bands and the temperature (MAKE-09, decisio
     await startVanilla();
     const text = root().querySelector('aside.notebook-log').textContent;
     expect(text).not.toMatch(/machine|equipment|pasteur|hold/i);
-    expect(root().querySelectorAll('aside.notebook-log .mk-region')).toHaveLength(2);
+    expect(root().querySelectorAll('aside.notebook-log .mk-region')).toHaveLength(3);
   });
 
   it('two band edits in one React batch both land', async () => {

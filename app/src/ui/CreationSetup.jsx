@@ -5,7 +5,7 @@ import { useCatalog } from './CatalogContext.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { Segmented } from './Segmented.jsx';
 import { FIGURE_SPECS, figureLabelText } from '../domain/figures.js';
-import { mintScaleKey, MAX_RECIPE_SCALES } from '../domain/catalog.js';
+import { mintScaleKey, MAX_RECIPE_PROBLEMS, MAX_RECIPE_SCALES } from '../domain/catalog.js';
 import { freshId } from '../domain/id.js';
 import {
   applyStyle,
@@ -15,12 +15,15 @@ import {
   updateScale,
   removeScale,
   scaleStopsLine,
+  addProblem,
+  updateProblem,
+  removeProblem,
 } from '../domain/creation.js';
 
 // The creation editor's log column (Phase 10, MAKE-09, TASTE-01, sketch 013
 // style-menu-and-bands.html and scales-and-problems.html): the Style region, a
 // menu of the catalog's styles, the serving temperature and the six balance
-// bands, then the Scales region. There is no machine and
+// bands, then the Scales and Problems regions. There is no machine and
 // no process here (decisions 15 and 20). Every change is handed to onChange as
 // an updater over the newest draft, never as a draft built from this render's
 // createDraft, so two edits in one React batch both land (usePenDraft.js:41-45:
@@ -53,22 +56,23 @@ export function CreationSetup({ createDraft, onChange }) {
   // handler leaves a request; the effect below finds the target inside its own
   // region, since every card's field is labelled Name, and focuses it once.
   const scalesRef = useRef(null);
+  const problemsRef = useRef(null);
   const focusRequestRef = useRef(null);
 
   useEffect(() => {
     const request = focusRequestRef.current;
     if (!request) return;
     focusRequestRef.current = null;
-    const region = scalesRef.current;
+    const region = (request.endsWith('scale') ? scalesRef : problemsRef).current;
     if (!region) return;
-    const target =
-      request === 'new-scale'
-        ? [...region.querySelectorAll('.mk-card')].pop()?.querySelector('input[aria-label="Name"]')
-        : region.querySelector('.mk-add');
+    const target = request.startsWith('new-')
+      ? [...region.querySelectorAll('.mk-card')].pop()?.querySelector('input[aria-label="Name"]')
+      : region.querySelector('.mk-add');
     target?.focus();
   });
 
   const coreScales = catalog.scales.filter((scale) => scale.group === 'core').map((scale) => scale.name).join(', ');
+  const coreProblems = catalog.problems.map((problem) => problem.name).join(' · ');
 
   // A new scale's key is minted here, once, never in render (D-03b).
   const handleAddScale = () => {
@@ -89,6 +93,21 @@ export function CreationSetup({ createDraft, onChange }) {
 
   const handleScaleKind = (key, word) => {
     onChange((prev) => updateScale(prev, key, 'kind', KIND_BY_WORD[word]));
+  };
+
+  const handleAddProblem = () => {
+    onChange((prev) => addProblem(prev));
+    focusRequestRef.current = 'new-problem';
+  };
+
+  const handleRemoveProblem = (index) => {
+    onChange((prev) => removeProblem(prev, index));
+    focusRequestRef.current = 'add-problem';
+  };
+
+  const handleProblemName = (index) => (event) => {
+    const raw = event.target.value;
+    onChange((prev) => updateProblem(prev, index, raw));
   };
 
   const handleStyle = (event) => {
@@ -239,6 +258,37 @@ export function CreationSetup({ createDraft, onChange }) {
             <p className="mk-add-row">
               <Button className="text-control mk-add" onClick={handleAddScale}>
                 Add scale
+              </Button>
+            </p>
+          )}
+        </div>
+      </section>
+      <section className="batch-row mk-region" aria-label="Problems" ref={problemsRef}>
+        <div className="batch-row__head">
+          <div className="batch-row__head-lead">
+            <h2 className="region-name">Problems</h2>
+          </div>
+        </div>
+        <div className="mk-body">
+          <p className="pen-caption mk-cue">Every recipe</p>
+          <p className="mk-core">{coreProblems}</p>
+          {createDraft.problems.length > 0 && <p className="pen-caption mk-cue">This recipe only</p>}
+          {createDraft.problems.map((problem, index) => (
+            // A problem is words only, with no key of its own: its place is its identity.
+            <div className="mk-card" role="group" aria-label={`Problem ${index + 1}`} key={index}>
+              <div className="mk-card__head">
+                <span className="notebook-caption">{`Problem ${index + 1}`}</span>
+                <Button className="text-control" onClick={() => handleRemoveProblem(index)}>
+                  remove
+                </Button>
+              </div>
+              <CardField label="Name" value={problem} onChange={handleProblemName(index)} />
+            </div>
+          ))}
+          {createDraft.problems.length < MAX_RECIPE_PROBLEMS && (
+            <p className="mk-add-row">
+              <Button className="text-control mk-add" onClick={handleAddProblem}>
+                Add problem
               </Button>
             </p>
           )}

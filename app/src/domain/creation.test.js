@@ -22,6 +22,9 @@ import {
   updateScale,
   removeScale,
   scaleStopsLine,
+  addProblem,
+  updateProblem,
+  removeProblem,
 } from './creation.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate } from './draft.js';
 import { rowFromLibraryRecord } from './versionRow.js';
@@ -396,5 +399,50 @@ describe("the recipe's own scales (TASTE-01, decision 12, T-04)", () => {
     expect(scaleStopsLine({ low: '', high: 'rich', kind: 'goldilocks' })).toBeNull();
     expect(scaleStopsLine({ low: 'thin', high: 'rich', kind: '' })).toBeNull();
     expect(scaleStopsLine({ low: '<b>x', high: 'y', kind: 'magnitude' })).toBe('<b>x to y');
+  });
+});
+
+describe("the recipe's own problems (TASTE-02)", () => {
+  const asRecord = (payload) => buildDraftRecord({ versionId: 'v1', kind: 'create', payload, now: '2026-10-20T08:00:00.000Z' });
+
+  it('addProblem appends an empty problem that still fits a create record', () => {
+    const next = addProblem(blank());
+    expect(next.problems).toEqual(['']);
+    expect(draftMatchesCreate(asRecord(next))).toBe(true);
+  });
+
+  it('addProblem refuses a third problem with a RangeError', () => {
+    expect(() => addProblem(addProblem(addProblem(blank())))).toThrow(RangeError);
+  });
+
+  it('updateProblem and removeProblem change only that entry', () => {
+    const two = updateProblem(addProblem(addProblem(blank())), 1, 'Greasy');
+    expect(two.problems).toEqual(['', 'Greasy']);
+    expect(updateProblem(two, 0, 'Bitter').problems).toEqual(['Bitter', 'Greasy']);
+    expect(removeProblem(two, 0).problems).toEqual(['Greasy']);
+    expect(removeProblem(two, 1).problems).toEqual(['']);
+  });
+
+  it('an index out of range throws a RangeError', () => {
+    const one = addProblem(blank());
+    expect(() => updateProblem(one, 1, 'x')).toThrow(RangeError);
+    expect(() => updateProblem(one, -1, 'x')).toThrow(RangeError);
+    expect(() => updateProblem(one, 0.5, 'x')).toThrow(RangeError);
+    expect(() => removeProblem(one, 1)).toThrow(RangeError);
+    expect(() => removeProblem(blank(), 0)).toThrow(RangeError);
+  });
+
+  it('two problems may hold the same words; nothing refuses it before Save', () => {
+    const same = updateProblem(updateProblem(addProblem(addProblem(blank())), 0, 'Bitter'), 1, 'Bitter');
+    expect(same.problems).toEqual(['Bitter', 'Bitter']);
+  });
+
+  it('does not change the draft it is given', () => {
+    const base = addProblem(blank());
+    const before = structuredClone(base);
+    updateProblem(base, 0, 'x');
+    removeProblem(base, 0);
+    addProblem(base);
+    expect(base).toEqual(before);
   });
 });

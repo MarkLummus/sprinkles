@@ -5,7 +5,7 @@
 // new values and copies what it takes from its arguments.
 
 import { stopWordsFor } from './axes.js';
-import { MAX_RECIPE_SCALES, SCALE_KINDS } from './catalog.js';
+import { MAX_RECIPE_PROBLEMS, MAX_RECIPE_SCALES, SCALE_KINDS } from './catalog.js';
 import { blankCreateDraft } from './draft.js';
 import { FIGURE_SPECS } from './figures.js';
 import { parseGramsDraft } from './lineage.js';
@@ -291,4 +291,41 @@ export function scaleStopsLine(scale) {
   if (scale.kind === 'goldilocks') return stopWordsFor(scale).join(' · ');
   if (scale.kind === 'magnitude') return `${scale.low} to ${scale.high}`;
   return null;
+}
+
+function assertProblemIndex(draft, index) {
+  if (!Number.isInteger(index) || index < 0 || index >= draft.problems.length) {
+    throw new RangeError(`no problem at index ${index}`);
+  }
+}
+
+/**
+ * addProblem(draft) -> a new draft whose problems end with an empty one
+ * (TASTE-02). A third problem is a caller bug and throws a RangeError. Two
+ * problems may hold the same words: refusing that is Phase 11's Save.
+ */
+export function addProblem(draft) {
+  if (draft.problems.length >= MAX_RECIPE_PROBLEMS) {
+    throw new RangeError(`a recipe holds at most ${MAX_RECIPE_PROBLEMS} problems`);
+  }
+  return { ...draft, problems: [...draft.problems, ''] };
+}
+
+/**
+ * updateProblem(draft, index, text) -> a new draft with problem `index`
+ * reading `text` as typed; the other is untouched. An index outside the list
+ * throws a RangeError.
+ */
+export function updateProblem(draft, index, text) {
+  assertProblemIndex(draft, index);
+  return { ...draft, problems: draft.problems.map((problem, at) => (at === index ? text : problem)) };
+}
+
+/**
+ * removeProblem(draft, index) -> a new draft without problem `index`. An index
+ * outside the list throws a RangeError.
+ */
+export function removeProblem(draft, index) {
+  assertProblemIndex(draft, index);
+  return { ...draft, problems: draft.problems.filter((_problem, at) => at !== index) };
 }

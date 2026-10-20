@@ -11,6 +11,9 @@ import {
   addNote,
   updateNote,
   removeNote,
+  addRow,
+  setRowGrams,
+  removeRow,
 } from './creation.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate } from './draft.js';
 import { rowFromLibraryRecord } from './versionRow.js';
@@ -109,6 +112,12 @@ describe('creationSheetVersion (D-05, D-08)', () => {
     expect(version.rows[0].portions).toEqual([{ step: 1, grams: 0 }]);
   });
 
+  it('projects a grams value that reads as Infinity at 0 g and throws nothing', () => {
+    const overflow = `1${'0'.repeat(309)}`;
+    const version = creationSheetVersion(withRows([rowOf(overflow), rowOf('150', { id: 'row-b', libraryId: 'sucrose' })]), records);
+    expect(version.rows.map((row) => row.portions[0].grams)).toEqual([0, 150]);
+  });
+
   it('never mutates the draft and holds no grams string', () => {
     const draft = withRows([rowOf('600')]);
     const before = structuredClone(draft);
@@ -161,5 +170,48 @@ describe('note operations on a create draft (MAKE-08)', () => {
     const draft = noted('One.', 'Two.');
     expect(() => updateNote(draft, index, 'x')).toThrow(RangeError);
     expect(() => removeNote(draft, index)).toThrow(RangeError);
+  });
+});
+
+describe('row operations on a create draft (MAKE-06, D-05, D-07)', () => {
+  it('addRow appends a link-and-grams row last, and the result still fits a create record', () => {
+    const first = addRow(blank(), { rowId: 'row-1', libraryId: 'sucrose' });
+    const second = addRow(first, { rowId: 'row-2', libraryId: 'wholeMilk' });
+    expect(second.rows).toEqual([
+      { id: 'row-1', libraryId: 'sucrose', portions: [{ step: 1, grams: '' }] },
+      { id: 'row-2', libraryId: 'wholeMilk', portions: [{ step: 1, grams: '' }] },
+    ]);
+    const record = buildDraftRecord({ versionId: 'v1', kind: 'create', payload: second, now: '2026-10-20T08:00:00.000Z' });
+    expect(draftMatchesCreate(record)).toBe(true);
+  });
+
+  it('addRow throws a RangeError for a row id already on the draft and a TypeError for an empty id', () => {
+    const draft = addRow(blank(), { rowId: 'row-1', libraryId: 'sucrose' });
+    expect(() => addRow(draft, { rowId: 'row-1', libraryId: 'wholeMilk' })).toThrow(RangeError);
+    expect(() => addRow(draft, { rowId: '', libraryId: 'wholeMilk' })).toThrow(TypeError);
+    expect(() => addRow(draft, { rowId: 'row-2', libraryId: '' })).toThrow(TypeError);
+  });
+
+  it('setRowGrams changes only that row, keeps the text as typed, and throws for an unknown row', () => {
+    const draft = addRow(addRow(blank(), { rowId: 'row-1', libraryId: 'sucrose' }), { rowId: 'row-2', libraryId: 'wholeMilk' });
+    const next = setRowGrams(draft, 'row-1', '150.');
+    expect(next.rows[0].portions).toEqual([{ step: 1, grams: '150.' }]);
+    expect(next.rows[1]).toEqual(draft.rows[1]);
+    expect(() => setRowGrams(draft, 'nope', '1')).toThrow(RangeError);
+  });
+
+  it('removeRow drops that row, keeps the rest in order, and throws for an unknown row', () => {
+    const draft = ['a', 'b', 'c'].reduce((acc, id) => addRow(acc, { rowId: id, libraryId: 'sucrose' }), blank());
+    expect(removeRow(draft, 'b').rows.map((row) => row.id)).toEqual(['a', 'c']);
+    expect(() => removeRow(draft, 'nope')).toThrow(RangeError);
+  });
+
+  it('mutates neither the draft nor its rows', () => {
+    const draft = addRow(blank(), { rowId: 'row-1', libraryId: 'sucrose' });
+    const before = structuredClone(draft);
+    addRow(draft, { rowId: 'row-2', libraryId: 'wholeMilk' });
+    setRowGrams(draft, 'row-1', '5');
+    removeRow(draft, 'row-1');
+    expect(draft).toEqual(before);
   });
 });

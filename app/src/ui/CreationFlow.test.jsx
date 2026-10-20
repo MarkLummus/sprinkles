@@ -908,3 +908,157 @@ describe('Before you start while creating (MAKE-08, decision 19, T-01)', () => {
     expect(root().querySelector('.before-region b')).toBeNull();
   });
 });
+
+describe('Add ingredient, pick, type grams (MAKE-06, D-07, D-08)', () => {
+  const MILK = 'Whole milk, 3.5% fat';
+  const CREAM = 'Heavy cream, 36% fat';
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-add');
+  const pickerCancel = () => root().querySelector('.ingredient-table-region .pick__head button');
+  const gramsField = (name) => field(`${name}, grams`);
+  const tableNames = () =>
+    [...root().querySelectorAll('.ingredient-table tbody td.ingredient-table__col-name')].map((cell) => cell.firstChild.textContent);
+  const milkSolids = () => {
+    const rule = [...root().querySelectorAll('.graduated-rule')].find(
+      (node) => node.querySelector('.graduated-rule__label-word').textContent === 'Milk solids',
+    );
+    return rule ? rule.querySelector('.graduated-rule__value').textContent : null;
+  };
+
+  async function pick(name) {
+    await click(addButton());
+    const row = [...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === name);
+    await click(row);
+  }
+
+  it('Add ingredient opens the picker in its place, and a pick appends one row, closes the picker and focuses its empty grams field', async () => {
+    await startVanilla();
+    expect(addButton().textContent).toBe('Add ingredient');
+    await click(addButton());
+    const picker = root().querySelector('div.pick');
+    expect(picker.getAttribute('role')).toBe('group');
+    expect(picker.getAttribute('aria-label')).toBe('Add ingredient');
+    expect(addButton()).toBeNull();
+    const names = [...picker.querySelectorAll('.pick__name')].map((node) => node.textContent);
+    expect(names).toContain('Sucrose');
+    expect(names).toEqual([...names].sort((a, b) => (a.toLowerCase() < b.toLowerCase() ? -1 : 1)));
+
+    await click([...picker.querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === 'Sucrose'));
+    expect(root().querySelector('div.pick')).toBeNull();
+    expect(tableNames()).toEqual(['Sucrose']);
+    expect(gramsField('Sucrose').value).toBe('');
+    expect(document.activeElement).toBe(gramsField('Sucrose'));
+    expect(gramsField('Sucrose').classList.contains('mk-focus')).toBe(true);
+    expect(addButton().textContent).toBe('Add ingredient');
+  });
+
+  it('typing grams draws the side-region with figures, and more rows move the Milk solids figure', async () => {
+    await startVanilla();
+    await pick('Sucrose');
+    expect(root().querySelector('.side-region')).toBeNull();
+    await type(gramsField('Sucrose'), '150');
+    expect(root().querySelector('.side-region')).not.toBeNull();
+
+    await pick(MILK);
+    await type(gramsField(MILK), '600');
+    const withMilk = milkSolids();
+    expect(withMilk).not.toBeNull();
+    await pick(CREAM);
+    await type(gramsField(CREAM), '250');
+    expect(tableNames()).toEqual(['Sucrose', MILK, CREAM]);
+    expect(milkSolids()).not.toBeNull();
+    expect(milkSolids()).not.toBe(withMilk);
+    expect(root().querySelectorAll('.ingredient-table tbody').length).toBe(1);
+    expect(root().querySelector('.ingredient-table__step-head')).toBeNull();
+    expect(root().querySelector('.struck-value')).toBeNull();
+    expect(root().querySelector('.method-region')).toBeNull();
+    expect(root().querySelector('.ingredient-table').classList.contains('is-developing')).toBe(true);
+  });
+
+  it('keeps only the link and the typed grams on each saved row', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await pick('Sucrose');
+    await type(gramsField('Sucrose'), '150');
+    await advance();
+    const rows = lastSaved().payload.rows;
+    expect(rows).toHaveLength(1);
+    expect(Object.keys(rows[0]).sort()).toEqual(['id', 'libraryId', 'portions']);
+    expect(rows[0].libraryId).toBe('sucrose');
+    expect(rows[0].portions).toEqual([{ step: 1, grams: '150' }]);
+    expectNoRecordWrites();
+  });
+
+  it('Cancel on the picker closes it and puts focus on Add ingredient', async () => {
+    await startVanilla();
+    await click(addButton());
+    await click(pickerCancel());
+    expect(root().querySelector('div.pick')).toBeNull();
+    expect(document.activeElement).toBe(addButton());
+    expect(tableNames()).toEqual([]);
+  });
+
+  it('a 309-digit amount leaves the row on the table at 0 g and throws nothing', async () => {
+    await startVanilla();
+    await pick(MILK);
+    await type(gramsField(MILK), '600');
+    await pick('Sucrose');
+    const before = root().querySelector('.side-region').textContent;
+    await type(gramsField('Sucrose'), `1${'0'.repeat(309)}`);
+    expect(tableNames()).toEqual([MILK, 'Sucrose']);
+    expect(root().querySelector('.side-region').textContent).toBe(before);
+    expect(root().querySelector('tr[aria-label^="Sucrose"]').getAttribute('aria-label')).toBe('Sucrose, 0 g');
+    await type(gramsField('Sucrose'), '150');
+    expect(root().querySelector('tr[aria-label^="Sucrose"]').getAttribute('aria-label')).toBe('Sucrose, 150 g');
+  });
+
+  it('opens a stored row with an empty portions array on the table with an empty grams field', async () => {
+    const record = createDraftRecord('Vanilla');
+    record.payload.rows = [{ id: 'row-x', libraryId: 'sucrose', portions: [] }];
+    store.drafts.set(record.versionId, record);
+    await mountAt('/notebook/new');
+    await flush(() => field('Recipe name') !== null);
+    expect(gramsField('Sucrose').value).toBe('');
+  });
+
+  it('with the library unreadable it shows PAGE_LOAD_ERROR with the band and a Cancel that discards', async () => {
+    const original = repository.listLibrary.getMockImplementation();
+    repository.listLibrary.mockRejectedValue(new Error('store gone'));
+    try {
+      await startVanilla();
+      expect(field('Recipe name').value).toBe('Vanilla');
+      expect(root().querySelector('.not-found p').textContent).toBe(PAGE_LOAD_ERROR);
+      expect(root().querySelector('.ingredient-table-region')).toBeNull();
+      expect(root().querySelector('aside.notebook-log')).toBeNull();
+      await click(buttonByText('Cancel'));
+      await flush(() => location.pathname === '/notebook');
+      expect(repository.deleteDraft).toHaveBeenCalled();
+      expect(location.pathname).toBe('/notebook');
+    } finally {
+      repository.listLibrary.mockImplementation(original);
+    }
+  });
+
+  it('with the library unreadable and the delete failing once, the kept draft is live again and a second Cancel lands on /notebook', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    const original = repository.listLibrary.getMockImplementation();
+    repository.listLibrary.mockRejectedValue(new Error('store gone'));
+    try {
+      await startVanilla();
+      repository.deleteDraft.mockRejectedValueOnce(new Error('store gone'));
+      await click(buttonByText('Cancel'));
+      await flush();
+      expect(location.pathname).toBe('/notebook/new');
+      expect(field('Recipe name')).not.toBeNull();
+
+      await type(field('Recipe name'), 'Vanilla Two');
+      await advance();
+      expect(lastSaved().payload.name).toBe('Vanilla Two');
+
+      await click(buttonByText('Cancel'));
+      await flush(() => location.pathname === '/notebook');
+      expect(location.pathname).toBe('/notebook');
+    } finally {
+      repository.listLibrary.mockImplementation(original);
+    }
+  });
+});

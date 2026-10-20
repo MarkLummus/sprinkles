@@ -7,15 +7,19 @@ import { sheetView } from './sheetView.js';
 import { DRAFT_KEPT_STATUS, useDraftWriter, useKeptDraft } from './useKeptDraft.js';
 import { PageNotice, usePageNotice } from './PageNotice.jsx';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
+import { IngredientPicker } from './IngredientPicker.jsx';
 import { repository } from '../store/repository.js';
 import { draftMatchesCreate } from '../domain/draft.js';
 import { NOTEBOOK_PLACE_PATH } from './notebookPaths.js';
+import { freshId } from '../domain/id.js';
 import {
   addNote,
+  addRow,
   creationSheetVersion,
   creationTitle,
   normalizeCreateDraft,
   removeNote,
+  setRowGrams,
   updateNote,
 } from '../domain/creation.js';
 
@@ -43,6 +47,14 @@ export function CreationPage({ record, justStarted = false }) {
   // never goes to a control that is not there yet.
   const pageRef = useRef(null);
   const focusRequestRef = useRef(null);
+  // The library is read once and shared by the picker and the Sheet's
+  // projection (D-07). null until loaded; libraryFailed when the read rejects.
+  const [library, setLibrary] = useState(null);
+  const [libraryFailed, setLibraryFailed] = useState(false);
+  // The picker is open in the place of Add ingredient, and the row just added
+  // holds focus in its grams field until it is left.
+  const [picking, setPicking] = useState(false);
+  const [focusRowId, setFocusRowId] = useState(null);
   const { draftRestoreDone } = useKeptDraft({
     writer,
     versionId: record.versionId,
@@ -73,9 +85,27 @@ export function CreationPage({ record, justStarted = false }) {
     navigate,
   });
 
+  useEffect(() => {
+    let cancelled = false;
+    Promise.resolve()
+      .then(() => repository.listLibrary())
+      .then(
+        (records) => {
+          if (!cancelled) setLibrary(records);
+        },
+        () => {
+          if (!cancelled) setLibraryFailed(true);
+        },
+      );
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const libraryById = useMemo(() => new Map((library ?? []).map((record) => [record.id, record])), [library]);
   // The Sheet reads the creation as a version (no baseline: nothing to compare
-  // with), rebuilt only when the draft changes.
-  const version = useMemo(() => creationSheetVersion(createDraft), [createDraft]);
+  // with), rebuilt only when the draft or the library changes.
+  const version = useMemo(() => creationSheetVersion(createDraft, libraryById), [createDraft, libraryById]);
   const view = useMemo(
     () =>
       sheetView({
@@ -106,17 +136,25 @@ export function CreationPage({ record, justStarted = false }) {
     const page = pageRef.current;
     if (!request || !page) return;
     focusRequestRef.current = null;
-    const target =
-      request === 'new-note'
-        ? page.querySelector(`textarea[aria-label="beforeYouStart note ${createDraft.beforeYouStart.length}"]`)
-        : page.querySelector('.mk-add');
+    let target;
+    if (request === 'new-note') {
+      target = page.querySelector(`textarea[aria-label="beforeYouStart note ${createDraft.beforeYouStart.length}"]`);
+    } else if (request === 'add-note') {
+      target = page.querySelector('.before-region .mk-add');
+    } else {
+      // The table region's add control: Add ingredient, or, while the picker is
+      // open in its place, the picker's Cancel.
+      target =
+        page.querySelector('.ingredient-table-region .mk-add') ??
+        page.querySelector('.ingredient-table-region .pick__head button');
+    }
     target?.focus();
   });
 
   // Nothing is drawn until the kept-draft hook's own restore read has settled,
   // so nothing can be typed into a read still out and no keystroke is lost to a
   // page left before it resolves. The read is one IndexedDB get.
-  if (!draftRestoreDone) return <PageNotice message={notice} />;
+  if (!draftRestoreDone || (library === null && !libraryFailed)) return <PageNotice message={notice} />;
 
   // A functional update: two edits in one React batch both land, and the
   // payload is never rebuilt during render (useKeptDraft's identity rule).
@@ -140,6 +178,32 @@ export function CreationPage({ record, justStarted = false }) {
     setCreateDraft((prev) => addNote(prev));
     focusRequestRef.current = 'new-note';
   };
+
+  // Ingredient rows (MAKE-06). A pick mints the row id here, never in render;
+  // every change is a functional update, and the draft keeps the link and the
+  // typed grams only (D-07).
+  const handlePick = (record) => {
+    const rowId = freshId();
+    setCreateDraft((prev) => addRow(prev, { rowId, libraryId: record.id }));
+    setPicking(false);
+    setFocusRowId(rowId);
+  };
+
+  const handleCancelPicker = () => {
+    setPicking(false);
+    focusRequestRef.current = 'ingredient-target';
+  };
+
+  const handleChangeGrams = (rowId, value) => {
+    setCreateDraft((prev) => setRowGrams(prev, rowId, value));
+  };
+
+  const handleBlurGrams = (rowId) => {
+    setFocusRowId((prev) => (prev === rowId ? null : prev));
+  };
+
+  const gramsByRow = new Map(createDraft.rows.map((row) => [row.id, row.portions[0]?.grams ?? '']));
+  const addedIds = new Set(createDraft.rows.map((row) => row.libraryId));
 
   // Cancel ends the creation for good, and only once the delete has succeeded
   // (RESEARCH Pitfall 6): the Notebook must not read 'discarded' over a draft
@@ -218,26 +282,54 @@ export function CreationPage({ record, justStarted = false }) {
             </form>
           </div>
         </header>
-        <div className="notebook-body">
-          <div className="notebook-body__sheet">
-            <RecipeSheet
-              view={view}
-              version={version}
-              mode="creating"
-              penDraft={null}
-              onChangePenNoteText={handleChangeNote}
-              onRemovePenNote={handleRemoveNote}
-              beforeFoot={
-                <p className="mk-add-row">
-                  <Button className="text-control mk-add" onClick={handleAddNote}>
-                    Add note
-                  </Button>
-                </p>
-              }
-            />
+        {libraryFailed ? (
+          <div className="not-found">
+            <p>{PAGE_LOAD_ERROR}</p>
           </div>
-          <aside className="notebook-log" aria-label="Setup" />
-        </div>
+        ) : (
+          <div className="notebook-body">
+            <div className="notebook-body__sheet">
+              <RecipeSheet
+                view={view}
+                version={version}
+                mode="creating"
+                penDraft={null}
+                creationRows={{
+                  gramsByRow,
+                  focusRowId,
+                  onChangeGrams: handleChangeGrams,
+                  onBlurGrams: handleBlurGrams,
+                }}
+                onChangePenNoteText={handleChangeNote}
+                onRemovePenNote={handleRemoveNote}
+                beforeFoot={
+                  <p className="mk-add-row">
+                    <Button className="text-control mk-add" onClick={handleAddNote}>
+                      Add note
+                    </Button>
+                  </p>
+                }
+                ingredientsFoot={
+                  picking ? (
+                    <IngredientPicker
+                      records={library}
+                      addedIds={addedIds}
+                      onPick={handlePick}
+                      onCancel={handleCancelPicker}
+                    />
+                  ) : (
+                    <p className="mk-add-row">
+                      <Button className="text-control mk-add" onClick={() => setPicking(true)}>
+                        Add ingredient
+                      </Button>
+                    </p>
+                  )
+                }
+              />
+            </div>
+            <aside className="notebook-log" aria-label="Setup" />
+          </div>
+        )}
       </div>
     </>
   );

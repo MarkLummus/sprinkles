@@ -205,10 +205,10 @@ Plans:
 - [ ] 10-01-PLAN.md — the strict walk recorded at the base commit (no allowance at all) and the side-by-side WebKit board engine (full-page and anchored cropped panels), proven on sketch 012 and on cropped sketch 013 panels; no app change
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 10-02-PLAN.md — New recipe, Start, the /notebook/new editor over the kept create draft (kept as typed until Cancel) and Cancel (tracer: Start opens the editor end to end)
+- [ ] 10-02-PLAN.md — New recipe, Start (reusing a kept creation, D-04b, with its draft row and Resume), the /notebook/new editor over the kept create draft (kept as typed until Cancel) and Cancel, final only once its delete succeeds (tracer: Start opens the editor end to end)
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 10-11-PLAN.md — the Notebook's draft row and Resume, a closed tab losing nothing past the debounce, and the "Draft kept" and "Draft discarded" page notices
+- [ ] 10-11-PLAN.md — the Notebook reading a kept creation at load (draft row and Resume on every visit), a closed tab losing nothing past the debounce, the "Draft kept" and "Draft discarded" page notices, and Cancel saying whether another creation remains
 
 **Wave 4** *(blocked on Wave 3 completion)*
 - [ ] 10-03-PLAN.md — the Notebook entry's words (Enter a recipe name, the same-name warning), one draft per Start, and its look against sketch 013

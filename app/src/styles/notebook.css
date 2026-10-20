@@ -156,6 +156,166 @@
   align-items: center;
 }
 
+/* The focus the page puts on the landing row's grams field after a pick: script
+   focus after a pointer press draws no :focus-visible outline in WebKit, so the
+   class draws it (plan 10-06 names it, plan 10-12 styles it). */
+.notebook .mk-focus {
+  outline: var(--focus-outline-width) solid var(--sheet-ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+/* The ingredient picker, open under the Ingredients table on the Sheet (Phase 10,
+   sketch 013 ingredient-picker.html). Ported from the board's own rules with
+   .notebook in place of its panel wrapper; every value is a token. */
+.notebook .pick {
+  margin: var(--gap-s) 0 0;
+  padding: var(--gap-s);
+  border: var(--rule-ink-field) solid var(--sheet-ink);
+}
+
+.notebook .pick__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  min-height: var(--touch-min);
+}
+
+/* The picker's filters are the Ingredients place's own (shell.css scopes those
+   to .place, which the editor is not in), re-homed here with the board's
+   resolved values and its three margin changes. */
+.notebook .pick .ing__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--gap-s);
+  margin: 0;
+}
+
+.notebook .pick .ing__field {
+  flex: 1 1 var(--measure-prose);
+  min-width: 0;
+  max-width: var(--measure-prose);
+}
+
+.notebook .pick .ing__field--category {
+  flex: 0 0 auto;
+  max-width: none;
+}
+
+.notebook .pick .ing__filters select.ink-field {
+  background-color: var(--app-background);
+  background-image: linear-gradient(45deg,transparent 50%,var(--app-text) 50%),linear-gradient(135deg,var(--app-text) 50%,transparent 50%);
+  background-position: calc(100% - var(--sheet-inset-select-chevron-x)) calc(50% - var(--sheet-inset-select-chevron-y)),calc(100% - var(--sheet-inset-select-chevron-x) + var(--sheet-size-select-chevron)) calc(50% - var(--sheet-inset-select-chevron-y));
+  background-size: var(--sheet-size-select-chevron) var(--sheet-size-select-chevron),var(--sheet-size-select-chevron) var(--sheet-size-select-chevron);
+  background-repeat: no-repeat;
+  padding-right: var(--gap-select-chevron-room);
+  min-width: var(--app-col-standing);
+}
+
+.notebook .pick .ing__status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  margin: var(--gap-s) 0 var(--gap-xs);
+  min-height: 0;
+}
+
+.notebook .pick .ing__count {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.notebook .pick .ing__clear {
+  border-radius: var(--app-radius-control);
+}
+
+.notebook .pick__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: calc(var(--touch-min) * 6);
+  overflow-y: auto;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+
+.notebook .pick__row {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  grid-template-areas: 'name act' 'sum sum';
+  column-gap: var(--gap-m);
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: var(--touch-min);
+  margin: 0;
+  padding: var(--gap-xs) 0;
+  border: none;
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+  border-radius: 0;
+  background: none;
+  color: var(--app-text);
+  font-family: var(--face-grotesk);
+  text-align: left;
+  cursor: pointer;
+}
+
+.notebook .pick__row:hover {
+  border: none;
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+  padding: var(--gap-xs) 0;
+}
+
+.notebook .pick__name {
+  grid-area: name;
+  font-size: var(--app-notebook-size-body);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.notebook .pick__sum {
+  grid-area: sum;
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The Add word is underlined here, not in app.css: binder.test.js pins app.css
+   to underlining only .text-control and a (D-18). */
+.notebook .pick__act {
+  grid-area: act;
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+}
+
+.notebook .pick__row--added {
+  cursor: default;
+}
+
+.notebook .pick__row--added .pick__name,
+.notebook .pick__row--added .pick__sum,
+.notebook .pick__row--added .pick__act {
+  color: var(--app-text-secondary);
+  text-decoration: none;
+}
+
+.notebook .pick__none {
+  margin: var(--gap-s) 0 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+
 .notebook-recipe__form-actions {
   display: flex;
   gap: var(--gap-s);
@@ -1261,6 +1421,17 @@
     align-self: stretch;
   }
 
+  /* The picker's Name and Category stack (the place stacks them at 759.98; the
+     editor's pinned cut is 723.98, RESEARCH Open Question 6). */
+  .notebook .pick .ing__field {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+
+  .notebook .pick .ing__field--category {
+    flex: 1 1 100%;
+  }
+
   .notebook-band {
     padding: var(--app-notebook-band-pad-t-narrow) var(--gap-m) var(--gap-m);
   }
@@ -1326,6 +1497,11 @@
    so the zoom threshold stays one value across the app. */
 @media (pointer: coarse) {
   .notebook .mk-add {
+    min-height: var(--touch-min);
+  }
+
+  .notebook .pick__head .text-control,
+  .notebook .pick .ing__clear {
     min-height: var(--touch-min);
   }
 

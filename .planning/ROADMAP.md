@@ -198,14 +198,14 @@ Plans:
   4. While creating, the maker defines 0 to 2 scales, each with a name, a label for each end and its kind (goldilocks, with the fixed middle word "right", or plain magnitude), and 0 to 2 problems; chooses an ice cream style, so the balance bands fill in, then edits them or leaves them blank; and sees an empty target reading in the editor with no gap or error
   5. A half-made recipe survives a closed tab: the Notebook offers Resume and reopens it as it was left, scales, problems and targets included, and abandoning it leaves no record behind; there is no Save: however far a creation goes, the Notebook lists no new recipe, and the only record a creation writes is its draft
 
-**Plans:** 1/12 plans executed in 9 waves (10-10 stops for the orchestrator to put the one iPad check on Mark's List; 10-11 and 10-12 were split out of 10-02 and 10-06 in the plan-check revision)
+**Plans:** 2/12 plans executed in 9 waves (10-10 stops for the orchestrator to put the one iPad check on Mark's List; 10-11 and 10-12 were split out of 10-02 and 10-06 in the plan-check revision)
 
 Plans:
 **Wave 1**
 - [x] 10-01-PLAN.md — the strict walk recorded at the base commit (no allowance at all) and the side-by-side WebKit board engine (full-page and anchored cropped panels), proven on sketch 012 and on cropped sketch 013 panels; no app change
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 10-02-PLAN.md — New recipe, Start (reusing a kept creation, D-04b, with its draft row and Resume), the /notebook/new editor over the kept create draft (kept as typed until Cancel) and Cancel, final only once its delete succeeds (tracer: Start opens the editor end to end)
+- [x] 10-02-PLAN.md — New recipe, Start (reusing a kept creation, D-04b, with its draft row and Resume), the /notebook/new editor over the kept create draft (kept as typed until Cancel) and Cancel, final only once its delete succeeds (tracer: Start opens the editor end to end)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 10-11-PLAN.md — the Notebook reading a kept creation at load (draft row and Resume on every visit), a closed tab losing nothing past the debounce, the "Draft kept" and "Draft discarded" page notices, and Cancel saying whether another creation remains
@@ -276,7 +276,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 |-------|-----------|----------------|--------|-----------|
 | 8. Split the recipe page along its jobs | v2.0 | 6/6 | Complete    | 2026-10-17 |
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
-| 10. The creation editor, without Save | v2.0 | 1/12 | In Progress | - |
+| 10. The creation editor, without Save | v2.0 | 2/12 | In Progress | - |
 | 11. Steps, structure, save and print | v2.0 | 0/TBD | Not started | - |
 | 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/TBD | Not started | - |
 

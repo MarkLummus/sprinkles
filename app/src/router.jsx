@@ -11,6 +11,7 @@ import { IngredientsPlace } from './ui/IngredientsPlace.jsx';
 import { PrintSheetForRoute } from './ui/PrintSheet.jsx';
 import { NotebookLatestRedirect, LegacyRecipeRedirect } from './ui/NotebookRedirects.jsx';
 import { CreationRoute } from './ui/CreationRoute.jsx';
+import { PageNoticeContext } from './ui/PageNotice.jsx';
 
 // A different version, or a different batch of the same version, must be a
 // different page instance (one-pen-rule-leaks.md Evidence 8-9). React
@@ -39,6 +40,7 @@ export function RecipePageForRoute() {
   const pageStatusTimerRef = useRef(null);
   const [penOpen, setPenOpen] = useState(false);
   const guardImport = useContext(ImportGuardContext);
+  const registerPageNotice = useContext(PageNoticeContext);
 
   useEffect(
     () => () => {
@@ -68,6 +70,10 @@ export function RecipePageForRoute() {
     if (!penOpen) return undefined;
     return guardImport(announcePageStatus);
   }, [penOpen, guardImport, announcePageStatus]);
+
+  // The route's own notice receives a creation's import refusal (D-10a), so the
+  // Shell's fallback notice is never drawn on a recipe route.
+  useEffect(() => registerPageNotice(announcePageStatus), [registerPageNotice, announcePageStatus]);
 
   return (
     <>

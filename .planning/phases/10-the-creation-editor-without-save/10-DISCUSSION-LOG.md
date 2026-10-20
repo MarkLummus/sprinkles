@@ -131,6 +131,22 @@
 | Mise en Place auto-generator | | |
 | Recipe book print format | | |
 
+## Codex review (2026-10-19, after the first write)
+
+Seven findings, none a scope contradiction. F-01, F-02, F-05, F-06, F-07 were wording errors against the code (draft row shape, the library is not in the catalog, Start's immediate write is new, the walk scripts carry an allow-list, the redirect is new behaviour) and were corrected in place. Two needed Mark:
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| Kept until Cancel | A started creation stays kept even when blank again; Notebook reads "Untitled" | ✓ |
+| Blanking abandons it | Erasing everything deletes the draft | |
+| You decide | | |
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| On blur | The grams message shows when focus leaves an invalid field | ✓ |
+| While typing | | |
+| Never, Balance only | | |
+
 ## Claude's Discretion
 
 Plan slicing within the research's order; module homes and names; `RecipeSheet` creating props; the import-refusal wording for a kept creation.

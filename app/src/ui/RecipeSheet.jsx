@@ -34,6 +34,8 @@ export function RecipeSheet({
   batchSaveAction = null,
   foot = null,
   beforeFoot = null,
+  creationRows = null,
+  ingredientsFoot = null,
   onChangePenField,
   onChangePenNoteText,
   onRemovePenNote,
@@ -148,6 +150,7 @@ export function RecipeSheet({
             markedRowIds={markedRowIds}
             markedFigureLabel={markedFigureLabel}
             mode={mode}
+            creationRows={creationRows}
             draft={draft}
             penDraft={penDraft}
             openBatch={evidenceBatch}
@@ -162,6 +165,7 @@ export function RecipeSheet({
         ) : (
           <p>This version has no ingredient rows.</p>
         )}
+        {ingredientsFoot}
       </section>
 
       {/* No Instructions section when there is no step to show (261003-9bz;

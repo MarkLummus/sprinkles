@@ -449,6 +449,9 @@ export function IngredientTable({
   // 2026-10-05).
   blockedRowMessage = null,
   mode = 'reading',
+  // The creation editor's rows (Phase 10, MAKE-06): { gramsByRow, focusRowId,
+  // onChangeGrams, onBlurGrams, onRemoveRow }, present only while creating.
+  creationRows = null,
   draft = null,
   penDraft = null,
   openBatch = null,
@@ -491,6 +494,13 @@ export function IngredientTable({
     else gramsInputsRef.current.delete(`${rowId}:${lineIndex}`);
   }
 
+  // A row just added from the picker takes focus in its empty grams field, once,
+  // after the render that drew it.
+  const creationFocusRowId = creationRows?.focusRowId ?? null;
+  useEffect(() => {
+    if (creationFocusRowId) gramsInputsRef.current.get(`${creationFocusRowId}:0`)?.focus();
+  }, [creationFocusRowId]);
+
   const activeRowsOnly = activeRows({ rows, method: steps });
   const baselineBalance = computeBalance(activeRowsOnly);
   const baselineMass = baselineBalance ? baselineBalance.mass : 0;
@@ -510,6 +520,9 @@ export function IngredientTable({
   }
 
   const isDeveloping = mode === 'developing' && draftVersion != null;
+  // The creation editor's table reads like the pen's (the board's markup) but has
+  // no draftVersion: every read of draftVersion stays gated on isDeveloping.
+  const isCreating = mode === 'creating' && creationRows != null;
   // The show-changes state (route-recipe-version.md § 3, § 6; D-02, 03-04):
   // never while the pen is open — its own always-visible grammar owns that
   // state — and only once the diff itself exists (no parent, or an unread
@@ -603,6 +616,44 @@ export function IngredientTable({
             <AsMadeCell row={row} drawnRow={liveRow} portionIndex={portionIndex} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
           </td>
         )}
+        <td className="ingredient-table__col-numeric">{formatShareOfBatch(portion.grams, baselineMass)}</td>
+      </tr>
+    );
+  }
+
+  // The creation row (sketch 013 creation-editor.html eB1): the grams field
+  // holds the maker's raw text, the name carries its estimated flag and a remove
+  // that deletes the row outright, and the share reads the live Balance's mass.
+  function renderCreatingEntry(row, portion, portionIndex) {
+    const dataFlag = dataFlagFor(row);
+    const isMarked = markedRowIds.includes(row.id);
+    const ariaLabel = rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, null);
+    return (
+      <tr key={`${row.id}:${portionIndex}`} className={isMarked ? 'is-marked' : undefined} aria-label={ariaLabel}>
+        <td className="ingredient-table__col-grams">
+          <span className="ingredient-table__plan-grams">
+            <input
+              ref={(element) => registerGramsInput(row.id, 0, element)}
+              type="text"
+              inputMode="decimal"
+              className={row.id === creationRows.focusRowId ? 'ink-field mk-focus' : 'ink-field'}
+              value={creationRows.gramsByRow.get(row.id) ?? ''}
+              aria-label={`${row.ingredientName}, grams`}
+              onChange={(event) => creationRows.onChangeGrams(row.id, event.target.value)}
+              onBlur={() => creationRows.onBlurGrams(row.id)}
+            />
+            {' g'}
+          </span>
+        </td>
+        <td className="ingredient-table__col-name">
+          {row.ingredientName}
+          {dataFlag && (
+            <span className="target-chip ingredient-table__flag">
+              <span className="target-chip__value">{dataFlag}</span>
+            </span>
+          )}
+          <RemoveRowControl removed={false} onToggle={() => creationRows.onRemoveRow(row.id)} />
+        </td>
         <td className="ingredient-table__col-numeric">{formatShareOfBatch(portion.grams, baselineMass)}</td>
       </tr>
     );
@@ -807,6 +858,7 @@ export function IngredientTable({
   }
 
   function renderEntry({ row, portion, portionIndex, displayNumber, stepRemoved }) {
+    if (isCreating) return renderCreatingEntry(row, portion, portionIndex);
     if (isShowingChanges) return renderShowChangesEntry(row, portion, portionIndex);
     if (isDeveloping) return renderDevelopingEntry(row, portion, portionIndex, displayNumber, stepRemoved);
     return renderReadingEntry(row, portion, portionIndex);
@@ -818,7 +870,7 @@ export function IngredientTable({
           decisions 31 and 32; decision 33 brief (c)); the DOM already omits the As made cells
           when there is no layer. */}
       <table
-        className={`ingredient-table${hasAsMadeLayer ? ' ingredient-table--as-made' : ''}${isDeveloping ? ' is-developing' : ''}`}
+        className={`ingredient-table${hasAsMadeLayer ? ' ingredient-table--as-made' : ''}${isDeveloping || isCreating ? ' is-developing' : ''}`}
       >
         {comparisonBatchLabel && <caption className="ingredient-table__comparison">{comparisonBatchLabel}</caption>}
         <thead>

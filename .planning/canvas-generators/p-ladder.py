@@ -15,12 +15,23 @@ M = json.load(open(HERE + '/p-ladder-measure.json')) if os.path.exists(HERE + '/
 esc = lambda s: _html.escape(str(s), quote=True)
 
 PROPOSED_CSS = '''
-/* L4 caption: one caption face in the log, the App's (notebook-caption): 12/600 caps, app-tracking-label, secondary */
+/* Revision 2 (2026-10-21, after Mark rejected revision 1: "strong(4) looks bigger and bolder than its parents; This recipe only looks smallest ... looks completely random"): the ladder governs the values too.
+   The sequence, top to bottom, never grows in size or weight: L1 region name 14/600 caps secondary; L2 group cue 14/600 sentence ink; L3 caption 12/600 caps secondary, a tag on its content;
+   L4 content 14/400 ink (words, lists, figures with tabular numerals); the hand keeps its face, colour and its 20 px floor and sits under its cue by weight; chips 13/400; fields 16/400 in their boxes (controls, the touch floor). */
+/* L1 region name: the Sheet's section size (14), caps, tracked, secondary, in the 44 px head row */
+.notebook-log .region-name,.notebook-log .batch-row__head .region-name{font-size:var(--app-size-meta)}
+/* L3 caption: one caption face in the log, the App's (notebook-caption): 12/600 caps, app-tracking-label, secondary; the axis names and the pen's captions join it */
 .notebook-log .pen-caption{font-weight:600;letter-spacing:var(--app-tracking-label)}
-/* L2 group cue (sketch 011 decision 40 C, the pen's axes-cue): every label that stands over two or more things of one kind */
+.notebook-log .axis-mark__name{font-weight:600;letter-spacing:var(--app-tracking-label);color:var(--app-text-secondary)}
+/* L2 group cue (sketch 011 decision 40 C): every first-level label that stands over two or more things of one kind */
 .notebook-log .axes-cue,.notebook-log .mk-cue,.notebook-log .mk-cue-targets,.notebook-log .defects-head > .pen-caption,.notebook-log .tasting-reading__group > h4.batch-row__group-label{font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:0;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
-/* L3 item: a line of content under a cue, at the meta size on the cue's line */
+/* a label nested under a cue (Every recipe and This recipe only inside Any problems?) is a caption, not a second cue */
+.notebook-log .tasting-reading__subgroup > .batch-row__group-label,.notebook-log .defect-group > .axes-cue{font-size:var(--app-size-label);font-weight:600;text-transform:uppercase;letter-spacing:var(--app-tracking-label);line-height:normal;color:var(--app-text-secondary)}
+/* L4 content: words, lists and figures under a cue or a caption at the meta size, regular, on the cue's line; the reading cell's figure comes down from 20/600 (sketch 011's log value) */
 .notebook-log .mk-core{font-size:var(--app-size-meta);line-height:var(--app-notebook-pen-cue-line-h)}
+.notebook-log .batch-row__cell-value{font-size:var(--app-size-meta);font-weight:400;line-height:var(--app-notebook-pen-cue-line-h)}
+/* the hand: Caveat, pen blue, at its floor (size-hand-min), under its cue by weight and face */
+.notebook-log .app-hand{font-size:var(--size-hand-min)}
 /* the spacing scale: gap-l between groups, gap-xs under a cue over a one-line list, gap-s under a cue over a card, gap-s elsewhere */
 .notebook-log .mk-cue{margin-top:var(--gap-m);margin-bottom:calc(var(--gap-xs) - var(--gap-s))}
 .notebook-log .mk-body > .mk-cue:first-child{margin-top:0}
@@ -38,10 +49,10 @@ def proposed_markup(key, h):
     return h
 
 SURFACES = [
-    ('creation', 'Creation editor · Scales and Problems', '.mk-region[aria-label="Scales"]', '.mk-region[aria-label="Problems"]', 'the two cues take L2 (decision 25) and stand 32 off the group before them, 6 over the core names, 12 over a card; the core names take L3 (14 on the 20 px line); the card loses its "Scale 1" head and remove stands beside Name; Kind\'s caption joins the one caption face'),
-    ('tasting-pen', 'Record pen · the axes group and Any problems?', '.axes-grid__group--declared', '.defects-row__chips', 'This recipe only (and Every recipe, From freezer above it) already reads L2 (decision 40 C, kept) and stands 32 off the group before it; Any problems? takes L2 too, keeping its 32; the pen captions take the one caption face (600, 0.08em); the axis names keep their ink caps'),
-    ('reading-olive', 'Batch margin · the reading state', '.tasting-reading__group', '.batch-row__conclusion', 'Every recipe and This recipe only already read L2 (kept); Any problems? takes L2 (it heads the problems; Mark\'s 2026-10-06 note is reopened); Next time stays a caption, it heads one line; the cell labels are the caption face already'),
-    ('record-pen', 'Record pen · the churn fields and At draw', '.batch-row__head', '.segmented-field', 'the region name stays L1; At draw already reads L2; every pen caption takes the one caption face, so Churn date and Exit consistency read as Out of machine does in the reading state; nothing moves'),
+    ('creation', 'Creation editor · Scales and Problems', '.mk-region[aria-label="Scales"]', '.mk-region[aria-label="Problems"]', 'the region name comes up to 14 caps; the two cues take L2 (14/600 ink) and stand 32 off the group before them, 6 over the core names, 12 over a card; the core names read as content (14/400); the card loses its "Scale 1" head and remove stands beside Name; Kind\'s caption joins the one caption face'),
+    ('tasting-pen', 'Record pen · the axes group and Any problems?', '.axes-grid__group--declared', '.defects-row__chips', 'This recipe only (and Every recipe, From freezer above it) already reads L2 (decision 40 C, kept); Any problems? takes L2 and its two sub-labels become captions, so the chips sit cue > caption > chip; the axis names join the one caption face (600, tracked, secondary)'),
+    ('reading-olive', 'Batch margin · the reading state', '.tasting-reading__group', '.batch-row__conclusion', 'Every recipe and This recipe only already read L2 (kept); the mark words come down from 20/600 to 14/400 so a value is never bigger or bolder than its cue; Any problems? takes L2 and its This recipe only becomes a caption; the hand drops to its 20 px floor under a 14/600 cue; Next time stays a caption; the cell labels are the caption face already'),
+    ('record-pen', 'Record pen · the churn fields and At draw', '.batch-row__head', '.segmented-field', 'the region name comes up to 14 caps so it tops the ladder; At draw already reads L2; every pen caption takes the one caption face, so Churn date and Exit consistency read as Out of machine does in the reading state; the fields stay 16 in their boxes (controls, the touch floor); nothing moves'),
 ]
 VARIANTS = [('b', 'As built'), ('p', 'Proposed')]
 ROLES = [('Region name', '.region-name'), ('Group cue', '.axes-cue, .mk-cue, .batch-row__group-label--cue'), ('Any problems?', '.defects-head > .pen-caption, h4.batch-row__group-label:not(.batch-row__group-label--cue)'),
@@ -142,12 +153,14 @@ def column(key, v, x, y, other):
         if changed and v == 'p': last += 16
     return win + ann, max(h, last + LH - y)
 
-KEY = ('<b>The ladder.</b> L1 Region name: grotesk 12/600 caps, app-tracking-label, app-text-secondary, the 44 px head row (unchanged, DESIGN.md). L2 Group cue: grotesk 14/600 sentence, app-text, the 20 px line (sketch 011 decision 40 C): every label that stands over two or more things of one kind. '
-       'L3 Item: a line of content under a cue: grotesk 14/400 sentence, app-text, the 20 px line. L4 Caption: one caption face, the App\'s: grotesk 12/600 caps, app-tracking-label, app-text-secondary, over one field, value or control. Fields, values, the hand and the blue actions keep their faces. '
-       '<b>The scale.</b> Region seam gap-m + rule + gap-m (unchanged). Group seam gap-l. Cue to a one-line list or chips gap-xs; cue to a card or a control gap-s. Between items gap-s. A card: a rule, gap-s inside. '
-       '<b>The rule.</b> Count what stands under the label: two or more of one kind, it is a cue (L2); one field, value or control, it is a caption (L4); content, it is an item (L3); a region, its name (L1). '
-       '<b>Reads with it:</b> the dimensions at each panel\'s left and the role labels at its right are measured in WebKit; in the proposed column only what changes is blue, with "was" under it.')
-TITLE = 'The log column\'s ladder · four levels and one spacing scale for every grouped surface in aside.notebook-log, as built beside the proposal, at 1366 (drawn 2026-10-21; for Mark\'s choice)'
+KEY = ('<b>Revision 2.</b> Revision 1 was rejected on 2026-10-21 (Mark: "strong(4) looks bigger and bolder than its parents; This recipe only looks smallest. same with Bitter, bigger than Any problems?, a different color, and a different typeface ... looks completely random"): it left the values alone. '
+       '<b>The ladder, a sequence that never grows in size or weight going down.</b> L1 Region name: grotesk 14/600 caps, app-tracking-label, app-text-secondary, the 44 px head row. L2 Group cue: grotesk 14/600 sentence, app-text, the 20 px line (sketch 011 decision 40 C): the first-level label over two or more things of one kind. '
+       'L3 Caption: grotesk 12/600 caps, app-tracking-label, app-text-secondary: a tag over one field, value or control, and any label nested under a cue. L4 Content: grotesk 14/400 sentence, app-text, the 20 px line: words, lists and figures (tabular numerals). '
+       'The hand keeps Caveat in sheet-pen-blue at its 20 px floor (size-hand-min) and sits under its cue by weight and face. Chips 13/400 and fields 16/400 in their boxes are controls, under the touch floor rule, not levels. '
+       '<b>The scale.</b> Region seam gap-m + rule + gap-m. Group seam gap-l. Cue to a one-line list or chips gap-xs; cue to a card or control gap-s. Between items gap-s. A card: a rule, gap-s inside. '
+       '<b>The rule.</b> Count what stands under the label: a region, its name (L1); two or more of one kind at the first level, a cue (L2); one field, value or control, or anything nested under a cue, a caption (L3); the rest is content (L4). '
+       '<b>Reads with it:</b> dimensions at each panel\'s left and role labels at its right are measured in WebKit; in the proposed column only what changes is blue, with "was" under it.')
+TITLE = 'The log column\'s ladder, revision 2 · four levels that never grow going down, one spacing scale, for every grouped surface in aside.notebook-log, as built beside the proposal, at 1366 (redrawn 2026-10-21; for Mark\'s choice)'
 
 def build(out):
     parts = []; y = 150; bw = 0
@@ -173,5 +186,5 @@ if __name__ == '__main__':
         prev = c['boards'].get('P10_LogRhythm.dc.html', {}); x = prev.get('x', 0) + prev.get('w', 3268) + 240
         c['boards'][fn] = {**dict(x=x, y=0, page=PAGE), **c['boards'].get(fn, {}), 'w': w, 'h': h, 'title': TITLE}
         if fn not in c['order']: c['order'].append(fn)
-        c['notes']['p10-ladder-title'] = dict(c['notes'].get('p10-ladder-title', {}), x=x, y=-300, text='The log column\'s ladder: as built and proposed, four surfaces', kind='title1', maxW=w, page=PAGE)
+        c['notes']['p10-ladder-title'] = dict(c['notes'].get('p10-ladder-title', {}), x=x, y=-300, text='The log column\'s ladder, revision 2: as built and proposed, four surfaces', kind='title1', maxW=w, page=PAGE)
         json.dump(c, open(sys.argv[2] + '/project/canvas.json', 'w'), indent=1, ensure_ascii=False); print(w, h)

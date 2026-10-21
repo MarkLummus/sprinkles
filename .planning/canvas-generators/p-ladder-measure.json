@@ -228,15 +228,15 @@
    {
     "role": "Region name",
     "text": "Scales",
-    "top": 539.90625,
-    "right": 61.140625,
-    "height": 16.1875,
+    "top": 538.546875,
+    "right": 69.09375,
+    "height": 18.890625,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
-    "fontSize": "12px",
+    "fontSize": "14px",
     "fontWeight": "600",
     "textTransform": "uppercase",
-    "letterSpacing": "0.96px",
-    "lineHeight": "16.200001px",
+    "letterSpacing": "1.12px",
+    "lineHeight": "18.9px",
     "color": "rgb(89, 89, 89)"
    },
    {
@@ -506,13 +506,13 @@
   ]
  },
  "tasting-pen-p": {
-  "start": 1974.421875,
-  "end": 2568.015625,
+  "start": 1977.125,
+  "end": 2560.71875,
   "roles": [
    {
     "role": "Group cue",
     "text": "This recipe only",
-    "top": 1995.421875,
+    "top": 1998.125,
     "right": 358,
     "height": 20,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
@@ -526,7 +526,7 @@
    {
     "role": "Any problems?",
     "text": "Any problems?",
-    "top": 2293.015625,
+    "top": 2295.71875,
     "right": 108.53125,
     "height": 20,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
@@ -540,21 +540,21 @@
    {
     "role": "Axis name",
     "text": "Body",
-    "top": 2041.21875,
-    "right": 43.71875,
+    "top": 2043.921875,
+    "right": 46.109375,
     "height": 15,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
     "fontSize": "12px",
-    "fontWeight": "500",
+    "fontWeight": "600",
     "textTransform": "uppercase",
-    "letterSpacing": "0.48px",
+    "letterSpacing": "0.96px",
     "lineHeight": "normal",
-    "color": "rgb(20, 20, 20)"
+    "color": "rgb(89, 89, 89)"
    },
    {
     "role": "Chip",
     "text": "Coarse, icy",
-    "top": 2351.015625,
+    "top": 2348.71875,
     "right": 94.4375,
     "height": 44,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
@@ -568,26 +568,26 @@
   ],
   "gaps": [
    {
-    "from": 2124.21875,
-    "to": 2164.21875,
+    "from": 2126.921875,
+    "to": 2166.921875,
     "a": "axis-mark:Body(Not rec",
     "b": "axis-mark:Oil(Not reco"
    },
    {
-    "from": 2261.015625,
-    "to": 2293.015625,
+    "from": 2263.71875,
+    "to": 2295.71875,
     "a": "axis-mark:Oil(Not reco",
     "b": "defects-head:Any problems"
    },
    {
-    "from": 2313.015625,
-    "to": 2351.015625,
+    "from": 2315.71875,
+    "to": 2348.71875,
     "a": "defects-head:Any problems",
     "b": "defects-row__chips:Coarse, icyS"
    },
    {
-    "from": 2445.015625,
-    "to": 2516.015625,
+    "from": 2442.71875,
+    "to": 2508.71875,
     "a": "defects-row__chips:Coarse, icyS",
     "b": "defects-row__chips:Bitter"
    }
@@ -734,13 +734,13 @@
   ]
  },
  "reading-olive-p": {
-  "start": 494,
-  "end": 856.5,
+  "start": 480,
+  "end": 829,
   "roles": [
    {
     "role": "Group cue",
     "text": "Every recipe",
-    "top": 502,
+    "top": 488,
     "right": 358,
     "height": 20,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
@@ -754,7 +754,7 @@
    {
     "role": "Any problems?",
     "text": "Any problems?",
-    "top": 698,
+    "top": 678,
     "right": 358,
     "height": 20,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
@@ -768,7 +768,7 @@
    {
     "role": "Caption",
     "text": "Sweetness",
-    "top": 528,
+    "top": 514,
     "right": 173,
     "height": 15,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
@@ -782,21 +782,21 @@
    {
     "role": "Cell value",
     "text": "more (4)",
-    "top": 545,
+    "top": 531,
     "right": 173,
-    "height": 23,
+    "height": 20,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
-    "fontSize": "20px",
-    "fontWeight": "600",
+    "fontSize": "14px",
+    "fontWeight": "400",
     "textTransform": "none",
     "letterSpacing": "normal",
-    "lineHeight": "normal",
+    "lineHeight": "20px",
     "color": "rgb(20, 20, 20)"
    },
    {
     "role": "Next time",
     "text": "Next time",
-    "top": 809.5,
+    "top": 782,
     "right": 358,
     "height": 15,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
@@ -810,64 +810,64 @@
    {
     "role": "Hand",
     "text": "Bitter",
-    "top": 751.251953125,
-    "right": 63.666015625,
-    "height": 24.99609375,
+    "top": 726.1376953125,
+    "right": 58.60546875,
+    "height": 22.724609375,
     "fontFamily": "Caveat, Georgia, Iowan Old Style, Times New Roman, serif",
-    "fontSize": "22px",
+    "fontSize": "20px",
     "fontWeight": "400",
     "textTransform": "none",
     "letterSpacing": "normal",
-    "lineHeight": "27.5px",
+    "lineHeight": "25px",
     "color": "rgb(31, 61, 122)"
    }
   ],
   "gaps": [
    {
-    "from": 522,
-    "to": 528,
+    "from": 508,
+    "to": 514,
     "a": "batch-row__group-label:Every recipe",
     "b": "batch-row__cell:Sweetnessmor"
    },
    {
-    "from": 568,
-    "to": 600,
+    "from": 551,
+    "to": 583,
     "a": "batch-row__cell:Sweetnessmor",
     "b": "batch-row__group-label:This recipe "
    },
    {
-    "from": 620,
-    "to": 626,
+    "from": 603,
+    "to": 609,
     "a": "batch-row__group-label:This recipe ",
     "b": "batch-row__cell:Oilstrong (4"
    },
    {
-    "from": 666,
-    "to": 698,
+    "from": 646,
+    "to": 678,
     "a": "batch-row__cell:Oilstrong (4",
     "b": "batch-row__group-label:Any problems"
    },
    {
-    "from": 718,
-    "to": 724,
+    "from": 698,
+    "to": 704,
     "a": "batch-row__group-label:Any problems",
     "b": "batch-row__group-label:This recipe "
    },
    {
-    "from": 744,
-    "to": 751.251953125,
+    "from": 719,
+    "to": 726.1376953125,
     "a": "batch-row__group-label:This recipe ",
     "b": "app-hand:Bitter"
    },
    {
-    "from": 776.248046875,
-    "to": 809.5,
+    "from": 748.8623046875,
+    "to": 782,
     "a": "app-hand:Bitter",
     "b": "batch-row__group-label:Next time"
    },
    {
-    "from": 824.5,
-    "to": 831.6337890625,
+    "from": 797,
+    "to": 804.1337890625,
     "a": "batch-row__group-label:Next time",
     "b": "batch-row__unit:nothing writ"
    }
@@ -979,26 +979,26 @@
  },
  "record-pen-p": {
   "start": -8,
-  "end": 645.546875,
+  "end": 648.25,
   "roles": [
    {
     "role": "Region name",
     "text": "Batch",
     "top": 0,
-    "right": 54.125,
-    "height": 16.1875,
+    "right": 61.0625,
+    "height": 18.890625,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
-    "fontSize": "12px",
+    "fontSize": "14px",
     "fontWeight": "600",
     "textTransform": "uppercase",
-    "letterSpacing": "0.96px",
-    "lineHeight": "16.200001px",
+    "letterSpacing": "1.12px",
+    "lineHeight": "18.9px",
     "color": "rgb(89, 89, 89)"
    },
    {
     "role": "Group cue",
     "text": "At draw",
-    "top": 409.953125,
+    "top": 412.65625,
     "right": 59.8125,
     "height": 20,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
@@ -1012,7 +1012,7 @@
    {
     "role": "Caption",
     "text": "Churn date",
-    "top": 34.1875,
+    "top": 36.890625,
     "right": 136,
     "height": 28.796875,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
@@ -1026,56 +1026,56 @@
   ],
   "gaps": [
    {
-    "from": 16.1875,
-    "to": 34.1875,
+    "from": 18.890625,
+    "to": 36.890625,
     "a": "batch-row__head:Batch",
     "b": "field-row:Churn dateRe"
    },
    {
-    "from": 244.78125,
-    "to": 250.78125,
+    "from": 247.484375,
+    "to": 253.484375,
     "a": "field-row:Churn dateRe",
     "b": "batch-margin__field:At the machi"
    },
    {
-    "from": 322.96875,
-    "to": 328.96875,
+    "from": 325.671875,
+    "to": 331.671875,
     "a": "batch-margin__field:At the machi",
     "b": "batch-margin__field:Ingredient n"
    },
    {
-    "from": 401.15625,
-    "to": 401.15625,
+    "from": 403.859375,
+    "to": 403.859375,
     "a": "batch-margin__field:Ingredient n",
     "b": "segmented-field__head:At draw"
    },
    {
-    "from": 429.953125,
-    "to": 435.953125,
+    "from": 432.65625,
+    "to": 438.65625,
     "a": "segmented-field__head:At draw",
     "b": "segmented:Nothing to n"
    },
    {
-    "from": 479.953125,
-    "to": 479.953125,
+    "from": 482.65625,
+    "to": 482.65625,
     "a": "segmented:Nothing to n",
     "b": "segmented-field__head:Exit consist"
    },
    {
-    "from": 508.75,
-    "to": 514.75,
+    "from": 511.453125,
+    "to": 517.453125,
     "a": "segmented-field__head:Exit consist",
     "b": "segmented:Smooth ribbo"
    },
    {
-    "from": 558.75,
-    "to": 558.75,
+    "from": 561.453125,
+    "to": 561.453125,
     "a": "segmented:Smooth ribbo",
     "b": "segmented-field__head:Airiness (es"
    },
    {
-    "from": 587.546875,
-    "to": 593.546875,
+    "from": 590.25,
+    "to": 596.25,
     "a": "segmented-field__head:Airiness (es",
     "b": "segmented:Low, denseMe"
    }

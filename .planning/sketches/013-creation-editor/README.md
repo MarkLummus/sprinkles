@@ -58,6 +58,10 @@ Mark's answers on Mark's List, in date order, each exactly as the boards draw th
 21. The style is chosen on a menu, not the four joined cells: one control however many types there are, 44 px tall, the chosen type shown on it, its open list one row per type (`decide-p10-style-control`, A "menu", 20:38; Mark: "the 4-cell joined group is not scalable. I have other types that I will add later."). The same answer applies to the machine when it is drawn. Approved as redrawn on `look-p10-style-machine-menu` (20:49; canvas version 420).
 22. Look rows go one per surface from now on (Mark's note on `look-p10-editor-picker`: "at a minimum, there should one row for creation editor, and another for ingredient picker"). A process rule for Sid, not a drawing.
 
+**2026-10-21** (after Sid's Phase 10 audit and the iPad check):
+23. The page notice on the Notebook and the creation editor moves to the right of the bar, beside Import, and stays on screen while the page scrolls: absolute to the top of the scrollable part and sticky, not pinned to the top of the recipe page (`decide-creation-notice-place`, beside-import, with Mark's note; `check-creation-editor-ipad` failed at step 7 because the Import refusal had scrolled off while editing a problem at the bottom). The boards still draw the notice over the band's first caption; a redraw is Sid's when the boards are next touched.
+24. The ingredient picker's Name and Category fields and Clear filters keep the App chrome as the approved board draws them (`decide-picker-field-chrome`, keep-app-chrome).
+
 Calls made without a row (they stand because Mark approved the boards as drawn; the details are in `CONTRACT.md`):
 
 - The recipe name and the one description are typed top left in Rename's own form kept open; the Sheet shows them as read text. Cancel is the only action (no Save until Phase 11) and abandons the draft.

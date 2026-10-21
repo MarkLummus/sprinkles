@@ -46,16 +46,15 @@ Shipped v1.1 Groundwork for creation (2026-10-15): the code is ready for recipe 
 - ✓ Framework-free creation primitives: `createRecipe` (recipe plus root version, no store), `nextStepKey` (never reuses a key), `rowFromLibraryRecord` (embeds a `structuredClone` of the entry) — MAKE-01 to MAKE-03 — Phase 7 (v1.1)
 
 - ✓ `RecipePage` split along its jobs with no visible change — EDIT-05, EDIT-06 — Phase 8
+- ✓ The creation editor without Save: a recipe started from the Notebook with only a name (same names allowed, with a warning), authored against live figures (rows from the library picker, Version name, one description, Before you start, its own scales and problems, a style menu filling the bands and the serving temperature), kept as a `create` draft that survives a closed tab and offers Resume, refused Import while kept, and Cancel leaving no record — MAKE-04, MAKE-05, MAKE-06, MAKE-08, MAKE-09, MAKE-11 — Phase 10
 - ✓ The reviewed ingredient library (111 entries, with provenance and six nullable per-ingredient coefficients) reaches every profile through the one-way reset at database version 10; a recipe's own scale definitions carry their kind into the batches made from it; the read-only Ingredients place (search by name and category, open entry with Basis and Source) and the Notebook place listing the recipes — LIB-04 to LIB-09, CODE-01, TASTE-03, PLACE-01, PLACE-02 — Phase 9
 
 ### Active
 
 v2.0 Recipe creation (see Current Milestone). Requirement IDs are assigned in `REQUIREMENTS.md`:
 
-- [ ] Notebook starts a new recipe
-- [ ] Create a recipe and author every section of its first version
+- [ ] Create a recipe and author its Instructions steps, then save it as its first version (MAKE-07, MAKE-10, MAKE-12)
 - [ ] Add, remove and reorder steps and rows at creation
-- [ ] Custom scales and problems for a new recipe (SEED-261001-iq4)
 
 ### Out of Scope
 
@@ -169,6 +168,8 @@ Boundaries come from the accepted decisions; reasons are recorded so they are no
 | The reset window: database version 9 to 10 drops and reseeds every store once (`oldVersion < 10`), reaching every profile with the 111-entry library; nothing resets on a second open | Phase 9 settles every stored shape while a reset is still free; Phase 11's first Save closes the window | ✓ Good — Phase 9, walked in WebKit and on the iPad |
 | A recipe's own scale definitions carry their `kind` and travel into batches; `isScaleDefinition` lives in `domain/catalog.js` | A batch must read its tasting against the scale shape the recipe had when it was made | ✓ Good — Phase 9 |
 | The Ingredients place is read-only: the lactose line shows on any entry with milk solids, not only dairy; below 760 px the source sits on its own line under the figure; facts lines are value-first | Mark's answers on Mark's List, 2026-10-19, drawn into sketch 012 (decisions 5 to 7) before quick batch 261019-arp built them | ✓ Good — Phase 9 |
+| The creation editor has no Save and no machine: a creation is only its `create` draft (one at a time, Resume stands in for New recipe), Import is refused while one is kept, and Cancel deletes the draft and waits for the delete before leaving | Keeps the reset window open through Phase 10 (nothing real is stored), and equipment belongs to churning a batch (Mark, 2026-10-18) | ✓ Good — Phase 10, walked in WebKit and checked on the iPad |
+| The page notice on the Notebook, the creation editor and the recipe route is sticky under the bar at the end gutter, beside Import | Pinned to the page top it scrolled off while editing at the bottom (iPad check) and covered the band's first caption (Sid's audit); Mark chose beside-import with sticky (decide-creation-notice-place) | ✓ Good — quick 261021-07s |
 | After an import whose reload fails, every route shows the recovery page titled Import with one line and no button; the browser's reload is the way out | No board drew it; Mark approved it as rendered (look-p9-new-lines-live) | ✓ Good — Phase 9 |
 
 ## Evolution
@@ -189,4 +190,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-19 after Phase 9*
+*Last updated: 2026-10-21 after Phase 10*

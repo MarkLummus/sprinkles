@@ -47,7 +47,7 @@ Full phase detail, plans and progress: `.planning/milestones/v1.1-ROADMAP.md`.
 
 - [x] **Phase 8: Split the recipe page along its jobs** - `RecipePage` is cut into the modules creating and editing will share; the maker sees no change (completed 2026-10-17)
 - [x] **Phase 9: The library and the stored shapes, plus the two places** - The reviewed library reaches every profile with provenance, every shape creation will store is settled while a reset is still free, every seed dataset is rows in a store table, and the Ingredients and Notebook places list the library and the recipes (completed 2026-10-19)
-- [ ] **Phase 10: The creation editor, without Save** - A maker starts a recipe from the Notebook with only a name, authors all of it but its steps against live figures (rows, Version name, Before you start, its own scales and problems, its style and balance targets), and can Resume it; nothing is saved yet
+- [x] **Phase 10: The creation editor, without Save** - A maker starts a recipe from the Notebook with only a name, authors all of it but its steps against live figures (rows, Version name, Before you start, its own scales and problems, its style and balance targets), and can Resume it; nothing is saved yet (completed 2026-10-21)
 - [ ] **Phase 11: Steps, structure, save and print** - A maker authors and shapes the new recipe's Instructions steps, saves it as its first version, which stays editable until it has a batch or a child version, and prints it as a bench sheet
 - [ ] **Phase 12: Showing a recipe's own scales and problems, and the whole loop** - The record pen, the reading and the printed log show a created recipe's own scales and problems, and a created recipe survives print, batch, export and import on the iPad
 
@@ -198,7 +198,7 @@ Plans:
   4. While creating, the maker defines 0 to 2 scales, each with a name, a label for each end and its kind (goldilocks, with the fixed middle word "right", or plain magnitude), and 0 to 2 problems; chooses an ice cream style, so the balance bands fill in, then edits them or leaves them blank; and sees an empty target reading in the editor with no gap or error
   5. A half-made recipe survives a closed tab: the Notebook offers Resume and reopens it as it was left, scales, problems and targets included, and abandoning it leaves no record behind; there is no Save: however far a creation goes, the Notebook lists no new recipe, and the only record a creation writes is its draft
 
-**Plans:** 12/12 plans executed in 9 waves (10-10 stops for the orchestrator to put the one iPad check on Mark's List; 10-11 and 10-12 were split out of 10-02 and 10-06 in the plan-check revision)
+**Plans:** 12/12 plans complete in 9 waves (10-10 stops for the orchestrator to put the one iPad check on Mark's List; 10-11 and 10-12 were split out of 10-02 and 10-06 in the plan-check revision)
 
 Plans:
 **Wave 1**
@@ -276,7 +276,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 |-------|-----------|----------------|--------|-----------|
 | 8. Split the recipe page along its jobs | v2.0 | 6/6 | Complete    | 2026-10-17 |
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
-| 10. The creation editor, without Save | v2.0 | 12/12 | In Progress | - |
+| 10. The creation editor, without Save | v2.0 | 12/12 | Complete    | 2026-10-21 |
 | 11. Steps, structure, save and print | v2.0 | 0/TBD | Not started | - |
 | 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/TBD | Not started | - |
 

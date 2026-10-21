@@ -2,45 +2,45 @@
 gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Recipe creation
-current_phase: 10
-current_phase_name: The creation editor, without Save
-status: executing
-stopped_at: Phase 10 context gathered
-last_updated: "2026-10-21T04:32:26.857Z"
-last_activity: 2026-10-20
-last_activity_desc: Phase 10 execution started
-state_head: 4c43c06f2573d730ea5f8c1490e20cc2cdd08549
+current_phase: 11
+current_phase_name: Steps, structure, save and print
+status: planning
+stopped_at: Phase 10 complete, ready to plan Phase 11
+last_updated: "2026-10-21T11:12:54.710Z"
+last_activity: 2026-10-21
+last_activity_desc: Phase 10 complete, transitioned to Phase 11
+state_head: 992c8bd705c5afe0ade13b44859669d9221275e5
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 35
-  completed_plans: 23
-  percent: 40
+  completed_plans: 35
+  percent: 60
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-19)
+See: .planning/PROJECT.md (updated 2026-10-21)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 10 — The creation editor, without Save
+**Current focus:** Phase 11 — Steps, structure, save and print
 
 ## Current Position
 
-Phase: 10 (The creation editor, without Save) — EXECUTING
-Plan: 1 of 12
-Status: Executing Phase 10
-Last activity: 2026-10-21 - Completed quick task 261021-07s: Move the page notice on the Notebook and creation routes beside Import and keep it on screen while the page scrolls
+Phase: 11 — Steps, structure, save and print
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-10-21 — Phase 10 complete, transitioned to Phase 11
 
-Progress: [████░░░░░░] 40%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 155
+- Total plans completed: 167
 - Average duration: —
 - Total execution time: —
 
@@ -67,6 +67,7 @@ Progress: [████░░░░░░] 40%
 | 07 | 3 | - | - |
 | 08 | 6 | - | - |
 | 09 | 17 | - | - |
+| 10 | 12 | - | - |
 
 **Recent Trend:**
 
@@ -176,6 +177,7 @@ Progress: [████░░░░░░] 40%
 
 Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–D16 live in `product-requirements/03-decision-register.md` and are accepted.
 
+- [Phase 10, 2026-10-21]: Phase 10 verified and closed: the creation editor at /notebook/new without Save (12 plans, 3728 tests, strict walk MATCH 94, five sketch 013 boards 2660 PASS, iPad check passed after quick 261021-07s moved the page notice sticky beside Import). Open from its reviews: WR-01 to WR-03 and IN-01 to IN-08 in 10-REVIEW-DISPOSITION.md; Sid's P1 (the "Every recipe" cue face) and the P10_Scales canvas republish wait on Sid; DESIGN.md's notice placement line is stale. 33 threats closed in 10-SECURITY.md.
 - [Phase 09, 2026-10-19]: Phase 9 verified and closed: one-way reset at database version 10, 111-entry library with provenance, scale definitions carry kind into batches, Ingredients and Notebook places open read-only. Open from its reviews: WR-01, WR-02, IN-01 to IN-05 in 09-REVIEW-DISPOSITION.md; decide-p9-boot-word-problems and decide-p9-facts-line-shape on Mark's List.
 - [Phase 09, 2026-10-18]: D-20 adds six nullable per-ingredient coefficients to the library seed in the 9 to 10 bump; the other 2026-10-18 decisions (approved style values stand, Guelph method with a calibrated target, Balance tiers in v2.1, stage model at Phase 11, menus for the Phase 10 style and machine pickers) are in `.planning/notes/2026-10-18-balance-and-process-decisions.md`.
 - Roadmap: Milestone 1 is four vertical slices on the olive oil working case (read → record → develop → print), not technical layers.
@@ -618,12 +620,12 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-20T03:09:24.312Z
-Stopped at: Phase 10 context gathered
-Resume file: .planning/phases/10-the-creation-editor-without-save/10-CONTEXT.md
+Last session: 2026-10-21T11:13:00Z
+Stopped at: Phase 10 complete, ready to plan Phase 11
+Resume file: None
 
 ## Operator Next Steps
 
-- Discuss Phase 8 with /gsd-discuss-phase 8, then plan it with /gsd-plan-phase 8
-- Phase 9's two place boards are approved and snapshotted as `.planning/sketches/012-places/`; discuss Phase 9 next with /gsd-discuss-phase 9 (Phase 8 merges first, per its context)
-- Phase 9's seed content is settled: the four styles' approved bands and fields (`.planning/notes/2026-10-16-style-bands-draft.md`) and the Whynter row (maximum empty)
+- Phase 11's design gate is open: Sid draws the Instructions steps (uses, portions) and the Add/Remove/Move controls for steps and rows, while creating and on a saved first version; Mark approves; snapshot to sketch 014; then /gsd-discuss-phase 11
+- Before the first device build that can save a recipe (Phase 11), put the export-first row on Mark's List (ROADMAP, the reset window)
+- Phase 10 leftovers: 10-REVIEW-DISPOSITION.md rows WR-01 to WR-03 (worth a /gsd-quick-batch), Sid's P1 cue-face fix via p10.py and the P10_Scales republish, DESIGN.md notice line

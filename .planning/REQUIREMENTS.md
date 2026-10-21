@@ -30,14 +30,14 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 
 ### Creating a recipe (continues MAKE-03)
 
-- [ ] **MAKE-04**: A maker can start a blank recipe from the Notebook, needing only a name. Two recipes may share a name; the Notebook warns when they do.
-- [ ] **MAKE-05**: A maker can author the recipe's name, its description and its Version name. One description box fills both the recipe description and the Sheet description. The Version name starts as "Version 1", which the maker can change.
-- [ ] **MAKE-06**: A maker can add ingredient rows from the library, enter grams, and see the balance figures update. A maker can also remove a row, which deletes it outright. An ingredient not in the library adds nothing: the picker says "Not in the library yet".
+- [x] **MAKE-04**: A maker can start a blank recipe from the Notebook, needing only a name. Two recipes may share a name; the Notebook warns when they do.
+- [x] **MAKE-05**: A maker can author the recipe's name, its description and its Version name. One description box fills both the recipe description and the Sheet description. The Version name starts as "Version 1", which the maker can change.
+- [x] **MAKE-06**: A maker can add ingredient rows from the library, enter grams, and see the balance figures update. A maker can also remove a row, which deletes it outright. An ingredient not in the library adds nothing: the picker says "Not in the library yet".
 - [ ] **MAKE-07**: A maker can author Instructions steps (lead-in, text, targets) and say which rows each step uses and in what portions.
-- [ ] **MAKE-08**: A maker can author Before you start notes.
-- [ ] **MAKE-09**: A maker can choose an ice cream style, and the balance bands fill in from it; the maker can edit the bands or leave them blank. The styles are Philadelphia, French, gelato and sorbet; the bands are Mark's approved values, with PAC and sugar starting blank. The maker can also set a target serving temperature, which the style fills in and Clear empties, or leave it empty (Mark, 2026-10-18). The creation editor offers no machine and no pasteurise temperature or hold time: equipment belongs to churning a batch (Mark, 2026-10-18). (The machine table still starts with Whynter at 700 g minimum and no maximum, seeded in LIB-09; Mark adds other machines and fills the maximum later.)
+- [x] **MAKE-08**: A maker can author Before you start notes.
+- [x] **MAKE-09**: A maker can choose an ice cream style, and the balance bands fill in from it; the maker can edit the bands or leave them blank. The styles are Philadelphia, French, gelato and sorbet; the bands are Mark's approved values, with PAC and sugar starting blank. The maker can also set a target serving temperature, which the style fills in and Clear empties, or leave it empty (Mark, 2026-10-18). The creation editor offers no machine and no pasteurise temperature or hold time: equipment belongs to churning a batch (Mark, 2026-10-18). (The machine table still starts with Whynter at 700 g minimum and no maximum, seeded in LIB-09; Mark adds other machines and fills the maximum later.)
 - [ ] **MAKE-10**: Saving creates the recipe and its first version in one step, lands on the new page, and a failed save leaves neither behind.
-- [ ] **MAKE-11**: An unsaved creation survives a closed tab and offers Resume, and abandoning it leaves no records.
+- [x] **MAKE-11**: An unsaved creation survives a closed tab and offers Resume, and abandoning it leaves no records.
 - [ ] **MAKE-12**: A created recipe prints as a bench sheet with its Sheet code (CODE-01), like the seeded ones, and typing that code finds it after any later edit.
 
 ### Structure on a first version
@@ -109,14 +109,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PLACE-01 | Phase 9 | Complete |
 | PLACE-02 | Phase 9 | Complete |
 | CODE-01 | Phase 9 | Complete |
-| MAKE-04 | Phase 10 | Pending |
-| MAKE-05 | Phase 10 | Pending |
-| MAKE-06 | Phase 10 | Pending |
+| MAKE-04 | Phase 10 | Complete |
+| MAKE-05 | Phase 10 | Complete |
+| MAKE-06 | Phase 10 | Complete |
 | MAKE-07 | Phase 11 | Pending |
-| MAKE-08 | Phase 10 | Pending |
-| MAKE-09 | Phase 10 | Pending |
+| MAKE-08 | Phase 10 | Complete |
+| MAKE-09 | Phase 10 | Complete |
 | MAKE-10 | Phase 11 | Pending |
-| MAKE-11 | Phase 10 | Pending |
+| MAKE-11 | Phase 10 | Complete |
 | MAKE-12 | Phase 11 | Pending |
 | STRUCT-01 | Phase 11 | Pending |
 | STRUCT-02 | Phase 11 | Pending |
@@ -136,4 +136,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-10-16*
-*Last updated: 2026-10-16 after Mark's decision that all seed data is rows in store tables (LIB-09), and after the Codex review and Mark's answers: MAKE-09, SCALE-01 and SCALE-02 moved to Phase 10; LIB-05, LIB-06, MAKE-04, MAKE-05, MAKE-06, MAKE-09, STRUCT-01, STRUCT-04, SCALE-01, SCALE-03 and SCALE-04 reworded*
+*Last updated: 2026-10-21 after Phase 10 closed: MAKE-04, MAKE-05, MAKE-06, MAKE-08, MAKE-09 and MAKE-11 complete (the creation editor without Save, verified on the iPad)*

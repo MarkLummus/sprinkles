@@ -668,7 +668,7 @@
     "color": "rgb(89, 89, 89)"
    },
    {
-    "role": "Hand",
+    "role": "Picked problem",
     "text": "Bitter",
     "top": 746.251953125,
     "right": 63.666015625,
@@ -735,7 +735,7 @@
  },
  "reading-olive-p": {
   "start": 480,
-  "end": 829,
+  "end": 824,
   "roles": [
    {
     "role": "Group cue",
@@ -796,7 +796,7 @@
    {
     "role": "Next time",
     "text": "Next time",
-    "top": 782,
+    "top": 777,
     "right": 358,
     "height": 15,
     "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
@@ -808,18 +808,18 @@
     "color": "rgb(89, 89, 89)"
    },
    {
-    "role": "Hand",
+    "role": "Picked problem",
     "text": "Bitter",
-    "top": 726.1376953125,
-    "right": 58.60546875,
-    "height": 22.724609375,
-    "fontFamily": "Caveat, Georgia, Iowan Old Style, Times New Roman, serif",
-    "fontSize": "20px",
+    "top": 726.755859375,
+    "right": 43.1572265625,
+    "height": 16.48828125,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
     "fontWeight": "400",
     "textTransform": "none",
     "letterSpacing": "normal",
-    "lineHeight": "25px",
-    "color": "rgb(31, 61, 122)"
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
    }
   ],
   "gaps": [
@@ -855,19 +855,19 @@
    },
    {
     "from": 719,
-    "to": 726.1376953125,
+    "to": 726.755859375,
     "a": "batch-row__group-label:This recipe ",
     "b": "app-hand:Bitter"
    },
    {
-    "from": 748.8623046875,
-    "to": 782,
+    "from": 743.244140625,
+    "to": 777,
     "a": "app-hand:Bitter",
     "b": "batch-row__group-label:Next time"
    },
    {
-    "from": 797,
-    "to": 804.1337890625,
+    "from": 792,
+    "to": 799.1337890625,
     "a": "batch-row__group-label:Next time",
     "b": "batch-row__unit:nothing writ"
    }

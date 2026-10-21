@@ -1,0 +1,1084 @@
+{
+ "creation-b": {
+  "start": 502,
+  "end": 1469.046875,
+  "roles": [
+   {
+    "role": "Region name",
+    "text": "Scales",
+    "top": 534.90625,
+    "right": 61.140625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Group cue",
+    "text": "Every recipe",
+    "top": 573,
+    "right": 358,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Core names",
+    "text": "Hardness, Scoopability, ",
+    "top": 601.1875,
+    "right": 358,
+    "height": 22.5,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "22.5px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Card head",
+    "text": "Scale 1",
+    "top": 678.375,
+    "right": 63.296875,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Caption",
+    "text": "Scale 1",
+    "top": 678.375,
+    "right": 63.296875,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Stops line",
+    "text": "thin · leaning thin · ri",
+    "top": 960.671875,
+    "right": 358,
+    "height": 17,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "remove",
+    "text": "remove",
+    "top": 663.875,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Add link",
+    "text": "Add scale",
+    "top": 1007.671875,
+    "right": 73.9375,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 555,
+    "to": 573,
+    "a": "batch-row__head:Scales",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 589.1875,
+    "to": 601.1875,
+    "a": "pen-caption:Every recipe",
+    "b": "mk-core:Hardness, Sc"
+   },
+   {
+    "from": 623.6875,
+    "to": 635.6875,
+    "a": "mk-core:Hardness, Sc",
+    "b": "pen-caption:This recipe "
+   },
+   {
+    "from": 651.875,
+    "to": 663.875,
+    "a": "pen-caption:This recipe ",
+    "b": "mk-card__head:Scale 1remov"
+   },
+   {
+    "from": 707.875,
+    "to": 719.875,
+    "a": "mk-card__head:Scale 1remov",
+    "b": "notebook-field:Name"
+   },
+   {
+    "from": 782.875,
+    "to": 794.875,
+    "a": "notebook-field:Name",
+    "b": "mk-pair:Low endHigh "
+   },
+   {
+    "from": 857.875,
+    "to": 869.875,
+    "a": "mk-pair:Low endHigh ",
+    "b": "segmented-field__head:Kind"
+   },
+   {
+    "from": 898.671875,
+    "to": 904.671875,
+    "a": "segmented-field__head:Kind",
+    "b": "segmented:Right in the"
+   },
+   {
+    "from": 948.671875,
+    "to": 960.671875,
+    "a": "segmented:Right in the",
+    "b": "mk-stops:thin · leani"
+   },
+   {
+    "from": 977.671875,
+    "to": 1007.671875,
+    "a": "mk-stops:thin · leani",
+    "b": "mk-add-row:Add scale"
+   },
+   {
+    "from": 1051.671875,
+    "to": 1092.671875,
+    "a": "mk-add-row:Add scale",
+    "b": "batch-row__head:Problems"
+   },
+   {
+    "from": 1116.671875,
+    "to": 1134.671875,
+    "a": "batch-row__head:Problems",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1150.859375,
+    "to": 1162.859375,
+    "a": "pen-caption:Every recipe",
+    "b": "mk-core:Coarse, icy "
+   },
+   {
+    "from": 1207.859375,
+    "to": 1219.859375,
+    "a": "mk-core:Coarse, icy ",
+    "b": "pen-caption:This recipe "
+   },
+   {
+    "from": 1236.046875,
+    "to": 1248.046875,
+    "a": "pen-caption:This recipe ",
+    "b": "mk-card__head:Problem 1rem"
+   },
+   {
+    "from": 1292.046875,
+    "to": 1304.046875,
+    "a": "mk-card__head:Problem 1rem",
+    "b": "notebook-field:Name"
+   },
+   {
+    "from": 1367.046875,
+    "to": 1397.046875,
+    "a": "notebook-field:Name",
+    "b": "mk-add-row:Add problem"
+   }
+  ]
+ },
+ "creation-p": {
+  "start": 507,
+  "end": 1397.796875,
+  "roles": [
+   {
+    "role": "Region name",
+    "text": "Scales",
+    "top": 539.90625,
+    "right": 61.140625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Group cue",
+    "text": "Every recipe",
+    "top": 578,
+    "right": 358,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Core names",
+    "text": "Hardness, Scoopability, ",
+    "top": 604,
+    "right": 358,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Name",
+    "top": 688,
+    "right": 296.015625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Stops line",
+    "text": "thin · leaning thin · ri",
+    "top": 928.796875,
+    "right": 358,
+    "height": 17,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "remove",
+    "text": "remove",
+    "top": 707,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Add link",
+    "text": "Add scale",
+    "top": 975.796875,
+    "right": 73.9375,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 560,
+    "to": 578,
+    "a": "batch-row__head:Scales",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 598,
+    "to": 604,
+    "a": "pen-caption:Every recipe",
+    "b": "mk-core:Hardness, Sc"
+   },
+   {
+    "from": 624,
+    "to": 656,
+    "a": "mk-core:Hardness, Sc",
+    "b": "pen-caption:This recipe "
+   },
+   {
+    "from": 676,
+    "to": 688,
+    "a": "pen-caption:This recipe ",
+    "b": "mk-caprow:Nameremove"
+   },
+   {
+    "from": 751,
+    "to": 763,
+    "a": "mk-caprow:Nameremove",
+    "b": "mk-pair:Low endHigh "
+   },
+   {
+    "from": 826,
+    "to": 838,
+    "a": "mk-pair:Low endHigh ",
+    "b": "segmented-field__head:Kind"
+   },
+   {
+    "from": 866.796875,
+    "to": 872.796875,
+    "a": "segmented-field__head:Kind",
+    "b": "segmented:Right in the"
+   },
+   {
+    "from": 916.796875,
+    "to": 928.796875,
+    "a": "segmented:Right in the",
+    "b": "mk-stops:thin · leani"
+   },
+   {
+    "from": 945.796875,
+    "to": 975.796875,
+    "a": "mk-stops:thin · leani",
+    "b": "mk-add-row:Add scale"
+   },
+   {
+    "from": 1019.796875,
+    "to": 1060.796875,
+    "a": "mk-add-row:Add scale",
+    "b": "batch-row__head:Problems"
+   },
+   {
+    "from": 1084.796875,
+    "to": 1102.796875,
+    "a": "batch-row__head:Problems",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1122.796875,
+    "to": 1128.796875,
+    "a": "pen-caption:Every recipe",
+    "b": "mk-core:Coarse, icy "
+   },
+   {
+    "from": 1168.796875,
+    "to": 1200.796875,
+    "a": "mk-core:Coarse, icy ",
+    "b": "pen-caption:This recipe "
+   },
+   {
+    "from": 1220.796875,
+    "to": 1232.796875,
+    "a": "pen-caption:This recipe ",
+    "b": "mk-caprow:Nameremove"
+   },
+   {
+    "from": 1295.796875,
+    "to": 1325.796875,
+    "a": "mk-caprow:Nameremove",
+    "b": "mk-add-row:Add problem"
+   }
+  ]
+ },
+ "tasting-pen-b": {
+  "start": 1974.421875,
+  "end": 2566.203125,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "This recipe only",
+    "top": 1995.421875,
+    "right": 358,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Any problems?",
+    "text": "Any problems?",
+    "top": 2294.390625,
+    "right": 114.984375,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Body",
+    "top": 2041.21875,
+    "right": 43.71875,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Chip",
+    "text": "Coarse, icy",
+    "top": 2349.203125,
+    "right": 94.4375,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(20, 20, 20)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 2124.21875,
+    "to": 2164.21875,
+    "a": "axis-mark:Body(Not rec",
+    "b": "axis-mark:Oil(Not reco"
+   },
+   {
+    "from": 2261.015625,
+    "to": 2293.015625,
+    "a": "axis-mark:Oil(Not reco",
+    "b": "defects-head:Any problems"
+   },
+   {
+    "from": 2311.203125,
+    "to": 2349.203125,
+    "a": "defects-head:Any problems",
+    "b": "defects-row__chips:Coarse, icyS"
+   },
+   {
+    "from": 2443.203125,
+    "to": 2514.203125,
+    "a": "defects-row__chips:Coarse, icyS",
+    "b": "defects-row__chips:Bitter"
+   }
+  ]
+ },
+ "tasting-pen-p": {
+  "start": 1974.421875,
+  "end": 2568.015625,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "This recipe only",
+    "top": 1995.421875,
+    "right": 358,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Any problems?",
+    "text": "Any problems?",
+    "top": 2293.015625,
+    "right": 108.53125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Body",
+    "top": 2041.21875,
+    "right": 43.71875,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Chip",
+    "text": "Coarse, icy",
+    "top": 2351.015625,
+    "right": 94.4375,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(20, 20, 20)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 2124.21875,
+    "to": 2164.21875,
+    "a": "axis-mark:Body(Not rec",
+    "b": "axis-mark:Oil(Not reco"
+   },
+   {
+    "from": 2261.015625,
+    "to": 2293.015625,
+    "a": "axis-mark:Oil(Not reco",
+    "b": "defects-head:Any problems"
+   },
+   {
+    "from": 2313.015625,
+    "to": 2351.015625,
+    "a": "defects-head:Any problems",
+    "b": "defects-row__chips:Coarse, icyS"
+   },
+   {
+    "from": 2445.015625,
+    "to": 2516.015625,
+    "a": "defects-row__chips:Coarse, icyS",
+    "b": "defects-row__chips:Bitter"
+   }
+  ]
+ },
+ "reading-olive-b": {
+  "start": 494,
+  "end": 851.5,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "Every recipe",
+    "top": 502,
+    "right": 358,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Any problems?",
+    "text": "Any problems?",
+    "top": 698,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Caption",
+    "text": "Sweetness",
+    "top": 528,
+    "right": 173,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Cell value",
+    "text": "more (4)",
+    "top": 545,
+    "right": 173,
+    "height": 23,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "20px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Next time",
+    "text": "Next time",
+    "top": 804.5,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Hand",
+    "text": "Bitter",
+    "top": 746.251953125,
+    "right": 63.666015625,
+    "height": 24.99609375,
+    "fontFamily": "Caveat, Georgia, Iowan Old Style, Times New Roman, serif",
+    "fontSize": "22px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "27.5px",
+    "color": "rgb(31, 61, 122)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 522,
+    "to": 528,
+    "a": "batch-row__group-label:Every recipe",
+    "b": "batch-row__cell:Sweetnessmor"
+   },
+   {
+    "from": 568,
+    "to": 600,
+    "a": "batch-row__cell:Sweetnessmor",
+    "b": "batch-row__group-label:This recipe "
+   },
+   {
+    "from": 620,
+    "to": 626,
+    "a": "batch-row__group-label:This recipe ",
+    "b": "batch-row__cell:Oilstrong (4"
+   },
+   {
+    "from": 666,
+    "to": 698,
+    "a": "batch-row__cell:Oilstrong (4",
+    "b": "batch-row__group-label:Any problems"
+   },
+   {
+    "from": 713,
+    "to": 719,
+    "a": "batch-row__group-label:Any problems",
+    "b": "batch-row__group-label:This recipe "
+   },
+   {
+    "from": 739,
+    "to": 746.251953125,
+    "a": "batch-row__group-label:This recipe ",
+    "b": "app-hand:Bitter"
+   },
+   {
+    "from": 771.248046875,
+    "to": 804.5,
+    "a": "app-hand:Bitter",
+    "b": "batch-row__group-label:Next time"
+   },
+   {
+    "from": 819.5,
+    "to": 826.6337890625,
+    "a": "batch-row__group-label:Next time",
+    "b": "batch-row__unit:nothing writ"
+   }
+  ]
+ },
+ "reading-olive-p": {
+  "start": 494,
+  "end": 856.5,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "Every recipe",
+    "top": 502,
+    "right": 358,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Any problems?",
+    "text": "Any problems?",
+    "top": 698,
+    "right": 358,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Sweetness",
+    "top": 528,
+    "right": 173,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Cell value",
+    "text": "more (4)",
+    "top": 545,
+    "right": 173,
+    "height": 23,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "20px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Next time",
+    "text": "Next time",
+    "top": 809.5,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Hand",
+    "text": "Bitter",
+    "top": 751.251953125,
+    "right": 63.666015625,
+    "height": 24.99609375,
+    "fontFamily": "Caveat, Georgia, Iowan Old Style, Times New Roman, serif",
+    "fontSize": "22px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "27.5px",
+    "color": "rgb(31, 61, 122)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 522,
+    "to": 528,
+    "a": "batch-row__group-label:Every recipe",
+    "b": "batch-row__cell:Sweetnessmor"
+   },
+   {
+    "from": 568,
+    "to": 600,
+    "a": "batch-row__cell:Sweetnessmor",
+    "b": "batch-row__group-label:This recipe "
+   },
+   {
+    "from": 620,
+    "to": 626,
+    "a": "batch-row__group-label:This recipe ",
+    "b": "batch-row__cell:Oilstrong (4"
+   },
+   {
+    "from": 666,
+    "to": 698,
+    "a": "batch-row__cell:Oilstrong (4",
+    "b": "batch-row__group-label:Any problems"
+   },
+   {
+    "from": 718,
+    "to": 724,
+    "a": "batch-row__group-label:Any problems",
+    "b": "batch-row__group-label:This recipe "
+   },
+   {
+    "from": 744,
+    "to": 751.251953125,
+    "a": "batch-row__group-label:This recipe ",
+    "b": "app-hand:Bitter"
+   },
+   {
+    "from": 776.248046875,
+    "to": 809.5,
+    "a": "app-hand:Bitter",
+    "b": "batch-row__group-label:Next time"
+   },
+   {
+    "from": 824.5,
+    "to": 831.6337890625,
+    "a": "batch-row__group-label:Next time",
+    "b": "batch-row__unit:nothing writ"
+   }
+  ]
+ },
+ "record-pen-b": {
+  "start": -8,
+  "end": 645.546875,
+  "roles": [
+   {
+    "role": "Region name",
+    "text": "Batch",
+    "top": 0,
+    "right": 54.125,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 409.953125,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Churn date",
+    "top": 34.1875,
+    "right": 136,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 16.1875,
+    "to": 34.1875,
+    "a": "batch-row__head:Batch",
+    "b": "field-row:Churn dateRe"
+   },
+   {
+    "from": 244.78125,
+    "to": 250.78125,
+    "a": "field-row:Churn dateRe",
+    "b": "batch-margin__field:At the machi"
+   },
+   {
+    "from": 322.96875,
+    "to": 328.96875,
+    "a": "batch-margin__field:At the machi",
+    "b": "batch-margin__field:Ingredient n"
+   },
+   {
+    "from": 401.15625,
+    "to": 401.15625,
+    "a": "batch-margin__field:Ingredient n",
+    "b": "segmented-field__head:At draw"
+   },
+   {
+    "from": 429.953125,
+    "to": 435.953125,
+    "a": "segmented-field__head:At draw",
+    "b": "segmented:Nothing to n"
+   },
+   {
+    "from": 479.953125,
+    "to": 479.953125,
+    "a": "segmented:Nothing to n",
+    "b": "segmented-field__head:Exit consist"
+   },
+   {
+    "from": 508.75,
+    "to": 514.75,
+    "a": "segmented-field__head:Exit consist",
+    "b": "segmented:Smooth ribbo"
+   },
+   {
+    "from": 558.75,
+    "to": 558.75,
+    "a": "segmented:Smooth ribbo",
+    "b": "segmented-field__head:Airiness (es"
+   },
+   {
+    "from": 587.546875,
+    "to": 593.546875,
+    "a": "segmented-field__head:Airiness (es",
+    "b": "segmented:Low, denseMe"
+   }
+  ]
+ },
+ "record-pen-p": {
+  "start": -8,
+  "end": 645.546875,
+  "roles": [
+   {
+    "role": "Region name",
+    "text": "Batch",
+    "top": 0,
+    "right": 54.125,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 409.953125,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Churn date",
+    "top": 34.1875,
+    "right": 136,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 16.1875,
+    "to": 34.1875,
+    "a": "batch-row__head:Batch",
+    "b": "field-row:Churn dateRe"
+   },
+   {
+    "from": 244.78125,
+    "to": 250.78125,
+    "a": "field-row:Churn dateRe",
+    "b": "batch-margin__field:At the machi"
+   },
+   {
+    "from": 322.96875,
+    "to": 328.96875,
+    "a": "batch-margin__field:At the machi",
+    "b": "batch-margin__field:Ingredient n"
+   },
+   {
+    "from": 401.15625,
+    "to": 401.15625,
+    "a": "batch-margin__field:Ingredient n",
+    "b": "segmented-field__head:At draw"
+   },
+   {
+    "from": 429.953125,
+    "to": 435.953125,
+    "a": "segmented-field__head:At draw",
+    "b": "segmented:Nothing to n"
+   },
+   {
+    "from": 479.953125,
+    "to": 479.953125,
+    "a": "segmented:Nothing to n",
+    "b": "segmented-field__head:Exit consist"
+   },
+   {
+    "from": 508.75,
+    "to": 514.75,
+    "a": "segmented-field__head:Exit consist",
+    "b": "segmented:Smooth ribbo"
+   },
+   {
+    "from": 558.75,
+    "to": 558.75,
+    "a": "segmented:Smooth ribbo",
+    "b": "segmented-field__head:Airiness (es"
+   },
+   {
+    "from": 587.546875,
+    "to": 593.546875,
+    "a": "segmented-field__head:Airiness (es",
+    "b": "segmented:Low, denseMe"
+   }
+  ]
+ }
+}

@@ -1,0 +1,68 @@
+# The log column's ladder (2026-10-21)
+
+⚠️ DEGRADED: single-context (no sub-agent tool is exposed to this agent). `/impeccable typeset` and `/impeccable layout` were run as assessments only, by their references, on the log column as one surface across its grouped states; neither edited `app/` (Impeccable describes, GSD edits). Their mechanical scans (`impeccable detect --scope type` and `--scope layout` over `CreationSetup.jsx`, `BatchRow.jsx`, `AxisMark.jsx`, `Segmented.jsx`, `notebook.css`, `app.css`): 0 findings each. A clean scan is a floor: the defect is which role each label reads, which no detector sees.
+
+Target: `aside.notebook-log` on the built app (HEAD 6ee9051b; `app/` unchanged since 61d2fe9c), scratch build served on an ephemeral port, WebKit 1366 × 744, coarse pointer. States measured by `.planning/phases/10-the-creation-editor-without-save/10-log-inventory.mjs` (every labelled element in the log with face and gap; `.planning/canvas-generators/log-inventory.json`; the log markup in `log-capture.json`): the creation editor (`/notebook/new`, a draft with two rows, Philadelphia, one scale, one problem); Olive Oil v1 reading (the batch margin with a tasted batch); the same with the version pen open (the log is unchanged by it); the record pen (Record another); the tasting pen (Add tasting); Mexican Chocolate v3 reading (an untasted batch). History is in the band, not the log, and is out of scope.
+
+## Inventory: the ladder as built
+
+| Surface | Region name | Group cue | Item / card head | Field or cell caption | Gaps |
+|---|---|---|---|---|---|
+| Creation editor (Style, Scales, Problems) | 12/600 caps 0.96px secondary, 16.2 line | "Every recipe", "This recipe only": 12/500 caps 0.48px secondary (`.pen-caption.mk-cue`); "Targets": 12/600 caps secondary (`.notebook-caption`) | core names 15/400 ink 22.5 line; "Scale 1", "Problem 1": 12/600 caps secondary | 12/600 caps 0.96px secondary (`.notebook-caption`); Kind: 12/500 caps 0.48px (`.pen-caption`) | head→cue 18; cue→core 12; core→cue 12; cue→card 12; card rows 12; stops→add 30; region seam 20 + rule + 20 |
+| Batch margin, reading (Olive Oil v1) | 12/600 caps secondary | "Every recipe", "This recipe only": 14/600 sentence ink, 20 line (`h4.batch-row__group-label--cue`); "Any problems?": 12/600 caps secondary (`h4`) | cell value 20/600 ink | cell labels 12/600 caps 0.96px secondary | cue→cell 6; group seam 32; "Next time" (h3, 12/600 caps) 32 above, 7 below |
+| Batch margin, reading (Mexican Chocolate v3) | same | none (untasted) | | same | cells 16/12; "Next time" 32 above |
+| Version pen open | the log is the reading state above, unchanged | | | | |
+| Record pen (churn) | 12/600 caps secondary | "At draw": 14/600 sentence ink 20 line (`.axes-cue`) | | 12/500 caps 0.48px secondary (`.pen-caption`), 14.4 line in the field rows | head→fields 18; caption→control 4 to 6; note blocks 6; At draw group 32 seams |
+| Tasting pen (axes group) | "Tasting" 12/600 caps secondary (h3.region-name) | "From freezer", "Every recipe", "This recipe only": 14/600 sentence ink 20 line; "Any problems?": 12/500 caps secondary (`.defects-head .pen-caption`) | axis names 12/500 caps 0.48px **ink** (`.axis-mark__name`) | 12/500 caps 0.48px secondary | cue→first axis 21; axes 40 apart; group seam 32 (45 above a cue); Any problems?→chips 38 (12 + 6 under the cue); chips 6 under "Every recipe" |
+
+What a user sees: five text levels (region, cue, item head, caption, value) in two faces that differ by a weight step and 0.04 em of tracking, plus the one cue the pen got from decision 40 C; the same word ("Out of machine", "Sweetness") in the pen's 12/500 and the reading's 12/600. In the creation editor every gap is 12.
+
+## Typeset assessment (by reference/typeset.md)
+
+- Authority and fit: the grotesk (`--face-grotesk`) with tabular numerals and the hand (Caveat) are authoritative (DESIGN.md); no family is unnecessary. Roles established in `tokens.css`: `--app-size-label` 12, `--app-size-meta` 14, `--app-notebook-size-body` 15, `--sheet-size-ink-field` 16, the hand 22; `--app-notebook-pen-cue-line-h` 20.
+- Hierarchy: heading, label and metadata roles cannot be told apart at a glance inside the log: region name, caption and (in the creation editor) the group cue share 12 px caps secondary. Two caption classes (`.pen-caption` 500/0.04em, `.notebook-caption` 600/0.08em) carry no meaning.
+- Scale and consistency: a deliberate ramp exists (12/14/15/16/20/22) but the roles are not mapped to it: the group cue is 12 in the creation editor and 14 in the pen; the item line under a cue is 15 (body) in the creation editor and 12 caps (axis name) in the pen.
+- Reading: no prose in the log beyond the hand and helper lines; measure not at issue at 350 wide.
+- Stress: long core lines wrap (Problems' four names take two lines at 15; at 14 on a 20 px line they still wrap, fine); zoom and fallback unaffected.
+- Delivery: system grotesk, no web font to load for the log except the hand.
+
+## Layout assessment (by reference/layout.md)
+
+- Reading order (squint): the region heads and the hairlines survive the squint; the groups do not, except in the pen's axes grid where 32 px seams exist. In the creation editor the squint shows a stack of equal rows.
+- Grouping: proximity is not doing the work; cards lean on their top rule, groups on nothing.
+- Rhythm: one value (12) repeated in the creation editor; the pen and the reading state have the deliberate 32 / 6 cadence (decision 40 C) and read better for it.
+- Structure: region > group > card > field is the right topology; it is only unmarked.
+- Density: right for an authoring column at 1366.
+- Adaptation: at 393 the log stacks under the Sheet (sketch 013); the ladder is width-independent.
+- Extremes: two cards per group at most (decision 26); nothing overflows (1366 scrollWidth 1366).
+
+## The proposal: one ladder, one scale, one rule
+
+**Four levels.**
+- L1 Region name: grotesk 12/600 caps, `--app-tracking-label`, `--app-text-secondary`, in the 44 px head row (`.region-name` in the log, unchanged; DESIGN.md Region name; sketch 011 decision 34).
+- L2 Group cue: grotesk `--app-size-meta` (14)/600, sentence case, no tracking, `--app-text`, `--app-notebook-pen-cue-line-h` (20): sketch 011 decision 40 C, kept. Every label that stands over two or more things of one kind: Every recipe, This recipe only, At draw, From freezer, Any problems?, Targets.
+- L3 Item: a line of content under a cue (the core names): grotesk 14/400 sentence `--app-text` on the 20 px line. Controls and fields keep their own faces (axis names stay the 12/500 caps ink of the axis mark; chips 13; fields 16; cell values 20/600; the hand 22).
+- L4 Caption: one caption face in the log, the App's `.notebook-caption`: 12/600 caps, `--app-tracking-label`, `--app-text-secondary`, over one field, value or control (Name, Kind, Churn date, Out of machine, Next time, Serving temperature). `.pen-caption` in the log takes the same weight and tracking.
+
+**The rule.** Count what stands under the label: two or more of one kind, a cue (L2); one field, value or control, a caption (L4); a line of content, an item (L3); a region, its name (L1). Actions (14/600 `--app-blue-text`) and the hand are not levels.
+
+**The spacing scale.** Region seam `--gap-m` + rule + `--gap-m` (unchanged). Group seam `--gap-l` (32) above a cue that follows a group. Cue to a one-line list or chips `--gap-xs` (6); cue to a card or a control `--gap-s` (12). Between items `--gap-s`. A card: a rule, `--gap-s` inside. The first cue after a region head keeps the head row's own 18.
+
+**No new token.** Every value above is in `tokens.css`.
+
+## What it changes on each surface, and what it leaves alone
+
+- Creation editor, Scales and Problems: cues to L2 (decision 25 on the canvas, not built); 32 above "This recipe only", 6 under a cue over the core names, 12 under a cue over a card; core names to L3; the card head dropped and remove beside Name (`decide-p10-card-head`); Kind's caption joins L4. Reopens sketch 013's card as approved, and decision 25's drawing (the face stands).
+- Creation editor, Style: "Targets" to L2 (it heads six band rows). Serving temperature stays L4. Nothing moves.
+- Record pen and tasting pen: captions take L4's weight and tracking (nothing moves); "Any problems?" to L2 (`decide-p10-any-problems-level`; reopens Mark's 2026-10-06 note, decision 58); the axes group, At draw and From freezer kept as decision 40 C built them; axis names left alone.
+- Batch margin, reading state: already on the ladder except "Any problems?" (the same row); Next time stays a caption (it heads one line); cell labels are L4 already. Left alone otherwise.
+- Version pen: the log is the reading state; nothing to change.
+- Out of scope: History (in the band), the Sheet's regions (bookcloth), the band's captions.
+
+## Which fixes it
+
+Neither the rhythm board's A nor B alone: A spaces the creation editor, B also sizes its core line, and both start from decision 25's cue face, which the build lacks. The ladder is B plus the rule that makes the same words read the same on every surface (one caption face, Any problems? as a cue, Targets as a cue) and the card head call. Rows: `decide-p10-log-ladder` (supersedes `decide-p10-log-rhythm`), `decide-p10-any-problems-level`, `decide-p10-card-head`, `decide-p10-ladder-reach`; the board is `P10_LogLadder` (`look-p10-log-ladder-board`).
+
+## After Mark answers
+
+Sid redraws P10_Scales and P10_Editor (and the record pen boards only if the reach is every surface), updates the 013 snapshot and DESIGN.md's Typography (the ladder as named rules); then GSD: `/gsd-quick` for `notebook.css` (the cue rule, the gaps, the core line, the caption face) and `CreationSetup.jsx` (the card head), `/gsd-fast` for the `defects-head` and reading `h4` cue rules.

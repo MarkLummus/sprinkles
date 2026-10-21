@@ -1,0 +1,86 @@
+{
+ "pA1": {
+  "balY": 168,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "pB1": {
+  "balY": 168,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "pC1": {
+  "balY": 168,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "pD1": {
+  "balY": 168,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "qA1": {
+  "balY": 168,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "qB1": {
+  "balY": 168,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "qC1": {
+  "balY": 168,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "qD1": {
+  "balY": 168,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "vA1": {
+  "balY": 465,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "vB1": {
+  "balY": 465,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "vC1": {
+  "balY": 685,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "fA1": {
+  "balY": 685,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "fB1": {
+  "balY": 465,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "fC1": {
+  "balY": 685,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ }
+}

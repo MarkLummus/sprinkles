@@ -52,9 +52,10 @@
   /* The page shell's one inline edge (260917-gjo; the list route's page
      body added 260917-h83; the running head retired 03.5-02 Task 3): the
      left edge shared by the page itself (.recipe-page), the "no recipe
-     found" page in that same position (.not-found), the notice that
-     anchors above the page (.page-status), and the list route's page
-     body (.list-page) — four boxes, one gutter, so a future edit cannot
+     found" page in that same position (.not-found), and the list route's
+     page body (.list-page), and the right inset of the notice that
+     anchors under the bar (.page-status), which reads the same gutter
+     from the right — four boxes, one gutter, so a future edit cannot
      move one of them without the others. Reads --gap-xl at desktop. The
      step to --gap-m below the phone-forms cut is declared once, on :root
      inside app.css's existing phone-forms media block — not here — for

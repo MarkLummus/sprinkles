@@ -1,0 +1,929 @@
+{
+ "r0": {
+  "height": 1546,
+  "logH": 1498,
+  "roles": [
+   {
+    "role": "Region name",
+    "top": 13.90625,
+    "right": 51.25,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear (head act)",
+    "top": 0,
+    "right": 118.890625,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Menu value",
+    "top": 62,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20.25px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field caption",
+    "top": 118,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Field value",
+    "top": 137,
+    "right": 92,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Unit",
+    "top": 151,
+    "right": 111.296875,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Targets caption",
+    "top": 193,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Band label",
+    "top": 234,
+    "right": 182,
+    "height": 18,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Band term",
+    "top": 237.0673828125,
+    "right": 101.30908203125,
+    "height": 14.1328125,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Band field",
+    "top": 221,
+    "right": 250,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Group cue",
+    "top": 573,
+    "right": 358,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Core names",
+    "top": 605,
+    "right": 358,
+    "height": 22.5,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "22.5px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Card head",
+    "top": 686,
+    "right": 63.296875,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "remove",
+    "top": 671.5,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Kind caption",
+    "top": 890.109375,
+    "right": 39.265625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Kind cell",
+    "top": 912.296875,
+    "right": 139.328125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(255, 255, 255)"
+   },
+   {
+    "role": "Stops line",
+    "top": 968.296875,
+    "right": 358,
+    "height": 17,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Required",
+    "top": 1388.296875,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Add link",
+    "top": 1015.296875,
+    "right": 73.9375,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 555,
+    "to": 573,
+    "a": "batch-row__head",
+    "b": "pen-caption mk-cue"
+   },
+   {
+    "from": 593,
+    "to": 605,
+    "a": "pen-caption mk-cue",
+    "b": "mk-core"
+   },
+   {
+    "from": 627.5,
+    "to": 639.5,
+    "a": "mk-core",
+    "b": "pen-caption mk-cue"
+   },
+   {
+    "from": 659.5,
+    "to": 671.5,
+    "a": "pen-caption mk-cue",
+    "b": "mk-card__head"
+   },
+   {
+    "from": 715.5,
+    "to": 727.5,
+    "a": "mk-card__head",
+    "b": "notebook-field"
+   },
+   {
+    "from": 790.5,
+    "to": 802.5,
+    "a": "notebook-field",
+    "b": "mk-pair"
+   },
+   {
+    "from": 865.5,
+    "to": 877.5,
+    "a": "mk-pair",
+    "b": "segmented-field"
+   },
+   {
+    "from": 956.296875,
+    "to": 968.296875,
+    "a": "segmented-field",
+    "b": "mk-stops"
+   },
+   {
+    "from": 985.296875,
+    "to": 1015.296875,
+    "a": "mk-stops",
+    "b": "mk-add-row"
+   }
+  ]
+ },
+ "rA": {
+  "height": 1562,
+  "logH": 1514,
+  "roles": [
+   {
+    "role": "Region name",
+    "top": 13.90625,
+    "right": 51.25,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear (head act)",
+    "top": 0,
+    "right": 118.890625,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Menu value",
+    "top": 62,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20.25px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field caption",
+    "top": 118,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Field value",
+    "top": 137,
+    "right": 92,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Unit",
+    "top": 151,
+    "right": 111.296875,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Targets caption",
+    "top": 193,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Band label",
+    "top": 234,
+    "right": 182,
+    "height": 18,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Band term",
+    "top": 237.0673828125,
+    "right": 101.30908203125,
+    "height": 14.1328125,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Band field",
+    "top": 221,
+    "right": 250,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Group cue",
+    "top": 573,
+    "right": 358,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Core names",
+    "top": 599,
+    "right": 358,
+    "height": 22.5,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "22.5px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Card head",
+    "top": 694,
+    "right": 63.296875,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "remove",
+    "top": 679.5,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Kind caption",
+    "top": 898.109375,
+    "right": 39.265625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Kind cell",
+    "top": 920.296875,
+    "right": 139.328125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(255, 255, 255)"
+   },
+   {
+    "role": "Stops line",
+    "top": 976.296875,
+    "right": 358,
+    "height": 17,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Required",
+    "top": 1404.296875,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Add link",
+    "top": 1023.296875,
+    "right": 73.9375,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 555,
+    "to": 573,
+    "a": "batch-row__head",
+    "b": "pen-caption mk-cue"
+   },
+   {
+    "from": 593,
+    "to": 599,
+    "a": "pen-caption mk-cue",
+    "b": "mk-core"
+   },
+   {
+    "from": 621.5,
+    "to": 653.5,
+    "a": "mk-core",
+    "b": "pen-caption mk-cue"
+   },
+   {
+    "from": 673.5,
+    "to": 679.5,
+    "a": "pen-caption mk-cue",
+    "b": "mk-card__head"
+   },
+   {
+    "from": 723.5,
+    "to": 735.5,
+    "a": "mk-card__head",
+    "b": "notebook-field"
+   },
+   {
+    "from": 798.5,
+    "to": 810.5,
+    "a": "notebook-field",
+    "b": "mk-pair"
+   },
+   {
+    "from": 873.5,
+    "to": 885.5,
+    "a": "mk-pair",
+    "b": "segmented-field"
+   },
+   {
+    "from": 964.296875,
+    "to": 976.296875,
+    "a": "segmented-field",
+    "b": "mk-stops"
+   },
+   {
+    "from": 993.296875,
+    "to": 1023.296875,
+    "a": "mk-stops",
+    "b": "mk-add-row"
+   }
+  ]
+ },
+ "rB": {
+  "height": 1554,
+  "logH": 1506,
+  "roles": [
+   {
+    "role": "Region name",
+    "top": 13.90625,
+    "right": 51.25,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear (head act)",
+    "top": 0,
+    "right": 118.890625,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Menu value",
+    "top": 62,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20.25px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field caption",
+    "top": 118,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Field value",
+    "top": 137,
+    "right": 92,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Unit",
+    "top": 151,
+    "right": 111.296875,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Targets caption",
+    "top": 193,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Band label",
+    "top": 234,
+    "right": 182,
+    "height": 18,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Band term",
+    "top": 237.0673828125,
+    "right": 101.30908203125,
+    "height": 14.1328125,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Band field",
+    "top": 221,
+    "right": 250,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Group cue",
+    "top": 573,
+    "right": 358,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Core names",
+    "top": 599,
+    "right": 358,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Card head",
+    "top": 691.5,
+    "right": 63.296875,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "remove",
+    "top": 677,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Kind caption",
+    "top": 895.609375,
+    "right": 39.265625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Kind cell",
+    "top": 917.796875,
+    "right": 139.328125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(255, 255, 255)"
+   },
+   {
+    "role": "Stops line",
+    "top": 973.796875,
+    "right": 358,
+    "height": 17,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Required",
+    "top": 1396.796875,
+    "right": 358,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Add link",
+    "top": 1020.796875,
+    "right": 73.9375,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 555,
+    "to": 573,
+    "a": "batch-row__head",
+    "b": "pen-caption mk-cue"
+   },
+   {
+    "from": 593,
+    "to": 599,
+    "a": "pen-caption mk-cue",
+    "b": "mk-core"
+   },
+   {
+    "from": 619,
+    "to": 651,
+    "a": "mk-core",
+    "b": "pen-caption mk-cue"
+   },
+   {
+    "from": 671,
+    "to": 677,
+    "a": "pen-caption mk-cue",
+    "b": "mk-card__head"
+   },
+   {
+    "from": 721,
+    "to": 733,
+    "a": "mk-card__head",
+    "b": "notebook-field"
+   },
+   {
+    "from": 796,
+    "to": 808,
+    "a": "notebook-field",
+    "b": "mk-pair"
+   },
+   {
+    "from": 871,
+    "to": 883,
+    "a": "mk-pair",
+    "b": "segmented-field"
+   },
+   {
+    "from": 961.796875,
+    "to": 973.796875,
+    "a": "segmented-field",
+    "b": "mk-stops"
+   },
+   {
+    "from": 990.796875,
+    "to": 1020.796875,
+    "a": "mk-stops",
+    "b": "mk-add-row"
+   }
+  ]
+ }
+}

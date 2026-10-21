@@ -284,15 +284,17 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
   // rule order (723-batch.html). Since decision 45 (03.7-02) the list form is a
   // screen-only block of its own, directly after this one, so print always draws
   // the column form, whose head repeats over a table that breaks.
-  test('the phone-forms block keeps its four rules; the list form is not among them (decision 45, 03.7-02)', () => {
+  test('the phone-forms block keeps its five rules; the list form is not among them (decision 45, 03.7-02; decide-creation-notice-place, quick 261021-07s)', () => {
     // The record pen's own width-only block shares this condition (decision
-    // 28) and is pinned above.
+    // 28) and is pinned above. The notice's anchor joined the block
+    // (quick 261021-07s) because the bar stops sticking below 724.
     const phoneFormsRules = rules.filter((r) => r.media === '(max-width: 723.98px)' && !r.selector.startsWith('.axis-mark'));
     expect(phoneFormsRules.map((r) => r.selector)).toEqual([
       ':root',
       '.field-row__label',
       '.batch-margin__field',
       '.save-ceremony, .pen-foot__controls',
+      '.page-status-anchor',
     ]);
   });
 
@@ -860,24 +862,30 @@ describe('exclusion guards — registers the finding deliberately leaves in plac
 });
 
 describe('the page notice anchors above the keyed page, out of flow (260917-ewf; re-anchored 03.5-02 Task 3)', () => {
-  test('.page-status is absolutely positioned, with no fixed-corner declarations left', () => {
+  test('.page-status is absolutely positioned at the end gutter, with no fixed-corner declarations left (decide-creation-notice-place, quick 261021-07s)', () => {
     const rule = ruleFor('.page-status');
     expect(rule, 'expected a top-level .page-status rule').toBeTruthy();
     expect(rule.declarations).toMatch(/position:\s*absolute/);
     expect(rule.declarations).not.toMatch(/position:\s*fixed/);
     expect(rule.declarations).not.toMatch(/inset-block-end/);
-    expect(rule.declarations).not.toMatch(/inset-inline-end/);
+    expect(rule.declarations).not.toMatch(/inset-inline-start/);
+    expect(rule.declarations).toMatch(/inset-inline-end:\s*var\(--gap-page\)/);
   });
 
-  test('.page-status-anchor is the containing block (position: relative), and .page-status anchors flush to its own top edge', () => {
+  test('.page-status-anchor is a sticky containing block under the bar (below 724, under the window top), and .page-status anchors flush to its own top edge (decide-creation-notice-place, quick 261021-07s)', () => {
     const anchorRule = ruleFor('.page-status-anchor');
     expect(anchorRule, 'expected a top-level .page-status-anchor rule').toBeTruthy();
-    expect(anchorRule.declarations).toMatch(/position:\s*relative/);
+    expect(anchorRule.declarations).toMatch(/position:\s*sticky/);
+    expect(anchorRule.declarations).toMatch(/inset-block-start:\s*var\(--app-size-header-h\)/);
+    expect(anchorRule.declarations).toMatch(/z-index:\s*var\(--app-z-notice\)/);
+    const phoneRule = rules.find((r) => r.selector === '.page-status-anchor' && r.media === '(max-width: 723.98px)');
+    expect(phoneRule, 'expected a phone-forms .page-status-anchor rule').toBeTruthy();
+    expect(phoneRule.declarations).toMatch(/inset-block-start:\s*0/);
     expect(ruleFor('.page-status').declarations).toMatch(/inset-block-start:\s*0/);
   });
 
-  test('four boxes, one gutter — the notice, the page, the "no recipe found" page, and the list route\'s page body all read the shared --gap-page, so none can drift alone (260917-gjo; the fifth box, the running head, retired 03.5-02 Task 3)', () => {
-    expect(ruleFor('.page-status').declarations).toMatch(/inset-inline-start:\s*var\(--gap-page\)/);
+  test('four boxes, one gutter, the notice reading it from the end — the notice, the page, the "no recipe found" page, and the list route\'s page body all read the shared --gap-page, so none can drift alone (260917-gjo; the fifth box, the running head, retired 03.5-02 Task 3)', () => {
+    expect(ruleFor('.page-status').declarations).toMatch(/inset-inline-end:\s*var\(--gap-page\)/);
     expect(ruleFor('.not-found').declarations).toMatch(/padding:\s*var\(--gap-m\)\s+var\(--gap-page\)/);
     expect(ruleFor('.recipe-page').declarations).toMatch(/padding:\s*var\(--gap-page\)/);
     expect(ruleFor('.list-page').declarations).toMatch(/padding:\s*var\(--gap-page\)/);

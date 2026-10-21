@@ -6,10 +6,10 @@ current_phase: 10
 current_phase_name: The creation editor, without Save
 status: executing
 stopped_at: Phase 10 context gathered
-last_updated: "2026-10-20T14:51:19.927Z"
+last_updated: "2026-10-21T04:32:26.857Z"
 last_activity: 2026-10-20
 last_activity_desc: Phase 10 execution started
-state_head: 40eede750bbd8282d18fbe1861cf9931ec340e07
+state_head: 4c43c06f2573d730ea5f8c1490e20cc2cdd08549
 progress:
   total_phases: 5
   completed_phases: 2
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-19)
 Phase: 10 (The creation editor, without Save) — EXECUTING
 Plan: 1 of 12
 Status: Executing Phase 10
-Last activity: 2026-10-20 — Phase 10 execution started
+Last activity: 2026-10-21 - Completed quick task 261021-07s: Move the page notice on the Notebook and creation routes beside Import and keep it on screen while the page scrolls
 
 Progress: [████░░░░░░] 40%
 
@@ -581,6 +581,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261019-ars | Ingredients place: lactose line on any entry with milk solids | 2026-10-19 | 55891a98 | .planning/quick/261019-ars-ingredients-place-lactose-line-on-any-entry-with-milk-solids |
 | 181 | Sketch 012 README decision 6: name the built lactose-line condition (55891a98) | 2026-10-19 | 30a5727d | — |
 | 182 | Fold D-04b (Start reuses an existing create draft) into Phase 10 plans 10-02, 10-03, 10-04, 10-11 and 10-CONTEXT.md | 2026-10-20 | 24b8009f | — |
+| 261021-07s | Move the page notice on the Notebook and creation routes beside Import and keep it on screen while the page scrolls | 2026-10-21 | 4c43c06f | [261021-07s-move-the-page-notice-on-the-notebook-and](./quick/261021-07s-move-the-page-notice-on-the-notebook-and/) |
 
 ### Roadmap Evolution
 

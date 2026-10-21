@@ -34,7 +34,8 @@ P10_CSS = '''
 .mk-region .batch-row__head{min-height:var(--sheet-text-control-min);align-items:center}
 .mk-region:first-child{border-top:none;padding-top:0}
 .mk-body{display:flex;flex-direction:column;gap:var(--gap-s)}
-.mk-cue{margin:0}
+/* 2026-10-21 (Sid's Phase 10 audit, P1): the group cue is the record pen's Group cue (notebook.css .notebook-log .axes-cue; sketch 011 decision 40 C), not the caption face, so a group never reads as one more item beneath it; two classes, as the pen's rule has, or the log's .pen-caption colour wins (measured) */
+.notebook-log .mk-cue{margin:0;font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:0;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
 .mk-core{margin:0;font-family:var(--face-grotesk);font-size:var(--app-notebook-size-body);line-height:var(--app-notebook-desc-leading);color:var(--app-text)}
 .mk-pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--gap-s)}
 .mk-field-row{display:flex;align-items:center;column-gap:var(--gap-field-unit)}

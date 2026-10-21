@@ -43,7 +43,7 @@ Targets: `notebook-new-recipe.html` (except its last panel, "Option B · several
 
 ## 5. Scales and problems (`scales-and-problems.html`; TASTE-01, TASTE-02)
 
-- Scales region: cue "Every recipe" (`.pen-caption.mk-cue`) over "Hardness, Scoopability, Smoothness, Sweetness" (`.mk-core`); cue "This recipe only" only once a scale exists; then the cards; then "Add scale" (65.9 × 44), gone at two scales.
+- Scales region: cue "Every recipe" (`.pen-caption.mk-cue`, in the record pen's Group cue face since decision 25: meta size, 600, sentence case, App text) over "Hardness, Scoopability, Smoothness, Sweetness" (`.mk-core`); cue "This recipe only" only once a scale exists; then the cards; then "Add scale" (65.9 × 44), gone at two scales.
 - A scale card (`.mk-card`): head "Scale n" with remove at the right; Name; Low end and High end side by side (`.mk-pair`); Kind as the app's joined two-cell group ("Right in the middle" 131.3 × 44, "Low to high" 87.8 × 44; decision 12), nothing pre-picked; under it the stops it will draw (`.mk-stops`, meta size, secondary text): for Right in the middle "thin · leaning thin · right · leaning rich · rich" from the two words typed; for Low to high "faint to strong". No stops line until both ends are typed.
 - Problems region: cue "Every recipe" over "Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film"; "This recipe only" once a problem exists; a problem card is "Problem n", remove, and Name; "Add problem" (86.5 × 44), gone at two problems.
 - Just added: Required stands under each empty field (`.field-requirement`), Kind has no cell filled. 0 to 2 of each (sketch 010 D26 carries the same limit on the printed pages).
@@ -58,4 +58,4 @@ Targets: `notebook-new-recipe.html` (except its last panel, "Option B · several
 
 ## Decision map
 
-Decisions 1 to 7 (2026-10-16, the roadmap) set the words and rules; 8 to 22 (2026-10-18) are the boards' own. 7 (the machine list) is superseded for this editor by 20 (the machine is chosen where a batch is churned). 14 (Clear leaves the bands) and 17 (Clear empties the temperature) are both drawn in the "After Clear on Philadelphia" panel. 21 (the menu) replaced the four-cell group drawn on 2026-10-17 and approved in principle on `look-p10-scales-style-machine`; the menu redraw is the approved shape. The numbers are `README.md`'s Decisions list.
+Decisions 1 to 7 (2026-10-16, the roadmap) set the words and rules; 8 to 22 (2026-10-18) are the boards' own; 23 to 25 (2026-10-21) follow the Phase 10 audit and the iPad check. 7 (the machine list) is superseded for this editor by 20 (the machine is chosen where a batch is churned). 14 (Clear leaves the bands) and 17 (Clear empties the temperature) are both drawn in the "After Clear on Philadelphia" panel. 21 (the menu) replaced the four-cell group drawn on 2026-10-17 and approved in principle on `look-p10-scales-style-machine`; the menu redraw is the approved shape. The numbers are `README.md`'s Decisions list.

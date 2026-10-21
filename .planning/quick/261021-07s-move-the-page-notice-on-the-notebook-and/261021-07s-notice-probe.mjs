@@ -198,6 +198,74 @@ async function scenarioEditor(page, servers, width) {
   }
 }
 
+// Scenario B1: /notebook with the draft kept; Import's refusal reads in the Notebook's own notice.
+async function scenarioNotebook(page, servers, width) {
+  await page.goto(`${servers.appUrl}/notebook`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('.nb__count');
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator('.nb__draft').waitFor({ state: 'visible', timeout: 5000 });
+  await scrollEnd(page);
+  await settle(page);
+  if ((await page.evaluate(() => window.scrollY)) === 0) info(`notebook: the page does not scroll at ${width}`);
+  await pressImport(page, width);
+  let m = await measure(page);
+  gates('notebook at page end', m, IMPORT_NOTICE, false);
+  info(`notebook title ${box(await page.evaluate(() => {
+    const r = document.querySelector('h1.place__title')?.getBoundingClientRect();
+    return r ? { x: r.x, y: r.y, width: r.width, height: r.height } : null;
+  }))}`);
+  await scrollTop(page);
+  await settle(page);
+  m = await measure(page);
+  gates('notebook at page top', m, IMPORT_NOTICE, false);
+}
+
+// Scenario B2: Resume on the kept draft; the notice reads the kept message in the same place.
+async function scenarioResume(page, servers, width) {
+  await press(page, page.locator('.nb__draft button', { hasText: 'Resume' }), async () => pathOf(page) === '/notebook/new');
+  await page.waitForSelector('.notebook.mk-page');
+  if (!(await until(page, async () => (await notice(page)) === KEPT_NOTICE))) throw new Error(`the notice reads "${await notice(page)}"`);
+  let m = await measure(page);
+  if (width >= 1366) gates('resume at page top', m, KEPT_NOTICE, true);
+  else {
+    gates('resume at page top', m, KEPT_NOTICE, false);
+    info(`resume at page top, residual: notice ${box(m.status)}, caption ${box(m.caption)}, caption text ${box(m.captionText)}`);
+  }
+  await page.locator('.mk-region[aria-label="Problems"]').scrollIntoViewIfNeeded();
+  await settle(page);
+  m = await measure(page);
+  gates('resume at Problems', m, KEPT_NOTICE, true);
+}
+
+// Scenario B3: the version route (a first version link on /notebook), Import refused while the draft is kept.
+async function scenarioVersionRoute(page, servers, width) {
+  await page.goto(`${servers.appUrl}/notebook`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('.nb__count');
+  const href = await page.evaluate(
+    () => [...document.querySelectorAll('a')].map((a) => a.getAttribute('href')).find((h) => /^\/notebook\/[^/]+\/[^/]+$/.test(h ?? '')) ?? null,
+  );
+  if (!href) throw new Error('no version link on /notebook');
+  info(`version route ${href}`);
+  await page.goto(`${servers.appUrl}${href}`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('.notebook-recipe__name');
+  await page.evaluate(() => document.fonts.ready);
+  await pressImport(page, width);
+  let m = await measure(page);
+  gates('version route at page top', m, IMPORT_NOTICE, false);
+  const name = await page.evaluate(() => {
+    const r = document.querySelector('h1.notebook-recipe__name')?.getBoundingClientRect();
+    return r ? { x: r.x, y: r.y, width: r.width, height: r.height } : null;
+  });
+  if (width >= 1366) {
+    if (!name) fail('version route at page top clear of the recipe name: no heading');
+    else (overlap(m.status, name) === 0 ? pass : fail)(`version route at page top clear of the recipe name: heading ${box(name)} notice ${box(m.status)}`);
+  } else info(`version route at page top, recipe name ${box(name)}, notice ${box(m.status)}`);
+  await scrollEnd(page);
+  await settle(page);
+  m = await measure(page);
+  gates('version route at page end', m, IMPORT_NOTICE, false);
+}
+
 const servers = await startServers({ appRoot: DIST });
 const browser = await webkit.launch();
 let exitCode = 1;
@@ -212,7 +280,12 @@ try {
       new URL(request.request().url()).hostname === '127.0.0.1' ? request.continue() : request.abort(),
     );
     const page = await context.newPage();
-    const scenarios = [['editor', scenarioEditor]];
+    const scenarios = [
+      ['editor', scenarioEditor],
+      ['notebook', scenarioNotebook],
+      ['resume', scenarioResume],
+      ['version route', scenarioVersionRoute],
+    ];
     for (const [name, run] of scenarios) {
       try {
         await run(page, servers, width);

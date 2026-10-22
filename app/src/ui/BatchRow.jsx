@@ -1304,8 +1304,11 @@ export function BatchRow({
           nothing to disclose. From one batch, nothing renders here any
           more — the batch list above (showBatchList) replaces it from
           two, and one batch offers no control of any kind (the
-          batch-head todo). */}
-      {batches.length === 0 && (
+          batch-head todo). The list is also withheld while any pen is
+          open, as the brief withholds the batch list while recording, so
+          "no batch yet" never sits under Save batch while the first batch
+          is recorded (critique P3, Mark 2026-10-22). */}
+      {batches.length === 0 && openPen === null && (
         <ul className="batch-margin__list">
           <li>no batch yet</li>
         </ul>

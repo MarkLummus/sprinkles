@@ -1446,6 +1446,20 @@
   font-weight: 600;
 }
 
+/* The log column's pen types in the grotesk (sketch 013 decision 26; Mark,
+   2026-10-22, the critique of the built batch route: "Grotesk while
+   typing"; quick 261022-d3i). The four record prose fields (At the
+   machine, Ingredient notes, How did it turn out?, Next time) take the
+   App's face while the maker types, and their saved words still show in
+   the hand. Face only: the size stays app.css's (the 16px Field Rule under
+   a coarse pointer), the colour stays .prose-field's pen blue, and the
+   placeholder inherits the face, as an ink field's does. Two classes
+   outrank app.css's one-class .prose-field. The Sheet's prose fields and
+   the ceremony's Why (sketch 011 decision 17) keep the text face. */
+.notebook-log .prose-field {
+  font-family: var(--face-grotesk);
+}
+
 /* The group cues take their own face and their own space (sketch 011
    decision 40 option C, Mark, 2026-10-04, answer 1). The cue reads as a
    heading in its own face, 26px above its first label and 45px below the

@@ -927,3 +927,37 @@ describe('the filled action reads weight 600 on Home and in the Notebook (Mark 2
     });
   });
 });
+
+describe('the log column\'s pen types in the grotesk (sketch 013 decision 26, Mark 2026-10-22: "Grotesk while typing"; quick 261022-d3i)', () => {
+  const appRules = readAllRules(readFileSync(path.join(STYLES_DIR, 'app.css'), 'utf8'));
+  const declarationList = (rule) =>
+    rule.declarations
+      .split(';')
+      .map((d) => d.trim().replace(/\s+/g, ' '))
+      .filter(Boolean);
+  const LOG_FIELD = '.notebook-log .prose-field';
+
+  test('the rule sets the face alone: no size, no colour, no style', () => {
+    const rule = rules.find((r) => r.selector === LOG_FIELD && r.media === undefined);
+    expect(rule, `a top-level rule for ${LOG_FIELD}`).toBeDefined();
+    expect(declarationList(rule)).toEqual(['font-family: var(--face-grotesk)']);
+  });
+
+  test("the Sheet's .prose-field keeps the text face and pen blue; the log column's rule is the only .prose-field face in notebook.css", () => {
+    const sheet = appRules.find((r) => r.selector === '.prose-field' && r.media === undefined);
+    expect(sheet, 'app.css .prose-field').toBeDefined();
+    const declarations = declarationList(sheet);
+    expect(declarations).toContain('font-family: var(--face-text)');
+    expect(declarations).toContain('color: var(--sheet-pen-blue)');
+    const faceRules = rules.filter((r) => r.selector.includes('.prose-field') && /(?:^|;)\s*font-family:/.test(r.declarations));
+    expect(faceRules.map((r) => r.selector)).toEqual([LOG_FIELD]);
+  });
+
+  test('no ::placeholder rule declares a face, so the placeholder inherits its field\'s, as an ink field\'s does', () => {
+    const placeholders = [...appRules, ...rules].filter((r) => r.selector.includes('::placeholder'));
+    expect(placeholders.length).toBeGreaterThan(0);
+    for (const r of placeholders) {
+      expect(r.declarations, r.selector).not.toMatch(/font-family\s*:/);
+    }
+  });
+});

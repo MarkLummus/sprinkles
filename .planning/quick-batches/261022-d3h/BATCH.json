@@ -9,7 +9,7 @@
       "quick_id": "261022-d3i",
       "client_id": null,
       "description": "Log column prose fields type in the grotesk: the batch pen's four prose textareas in the log column (At the machine, Ingredient notes, How did it turn out?, Next time; classes prose-field / prose-field--empty inside .notebook-log / .batch-margin; see app/src/ui/BatchRow.jsx, app/src/styles/notebook.css, app.css ~1461) currently read Georgia (--face-text) 16 pen blue with an italic Georgia placeholder. Mark decided 2026-10-22 (\"Grotesk while typing\", Impeccable critique .impeccable/critique/2026-10-22T13-12-36Z__atch-60b9470b-3697-4a33-9c4e-40619352bbbb-32e2a32c.md): change them and their placeholder to --face-grotesk at the 16px Field Rule size, pen blue, placeholder in the grotesk matching .ink-field's placeholder convention; the saved words still render in the hand. Leave the Sheet's prose fields (headnote, method step lines, Before you start) and the creation ceremony's Why (.notebook-ceremony__why, sketch 011 decision 17) unchanged: log column only. Tokens only, no literals. Record it: append decision 26 to .planning/sketches/013-creation-editor/README.md ## Decisions (\"The log column's pen types in the grotesk, 16 pen blue, and shows the saved words in the hand (Mark, 2026-10-22, critique of the batch route: 'Grotesk while typing'); the Sheet and the ceremony's Why keep decision 17's text face\"), and amend DESIGN.md's Prose field role (line ~573) with one sentence saying the log column's pen reads in the grotesk per that decision. Verify in Playwright WebKit at 1366 (a scratch build served on a free port, never the 4173 preview) that the four fields and their placeholders resolve to the grotesk and the Sheet's prose fields still resolve to Georgia; npm --prefix app test green; the strict walk .planning/phases/10-the-creation-editor-without-save/10-walk-check.sh green with snapshots updated only where this change lands.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "planned_files": [
         "app/src/styles/notebook.css",
@@ -24,14 +24,14 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 0,
-      "commit": null,
+      "commit": "1bc7ad9f",
       "failure_reason": null
     },
     {
       "quick_id": "261022-d3j",
       "client_id": null,
       "description": "Hide \"no batch yet\" while the record pen is open: app/src/ui/BatchRow.jsx ~1310 renders <li>no batch yet</li> in the batch list under the open record pen (Save batch) while the first batch is being recorded; the surface brief .impeccable/surfaces/route-recipe-batch.md withholds the batch list while recording (Mark decided 2026-10-22, critique P3). Render the placeholder only when no pen is open; update BatchRow.test.jsx ~1703 and add a test that the placeholder is absent with the pen open; npm --prefix app test green; the strict walk 10-walk-check.sh green with snapshots updated only where this lands. Do not touch the 4173 preview server.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "planned_files": [
         "app/src/ui/BatchRow.jsx",
@@ -43,14 +43,14 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 0,
-      "commit": null,
+      "commit": "ac2ff0ff",
       "failure_reason": null
     },
     {
       "quick_id": "261022-d3k",
       "client_id": null,
       "description": "Reading-state heading levels: app/src/ui/BatchRow.jsx ~280 markGroup renders the tasting reading's group cue (\"Every recipe\", \"This recipe only\") as h4 under the Tasting h2 (BatchRow.jsx ~413), a skipped level the in-page detector flagged (skipped-heading; Mark decided 2026-10-22, critique P3). Make the cue the next level under its region heading (h3 under the h2), check the record pen's groups use the matching level under their own region headings, keep the classes batch-row__group-label batch-row__group-label--cue so no CSS changes, update any test or snapshot that names the tag; npm --prefix app test green; the strict walk 10-walk-check.sh green. Do not touch the 4173 preview server.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "planned_files": [
         "app/src/ui/BatchRow.jsx",
@@ -63,7 +63,7 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 1,
-      "commit": null,
+      "commit": "11136a95",
       "failure_reason": null
     }
   ]

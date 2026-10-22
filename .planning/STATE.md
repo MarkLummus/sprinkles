@@ -584,6 +584,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 181 | Sketch 012 README decision 6: name the built lactose-line condition (55891a98) | 2026-10-19 | 30a5727d | — |
 | 182 | Fold D-04b (Start reuses an existing create draft) into Phase 10 plans 10-02, 10-03, 10-04, 10-11 and 10-CONTEXT.md | 2026-10-20 | 24b8009f | — |
 | 261021-07s | Move the page notice on the Notebook and creation routes beside Import and keep it on screen while the page scrolls | 2026-10-21 | 4c43c06f | [261021-07s-move-the-page-notice-on-the-notebook-and](./quick/261021-07s-move-the-page-notice-on-the-notebook-and/) |
+| 261022-d3i | Log column prose fields type in the grotesk | 2026-10-22 | 1bc7ad9f | /Users/mark/Documents/projects/sprinkles/.planning/quick/261022-d3i-log-column-prose-fields-type-in-the-grotesk-the-batch-pen-s |
+| 261022-d3j | Hide "no batch yet" while the record pen is open | 2026-10-22 | ac2ff0ff | /Users/mark/Documents/projects/sprinkles/.planning/quick/261022-d3j-hide-no-batch-yet-while-the-record-pen-is-open-app-src-ui-ba |
+| 261022-d3k | Reading-state heading levels | 2026-10-22 | 11136a95 | /Users/mark/Documents/projects/sprinkles/.planning/quick/261022-d3k-reading-state-heading-levels-app-src-ui-batchrow-jsx-280-mar |
 
 ### Roadmap Evolution
 

@@ -1182,7 +1182,7 @@
   margin: 0;
 }
 
-/* The reading's four group names (the two h4s over the marks, the two h5s
+/* The reading's four group names (the two h3s over the marks, the two h4s
    over the problems) take the pen's cue face (sketch 011 decision 58 B2,
    board tasting-group-names.html): decision 40's .axes-cue face. Same
    two-class specificity as the base label rule above, so its place after

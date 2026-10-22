@@ -1575,9 +1575,9 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
   it('reads the recipe-specific flaw by its plain name, under "Any problems?" in the This recipe only block, in the hand — no other defects picked (the seeded case)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toContain(
-      `<div class="tasting-reading__group"><h4 class="batch-row__group-label">Any problems?</h4><div class="tasting-reading__subgroup"><h5 class="${CUE}">This recipe only</h5><span class="app-hand tasting-reading__problems">Bitter</span></div></div>`,
+      `<div class="tasting-reading__group"><h3 class="batch-row__group-label">Any problems?</h3><div class="tasting-reading__subgroup"><h4 class="${CUE}">This recipe only</h4><span class="app-hand tasting-reading__problems">Bitter</span></div></div>`,
     );
-    expect(markup).not.toContain('>Problems</h4>');
+    expect(markup).not.toContain('>Problems</h3>');
   });
 
   // Decision 58 B2 (R3): picked words and the declared flaw in two blocks.
@@ -1588,7 +1588,7 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     };
     const markup = renderBatchRow({ openBatch: flawedBatch, batches: [flawedBatch], mode: 'reading' });
     expect(markup).toContain(
-      `<h4 class="batch-row__group-label">Any problems?</h4><div class="tasting-reading__subgroup"><h5 class="${CUE}">Every recipe</h5><span class="app-hand tasting-reading__problems">Sandy, gritty · Greasy film</span></div><div class="tasting-reading__subgroup"><h5 class="${CUE}">This recipe only</h5><span class="app-hand tasting-reading__problems">Bitter</span></div></div>`,
+      `<h3 class="batch-row__group-label">Any problems?</h3><div class="tasting-reading__subgroup"><h4 class="${CUE}">Every recipe</h4><span class="app-hand tasting-reading__problems">Sandy, gritty · Greasy film</span></div><div class="tasting-reading__subgroup"><h4 class="${CUE}">This recipe only</h4><span class="app-hand tasting-reading__problems">Bitter</span></div></div>`,
     );
     expect(markup).not.toContain('Greasy film · Bitter');
   });
@@ -1627,13 +1627,13 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
       'tasting-reading__conditions',
       'tasting-reading__note',
       '>Melt test<',
-      '>Every recipe</h4>',
-      '>This recipe only</h4>',
-      '>Any problems?</h4>',
+      '>Every recipe</h3>',
+      '>This recipe only</h3>',
+      '>Any problems?</h3>',
     ].map((needle) => markup.indexOf(needle));
     for (const index of order) expect(index).toBeGreaterThan(-1);
     for (let i = 1; i < order.length; i += 1) expect(order[i]).toBeGreaterThan(order[i - 1]);
-    expect(markup).not.toContain('>Melt</h4>');
+    expect(markup).not.toContain('>Melt</h3>');
   });
 
   it('reads no code reference to the retired plural-tasting wording (Pitfall 7): never "once", "twice", or "times"', () => {
@@ -1949,50 +1949,50 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
   it('G1: draws the marks under Every recipe then This recipe only, each its own group, and no Observations heading', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toContain(
-      `<div class="tasting-reading__group"><h4 class="${CUE}">Every recipe</h4><div class="batch-row__cells tasting-reading__axes"><div class="batch-row__cell"><span class="batch-row__cell-label">Sweetness</span><span class="batch-row__cell-value">more (4)</span></div></div></div><div class="tasting-reading__group"><h4 class="${CUE}">This recipe only</h4><div class="batch-row__cells tasting-reading__axes"><div class="batch-row__cell"><span class="batch-row__cell-label">Oil</span><span class="batch-row__cell-value">strong (4)</span></div></div></div>`,
+      `<div class="tasting-reading__group"><h3 class="${CUE}">Every recipe</h3><div class="batch-row__cells tasting-reading__axes"><div class="batch-row__cell"><span class="batch-row__cell-label">Sweetness</span><span class="batch-row__cell-value">more (4)</span></div></div></div><div class="tasting-reading__group"><h3 class="${CUE}">This recipe only</h3><div class="batch-row__cells tasting-reading__axes"><div class="batch-row__cell"><span class="batch-row__cell-label">Oil</span><span class="batch-row__cell-value">strong (4)</span></div></div></div>`,
     );
     expect(markup).not.toContain('>Observations<');
   });
 
   it('G2: with all six marked, the core four stand under Every recipe and Body, Oil under This recipe only', () => {
     const section = sectionOf(withTasting({ marks: allSix, defects: null, declaredDefects: null }));
-    const every = section.indexOf('>Every recipe</h4>');
-    const only = section.indexOf('>This recipe only</h4>');
+    const every = section.indexOf('>Every recipe</h3>');
+    const only = section.indexOf('>This recipe only</h3>');
     expect(every).toBeGreaterThan(-1);
     expect(only).toBeGreaterThan(every);
     expect(cellLabels(section.slice(every, only))).toEqual(['Hardness', 'Scoopability', 'Smoothness', 'Sweetness']);
     expect(cellLabels(section.slice(only))).toEqual(['Body', 'Oil']);
   });
 
-  it('G3: with core marks only, Every recipe is drawn over the marks and no This recipe only h4 follows (the problems block is an h5)', () => {
+  it('G3: with core marks only, Every recipe is drawn over the marks and no This recipe only h3 follows (the problems block is an h4)', () => {
     const markup = withTasting({ marks: { hardness: 3, smoothness: 4 }, declaredDefects: ['Bitter'] });
-    expect(markup).toContain(`<h4 class="${CUE}">Every recipe</h4>`);
+    expect(markup).toContain(`<h3 class="${CUE}">Every recipe</h3>`);
     expect(markup).toContain('>Hardness</span>');
     expect(markup).toContain('>Smoothness</span>');
-    expect(markup).not.toContain(`<h4 class="${CUE}">This recipe only</h4>`);
-    expect(markup).toContain(`<h5 class="${CUE}">This recipe only</h5>`);
+    expect(markup).not.toContain(`<h3 class="${CUE}">This recipe only</h3>`);
+    expect(markup).toContain(`<h4 class="${CUE}">This recipe only</h4>`);
   });
 
   it('G4: with declared marks only, This recipe only is drawn over Oil and Every recipe is not', () => {
     const markup = withTasting({ marks: { oil: 4 } });
-    expect(markup).not.toContain(`<h4 class="${CUE}">Every recipe</h4>`);
+    expect(markup).not.toContain(`<h3 class="${CUE}">Every recipe</h3>`);
     expect(markup).toMatch(
-      new RegExp(`<h4 class="${CUE}">This recipe only</h4><div class="batch-row__cells tasting-reading__axes"><div class="batch-row__cell"><span class="batch-row__cell-label">Oil</span>`),
+      new RegExp(`<h3 class="${CUE}">This recipe only</h3><div class="batch-row__cells tasting-reading__axes"><div class="batch-row__cell"><span class="batch-row__cell-label">Oil</span>`),
     );
   });
 
   it('G5: with nothing marked, neither mark name and no axes grid is drawn', () => {
     const markup = withTasting({ marks: {} });
-    expect(markup).not.toContain(`<h4 class="${CUE}">`);
+    expect(markup).not.toContain(`<h3 class="${CUE}">`);
     expect(markup).not.toContain('tasting-reading__axes');
   });
 
   it('G6: with only core defects picked, Any problems? holds the Every recipe block alone', () => {
     const markup = withTasting({ defects: ['Coarse, icy'], declaredDefects: null });
     expect(markup).toContain(
-      `<div class="tasting-reading__group"><h4 class="batch-row__group-label">Any problems?</h4><div class="tasting-reading__subgroup"><h5 class="${CUE}">Every recipe</h5><span class="app-hand tasting-reading__problems">Coarse, icy</span></div></div>`,
+      `<div class="tasting-reading__group"><h3 class="batch-row__group-label">Any problems?</h3><div class="tasting-reading__subgroup"><h4 class="${CUE}">Every recipe</h4><span class="app-hand tasting-reading__problems">Coarse, icy</span></div></div>`,
     );
-    expect(markup).not.toContain(`<h5 class="${CUE}">This recipe only</h5>`);
+    expect(markup).not.toContain(`<h4 class="${CUE}">This recipe only</h4>`);
   });
 
   it('G7: the conditions grid holds Tempering, Tasting temperature, Melt test, Melt style in that order', () => {
@@ -2004,7 +2004,7 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
 
   it('G8: no Melt group or its grid class is drawn', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).not.toContain('>Melt</h4>');
+    expect(markup).not.toContain('>Melt</h3>');
     expect(markup).not.toContain('tasting-reading__melt');
   });
 
@@ -2012,6 +2012,17 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
     const section = sectionOf(withTasting({ marks: {}, defects: null, declaredDefects: null }));
     expect(section).not.toContain('tasting-reading__group');
     expect(cellLabels(section)).toEqual(['Tempering', 'Tasting temperature', 'Melt test', 'Melt style']);
+  });
+
+  // The in-page detector's skipped-heading, critique P3, Mark 2026-10-22.
+  it('G10: the heading outline steps one level at a time: Tasting h2, the group names and Any problems? h3, the problem names h4; the record pen keeps Batch h2, Tasting h3 (critique P3, Mark 2026-10-22)', () => {
+    const outline = (markup) => [...markup.matchAll(/<h([1-6])[\s>]/g)].map((m) => Number(m[1]));
+    expect(outline(renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' }))).toEqual([2, 2, 3, 3, 3, 4, 3]);
+    expect(outline(withTasting({ marks: allSix, defects: ['Coarse, icy'] }))).toEqual([2, 2, 3, 3, 3, 4, 4, 3]);
+    expect(outline(withTasting({ marks: {}, defects: ['Coarse, icy'] }))).toEqual([2, 2, 3, 4, 4, 3]);
+    expect(
+      outline(renderBatchRow({ openPen: 'record', mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } })),
+    ).toEqual([2, 3]);
   });
 });
 

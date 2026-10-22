@@ -274,10 +274,13 @@ function TastingReading({ batch, foldsOpen = true }) {
   const declaredAxes = markedAxes.filter((axis) => axis.group === 'declared');
   const coreProblems = batch.tasting.defects ?? [];
   const declaredProblems = batch.tasting.declaredDefects ?? [];
+  // The group names and Any problems? stand one level under the Tasting h2, the
+  // problem names one under Any problems?, so the outline never skips a level
+  // (the in-page detector's skipped-heading; critique P3, Mark 2026-10-22).
   const markGroup = (name, groupAxes) =>
     groupAxes.length > 0 && (
       <div className="tasting-reading__group">
-        <h4 className="batch-row__group-label batch-row__group-label--cue">{name}</h4>
+        <h3 className="batch-row__group-label batch-row__group-label--cue">{name}</h3>
         <div className="batch-row__cells tasting-reading__axes">
           {groupAxes.map((axis) => (
             <div className="batch-row__cell" key={axis.key}>
@@ -291,7 +294,7 @@ function TastingReading({ batch, foldsOpen = true }) {
   const problemBlock = (name, words) =>
     words.length > 0 && (
       <div className="tasting-reading__subgroup">
-        <h5 className="batch-row__group-label batch-row__group-label--cue">{name}</h5>
+        <h4 className="batch-row__group-label batch-row__group-label--cue">{name}</h4>
         <span className="app-hand tasting-reading__problems">{words.join(' · ')}</span>
       </div>
     );
@@ -399,7 +402,7 @@ function TastingReading({ batch, foldsOpen = true }) {
               ways; the heading keeps Next time's caption face. */}
           {(coreProblems.length > 0 || declaredProblems.length > 0) && (
             <div className="tasting-reading__group">
-              <h4 className="batch-row__group-label">Any problems?</h4>
+              <h3 className="batch-row__group-label">Any problems?</h3>
               {problemBlock('Every recipe', coreProblems)}
               {problemBlock('This recipe only', declaredProblems)}
             </div>

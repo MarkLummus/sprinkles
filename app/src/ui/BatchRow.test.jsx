@@ -1700,8 +1700,8 @@ describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 
 });
 
 describe('BatchRow — zero-batch and unknown-address states', () => {
-  it('reads "no batch yet" with no batch recorded', () => {
-    const markup = renderBatchRow({ openBatch: null, batches: [] });
+  it('reads "no batch yet" with no batch recorded and no pen open', () => {
+    const markup = renderBatchRow({ openBatch: null, batches: [], openPen: null });
     expect(markup).toContain('no batch yet');
   });
 
@@ -1731,6 +1731,20 @@ describe('BatchRow — the batch list, always a list only with zero batches; the
   it('reads "no batch yet" with no batch recorded', () => {
     const markup = renderBatchRow({ batches: [] });
     expect(markup).toMatch(/<ul class="batch-margin__list"><li>no batch yet<\/li><\/ul>/);
+  });
+
+  it('hides the empty-list placeholder while the record pen is open on a version with no batch (critique P3, Mark 2026-10-22)', () => {
+    const markup = renderBatchRow({ openPen: 'record', mode: 'recording', draft: emptyRecordDraft, openBatch: null, batches: [] });
+    expect(markup).not.toContain('no batch yet');
+    expect(markup).not.toContain('batch-margin__list');
+    expect(markup).toContain('Save batch');
+  });
+
+  it('hides the empty-list placeholder while the Next version pen is open on a version with no batch (no pen open is the only state that shows it)', () => {
+    const markup = renderBatchRow({ openPen: 'plan', openBatch: null, batches: [] });
+    expect(markup).not.toContain('no batch yet');
+    expect(markup).not.toContain('batch-margin__list');
+    expect(markup).toContain(NO_BATCH_PROSE);
   });
 
   it('renders no batch list at all with exactly one batch — no Batches control at 0 or 1 (decision 19, batch-head todo)', () => {

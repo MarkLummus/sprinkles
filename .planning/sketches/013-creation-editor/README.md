@@ -64,6 +64,9 @@ Mark's answers on Mark's List, in date order, each exactly as the boards draw th
 
 25. The log column's group cues, "Every recipe" and "This recipe only", are set in the record pen's Group cue face (`.notebook-log .axes-cue` in `notebook.css`: meta size, 600, sentence case, no tracking, the 20 px cue line, App text), not the caption face the boards drew (Sid's Phase 10 audit, `10-UI-REVIEW.md` finding 1, P1: four levels of structure in one voice; sketch 011 decision 40 C and Mark's note of 2026-10-01 on section rhythm). Measured on the republished board in WebKit: 14 px, 600, no transform, 20 px line, rgb(20,20,20); the captions around it stay 12 px, 600, uppercase, secondary. The rule is `.notebook-log .mk-cue` (two classes, as the pen's: a one-class rule loses the colour to the log's `.pen-caption`). Drawn on `P10_Scales` (canvas version 424; look row `look-p10-scales-group-cue`); the app's one rule in `notebook.css` is a `/gsd-fast` after Mark's look.
 
+**2026-10-22** (the Impeccable critique of the built batch route):
+26. The log column's pen types in the grotesk, 16 pen blue, and shows the saved words in the hand (Mark, 2026-10-22, critique of the batch route: "Grotesk while typing"); the Sheet and the ceremony's Why keep sketch 011 decision 17's text face. Built in quick 261022-d3i as one rule, `.notebook-log .prose-field` in `notebook.css`, that sets the face alone: the 16 is the Field Rule's under a coarse pointer, and the placeholder takes the grotesk as an ink field's does.
+
 Calls made without a row (they stand because Mark approved the boards as drawn; the details are in `CONTRACT.md`):
 
 - The recipe name and the one description are typed top left in Rename's own form kept open; the Sheet shows them as read text. Cancel is the only action (no Save until Phase 11) and abandons the draft.

@@ -103,3 +103,11 @@ He is right by his own 2026-09-21 approval. The slip is written down in two plac
 **Mark, on the key's "Cell value grotesk 14/400":** "cell value is larger than caption above it. is that ok according to new ladder?"
 
 Settled, and said on the key in one sentence: the caption is a tag, not a level. It is smaller (12) and in the secondary colour by design so what it labels reads first, and the sequence that never grows going down applies to region (14/600 caps secondary) > cue (14/600 sentence ink) > content (14/400 ink). A caption over a value (SWEETNESS over more (4), row 3) is the same convention as a caption over a field (CHURN DATE over its 16 px box, row 4), both on the board, and every field in the app already works this way (Recipe name, Version name, Churn date). The other way, the caption in the sequence, means every value and figure drops to 12 (the batch margin's figures become the smallest text in the column) or every caption rises to 14/600 caps, the region name's exact face, which brings the same-face fault back on every field in the pen and the creation editor. Measured today: captions are 12/600 or 12/500 caps over 16 px fields in the pen and the creation editor, so the tag reading changes nothing there. Row `decide-p10-caption-level` (tag, recommended / in the sequence). The ladder is now stated as three levels and one tag; the key, the title and the rule on the board say so.
+
+## Mark's answers (2026-10-22 and 2026-10-23, on Mark's List)
+
+- `decide-p10-caption-level`: **a tag outside the sequence** (12/600 caps secondary over its value or field; the sequence region > cue > content, revision 2a as drawn).
+- `decide-p10-log-figure-face`: **figures as content**, 14/400 like every other cell value (revision 2).
+- `decide-p10-ladder-reach`: **every grouped surface in the log**: the creation editor, the record and tasting pens, the batch margin's reading state.
+
+Still open before anything is built: `decide-p10-log-ladder-r2` (the ladder itself), `decide-p10-any-problems-level-r2`, `decide-p10-picked-option-face`, `decide-p10-card-head`. Then the "After Mark answers" step above: Sid redraws, then `/gsd-quick`.

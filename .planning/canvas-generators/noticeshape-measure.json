@@ -1,0 +1,833 @@
+{
+ "A_1366": {
+  "notice": {
+   "x": 1156.9,
+   "y": 63,
+   "w": 161.1,
+   "h": 30
+  },
+  "font": "13px",
+  "lh": "normal",
+  "pad": "6px 12px",
+  "covers": [
+   {
+    "tag": "BUTTON",
+    "cls": "fold-row",
+    "text": "VersionHide details",
+    "ov": {
+     "w": 161.1,
+     "h": 16
+    }
+   }
+  ],
+  "scrollY": 0,
+  "focused": {
+   "text": "BatchHidechurned 22 Oct 2026",
+   "box": {
+    "x": 984,
+    "y": 598.2,
+    "w": 350,
+    "h": 44
+   }
+  },
+  "toFocus": 505.2,
+  "toHead": 6,
+  "headVisible": true,
+  "toTabs": null,
+  "tabs": null,
+  "toViewportBottom": 931,
+  "toEnd": 48,
+  "name": {
+   "box": {
+    "x": 54,
+    "y": 77,
+    "w": 382.1,
+    "h": 32.2
+   },
+   "ov": null
+  },
+  "atTop": {
+   "notice": {
+    "x": 1156.9,
+    "y": 63,
+    "w": 161.1,
+    "h": 30
+   },
+   "covers": [
+    {
+     "tag": "BUTTON",
+     "cls": "fold-row",
+     "text": "VersionHide details",
+     "ov": {
+      "w": 161.1,
+      "h": 16
+     }
+    }
+   ],
+   "name": {
+    "box": {
+     "x": 54,
+     "y": 77,
+     "w": 382.1,
+     "h": 32.2
+    },
+    "ov": null
+   },
+   "toHead": 6
+  }
+ },
+ "B_1366": {
+  "notice": {
+   "x": 581.1,
+   "y": 954,
+   "w": 203.9,
+   "h": 50
+  },
+  "font": "16px",
+  "lh": "24px",
+  "pad": "12px 20px",
+  "covers": [
+   {
+    "tag": "TD",
+    "cls": "ingredient-table__col-numeric",
+    "text": "0.1%",
+    "ov": {
+     "w": 20.9,
+     "h": 18
+    }
+   },
+   {
+    "tag": "TD",
+    "cls": "ingredient-table__col-numeric",
+    "text": "0.1%",
+    "ov": {
+     "w": 20.9,
+     "h": 7.4
+    }
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "graduated-rule",
+    "text": "Fat18.0%0inside 16–20%30",
+    "ov": {
+     "w": 144.9,
+     "h": 32.2
+    }
+   },
+   {
+    "tag": "SPAN",
+    "cls": "",
+    "text": "0",
+    "ov": {
+     "w": 7.6,
+     "h": 16
+    }
+   },
+   {
+    "tag": "SPAN",
+    "cls": "graduated-rule__deviation",
+    "text": "inside 16–20%",
+    "ov": {
+     "w": 62.4,
+     "h": 16
+    }
+   },
+   {
+    "tag": "P",
+    "cls": "formulation-note__fat-breakdown",
+    "text": "Milkfat 13.0% and added fat 5.0% — 28% o",
+    "ov": {
+     "w": 144.9,
+     "h": 11.8
+    }
+   }
+  ],
+  "scrollY": 0,
+  "focused": {
+   "text": "BatchHidechurned 22 Oct 2026",
+   "box": {
+    "x": 984,
+    "y": 598.2,
+    "w": 350,
+    "h": 44
+   }
+  },
+  "toFocus": 311.8,
+  "toHead": 897,
+  "headVisible": true,
+  "toTabs": null,
+  "tabs": null,
+  "toViewportBottom": 20,
+  "toEnd": 581.1,
+  "name": {
+   "box": {
+    "x": 54,
+    "y": 77,
+    "w": 382.1,
+    "h": 32.2
+   },
+   "ov": null
+  },
+  "atTop": {
+   "notice": {
+    "x": 581.1,
+    "y": 954,
+    "w": 203.9,
+    "h": 50
+   },
+   "covers": [
+    {
+     "tag": "TD",
+     "cls": "ingredient-table__col-numeric",
+     "text": "0.1%",
+     "ov": {
+      "w": 20.9,
+      "h": 18
+     }
+    },
+    {
+     "tag": "TD",
+     "cls": "ingredient-table__col-numeric",
+     "text": "0.1%",
+     "ov": {
+      "w": 20.9,
+      "h": 7.4
+     }
+    },
+    {
+     "tag": "BUTTON",
+     "cls": "graduated-rule",
+     "text": "Fat18.0%0inside 16–20%30",
+     "ov": {
+      "w": 144.9,
+      "h": 32.2
+     }
+    },
+    {
+     "tag": "SPAN",
+     "cls": "",
+     "text": "0",
+     "ov": {
+      "w": 7.6,
+      "h": 16
+     }
+    },
+    {
+     "tag": "SPAN",
+     "cls": "graduated-rule__deviation",
+     "text": "inside 16–20%",
+     "ov": {
+      "w": 62.4,
+      "h": 16
+     }
+    },
+    {
+     "tag": "P",
+     "cls": "formulation-note__fat-breakdown",
+     "text": "Milkfat 13.0% and added fat 5.0% — 28% o",
+     "ov": {
+      "w": 144.9,
+      "h": 11.8
+     }
+    }
+   ],
+   "name": {
+    "box": {
+     "x": 54,
+     "y": 77,
+     "w": 382.1,
+     "h": 32.2
+    },
+    "ov": null
+   },
+   "toHead": 897
+  }
+ },
+ "C_1366": {
+  "notice": {
+   "x": 0,
+   "y": 57,
+   "w": 1366,
+   "h": 49
+  },
+  "font": "16px",
+  "lh": "24px",
+  "pad": "12px 48px",
+  "covers": [
+   {
+    "tag": "H1",
+    "cls": "notebook-recipe__name",
+    "text": "Olive Oil Ice Cream, circulator",
+    "ov": {
+     "w": 382.1,
+     "h": 29
+    }
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "fold-row",
+    "text": "VersionHide details",
+    "ov": {
+     "w": 548.7,
+     "h": 29
+    }
+   },
+   {
+    "tag": "SPAN",
+    "cls": "notebook-caption",
+    "text": "Version",
+    "ov": {
+     "w": 60.8,
+     "h": 14.1
+    }
+   },
+   {
+    "tag": "SPAN",
+    "cls": "fold-row__control",
+    "text": "Hide details",
+    "ov": {
+     "w": 71.6,
+     "h": 15
+    }
+   }
+  ],
+  "scrollY": 0,
+  "focused": {
+   "text": "BatchHidechurned 22 Oct 2026",
+   "box": {
+    "x": 984,
+    "y": 598.2,
+    "w": 350,
+    "h": 44
+   }
+  },
+  "toFocus": 492.2,
+  "toHead": 0,
+  "headVisible": true,
+  "toTabs": null,
+  "tabs": null,
+  "toViewportBottom": 918,
+  "toEnd": 0,
+  "name": {
+   "box": {
+    "x": 54,
+    "y": 77,
+    "w": 382.1,
+    "h": 32.2
+   },
+   "ov": {
+    "w": 382.1,
+    "h": 29
+   }
+  },
+  "atTop": {
+   "notice": {
+    "x": 0,
+    "y": 57,
+    "w": 1366,
+    "h": 49
+   },
+   "covers": [
+    {
+     "tag": "H1",
+     "cls": "notebook-recipe__name",
+     "text": "Olive Oil Ice Cream, circulator",
+     "ov": {
+      "w": 382.1,
+      "h": 29
+     }
+    },
+    {
+     "tag": "BUTTON",
+     "cls": "fold-row",
+     "text": "VersionHide details",
+     "ov": {
+      "w": 548.7,
+      "h": 29
+     }
+    },
+    {
+     "tag": "SPAN",
+     "cls": "notebook-caption",
+     "text": "Version",
+     "ov": {
+      "w": 60.8,
+      "h": 14.1
+     }
+    },
+    {
+     "tag": "SPAN",
+     "cls": "fold-row__control",
+     "text": "Hide details",
+     "ov": {
+      "w": 71.6,
+      "h": 15
+     }
+    }
+   ],
+   "name": {
+    "box": {
+     "x": 54,
+     "y": 77,
+     "w": 382.1,
+     "h": 32.2
+    },
+    "ov": {
+     "w": 382.1,
+     "h": 29
+    }
+   },
+   "toHead": 0
+  }
+ },
+ "D_1366": {
+  "notice": {
+   "x": 1114.1,
+   "y": 63,
+   "w": 203.9,
+   "h": 50
+  },
+  "font": "16px",
+  "lh": "24px",
+  "pad": "12px 20px",
+  "covers": [
+   {
+    "tag": "BUTTON",
+    "cls": "fold-row",
+    "text": "VersionHide details",
+    "ov": {
+     "w": 203.9,
+     "h": 36
+    }
+   }
+  ],
+  "scrollY": 0,
+  "focused": {
+   "text": "BatchHidechurned 22 Oct 2026",
+   "box": {
+    "x": 984,
+    "y": 598.2,
+    "w": 350,
+    "h": 44
+   }
+  },
+  "toFocus": 485.2,
+  "toHead": 6,
+  "headVisible": true,
+  "toTabs": null,
+  "tabs": null,
+  "toViewportBottom": 911,
+  "toEnd": 48,
+  "name": {
+   "box": {
+    "x": 54,
+    "y": 77,
+    "w": 382.1,
+    "h": 32.2
+   },
+   "ov": null
+  },
+  "atTop": {
+   "notice": {
+    "x": 1114.1,
+    "y": 63,
+    "w": 203.9,
+    "h": 50
+   },
+   "covers": [
+    {
+     "tag": "BUTTON",
+     "cls": "fold-row",
+     "text": "VersionHide details",
+     "ov": {
+      "w": 203.9,
+      "h": 36
+     }
+    }
+   ],
+   "name": {
+    "box": {
+     "x": 54,
+     "y": 77,
+     "w": 382.1,
+     "h": 32.2
+    },
+    "ov": null
+   },
+   "toHead": 6
+  }
+ },
+ "A_393": {
+  "notice": {
+   "x": 211.9,
+   "y": 6,
+   "w": 161.1,
+   "h": 30
+  },
+  "font": "13px",
+  "lh": "normal",
+  "pad": "6px 12px",
+  "covers": [
+   {
+    "tag": "SPAN",
+    "cls": "",
+    "text": "Emulsify the oil, cold. Mix still at 4 °",
+    "ov": {
+     "w": 132.9,
+     "h": 21.1
+    }
+   },
+   {
+    "tag": "B",
+    "cls": "",
+    "text": "Emulsify the oil, cold.",
+    "ov": {
+     "w": 10.6,
+     "h": 18.2
+    }
+   }
+  ],
+  "scrollY": 2886,
+  "focused": {
+   "text": "BatchHidechurned 22 Oct 2026",
+   "box": {
+    "x": 20,
+    "y": 403.5,
+    "w": 353,
+    "h": 44
+   }
+  },
+  "toFocus": 367.5,
+  "toHead": 2830,
+  "headVisible": false,
+  "toTabs": 760,
+  "tabs": {
+   "x": 0,
+   "y": 796,
+   "w": 393,
+   "h": 56
+  },
+  "toViewportBottom": 816,
+  "toEnd": 20,
+  "name": {
+   "box": {
+    "x": 42,
+    "y": -2808,
+    "w": 331,
+    "h": 64.4
+   },
+   "ov": null
+  },
+  "atTop": {
+   "notice": {
+    "x": 211.9,
+    "y": 68,
+    "w": 161.1,
+    "h": 30
+   },
+   "covers": [
+    {
+     "tag": "H1",
+     "cls": "notebook-recipe__name",
+     "text": "Olive Oil Ice Cream, circulator",
+     "ov": {
+      "w": 161.1,
+      "h": 20
+     }
+    }
+   ],
+   "name": {
+    "box": {
+     "x": 42,
+     "y": 78,
+     "w": 331,
+     "h": 64.4
+    },
+    "ov": {
+     "w": 161.1,
+     "h": 20
+    }
+   },
+   "toHead": 6
+  }
+ },
+ "B_393": {
+  "notice": {
+   "x": 94.6,
+   "y": 726,
+   "w": 203.9,
+   "h": 50
+  },
+  "font": "16px",
+  "lh": "24px",
+  "pad": "12px 20px",
+  "covers": [
+   {
+    "tag": "DD",
+    "cls": "",
+    "text": "24 Oct 2026",
+    "ov": {
+     "w": 71.7,
+     "h": 15
+    }
+   }
+  ],
+  "scrollY": 2886,
+  "focused": {
+   "text": "BatchHidechurned 22 Oct 2026",
+   "box": {
+    "x": 20,
+    "y": 403.5,
+    "w": 353,
+    "h": 44
+   }
+  },
+  "toFocus": 278.5,
+  "toHead": 3550,
+  "headVisible": false,
+  "toTabs": 20,
+  "tabs": {
+   "x": 0,
+   "y": 796,
+   "w": 393,
+   "h": 56
+  },
+  "toViewportBottom": 76,
+  "toEnd": 94.6,
+  "name": {
+   "box": {
+    "x": 42,
+    "y": -2808,
+    "w": 331,
+    "h": 64.4
+   },
+   "ov": null
+  },
+  "atTop": {
+   "notice": {
+    "x": 94.6,
+    "y": 726,
+    "w": 203.9,
+    "h": 50
+   },
+   "covers": [
+    {
+     "tag": "P",
+     "cls": "headnote__prose",
+     "text": "Silky and quietly savoury. Fresh olive o",
+     "ov": {
+      "w": 203.9,
+      "h": 34.4
+     }
+    }
+   ],
+   "name": {
+    "box": {
+     "x": 42,
+     "y": 78,
+     "w": 331,
+     "h": 64.4
+    },
+    "ov": null
+   },
+   "toHead": 664
+  }
+ },
+ "C_393": {
+  "notice": {
+   "x": 0,
+   "y": 0,
+   "w": 393,
+   "h": 49
+  },
+  "font": "16px",
+  "lh": "24px",
+  "pad": "12px 20px",
+  "covers": [
+   {
+    "tag": "SPAN",
+    "cls": "method-step__n",
+    "text": "8",
+    "ov": {
+     "w": 12,
+     "h": 34.5
+    }
+   },
+   {
+    "tag": "SPAN",
+    "cls": "",
+    "text": "Emulsify the oil, cold. Mix still at 4 °",
+    "ov": {
+     "w": 300.8,
+     "h": 34.1
+    }
+   },
+   {
+    "tag": "B",
+    "cls": "",
+    "text": "Emulsify the oil, cold.",
+    "ov": {
+     "w": 178.5,
+     "h": 18.2
+    }
+   }
+  ],
+  "scrollY": 2886,
+  "focused": {
+   "text": "BatchHidechurned 22 Oct 2026",
+   "box": {
+    "x": 20,
+    "y": 403.5,
+    "w": 353,
+    "h": 44
+   }
+  },
+  "toFocus": 354.5,
+  "toHead": 2824,
+  "headVisible": false,
+  "toTabs": 747,
+  "tabs": {
+   "x": 0,
+   "y": 796,
+   "w": 393,
+   "h": 56
+  },
+  "toViewportBottom": 803,
+  "toEnd": 0,
+  "name": {
+   "box": {
+    "x": 42,
+    "y": -2808,
+    "w": 331,
+    "h": 64.4
+   },
+   "ov": null
+  },
+  "atTop": {
+   "notice": {
+    "x": 0,
+    "y": 62,
+    "w": 393,
+    "h": 49
+   },
+   "covers": [
+    {
+     "tag": "H1",
+     "cls": "notebook-recipe__name",
+     "text": "Olive Oil Ice Cream, circulator",
+     "ov": {
+      "w": 331,
+      "h": 33
+     }
+    }
+   ],
+   "name": {
+    "box": {
+     "x": 42,
+     "y": 78,
+     "w": 331,
+     "h": 64.4
+    },
+    "ov": {
+     "w": 331,
+     "h": 33
+    }
+   },
+   "toHead": 0
+  }
+ },
+ "D_393": {
+  "notice": {
+   "x": 169.1,
+   "y": 6,
+   "w": 203.9,
+   "h": 50
+  },
+  "font": "16px",
+  "lh": "24px",
+  "pad": "12px 20px",
+  "covers": [
+   {
+    "tag": "SPAN",
+    "cls": "",
+    "text": "Emulsify the oil, cold. Mix still at 4 °",
+    "ov": {
+     "w": 175.7,
+     "h": 41.1
+    }
+   },
+   {
+    "tag": "B",
+    "cls": "",
+    "text": "Emulsify the oil, cold.",
+    "ov": {
+     "w": 53.4,
+     "h": 18.2
+    }
+   }
+  ],
+  "scrollY": 2886,
+  "focused": {
+   "text": "BatchHidechurned 22 Oct 2026",
+   "box": {
+    "x": 20,
+    "y": 403.5,
+    "w": 353,
+    "h": 44
+   }
+  },
+  "toFocus": 347.5,
+  "toHead": 2830,
+  "headVisible": false,
+  "toTabs": 740,
+  "tabs": {
+   "x": 0,
+   "y": 796,
+   "w": 393,
+   "h": 56
+  },
+  "toViewportBottom": 796,
+  "toEnd": 20,
+  "name": {
+   "box": {
+    "x": 42,
+    "y": -2808,
+    "w": 331,
+    "h": 64.4
+   },
+   "ov": null
+  },
+  "atTop": {
+   "notice": {
+    "x": 169.1,
+    "y": 68,
+    "w": 203.9,
+    "h": 50
+   },
+   "covers": [
+    {
+     "tag": "H1",
+     "cls": "notebook-recipe__name",
+     "text": "Olive Oil Ice Cream, circulator",
+     "ov": {
+      "w": 203.9,
+      "h": 40
+     }
+    }
+   ],
+   "name": {
+    "box": {
+     "x": 42,
+     "y": 78,
+     "w": 331,
+     "h": 64.4
+    },
+    "ov": {
+     "w": 203.9,
+     "h": 40
+    }
+   },
+   "toHead": 6
+  }
+ }
+}

@@ -41,12 +41,15 @@ PROPOSED_CSS = LADDER.PROPOSED_CSS + '''
 '''
 
 def proposed_markup(h):
-    """Item 7, the caption option: a 12 px caption between the cue's head and the two options in each .mo-group (At draw, From freezer)."""
+    """Item 7, the caption option: a 12 px caption between the cue's head and the two options in each .mo-group (At draw, From freezer).
+    Item 8 (Mark, 2026-10-24, answer A on the critique's cognitive-load section): "(Not recorded)" is not rendered in the pen; a blank axis's head is its name alone.
+    The reading state keeps it. A marked axis's "(4)" and Clear stay. Markup, not CSS: AxisMark.jsx stops rendering the span when the axis is blank."""
+    h = re.sub(r'<span class="axis-mark__state">\(Not recorded\)</span>', '', h)
     return re.sub(r'(<div class="segmented-field mo-group"[^>]*?data-mo="([^"]+)"[^>]*><div class="segmented-field__head">.*?</div>)',
                   lambda m: m.group(1) + f'<span class="pen-caption segmented-field__caption" id="{m.group(2)}-why">Why blank</span>', h, flags=re.S)
 
 SURFACE = ('pen', 'Record pen with a tasting · from the Batch head row to Cancel / Save batch', '.batch-row__head', '.save-ceremony')
-VARIANTS = [('b', 'As built (app/dist at HEAD, the build the iPad shows)', ''), ('p', 'Proposed (the change set of 2026-10-22 on revision 2a; At draw and From freezer drawn with the caption option)', PROPOSED_CSS)]
+VARIANTS = [('b', 'As built (app/dist at HEAD, the build the iPad shows)', ''), ('p', 'Proposed (the change set of 2026-10-22 on revision 2a; At draw and From freezer drawn with the caption option; "(Not recorded)" out of the pen, Mark 2026-10-24)', PROPOSED_CSS)]
 
 SIZES = LADDER.SIZES; COLORS = LADDER.COLORS; GAPS = LADDER.GAPS; spec = LADDER.spec
 def gap_name(px):
@@ -189,12 +192,13 @@ KEY = ('<b>The pen as built beside the proposal of 2026-10-22</b> (.impeccable/p
        '20 between axes and from From freezer\'s options to Every recipe; 32 between groups and above Cancel / Save batch; At draw and From freezer 12 under the note\'s underline (sketch 010 D13); 18 under the Tasting head as under the Batch head. '
        '<b>Faces:</b> ladder revision 2a (P10_LogLadder), unchanged by this change set: region name 14/600 caps secondary, group cue 14/600 sentence ink on the 20 px line, caption 12/600 caps secondary as a tag, content 14/400. '
        '<b>At draw and From freezer</b> are drawn with the caption option of decide-p10-at-draw-caption (recommended, not decided): a 12 px caption between the cue and its two options, the word open ("Why blank" here). '
+       '<b>"(Not recorded)" is out of the pen</b> (Mark, 2026-10-24, answer A to the critique\'s cognitive-load section: one column, no tabs, no disclosures): a blank axis\'s head is its name alone; the reading state keeps the words. The only move is 0.9 px on the two blank axes\' head lines (the italic\'s taller line box goes; Scoopability and Sweetness to their stops). '
        '<b>Reads with it:</b> every dimension is measured on this board in WebKit, from a label\'s text line to the next label\'s text line or the next control\'s box (so a reserved caption box does not count as text); the token beside it is the one the interval reads, "no token" where a reserve and a margin add up to it. '
        'In the proposed column only what changes is blue, with "was" (or "new") beside it. '
        '<b>What the drawing shows the proposal did not say:</b> a 12 px caption on the 20 px head line (Exit consistency, Airiness, Melt style) sits 8 over its options and 13.8 under the control before it, not 6 and 12, because baseline alignment leaves the line\'s spare 3.8 under the caption; '
        'an axis name moves 1.5 px when its axis is picked (Clear\'s baseline), so the axes read 21 / 22.3 and 8.7 / 10, not one 20; Tasting to Tasted reads 31, not 18, because the head row is the 44 px Remove tasting button\'s and the name sits in it; '
        'How did it turn out? to Melt test reads 15.3, not 12, the textarea\'s 3.3 px inline descent in the note block; and two rules the change set needs but does not list are drawn here (12 above the note block, since the field label\'s margin it relied on is set to 0; the inserted caption\'s own 6).')
-TITLE = 'The batch route\'s pen rhythm · as built beside the proposal of 2026-10-22: the reserve removed, 6 / 12 / 20 / 32, At draw and From freezer with the caption option (open), at 1366 (for Mark\'s look); below, the choice controls at one size: as built 13 / 15, both 15, both 14, 15 with pad 6, at 1366 and 393 (decide-p10-control-text-size)'
+TITLE = 'The batch route\'s pen rhythm · as built beside the proposal of 2026-10-22: the reserve removed, 6 / 12 / 20 / 32, At draw and From freezer with the caption option (open), "(Not recorded)" out of the pen (Mark 2026-10-24), at 1366 (for Mark\'s look); below, the choice controls at one size: as built 13 / 15, both 15, both 14, 15 with pad 6, at 1366 and 393 (decide-p10-control-text-size)'
 
 SAW = 230      # the control-size panels' right label column
 def size_row_text(cfg):

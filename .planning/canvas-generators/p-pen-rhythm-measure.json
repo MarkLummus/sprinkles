@@ -869,12 +869,12 @@
    },
    {
     "from": 1460.296875,
-    "to": 1481.171875,
+    "to": 1480.296875,
     "a": "axis-mark__anchors:softrighthard",
     "b": "axis-mark__name:Scoopability"
    },
    {
-    "from": 1496.171875,
+    "from": 1495.296875,
     "to": 1506.296875,
     "a": "axis-mark__name:Scoopability",
     "b": "axis-mark__stops:12345"
@@ -905,12 +905,12 @@
    },
    {
     "from": 1676.296875,
-    "to": 1697.171875,
+    "to": 1696.296875,
     "a": "axis-mark__anchors:grainyrightsmooth",
     "b": "axis-mark__name:Sweetness"
    },
    {
-    "from": 1712.171875,
+    "from": 1711.296875,
     "to": 1722.296875,
     "a": "axis-mark__name:Sweetness",
     "b": "axis-mark__stops:12345"

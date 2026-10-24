@@ -3,6 +3,8 @@
   "start": -8,
   "end": 2216.609375,
   "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
   "roles": [
    {
     "role": "Region name",
@@ -94,7 +96,7 @@
     "top": 278.96875,
     "right": 358,
     "height": 44,
-    "fontFamily": "Georgia, Iowan Old Style, Times New Roman, serif",
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
     "fontSize": "16px",
     "fontWeight": "400",
     "textTransform": "none",
@@ -462,6 +464,8 @@
   "start": -8,
   "end": 2047.296875,
   "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
   "roles": [
    {
     "role": "Region name",
@@ -567,7 +571,7 @@
     "top": 228.859375,
     "right": 358,
     "height": 44,
-    "fontFamily": "Georgia, Iowan Old Style, Times New Roman, serif",
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
     "fontSize": "16px",
     "fontWeight": "400",
     "textTransform": "none",
@@ -940,6 +944,6120 @@
     "to": 1995.296875,
     "a": "defects-row__chips:Coarse, icySandy, gr",
     "b": ":Cancel"
+   }
+  ]
+ },
+ "sz-1366c-bb-churn": {
+  "start": 393.15625,
+  "end": 645.546875,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 409.953125,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 492.5625,
+    "right": 132.265625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 435.953125,
+    "right": 120.21875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 490.5625,
+    "right": 358,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 429.953125,
+    "to": 435.953125,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 479.953125,
+    "to": 492.5625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 508.75,
+    "to": 514.75,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 558.75,
+    "to": 571.359375,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 587.546875,
+    "to": 593.546875,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 435.953125,
+    "bottom": 479.953125,
+    "left": 984,
+    "right": 1197.296875,
+    "sum": 213.296875,
+    "column": 350,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 112.21875
+     },
+     {
+      "text": "Not evaluated",
+      "w": 102.078125
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 514.75,
+    "bottom": 558.75,
+    "left": 984,
+    "right": 1306.09375,
+    "sum": 322.09375,
+    "column": 350,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 107.40625
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 85.671875
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 131.015625
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 593.546875,
+    "bottom": 637.546875,
+    "left": 984,
+    "right": 1270.5625,
+    "sum": 286.5625,
+    "column": 350,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 85.59375
+     },
+     {
+      "text": "Medium, standard",
+      "w": 127.3125
+     },
+     {
+      "text": "High, airy",
+      "w": 75.65625
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-1366c-bb-tasting": {
+  "start": 1018.65625,
+  "end": 1548.03125,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1321.234375,
+    "right": 94.5625,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 1026.65625,
+    "right": 161.8125,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1457.03125,
+    "right": 77.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 1061.453125,
+    "right": 64,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1268.4375,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1164.25,
+    "right": 126,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1524.03125,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1140.0625,
+    "right": 323.9375,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 1055.453125,
+    "to": 1061.453125,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1105.453125,
+    "to": 1142.0625,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1158.25,
+    "to": 1164.25,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1208.25,
+    "to": 1240.25,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1256.4375,
+    "to": 1268.4375,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1312.4375,
+    "to": 1321.234375,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1341.234375,
+    "to": 1347.234375,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1391.234375,
+    "to": 1411.234375,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1431.234375,
+    "to": 1457.03125,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1472.03125,
+    "to": 1478.03125,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1522.03125,
+    "to": 1524.03125,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1164.25,
+    "bottom": 1208.25,
+    "left": 984,
+    "right": 1299.9375,
+    "sum": 315.9375,
+    "column": 315.9375,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 118
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 109.65625
+     },
+     {
+      "text": "Stable foam",
+      "w": 90.28125
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1347.234375,
+    "bottom": 1391.234375,
+    "left": 984,
+    "right": 1197.296875,
+    "sum": 213.296875,
+    "column": 350,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 112.21875
+     },
+     {
+      "text": "Not evaluated",
+      "w": 102.078125
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "15px",
+    "top": 1478.03125,
+    "bottom": 1522.03125,
+    "left": 984,
+    "right": 1200
+   }
+  ]
+ },
+ "sz-1366c-bs15-churn": {
+  "start": 393.15625,
+  "end": 695.546875,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 409.953125,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 492.5625,
+    "right": 132.265625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 435.953125,
+    "right": 132.53125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 490.5625,
+    "right": 358,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 429.953125,
+    "to": 435.953125,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 479.953125,
+    "to": 492.5625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 508.75,
+    "to": 514.75,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 608.75,
+    "to": 621.359375,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 637.546875,
+    "to": 643.546875,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 435.953125,
+    "bottom": 479.953125,
+    "left": 984,
+    "right": 1220.640625,
+    "sum": 236.640625,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 124.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 113.109375
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 514.75,
+    "bottom": 608.75,
+    "left": 984,
+    "right": 1196.859375,
+    "sum": 357.78125,
+    "column": 350,
+    "rows": 2,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 119.25
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 94.609375
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 145.921875
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 643.546875,
+    "bottom": 687.546875,
+    "left": 984,
+    "right": 1301.359375,
+    "sum": 317.359375,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 94.53125
+     },
+     {
+      "text": "Medium, standard",
+      "w": 141.78125
+     },
+     {
+      "text": "High, airy",
+      "w": 83.046875
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-1366c-bs15-tasting": {
+  "start": 1068.65625,
+  "end": 1648.03125,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1421.234375,
+    "right": 94.5625,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 1076.65625,
+    "right": 161.8125,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1557.03125,
+    "right": 77.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 1111.453125,
+    "right": 64,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1368.4375,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1214.25,
+    "right": 139.1875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1624.03125,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1190.0625,
+    "right": 358,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 1105.453125,
+    "to": 1111.453125,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1155.453125,
+    "to": 1192.0625,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1208.25,
+    "to": 1214.25,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1308.25,
+    "to": 1340.25,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1356.4375,
+    "to": 1368.4375,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1412.4375,
+    "to": 1421.234375,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1441.234375,
+    "to": 1447.234375,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1491.234375,
+    "to": 1511.234375,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1531.234375,
+    "to": 1557.03125,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1572.03125,
+    "to": 1578.03125,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1622.03125,
+    "to": 1624.03125,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1214.25,
+    "bottom": 1308.25,
+    "left": 984,
+    "right": 1236.046875,
+    "sum": 350.84375,
+    "column": 350,
+    "rows": 2,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 131.1875
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 121.859375
+     },
+     {
+      "text": "Stable foam",
+      "w": 99.796875
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1447.234375,
+    "bottom": 1491.234375,
+    "left": 984,
+    "right": 1220.640625,
+    "sum": 236.640625,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 124.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 113.109375
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "15px",
+    "top": 1578.03125,
+    "bottom": 1622.03125,
+    "left": 984,
+    "right": 1200
+   }
+  ]
+ },
+ "sz-1366c-bs14-churn": {
+  "start": 393.15625,
+  "end": 645.546875,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 409.953125,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 492.5625,
+    "right": 132.265625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 435.953125,
+    "right": 126.453125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 490.5625,
+    "right": 358,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 429.953125,
+    "to": 435.953125,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 479.953125,
+    "to": 492.5625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 508.75,
+    "to": 514.75,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 558.75,
+    "to": 571.359375,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 587.546875,
+    "to": 593.546875,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 435.953125,
+    "bottom": 479.953125,
+    "left": 984,
+    "right": 1209.109375,
+    "sum": 225.109375,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 118.453125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 107.65625
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 514.75,
+    "bottom": 558.75,
+    "left": 984,
+    "right": 1324.125,
+    "sum": 340.125,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 113.390625
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 90.1875
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 138.546875
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 593.546875,
+    "bottom": 637.546875,
+    "left": 984,
+    "right": 1286.140625,
+    "sum": 302.140625,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 90.109375
+     },
+     {
+      "text": "Medium, standard",
+      "w": 134.625
+     },
+     {
+      "text": "High, airy",
+      "w": 79.40625
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-1366c-bs14-tasting": {
+  "start": 1018.65625,
+  "end": 1548.03125,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1321.234375,
+    "right": 94.5625,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 1026.65625,
+    "right": 161.8125,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1457.03125,
+    "right": 77.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 1061.453125,
+    "right": 64,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1268.4375,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1164.25,
+    "right": 132.65625,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1524.03125,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1140.0625,
+    "right": 341.578125,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 1055.453125,
+    "to": 1061.453125,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1105.453125,
+    "to": 1142.0625,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1158.25,
+    "to": 1164.25,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1208.25,
+    "to": 1240.25,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1256.4375,
+    "to": 1268.4375,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1312.4375,
+    "to": 1321.234375,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1341.234375,
+    "to": 1347.234375,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1391.234375,
+    "to": 1411.234375,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1431.234375,
+    "to": 1457.03125,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1472.03125,
+    "to": 1478.03125,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1522.03125,
+    "to": 1524.03125,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1164.25,
+    "bottom": 1208.25,
+    "left": 984,
+    "right": 1317.578125,
+    "sum": 333.578125,
+    "column": 333.578125,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 124.65625
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 115.828125
+     },
+     {
+      "text": "Stable foam",
+      "w": 95.09375
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1347.234375,
+    "bottom": 1391.234375,
+    "left": 984,
+    "right": 1209.109375,
+    "sum": 225.109375,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 118.453125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 107.65625
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "14px",
+    "top": 1478.03125,
+    "bottom": 1522.03125,
+    "left": 984,
+    "right": 1200
+   }
+  ]
+ },
+ "sz-1366c-bs15p-churn": {
+  "start": 393.15625,
+  "end": 645.546875,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 409.953125,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 492.5625,
+    "right": 132.265625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 435.953125,
+    "right": 128.53125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 490.5625,
+    "right": 358,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 429.953125,
+    "to": 435.953125,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 479.953125,
+    "to": 492.5625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 508.75,
+    "to": 514.75,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 558.75,
+    "to": 571.359375,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 587.546875,
+    "to": 593.546875,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 435.953125,
+    "bottom": 479.953125,
+    "left": 984,
+    "right": 1212.640625,
+    "sum": 228.640625,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 120.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 109.109375
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 514.75,
+    "bottom": 558.75,
+    "left": 984,
+    "right": 1329.78125,
+    "sum": 345.78125,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 115.25
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 90.609375
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 141.921875
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 593.546875,
+    "bottom": 637.546875,
+    "left": 984,
+    "right": 1289.359375,
+    "sum": 305.359375,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 90.53125
+     },
+     {
+      "text": "Medium, standard",
+      "w": 137.78125
+     },
+     {
+      "text": "High, airy",
+      "w": 79.046875
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-1366c-bs15p-tasting": {
+  "start": 1018.65625,
+  "end": 1548.03125,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1321.234375,
+    "right": 94.5625,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 1026.65625,
+    "right": 161.8125,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1457.03125,
+    "right": 77.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 1061.453125,
+    "right": 64,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1268.4375,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1164.25,
+    "right": 135.1875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1524.03125,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1140.0625,
+    "right": 346.84375,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 1055.453125,
+    "to": 1061.453125,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1105.453125,
+    "to": 1142.0625,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1158.25,
+    "to": 1164.25,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1208.25,
+    "to": 1240.25,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1256.4375,
+    "to": 1268.4375,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1312.4375,
+    "to": 1321.234375,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1341.234375,
+    "to": 1347.234375,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1391.234375,
+    "to": 1411.234375,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1431.234375,
+    "to": 1457.03125,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1472.03125,
+    "to": 1478.03125,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1522.03125,
+    "to": 1524.03125,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1164.25,
+    "bottom": 1208.25,
+    "left": 984,
+    "right": 1322.84375,
+    "sum": 338.84375,
+    "column": 338.84375,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 127.1875
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 117.859375
+     },
+     {
+      "text": "Stable foam",
+      "w": 95.796875
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1347.234375,
+    "bottom": 1391.234375,
+    "left": 984,
+    "right": 1212.640625,
+    "sum": 228.640625,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 120.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 109.109375
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "15px",
+    "top": 1478.03125,
+    "bottom": 1522.03125,
+    "left": 984,
+    "right": 1200
+   }
+  ]
+ },
+ "sz-1366c-ps15-churn": {
+  "start": 355.046875,
+  "end": 683.234375,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 363.046875,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Why blank",
+    "top": 395.046875,
+    "right": 358,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Control caption",
+    "text": "Why blank",
+    "top": 395.046875,
+    "right": 358,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 417.234375,
+    "right": 132.53125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 473.234375,
+    "right": 358,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 383.046875,
+    "to": 395.046875,
+    "a": "segmented-field__caption:At draw",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 411.234375,
+    "to": 417.234375,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 461.234375,
+    "to": 474.984375,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 491.171875,
+    "to": 499.234375,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 593.234375,
+    "to": 606.984375,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 623.171875,
+    "to": 631.234375,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 417.234375,
+    "bottom": 461.234375,
+    "left": 984,
+    "right": 1220.640625,
+    "sum": 236.640625,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 124.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 113.109375
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 499.234375,
+    "bottom": 593.234375,
+    "left": 984,
+    "right": 1196.859375,
+    "sum": 357.78125,
+    "column": 350,
+    "rows": 2,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 119.25
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 94.609375
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 145.921875
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 631.234375,
+    "bottom": 675.234375,
+    "left": 984,
+    "right": 1301.359375,
+    "sum": 317.359375,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 94.53125
+     },
+     {
+      "text": "Medium, standard",
+      "w": 141.78125
+     },
+     {
+      "text": "High, airy",
+      "w": 83.046875
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-1366c-ps15-tasting": {
+  "start": 1007.53125,
+  "end": 1568.296875,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1322.109375,
+    "right": 94.5625,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 1015.53125,
+    "right": 161.8125,
+    "height": 14.390625,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Control caption",
+    "text": "Why blank",
+    "top": 1354.109375,
+    "right": 358,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1474.640625,
+    "right": 82.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 1035.921875,
+    "right": 64,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1266.109375,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1117.921875,
+    "right": 139.1875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1544.296875,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1091.921875,
+    "right": 358,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 1029.921875,
+    "to": 1035.921875,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1079.921875,
+    "to": 1093.671875,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1109.859375,
+    "to": 1117.921875,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1211.921875,
+    "to": 1243.921875,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1260.109375,
+    "to": 1266.109375,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1310.109375,
+    "to": 1322.109375,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1342.109375,
+    "to": 1354.109375,
+    "a": "segmented-field__caption:From freezer",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 1370.296875,
+    "to": 1376.296875,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1420.296875,
+    "to": 1440.296875,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1460.296875,
+    "to": 1474.640625,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1489.640625,
+    "to": 1498.296875,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1542.296875,
+    "to": 1544.296875,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1117.921875,
+    "bottom": 1211.921875,
+    "left": 984,
+    "right": 1236.046875,
+    "sum": 350.84375,
+    "column": 350,
+    "rows": 2,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 131.1875
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 121.859375
+     },
+     {
+      "text": "Stable foam",
+      "w": 99.796875
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1376.296875,
+    "bottom": 1420.296875,
+    "left": 984,
+    "right": 1220.640625,
+    "sum": 236.640625,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 124.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 113.109375
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "15px",
+    "top": 1498.296875,
+    "bottom": 1542.296875,
+    "left": 984,
+    "right": 1200
+   }
+  ]
+ },
+ "sz-1366c-ps14-churn": {
+  "start": 355.046875,
+  "end": 633.234375,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 363.046875,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Why blank",
+    "top": 395.046875,
+    "right": 358,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Control caption",
+    "text": "Why blank",
+    "top": 395.046875,
+    "right": 358,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 417.234375,
+    "right": 126.453125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 473.234375,
+    "right": 358,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 383.046875,
+    "to": 395.046875,
+    "a": "segmented-field__caption:At draw",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 411.234375,
+    "to": 417.234375,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 461.234375,
+    "to": 474.984375,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 491.171875,
+    "to": 499.234375,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 543.234375,
+    "to": 556.984375,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 573.171875,
+    "to": 581.234375,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 417.234375,
+    "bottom": 461.234375,
+    "left": 984,
+    "right": 1209.109375,
+    "sum": 225.109375,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 118.453125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 107.65625
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 499.234375,
+    "bottom": 543.234375,
+    "left": 984,
+    "right": 1324.125,
+    "sum": 340.125,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 113.390625
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 90.1875
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 138.546875
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 581.234375,
+    "bottom": 625.234375,
+    "left": 984,
+    "right": 1286.140625,
+    "sum": 302.140625,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 90.109375
+     },
+     {
+      "text": "Medium, standard",
+      "w": 134.625
+     },
+     {
+      "text": "High, airy",
+      "w": 79.40625
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-1366c-ps14-tasting": {
+  "start": 957.53125,
+  "end": 1468.296875,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1222.109375,
+    "right": 94.5625,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 965.53125,
+    "right": 161.8125,
+    "height": 14.390625,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Control caption",
+    "text": "Why blank",
+    "top": 1254.109375,
+    "right": 358,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1374.640625,
+    "right": 82.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 985.921875,
+    "right": 64,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1166.109375,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1067.921875,
+    "right": 132.65625,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1444.296875,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1041.921875,
+    "right": 341.578125,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 979.921875,
+    "to": 985.921875,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1029.921875,
+    "to": 1043.671875,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1059.859375,
+    "to": 1067.921875,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1111.921875,
+    "to": 1143.921875,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1160.109375,
+    "to": 1166.109375,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1210.109375,
+    "to": 1222.109375,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1242.109375,
+    "to": 1254.109375,
+    "a": "segmented-field__caption:From freezer",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 1270.296875,
+    "to": 1276.296875,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1320.296875,
+    "to": 1340.296875,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1360.296875,
+    "to": 1374.640625,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1389.640625,
+    "to": 1398.296875,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1442.296875,
+    "to": 1444.296875,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1067.921875,
+    "bottom": 1111.921875,
+    "left": 984,
+    "right": 1317.578125,
+    "sum": 333.578125,
+    "column": 333.578125,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 124.65625
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 115.828125
+     },
+     {
+      "text": "Stable foam",
+      "w": 95.09375
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1276.296875,
+    "bottom": 1320.296875,
+    "left": 984,
+    "right": 1209.109375,
+    "sum": 225.109375,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 118.453125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 107.65625
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "14px",
+    "top": 1398.296875,
+    "bottom": 1442.296875,
+    "left": 984,
+    "right": 1200
+   }
+  ]
+ },
+ "sz-1366f-bb-churn": {
+  "start": 359.65625,
+  "end": 561.65625,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 371.65625,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 437.46875,
+    "right": 132.265625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 397.65625,
+    "right": 120.21875,
+    "height": 32,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 429.65625,
+    "right": 358,
+    "height": 24,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 391.65625,
+    "to": 397.65625,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 429.65625,
+    "to": 437.46875,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 453.65625,
+    "to": 459.65625,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 491.65625,
+    "to": 499.46875,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 515.65625,
+    "to": 521.65625,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 397.65625,
+    "bottom": 429.65625,
+    "left": 984,
+    "right": 1197.296875,
+    "sum": 213.296875,
+    "column": 350,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 112.21875
+     },
+     {
+      "text": "Not evaluated",
+      "w": 102.078125
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 459.65625,
+    "bottom": 491.65625,
+    "left": 984,
+    "right": 1306.09375,
+    "sum": 322.09375,
+    "column": 350,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 107.40625
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 85.671875
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 131.015625
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 521.65625,
+    "bottom": 553.65625,
+    "left": 984,
+    "right": 1270.5625,
+    "sum": 286.5625,
+    "column": 350,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 85.59375
+     },
+     {
+      "text": "Medium, standard",
+      "w": 127.3125
+     },
+     {
+      "text": "High, airy",
+      "w": 75.65625
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-1366f-bb-tasting": {
+  "start": 882.265625,
+  "end": 1354.5,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1144.5,
+    "right": 94.5625,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 890.265625,
+    "right": 161.8125,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1263.5,
+    "right": 77.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 925.0625,
+    "right": 64,
+    "height": 26.25,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20.25px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1097.5,
+    "right": 358,
+    "height": 43,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "22.5px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1005.3125,
+    "right": 126,
+    "height": 32,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1330.5,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 975.3125,
+    "right": 323.9375,
+    "height": 24,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 919.0625,
+    "to": 925.0625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 951.3125,
+    "to": 983.125,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 999.3125,
+    "to": 1005.3125,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1037.3125,
+    "to": 1069.3125,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1085.5,
+    "to": 1097.5,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1140.5,
+    "to": 1144.5,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1164.5,
+    "to": 1170.5,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1202.5,
+    "to": 1222.5,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1242.5,
+    "to": 1263.5,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1278.5,
+    "to": 1284.5,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1328.5,
+    "to": 1330.5,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1005.3125,
+    "bottom": 1037.3125,
+    "left": 984,
+    "right": 1299.9375,
+    "sum": 315.9375,
+    "column": 315.9375,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 118
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 109.65625
+     },
+     {
+      "text": "Stable foam",
+      "w": 90.28125
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1170.5,
+    "bottom": 1202.5,
+    "left": 984,
+    "right": 1197.296875,
+    "sum": 213.296875,
+    "column": 350,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 112.21875
+     },
+     {
+      "text": "Not evaluated",
+      "w": 102.078125
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "15px",
+    "top": 1284.5,
+    "bottom": 1328.5,
+    "left": 984,
+    "right": 1200
+   }
+  ]
+ },
+ "sz-1366f-bs15-churn": {
+  "start": 359.65625,
+  "end": 599.65625,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 371.65625,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 437.46875,
+    "right": 132.265625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 397.65625,
+    "right": 132.53125,
+    "height": 32,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 429.65625,
+    "right": 358,
+    "height": 24,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 391.65625,
+    "to": 397.65625,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 429.65625,
+    "to": 437.46875,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 453.65625,
+    "to": 459.65625,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 529.65625,
+    "to": 537.46875,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 553.65625,
+    "to": 559.65625,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 397.65625,
+    "bottom": 429.65625,
+    "left": 984,
+    "right": 1220.640625,
+    "sum": 236.640625,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 124.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 113.109375
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 459.65625,
+    "bottom": 529.65625,
+    "left": 984,
+    "right": 1196.859375,
+    "sum": 357.78125,
+    "column": 350,
+    "rows": 2,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 119.25
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 94.609375
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 145.921875
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 559.65625,
+    "bottom": 591.65625,
+    "left": 984,
+    "right": 1301.359375,
+    "sum": 317.359375,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 94.53125
+     },
+     {
+      "text": "Medium, standard",
+      "w": 141.78125
+     },
+     {
+      "text": "High, airy",
+      "w": 83.046875
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-1366f-bs15-tasting": {
+  "start": 920.265625,
+  "end": 1430.5,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1220.5,
+    "right": 94.5625,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 928.265625,
+    "right": 161.8125,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1339.5,
+    "right": 77.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 963.0625,
+    "right": 64,
+    "height": 26.25,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20.25px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1173.5,
+    "right": 358,
+    "height": 43,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "22.5px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1043.3125,
+    "right": 139.1875,
+    "height": 32,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1406.5,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1013.3125,
+    "right": 358,
+    "height": 24,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 957.0625,
+    "to": 963.0625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 989.3125,
+    "to": 1021.125,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1037.3125,
+    "to": 1043.3125,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1113.3125,
+    "to": 1145.3125,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1161.5,
+    "to": 1173.5,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1216.5,
+    "to": 1220.5,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1240.5,
+    "to": 1246.5,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1278.5,
+    "to": 1298.5,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1318.5,
+    "to": 1339.5,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1354.5,
+    "to": 1360.5,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1404.5,
+    "to": 1406.5,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1043.3125,
+    "bottom": 1113.3125,
+    "left": 984,
+    "right": 1236.046875,
+    "sum": 350.84375,
+    "column": 350,
+    "rows": 2,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 131.1875
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 121.859375
+     },
+     {
+      "text": "Stable foam",
+      "w": 99.796875
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1246.5,
+    "bottom": 1278.5,
+    "left": 984,
+    "right": 1220.640625,
+    "sum": 236.640625,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 124.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 113.109375
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "15px",
+    "top": 1360.5,
+    "bottom": 1404.5,
+    "left": 984,
+    "right": 1200
+   }
+  ]
+ },
+ "sz-1366f-bs14-churn": {
+  "start": 359.65625,
+  "end": 561.65625,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 371.65625,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 437.46875,
+    "right": 132.265625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 397.65625,
+    "right": 126.453125,
+    "height": 32,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 429.65625,
+    "right": 358,
+    "height": 24,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 391.65625,
+    "to": 397.65625,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 429.65625,
+    "to": 437.46875,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 453.65625,
+    "to": 459.65625,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 491.65625,
+    "to": 499.46875,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 515.65625,
+    "to": 521.65625,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 397.65625,
+    "bottom": 429.65625,
+    "left": 984,
+    "right": 1209.109375,
+    "sum": 225.109375,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 118.453125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 107.65625
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 459.65625,
+    "bottom": 491.65625,
+    "left": 984,
+    "right": 1324.125,
+    "sum": 340.125,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 113.390625
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 90.1875
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 138.546875
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 521.65625,
+    "bottom": 553.65625,
+    "left": 984,
+    "right": 1286.140625,
+    "sum": 302.140625,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 90.109375
+     },
+     {
+      "text": "Medium, standard",
+      "w": 134.625
+     },
+     {
+      "text": "High, airy",
+      "w": 79.40625
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-1366f-bs14-tasting": {
+  "start": 882.265625,
+  "end": 1354.5,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1144.5,
+    "right": 94.5625,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 890.265625,
+    "right": 161.8125,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1263.5,
+    "right": 77.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 925.0625,
+    "right": 64,
+    "height": 26.25,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20.25px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1097.5,
+    "right": 358,
+    "height": 43,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "22.5px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1005.3125,
+    "right": 132.65625,
+    "height": 32,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1330.5,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 975.3125,
+    "right": 341.578125,
+    "height": 24,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 919.0625,
+    "to": 925.0625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 951.3125,
+    "to": 983.125,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 999.3125,
+    "to": 1005.3125,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1037.3125,
+    "to": 1069.3125,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1085.5,
+    "to": 1097.5,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1140.5,
+    "to": 1144.5,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1164.5,
+    "to": 1170.5,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1202.5,
+    "to": 1222.5,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1242.5,
+    "to": 1263.5,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1278.5,
+    "to": 1284.5,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1328.5,
+    "to": 1330.5,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1005.3125,
+    "bottom": 1037.3125,
+    "left": 984,
+    "right": 1317.578125,
+    "sum": 333.578125,
+    "column": 333.578125,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 124.65625
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 115.828125
+     },
+     {
+      "text": "Stable foam",
+      "w": 95.09375
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1170.5,
+    "bottom": 1202.5,
+    "left": 984,
+    "right": 1209.109375,
+    "sum": 225.109375,
+    "column": 350,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 118.453125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 107.65625
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "14px",
+    "top": 1284.5,
+    "bottom": 1328.5,
+    "left": 984,
+    "right": 1200
+   }
+  ]
+ },
+ "sz-1366f-bs15p-churn": {
+  "start": 359.65625,
+  "end": 561.65625,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 371.65625,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 437.46875,
+    "right": 132.265625,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 397.65625,
+    "right": 128.53125,
+    "height": 32,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 429.65625,
+    "right": 358,
+    "height": 24,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 391.65625,
+    "to": 397.65625,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 429.65625,
+    "to": 437.46875,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 453.65625,
+    "to": 459.65625,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 491.65625,
+    "to": 499.46875,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 515.65625,
+    "to": 521.65625,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 397.65625,
+    "bottom": 429.65625,
+    "left": 984,
+    "right": 1212.640625,
+    "sum": 228.640625,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 120.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 109.109375
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 459.65625,
+    "bottom": 491.65625,
+    "left": 984,
+    "right": 1329.78125,
+    "sum": 345.78125,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 115.25
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 90.609375
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 141.921875
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 521.65625,
+    "bottom": 553.65625,
+    "left": 984,
+    "right": 1289.359375,
+    "sum": 305.359375,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 90.53125
+     },
+     {
+      "text": "Medium, standard",
+      "w": 137.78125
+     },
+     {
+      "text": "High, airy",
+      "w": 79.046875
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-1366f-bs15p-tasting": {
+  "start": 882.265625,
+  "end": 1354.5,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1144.5,
+    "right": 94.5625,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 890.265625,
+    "right": 161.8125,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1263.5,
+    "right": 77.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 925.0625,
+    "right": 64,
+    "height": 26.25,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20.25px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1097.5,
+    "right": 358,
+    "height": 43,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "22.5px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1005.3125,
+    "right": 135.1875,
+    "height": 32,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1330.5,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 975.3125,
+    "right": 346.84375,
+    "height": 24,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 919.0625,
+    "to": 925.0625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 951.3125,
+    "to": 983.125,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 999.3125,
+    "to": 1005.3125,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1037.3125,
+    "to": 1069.3125,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1085.5,
+    "to": 1097.5,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1140.5,
+    "to": 1144.5,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1164.5,
+    "to": 1170.5,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1202.5,
+    "to": 1222.5,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1242.5,
+    "to": 1263.5,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1278.5,
+    "to": 1284.5,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1328.5,
+    "to": 1330.5,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1005.3125,
+    "bottom": 1037.3125,
+    "left": 984,
+    "right": 1322.84375,
+    "sum": 338.84375,
+    "column": 338.84375,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 127.1875
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 117.859375
+     },
+     {
+      "text": "Stable foam",
+      "w": 95.796875
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1170.5,
+    "bottom": 1202.5,
+    "left": 984,
+    "right": 1212.640625,
+    "sum": 228.640625,
+    "column": 350,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 32,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 120.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 109.109375
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "15px",
+    "top": 1284.5,
+    "bottom": 1328.5,
+    "left": 984,
+    "right": 1200
+   }
+  ]
+ },
+ "sz-393c-bb-churn": {
+  "start": 421.15625,
+  "end": 719.15625,
+  "logLeft": 20,
+  "logWidth": 353,
+  "winW": 393,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 453.15625,
+    "right": -904.1875,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 550.96875,
+    "right": -831.734375,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 479.15625,
+    "right": -843.78125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 523.15625,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 473.15625,
+    "to": 479.15625,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 523.15625,
+    "to": 550.96875,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 567.15625,
+    "to": 573.15625,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 617.15625,
+    "to": 644.96875,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 661.15625,
+    "to": 667.15625,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 479.15625,
+    "bottom": 523.15625,
+    "left": 20,
+    "right": 233.296875,
+    "sum": 213.296875,
+    "column": 353,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 112.21875
+     },
+     {
+      "text": "Not evaluated",
+      "w": 102.078125
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 573.15625,
+    "bottom": 617.15625,
+    "left": 20,
+    "right": 342.09375,
+    "sum": 322.09375,
+    "column": 353,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 107.40625
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 85.671875
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 131.015625
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 667.15625,
+    "bottom": 711.15625,
+    "left": 20,
+    "right": 306.5625,
+    "sum": 286.5625,
+    "column": 353,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 85.59375
+     },
+     {
+      "text": "Medium, standard",
+      "w": 127.3125
+     },
+     {
+      "text": "High, airy",
+      "w": 75.65625
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-393c-bb-tasting": {
+  "start": 1092.265625,
+  "end": 1655.25,
+  "logLeft": 20,
+  "logWidth": 353,
+  "winW": 393,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1425.25,
+    "right": -869.4375,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 1100.265625,
+    "right": -802.1875,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1564.25,
+    "right": -886.09375,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 1135.0625,
+    "right": -900,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1357.25,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1253.0625,
+    "right": -838,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1631.25,
+    "right": -932.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1203.0625,
+    "right": -640.0625,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 1129.0625,
+    "to": 1135.0625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1179.0625,
+    "to": 1230.875,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1247.0625,
+    "to": 1253.0625,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1297.0625,
+    "to": 1329.0625,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1345.25,
+    "to": 1357.25,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1401.25,
+    "to": 1425.25,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1445.25,
+    "to": 1451.25,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1495.25,
+    "to": 1518.4375,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1538.4375,
+    "to": 1564.25,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1579.25,
+    "to": 1585.25,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1629.25,
+    "to": 1631.25,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1253.0625,
+    "bottom": 1297.0625,
+    "left": 20,
+    "right": 335.9375,
+    "sum": 315.9375,
+    "column": 315.9375,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 118
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 109.65625
+     },
+     {
+      "text": "Stable foam",
+      "w": 90.28125
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1451.25,
+    "bottom": 1495.25,
+    "left": 20,
+    "right": 233.296875,
+    "sum": 213.296875,
+    "column": 353,
+    "rows": 1,
+    "size": "13px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 112.21875
+     },
+     {
+      "text": "Not evaluated",
+      "w": 102.078125
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "15px",
+    "top": 1585.25,
+    "bottom": 1629.25,
+    "left": 20,
+    "right": 236
+   }
+  ]
+ },
+ "sz-393c-bs15-churn": {
+  "start": 421.15625,
+  "end": 769.15625,
+  "logLeft": 20,
+  "logWidth": 353,
+  "winW": 393,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 453.15625,
+    "right": -904.1875,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 550.96875,
+    "right": -831.734375,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 479.15625,
+    "right": -831.46875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 523.15625,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 473.15625,
+    "to": 479.15625,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 523.15625,
+    "to": 550.96875,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 567.15625,
+    "to": 573.15625,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 667.15625,
+    "to": 694.96875,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 711.15625,
+    "to": 717.15625,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 479.15625,
+    "bottom": 523.15625,
+    "left": 20,
+    "right": 256.640625,
+    "sum": 236.640625,
+    "column": 353,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 124.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 113.109375
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 573.15625,
+    "bottom": 667.15625,
+    "left": 20,
+    "right": 232.859375,
+    "sum": 357.78125,
+    "column": 353,
+    "rows": 2,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 119.25
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 94.609375
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 145.921875
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 717.15625,
+    "bottom": 761.15625,
+    "left": 20,
+    "right": 337.359375,
+    "sum": 317.359375,
+    "column": 353,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 94.53125
+     },
+     {
+      "text": "Medium, standard",
+      "w": 141.78125
+     },
+     {
+      "text": "High, airy",
+      "w": 83.046875
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-393c-bs15-tasting": {
+  "start": 1142.265625,
+  "end": 1705.25,
+  "logLeft": 20,
+  "logWidth": 353,
+  "winW": 393,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1475.25,
+    "right": -869.4375,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 1150.265625,
+    "right": -802.1875,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1614.25,
+    "right": -886.09375,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 1185.0625,
+    "right": -900,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1407.25,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1303.0625,
+    "right": -824.8125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1681.25,
+    "right": -932.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1253.0625,
+    "right": -605.15625,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 1179.0625,
+    "to": 1185.0625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1229.0625,
+    "to": 1280.875,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1297.0625,
+    "to": 1303.0625,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1347.0625,
+    "to": 1379.0625,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1395.25,
+    "to": 1407.25,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1451.25,
+    "to": 1475.25,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1495.25,
+    "to": 1501.25,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1545.25,
+    "to": 1568.4375,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1588.4375,
+    "to": 1614.25,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1629.25,
+    "to": 1635.25,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1679.25,
+    "to": 1681.25,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1303.0625,
+    "bottom": 1347.0625,
+    "left": 20,
+    "right": 370.84375,
+    "sum": 350.84375,
+    "column": 350.84375,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 131.1875
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 121.859375
+     },
+     {
+      "text": "Stable foam",
+      "w": 99.796875
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1501.25,
+    "bottom": 1545.25,
+    "left": 20,
+    "right": 256.640625,
+    "sum": 236.640625,
+    "column": 353,
+    "rows": 1,
+    "size": "15px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 124.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 113.109375
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "15px",
+    "top": 1635.25,
+    "bottom": 1679.25,
+    "left": 20,
+    "right": 236
+   }
+  ]
+ },
+ "sz-393c-bs14-churn": {
+  "start": 421.15625,
+  "end": 719.15625,
+  "logLeft": 20,
+  "logWidth": 353,
+  "winW": 393,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 453.15625,
+    "right": -904.1875,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 550.96875,
+    "right": -831.734375,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 479.15625,
+    "right": -837.546875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 523.15625,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 473.15625,
+    "to": 479.15625,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 523.15625,
+    "to": 550.96875,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 567.15625,
+    "to": 573.15625,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 617.15625,
+    "to": 644.96875,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 661.15625,
+    "to": 667.15625,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 479.15625,
+    "bottom": 523.15625,
+    "left": 20,
+    "right": 245.109375,
+    "sum": 225.109375,
+    "column": 353,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 118.453125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 107.65625
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 573.15625,
+    "bottom": 617.15625,
+    "left": 20,
+    "right": 360.125,
+    "sum": 340.125,
+    "column": 353,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 113.390625
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 90.1875
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 138.546875
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 667.15625,
+    "bottom": 711.15625,
+    "left": 20,
+    "right": 322.140625,
+    "sum": 302.140625,
+    "column": 353,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 90.109375
+     },
+     {
+      "text": "Medium, standard",
+      "w": 134.625
+     },
+     {
+      "text": "High, airy",
+      "w": 79.40625
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-393c-bs14-tasting": {
+  "start": 1092.265625,
+  "end": 1655.25,
+  "logLeft": 20,
+  "logWidth": 353,
+  "winW": 393,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1425.25,
+    "right": -869.4375,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 1100.265625,
+    "right": -802.1875,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1564.25,
+    "right": -886.09375,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 1135.0625,
+    "right": -900,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1357.25,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1253.0625,
+    "right": -831.34375,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1631.25,
+    "right": -932.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1203.0625,
+    "right": -622.421875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 1129.0625,
+    "to": 1135.0625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1179.0625,
+    "to": 1230.875,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1247.0625,
+    "to": 1253.0625,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1297.0625,
+    "to": 1329.0625,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1345.25,
+    "to": 1357.25,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1401.25,
+    "to": 1425.25,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1445.25,
+    "to": 1451.25,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1495.25,
+    "to": 1518.4375,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1538.4375,
+    "to": 1564.25,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1579.25,
+    "to": 1585.25,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1629.25,
+    "to": 1631.25,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1253.0625,
+    "bottom": 1297.0625,
+    "left": 20,
+    "right": 353.578125,
+    "sum": 333.578125,
+    "column": 333.578125,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 124.65625
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 115.828125
+     },
+     {
+      "text": "Stable foam",
+      "w": 95.09375
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1451.25,
+    "bottom": 1495.25,
+    "left": 20,
+    "right": 245.109375,
+    "sum": 225.109375,
+    "column": 353,
+    "rows": 1,
+    "size": "14px",
+    "padX": "8px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 118.453125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 107.65625
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "14px",
+    "top": 1585.25,
+    "bottom": 1629.25,
+    "left": 20,
+    "right": 236
+   }
+  ]
+ },
+ "sz-393c-bs15p-churn": {
+  "start": 421.15625,
+  "end": 719.15625,
+  "logLeft": 20,
+  "logWidth": 353,
+  "winW": 393,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 453.15625,
+    "right": -904.1875,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Exit consistency",
+    "top": 550.96875,
+    "right": -831.734375,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 479.15625,
+    "right": -835.46875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 523.15625,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 473.15625,
+    "to": 479.15625,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 523.15625,
+    "to": 550.96875,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 567.15625,
+    "to": 573.15625,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 617.15625,
+    "to": 644.96875,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 661.15625,
+    "to": 667.15625,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   }
+  ],
+  "segs": [
+   {
+    "name": "At draw",
+    "top": 479.15625,
+    "bottom": 523.15625,
+    "left": 20,
+    "right": 248.640625,
+    "sum": 228.640625,
+    "column": 353,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 120.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 109.109375
+     }
+    ]
+   },
+   {
+    "name": "Exit consistency",
+    "top": 573.15625,
+    "bottom": 617.15625,
+    "left": 20,
+    "right": 365.78125,
+    "sum": 345.78125,
+    "column": 353,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Smooth ribbon",
+      "w": 115.25
+     },
+     {
+      "text": "Wet, soupy",
+      "w": 90.609375
+     },
+     {
+      "text": "Chunky, separated",
+      "w": 141.921875
+     }
+    ]
+   },
+   {
+    "name": "Airiness (estimated)",
+    "top": 667.15625,
+    "bottom": 711.15625,
+    "left": 20,
+    "right": 325.359375,
+    "sum": 305.359375,
+    "column": 353,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Low, dense",
+      "w": 90.53125
+     },
+     {
+      "text": "Medium, standard",
+      "w": 137.78125
+     },
+     {
+      "text": "High, airy",
+      "w": 79.046875
+     }
+    ]
+   }
+  ],
+  "stops": []
+ },
+ "sz-393c-bs15p-tasting": {
+  "start": 1092.265625,
+  "end": 1655.25,
+  "logLeft": 20,
+  "logWidth": 353,
+  "winW": 393,
+  "roles": [
+   {
+    "role": "Group cue",
+    "text": "From freezer",
+    "top": 1425.25,
+    "right": -869.4375,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Melt test",
+    "top": 1100.265625,
+    "right": -802.1875,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1564.25,
+    "right": -886.09375,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 1135.0625,
+    "right": -900,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Less cinnamon",
+    "top": 1357.25,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Watery, weeping",
+    "top": 1253.0625,
+    "right": -828.8125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "19.5px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1631.25,
+    "right": -932.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1203.0625,
+    "right": -617.15625,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 1129.0625,
+    "to": 1135.0625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1179.0625,
+    "to": 1230.875,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1247.0625,
+    "to": 1253.0625,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1297.0625,
+    "to": 1329.0625,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1345.25,
+    "to": 1357.25,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1401.25,
+    "to": 1425.25,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1445.25,
+    "to": 1451.25,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1495.25,
+    "to": 1518.4375,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1538.4375,
+    "to": 1564.25,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1579.25,
+    "to": 1585.25,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1629.25,
+    "to": 1631.25,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   }
+  ],
+  "segs": [
+   {
+    "name": "Melt style",
+    "top": 1253.0625,
+    "bottom": 1297.0625,
+    "left": 20,
+    "right": 358.84375,
+    "sum": 338.84375,
+    "column": 338.84375,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Watery, weeping",
+      "w": 127.1875
+     },
+     {
+      "text": "Creamy puddle",
+      "w": 117.859375
+     },
+     {
+      "text": "Stable foam",
+      "w": 95.796875
+     }
+    ]
+   },
+   {
+    "name": "From freezer",
+    "top": 1451.25,
+    "bottom": 1495.25,
+    "left": 20,
+    "right": 248.640625,
+    "sum": 228.640625,
+    "column": 353,
+    "rows": 1,
+    "size": "15px",
+    "padX": "6px",
+    "optH": 44,
+    "options": [
+     {
+      "text": "Nothing to note",
+      "w": 120.53125
+     },
+     {
+      "text": "Not evaluated",
+      "w": 109.109375
+     }
+    ]
+   }
+  ],
+  "stops": [
+   {
+    "name": "Hardness",
+    "n": 5,
+    "w": 44,
+    "h": 44,
+    "size": "15px",
+    "top": 1585.25,
+    "bottom": 1629.25,
+    "left": 20,
+    "right": 236
    }
   ]
  }

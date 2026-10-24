@@ -1,0 +1,2288 @@
+{
+ "1366c": {
+  "width": 1366,
+  "pointer": "coarse",
+  "candidates": {
+   "b": {
+    "penHeight": 2174.4,
+    "penTop": 528.4,
+    "penLeft": 984,
+    "penWidth": 350,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 112.2,
+        "h": 44,
+        "top": 401.8,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 102.1,
+        "h": 44,
+        "top": 401.8,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 213.3,
+      "rows": 1,
+      "top": 401.8,
+      "height": 44
+     },
+     {
+      "name": "Exit consistency",
+      "column": 350,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 107.4,
+        "h": 44,
+        "top": 480.6,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 85.7,
+        "h": 44,
+        "top": 480.6,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 131,
+        "h": 44,
+        "top": 480.6,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 322.1,
+      "rows": 1,
+      "top": 480.6,
+      "height": 44
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 350,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 85.6,
+        "h": 44,
+        "top": 559.4,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 127.3,
+        "h": 44,
+        "top": 559.4,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "High, airy",
+        "w": 75.7,
+        "h": 44,
+        "top": 559.4,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 286.6,
+      "rows": 1,
+      "top": 559.4,
+      "height": 44
+     },
+     {
+      "name": "Melt style",
+      "column": 315.9,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 118,
+        "h": 44,
+        "top": 1130.1,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 109.7,
+        "h": 44,
+        "top": 1130.1,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 90.3,
+        "h": 44,
+        "top": 1130.1,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 316,
+      "rows": 1,
+      "top": 1130.1,
+      "height": 44
+     },
+     {
+      "name": "From freezer",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 112.2,
+        "h": 44,
+        "top": 1313,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 102.1,
+        "h": 44,
+        "top": 1313,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 213.3,
+      "rows": 1,
+      "top": 1313,
+      "height": 44
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "15px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "16px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 367,
+     "to": 635.4
+    },
+    "atdraw": {
+     "top": 367,
+     "bottom": 445.8
+    },
+    "axes": {
+     "top": 1377,
+     "bottom": 2098.4
+    }
+   },
+   "s15": {
+    "penHeight": 2274.4,
+    "penTop": 528.4,
+    "penLeft": 984,
+    "penWidth": 350,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 124.5,
+        "h": 44,
+        "top": 401.8,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 113.1,
+        "h": 44,
+        "top": 401.8,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 236.6,
+      "rows": 1,
+      "top": 401.8,
+      "height": 44
+     },
+     {
+      "name": "Exit consistency",
+      "column": 350,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 119.3,
+        "h": 44,
+        "top": 480.6,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 94.6,
+        "h": 44,
+        "top": 480.6,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 145.9,
+        "h": 44,
+        "top": 530.6,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 357.8,
+      "rows": 2,
+      "top": 480.6,
+      "height": 94
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 350,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 94.5,
+        "h": 44,
+        "top": 609.4,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 141.8,
+        "h": 44,
+        "top": 609.4,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "High, airy",
+        "w": 83,
+        "h": 44,
+        "top": 609.4,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 317.3,
+      "rows": 1,
+      "top": 609.4,
+      "height": 44
+     },
+     {
+      "name": "Melt style",
+      "column": 350,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 131.2,
+        "h": 44,
+        "top": 1180.1,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 121.9,
+        "h": 44,
+        "top": 1180.1,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 99.8,
+        "h": 44,
+        "top": 1230.1,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 350.9,
+      "rows": 2,
+      "top": 1180.1,
+      "height": 94
+     },
+     {
+      "name": "From freezer",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 124.5,
+        "h": 44,
+        "top": 1413,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 113.1,
+        "h": 44,
+        "top": 1413,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 236.6,
+      "rows": 1,
+      "top": 1413,
+      "height": 44
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "15px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "16px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 367,
+     "to": 685.4
+    },
+    "atdraw": {
+     "top": 367,
+     "bottom": 445.8
+    },
+    "axes": {
+     "top": 1477,
+     "bottom": 2198.4
+    }
+   },
+   "s14": {
+    "penHeight": 2174.4,
+    "penTop": 528.4,
+    "penLeft": 984,
+    "penWidth": 350,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 118.5,
+        "h": 44,
+        "top": 401.8,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 107.7,
+        "h": 44,
+        "top": 401.8,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 225.2,
+      "rows": 1,
+      "top": 401.8,
+      "height": 44
+     },
+     {
+      "name": "Exit consistency",
+      "column": 350,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 113.4,
+        "h": 44,
+        "top": 480.6,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 90.2,
+        "h": 44,
+        "top": 480.6,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 138.5,
+        "h": 44,
+        "top": 480.6,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 340.1,
+      "rows": 1,
+      "top": 480.6,
+      "height": 44
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 350,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 90.1,
+        "h": 44,
+        "top": 559.4,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 134.6,
+        "h": 44,
+        "top": 559.4,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "High, airy",
+        "w": 79.4,
+        "h": 44,
+        "top": 559.4,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 302.1,
+      "rows": 1,
+      "top": 559.4,
+      "height": 44
+     },
+     {
+      "name": "Melt style",
+      "column": 333.6,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 124.7,
+        "h": 44,
+        "top": 1130.1,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 115.8,
+        "h": 44,
+        "top": 1130.1,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 95.1,
+        "h": 44,
+        "top": 1130.1,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 333.6,
+      "rows": 1,
+      "top": 1130.1,
+      "height": 44
+     },
+     {
+      "name": "From freezer",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 118.5,
+        "h": 44,
+        "top": 1313,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 107.7,
+        "h": 44,
+        "top": 1313,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 225.2,
+      "rows": 1,
+      "top": 1313,
+      "height": 44
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "14px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "16px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 367,
+     "to": 635.4
+    },
+    "atdraw": {
+     "top": 367,
+     "bottom": 445.8
+    },
+    "axes": {
+     "top": 1377,
+     "bottom": 2098.4
+    }
+   },
+   "s15p": {
+    "penHeight": 2174.4,
+    "penTop": 528.4,
+    "penLeft": 984,
+    "penWidth": 350,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 120.5,
+        "h": 44,
+        "top": 401.8,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 109.1,
+        "h": 44,
+        "top": 401.8,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 228.6,
+      "rows": 1,
+      "top": 401.8,
+      "height": 44
+     },
+     {
+      "name": "Exit consistency",
+      "column": 350,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 115.3,
+        "h": 44,
+        "top": 480.6,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 90.6,
+        "h": 44,
+        "top": 480.6,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 141.9,
+        "h": 44,
+        "top": 480.6,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 345.8,
+      "rows": 1,
+      "top": 480.6,
+      "height": 44
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 350,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 90.5,
+        "h": 44,
+        "top": 559.4,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 137.8,
+        "h": 44,
+        "top": 559.4,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "High, airy",
+        "w": 79,
+        "h": 44,
+        "top": 559.4,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 305.3,
+      "rows": 1,
+      "top": 559.4,
+      "height": 44
+     },
+     {
+      "name": "Melt style",
+      "column": 338.8,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 127.2,
+        "h": 44,
+        "top": 1130.1,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 117.9,
+        "h": 44,
+        "top": 1130.1,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 95.8,
+        "h": 44,
+        "top": 1130.1,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 338.9,
+      "rows": 1,
+      "top": 1130.1,
+      "height": 44
+     },
+     {
+      "name": "From freezer",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 120.5,
+        "h": 44,
+        "top": 1313,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 109.1,
+        "h": 44,
+        "top": 1313,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 228.6,
+      "rows": 1,
+      "top": 1313,
+      "height": 44
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "15px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "16px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 367,
+     "to": 635.4
+    },
+    "atdraw": {
+     "top": 367,
+     "bottom": 445.8
+    },
+    "axes": {
+     "top": 1377,
+     "bottom": 2098.4
+    }
+   }
+  }
+ },
+ "1366f": {
+  "width": 1366,
+  "pointer": "fine",
+  "candidates": {
+   "b": {
+    "penHeight": 1868.5,
+    "penTop": 528.4,
+    "penLeft": 984,
+    "penWidth": 350,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 112.2,
+        "h": 32,
+        "top": 331.5,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 102.1,
+        "h": 32,
+        "top": 331.5,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 213.3,
+      "rows": 1,
+      "top": 331.5,
+      "height": 32
+     },
+     {
+      "name": "Exit consistency",
+      "column": 350,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 107.4,
+        "h": 32,
+        "top": 393.5,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 85.7,
+        "h": 32,
+        "top": 393.5,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 131,
+        "h": 32,
+        "top": 393.5,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 322.1,
+      "rows": 1,
+      "top": 393.5,
+      "height": 32
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 350,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 85.6,
+        "h": 32,
+        "top": 455.5,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 127.3,
+        "h": 32,
+        "top": 455.5,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "High, airy",
+        "w": 75.7,
+        "h": 32,
+        "top": 455.5,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 286.6,
+      "rows": 1,
+      "top": 455.5,
+      "height": 32
+     },
+     {
+      "name": "Melt style",
+      "column": 315.9,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 118,
+        "h": 32,
+        "top": 923.1,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 109.7,
+        "h": 32,
+        "top": 923.1,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 90.3,
+        "h": 32,
+        "top": 923.1,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 316,
+      "rows": 1,
+      "top": 923.1,
+      "height": 32
+     },
+     {
+      "name": "From freezer",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 112.2,
+        "h": 32,
+        "top": 1072.3,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 102.1,
+        "h": 32,
+        "top": 1072.3,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 213.3,
+      "rows": 1,
+      "top": 1072.3,
+      "height": 32
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "15px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "15px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 301.5,
+     "to": 519.5
+    },
+    "atdraw": {
+     "top": 301.5,
+     "bottom": 363.5
+    },
+    "axes": {
+     "top": 1124.3,
+     "bottom": 1802.5
+    }
+   },
+   "s15": {
+    "penHeight": 1944.5,
+    "penTop": 528.4,
+    "penLeft": 984,
+    "penWidth": 350,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 124.5,
+        "h": 32,
+        "top": 331.5,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 113.1,
+        "h": 32,
+        "top": 331.5,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 236.6,
+      "rows": 1,
+      "top": 331.5,
+      "height": 32
+     },
+     {
+      "name": "Exit consistency",
+      "column": 350,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 119.3,
+        "h": 32,
+        "top": 393.5,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 94.6,
+        "h": 32,
+        "top": 393.5,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 145.9,
+        "h": 32,
+        "top": 431.5,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 357.8,
+      "rows": 2,
+      "top": 393.5,
+      "height": 70
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 350,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 94.5,
+        "h": 32,
+        "top": 493.5,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 141.8,
+        "h": 32,
+        "top": 493.5,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "High, airy",
+        "w": 83,
+        "h": 32,
+        "top": 493.5,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 317.3,
+      "rows": 1,
+      "top": 493.5,
+      "height": 32
+     },
+     {
+      "name": "Melt style",
+      "column": 350,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 131.2,
+        "h": 32,
+        "top": 961.1,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 121.9,
+        "h": 32,
+        "top": 961.1,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 99.8,
+        "h": 32,
+        "top": 999.1,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 350.9,
+      "rows": 2,
+      "top": 961.1,
+      "height": 70
+     },
+     {
+      "name": "From freezer",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 124.5,
+        "h": 32,
+        "top": 1148.3,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 113.1,
+        "h": 32,
+        "top": 1148.3,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 236.6,
+      "rows": 1,
+      "top": 1148.3,
+      "height": 32
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "15px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "15px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 301.5,
+     "to": 557.5
+    },
+    "atdraw": {
+     "top": 301.5,
+     "bottom": 363.5
+    },
+    "axes": {
+     "top": 1200.3,
+     "bottom": 1878.5
+    }
+   },
+   "s14": {
+    "penHeight": 1868.5,
+    "penTop": 528.4,
+    "penLeft": 984,
+    "penWidth": 350,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 118.5,
+        "h": 32,
+        "top": 331.5,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 107.7,
+        "h": 32,
+        "top": 331.5,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 225.2,
+      "rows": 1,
+      "top": 331.5,
+      "height": 32
+     },
+     {
+      "name": "Exit consistency",
+      "column": 350,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 113.4,
+        "h": 32,
+        "top": 393.5,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 90.2,
+        "h": 32,
+        "top": 393.5,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 138.5,
+        "h": 32,
+        "top": 393.5,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 340.1,
+      "rows": 1,
+      "top": 393.5,
+      "height": 32
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 350,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 90.1,
+        "h": 32,
+        "top": 455.5,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 134.6,
+        "h": 32,
+        "top": 455.5,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "High, airy",
+        "w": 79.4,
+        "h": 32,
+        "top": 455.5,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 302.1,
+      "rows": 1,
+      "top": 455.5,
+      "height": 32
+     },
+     {
+      "name": "Melt style",
+      "column": 333.6,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 124.7,
+        "h": 32,
+        "top": 923.1,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 115.8,
+        "h": 32,
+        "top": 923.1,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 95.1,
+        "h": 32,
+        "top": 923.1,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 333.6,
+      "rows": 1,
+      "top": 923.1,
+      "height": 32
+     },
+     {
+      "name": "From freezer",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 118.5,
+        "h": 32,
+        "top": 1072.3,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 107.7,
+        "h": 32,
+        "top": 1072.3,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 225.2,
+      "rows": 1,
+      "top": 1072.3,
+      "height": 32
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "14px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "15px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 301.5,
+     "to": 519.5
+    },
+    "atdraw": {
+     "top": 301.5,
+     "bottom": 363.5
+    },
+    "axes": {
+     "top": 1124.3,
+     "bottom": 1802.5
+    }
+   },
+   "s15p": {
+    "penHeight": 1868.5,
+    "penTop": 528.4,
+    "penLeft": 984,
+    "penWidth": 350,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 120.5,
+        "h": 32,
+        "top": 331.5,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 109.1,
+        "h": 32,
+        "top": 331.5,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 228.6,
+      "rows": 1,
+      "top": 331.5,
+      "height": 32
+     },
+     {
+      "name": "Exit consistency",
+      "column": 350,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 115.3,
+        "h": 32,
+        "top": 393.5,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 90.6,
+        "h": 32,
+        "top": 393.5,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 141.9,
+        "h": 32,
+        "top": 393.5,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 345.8,
+      "rows": 1,
+      "top": 393.5,
+      "height": 32
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 350,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 90.5,
+        "h": 32,
+        "top": 455.5,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 137.8,
+        "h": 32,
+        "top": 455.5,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "High, airy",
+        "w": 79,
+        "h": 32,
+        "top": 455.5,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 305.3,
+      "rows": 1,
+      "top": 455.5,
+      "height": 32
+     },
+     {
+      "name": "Melt style",
+      "column": 338.8,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 127.2,
+        "h": 32,
+        "top": 923.1,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 117.9,
+        "h": 32,
+        "top": 923.1,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 95.8,
+        "h": 32,
+        "top": 923.1,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 338.9,
+      "rows": 1,
+      "top": 923.1,
+      "height": 32
+     },
+     {
+      "name": "From freezer",
+      "column": 350,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 120.5,
+        "h": 32,
+        "top": 1072.3,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 109.1,
+        "h": 32,
+        "top": 1072.3,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 228.6,
+      "rows": 1,
+      "top": 1072.3,
+      "height": 32
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "15px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "15px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 301.5,
+     "to": 519.5
+    },
+    "atdraw": {
+     "top": 301.5,
+     "bottom": 363.5
+    },
+    "axes": {
+     "top": 1124.3,
+     "bottom": 1802.5
+    }
+   }
+  }
+ },
+ "393c": {
+  "width": 393,
+  "pointer": "coarse",
+  "candidates": {
+   "b": {
+    "penHeight": 2299.3,
+    "penTop": 2426.8,
+    "penLeft": 20,
+    "penWidth": 353,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 353,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 112.2,
+        "h": 44,
+        "top": 417,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 102.1,
+        "h": 44,
+        "top": 417,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 213.3,
+      "rows": 1,
+      "top": 417,
+      "height": 44
+     },
+     {
+      "name": "Exit consistency",
+      "column": 353,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 107.4,
+        "h": 44,
+        "top": 511,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 85.7,
+        "h": 44,
+        "top": 511,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 131,
+        "h": 44,
+        "top": 511,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 322.1,
+      "rows": 1,
+      "top": 511,
+      "height": 44
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 353,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 85.6,
+        "h": 44,
+        "top": 605,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 127.3,
+        "h": 44,
+        "top": 605,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "High, airy",
+        "w": 75.7,
+        "h": 44,
+        "top": 605,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 286.6,
+      "rows": 1,
+      "top": 605,
+      "height": 44
+     },
+     {
+      "name": "Melt style",
+      "column": 315.9,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 118,
+        "h": 44,
+        "top": 1190.9,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 109.7,
+        "h": 44,
+        "top": 1190.9,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 90.3,
+        "h": 44,
+        "top": 1190.9,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 316,
+      "rows": 1,
+      "top": 1190.9,
+      "height": 44
+     },
+     {
+      "name": "From freezer",
+      "column": 353,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 112.2,
+        "h": 44,
+        "top": 1389.1,
+        "size": "13px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 102.1,
+        "h": 44,
+        "top": 1389.1,
+        "size": "13px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 213.3,
+      "rows": 1,
+      "top": 1389.1,
+      "height": 44
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "15px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "16px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 367,
+     "to": 681
+    },
+    "atdraw": {
+     "top": 367,
+     "bottom": 461
+    },
+    "axes": {
+     "top": 1453.1,
+     "bottom": 2223.3
+    }
+   },
+   "s15": {
+    "penHeight": 2349.3,
+    "penTop": 2426.8,
+    "penLeft": 20,
+    "penWidth": 353,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 353,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 124.5,
+        "h": 44,
+        "top": 417,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 113.1,
+        "h": 44,
+        "top": 417,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 236.6,
+      "rows": 1,
+      "top": 417,
+      "height": 44
+     },
+     {
+      "name": "Exit consistency",
+      "column": 353,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 119.3,
+        "h": 44,
+        "top": 511,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 94.6,
+        "h": 44,
+        "top": 511,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 145.9,
+        "h": 44,
+        "top": 561,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 357.8,
+      "rows": 2,
+      "top": 511,
+      "height": 94
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 353,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 94.5,
+        "h": 44,
+        "top": 655,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 141.8,
+        "h": 44,
+        "top": 655,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "High, airy",
+        "w": 83,
+        "h": 44,
+        "top": 655,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 317.3,
+      "rows": 1,
+      "top": 655,
+      "height": 44
+     },
+     {
+      "name": "Melt style",
+      "column": 350.8,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 131.2,
+        "h": 44,
+        "top": 1240.9,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 121.9,
+        "h": 44,
+        "top": 1240.9,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 99.8,
+        "h": 44,
+        "top": 1240.9,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 350.9,
+      "rows": 1,
+      "top": 1240.9,
+      "height": 44
+     },
+     {
+      "name": "From freezer",
+      "column": 353,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 124.5,
+        "h": 44,
+        "top": 1439.1,
+        "size": "15px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 113.1,
+        "h": 44,
+        "top": 1439.1,
+        "size": "15px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 236.6,
+      "rows": 1,
+      "top": 1439.1,
+      "height": 44
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "15px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "16px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 367,
+     "to": 731
+    },
+    "atdraw": {
+     "top": 367,
+     "bottom": 461
+    },
+    "axes": {
+     "top": 1503.1,
+     "bottom": 2273.3
+    }
+   },
+   "s14": {
+    "penHeight": 2299.3,
+    "penTop": 2426.8,
+    "penLeft": 20,
+    "penWidth": 353,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 353,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 118.5,
+        "h": 44,
+        "top": 417,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 107.7,
+        "h": 44,
+        "top": 417,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 225.2,
+      "rows": 1,
+      "top": 417,
+      "height": 44
+     },
+     {
+      "name": "Exit consistency",
+      "column": 353,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 113.4,
+        "h": 44,
+        "top": 511,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 90.2,
+        "h": 44,
+        "top": 511,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 138.5,
+        "h": 44,
+        "top": 511,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 340.1,
+      "rows": 1,
+      "top": 511,
+      "height": 44
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 353,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 90.1,
+        "h": 44,
+        "top": 605,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 134.6,
+        "h": 44,
+        "top": 605,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "High, airy",
+        "w": 79.4,
+        "h": 44,
+        "top": 605,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 302.1,
+      "rows": 1,
+      "top": 605,
+      "height": 44
+     },
+     {
+      "name": "Melt style",
+      "column": 333.6,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 124.7,
+        "h": 44,
+        "top": 1190.9,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 115.8,
+        "h": 44,
+        "top": 1190.9,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 95.1,
+        "h": 44,
+        "top": 1190.9,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 333.6,
+      "rows": 1,
+      "top": 1190.9,
+      "height": 44
+     },
+     {
+      "name": "From freezer",
+      "column": 353,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 118.5,
+        "h": 44,
+        "top": 1389.1,
+        "size": "14px",
+        "padX": "8px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 107.7,
+        "h": 44,
+        "top": 1389.1,
+        "size": "14px",
+        "padX": "8px"
+       }
+      ],
+      "sum": 225.2,
+      "rows": 1,
+      "top": 1389.1,
+      "height": 44
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "14px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "16px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 367,
+     "to": 681
+    },
+    "atdraw": {
+     "top": 367,
+     "bottom": 461
+    },
+    "axes": {
+     "top": 1453.1,
+     "bottom": 2223.3
+    }
+   },
+   "s15p": {
+    "penHeight": 2299.3,
+    "penTop": 2426.8,
+    "penLeft": 20,
+    "penWidth": 353,
+    "segs": [
+     {
+      "name": "At draw",
+      "column": 353,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 120.5,
+        "h": 44,
+        "top": 417,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 109.1,
+        "h": 44,
+        "top": 417,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 228.6,
+      "rows": 1,
+      "top": 417,
+      "height": 44
+     },
+     {
+      "name": "Exit consistency",
+      "column": 353,
+      "options": [
+       {
+        "text": "Smooth ribbon",
+        "w": 115.3,
+        "h": 44,
+        "top": 511,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Wet, soupy",
+        "w": 90.6,
+        "h": 44,
+        "top": 511,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Chunky, separated",
+        "w": 141.9,
+        "h": 44,
+        "top": 511,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 345.8,
+      "rows": 1,
+      "top": 511,
+      "height": 44
+     },
+     {
+      "name": "Airiness (estimated)",
+      "column": 353,
+      "options": [
+       {
+        "text": "Low, dense",
+        "w": 90.5,
+        "h": 44,
+        "top": 605,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Medium, standard",
+        "w": 137.8,
+        "h": 44,
+        "top": 605,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "High, airy",
+        "w": 79,
+        "h": 44,
+        "top": 605,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 305.3,
+      "rows": 1,
+      "top": 605,
+      "height": 44
+     },
+     {
+      "name": "Melt style",
+      "column": 338.8,
+      "options": [
+       {
+        "text": "Watery, weeping",
+        "w": 127.2,
+        "h": 44,
+        "top": 1190.9,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Creamy puddle",
+        "w": 117.9,
+        "h": 44,
+        "top": 1190.9,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Stable foam",
+        "w": 95.8,
+        "h": 44,
+        "top": 1190.9,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 338.9,
+      "rows": 1,
+      "top": 1190.9,
+      "height": 44
+     },
+     {
+      "name": "From freezer",
+      "column": 353,
+      "options": [
+       {
+        "text": "Nothing to note",
+        "w": 120.5,
+        "h": 44,
+        "top": 1389.1,
+        "size": "15px",
+        "padX": "6px"
+       },
+       {
+        "text": "Not evaluated",
+        "w": 109.1,
+        "h": 44,
+        "top": 1389.1,
+        "size": "15px",
+        "padX": "6px"
+       }
+      ],
+      "sum": 228.6,
+      "rows": 1,
+      "top": 1389.1,
+      "height": 44
+     }
+    ],
+    "stops": {
+     "n": 20,
+     "sizes": [
+      "15px"
+     ],
+     "boxes": [
+      "44x44"
+     ]
+    },
+    "fields": [
+     "16px"
+    ],
+    "cues": [
+     "14px/600"
+    ],
+    "churn": {
+     "from": 367,
+     "to": 681
+    },
+    "atdraw": {
+     "top": 367,
+     "bottom": 461
+    },
+    "axes": {
+     "top": 1453.1,
+     "bottom": 2223.3
+    }
+   }
+  }
+ }
+}

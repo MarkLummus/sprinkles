@@ -11,7 +11,12 @@
 //     coarse pointer and the text-control minimum under a fine one;
 //   - At draw and From freezer carry the Why blank caption, in the face of every other caption,
 //     and each radiogroup is named by two ids that both exist;
-//   - the intervals down the pen's left edge read the plan's table within 1px (the rows in GATED).
+//   - the intervals down the pen's left edge read the plan's table R1 to R39 within 1px, and the
+//     pen's choice controls read 14 (--app-size-meta) in boxes that keep their geometry;
+//   - a blank axis shows its name alone (one state span per marked axis);
+//   - no pen caption wraps, also at 723 and 724 coarse;
+//   - in the reading (Olive Oil v1's stored batch, no pen open) the Batch and Tasting heads give
+//     18 to their first cell.
 // Every design value is read through a temporary element from the app's own custom properties;
 // the probe holds no px literal for one.
 //
@@ -48,8 +53,6 @@ const CONFIGS = [
   { name: 'c393', width: 393, height: 852, touch: true, mobile: true },
 ];
 
-// The rows of the plan's interval table that this run gates; the rest print as INFO.
-const GATED = new Set(['R10', 'R11', 'R12', 'R30', 'R31', 'R32', 'R33', 'R34']);
 // [id, name of the item above, name of the item below, expected px]. Names compare by startsWith.
 const ROWS = [
   ['R1', 'Batch', 'Churn date', 18],
@@ -95,6 +98,9 @@ const ROWS = [
   ['R38', 'This recipe only', 'Body', 17],
   ['R39', 'thinrightheavy', 'Oil', 25],
 ];
+// Every row of the plan's interval table is gated. The defects (Any problems? and its captions)
+// are 261025-f8n's and are not in the table.
+const GATED = new Set(ROWS.map((row) => row[0]));
 
 let pass = 0;
 let fail = 0;
@@ -227,8 +233,28 @@ async function fillTasting(page, log) {
   await page.waitForTimeout(350);
 }
 
-async function scenarioA(servers, browser, cfg) {
-  const tag = cfg.name;
+// No caption in the pen wraps: each box is no taller than its computed line (plus half a pixel).
+async function captionsDoNotWrap(page, tag) {
+  const captions = await page.evaluate((penSel) => {
+    const sel = [
+      `${penSel} .field-row .pen-caption`,
+      `${penSel} .batch-margin__field > .pen-caption`,
+      `${penSel} .note-block__eyebrow`,
+      `${penSel} .segmented-field__caption:not(.axes-cue)`,
+    ].join(', ');
+    return [...document.querySelectorAll(sel)]
+      .filter((el) => el.getBoundingClientRect().height > 0)
+      .map((el) => {
+        const s = getComputedStyle(el);
+        const lh = parseFloat(s.lineHeight);
+        return { text: el.textContent.trim().slice(0, 24), height: el.getBoundingClientRect().height, line: Number.isFinite(lh) ? lh : parseFloat(s.fontSize) * 1.5 };
+      });
+  }, PEN);
+  const wrapped = captions.filter((c) => c.height > c.line + 0.5);
+  gate(captions.length > 0 && wrapped.length === 0, `${tag} none of ${captions.length} pen captions wraps${wrapped.length ? ` (wrapped: ${JSON.stringify(wrapped)})` : ''}`);
+}
+
+async function newPage(servers, browser, cfg) {
   const context = await browser.newContext({
     viewport: { width: cfg.width, height: cfg.height },
     hasTouch: cfg.touch,
@@ -245,6 +271,69 @@ async function scenarioA(servers, browser, cfg) {
   await page.waitForSelector('.notebook-log');
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(350);
+  return { context, page };
+}
+
+// Scenario W: no caption wraps at the widths either side of the pen's 724 cut.
+async function scenarioW(servers, browser, cfg) {
+  const { context, page } = await newPage(servers, browser, cfg);
+  const log = page.locator('.notebook-log');
+  await clickUntil(page, () => log.getByRole('button', { name: /^Record (another|a batch)$/ }).first(), PEN, 'open the record pen');
+  await page.waitForSelector('.ingredient-table__as-made-field');
+  await log.getByRole('button', { name: /add tasting/i }).first().click();
+  await page.waitForSelector('.tasting-head');
+  await page.waitForTimeout(350);
+  await captionsDoNotWrap(page, cfg.name);
+  await context.close();
+}
+
+// Scenario R: the reading. A head gives 18 to its first cell, the Batch head and the Tasting head alike.
+async function scenarioR(servers, browser, cfg) {
+  const tag = `${cfg.name} reading`;
+  const { context, page } = await newPage(servers, browser, cfg);
+  for (let i = 0; i < 8; i += 1) {
+    const closed = page.locator('.notebook-log .fold-row[aria-expanded="false"]').first();
+    if ((await closed.count()) === 0) break;
+    await clickUntil(page, () => closed, '.notebook-log .fold-row[aria-expanded="true"]', 'open a fold');
+    await page.waitForTimeout(250);
+  }
+  const closedLeft = await page.locator('.notebook-log .fold-row[aria-expanded="false"]').count();
+  gate(closedLeft === 0, `${tag} every fold in the log is open (${closedLeft} closed)`);
+  const ref = await page.evaluate(() => {
+    const el = document.createElement('div');
+    el.style.cssText = 'position:absolute;visibility:hidden;width:var(--app-notebook-log-group-gap)';
+    document.body.appendChild(el);
+    const w = el.getBoundingClientRect().width;
+    el.remove();
+    return w;
+  });
+  const reads = await page.evaluate(() => {
+    const labelAfter = (scope, bottom) =>
+      [...scope.querySelectorAll('.batch-row__cell-label')].find((l) => l.getBoundingClientRect().height > 0 && l.getBoundingClientRect().top >= bottom - 0.5);
+    const out = {};
+    const head = document.querySelector('.notebook-log .batch-row__head');
+    if (head) {
+      const label = labelAfter(document.querySelector('.notebook-log'), head.getBoundingClientRect().bottom);
+      out.RR1 = label ? label.getBoundingClientRect().top - head.getBoundingClientRect().bottom : null;
+    }
+    const region = document.querySelector('.notebook-log .tasting-reading > .region-name');
+    const fold = document.querySelector('.notebook-log #fold-tasting');
+    if (region && fold) {
+      const label = labelAfter(fold, region.getBoundingClientRect().bottom);
+      out.RR2 = label ? label.getBoundingClientRect().top - region.getBoundingClientRect().bottom : null;
+    }
+    return out;
+  });
+  for (const id of ['RR1', 'RR2']) {
+    const got = reads[id];
+    gate(typeof got === 'number' && near(got, ref, 1), `${tag} ${id}: ${typeof got === 'number' ? got.toFixed(1) : 'not found'} (want ${ref})`);
+  }
+  await context.close();
+}
+
+async function scenarioA(servers, browser, cfg) {
+  const tag = cfg.name;
+  const { context, page } = await newPage(servers, browser, cfg);
   const coarse = await page.evaluate(() => matchMedia('(pointer: coarse)').matches);
   gate(coarse === cfg.touch, `${tag} (pointer: coarse) matches ${coarse}, expected ${cfg.touch}`);
 
@@ -350,6 +439,42 @@ async function scenarioA(servers, browser, cfg) {
     gate(c.idsExist, `${tag} the radiogroup is named by two ids that exist (${c.ids.join(' ')})`);
   }
 
+  // The controls: one size, boxes that keep their geometry, every control on one row.
+  const ctl = await page.evaluate((penSel) => {
+    const size = (el) => getComputedStyle(el).fontSize;
+    const opts = [...document.querySelectorAll(`${penSel} .segmented__option`)];
+    const stops = [...document.querySelectorAll(`${penSel} .axis-mark__stop`)];
+    const box = (el) => el.getBoundingClientRect();
+    return {
+      options: opts.length,
+      stops: stops.length,
+      optionSizes: [...new Set(opts.flatMap((o) => [size(o), size(o.querySelector('span'))]))],
+      stopSizes: [...new Set(stops.flatMap((o) => [size(o), size(o.querySelector('span'))]))],
+      optionHeights: [...new Set(opts.map((o) => box(o).height))],
+      stopBoxes: [...new Set(stops.map((o) => `${box(o).width}x${box(o).height}`))],
+      rows: [...document.querySelectorAll(`${penSel} .segmented`)].map(
+        (seg) => new Set([...seg.querySelectorAll('.segmented__option')].map((o) => Math.round(box(o).top))).size,
+      ),
+      stateSpans: document.querySelectorAll(`${penSel} .axis-mark__state`).length,
+      markedAxes: [...document.querySelectorAll(`${penSel} .axis-mark`)].filter((a) => a.querySelector('input:checked')).length,
+      axes: document.querySelectorAll(`${penSel} .axis-mark`).length,
+    };
+  }, PEN);
+  gate(ctl.options > 0 && ctl.optionSizes.length === 1 && ctl.optionSizes[0] === ref.meta, `${tag} ${ctl.options} option boxes read ${ref.meta} (${ctl.optionSizes.join(', ')})`);
+  gate(ctl.stops > 0 && ctl.stopSizes.length === 1 && ctl.stopSizes[0] === ref.meta, `${tag} ${ctl.stops} axis stops read ${ref.meta} (${ctl.stopSizes.join(', ')})`);
+  const wantOptionH = cfg.touch ? ref.touchMin : ref.stopH;
+  gate(ctl.optionHeights.length === 1 && near(ctl.optionHeights[0], wantOptionH, 0.5), `${tag} option boxes are ${wantOptionH} tall (${ctl.optionHeights.join(', ')})`);
+  gate(
+    ctl.stopBoxes.length === 1 && ctl.stopBoxes[0] === `${ref.touchStopW}x${ref.touchStopH}`,
+    `${tag} stops are ${ref.touchStopW}x${ref.touchStopH} (${ctl.stopBoxes.join(', ')})`,
+  );
+  gate(ctl.rows.every((n) => n === 1), `${tag} every segmented control keeps its options on one row (${ctl.rows.join(',')})`);
+  gate(
+    ctl.stateSpans === ctl.markedAxes && ctl.markedAxes > 0,
+    `${tag} one state span per marked axis: ${ctl.stateSpans} spans, ${ctl.markedAxes} of ${ctl.axes} axes marked`,
+  );
+  await captionsDoNotWrap(page, tag);
+
   // The intervals.
   const gaps = await page.evaluate(measureItems, PEN);
   for (const g of gaps) info(`${tag} ${g.gap.toFixed(1).padStart(6)}  ${g.aCls}:${g.a}  ->  ${g.bCls}:${g.b}`);
@@ -374,6 +499,10 @@ async function run() {
   const browser = await webkit.launch();
   try {
     for (const cfg of CONFIGS) await scenarioA(servers, browser, cfg);
+    for (const cfg of [CONFIGS[0], CONFIGS[2]]) await scenarioR(servers, browser, cfg);
+    for (const width of [723, 724]) {
+      await scenarioW(servers, browser, { name: `c${width}`, width, height: width === 723 ? 852 : 1024, touch: true, mobile: width < 724 });
+    }
   } finally {
     await browser.close();
     await servers.close();

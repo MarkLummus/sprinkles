@@ -13,6 +13,10 @@ export const MARK_ONE_OFF_REASON = 'Clear marks below to choose.';
 // Not evaluated, say why an evaluation is absent; a pick hides the group's
 // evaluation fields (BatchRow decides that) and shows Clear beside the name.
 //
+// The group carries the caption Why blank between the name and the options
+// (Mark, 2026-10-24, decide-p10-at-draw-caption, the word approved with
+// P10_Pen), so the group reads cue, caption, control like the fields it heads.
+//
 // Three states, drawn in pen-states.html:
 //   blank   no option on, no Clear;
 //   picked  one option on, Clear shows; tapping the picked option again does
@@ -35,6 +39,7 @@ export function MarkOneField({ field, label, value, off = false, onChange, onCle
   const key = field.toLowerCase();
   const groupName = `mo-${key}`;
   const captionId = `${groupName}-caption`;
+  const whyId = `${groupName}-why`;
   const picked = !off && MARK_ONE_OPTIONS.includes(value);
   const firstOptionRef = useRef(null);
 
@@ -60,7 +65,10 @@ export function MarkOneField({ field, label, value, off = false, onChange, onCle
         )}
         {off && <span className="mo-hint">{MARK_ONE_OFF_REASON}</span>}
       </div>
-      <div className="segmented" role="radiogroup" aria-labelledby={captionId}>
+      <span className="pen-caption segmented-field__caption" id={whyId}>
+        Why blank
+      </span>
+      <div className="segmented" role="radiogroup" aria-labelledby={`${captionId} ${whyId}`}>
         {MARK_ONE_OPTIONS.map((option, index) => (
           <label key={option} className={off ? 'segmented__option is-off' : 'segmented__option'}>
             <Radio

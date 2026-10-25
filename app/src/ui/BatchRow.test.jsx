@@ -712,12 +712,12 @@ describe('AxesGrid — the two DOM orders, one per arrangement (contract "Keyboa
     expect(oilChunk).toContain('(5)');
   });
 
-  it('renders every axis unmarked, "(Not recorded)", with an empty marks map', () => {
+  it('renders a blank axis as its name alone, with no state span, with an empty marks map (Mark 2026-10-24, quick 261025-f8o)', () => {
     const markup = renderToStaticMarkup(
       <AxesGrid axes={batteryAxes} marks={{}} below={false} onChangeMark={noop} onClearMark={noop} />,
     );
-    const occurrences = markup.split('(Not recorded)').length - 1;
-    expect(occurrences).toBe(6);
+    expect(markup.split('axis-mark__state').length - 1).toBe(0);
+    expect(markup.split('axis-mark__name').length - 1).toBe(6);
   });
 });
 

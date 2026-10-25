@@ -1926,12 +1926,14 @@ textarea {
 }
 
 /* Inline state text (contract "Axes spec"): "(3)" reads pen-blue once
-   marked, "(Not recorded)" reads muted italic. AxisMark.jsx renders both
-   strings under the one .axis-mark__state class with no marked/unmarked
-   modifier of its own, so the marked case is read structurally instead:
-   only a marked axis renders the sibling Clear control (the component's
-   own `isMarked &&` guard), so :has(~ .axis-mark__clear) restates that
-   same fact in CSS rather than opening a second source of truth. */
+   marked; a blank axis's head is its name alone since quick-batch
+   261025-f8m took "(Not recorded)" out of the pen (the reading keeps
+   Not recorded as a cell value). AxisMark.jsx renders the state under the
+   one .axis-mark__state class with no marked/unmarked modifier of its own,
+   so the marked case is read structurally instead: only a marked axis
+   renders the sibling Clear control (the component's own `isMarked &&`
+   guard), so :has(~ .axis-mark__clear) restates that same fact in CSS
+   rather than opening a second source of truth. */
 .axis-mark__state {
   font-family: var(--face-grotesk);
   font-size: var(--sheet-type-control);

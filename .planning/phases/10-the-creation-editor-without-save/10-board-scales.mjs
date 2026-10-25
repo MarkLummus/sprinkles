@@ -49,8 +49,8 @@ const REGION_NAME = { selector: '.mk-region[aria-label="Scales"] .region-name', 
 const CUE = { selector: '.mk-cue', checks: ['count', 'text'] };
 const CORE = { selector: '.mk-core', checks: ['count', 'box', 'font', 'color', 'text'] };
 const CARD = { selector: '.mk-card', checks: ['count', 'box'] };
-const CARD_CAPTION = { selector: '.mk-card__head .notebook-caption', checks: ['count', 'text'] };
-const CARD_REMOVE = { selector: '.mk-card__head .text-control', checks: ['count', 'box', 'text'] };
+const CARD_CAPTION = { selector: '.mk-caprow .notebook-caption', checks: ['count', 'text'] };
+const CARD_REMOVE = { selector: '.mk-caprow .text-control', checks: ['count', 'box', 'text'] };
 const CARD_FIELD = { selector: '.mk-card .ink-field', checks: ['count', 'box', 'value'] };
 const REQUIRED = { selector: '.mk-card .field-requirement', checks: ['count', 'text'] };
 const OPTION = { selector: '.segmented__option', checks: ['count', 'box', 'font'] };

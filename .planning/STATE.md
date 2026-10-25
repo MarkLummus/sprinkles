@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: planning
 stopped_at: Phase 10 complete, ready to plan Phase 11
-last_updated: "2026-10-25T20:03:23.547Z"
+last_updated: "2026-10-25T20:34:46.910Z"
 last_activity: 2026-10-25
 last_activity_desc: Phase 10 complete, transitioned to Phase 11
-state_head: f58c861bc551c082fb13a31a860306f77896dad8
+state_head: e88eb557f2b349cdeafc66e4fa67e896eecffc00
 progress:
   total_phases: 5
   completed_phases: 3
@@ -593,6 +593,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261025-f8o | The pen's rhythm change set, controls at 14, (Not recorded) out of the pen, flex-end captions, 18 under every head, the Why blank caption (quick-batch 261025-f8m) | 2026-10-25 | 9fc80b1d | .planning/quick/261025-f8o-task-2-the-pen-s-rhythm-batch-route-proposal-the-change-set |
 | 261025-f8p | Tasting as a peer region of Batch in the record pen, Temperature, and the churn trio on one line with the date field at 120 (quick-batch 261025-f8m) | 2026-10-25 | c1774112 | .planning/quick/261025-f8p-task-3-tasting-as-a-peer-region-of-batch-temperature-and-the |
 | 192 | The notice card's words in the maker's own: Batch saved., Save or cancel your changes before importing., Couldn't open your recipes (decide-notice-copy) | 2026-10-25 | f58c861b | — |
+| 193 | The RECORDED caption takes the ladder's caption face in the log column (decide-p10-ladder-reach; re-critique P2) | 2026-10-25 | e88eb557 | — |
 
 ### Roadmap Evolution
 

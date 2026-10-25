@@ -41,7 +41,7 @@
       "quick_id": "261025-f8o",
       "client_id": null,
       "description": "Task 2, the pen's rhythm (batch-route proposal \"The change set\", items 1 to 9, with Mark's answers). The 2026-10-22 change set applied to the record pen in app/src/styles/notebook.css and BatchRow.jsx: the caption reserve removed, 6/12/20/32 intervals as the proposal lists them, axes 20 apart under one cue, 18 from every head to its first row in pen and reading alike (decide-p10-reading-head-interval: the reading's Tasting head gives 18 too), captions on the head line aligned flex-end (decide-p10-pen-caption-align), the Clear control's hit area 44 at coarse pointers, the pen's choice controls at one size: .notebook-log .batch-margin--pen .axis-mark__stop and .segmented__option at font-size var(--app-size-meta) (14; decide-p10-control-text-size-r2; the creation editor's Kind control stays as it is), \"(Not recorded)\" no longer rendered on a blank axis in the pen (AxisMark.jsx ~76; the reading state keeps the words; item 8), and At draw and From freezer gain a 12 px caption on their two options with the word \"Why blank\" (decide-p10-at-draw-caption, word approved with the board). Match P10_Pen's dimensioned intervals (p-pen-measure.json). Record: DESIGN.md's pen entries per the proposal's Verification section. Shared rules: Three related changes to the log column of the batch route and the creation editor, every one decided by Mark on 2026-10-24 and 2026-10-25 on Mark's List and recorded in the proposals named below (section \"Mark's answers (2026-10-24 and 2026-10-25, on Mark's List): the ladder decided\" in .impeccable/proposals/2026-10-21-log-column-ladder.md; \"Mark's answers (2026-10-24, on Mark's List): the change set decided\" in .impeccable/proposals/2026-10-22-batch-route-layout.md). The drawing to match is the canvas board P10_Pen (its generator .planning/canvas-generators/p-pen.py, measurements p-pen-measure.json, captures p-pen-capture.json) and P10_Scales / P10_Editor (.planning/canvas-generators/p10.py, p10-measure.json). App edits by the executors, tokens only, no literals; npm --prefix app test green; the strict walk .planning/phases/10-the-creation-editor-without-save/10-walk-check.sh green with snapshots updated only where these changes land; verify in Playwright WebKit at 1366 (coarse and fine pointer) and 393 on a scratch build served on a free loopback port, never the 4173 preview and never a Vite dev server. Never touch the 4173 preview server process. Commit each task atomically.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "261025-f8n"
       ],
@@ -63,7 +63,7 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 1,
-      "commit": null,
+      "commit": "9fc80b1d",
       "failure_reason": null
     },
     {

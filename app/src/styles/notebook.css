@@ -1530,6 +1530,14 @@
   color: var(--app-background);
 }
 
+/* The chip words read the pen's control size, 14, like the option words and
+   the stop digits (Mark, 2026-10-25, on the re-critique: chips to 14 for
+   consistency; two chips per line is fine). The Sheet keeps
+   --sheet-type-control. */
+.notebook-log .chip-toggle {
+  font-size: var(--app-size-meta);
+}
+
 .notebook-log .chip-toggle::before {
   border-color: var(--app-text-secondary);
   border-radius: var(--app-radius-rail);

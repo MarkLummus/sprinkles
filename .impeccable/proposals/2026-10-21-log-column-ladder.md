@@ -192,3 +192,7 @@ The alternative that keeps 128: "Out of machine" → "Drawn at" (its caption 65,
 - Looks approved ("approve"): `look-p10-log-ladder-board` (P10_LogLadder), `look-p10-pen-rhythm-board` (P10_PenRhythm), `look-p10-ladder-redraw` (P10_Pen, P10_Scales, P10_Editor). The words drawn on P10_Pen and left to him on the look row stand as approved with the board: "Temperature" (not "Served at") and "Churned" (not "Churn date").
 
 Nothing is open. The whole set (this ladder with the cues as h3; the 2026-10-22 change set items 1 to 9 with the control size; the peer change set; the churn trio) goes to one `/gsd-quick-batch` on 2026-10-25.
+
+## Mark's answer (2026-10-25, on the re-critique's P3): chips to 14
+
+The problem chips under Any problems? read the pen's control size, 14 (`--app-size-meta`), like the option words and the stop digits; "two chips per line instead of three and one" is fine (Mark, 2026-10-25). Amends the controls row above (chips 13). Landed by `/gsd-fast` in the log skin (`.notebook-log .chip-toggle`); the Sheet keeps `--sheet-type-control`.

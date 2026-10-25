@@ -40,14 +40,13 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
     }
   });
 
-  test("notebook.css carries exactly six named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1365.98px (the log moves below the Sheet and the folds/band rhythm default closed, sketch 011 decisions 16/18, 03.5-15), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758), then (max-width: 723.98px) and (pointer: coarse) (the phone's group-cue margin, where the 44px touch head puts the first axis name lower, 261004-ox4), then (forced-colors: active) (the record pen's picked states stay in the system Highlight under the App skin, 261004-ox4); the small info labels have no step of their own, because they read the same at every width (sketch 011 decision 41, quick 261004-ox5)", () => {
+  test("notebook.css carries exactly five named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1365.98px (the log moves below the Sheet and the folds/band rhythm default closed, sketch 011 decisions 16/18, 03.5-15), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758), then (forced-colors: active) (the record pen's picked states stay in the system Highlight under the App skin, 261004-ox4); the phone's group-cue margin step is retired with the caption reserve it compensated for (quick 261025-f8o); the small info labels have no step of their own, because they read the same at every width (sketch 011 decision 41, quick 261004-ox5)", () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
     expect(mediaConditions).toEqual([
       '(min-width: 1366px)',
       '(max-width: 1365.98px)',
       '(max-width: 723.98px)',
       '(pointer: coarse)',
-      '(max-width: 723.98px) and (pointer: coarse)',
       '(forced-colors: active)',
     ]);
   });
@@ -841,12 +840,11 @@ describe('the group cues take their own face and their own space (sketch 011 dec
     expect(rules.some((r) => r.selector === '.notebook-log .defects-head')).toBe(false);
   });
 
-  test("at the phone with a coarse pointer the cue's margin takes back the 15.2px the 44px head adds, read from the two Sheet tokens", () => {
-    const phone = find('.notebook-log .axes-grid__group > .axes-cue', '(max-width: 723.98px) and (pointer: coarse)');
-    expect(phone).toBeDefined();
-    expect(phone.declarations).toMatch(
-      /margin-bottom:\s*calc\(\s*var\(--gap-s\)\s*-\s*var\(--gap-m\)\s*-\s*\(\s*var\(--sheet-caption-line-h-touch\)\s*-\s*var\(--sheet-caption-two-lines-abs\)\s*\)\s*\)/,
-    );
+  test("the phone's coarse-pointer cue margin is retired with the caption reserve it compensated for (quick 261025-f8o): the cue's margin lives at top level alone", () => {
+    expect(rules.some((r) => r.media === '(max-width: 723.98px) and (pointer: coarse)')).toBe(false);
+    const cueRules = rules.filter((r) => r.selector === '.notebook-log .axes-grid__group > .axes-cue');
+    expect(cueRules).toHaveLength(1);
+    expect(cueRules[0].media).toBeUndefined();
   });
 });
 
@@ -1062,5 +1060,66 @@ describe("the log's content faces: figures, picked problems and the hand (quick 
     const retired = '--app-notebook-log-' + 'value-size';
     expect(notebookCssSource).not.toContain(retired);
     expect(readFileSync(TOKENS_CSS_PATH, 'utf8')).not.toContain(retired);
+  });
+});
+
+// The record pen's rhythm (quick 261025-f8o): the 2026-10-22 change set of
+// .impeccable/proposals/2026-10-22-batch-route-layout.md, items 1 to 9, with Mark's
+// answers of 2026-10-24 (decide-p10-pen-caption-align flex-end,
+// decide-p10-at-draw-caption caption, decide-p10-control-text-size-r2 both 14,
+// decide-p10-reading-head-interval 18). The caption reserve that added accidental
+// dead bands is gone in the log; four steps (6, 12, 20, 32) and 18 under each head
+// carry the grouping.
+describe("the record pen's rhythm, the 2026-10-22 change set (Mark 2026-10-24; quick 261025-f8o)", () => {
+  const find = (selector, media) => rules.find((r) => r.selector === selector && r.media === media);
+  const declared = (rule) => {
+    expect(rule, 'expected the rule to exist').toBeDefined();
+    return Object.fromEntries(
+      rule.declarations
+        .split(';')
+        .map((d) => d.trim())
+        .filter(Boolean)
+        .map((d) => [d.slice(0, d.indexOf(':')).trim(), d.slice(d.indexOf(':') + 1).trim()]),
+    );
+  };
+  const HEAD_RULE = '.notebook-log .batch-margin--pen .axis-mark__head, .notebook-log .batch-margin--pen .segmented-field__head';
+  const CLEAR_RULE = '.notebook-log .axis-mark__clear, .notebook-log .segmented-field__clear';
+  const CLEAR_AFTER = '.notebook-log .axis-mark__clear::after, .notebook-log .segmented-field__clear::after';
+
+  test('every axis head and segmented head in the pen is one 20px line, captions at its foot (decide-p10-pen-caption-align flex-end)', () => {
+    expect(declared(find(HEAD_RULE))).toEqual({
+      'min-height': 'var(--app-notebook-pen-cue-line-h)',
+      'align-items': 'flex-end',
+    });
+  });
+
+  test("the creation editor's Kind control keeps its head: no rule naming .segmented-field__head outside the pen declares a min-height", () => {
+    for (const rule of rules.filter((r) => r.selector.includes('.segmented-field__head') && !r.selector.includes('.batch-margin--pen'))) {
+      expect(declared(rule), rule.selector).not.toHaveProperty('min-height');
+    }
+  });
+
+  test('Clear is a box no taller than its word and its target is an overflowing ::after: the text-control minimum at a fine pointer, the touch floor under a coarse one', () => {
+    expect(declared(find(CLEAR_RULE))).toEqual({ 'min-height': '0', position: 'relative' });
+    expect(declared(find(CLEAR_AFTER))).toEqual({
+      content: "''",
+      position: 'absolute',
+      left: 'calc(-1 * var(--gap-xs))',
+      right: 'calc(-1 * var(--gap-xs))',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      height: 'var(--sheet-text-control-min)',
+    });
+    expect(declared(find(CLEAR_AFTER, '(pointer: coarse)'))).toEqual({ height: 'var(--touch-min)' });
+  });
+
+  test("At draw and From freezer: 12 under the note's rule, 12 under the cue, the caption its own 6 to the options (items 4, 5, 7)", () => {
+    expect(declared(find('.notebook-log .mo-group .segmented-field__head'))['margin-bottom']).toBe('var(--gap-s)');
+    expect(declared(find('.notebook-log .note-block + .mo-group, .notebook-log .batch-margin__field + .mo-group'))).toEqual({
+      'margin-top': 'var(--gap-s)',
+      'padding-top': '0',
+      'border-top': '0',
+    });
+    expect(declared(find('.notebook-log .mo-group > .segmented-field__caption'))).toEqual({ 'margin-bottom': 'var(--gap-xs)' });
   });
 });

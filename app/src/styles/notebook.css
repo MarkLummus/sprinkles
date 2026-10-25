@@ -1556,6 +1556,46 @@
   margin-bottom: calc(var(--gap-s) - var(--gap-l));
 }
 
+/* The record pen's rhythm (the 2026-10-22 change set, items 1 to 9,
+   .impeccable/proposals/2026-10-22-batch-route-layout.md; Mark's answers of
+   2026-10-24: decide-p10-pen-caption-align flex-end, decide-p10-at-draw-caption
+   caption, decide-p10-control-text-size-r2 both 14; quick 261025-f8o). Four
+   steps and no others, 6 from a caption to its control, 12 between fields, 20
+   between axes, 32 between groups, and 18 under each head, replace the
+   two-line caption reserve that added dead bands of 9 to 54px in the log. */
+
+/* Item 1: every axis head and segmented head in the pen is one 20px line at
+   every width and pointer, its caption at the foot (flex-end, so a pick moves
+   nothing). Scoped to the pen so the creation editor's Kind control keeps its
+   head. Three classes outrank every app.css head rule, at any media. */
+.notebook-log .batch-margin--pen .axis-mark__head,
+.notebook-log .batch-margin--pen .segmented-field__head {
+  min-height: var(--app-notebook-pen-cue-line-h);
+  align-items: flex-end;
+}
+
+/* Clear's box is its word, so no head grows to hold it; its target is an
+   overflowing hit area, the wide-touch block's mechanism (app.css) lifted into
+   the log at every width: the text-control minimum at a fine pointer, the
+   touch floor under a coarse one (the foot of the file). Two classes outrank
+   app.css's button and .text-control floors. */
+.notebook-log .axis-mark__clear,
+.notebook-log .segmented-field__clear {
+  min-height: 0;
+  position: relative;
+}
+
+.notebook-log .axis-mark__clear::after,
+.notebook-log .segmented-field__clear::after {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--gap-xs));
+  right: calc(-1 * var(--gap-xs));
+  top: 50%;
+  transform: translateY(-50%);
+  height: var(--sheet-text-control-min);
+}
+
 /* The band's rhythm moves with the folds (sketch 011 decision 18, Mark,
    2026-09-27: "Move with the folds"; 03.5-15 Task 2): roomy from 1366 —
    the folds' own default (03.5-15 Task 1) — and tight below it, at the
@@ -1755,17 +1795,11 @@
   .notebook-version__acts > a.notebook-link {
     min-height: var(--touch-min);
   }
-}
 
-/* The phone's group-cue margin (sketch 011 decision 40 C): the 44px touch
-   head puts the first axis name 15.2px lower than the 28.8px head in the 350
-   column, so the cue's margin takes that back, read from the two tokens
-   rather than the board's rounded 15. The condition is exactly where app.css
-   gives the head 44px. Fine pointers below 724 have a 24px head, take no
-   extra margin, and are not drawn. */
-@media (max-width: 723.98px) and (pointer: coarse) {
-  .notebook-log .axes-grid__group > .axes-cue {
-    margin-bottom: calc(var(--gap-s) - var(--gap-m) - (var(--sheet-caption-line-h-touch) - var(--sheet-caption-two-lines-abs)));
+  /* Clear's overflowing hit area is the touch floor (quick 261025-f8o). */
+  .notebook-log .axis-mark__clear::after,
+  .notebook-log .segmented-field__clear::after {
+    height: var(--touch-min);
   }
 }
 
@@ -1787,8 +1821,9 @@
 /* The two mark-one groups, At draw and From freezer (sketch 010 D6 to D14;
    pen-states.html, pen-whole.html, pen-reading.html, transcribed with the
    boards' panel scope replaced by .notebook-log). Every value is an existing
-   token. The group carries a hairline above it and a 12px gap under it, except
-   directly under a note, whose underline is the rule (D13). */
+   token. The group carries a hairline above it and a 12px gap under the cue,
+   except directly under a note, whose underline is the rule and the name sits
+   12px under it (D13; quick 261025-f8o). */
 .notebook-log .mo-group {
   border-top: var(--rule-graduation) solid var(--app-divider);
   padding-top: var(--gap-s);
@@ -1796,6 +1831,13 @@
 }
 
 .notebook-log .mo-group .segmented-field__head {
+  margin-bottom: var(--gap-s);
+}
+
+/* The Why blank caption (decide-p10-at-draw-caption): its own 6 to the two
+   options. app.css's .segmented-field__caption zeroes the margin; the child
+   combinator keeps the cue, which sits inside the head, out of it. */
+.notebook-log .mo-group > .segmented-field__caption {
   margin-bottom: var(--gap-xs);
 }
 
@@ -1806,7 +1848,7 @@
 
 .notebook-log .note-block + .mo-group,
 .notebook-log .batch-margin__field + .mo-group {
-  margin-top: 0;
+  margin-top: var(--gap-s);
   padding-top: 0;
   border-top: 0;
 }

@@ -26,6 +26,19 @@ function mount(element) {
   };
 }
 
+function assertWhyBlank(container, key) {
+  const group = container.querySelector('.mo-group');
+  const [head, why, radiogroup] = [...group.children];
+  expect(head.className).toBe('segmented-field__head');
+  expect(why.tagName).toBe('SPAN');
+  expect(why.className).toBe('pen-caption segmented-field__caption');
+  expect(why.id).toBe(`mo-${key}-why`);
+  expect(why.textContent).toBe('Why blank');
+  expect(radiogroup.getAttribute('role')).toBe('radiogroup');
+  expect(radiogroup.getAttribute('aria-labelledby')).toBe(`mo-${key}-caption mo-${key}-why`);
+  expect(group.children).toHaveLength(3);
+}
+
 const radios = (container) => [...container.querySelectorAll('input[type="radio"]')];
 
 describe('MarkOneField', () => {
@@ -58,7 +71,26 @@ describe('MarkOneField', () => {
     expect(caption.className).toBe('segmented-field__caption pen-caption axes-cue');
     expect(caption.textContent).toBe('From freezer');
     const radiogroup = container.querySelector('[role="radiogroup"]');
-    expect(radiogroup.getAttribute('aria-labelledby')).toBe(caption.id);
+    expect(radiogroup.getAttribute('aria-labelledby')).toBe(`${caption.id} mo-fromfreezer-why`);
+    unmount();
+  });
+
+  it.each([
+    ['blank', ''],
+    ['picked', 'Not evaluated'],
+  ])('%s: the head, then the Why blank caption, then the radiogroup, in that order (decide-p10-at-draw-caption)', (_state, value) => {
+    const { container, unmount } = mount(
+      <MarkOneField field="atDraw" label="At draw" value={value} onChange={() => {}} onClear={() => {}} />,
+    );
+    assertWhyBlank(container, 'atdraw');
+    unmount();
+  });
+
+  it('off: the Why blank caption stands between the head and the radiogroup too', () => {
+    const { container, unmount } = mount(
+      <MarkOneField field="atDraw" label="At draw" value="" off onChange={() => {}} onClear={() => {}} />,
+    );
+    assertWhyBlank(container, 'atdraw');
     unmount();
   });
 

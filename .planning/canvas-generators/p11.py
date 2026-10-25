@@ -15,7 +15,13 @@ import places as PL
 # pen's own open step (Method.jsx StepPenBody, sketch 011 decisions 2 and 5: .method-step__open-fields, the uses line, the checklist, add a purpose / add an aside) kept open, as the
 # creation editor keeps every field open (sketch 013: Rename's form kept open, the notes as fields). The table's step heads, portion notes and "Unallocated" group are the build's own
 # (IngredientTable.jsx groupPortionsByStep); the word over rows not yet in a step is Mark's (decide-p11-unplaced-rows-word; drawn "Not in a step yet").
-#   python3 p11.py measure <out dir> ; node p11-measure.mjs <out dir>/measure.html ; python3 p11.py <canvas.json read from the artifact root> <out dir>
+# Sid, 2026-10-25 (Mark's answers on look-p11-save and look-p11-steps): P11_Save's after-Save panel draws 'Recipe saved.' as the built page notice, the ink card at the window's foot
+# (app.css .page-status as built in 116d259c: decide-page-notice-shape BS fixed at the foot, decide-notice-card-palette ink; .impeccable/proposals/2026-10-23-page-notice-shape.md
+# § Mark's check 2026-10-25, 2026-10-25-notice-copy.md), measured on the 4173 preview after Save batch (Olive Oil v1, WebKit and Chromium, 1366 × 1024 coarse: 135 × 50, centred,
+# 20 above the foot, padding 12 / 20, 16 on 24, radius 10, --app-shadow-notice); decision 23's placement under the bar beside Import is superseded. And Add step sits on the
+# Instructions heading's row (p10.head_row: the Sheet's fold head look), as Add note now sits on Before you start's (Mark: "on the row next to the heading, similar to how we place
+# the hide/show link"); the app follows in Phase 11. P11_Structure and P11_FirstVersion regenerate with the row too but are not republished until Mark approves look-p11-steps-r2.
+#   python3 p11.py measure <out dir> ; node p11-measure.mjs <out dir>/measure.html ; python3 p11.py <canvas.json read from the artifact root> <out dir> [P11_Save,P11_Steps]
 MEAS = json.load(open(HERE + '/p11-measure.json')) if os.path.exists(HERE + '/p11-measure.json') else {}
 p10.MEAS = MEAS
 BYS = json.load(open(HERE + '/bys-capture.json'))
@@ -32,6 +38,8 @@ P11_CSS = '''
 /* the table's row acts: remove, then the moves, on the name cell's own line */
 .mk-row-acts{white-space:nowrap}
 /* the after-Save page: the acts row gains Edit beside Next version (decide-p11-first-version-editor, A); nothing else is new */
+/* the page notice's anchor at the window's foot: the app fixes it to the viewport (app.css .page-status-anchor); on a board the window is the panel, so the anchor is absolute in it (window_foot below) */
+.page-status-anchor.mk-win-foot{position:absolute;inset-block:auto 0;inset-inline:0;z-index:var(--app-z-notice)}
 '''
 p10.P10_CSS = p10.P10_CSS + P11_CSS
 
@@ -109,8 +117,8 @@ def step_html(n, lead='', text='', targets=(), uses=(), purpose=None, aside=None
     return f'<li class="method-step mk-step"><span class="method-step__n" aria-hidden="true">{n}</span><div class="method-step__body">{body}</div></li>'
 def method_html(steps):
     lst = f'<ol class="method-steps">{"".join(steps)}</ol>' if steps else ''
-    return (f'<section class="method-region" aria-label="Instructions"><h2 class="region-name">Instructions</h2>{lst}'
-            '<p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add step</button></p></section>')
+    # Add step on the Instructions heading's row (Mark, 2026-10-25, look-p11-steps), as Add note on Before you start's: p10.head_row
+    return f'<section class="method-region" aria-label="Instructions">{p10.head_row("Instructions", "Add step")}{lst}</section>'
 
 S1 = dict(lead='Warm the milk', text='Whisk the milk powder and sugar into the milk. Heat, stirring, then take it off.', targets=(('temp', '85 °C'),), uses=('milk', 'smp', 'suc'), purpose='The powder dissolves without lumps when the milk is warm.')
 S2 = dict(lead='Finish cold', text='Stir in the cream and vanilla. Chill overnight.', uses=('cream', 'van'))
@@ -192,8 +200,15 @@ def after_save_page(edit_act=True, with_batch=False, notice=None):
         nb = re.sub(r'<aside class="notebook-log".*?</aside>', lambda m: aside, nb, 1, flags=re.S)
         nb = nb.replace('<a class="notebook-jump"', '<a class="notebook-jump"', 1)
         nb = nb.replace('<span class="notebook-history__state">not churned</span>', '<span class="notebook-history__state">churned 22 Oct</span>', 1).replace('notebook-history__mark notebook-history__mark--in-view', 'notebook-history__mark notebook-history__mark--churned notebook-history__mark--in-view', 1)
-    pre = f'<div class="page-status-anchor"><p class="page-status" role="status" aria-live="polite">{esc(notice)}</p></div>' if notice else ''
-    return pre + nb + '</div>'
+    assert notice is None      # 2026-10-25: the notice is the built card at the window's foot, drawn by window_foot, not in the page
+    return nb + '</div>'
+def notice_html(text): return f'<div class="page-status-anchor mk-win-foot"><p class="page-status" role="status" aria-live="polite">{esc(text)}</p></div>'
+def window_foot(parts, pid, extra):
+    """Puts extra (the notice's anchor) directly in the panel's window, beside the page, so its absolute box is the window's: the card stands 20 above the window's foot as the app's does above the viewport's."""
+    for i, (h, c) in enumerate(parts):
+        if f' {pid}" style=' in h:
+            assert h.endswith('</div></div>'); parts[i] = (h[:-len('</div>')] + extra + '</div>', c); return
+    raise KeyError(pid)
 def reading_row(key):
     h = ROW_HTML[key]
     h = re.sub(r'<input inputmode="decimal" class="ink-field" aria-label="[^"]*" type="text" value="([^"]*)">', r'\1', h, 1)
@@ -215,6 +230,8 @@ def reading_sheet():
             + table + side_html('phil', 1366) + method + '</article>')
 
 STAMP = ' (drawn 2026-10-21; for approval)'
+STAMP2 = ' (drawn 2026-10-21; redrawn 2026-10-25; for approval)'
+STAMPS = {'P11_Steps': STAMP2, 'P11_Structure': STAMP, 'P11_Save': STAMP2, 'P11_FirstVersion': STAMP}
 TITLES = {'P11_Steps': 'Instructions while creating · a step, its targets, the rows it uses and in what portions, at 1366',
           'P11_Structure': 'Add, remove and move · steps, and rows within their step, at 1366',
           'P11_Save': 'Save · what refuses it and where it lands, at 1366',
@@ -225,14 +242,14 @@ def build_boards(out):
     W = 1000
     SC = lambda pid, sh, **kw: dict(dict(pid=pid, W=1366, html=sheet_only(pid, sh), w=W), **kw)
     # ======== P11_Steps
-    r1 = [dict(SC('pA1', sheet(table_html([(None, flat_rows(['milk', 'cream', 'smp', 'suc', 'van'])) ]), method_html([]))), cap='No step yet · 1366', sub='the Instructions heading and Add step stand under the table, as Before you start stands with Add note; the rows have no step head yet (Phase 10\'s flat table), only their own moves'),
+    r1 = [dict(SC('pA1', sheet(table_html([(None, flat_rows(['milk', 'cream', 'smp', 'suc', 'van'])) ]), method_html([]))), cap='No step yet · 1366', sub='the Instructions heading stands under the table with Add step on its row, as Before you start stands with Add note on its; the rows have no step head yet (Phase 10\'s flat table), only their own moves. Add step on the Instructions heading\'s row, as Add note on Before you start\'s, in the Show/Hide control\'s look (Mark, 2026-10-25; the app follows in Phase 11: CreationPage.jsx\'s beforeFoot and notebook.css .mk-add-row move onto the heading\'s row)'),
           dict(SC('pB1', sheet(table_html(grouped([dict(lead='', uses=())])), method_html(steps_html([dict(lead='', text='', uses=())], over={0: dict(required=True)})))),
-               cap='A step just added · 1366', sub='the pen\'s open step, kept open as every creation field is: lead-in, text, Add target, "uses nothing yet · change the ingredients · add a purpose · add an aside", then remove and the moves; Required under the two empty fields; the table now heads its rows "Not in a step yet"')]
-    r2 = [dict(SC('pC1', sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2], over={1: dict(uses_open=True)})))), cap='Two steps worked on · 1366', sub='step 1 has a target and a purpose; step 2\'s checklist is open (the build\'s Uses fieldset); the table reads in step order under step heads, every row in one step, so no "Not in a step yet" head'),
+               cap='A step just added · 1366', sub='the pen\'s open step, kept open as every creation field is: lead-in, text, Add target, "uses nothing yet · change the ingredients · add a purpose · add an aside", then remove and the moves; Required under the two empty fields; the table now heads its rows "Not in a step yet"; Add step stays on the heading\'s row (Mark, 2026-10-25)')]
+    r2 = [dict(SC('pC1', sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2], over={1: dict(uses_open=True)})))), cap='Two steps worked on · 1366', sub='step 1 has a target and a purpose; step 2\'s checklist is open (the build\'s Uses fieldset); the table reads in step order under step heads, every row in one step, so no "Not in a step yet" head; Add step on the heading\'s row (Mark, 2026-10-25)'),
           dict(SC('pD1', sheet(table_html(grouped([S1, S2], split={'milk': [(0, 400), (1, 200)]})), method_html(steps_html([S1, dict(S2, uses=('cream', 'van', 'milk'))])))),
-               cap='A row in two steps · 1366', sub='Whole milk ticked in step 2 as well: the row splits into one line per step, each with its own grams field, the note "400 g of 600 g · 58.0% in all" under each (the build\'s portion line); the grams are typed in the table, not on the step (decide-p11-portion-grams-place, A)')]
+               cap='A row in two steps · 1366', sub='Whole milk ticked in step 2 as well: the row splits into one line per step, each with its own grams field, the note "400 g of 600 g · 58.0% in all" under each (the build\'s portion line); the grams are typed in the table, not on the step (decide-p11-portion-grams-place, A); Add step on the heading\'s row (Mark, 2026-10-25)')]
     parts, bw, bh = flow([r1, r2]); sizes['P11_Steps'] = (bw, bh)
-    board('P11_Steps', TITLES['P11_Steps'] + STAMP, bw, bh, parts, out)
+    board('P11_Steps', TITLES['P11_Steps'] + STAMPS['P11_Steps'], bw, bh, parts, out)
 
     # ======== P11_Structure
     three = [S1, S2, S3]
@@ -242,23 +259,24 @@ def build_boards(out):
                cap='After remove on step 2 (Finish cold) · 1366', sub='deleted outright, no strike and no restore (decision 10): Heavy cream and Vanilla extract keep their grams and go back under "Not in a step yet"; Whole milk\'s 200 g line in that step went with it, so the row reads 400 g and the Balance has moved (decide-p11-step-removal-split-portion)'),
           dict(SC('qD1', sheet(table_html(grouped([dict(S1, uses=('smp', 'milk', 'suc')), S2, S3])), method_html(steps_html(three)))), cap='After Move down on Whole milk · 1366', sub='a row moves within its step only (decision 9): Skim milk powder now leads step 1\'s rows; nothing else moved')]
     parts, bw, bh = flow([r1, r2]); sizes['P11_Structure'] = (bw, bh)
-    board('P11_Structure', TITLES['P11_Structure'] + STAMP, bw, bh, parts, out)
+    board('P11_Structure', TITLES['P11_Structure'] + STAMPS['P11_Structure'], bw, bh, parts, out)
 
     # ======== P11_Save
     def editor_page(vid, band, sh): return shell_main(1366, page_html(band, sh, log_regions()), vid)
     worked = sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2])))
     r1 = [dict(pid='vA1', W=1366, html=editor_page('vA1', band_save(vid='vA1'), worked), max=900, cap='Ready to save · 1366', sub='the ceremony reads New recipe · draft, Version name, then Cancel and Save (the filled action); the page under it is the editor as worked on'),
           dict(pid='vB1', W=1366, html=editor_page('vB1', band_save(name='', vname='', vid='vB1', name_error='Enter a recipe name.'), worked), max=900, cap='Save refused · 1366', sub='the two fields Save needs: "Enter a recipe name." under the empty name (the Notebook\'s own sentence) and Required under the empty version name; nothing is saved and the page stays; a step with Required standing refuses the same way')]
-    r2 = [dict(pid='vC1', W=1366, html=shell_main(1366, after_save_page(notice='Recipe saved.'), 'vC1'), cap='After Save · the new recipe\'s page · 1366', sub='the recipe and its first version in one step (MAKE-10): the band reads Vanilla and its description with Rename; Version 1 · Latest, Written today, no From version, "no reason recorded"; Next version and Edit; History with one node; the Sheet as the seeded ones read, its steps numbered and the table under step heads; the Batch margin not yet churned; "Recipe saved." under the bar beside Import (decision 23)')]
+    r2 = [dict(pid='vC1', W=1366, html=shell_main(1366, after_save_page(), 'vC1'), h_fixed=1024, cap='After Save · the new recipe\'s page in a 1366 × 1024 window · 1366', sub='the recipe and its first version in one step (MAKE-10): the band reads Vanilla and its description with Rename; Version 1 · Latest, Written today, no From version, "no reason recorded"; Next version and Edit; History with one node; the Sheet as the seeded ones read, its steps numbered and the table under step heads; the Batch margin not yet churned; "Recipe saved." as the built page notice: the ink card at the window\'s foot, centred, 20 above the foot, the shape of "Batch saved." (decide-page-notice-shape and decide-notice-card-palette, Mark 2026-10-24/25; decision 23\'s place under the bar beside Import is superseded); it clears after 5 s as the others do')]
     parts, bw, bh = flow([r1, r2]); sizes['P11_Save'] = (bw, bh)
-    board('P11_Save', TITLES['P11_Save'] + STAMP, bw, bh, parts, out)
+    window_foot(parts, 'vC1', notice_html('Recipe saved.'))
+    board('P11_Save', TITLES['P11_Save'] + STAMPS['P11_Save'], bw, bh, parts, out)
 
     # ======== P11_FirstVersion
     r1 = [dict(pid='fA1', W=1366, html=shell_main(1366, after_save_page(), 'fA1'), max=620, cap='A first version with no batch and no child · Edit · 1366', sub='Edit stands beside Next version as an underlined word (the acts row\'s own link look) only while the version has no batch and no child (STRUCT-04); Show changes needs a parent, so it is absent on a root'),
           dict(pid='fB1', W=1366, html=editor_page('fB1', band_save(vid='fB1', caption='Version 1 · editing', form_label='Edit version'), worked), max=900, cap='Editing the first version · 1366', sub='Edit reopens the creation editor on the saved version, its steps, rows, style, scales and problems as saved (decide-p11-first-version-editor, A): the same Add, Remove and Move controls as while creating; the ceremony reads Version 1 · editing, Cancel and Save; Save writes over the version, Cancel keeps it as it was'),
           dict(pid='fC1', W=1366, html=shell_main(1366, after_save_page(edit_act=False, with_batch=True), 'fC1'), max=620, cap='Once a batch exists · 1366', sub='Edit is gone: the acts row reads Next version alone; the Batch margin holds the batch as built (one untasted batch); from here the version pen\'s own remove and restore apply to its children, as before (STRUCT-04)')]
     parts, bw, bh = flow([r1]); sizes['P11_FirstVersion'] = (bw, bh)
-    board('P11_FirstVersion', TITLES['P11_FirstVersion'] + STAMP, bw, bh, parts, out)
+    board('P11_FirstVersion', TITLES['P11_FirstVersion'] + STAMPS['P11_FirstVersion'], bw, bh, parts, out)
     return sizes
 
 if __name__ == '__main__':
@@ -270,10 +288,11 @@ if __name__ == '__main__':
         B = c['boards']; N = c['notes']; PAGE = ('page-21', 'Phase 11 steps, structure and save')
         if not any(p['id'] == PAGE[0] for p in c['pages']):
             i = [p['id'] for p in c['pages']].index('page-20'); c['pages'].insert(i + 1, {'id': PAGE[0], 'name': PAGE[1]})
-        x = 0
+        x = 0; ONLY = sys.argv[3].split(',') if len(sys.argv) > 3 else None      # write only these boards' frames and titles (the others are not republished)
         for key in ['P11_Steps', 'P11_Structure', 'P11_Save', 'P11_FirstVersion']:
             w, h = sizes[key]; fn = key + '.dc.html'
-            B[fn] = {**dict(x=x, y=0, page=PAGE[0]), **B.get(fn, {}), 'w': w, 'h': h, 'title': TITLES[key] + STAMP}
+            if ONLY and key not in ONLY and fn in B: x = B[fn]['x'] + B[fn]['w'] + 240; continue
+            B[fn] = {**dict(x=x, y=0, page=PAGE[0]), **B.get(fn, {}), 'w': w, 'h': h, 'title': TITLES[key] + STAMPS[key]}
             if fn not in c['order']: c['order'].append(fn)
             x = B[fn]['x'] + w + 240
         N['p11-title'] = dict(N.get('p11-title', {}), x=0, y=-300, text='Phase 11: the Instructions steps, add, remove and move, Save and the first version', kind='title1', maxW=x, page=PAGE[0])

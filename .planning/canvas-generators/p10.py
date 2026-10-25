@@ -36,6 +36,12 @@ P10_CSS = '''
 /* ---- shared: the add controls, the quiet note line, a region of the creation editor ---- */
 .mk-add-row{margin:var(--gap-xs) 0 0}
 .mk-add{display:inline-flex;align-items:center}
+/* Sid, 2026-10-25 (Mark on look-p11-steps: "the Add note and Add Step should be on the row next to the heading, similar to how we place the hide/show link"): the region heading
+   with its add control on the row, in the Sheet's own fold head at 1366 (h2.region-name holding .fold-row on Balance and Watch for; measured on the 4173 preview in WebKit and Chromium:
+   a 44 row, centred, the control 14 after the label, 13 / 400 / ink, underlined at 3; the row keeps the heading's 6 below). The app follows in Phase 11. */
+.mk-head-row{display:flex;align-items:center;gap:var(--app-notebook-recipe-rail-gap);min-height:var(--touch-min);margin:0 0 var(--gap-xs)}
+.mk-head-row .region-name{margin:0}
+.mk-head-act{display:inline-flex;align-items:center;min-height:var(--touch-min);text-underline-offset:var(--app-notebook-link-underline-offset)}
 .mk-focus{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}
 .mk-region{padding:var(--gap-m) 0;border-top:var(--app-rule-row) solid var(--app-divider)}
 .mk-region .batch-row__head{min-height:var(--sheet-text-control-min);align-items:center}
@@ -151,11 +157,15 @@ def headnote_html(title, desc):
     p = f'<p class="headnote__prose">{esc(desc)}</p>' if desc else ''
     return f'<div class="recipe-band"><header class="headnote"><h1>{esc(title)}</h1>{p}</header></div>'
 
+def head_row(name, act):
+    """The region heading with its add control on the row (Mark, 2026-10-25): the Sheet's fold head look, the control after the heading at the rail gap."""
+    return f'<div class="mk-head-row"><h2 class="region-name">{esc(name)}</h2><button type="button" class="text-control mk-head-act" tabindex="0">{esc(act)}</button></div>'
+
 def before_html(notes):
     items = ''.join(f'<li><span class="authored__note-field">{textarea("beforeYouStart note %d" % (i + 1), t)}<button type="button" class="text-control" tabindex="0">remove</button></span></li>' for i, t in enumerate(notes))
     lst = f'<ul class="authored__notes">{items}</ul>' if notes else ''
-    return (f'<section class="before-region" aria-label="Before you start"><h2 class="region-name">Before you start</h2>{lst}'
-            '<p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add note</button></p></section>')
+    # Add note on the heading's row, not under the list (Mark, 2026-10-25, look-p11-steps; drawn 2026-10-17 under the list, built so in Phase 10: CreationPage.jsx beforeFoot, notebook.css .mk-add-row)
+    return f'<section class="before-region" aria-label="Before you start">{head_row("Before you start", "Add note")}{lst}</section>'
 
 def ingredients_html(state, W, picker='', focus_last=False, blank_last=False):
     h = cap(state, W, 'ingredients')
@@ -353,6 +363,8 @@ STAMP = ' (drawn 2026-10-17; for approval)'
 STAMP2 = ' (redrawn 2026-10-18; for approval)'
 STAMP3 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card head dropped; look-p10-ladder-redraw)'
 STAMP4 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card head dropped, Targets 12 above and 12 below as built; look-p10-ladder-redraw)'
+STAMP5 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card head dropped, Targets 12 / 12 as built, and Add note on the Before you start heading\'s row; look-p11-steps-r2)'
+STAMP6 = ' (redrawn 2026-10-25: Add note on the Before you start heading\'s row; look-p11-steps-r2)'
 SAMPLE_NOTES = ['Chill the mix overnight before churning.', 'Keep the cream cold until it goes in.']
 SAMPLE_DESC = 'Plain and cold.'
 
@@ -377,8 +389,8 @@ def build_boards(out):
     def editor(W, vid, state, name, desc, notes, **kw):
         sh = sheet_html(state, W, name, desc, notes, balance=(state != 'empty'), **kw)
         return shell_main(W, page_html(band_html(name, desc, vid=vid), sh, log_html(style_region('Philadelphia', BANDS['Philadelphia'], STYLE_TEMP['Philadelphia'] if W == 1366 else None) if state != 'empty' else style_region(None, {}, '' if W == 1366 else None), scales_region([scale_card(1, 'Creaminess', 'thin', 'rich', KINDS[0])] if state != 'empty' else [], add=True), problems_region([problem_row(1, 'Bitter')] if state != 'empty' else []))), vid)
-    r1 = [dict(pid='eA1', W=1366, html=editor(1366, 'eA1', 'empty', 'Vanilla', '', []), cap='The editor at 1366 · just arrived from New recipe (a name, nothing else)', sub='no Instructions section yet; no Balance until a row exists; every region of the log column is empty and reads as it is')]
-    r2 = [dict(pid='eB1', W=1366, html=editor(1366, 'eB1', 'phil', 'Vanilla', SAMPLE_DESC, SAMPLE_NOTES), cap='The editor at 1366 · worked on', sub='description once, five rows with grams, the live Balance, a style, one scale, one problem')]
+    r1 = [dict(pid='eA1', W=1366, html=editor(1366, 'eA1', 'empty', 'Vanilla', '', []), cap='The editor at 1366 · just arrived from New recipe (a name, nothing else)', sub='no Instructions section yet; no Balance until a row exists; every region of the log column is empty and reads as it is; Add note on the Before you start heading\'s row, as the Show/Hide control sits (Mark, 2026-10-25; the app follows in Phase 11)')]
+    r2 = [dict(pid='eB1', W=1366, html=editor(1366, 'eB1', 'phil', 'Vanilla', SAMPLE_DESC, SAMPLE_NOTES), cap='The editor at 1366 · worked on', sub='description once, five rows with grams, the live Balance, a style, one scale, one problem; Add note on the heading\'s row (Mark, 2026-10-25)')]
 
     # ---- helpers for the cropped boards
     def sheet_only(W, vid, state, name=None, desc=SAMPLE_DESC, notes=SAMPLE_NOTES, **kw):
@@ -394,7 +406,7 @@ def build_boards(out):
     r3 = [dict(sc(1366, 'eC1', 'phil'), cap='Remove · before · 1366', sub='five rows; the link beside Skim milk powder is "remove"'),
           dict(sc(1366, 'eC2', 'less'), cap='Remove · after · 1366', sub='the row is deleted outright; every figure follows, and the Balance says where Milk solids now stands against its band')]
     parts, bw, bh = flow([r1, r2, r3]); sizes['P10_Editor'] = (bw, bh)
-    board('P10_Editor', 'Creation editor · the recipe page with no parent and no Save, at 1366' + STAMP4, bw, bh, parts, out)
+    board('P10_Editor', 'Creation editor · the recipe page with no parent and no Save, at 1366' + STAMP5, bw, bh, parts, out)
 
     # ======== P10_Picker
     added2 = ('wholeMilk', 'heavyCream')
@@ -407,7 +419,7 @@ def build_boards(out):
           dict(sc(393, 'kC3', 'two', picker=picker_html(name='tonka', none=True)), cap='Not in the library yet · 393', sub=''),
           dict(sc(393, 'kC4', 'three', focus_last=True), cap='After choosing · 393', sub='')]
     parts, bw, bh = flow([r1, r2, r3]); sizes['P10_Picker'] = (bw, bh)
-    board('P10_Picker', 'Ingredient picker · open under the table, "Not in the library yet", and the row it adds, at 1366 and 393' + STAMP, bw, bh, parts, out)
+    board('P10_Picker', 'Ingredient picker · open under the table, "Not in the library yet", and the row it adds, at 1366 and 393' + STAMP6, bw, bh, parts, out)
 
     # ======== P10_Scales
     LG = lambda W, pid, *regs: dict(trim=40 if W == 1366 else 0, pid=pid, W=W, html=log_only(W, pid, *regs), w=366 if W == 1366 else 393, x0=LOGX if W == 1366 else 0)
@@ -463,13 +475,15 @@ if __name__ == '__main__':
         titles = {'P10_Notebook': 'Notebook · New recipe, its same-name warning and Resume, at 1366 and 393', 'P10_Editor': 'Creation editor · the recipe page with no parent and no Save, at 1366',
                   'P10_Picker': 'Ingredient picker · open under the table, "Not in the library yet", and the row it adds, at 1366 and 393', 'P10_Scales': "Authoring scales and problems · each scale's kind, 0 to 2 of each, at 1366 and 393",
                   'P10_Style': "Choosing a style · on a menu, the four styles' approved balance bands, edited or left blank, at 1366"}
-        TARGETED = ('P10_Editor', 'P10_Style'); LADDERED = ('P10_Scales',); x = 0
+        STAMPS = {'P10_Editor': STAMP5, 'P10_Picker': STAMP6, 'P10_Style': STAMP4, 'P10_Scales': STAMP3, 'P10_Notebook': STAMP}; x = 0
+        ONLY = sys.argv[3].split(',') if len(sys.argv) > 3 else None      # Sid, 2026-10-25: write only these boards' frames and titles into the index (the others are not republished)
         for gone in ('P10_Machine.dc.html',):      # retired 2026-10-18: drop the board from a canvas.json that still has it
             B.pop(gone, None)
             if gone in c['order']: c['order'].remove(gone)
         for key in ['P10_Editor', 'P10_Notebook', 'P10_Picker', 'P10_Style', 'P10_Scales']:
             w, h = sizes[key]; fn = key + '.dc.html'
-            B[fn] = {**dict(x=x, y=0, page=PAGE[0]), **B.get(fn, {}), 'w': w, 'h': h, 'title': titles[key] + (STAMP4 if key in TARGETED else STAMP3 if key in LADDERED else STAMP)}
+            if ONLY and key not in ONLY and fn in B: x = B[fn]['x'] + B[fn]['w'] + 240; continue
+            B[fn] = {**dict(x=x, y=0, page=PAGE[0]), **B.get(fn, {}), 'w': w, 'h': h, 'title': titles[key] + STAMPS[key]}
             if fn not in c['order']: c['order'].append(fn)
             x = B[fn]['x'] + w + 240
         N['p10-title'] = dict(N.get('p10-title', {}), x=0, y=-300, text='Phase 10 creation editor: Notebook entry, editor, picker, style, scales and problems', kind='title1', maxW=x, page=PAGE[0])

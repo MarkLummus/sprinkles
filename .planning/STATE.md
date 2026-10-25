@@ -589,6 +589,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261022-d3k | Reading-state heading levels | 2026-10-22 | 11136a95 | /Users/mark/Documents/projects/sprinkles/.planning/quick/261022-d3k-reading-state-heading-levels-app-src-ui-batchrow-jsx-280-mar |
 | 261025-elq | The page notice as a card from the bottom edge in Page styling with a shadow (BS; decide-page-notice-shape, bug-save-notice-covers-title-393) | 2026-10-25 | f43b1d32 | [261025-elq-the-page-notice-as-a-card-from-the-botto](./quick/261025-elq-the-page-notice-as-a-card-from-the-botto/) |
 | 188 | The page notice as the ink card (decide-notice-card-palette ink; bug-notice-card-ground-too-close-to-sheet) | 2026-10-25 | 116d259c | — |
+| 261025-f8n | The log column's ladder: revised four levels with the cues as h3, Any problems? a cue, picked problems as content, the card head dropped (quick-batch 261025-f8m) | 2026-10-25 | 9529ff18 | .planning/quick/261025-f8n-task-1-the-log-column-s-ladder-ladder-proposal-the-proposal |
 
 ### Roadmap Evolution
 

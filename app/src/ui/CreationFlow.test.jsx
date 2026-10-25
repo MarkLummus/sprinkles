@@ -1341,7 +1341,10 @@ describe('the recipe\'s own scales (TASTE-01, decision 12, T-04)', () => {
     await startVanilla();
     await click(addScaleButton());
     expect(cueTexts()).toEqual(['Every recipe', 'This recipe only']);
-    expect(scalesRegion().querySelector('.mk-card__head .notebook-caption').textContent).toBe('Scale 1');
+    expect(scalesRegion().querySelector('.mk-card__head')).toBeNull();
+    expect(scalesRegion().querySelector('.mk-card').getAttribute('aria-label')).toBe('Scale 1');
+    expect(scalesRegion().querySelector('.mk-card').firstElementChild.className).toBe('mk-caprow');
+    expect([...scalesRegion().querySelectorAll('.mk-cue')].map((node) => node.tagName)).toEqual(['H3', 'H3']);
     expect(document.activeElement).toBe(inScales('Name'));
     expect(scalesRegion().querySelector('.mk-stops')).toBeNull();
     await type(inScales('Name'), 'Creaminess');

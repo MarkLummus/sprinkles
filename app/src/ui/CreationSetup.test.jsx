@@ -87,6 +87,13 @@ describe('CreationSetup (MAKE-09)', () => {
     expect(current.container.textContent).not.toMatch(/machine|equipment|pasteuri|hold time|process/i);
   });
 
+  it('Targets is an h3 cue in the Style region', () => {
+    mount();
+    const targets = q('section[aria-label="Style"] .mk-cue-targets');
+    expect(targets.tagName).toBe('H3');
+    expect(targets.textContent).toBe('Targets');
+  });
+
   it('lists No style, then the catalog styles in their stored order, with the ids as values', () => {
     mount();
     const options = [...q('select.mk-menu').options];
@@ -187,7 +194,7 @@ describe('CreationSetup, the Scales and Problems regions (TASTE-01, TASTE-02, de
   const cues = (name) => [...region(name).querySelectorAll('.mk-cue')].map((node) => node.textContent);
   const addControl = (name) => region(name).querySelector('.mk-add');
   const required = (name) => region(name).querySelectorAll('.field-requirement');
-  const cardButton = (card) => card.querySelector('.mk-card__head button');
+  const cardButton = (card) => card.querySelector('.mk-caprow button');
   const radios = (card) => [...card.querySelectorAll('input[type="radio"]')];
 
   function press(element) {
@@ -226,7 +233,9 @@ describe('CreationSetup, the Scales and Problems regions (TASTE-01, TASTE-02, de
     expect(cues('Scales')).toEqual(['Every recipe', 'This recipe only']);
     expect(cues('Problems')).toEqual(['Every recipe']);
     const [card] = cards('Scales');
-    expect(card.querySelector('.mk-card__head .notebook-caption').textContent).toBe('Scale 1');
+    expect([...region('Scales').querySelectorAll('.mk-cue')].map((node) => node.tagName)).toEqual(['H3', 'H3']);
+    expect(card.querySelector('.mk-card__head')).toBeNull();
+    expect(card.getAttribute('aria-label')).toBe('Scale 1');
     expect(required('Scales')).toHaveLength(3);
     expect([...required('Scales')].map((node) => node.textContent)).toEqual(['Required', 'Required', 'Required']);
     expect(radios(card)).toHaveLength(2);
@@ -236,6 +245,23 @@ describe('CreationSetup, the Scales and Problems regions (TASTE-01, TASTE-02, de
     expect(held.scales).toHaveLength(1);
     expect(held.scales[0].kind).toBe('');
     expect(held.scales[0].key.startsWith('scale-')).toBe(true);
+  });
+
+  it('the card has no head: its first row holds the Name field and remove, and the cues are h3', () => {
+    mount();
+    press(addControl('Scales'));
+    press(addControl('Problems'));
+    for (const name of ['Scales', 'Problems']) {
+      const [card] = cards(name);
+      expect(card.querySelector('.mk-card__head')).toBeNull();
+      expect(card.firstElementChild.className).toBe('mk-caprow');
+      const row = card.firstElementChild;
+      expect(row.querySelectorAll('label.notebook-field')).toHaveLength(1);
+      expect(row.querySelector('label.notebook-field .notebook-caption').textContent).toBe('Name');
+      expect([...row.querySelectorAll('button')].map((button) => button.textContent)).toEqual(['remove']);
+      expect(card.textContent).not.toMatch(/(Scale|Problem) \d/);
+      expect([...region(name).querySelectorAll('.mk-cue')].map((node) => node.tagName)).toEqual(['H3', 'H3']);
+    }
   });
 
   it('Required leaves a field once it holds words and returns for whitespace', () => {
@@ -315,7 +341,7 @@ describe('CreationSetup, the Scales and Problems regions (TASTE-01, TASTE-02, de
     const [left] = cards('Scales');
     expect(cards('Scales')).toHaveLength(1);
     expect(left.getAttribute('aria-label')).toBe('Scale 1');
-    expect(left.querySelector('.mk-card__head .notebook-caption').textContent).toBe('Scale 1');
+    expect(left.querySelector('.mk-card__head')).toBeNull();
     expect(left.querySelector('[aria-label="Name"]').value).toBe('Cinnamon');
     expect(held.scales.map((scale) => scale.key)).toEqual([secondKey]);
     expect(addControl('Scales')).not.toBeNull();
@@ -337,7 +363,8 @@ describe('CreationSetup, the Scales and Problems regions (TASTE-01, TASTE-02, de
     press(addControl('Problems'));
     expect(cues('Problems')).toEqual(['Every recipe', 'This recipe only']);
     const [card] = cards('Problems');
-    expect(card.querySelector('.mk-card__head .notebook-caption').textContent).toBe('Problem 1');
+    expect(card.querySelector('.mk-card__head')).toBeNull();
+    expect(card.getAttribute('aria-label')).toBe('Problem 1');
     expect(card.querySelector('[aria-label="Name"]').value).toBe('');
     expect(required('Problems')).toHaveLength(1);
     type(card.querySelector('[aria-label="Name"]'), 'Bitter');

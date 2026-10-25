@@ -177,7 +177,7 @@ export function CreationSetup({ createDraft, onChange }) {
               <span className="mk-unit">°C</span>
             </span>
           </label>
-          <span className="notebook-caption">Targets</span>
+          <h3 className="notebook-caption mk-cue-targets">Targets</h3>
           <div>
             {FIGURE_SPECS.map((spec) => {
               const label = figureLabelText(spec.label);
@@ -224,20 +224,19 @@ export function CreationSetup({ createDraft, onChange }) {
           </div>
         </div>
         <div className="mk-body">
-          <p className="pen-caption mk-cue">Every recipe</p>
+          <h3 className="pen-caption mk-cue">Every recipe</h3>
           <p className="mk-core">{coreScales}</p>
-          {createDraft.scales.length > 0 && <p className="pen-caption mk-cue">This recipe only</p>}
+          {createDraft.scales.length > 0 && <h3 className="pen-caption mk-cue">This recipe only</h3>}
           {createDraft.scales.map((scale, index) => {
             const stops = scaleStopsLine(scale);
             return (
               <div className="mk-card" role="group" aria-label={`Scale ${index + 1}`} key={scale.key}>
-                <div className="mk-card__head">
-                  <span className="notebook-caption">{`Scale ${index + 1}`}</span>
+                <div className="mk-caprow">
+                  <CardField label="Name" value={scale.name} onChange={handleScaleField(scale.key, 'name')} />
                   <Button className="text-control" onClick={() => handleRemoveScale(scale.key)}>
                     remove
                   </Button>
                 </div>
-                <CardField label="Name" value={scale.name} onChange={handleScaleField(scale.key, 'name')} />
                 <div className="mk-pair">
                   <CardField label="Low end" value={scale.low} onChange={handleScaleField(scale.key, 'low')} />
                   <CardField label="High end" value={scale.high} onChange={handleScaleField(scale.key, 'high')} />
@@ -270,19 +269,18 @@ export function CreationSetup({ createDraft, onChange }) {
           </div>
         </div>
         <div className="mk-body">
-          <p className="pen-caption mk-cue">Every recipe</p>
+          <h3 className="pen-caption mk-cue">Every recipe</h3>
           <p className="mk-core">{coreProblems}</p>
-          {createDraft.problems.length > 0 && <p className="pen-caption mk-cue">This recipe only</p>}
+          {createDraft.problems.length > 0 && <h3 className="pen-caption mk-cue">This recipe only</h3>}
           {createDraft.problems.map((problem, index) => (
             // A problem is words only, with no key of its own: its place is its identity.
             <div className="mk-card" role="group" aria-label={`Problem ${index + 1}`} key={index}>
-              <div className="mk-card__head">
-                <span className="notebook-caption">{`Problem ${index + 1}`}</span>
+              <div className="mk-caprow">
+                <CardField label="Name" value={problem} onChange={handleProblemName(index)} />
                 <Button className="text-control" onClick={() => handleRemoveProblem(index)}>
                   remove
                 </Button>
               </div>
-              <CardField label="Name" value={problem} onChange={handleProblemName(index)} />
             </div>
           ))}
           {createDraft.problems.length < MAX_RECIPE_PROBLEMS && (

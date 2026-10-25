@@ -54,6 +54,7 @@ describe('MarkOneField', () => {
     const group = container.querySelector('.mo-group');
     expect(group.getAttribute('data-mo')).toBe('fromfreezer');
     const caption = container.querySelector('.segmented-field__caption');
+    expect(caption.tagName).toBe('H3');
     expect(caption.className).toBe('segmented-field__caption pen-caption axes-cue');
     expect(caption.textContent).toBe('From freezer');
     const radiogroup = container.querySelector('[role="radiogroup"]');

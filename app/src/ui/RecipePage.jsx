@@ -36,8 +36,10 @@ export {
 } from './useBatchRecording.js';
 
 // The one line the page shows when a store read fails (WR-05). Word for word
-// the boot failure line in main.jsx, so it adds no new words.
-export const PAGE_LOAD_ERROR = 'Could not open the local store. Try reloading.';
+// the boot failure line in main.jsx, so it adds no new words; it answers the
+// boot's 'Opening your recipes…' in the same words (Mark, 2026-10-25,
+// decide-notice-copy).
+export const PAGE_LOAD_ERROR = 'Couldn’t open your recipes. Try reloading.';
 
 // The not-found markup (03.5-02, decisions_recorded 3): shared by a version
 // missing outright and by a version whose recipeId does not match the

@@ -22,10 +22,12 @@ export const PLACES = [
   { path: '/kitchen', name: 'Kitchen', slug: 'kitchen' },
 ];
 
-// The page notice 'Close the open pen before importing.' (quick 261011-dz2,
-// decide-import-refreshes-open-recipe-pens = refuse). The one home of the sentence.
-// Wording approved by Mark (2026-10-11): decide-new-lines-import-block-and-too-long.
-export const IMPORT_BLOCKED_STATUS = 'Close the open pen before importing.';
+// The page notice for Import while a batch or version form is open (quick
+// 261011-dz2, decide-import-refreshes-open-recipe-pens = refuse). The one home
+// of the sentence. Wording by Mark (2026-10-25): decide-notice-copy, which
+// supersedes decide-new-lines-import-block-and-too-long ("pen" is not the
+// maker's word).
+export const IMPORT_BLOCKED_STATUS = 'Save or cancel your changes before importing.';
 
 // The page notice for Import while a new recipe draft is kept (Phase 10 D-10,
 // decide-import-refreshes-open-recipe-pens = refuse): an import replaces the

@@ -344,19 +344,19 @@ describe('a reserved row id through type, save, reload and reopen (WR-01)', () =
 });
 
 describe('batchSavedStatus', () => {
-  it('says "changed" for a record that carries a changed date', () => {
+  it('says "Batch saved." for a record that carries a changed date (decide-notice-copy)', () => {
     const record = { ...structuredClone(augustSecondBatch), changed: '2026-08-12T00:00:00.000Z' };
     const before = structuredClone(record);
     const first = batchSavedStatus(record);
-    expect(first.startsWith('changed ')).toBe(true);
+    expect(first).toBe('Batch saved.');
     expect(record).toEqual(before);
     expect(batchSavedStatus(record)).toBe(first);
   });
 
-  it('says "recorded" for a record with no changed date', () => {
+  it('says "Batch saved." for a record with no changed date (decide-notice-copy)', () => {
     const record = { ...structuredClone(augustSecondBatch), changed: null };
     const first = batchSavedStatus(record);
-    expect(first.startsWith('recorded ')).toBe(true);
+    expect(first).toBe('Batch saved.');
     expect(batchSavedStatus(record)).toBe(first);
   });
 });

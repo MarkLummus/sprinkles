@@ -32,7 +32,7 @@ try {
   await seedIfEmpty(repository);
   lists = await readSeedTables(repository);
 } catch (err) {
-  root.render(<p className="app-boot">Could not open the local store. Try reloading.</p>);
+  root.render(<p className="app-boot">Couldn’t open your recipes. Try reloading.</p>);
   throw err;
 }
 

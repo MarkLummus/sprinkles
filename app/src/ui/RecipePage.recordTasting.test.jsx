@@ -258,7 +258,7 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     expect(saved.churn.churnDate).toBe('2026-08-02');
     expect(saved.churn).not.toHaveProperty('timeToDrawTempMinutes');
     expect(pageStatus).toHaveBeenCalled();
-    expect(pageStatus.mock.calls.some(([message]) => typeof message === 'string' && message.startsWith('changed ') && !message.includes('against'))).toBe(true);
+    expect(pageStatus.mock.calls.some(([message]) => typeof message === 'string' && message === 'Batch saved.')).toBe(true);
     expect(pen()).toBeNull();
     expect(document.activeElement).toBe(current.container.querySelector('h2#batch'));
     expect(band().textContent).toBe('Record another');
@@ -360,7 +360,7 @@ describe('no Time to draw temp. in any churn object the real save writes (sketch
     expect(current.container.querySelector('.field-error')).toBeNull();
     expect(store.saveBatch).toHaveBeenCalledTimes(1);
     expect(store.saveBatch.mock.calls[0][0].churn).not.toHaveProperty('timeToDrawTempMinutes');
-    expect(pageStatus.mock.calls.some(([message]) => typeof message === 'string' && message.startsWith('changed '))).toBe(true);
+    expect(pageStatus.mock.calls.some(([message]) => message === 'Batch saved.')).toBe(true);
   });
 
   it('Record another writes a new batch with no draw-temperature key', async () => {

@@ -4,7 +4,6 @@
 // (Phase 5, D-01).
 import { BATTERY_FIELDS, parseMeasuredDraft } from './battery.js';
 import { setMark } from './axes.js';
-import { formatRecordDate } from './batch.js';
 import { parseGramsDraft } from './lineage.js';
 import { usesListsDiffer } from './penDraft.js';
 
@@ -417,14 +416,14 @@ export function buildTastingFieldsFromDraft(draft, parsed) {
   };
 }
 
-// An amendment (completeRecord stamps `changed`; createBatch writes null)
-// announces its own date in the read view's Changed vocabulary, not the
-// original recording date. The page already shows the version (Mark,
-// 2026-10-04), so neither sentence repeats it.
+// One line for the first save and the save after Correct, the sibling of
+// 'Version saved.' (Mark, 2026-10-25, decide-notice-copy: the dated
+// 'recorded …' / 'changed …' fragments dropped). The page already shows the
+// version and the Changed row (Mark, 2026-10-04), so the sentence repeats
+// neither. The record stays the argument so the two call sites keep their shape.
+export const BATCH_SAVED_STATUS = 'Batch saved.';
 export function batchSavedStatus(record) {
-  return record.changed
-    ? `changed ${formatRecordDate(record.changed)}`
-    : `recorded ${formatRecordDate(record.recordedAt)}`;
+  return BATCH_SAVED_STATUS;
 }
 
 // The record pen's edits, each a pure (draft, ...args) => draft the hook's

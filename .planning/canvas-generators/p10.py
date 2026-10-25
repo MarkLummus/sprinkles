@@ -3,7 +3,8 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 from cssscope import resolve_media, scope_css, unique_ids
 import printstart
 import places as PL
-import pod40
+import pod40, importlib
+LADDER = importlib.import_module('p-ladder')      # revision 2a's faces and spacing scale, one source
 # Sid, 2026-10-17 (Phase 10 design gate; MAKE-04 to MAKE-09, MAKE-11, TASTE-01, TASTE-02; nothing approved yet): the creation editor's boards.
 #   P10_Notebook       the Notebook's New recipe entry, its same-name warning and Resume                            (1366 and 393)
 #   P10_Editor         the creation editor: name and its one description, Version name, Before you start, rows with the live Balance, remove a row
@@ -14,6 +15,10 @@ import pod40
 #   however many types there are, 44 px tall under the coarse pointer, the chosen type on it. The open list is drawn as a stand-in (.mk-list): the list itself is the browser's own.
 #   The Machine group is not redrawn: the P10_Machine board was retired the same day (below), so the decision reaches the machine when it is drawn where batches are churned.
 # 2026-10-18: the machine is out of the creation editor (Mark: the equipment matters when churning a batch, not when creating a recipe), so the P10_Machine board is retired; Process, Pasteurise and Hold are out too (decide-p9-pasteurise-fields, editor-only). The log column reads Style, Scales, Problems.
+# 2026-10-25 (the ladder redraw, every decide row answered 2026-10-24: decide-p10-log-ladder-r2 revised with the cues as h3, decide-p10-card-head drop): P10_Editor and
+#   P10_Scales take ladder revision 2's faces (p-ladder.PROPOSED_CSS: region name 14/600 caps secondary, cue 14/600 sentence ink, caption 12/600 caps secondary, the core
+#   names as content 14/400, the spacing scale), the cues become h3 (Every recipe, This recipe only, Targets), and the card loses its "Scale 1" / "Problem 1" head: remove
+#   stands beside Name (.mk-caprow). P10_Notebook, P10_Picker and P10_Style are regenerated unchanged by this and not republished.
 # 2026-10-18: boards P10_Editor and P10_Style are 1366 only (Mark does not create recipes on an iPhone); P10_Notebook, P10_Picker and P10_Scales keep their 393 panels, not redrawn.
 # The editor is the recipe page's pen with no parent (Phase 8's split RecipePage, a `creating` mode with no baseline). Every panel is the built app's own shell and markup (p10-capture.json: WebKit, a scratch
 # profile holding a stand-in recipe, 1366 and 393, both with a coarse pointer) with the app's own tokens.css, app.css, notebook.css and shell.css, their @media resolved at the panel's width and pointer.
@@ -104,12 +109,17 @@ COARSE_P10 = '''
 .mk-band .ink-field{min-height:var(--touch-min)}
 '''
 
+LADDER_P10 = '''
+.notebook-log h3.mk-cue{margin-top:var(--gap-m);margin-bottom:calc(var(--gap-xs) - var(--gap-s));font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:normal;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
+.notebook-log .mk-body > h3.mk-cue:first-child{margin-top:0}
+.notebook-log h3.mk-cue-targets{display:block;margin:0 0 var(--gap-xs);font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:normal;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
+'''
 LABH = 78; GAP = 80
 CSS_BY_CLS = {}
 def css_for(W):
     cls = 'pc%d' % W
     if cls not in CSS_BY_CLS:
-        extra = resolve_media(P10_CSS, W, True) + COARSE_P10
+        extra = resolve_media(P10_CSS, W, True) + COARSE_P10 + LADDER.PROPOSED_CSS + LADDER_P10
         CSS_BY_CLS[cls] = PL.css_for(W, True, cls, extra=extra)
     return CSS_BY_CLS[cls]
 
@@ -222,7 +232,7 @@ def menu(label, options, picked, none_word, open_list=False):
     return f'<div class="mk-menu-wrap"><select class="ink-field mk-menu" aria-label="{esc(label)}" tabindex="0">{opts}</select>{lst}</div>'
 def style_region(picked, bands, temp=None, open_list=False):
     t = temp_field(temp) if temp is not None else ''
-    return region('Style', menu('Style', STYLES, picked, NO_STYLE, open_list) + t + '<span class="notebook-caption">Targets</span><div>' + band_rows(bands) + '</div>', clear=picked is not None)
+    return region('Style', menu('Style', STYLES, picked, NO_STYLE, open_list) + t + '<h3 class="notebook-caption mk-cue-targets">Targets</h3><div>' + band_rows(bands) + '</div>', clear=picked is not None)
 
 KINDS = ['Right in the middle', 'Low to high']
 def stops(lo, hi, kind):
@@ -232,20 +242,19 @@ def stops(lo, hi, kind):
 def scale_card(n, name, lo, hi, kind, required_hints=False):
     nm = field('Name', name, required=required_hints and not name)
     ends = '<div class="mk-pair">' + field('Low end', lo, required=required_hints and not lo) + field('High end', hi, required=required_hints and not hi) + '</div>'
-    return (f'<div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Scale {n}</span><button type="button" class="text-control" tabindex="0">remove</button></div>'
-            + nm + ends + segmented('Kind', KINDS, kind, name='segment-kind-%d' % n) + stops(lo, hi, kind) + '</div>')
+    return (f'<div class="mk-card"><div class="mk-caprow">{nm}<button type="button" class="text-control" tabindex="0" aria-label="Remove scale {n}">remove</button></div>'
+            + ends + segmented('Kind', KINDS, kind, name='segment-kind-%d' % n) + stops(lo, hi, kind) + '</div>')
 def scales_region(cards, add=True):
-    core = '<p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p>'
-    mine = ('<p class="pen-caption mk-cue">This recipe only</p>' + ''.join(cards)) if cards else ''
+    core = '<h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p>'
+    mine = ('<h3 class="pen-caption mk-cue">This recipe only</h3>' + ''.join(cards)) if cards else ''
     a = '<p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p>' if add else ''
     return region('Scales', core + mine + a)
 CORE_PROBLEMS = 'Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film'
 def problem_row(n, name, hint=False):
-    return (f'<div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Problem {n}</span><button type="button" class="text-control" tabindex="0">remove</button></div>'
-            + field('Name', name, required=hint and not name) + '</div>')
+    return (f'<div class="mk-card"><div class="mk-caprow">{field("Name", name, required=hint and not name)}<button type="button" class="text-control" tabindex="0" aria-label="Remove problem {n}">remove</button></div></div>')
 def problems_region(rows, add=True):
-    core = f'<p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">{CORE_PROBLEMS}</p>'
-    mine = ('<p class="pen-caption mk-cue">This recipe only</p>' + ''.join(rows)) if rows else ''
+    core = f'<h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">{CORE_PROBLEMS}</p>'
+    mine = ('<h3 class="pen-caption mk-cue">This recipe only</h3>' + ''.join(rows)) if rows else ''
     a = '<p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p>' if add else ''
     return region('Problems', core + mine + a)
 
@@ -340,6 +349,7 @@ def board(key, title, bw, bh, parts, out):
 
 STAMP = ' (drawn 2026-10-17; for approval)'
 STAMP2 = ' (redrawn 2026-10-18; for approval)'
+STAMP3 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card head dropped; look-p10-ladder-redraw)'
 SAMPLE_NOTES = ['Chill the mix overnight before churning.', 'Keep the cream cold until it goes in.']
 SAMPLE_DESC = 'Plain and cold.'
 
@@ -381,7 +391,7 @@ def build_boards(out):
     r3 = [dict(sc(1366, 'eC1', 'phil'), cap='Remove · before · 1366', sub='five rows; the link beside Skim milk powder is "remove"'),
           dict(sc(1366, 'eC2', 'less'), cap='Remove · after · 1366', sub='the row is deleted outright; every figure follows, and the Balance says where Milk solids now stands against its band')]
     parts, bw, bh = flow([r1, r2, r3]); sizes['P10_Editor'] = (bw, bh)
-    board('P10_Editor', 'Creation editor · the recipe page with no parent and no Save, at 1366' + STAMP2, bw, bh, parts, out)
+    board('P10_Editor', 'Creation editor · the recipe page with no parent and no Save, at 1366' + STAMP3, bw, bh, parts, out)
 
     # ======== P10_Picker
     added2 = ('wholeMilk', 'heavyCream')
@@ -409,7 +419,7 @@ def build_boards(out):
           dict(LG(393, 'sC2', scales_region([g1, p1], add=False), problems_region([problem_row(1, 'Bitter'), problem_row(2, 'Salty')], add=False)), cap='Two and two · 393', sub=''),
           dict(LG(393, 'sD2', scales_region([blank]), problems_region([problem_row(1, '', hint=True)])), cap='Just added · 393', sub='')]
     parts, bw, bh = flow([r1, r2]); sizes['P10_Scales'] = (bw, bh)
-    board('P10_Scales', 'Authoring scales and problems · each scale\'s kind, 0 to 2 of each, at 1366 and 393' + STAMP, bw, bh, parts, out)
+    board('P10_Scales', 'Authoring scales and problems · each scale\'s kind, 0 to 2 of each, at 1366 and 393' + STAMP3, bw, bh, parts, out)
 
     # ======== P10_Style
     ST = lambda W, pid, picked, bands, temp='default', open_list=False: dict(trim=40 if W == 1366 else 0, pid=pid, W=W, html=log_only(W, pid, style_region(picked, bands, (STYLE_TEMP.get(picked, '') if temp == 'default' else temp) if W == 1366 else None, open_list)), w=366 if W == 1366 else 393, x0=LOGX if W == 1366 else 0)
@@ -450,13 +460,13 @@ if __name__ == '__main__':
         titles = {'P10_Notebook': 'Notebook · New recipe, its same-name warning and Resume, at 1366 and 393', 'P10_Editor': 'Creation editor · the recipe page with no parent and no Save, at 1366',
                   'P10_Picker': 'Ingredient picker · open under the table, "Not in the library yet", and the row it adds, at 1366 and 393', 'P10_Scales': "Authoring scales and problems · each scale's kind, 0 to 2 of each, at 1366 and 393",
                   'P10_Style': "Choosing a style · on a menu, the four styles' approved balance bands, edited or left blank, at 1366"}
-        REDRAWN = ('P10_Editor', 'P10_Style'); x = 0
+        REDRAWN = ('P10_Style',); LADDERED = ('P10_Editor', 'P10_Scales'); x = 0
         for gone in ('P10_Machine.dc.html',):      # retired 2026-10-18: drop the board from a canvas.json that still has it
             B.pop(gone, None)
             if gone in c['order']: c['order'].remove(gone)
         for key in ['P10_Editor', 'P10_Notebook', 'P10_Picker', 'P10_Style', 'P10_Scales']:
             w, h = sizes[key]; fn = key + '.dc.html'
-            B[fn] = {**dict(x=x, y=0, page=PAGE[0]), **B.get(fn, {}), 'w': w, 'h': h, 'title': titles[key] + (STAMP2 if key in REDRAWN else STAMP)}
+            B[fn] = {**dict(x=x, y=0, page=PAGE[0]), **B.get(fn, {}), 'w': w, 'h': h, 'title': titles[key] + (STAMP3 if key in LADDERED else STAMP2 if key in REDRAWN else STAMP)}
             if fn not in c['order']: c['order'].append(fn)
             x = B[fn]['x'] + w + 240
         N['p10-title'] = dict(N.get('p10-title', {}), x=0, y=-300, text='Phase 10 creation editor: Notebook entry, editor, picker, style, scales and problems', kind='title1', maxW=x, page=PAGE[0])

@@ -1,0 +1,2525 @@
+{
+ "pen-b-A-1366": {
+  "start": -8,
+  "end": 2642.203125,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Region name",
+    "text": "Batch",
+    "top": 0,
+    "right": 54.125,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 409.953125,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Churn date",
+    "top": 34.1875,
+    "right": 136,
+    "height": 28.796875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1457.03125,
+    "right": 77.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Any problems?",
+    "text": "Any problems?",
+    "top": 2294.390625,
+    "right": 114.984375,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.48px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 68.984375,
+    "right": 136,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Soft, held its shape",
+    "top": 278.96875,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 435.953125,
+    "right": 120.21875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1524.03125,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Chip",
+    "text": "Coarse, icy",
+    "top": 2349.203125,
+    "right": 94.4375,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 490.5625,
+    "right": 358,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Button",
+    "text": "Save batch",
+    "top": 2590.203125,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(255, 255, 255)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 16.1875,
+    "to": 48.584374,
+    "a": "region-name:Batch",
+    "b": "pen-caption:Churn date"
+   },
+   {
+    "from": 62.984375,
+    "to": 68.984375,
+    "a": "pen-caption:Churn date",
+    "b": "ink-field:2026-10-18"
+   },
+   {
+    "from": 112.984375,
+    "to": 114.984375,
+    "a": "ink-field:2026-10-18",
+    "b": "field-requirement:Required"
+   },
+   {
+    "from": 129.984375,
+    "to": 168.381249,
+    "a": "field-requirement:Required",
+    "b": "pen-caption:Churn duration"
+   },
+   {
+    "from": 182.78125,
+    "to": 188.78125,
+    "a": "pen-caption:Churn duration",
+    "b": "ink-field:28"
+   },
+   {
+    "from": 232.78125,
+    "to": 250.78125,
+    "a": "ink-field:28",
+    "b": "pen-caption:At the machine"
+   },
+   {
+    "from": 266.96875,
+    "to": 278.96875,
+    "a": "pen-caption:At the machine",
+    "b": "prose-field:Soft, held its shape"
+   },
+   {
+    "from": 322.96875,
+    "to": 328.96875,
+    "a": "prose-field:Soft, held its shape",
+    "b": "pen-caption:Ingredient notes"
+   },
+   {
+    "from": 345.15625,
+    "to": 357.15625,
+    "a": "pen-caption:Ingredient notes",
+    "b": "prose-field:Olive oil opened 1 O"
+   },
+   {
+    "from": 401.15625,
+    "to": 409.953125,
+    "a": "prose-field:Olive oil opened 1 O",
+    "b": "segmented-field__caption:At draw"
+   },
+   {
+    "from": 429.953125,
+    "to": 435.953125,
+    "a": "segmented-field__caption:At draw",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 479.953125,
+    "to": 492.5625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 508.75,
+    "to": 514.75,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 558.75,
+    "to": 571.359375,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 587.546875,
+    "to": 593.546875,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   },
+   {
+    "from": 637.546875,
+    "to": 696.203125,
+    "a": "segmented:Low, denseMedium, st",
+    "b": "region-name:Tasting"
+   },
+   {
+    "from": 712.390625,
+    "to": 745.943749,
+    "a": "region-name:Tasting",
+    "b": "pen-caption:Tasted"
+   },
+   {
+    "from": 760.34375,
+    "to": 766.34375,
+    "a": "pen-caption:Tasted",
+    "b": "ink-field:2026-10-19"
+   },
+   {
+    "from": 810.34375,
+    "to": 848.740624,
+    "a": "ink-field:2026-10-19",
+    "b": "pen-caption:Tasting temperature"
+   },
+   {
+    "from": 863.140625,
+    "to": 869.140625,
+    "a": "pen-caption:Tasting temperature",
+    "b": "ink-field:-12"
+   },
+   {
+    "from": 913.140625,
+    "to": 925.140625,
+    "a": "ink-field:-12",
+    "b": "note-block__eyebrow:How did it turn out?"
+   },
+   {
+    "from": 941.328125,
+    "to": 947.328125,
+    "a": "note-block__eyebrow:How did it turn out?",
+    "b": "prose-field:Rich, a chalky finis"
+   },
+   {
+    "from": 991.328125,
+    "to": 1041.053124,
+    "a": "prose-field:Rich, a chalky finis",
+    "b": "pen-caption:Melt test"
+   },
+   {
+    "from": 1055.453125,
+    "to": 1061.453125,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1105.453125,
+    "to": 1142.0625,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1158.25,
+    "to": 1164.25,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1208.25,
+    "to": 1240.25,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1256.4375,
+    "to": 1268.4375,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1312.4375,
+    "to": 1321.234375,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1341.234375,
+    "to": 1347.234375,
+    "a": "segmented-field__caption:From freezer",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1391.234375,
+    "to": 1411.234375,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1431.234375,
+    "to": 1457.03125,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1472.03125,
+    "to": 1478.03125,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1522.03125,
+    "to": 1524.03125,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   },
+   {
+    "from": 1540.03125,
+    "to": 1593.828125,
+    "a": "axis-mark__anchors:softrighthard",
+    "b": "axis-mark__name:Scoopability"
+   },
+   {
+    "from": 1608.828125,
+    "to": 1614.828125,
+    "a": "axis-mark__name:Scoopability",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1658.828125,
+    "to": 1660.828125,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:crumblyrightgummy"
+   },
+   {
+    "from": 1676.828125,
+    "to": 1730.625,
+    "a": "axis-mark__anchors:crumblyrightgummy",
+    "b": "axis-mark__name:Smoothness"
+   },
+   {
+    "from": 1745.625,
+    "to": 1751.625,
+    "a": "axis-mark__name:Smoothness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1795.625,
+    "to": 1797.625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:grainyrightsmooth"
+   },
+   {
+    "from": 1813.625,
+    "to": 1867.421875,
+    "a": "axis-mark__anchors:grainyrightsmooth",
+    "b": "axis-mark__name:Sweetness"
+   },
+   {
+    "from": 1882.421875,
+    "to": 1888.421875,
+    "a": "axis-mark__name:Sweetness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1932.421875,
+    "to": 1934.421875,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:lessrightmore"
+   },
+   {
+    "from": 1950.421875,
+    "to": 1995.421875,
+    "a": "axis-mark__anchors:lessrightmore",
+    "b": "pen-caption:This recipe only"
+   },
+   {
+    "from": 2015.421875,
+    "to": 2041.21875,
+    "a": "pen-caption:This recipe only",
+    "b": "axis-mark__name:Body"
+   },
+   {
+    "from": 2056.21875,
+    "to": 2062.21875,
+    "a": "axis-mark__name:Body",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 2106.21875,
+    "to": 2108.21875,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:thinrightheavy"
+   },
+   {
+    "from": 2124.21875,
+    "to": 2178.015625,
+    "a": "axis-mark__anchors:thinrightheavy",
+    "b": "axis-mark__name:Oil"
+   },
+   {
+    "from": 2193.015625,
+    "to": 2199.015625,
+    "a": "axis-mark__name:Oil",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 2243.015625,
+    "to": 2245.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:faintrightstrong"
+   },
+   {
+    "from": 2261.015625,
+    "to": 2294.390625,
+    "a": "axis-mark__anchors:faintrightstrong",
+    "b": "pen-caption:Any problems?"
+   },
+   {
+    "from": 2310.578125,
+    "to": 2323.203125,
+    "a": "pen-caption:Any problems?",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 2343.203125,
+    "to": 2349.203125,
+    "a": "pen-caption:Every recipe",
+    "b": "defects-row__chips:Coarse, icySandy, gr"
+   },
+   {
+    "from": 2443.203125,
+    "to": 2488.203125,
+    "a": "defects-row__chips:Coarse, icySandy, gr",
+    "b": "pen-caption:This recipe only"
+   },
+   {
+    "from": 2508.203125,
+    "to": 2514.203125,
+    "a": "pen-caption:This recipe only",
+    "b": "defects-row__chips:Bitter"
+   },
+   {
+    "from": 2558.203125,
+    "to": 2590.203125,
+    "a": "defects-row__chips:Bitter",
+    "b": ":Cancel"
+   }
+  ]
+ },
+ "pen-p-A-1366": {
+  "start": -8,
+  "end": 2376.015625,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Region name",
+    "text": "Batch",
+    "top": 12.546875,
+    "right": 61.0625,
+    "height": 18.890625,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "1.12px",
+    "lineHeight": "18.9px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 388.15625,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Churn date",
+    "top": 62,
+    "right": 136,
+    "height": 14.390625,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Control caption",
+    "text": "Why blank",
+    "top": 420.15625,
+    "right": 358,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1335.015625,
+    "right": 82.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Any problems?",
+    "text": "Any problems?",
+    "top": 2047.015625,
+    "right": 108.53125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 82.390625,
+    "right": 136,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Soft, held its shape",
+    "top": 253.96875,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 442.34375,
+    "right": 126.453125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1402.015625,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Chip",
+    "text": "Coarse, icy",
+    "top": 2094.015625,
+    "right": 94.4375,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 500.15625,
+    "right": 358,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Button",
+    "text": "Save batch",
+    "top": 2324.015625,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(255, 255, 255)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 31.4375,
+    "to": 62,
+    "a": "region-name:Batch",
+    "b": "pen-caption:Churn date"
+   },
+   {
+    "from": 76.390625,
+    "to": 82.390625,
+    "a": "pen-caption:Churn date",
+    "b": "ink-field:2026-10-18"
+   },
+   {
+    "from": 126.390625,
+    "to": 128.390625,
+    "a": "ink-field:2026-10-18",
+    "b": "field-requirement:Required"
+   },
+   {
+    "from": 143.390625,
+    "to": 155.390625,
+    "a": "field-requirement:Required",
+    "b": "pen-caption:Churn duration"
+   },
+   {
+    "from": 169.78125,
+    "to": 175.78125,
+    "a": "pen-caption:Churn duration",
+    "b": "ink-field:28"
+   },
+   {
+    "from": 219.78125,
+    "to": 231.78125,
+    "a": "ink-field:28",
+    "b": "pen-caption:At the machine"
+   },
+   {
+    "from": 247.96875,
+    "to": 253.96875,
+    "a": "pen-caption:At the machine",
+    "b": "prose-field:Soft, held its shape"
+   },
+   {
+    "from": 297.96875,
+    "to": 309.96875,
+    "a": "prose-field:Soft, held its shape",
+    "b": "pen-caption:Ingredient notes"
+   },
+   {
+    "from": 326.15625,
+    "to": 332.15625,
+    "a": "pen-caption:Ingredient notes",
+    "b": "prose-field:Olive oil opened 1 O"
+   },
+   {
+    "from": 376.15625,
+    "to": 388.15625,
+    "a": "prose-field:Olive oil opened 1 O",
+    "b": "segmented-field__caption:At draw"
+   },
+   {
+    "from": 408.15625,
+    "to": 420.15625,
+    "a": "segmented-field__caption:At draw",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 436.34375,
+    "to": 442.34375,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 486.34375,
+    "to": 502.15625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 518.34375,
+    "to": 524.34375,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 568.34375,
+    "to": 584.15625,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 600.34375,
+    "to": 606.34375,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   },
+   {
+    "from": 650.34375,
+    "to": 709.890625,
+    "a": "segmented:Low, denseMedium, st",
+    "b": "region-name:Tasting"
+   },
+   {
+    "from": 728.78125,
+    "to": 765.34375,
+    "a": "region-name:Tasting",
+    "b": "pen-caption:Tasted"
+   },
+   {
+    "from": 779.734375,
+    "to": 785.734375,
+    "a": "pen-caption:Tasted",
+    "b": "ink-field:2026-10-19"
+   },
+   {
+    "from": 829.734375,
+    "to": 841.734375,
+    "a": "ink-field:2026-10-19",
+    "b": "note-block__eyebrow:How did it turn out?"
+   },
+   {
+    "from": 857.921875,
+    "to": 863.921875,
+    "a": "note-block__eyebrow:How did it turn out?",
+    "b": "prose-field:Rich, a chalky finis"
+   },
+   {
+    "from": 907.921875,
+    "to": 923.25,
+    "a": "prose-field:Rich, a chalky finis",
+    "b": "pen-caption:Melt test"
+   },
+   {
+    "from": 937.640625,
+    "to": 943.640625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 987.640625,
+    "to": 1003.453125,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1019.640625,
+    "to": 1025.640625,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1069.640625,
+    "to": 1101.640625,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1117.828125,
+    "to": 1123.828125,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1167.828125,
+    "to": 1179.828125,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1199.828125,
+    "to": 1211.828125,
+    "a": "segmented-field__caption:From freezer",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 1228.015625,
+    "to": 1234.015625,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1278.015625,
+    "to": 1298.015625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1318.015625,
+    "to": 1335.015625,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1350.015625,
+    "to": 1356.015625,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1400.015625,
+    "to": 1402.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   },
+   {
+    "from": 1418.015625,
+    "to": 1443.015625,
+    "a": "axis-mark__anchors:softrighthard",
+    "b": "axis-mark__name:Scoopability"
+   },
+   {
+    "from": 1458.015625,
+    "to": 1464.015625,
+    "a": "axis-mark__name:Scoopability",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1508.015625,
+    "to": 1510.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:crumblyrightgummy"
+   },
+   {
+    "from": 1526.015625,
+    "to": 1551.015625,
+    "a": "axis-mark__anchors:crumblyrightgummy",
+    "b": "axis-mark__name:Smoothness"
+   },
+   {
+    "from": 1566.015625,
+    "to": 1572.015625,
+    "a": "axis-mark__name:Smoothness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1616.015625,
+    "to": 1618.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:grainyrightsmooth"
+   },
+   {
+    "from": 1634.015625,
+    "to": 1659.015625,
+    "a": "axis-mark__anchors:grainyrightsmooth",
+    "b": "axis-mark__name:Sweetness"
+   },
+   {
+    "from": 1674.015625,
+    "to": 1680.015625,
+    "a": "axis-mark__name:Sweetness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1724.015625,
+    "to": 1726.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:lessrightmore"
+   },
+   {
+    "from": 1742.015625,
+    "to": 1787.015625,
+    "a": "axis-mark__anchors:lessrightmore",
+    "b": "pen-caption:This recipe only"
+   },
+   {
+    "from": 1807.015625,
+    "to": 1824.015625,
+    "a": "pen-caption:This recipe only",
+    "b": "axis-mark__name:Body"
+   },
+   {
+    "from": 1839.015625,
+    "to": 1845.015625,
+    "a": "axis-mark__name:Body",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1889.015625,
+    "to": 1891.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:thinrightheavy"
+   },
+   {
+    "from": 1907.015625,
+    "to": 1932.015625,
+    "a": "axis-mark__anchors:thinrightheavy",
+    "b": "axis-mark__name:Oil"
+   },
+   {
+    "from": 1947.015625,
+    "to": 1953.015625,
+    "a": "axis-mark__name:Oil",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1997.015625,
+    "to": 1999.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:faintrightstrong"
+   },
+   {
+    "from": 2015.015625,
+    "to": 2047.015625,
+    "a": "axis-mark__anchors:faintrightstrong",
+    "b": "pen-caption:Any problems?"
+   },
+   {
+    "from": 2067.015625,
+    "to": 2079.015625,
+    "a": "pen-caption:Any problems?",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 2094.015625,
+    "to": 2094.015625,
+    "a": "pen-caption:Every recipe",
+    "b": "defects-row__chips:Coarse, icySandy, gr"
+   },
+   {
+    "from": 2188.015625,
+    "to": 2233.015625,
+    "a": "defects-row__chips:Coarse, icySandy, gr",
+    "b": "pen-caption:This recipe only"
+   },
+   {
+    "from": 2248.015625,
+    "to": 2248.015625,
+    "a": "pen-caption:This recipe only",
+    "b": "defects-row__chips:Bitter"
+   },
+   {
+    "from": 2292.015625,
+    "to": 2324.015625,
+    "a": "defects-row__chips:Bitter",
+    "b": ":Cancel"
+   }
+  ]
+ },
+ "pen-p-B-1366": {
+  "start": -8,
+  "end": 1999.015625,
+  "logLeft": 984,
+  "logWidth": 350,
+  "winW": 1366,
+  "roles": [
+   {
+    "role": "Region name",
+    "text": "Batch",
+    "top": 12.546875,
+    "right": 61.0625,
+    "height": 18.890625,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "1.12px",
+    "lineHeight": "18.9px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 388.15625,
+    "right": 59.8125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Churn date",
+    "top": 62,
+    "right": 136,
+    "height": 14.390625,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Control caption",
+    "text": "Why blank",
+    "top": 420.15625,
+    "right": 358,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1335.015625,
+    "right": 82.90625,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Any problems?",
+    "text": "Any problems?",
+    "top": 1774.015625,
+    "right": 108.53125,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 82.390625,
+    "right": 136,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "",
+    "top": 253.96875,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 442.34375,
+    "right": 126.453125,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1402.015625,
+    "right": 31.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Chip",
+    "text": "Coarse, icy",
+    "top": 1821.015625,
+    "right": 94.4375,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1001.453125,
+    "right": 341.578125,
+    "height": 18.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Button",
+    "text": "Save batch",
+    "top": 1947.015625,
+    "right": 358,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(255, 255, 255)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 31.4375,
+    "to": 62,
+    "a": "region-name:Batch",
+    "b": "pen-caption:Churn date"
+   },
+   {
+    "from": 76.390625,
+    "to": 82.390625,
+    "a": "pen-caption:Churn date",
+    "b": "ink-field:ink-field"
+   },
+   {
+    "from": 126.390625,
+    "to": 128.390625,
+    "a": "ink-field:ink-field",
+    "b": "field-requirement:Required"
+   },
+   {
+    "from": 143.390625,
+    "to": 155.390625,
+    "a": "field-requirement:Required",
+    "b": "pen-caption:Churn duration"
+   },
+   {
+    "from": 169.78125,
+    "to": 175.78125,
+    "a": "pen-caption:Churn duration",
+    "b": "ink-field:ink-field"
+   },
+   {
+    "from": 219.78125,
+    "to": 231.78125,
+    "a": "ink-field:ink-field",
+    "b": "pen-caption:At the machine"
+   },
+   {
+    "from": 247.96875,
+    "to": 253.96875,
+    "a": "pen-caption:At the machine",
+    "b": "prose-field:prose-field"
+   },
+   {
+    "from": 297.96875,
+    "to": 309.96875,
+    "a": "prose-field:prose-field",
+    "b": "pen-caption:Ingredient notes"
+   },
+   {
+    "from": 326.15625,
+    "to": 332.15625,
+    "a": "pen-caption:Ingredient notes",
+    "b": "prose-field:prose-field"
+   },
+   {
+    "from": 376.15625,
+    "to": 388.15625,
+    "a": "prose-field:prose-field",
+    "b": "segmented-field__caption:At draw"
+   },
+   {
+    "from": 408.15625,
+    "to": 420.15625,
+    "a": "segmented-field__caption:At draw",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 436.34375,
+    "to": 442.34375,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 486.34375,
+    "to": 502.15625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 518.34375,
+    "to": 524.34375,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 568.34375,
+    "to": 584.15625,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 600.34375,
+    "to": 606.34375,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   },
+   {
+    "from": 650.34375,
+    "to": 709.890625,
+    "a": "segmented:Low, denseMedium, st",
+    "b": "region-name:Tasting"
+   },
+   {
+    "from": 728.78125,
+    "to": 765.34375,
+    "a": "region-name:Tasting",
+    "b": "pen-caption:Tasted"
+   },
+   {
+    "from": 779.734375,
+    "to": 785.734375,
+    "a": "pen-caption:Tasted",
+    "b": "ink-field:2026-10-19"
+   },
+   {
+    "from": 829.734375,
+    "to": 841.734375,
+    "a": "ink-field:2026-10-19",
+    "b": "note-block__eyebrow:How did it turn out?"
+   },
+   {
+    "from": 857.921875,
+    "to": 863.921875,
+    "a": "note-block__eyebrow:How did it turn out?",
+    "b": "prose-field:Rich, a chalky finis"
+   },
+   {
+    "from": 907.921875,
+    "to": 923.25,
+    "a": "prose-field:Rich, a chalky finis",
+    "b": "pen-caption:Melt test"
+   },
+   {
+    "from": 937.640625,
+    "to": 943.640625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 987.640625,
+    "to": 1003.453125,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1019.640625,
+    "to": 1025.640625,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1069.640625,
+    "to": 1101.640625,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1117.828125,
+    "to": 1123.828125,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1167.828125,
+    "to": 1179.828125,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1199.828125,
+    "to": 1211.828125,
+    "a": "segmented-field__caption:From freezer",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 1228.015625,
+    "to": 1234.015625,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1278.015625,
+    "to": 1298.015625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1318.015625,
+    "to": 1335.015625,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1350.015625,
+    "to": 1356.015625,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1400.015625,
+    "to": 1402.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   },
+   {
+    "from": 1418.015625,
+    "to": 1443.015625,
+    "a": "axis-mark__anchors:softrighthard",
+    "b": "axis-mark__name:Scoopability"
+   },
+   {
+    "from": 1458.015625,
+    "to": 1464.015625,
+    "a": "axis-mark__name:Scoopability",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1508.015625,
+    "to": 1510.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:crumblyrightgummy"
+   },
+   {
+    "from": 1526.015625,
+    "to": 1551.015625,
+    "a": "axis-mark__anchors:crumblyrightgummy",
+    "b": "axis-mark__name:Smoothness"
+   },
+   {
+    "from": 1566.015625,
+    "to": 1572.015625,
+    "a": "axis-mark__name:Smoothness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1616.015625,
+    "to": 1618.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:grainyrightsmooth"
+   },
+   {
+    "from": 1634.015625,
+    "to": 1659.015625,
+    "a": "axis-mark__anchors:grainyrightsmooth",
+    "b": "axis-mark__name:Sweetness"
+   },
+   {
+    "from": 1674.015625,
+    "to": 1680.015625,
+    "a": "axis-mark__name:Sweetness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1724.015625,
+    "to": 1726.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:lessrightmore"
+   },
+   {
+    "from": 1742.015625,
+    "to": 1774.015625,
+    "a": "axis-mark__anchors:lessrightmore",
+    "b": "pen-caption:Any problems?"
+   },
+   {
+    "from": 1794.015625,
+    "to": 1806.015625,
+    "a": "pen-caption:Any problems?",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1821.015625,
+    "to": 1821.015625,
+    "a": "pen-caption:Every recipe",
+    "b": "defects-row__chips:Coarse, icySandy, gr"
+   },
+   {
+    "from": 1915.015625,
+    "to": 1947.015625,
+    "a": "defects-row__chips:Coarse, icySandy, gr",
+    "b": ":Cancel"
+   }
+  ]
+ },
+ "pen-p-A-393": {
+  "start": 20,
+  "end": 2524.015625,
+  "logLeft": 20,
+  "logWidth": 353,
+  "winW": 393,
+  "roles": [
+   {
+    "role": "Region name",
+    "text": "Batch",
+    "top": 40.546875,
+    "right": -902.9375,
+    "height": 18.890625,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "1.12px",
+    "lineHeight": "18.9px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 416.15625,
+    "right": -904.1875,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Churn date",
+    "top": 90,
+    "right": -828,
+    "height": 14.390625,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Control caption",
+    "text": "Why blank",
+    "top": 448.15625,
+    "right": -603,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1459.015625,
+    "right": -881.09375,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Any problems?",
+    "text": "Any problems?",
+    "top": 2195.015625,
+    "right": -855.46875,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 110.390625,
+    "right": -828,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "Soft, held its shape",
+    "top": 281.96875,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 470.34375,
+    "right": -837.546875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1526.015625,
+    "right": -932.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Chip",
+    "text": "Coarse, icy",
+    "top": 2242.015625,
+    "right": -869.5625,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 526.34375,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Button",
+    "text": "Save batch",
+    "top": 2472.015625,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(255, 255, 255)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 59.4375,
+    "to": 90,
+    "a": "region-name:Batch",
+    "b": "pen-caption:Churn date"
+   },
+   {
+    "from": 104.390625,
+    "to": 110.390625,
+    "a": "pen-caption:Churn date",
+    "b": "ink-field:2026-10-18"
+   },
+   {
+    "from": 154.390625,
+    "to": 156.390625,
+    "a": "ink-field:2026-10-18",
+    "b": "field-requirement:Required"
+   },
+   {
+    "from": 171.390625,
+    "to": 183.390625,
+    "a": "field-requirement:Required",
+    "b": "pen-caption:Churn duration"
+   },
+   {
+    "from": 197.78125,
+    "to": 203.78125,
+    "a": "pen-caption:Churn duration",
+    "b": "ink-field:28"
+   },
+   {
+    "from": 247.78125,
+    "to": 259.78125,
+    "a": "ink-field:28",
+    "b": "pen-caption:At the machine"
+   },
+   {
+    "from": 275.96875,
+    "to": 281.96875,
+    "a": "pen-caption:At the machine",
+    "b": "prose-field:Soft, held its shape"
+   },
+   {
+    "from": 325.96875,
+    "to": 337.96875,
+    "a": "prose-field:Soft, held its shape",
+    "b": "pen-caption:Ingredient notes"
+   },
+   {
+    "from": 354.15625,
+    "to": 360.15625,
+    "a": "pen-caption:Ingredient notes",
+    "b": "prose-field:Olive oil opened 1 O"
+   },
+   {
+    "from": 404.15625,
+    "to": 416.15625,
+    "a": "prose-field:Olive oil opened 1 O",
+    "b": "segmented-field__caption:At draw"
+   },
+   {
+    "from": 436.15625,
+    "to": 448.15625,
+    "a": "segmented-field__caption:At draw",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 464.34375,
+    "to": 470.34375,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 514.34375,
+    "to": 554.15625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 570.34375,
+    "to": 576.34375,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 620.34375,
+    "to": 660.15625,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 676.34375,
+    "to": 682.34375,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   },
+   {
+    "from": 726.34375,
+    "to": 785.890625,
+    "a": "segmented:Low, denseMedium, st",
+    "b": "region-name:Tasting"
+   },
+   {
+    "from": 804.78125,
+    "to": 841.34375,
+    "a": "region-name:Tasting",
+    "b": "pen-caption:Tasted"
+   },
+   {
+    "from": 855.734375,
+    "to": 861.734375,
+    "a": "pen-caption:Tasted",
+    "b": "ink-field:2026-10-19"
+   },
+   {
+    "from": 905.734375,
+    "to": 917.734375,
+    "a": "ink-field:2026-10-19",
+    "b": "note-block__eyebrow:How did it turn out?"
+   },
+   {
+    "from": 933.921875,
+    "to": 939.921875,
+    "a": "note-block__eyebrow:How did it turn out?",
+    "b": "prose-field:Rich, a chalky finis"
+   },
+   {
+    "from": 983.921875,
+    "to": 999.25,
+    "a": "prose-field:Rich, a chalky finis",
+    "b": "pen-caption:Melt test"
+   },
+   {
+    "from": 1013.640625,
+    "to": 1019.640625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1063.640625,
+    "to": 1103.453125,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1119.640625,
+    "to": 1125.640625,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1169.640625,
+    "to": 1201.640625,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1217.828125,
+    "to": 1223.828125,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1267.828125,
+    "to": 1279.828125,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1299.828125,
+    "to": 1311.828125,
+    "a": "segmented-field__caption:From freezer",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 1328.015625,
+    "to": 1334.015625,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1378.015625,
+    "to": 1398.015625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1418.015625,
+    "to": 1459.015625,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1474.015625,
+    "to": 1480.015625,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1524.015625,
+    "to": 1526.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   },
+   {
+    "from": 1542.015625,
+    "to": 1567.015625,
+    "a": "axis-mark__anchors:softrighthard",
+    "b": "axis-mark__name:Scoopability"
+   },
+   {
+    "from": 1582.015625,
+    "to": 1588.015625,
+    "a": "axis-mark__name:Scoopability",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1632.015625,
+    "to": 1634.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:crumblyrightgummy"
+   },
+   {
+    "from": 1650.015625,
+    "to": 1699.015625,
+    "a": "axis-mark__anchors:crumblyrightgummy",
+    "b": "axis-mark__name:Smoothness"
+   },
+   {
+    "from": 1714.015625,
+    "to": 1720.015625,
+    "a": "axis-mark__name:Smoothness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1764.015625,
+    "to": 1766.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:grainyrightsmooth"
+   },
+   {
+    "from": 1782.015625,
+    "to": 1807.015625,
+    "a": "axis-mark__anchors:grainyrightsmooth",
+    "b": "axis-mark__name:Sweetness"
+   },
+   {
+    "from": 1822.015625,
+    "to": 1828.015625,
+    "a": "axis-mark__name:Sweetness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1872.015625,
+    "to": 1874.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:lessrightmore"
+   },
+   {
+    "from": 1890.015625,
+    "to": 1935.015625,
+    "a": "axis-mark__anchors:lessrightmore",
+    "b": "pen-caption:This recipe only"
+   },
+   {
+    "from": 1955.015625,
+    "to": 1972.015625,
+    "a": "pen-caption:This recipe only",
+    "b": "axis-mark__name:Body"
+   },
+   {
+    "from": 1987.015625,
+    "to": 1993.015625,
+    "a": "axis-mark__name:Body",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 2037.015625,
+    "to": 2039.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:thinrightheavy"
+   },
+   {
+    "from": 2055.015625,
+    "to": 2080.015625,
+    "a": "axis-mark__anchors:thinrightheavy",
+    "b": "axis-mark__name:Oil"
+   },
+   {
+    "from": 2095.015625,
+    "to": 2101.015625,
+    "a": "axis-mark__name:Oil",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 2145.015625,
+    "to": 2147.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:faintrightstrong"
+   },
+   {
+    "from": 2163.015625,
+    "to": 2195.015625,
+    "a": "axis-mark__anchors:faintrightstrong",
+    "b": "pen-caption:Any problems?"
+   },
+   {
+    "from": 2215.015625,
+    "to": 2227.015625,
+    "a": "pen-caption:Any problems?",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 2242.015625,
+    "to": 2242.015625,
+    "a": "pen-caption:Every recipe",
+    "b": "defects-row__chips:Coarse, icySandy, gr"
+   },
+   {
+    "from": 2336.015625,
+    "to": 2381.015625,
+    "a": "defects-row__chips:Coarse, icySandy, gr",
+    "b": "pen-caption:This recipe only"
+   },
+   {
+    "from": 2396.015625,
+    "to": 2396.015625,
+    "a": "pen-caption:This recipe only",
+    "b": "defects-row__chips:Bitter"
+   },
+   {
+    "from": 2440.015625,
+    "to": 2472.015625,
+    "a": "defects-row__chips:Bitter",
+    "b": ":Cancel"
+   }
+  ]
+ },
+ "pen-p-B-393": {
+  "start": 20,
+  "end": 2099.015625,
+  "logLeft": 20,
+  "logWidth": 353,
+  "winW": 393,
+  "roles": [
+   {
+    "role": "Region name",
+    "text": "Batch",
+    "top": 40.546875,
+    "right": -902.9375,
+    "height": 18.890625,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "1.12px",
+    "lineHeight": "18.9px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Group cue",
+    "text": "At draw",
+    "top": 416.15625,
+    "right": -904.1875,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Caption",
+    "text": "Churn date",
+    "top": 90,
+    "right": -828,
+    "height": 14.390625,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "14.400001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Control caption",
+    "text": "Why blank",
+    "top": 448.15625,
+    "right": -603,
+    "height": 16.1875,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "16.200001px",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Axis name",
+    "text": "Hardness",
+    "top": 1411.015625,
+    "right": -881.09375,
+    "height": 15,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "textTransform": "uppercase",
+    "letterSpacing": "0.96px",
+    "lineHeight": "normal",
+    "color": "rgb(89, 89, 89)"
+   },
+   {
+    "role": "Any problems?",
+    "text": "Any problems?",
+    "top": 1874.015625,
+    "right": -855.46875,
+    "height": 20,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "20px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Field",
+    "text": "",
+    "top": 110.390625,
+    "right": -828,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "21.6px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Prose field",
+    "text": "",
+    "top": 281.96875,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "24px",
+    "color": "rgb(31, 61, 122)"
+   },
+   {
+    "role": "Option",
+    "text": "Nothing to note",
+    "top": 470.34375,
+    "right": -837.546875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Anchor",
+    "text": "soft",
+    "top": 1478.015625,
+    "right": -932.5,
+    "height": 16,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Chip",
+    "text": "Coarse, icy",
+    "top": 1921.015625,
+    "right": -869.5625,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "16.9px",
+    "color": "rgb(20, 20, 20)"
+   },
+   {
+    "role": "Clear",
+    "text": "Clear",
+    "top": 1027.640625,
+    "right": -622.421875,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "18.199999px",
+    "color": "rgb(20, 117, 221)"
+   },
+   {
+    "role": "Button",
+    "text": "Save batch",
+    "top": 2047.015625,
+    "right": -603,
+    "height": 44,
+    "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "fontWeight": "600",
+    "textTransform": "none",
+    "letterSpacing": "normal",
+    "lineHeight": "normal",
+    "color": "rgb(255, 255, 255)"
+   }
+  ],
+  "gaps": [
+   {
+    "from": 59.4375,
+    "to": 90,
+    "a": "region-name:Batch",
+    "b": "pen-caption:Churn date"
+   },
+   {
+    "from": 104.390625,
+    "to": 110.390625,
+    "a": "pen-caption:Churn date",
+    "b": "ink-field:ink-field"
+   },
+   {
+    "from": 154.390625,
+    "to": 156.390625,
+    "a": "ink-field:ink-field",
+    "b": "field-requirement:Required"
+   },
+   {
+    "from": 171.390625,
+    "to": 183.390625,
+    "a": "field-requirement:Required",
+    "b": "pen-caption:Churn duration"
+   },
+   {
+    "from": 197.78125,
+    "to": 203.78125,
+    "a": "pen-caption:Churn duration",
+    "b": "ink-field:ink-field"
+   },
+   {
+    "from": 247.78125,
+    "to": 259.78125,
+    "a": "ink-field:ink-field",
+    "b": "pen-caption:At the machine"
+   },
+   {
+    "from": 275.96875,
+    "to": 281.96875,
+    "a": "pen-caption:At the machine",
+    "b": "prose-field:prose-field"
+   },
+   {
+    "from": 325.96875,
+    "to": 337.96875,
+    "a": "prose-field:prose-field",
+    "b": "pen-caption:Ingredient notes"
+   },
+   {
+    "from": 354.15625,
+    "to": 360.15625,
+    "a": "pen-caption:Ingredient notes",
+    "b": "prose-field:prose-field"
+   },
+   {
+    "from": 404.15625,
+    "to": 416.15625,
+    "a": "prose-field:prose-field",
+    "b": "segmented-field__caption:At draw"
+   },
+   {
+    "from": 436.15625,
+    "to": 448.15625,
+    "a": "segmented-field__caption:At draw",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 464.34375,
+    "to": 470.34375,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 514.34375,
+    "to": 530.15625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "segmented-field__caption:Exit consistency"
+   },
+   {
+    "from": 546.34375,
+    "to": 552.34375,
+    "a": "segmented-field__caption:Exit consistency",
+    "b": "segmented:Smooth ribbonWet, so"
+   },
+   {
+    "from": 596.34375,
+    "to": 612.15625,
+    "a": "segmented:Smooth ribbonWet, so",
+    "b": "segmented-field__caption:Airiness (estimated)"
+   },
+   {
+    "from": 628.34375,
+    "to": 634.34375,
+    "a": "segmented-field__caption:Airiness (estimated)",
+    "b": "segmented:Low, denseMedium, st"
+   },
+   {
+    "from": 678.34375,
+    "to": 737.890625,
+    "a": "segmented:Low, denseMedium, st",
+    "b": "region-name:Tasting"
+   },
+   {
+    "from": 756.78125,
+    "to": 793.34375,
+    "a": "region-name:Tasting",
+    "b": "pen-caption:Tasted"
+   },
+   {
+    "from": 807.734375,
+    "to": 813.734375,
+    "a": "pen-caption:Tasted",
+    "b": "ink-field:2026-10-19"
+   },
+   {
+    "from": 857.734375,
+    "to": 869.734375,
+    "a": "ink-field:2026-10-19",
+    "b": "note-block__eyebrow:How did it turn out?"
+   },
+   {
+    "from": 885.921875,
+    "to": 891.921875,
+    "a": "note-block__eyebrow:How did it turn out?",
+    "b": "prose-field:Rich, a chalky finis"
+   },
+   {
+    "from": 935.921875,
+    "to": 951.25,
+    "a": "prose-field:Rich, a chalky finis",
+    "b": "pen-caption:Melt test"
+   },
+   {
+    "from": 965.640625,
+    "to": 971.640625,
+    "a": "pen-caption:Melt test",
+    "b": "ink-field:4"
+   },
+   {
+    "from": 1015.640625,
+    "to": 1055.453125,
+    "a": "ink-field:4",
+    "b": "segmented-field__caption:Melt style"
+   },
+   {
+    "from": 1071.640625,
+    "to": 1077.640625,
+    "a": "segmented-field__caption:Melt style",
+    "b": "segmented:Watery, weepingCream"
+   },
+   {
+    "from": 1121.640625,
+    "to": 1153.640625,
+    "a": "segmented:Watery, weepingCream",
+    "b": "pen-caption:Next time"
+   },
+   {
+    "from": 1169.828125,
+    "to": 1175.828125,
+    "a": "pen-caption:Next time",
+    "b": "prose-field:Less cinnamon"
+   },
+   {
+    "from": 1219.828125,
+    "to": 1231.828125,
+    "a": "prose-field:Less cinnamon",
+    "b": "segmented-field__caption:From freezer"
+   },
+   {
+    "from": 1251.828125,
+    "to": 1263.828125,
+    "a": "segmented-field__caption:From freezer",
+    "b": "pen-caption:Why blank"
+   },
+   {
+    "from": 1280.015625,
+    "to": 1286.015625,
+    "a": "pen-caption:Why blank",
+    "b": "segmented:Nothing to noteNot e"
+   },
+   {
+    "from": 1330.015625,
+    "to": 1350.015625,
+    "a": "segmented:Nothing to noteNot e",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1370.015625,
+    "to": 1411.015625,
+    "a": "pen-caption:Every recipe",
+    "b": "axis-mark__name:Hardness"
+   },
+   {
+    "from": 1426.015625,
+    "to": 1432.015625,
+    "a": "axis-mark__name:Hardness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1476.015625,
+    "to": 1478.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:softrighthard"
+   },
+   {
+    "from": 1494.015625,
+    "to": 1519.015625,
+    "a": "axis-mark__anchors:softrighthard",
+    "b": "axis-mark__name:Scoopability"
+   },
+   {
+    "from": 1534.015625,
+    "to": 1540.015625,
+    "a": "axis-mark__name:Scoopability",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1584.015625,
+    "to": 1586.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:crumblyrightgummy"
+   },
+   {
+    "from": 1602.015625,
+    "to": 1651.015625,
+    "a": "axis-mark__anchors:crumblyrightgummy",
+    "b": "axis-mark__name:Smoothness"
+   },
+   {
+    "from": 1666.015625,
+    "to": 1672.015625,
+    "a": "axis-mark__name:Smoothness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1716.015625,
+    "to": 1718.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:grainyrightsmooth"
+   },
+   {
+    "from": 1734.015625,
+    "to": 1759.015625,
+    "a": "axis-mark__anchors:grainyrightsmooth",
+    "b": "axis-mark__name:Sweetness"
+   },
+   {
+    "from": 1774.015625,
+    "to": 1780.015625,
+    "a": "axis-mark__name:Sweetness",
+    "b": "axis-mark__stops:12345"
+   },
+   {
+    "from": 1824.015625,
+    "to": 1826.015625,
+    "a": "axis-mark__stops:12345",
+    "b": "axis-mark__anchors:lessrightmore"
+   },
+   {
+    "from": 1842.015625,
+    "to": 1874.015625,
+    "a": "axis-mark__anchors:lessrightmore",
+    "b": "pen-caption:Any problems?"
+   },
+   {
+    "from": 1894.015625,
+    "to": 1906.015625,
+    "a": "pen-caption:Any problems?",
+    "b": "pen-caption:Every recipe"
+   },
+   {
+    "from": 1921.015625,
+    "to": 1921.015625,
+    "a": "pen-caption:Every recipe",
+    "b": "defects-row__chips:Coarse, icySandy, gr"
+   },
+   {
+    "from": 2015.015625,
+    "to": 2047.015625,
+    "a": "defects-row__chips:Coarse, icySandy, gr",
+    "b": ":Cancel"
+   }
+  ]
+ }
+}

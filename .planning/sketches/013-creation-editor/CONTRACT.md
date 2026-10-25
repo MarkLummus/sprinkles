@@ -33,7 +33,7 @@ Targets: `notebook-new-recipe.html` (except its last panel, "Option B · several
 
 ## 4. The style, its bands and the serving temperature (`style-menu-and-bands.html`; MAKE-09)
 
-- The Style region: head "Style" with Clear (`.text-control`, aria-label "Clear Style") at its right only while a style is picked; then the menu; then the Serving temperature field; then the caption "Targets" and six band rows.
+- The Style region: head "Style" with Clear (`.text-control`, aria-label "Clear Style") at its right only while a style is picked; then the menu; then the Serving temperature field; then the cue "Targets" (an h3 in the group-cue face since decision 27; 12 above and 12 below as built, decision 28) and six band rows.
 - The menu (decision 21): the app's own `select.ink-field.mk-menu` (appearance none, the D-17 chevron, `--gap-select-chevron-room` at the right), in the log's field chrome (`--app-rule-row` divider border, `--app-radius-control`, `--app-notebook-size-body` text), full width: 350 × 44. Its first option is "No style" (selected when nothing is picked), then Philadelphia, French, Gelato, Sorbet. A type added later is one more option. The drawn open list (`ul.mk-list`, role listbox, 348 × 44 a row, the chosen row `--app-blue-text` on `--app-background`) is a stand-in for the browser's own list; the build renders the select and nothing for the list.
 - Clear does the same as choosing No style: the menu reads No style, the bands stay as they stand (decision 14), the serving temperature is emptied (decision 17).
 - Picking a style replaces all six bands (decision 14) and the serving temperature (decision 9) with the style's own. Editing a band or the temperature leaves the style picked.
@@ -43,11 +43,11 @@ Targets: `notebook-new-recipe.html` (except its last panel, "Option B · several
 
 ## 5. Scales and problems (`scales-and-problems.html`; TASTE-01, TASTE-02)
 
-- Scales region: cue "Every recipe" (`.pen-caption.mk-cue`, in the record pen's Group cue face since decision 25: meta size, 600, sentence case, App text) over "Hardness, Scoopability, Smoothness, Sweetness" (`.mk-core`); cue "This recipe only" only once a scale exists; then the cards; then "Add scale" (65.9 × 44), gone at two scales.
-- A scale card (`.mk-card`): head "Scale n" with remove at the right; Name; Low end and High end side by side (`.mk-pair`); Kind as the app's joined two-cell group ("Right in the middle" 131.3 × 44, "Low to high" 87.8 × 44; decision 12), nothing pre-picked; under it the stops it will draw (`.mk-stops`, meta size, secondary text): for Right in the middle "thin · leaning thin · right · leaning rich · rich" from the two words typed; for Low to high "faint to strong". No stops line until both ends are typed.
-- Problems region: cue "Every recipe" over "Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film"; "This recipe only" once a problem exists; a problem card is "Problem n", remove, and Name; "Add problem" (86.5 × 44), gone at two problems.
+- Scales region: cue "Every recipe" (`h3.mk-cue`, the group-cue face since decisions 25 and 27: 14 px, 600, sentence case, App text) over "Hardness, Scoopability, Smoothness, Sweetness" (`.mk-core`); cue "This recipe only" only once a scale exists; then the cards; then "Add scale" (65.9 × 44), gone at two scales.
+- A scale card (`.mk-card`): no head since decision 27 (its accessible name stays "Scale n"); its first row (`.mk-caprow`) holds Name with remove beside it, 12 apart, bottoms aligned; Low end and High end side by side (`.mk-pair`); Kind as the app's joined two-cell group ("Right in the middle" 131.3 × 44, "Low to high" 87.8 × 44; decision 12), nothing pre-picked; under it the stops it will draw (`.mk-stops`, meta size, secondary text): for Right in the middle "thin · leaning thin · right · leaning rich · rich" from the two words typed; for Low to high "faint to strong". No stops line until both ends are typed.
+- Problems region: cue "Every recipe" over "Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film"; "This recipe only" once a problem exists; a problem card is named "Problem n" and holds Name with remove beside it (decision 27); "Add problem" (86.5 × 44), gone at two problems.
 - Just added: Required stands under each empty field (`.field-requirement`), Kind has no cell filled. 0 to 2 of each (sketch 010 D26 carries the same limit on the printed pages).
-- Words: Scales, Problems, Every recipe, This recipe only, Scale 1, Scale 2, Problem 1, Problem 2, Name, Low end, High end, Kind, Right in the middle, Low to high, Add scale, Add problem, remove, Required.
+- Words: Scales, Problems, Every recipe, This recipe only, Scale 1 to Problem 2 as the cards' accessible names only (decision 27), Name, Low end, High end, Kind, Right in the middle, Low to high, Add scale, Add problem, remove, Required.
 
 ## 6. Rules for every panel
 

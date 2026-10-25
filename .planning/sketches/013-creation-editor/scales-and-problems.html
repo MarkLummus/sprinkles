@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Authoring scales and problems · each scale's kind, 0 to 2 of each, at 1366 and 393 (drawn 2026-10-17; for approval)</title>
+<title>Authoring scales and problems · each scale's kind, 0 to 2 of each, at 1366 and 393 (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card head dropped; look-p10-ladder-redraw)</title>
 </head>
 <body>
 <x-dc>
@@ -508,7 +508,7 @@ body{margin:0}
   position: absolute;
   z-index: var(--app-z-notice);
   inset-block-start: 0;
-  inset-inline-start: var(--gap-page);
+  inset-inline-end: var(--gap-page);
   max-width: min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));
   margin: 0;
   margin-block-start: var(--gap-xs);
@@ -536,7 +536,9 @@ body{margin:0}
   opacity: 1;
 }
 .pc1366 .page-status-anchor{
-  position: relative;
+  position: sticky;
+  inset-block-start: var(--app-size-header-h);
+  z-index: var(--app-z-notice);
 }
 .pc1366 .not-found{
   padding: var(--gap-m) var(--gap-page);
@@ -2053,6 +2055,321 @@ body{margin:0}
   flex: 1 1 auto;
   min-width: 0;
 }
+.pc1366 .place .nb__count{
+  margin: 0 0 var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc1366 .place .nb__list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pc1366 .place .nb__row{
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) var(--app-col-tally);
+  grid-template-areas: 'rail name meta' 'rail desc desc';
+  column-gap: var(--gap-m);
+  padding: var(--gap-m) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc1366 .place .nb__rail{
+  grid-area: rail;
+  align-self: stretch;
+  width: var(--app-size-rail-w);
+  min-height: var(--app-size-rail-h);
+  border-radius: var(--app-radius-rail);
+  background: var(--app-notebook);
+}
+.pc1366 .place .nb__name{
+  grid-area: name;
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-recipe-name);
+  font-weight: 700;
+  letter-spacing: var(--app-tracking-name);
+  overflow-wrap: anywhere;
+}
+.pc1366 .place .nb__name a{
+  color: inherit;
+  border-radius: var(--app-radius-control);
+}
+.pc1366 .place .nb__desc{
+  grid-area: desc;
+  margin: var(--gap-xs) 0 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text-secondary);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.pc1366 .place .nb__meta{
+  grid-area: meta;
+  align-self: center;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc1366 .place .nb__dot{
+  display: none;
+}
+.pc1366 .place .nb__head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  flex-wrap: wrap;
+  row-gap: var(--gap-s);
+}
+.pc1366 .place .nb__head .place__title{
+  margin: 0;
+}
+.pc1366 .place .nb__new{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+  max-width: var(--measure-prose);
+  margin: var(--gap-m) 0;
+}
+.pc1366 .place .nb__new .notebook-field{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+.pc1366 .place .nb__new-actions{
+  display: flex;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+}
+.pc1366 .place .nb__draft{
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  grid-template-areas: 'rail name act' 'rail meta act';
+  column-gap: var(--gap-m);
+  align-items: center;
+  padding: var(--gap-m) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc1366 .place .nb__draft .nb__rail{
+  grid-area: rail;
+}
+.pc1366 .place .nb__draft .nb__name{
+  grid-area: name;
+}
+.pc1366 .place .nb__draft .nb__meta{
+  grid-area: meta;
+  flex-direction: row;
+}
+.pc1366 .place .nb__draft-act{
+  grid-area: act;
+}
+.pc1366 .place .nb__drafts{
+  list-style: none;
+  padding: 0;
+  margin: var(--gap-m) 0 0;
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+}
+.pc1366 .place .nb__drafts .nb__draft:first-child{
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc1366 .place .ing__filters{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--gap-s);
+  margin: var(--gap-m) 0 0;
+}
+.pc1366 .place .ing__field{
+  flex: 1 1 var(--measure-prose);
+  min-width: 0;
+  max-width: var(--measure-prose);
+}
+.pc1366 .place .ing__field--category{
+  flex: 0 0 auto;
+  max-width: none;
+}
+.pc1366 .place .ing__filters select.ink-field{
+  background-color: var(--app-background);
+  background-image: linear-gradient(45deg,transparent 50%,var(--app-text) 50%),linear-gradient(135deg,var(--app-text) 50%,transparent 50%);
+  background-position: calc(100% - var(--sheet-inset-select-chevron-x)) calc(50% - var(--sheet-inset-select-chevron-y)),calc(100% - var(--sheet-inset-select-chevron-x) + var(--sheet-size-select-chevron)) calc(50% - var(--sheet-inset-select-chevron-y));
+  background-size: var(--sheet-size-select-chevron) var(--sheet-size-select-chevron),var(--sheet-size-select-chevron) var(--sheet-size-select-chevron);
+  background-repeat: no-repeat;
+  padding-right: var(--gap-select-chevron-room);
+  min-width: var(--app-col-standing);
+}
+.pc1366 .place .ing__status{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  margin: var(--gap-m) 0 var(--gap-s);
+}
+.pc1366 .place .ing__count{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc1366 .place .ing__clear{
+  border-radius: var(--app-radius-control);
+}
+.pc1366 .place .ing__list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pc1366 .place .ing__row{
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr);
+  column-gap: var(--gap-m);
+  padding: var(--gap-xs) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc1366 .place .ing__rail{
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  width: var(--app-size-rail-w);
+  min-height: var(--touch-min);
+  margin: var(--gap-xs) 0;
+  border-radius: var(--app-radius-rail);
+  background: var(--app-ingredients);
+}
+.pc1366 .place .ing__head{
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) var(--app-col-standing) minmax(0,1fr) auto;
+  column-gap: var(--gap-m);
+  align-items: center;
+  width: 100%;
+  min-height: var(--touch-min);
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--gap-xs) 0;
+  border: none;
+  border-radius: var(--app-radius-control);
+  background: none;
+  color: var(--app-text);
+  font-family: var(--face-grotesk);
+  text-align: left;
+  cursor: pointer;
+}
+.pc1366 .place .ing__head:hover{
+  border: none;
+  padding: var(--gap-xs) 0;
+}
+.pc1366 .place .ing__name{
+  font-size: var(--app-notebook-identity-size);
+  font-weight: 700;
+  letter-spacing: var(--app-tracking-name);
+  overflow-wrap: anywhere;
+}
+.pc1366 .place .ing__meta{
+  display: contents;
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+.pc1366 .place .ing__cat, .pc1366 .place .ing__sum{
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc1366 .place .ing__control{
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+}
+.pc1366 .place .ing__detail{
+  grid-column: 2;
+  padding: var(--gap-xs) 0 var(--gap-s);
+}
+.pc1366 .place .ing__figures{
+  width: 100%;
+  max-width: calc(var(--measure-prose) + var(--app-col-tally));
+  border-collapse: collapse;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  font-variant-numeric: tabular-nums;
+}
+.pc1366 .place .ing__figures th, .pc1366 .place .ing__figures td{
+  padding: var(--gap-xs) var(--gap-m) var(--gap-xs) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+  text-align: left;
+  vertical-align: baseline;
+  font-weight: 400;
+}
+.pc1366 .place .ing__figures thead th{
+  border-top: none;
+  padding-top: 0;
+  font-size: var(--app-size-label);
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-secondary);
+}
+.pc1366 .place .ing__figures tbody th{
+  font-weight: 600;
+  white-space: nowrap;
+}
+.pc1366 .place .ing__figures .ing__amount{
+  text-align: right;
+  white-space: nowrap;
+}
+.pc1366 .place .ing__figures .ing__unsaid{
+  color: var(--app-text-secondary);
+}
+.pc1366 .place .ing__facts, .pc1366 .place .ing__helper{
+  margin: var(--gap-s) 0 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+.pc1366 .place .ing__note-cap{
+  margin: var(--gap-m) 0 var(--gap-xs);
+}
+.pc1366 .place .ing__note{
+  margin: 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+.pc1366 .place .ing__none{
+  margin: var(--gap-m) 0 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+.pc1366 .place .nb__name a{
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-min);
+  }
+.pc1366 .place .ing__clear{
+    min-height: var(--touch-min);
+  }
+.pc1366 .place .ing__status{
+    min-height: var(--touch-min);
+  }
 .pc1366 .shell__place{
   display: flex;
   align-items: center;
@@ -2231,6 +2548,264 @@ body{margin:0}
   display: flex;
   flex-direction: column;
   gap: var(--gap-s);
+}
+.pc1366 .notebook.mk-page .notebook-recipe__form{
+  max-width: var(--measure-prose);
+}
+.pc1366 .notebook.mk-page .notebook-log{
+  padding-top: 0;
+}
+.pc1366 .notebook .mk-add-row{
+  margin: var(--gap-xs) 0 0;
+}
+.pc1366 .notebook .mk-add{
+  display: inline-flex;
+  align-items: center;
+}
+.pc1366 .notebook .mk-focus{
+  outline: var(--focus-outline-width) solid var(--sheet-ink);
+  outline-offset: var(--focus-outline-offset);
+}
+.pc1366 .notebook .pick{
+  margin: var(--gap-s) 0 0;
+  padding: var(--gap-s);
+  border: var(--rule-ink-field) solid var(--sheet-ink);
+}
+.pc1366 .notebook .pick__head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  min-height: var(--touch-min);
+}
+.pc1366 .notebook .pick .ing__filters{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--gap-s);
+  margin: 0;
+}
+.pc1366 .notebook .pick .ing__field{
+  flex: 1 1 var(--measure-prose);
+  min-width: 0;
+  max-width: var(--measure-prose);
+}
+.pc1366 .notebook .pick .ing__field--category{
+  flex: 0 0 auto;
+  max-width: none;
+}
+.pc1366 .notebook .pick .ing__filters select.ink-field{
+  background-color: var(--app-background);
+  background-image: linear-gradient(45deg,transparent 50%,var(--app-text) 50%),linear-gradient(135deg,var(--app-text) 50%,transparent 50%);
+  background-position: calc(100% - var(--sheet-inset-select-chevron-x)) calc(50% - var(--sheet-inset-select-chevron-y)),calc(100% - var(--sheet-inset-select-chevron-x) + var(--sheet-size-select-chevron)) calc(50% - var(--sheet-inset-select-chevron-y));
+  background-size: var(--sheet-size-select-chevron) var(--sheet-size-select-chevron),var(--sheet-size-select-chevron) var(--sheet-size-select-chevron);
+  background-repeat: no-repeat;
+  padding-right: var(--gap-select-chevron-room);
+  min-width: var(--app-col-standing);
+}
+.pc1366 .notebook .pick .ing__status{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  margin: var(--gap-s) 0 var(--gap-xs);
+  min-height: 0;
+}
+.pc1366 .notebook .pick .ing__count{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc1366 .notebook .pick .ing__clear{
+  border-radius: var(--app-radius-control);
+}
+.pc1366 .notebook .pick__list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: calc(var(--touch-min) * 6);
+  overflow-y: auto;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc1366 .notebook .pick__row{
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  grid-template-areas: 'name act' 'sum sum';
+  column-gap: var(--gap-m);
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: var(--touch-min);
+  margin: 0;
+  padding: var(--gap-xs) 0;
+  border: none;
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+  border-radius: 0;
+  background: none;
+  color: var(--app-text);
+  font-family: var(--face-grotesk);
+  text-align: left;
+  cursor: pointer;
+}
+.pc1366 .notebook .pick__row:hover{
+  border: none;
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+  padding: var(--gap-xs) 0;
+}
+.pc1366 .notebook .pick__name{
+  grid-area: name;
+  font-size: var(--app-notebook-size-body);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.pc1366 .notebook .pick__sum{
+  grid-area: sum;
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc1366 .notebook .pick__act{
+  grid-area: act;
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+}
+.pc1366 .notebook .pick__row--added{
+  cursor: default;
+}
+.pc1366 .notebook .pick__row--added .pick__name, .pc1366 .notebook .pick__row--added .pick__sum, .pc1366 .notebook .pick__row--added .pick__act{
+  color: var(--app-text-secondary);
+  text-decoration: none;
+}
+.pc1366 .notebook .pick__none{
+  margin: var(--gap-s) 0 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+.pc1366 .notebook .mk-region{
+  padding: var(--gap-m) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc1366 .notebook .mk-region .batch-row__head{
+  min-height: var(--sheet-text-control-min);
+  align-items: center;
+}
+.pc1366 .notebook .mk-region:first-child{
+  border-top: none;
+  padding-top: 0;
+}
+.pc1366 .notebook .mk-body{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+.pc1366 .notebook .mk-field-row{
+  display: flex;
+  align-items: center;
+  column-gap: var(--gap-field-unit);
+}
+.pc1366 .notebook .mk-field-row .ink-field{
+  width: var(--sheet-field-w-figure);
+  flex: none;
+}
+.pc1366 .notebook .mk-field-row .ink-field[type='number']{
+  width: calc(var(--sheet-field-w-figure) * 1.5);
+}
+.pc1366 .notebook .mk-unit{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  color: var(--app-text);
+}
+.pc1366 .notebook .mk-menu-wrap{
+  position: relative;
+}
+.pc1366 .notebook .notebook-log .mk-menu{
+  display: block;
+  width: 100%;
+  padding: var(--app-notebook-gap-tight) var(--gap-select-chevron-room) var(--app-notebook-gap-tight)
+    var(--app-notebook-field-pad-x);
+  border: var(--app-rule-row) solid var(--app-divider);
+  border-radius: var(--app-radius-control);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--sheet-leading-field);
+  color: var(--app-text);
+}
+.pc1366 .notebook .mk-band{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--gap-s);
+  min-height: var(--touch-min);
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc1366 .notebook .mk-band__label{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  color: var(--app-text);
+}
+.pc1366 .notebook .mk-band__label small{
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
+}
+.pc1366 .notebook .mk-band__ends{
+  display: flex;
+  align-items: center;
+  column-gap: var(--gap-field-unit);
+}
+.pc1366 .notebook .mk-band__ends .ink-field{
+  width: var(--sheet-field-w-figure);
+}
+.pc1366 .notebook .mk-band__unit{
+  min-width: var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  color: var(--app-text);
+}
+.pc1366 .notebook .mk-cue{
+  margin: 0;
+}
+.pc1366 .notebook .mk-core{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+.pc1366 .notebook .mk-pair{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: var(--gap-s);
+}
+.pc1366 .notebook .mk-card{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+  padding: var(--gap-s) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc1366 .notebook .mk-cue + .mk-card{
+  border-top: none;
+  padding-top: 0;
+}
+.pc1366 .notebook .mk-card__head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+}
+.pc1366 .notebook .mk-stops{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
 }
 .pc1366 .notebook-recipe__form-actions{
   display: flex;
@@ -2850,6 +3425,9 @@ body{margin:0}
   color: var(--app-background);
   font-weight: 600;
 }
+.pc1366 .notebook-log .prose-field{
+  font-family: var(--face-grotesk);
+}
 .pc1366 .notebook-log .axes-cue{
   font-size: var(--app-size-meta);
   font-weight: 600;
@@ -2870,6 +3448,15 @@ body{margin:0}
 .pc1366 .notebook-log .axes-grid--stacked > .defects-head{
   margin-bottom: calc(var(--gap-s) - var(--gap-l));
 }
+.pc1366 .notebook .mk-add{
+    min-height: var(--touch-min);
+  }
+.pc1366 .notebook .pick__head .text-control, .pc1366 .notebook .pick .ing__clear{
+    min-height: var(--touch-min);
+  }
+.pc1366 .notebook .mk-band .ink-field{
+    min-height: var(--touch-min);
+  }
 .pc1366 .notebook-field .ink-field, .pc1366 .notebook-field input, .pc1366 .notebook-field textarea{
     font-size: var(--sheet-type-note);
   }
@@ -2975,7 +3562,6 @@ body{margin:0}
 .pc1366 .ing__status{min-height:var(--touch-min)}
 .pc1366 .mk-add-row{margin:var(--gap-xs) 0 0}
 .pc1366 .mk-add{display:inline-flex;align-items:center}
-.pc1366 .mk-note{margin:0;font-family:var(--face-grotesk);font-size:var(--app-size-meta);line-height:var(--sheet-leading-helper);color:var(--app-text-secondary)}
 .pc1366 .mk-focus{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}
 .pc1366 .mk-region{padding:var(--gap-m) 0;border-top:var(--app-rule-row) solid var(--app-divider)}
 .pc1366 .mk-region .batch-row__head{min-height:var(--sheet-text-control-min);align-items:center}
@@ -2986,11 +3572,17 @@ body{margin:0}
 .pc1366 .mk-pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--gap-s)}
 .pc1366 .mk-field-row{display:flex;align-items:center;column-gap:var(--gap-field-unit)}
 .pc1366 .mk-field-row .ink-field{width:var(--sheet-field-w-figure);flex:none}
+.pc1366 .mk-field-row .ink-field[type=number]{width:calc(var(--sheet-field-w-figure) * 1.5)}
 .pc1366 .mk-unit{font-family:var(--face-grotesk);font-size:var(--sheet-type-control);color:var(--app-text)}
 .pc1366 .mk-card{display:flex;flex-direction:column;gap:var(--gap-s);padding:var(--gap-s) 0;border-top:var(--app-rule-row) solid var(--app-divider)}
 .pc1366 .mk-cue + .mk-card{border-top:none;padding-top:0}
 .pc1366 .mk-card__head{display:flex;align-items:center;justify-content:space-between;column-gap:var(--gap-m)}
 .pc1366 .mk-stops{margin:0;font-family:var(--face-grotesk);font-size:var(--app-size-meta);color:var(--app-text-secondary)}
+.pc1366 .mk-menu-wrap{position:relative}
+.pc1366 .notebook-log .mk-menu{display:block;width:100%;padding:var(--app-notebook-gap-tight) var(--gap-select-chevron-room) var(--app-notebook-gap-tight) var(--app-notebook-field-pad-x);border:var(--app-rule-row) solid var(--app-divider);border-radius:var(--app-radius-control);font-size:var(--app-notebook-size-body);line-height:var(--sheet-leading-field);color:var(--app-text)}
+.pc1366 .mk-list{position:absolute;left:0;right:0;top:calc(100% + var(--gap-xs));z-index:3;list-style:none;margin:0;padding:var(--gap-xs) 0;border:var(--app-rule-row) solid var(--app-divider);border-radius:var(--app-radius-control);background:var(--app-background);box-shadow:0 var(--gap-xs) var(--gap-m) var(--app-divider)}
+.pc1366 .mk-list li{display:flex;align-items:center;min-height:var(--touch-min);padding:0 var(--app-notebook-field-pad-x);font-family:var(--face-grotesk);font-size:var(--app-notebook-size-body);color:var(--app-text)}
+.pc1366 .mk-list li[aria-selected=true]{background:var(--app-blue-text);color:var(--app-background)}
 .pc1366 .mk-band{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:var(--gap-s);min-height:var(--touch-min);border-top:var(--app-rule-row) solid var(--app-divider)}
 .pc1366 .mk-band__label{font-family:var(--face-grotesk);font-size:var(--app-notebook-size-body);color:var(--app-text)}
 .pc1366 .mk-band__label small{font-size:var(--app-size-label);color:var(--app-text-secondary)}
@@ -3027,6 +3619,35 @@ body{margin:0}
 .pc1366 .mk-add{min-height:var(--touch-min)}
 .pc1366 .pick__head .text-control{min-height:var(--touch-min)}
 .pc1366 .mk-band .ink-field{min-height:var(--touch-min)}
+.pc1366 /* Revision 2 (2026-10-21, after Mark rejected revision 1: "strong(4) looks bigger and bolder than its parents; This recipe only looks smallest ... looks completely random"): the ladder governs the values too.
+   The sequence, .pc1366 top to bottom, .pc1366 never grows in size or weight: L1 region name 14/600 caps secondary; L2 group cue 14/600 sentence ink; L3 caption 12/600 caps secondary, .pc1366 a tag on its content;
+   L4 content 14/400 ink (words, lists, figures with tabular numerals); the hand keeps its face, .pc1366 colour and its 20 px floor and sits under its cue by weight; chips 13/400; fields 16/400 in their boxes (controls, the touch floor). */
+/* L1 region name: the Sheet's section size (14), .pc1366 caps, .pc1366 tracked, .pc1366 secondary, .pc1366 in the 44 px head row */
+.notebook-log .region-name, .pc1366 .notebook-log .batch-row__head .region-name{font-size:var(--app-size-meta)}
+.pc1366 /* L3 caption: one caption face in the log, .pc1366 the App's (notebook-caption): 12/600 caps, .pc1366 app-tracking-label, .pc1366 secondary; the axis names and the pen's captions join it */
+.notebook-log .pen-caption{font-weight:600;letter-spacing:var(--app-tracking-label)}
+.pc1366 .notebook-log .axis-mark__name{font-weight:600;letter-spacing:var(--app-tracking-label);color:var(--app-text-secondary)}
+.pc1366 /* L2 group cue (sketch 011 decision 40 C): every first-level label that stands over two or more things of one kind */
+.notebook-log .axes-cue, .pc1366 .notebook-log .mk-cue, .pc1366 .notebook-log .mk-cue-targets, .pc1366 .notebook-log .defects-head > .pen-caption, .pc1366 .notebook-log .tasting-reading__group > h4.batch-row__group-label{font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:0;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
+.pc1366 /* a label nested under a cue (Every recipe and This recipe only inside Any problems?) is a caption, .pc1366 not a second cue */
+.notebook-log .tasting-reading__subgroup > .batch-row__group-label, .pc1366 .notebook-log .defect-group > .axes-cue{font-size:var(--app-size-label);font-weight:600;text-transform:uppercase;letter-spacing:var(--app-tracking-label);line-height:normal;color:var(--app-text-secondary)}
+.pc1366 /* L4 content: words, .pc1366 lists and figures under a cue or a caption at the meta size, .pc1366 regular, .pc1366 on the cue's line; the reading cell's figure comes down from 20/600 (sketch 011's log value) */
+.notebook-log .mk-core{font-size:var(--app-size-meta);line-height:var(--app-notebook-pen-cue-line-h)}
+.pc1366 .notebook-log .batch-row__cell-value{font-size:var(--app-size-meta);font-weight:400;line-height:var(--app-notebook-pen-cue-line-h)}
+.pc1366 /* the hand: Caveat, .pc1366 pen blue, .pc1366 at its floor (size-hand-min), .pc1366 under its cue by weight and face; for the maker's own written words only */
+.notebook-log .app-hand{font-size:var(--size-hand-min)}
+.pc1366 /* Revision 2a (Mark, 2026-10-21, on Bitter: "I thought that the ink color was reserved for hand-written content, not selected options"): a picked problem is a selected option, .pc1366 not written words, .pc1366 so it is content (L4), .pc1366 not the hand */
+.notebook-log .tasting-reading__problems{font-family:var(--face-grotesk);font-size:var(--app-size-meta);font-weight:400;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
+.pc1366 /* the spacing scale: gap-l between groups, .pc1366 gap-xs under a cue over a one-line list, .pc1366 gap-s under a cue over a card, .pc1366 gap-s elsewhere */
+.notebook-log .mk-cue{margin-top:var(--gap-m);margin-bottom:calc(var(--gap-xs) - var(--gap-s))}
+.pc1366 .notebook-log .mk-body > .mk-cue:first-child{margin-top:0}
+.pc1366 .notebook-log .mk-cue + .mk-card{margin-top:calc(var(--gap-s) - var(--gap-xs))}
+.pc1366 /* the card: no head; remove stands beside the Name field */
+.notebook-log .mk-caprow{display:flex;align-items:flex-end;column-gap:var(--gap-s)}
+.pc1366 .notebook-log .mk-caprow .notebook-field{flex:1 1 auto}
+.pc1366 .notebook-log h3.mk-cue{margin-top:var(--gap-m);margin-bottom:calc(var(--gap-xs) - var(--gap-s));font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:normal;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
+.pc1366 .notebook-log .mk-body > h3.mk-cue:first-child{margin-top:0}
+.pc1366 .notebook-log h3.mk-cue-targets{display:block;margin:0 0 var(--gap-xs);font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:normal;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
 .pc393{
   
   --sheet-ground: #f7f7f4;
@@ -3523,7 +4144,7 @@ body{margin:0}
   position: absolute;
   z-index: var(--app-z-notice);
   inset-block-start: 0;
-  inset-inline-start: var(--gap-page);
+  inset-inline-end: var(--gap-page);
   max-width: min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));
   margin: 0;
   margin-block-start: var(--gap-xs);
@@ -3551,7 +4172,9 @@ body{margin:0}
   opacity: 1;
 }
 .pc393 .page-status-anchor{
-  position: relative;
+  position: sticky;
+  inset-block-start: var(--app-size-header-h);
+  z-index: var(--app-z-notice);
 }
 .pc393 .not-found{
   padding: var(--gap-m) var(--gap-page);
@@ -4800,6 +5423,9 @@ body{margin:0}
 .pc393 .save-ceremony, .pc393 .pen-foot__controls{
     flex-wrap: wrap;
   }
+.pc393 .page-status-anchor{
+    inset-block-start: 0;
+  }
 .pc393 .ingredient-table-region{
     overflow-x: auto;
   }
@@ -5089,6 +5715,407 @@ body{margin:0}
   flex: 1 1 auto;
   min-width: 0;
 }
+.pc393 .place .nb__count{
+  margin: 0 0 var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc393 .place .nb__list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pc393 .place .nb__row{
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) var(--app-col-tally);
+  grid-template-areas: 'rail name meta' 'rail desc desc';
+  column-gap: var(--gap-m);
+  padding: var(--gap-m) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc393 .place .nb__rail{
+  grid-area: rail;
+  align-self: stretch;
+  width: var(--app-size-rail-w);
+  min-height: var(--app-size-rail-h);
+  border-radius: var(--app-radius-rail);
+  background: var(--app-notebook);
+}
+.pc393 .place .nb__name{
+  grid-area: name;
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-recipe-name);
+  font-weight: 700;
+  letter-spacing: var(--app-tracking-name);
+  overflow-wrap: anywhere;
+}
+.pc393 .place .nb__name a{
+  color: inherit;
+  border-radius: var(--app-radius-control);
+}
+.pc393 .place .nb__desc{
+  grid-area: desc;
+  margin: var(--gap-xs) 0 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text-secondary);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.pc393 .place .nb__meta{
+  grid-area: meta;
+  align-self: center;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc393 .place .nb__dot{
+  display: none;
+}
+.pc393 .place .nb__head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  flex-wrap: wrap;
+  row-gap: var(--gap-s);
+}
+.pc393 .place .nb__head .place__title{
+  margin: 0;
+}
+.pc393 .place .nb__new{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+  max-width: var(--measure-prose);
+  margin: var(--gap-m) 0;
+}
+.pc393 .place .nb__new .notebook-field{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+.pc393 .place .nb__new-actions{
+  display: flex;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+}
+.pc393 .place .nb__draft{
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  grid-template-areas: 'rail name act' 'rail meta act';
+  column-gap: var(--gap-m);
+  align-items: center;
+  padding: var(--gap-m) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc393 .place .nb__draft .nb__rail{
+  grid-area: rail;
+}
+.pc393 .place .nb__draft .nb__name{
+  grid-area: name;
+}
+.pc393 .place .nb__draft .nb__meta{
+  grid-area: meta;
+  flex-direction: row;
+}
+.pc393 .place .nb__draft-act{
+  grid-area: act;
+}
+.pc393 .place .nb__drafts{
+  list-style: none;
+  padding: 0;
+  margin: var(--gap-m) 0 0;
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+}
+.pc393 .place .nb__drafts .nb__draft:first-child{
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc393 .place .ing__filters{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--gap-s);
+  margin: var(--gap-m) 0 0;
+}
+.pc393 .place .ing__field{
+  flex: 1 1 var(--measure-prose);
+  min-width: 0;
+  max-width: var(--measure-prose);
+}
+.pc393 .place .ing__field--category{
+  flex: 0 0 auto;
+  max-width: none;
+}
+.pc393 .place .ing__filters select.ink-field{
+  background-color: var(--app-background);
+  background-image: linear-gradient(45deg,transparent 50%,var(--app-text) 50%),linear-gradient(135deg,var(--app-text) 50%,transparent 50%);
+  background-position: calc(100% - var(--sheet-inset-select-chevron-x)) calc(50% - var(--sheet-inset-select-chevron-y)),calc(100% - var(--sheet-inset-select-chevron-x) + var(--sheet-size-select-chevron)) calc(50% - var(--sheet-inset-select-chevron-y));
+  background-size: var(--sheet-size-select-chevron) var(--sheet-size-select-chevron),var(--sheet-size-select-chevron) var(--sheet-size-select-chevron);
+  background-repeat: no-repeat;
+  padding-right: var(--gap-select-chevron-room);
+  min-width: var(--app-col-standing);
+}
+.pc393 .place .ing__status{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  margin: var(--gap-m) 0 var(--gap-s);
+}
+.pc393 .place .ing__count{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc393 .place .ing__clear{
+  border-radius: var(--app-radius-control);
+}
+.pc393 .place .ing__list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pc393 .place .ing__row{
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr);
+  column-gap: var(--gap-m);
+  padding: var(--gap-xs) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc393 .place .ing__rail{
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  width: var(--app-size-rail-w);
+  min-height: var(--touch-min);
+  margin: var(--gap-xs) 0;
+  border-radius: var(--app-radius-rail);
+  background: var(--app-ingredients);
+}
+.pc393 .place .ing__head{
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) var(--app-col-standing) minmax(0,1fr) auto;
+  column-gap: var(--gap-m);
+  align-items: center;
+  width: 100%;
+  min-height: var(--touch-min);
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--gap-xs) 0;
+  border: none;
+  border-radius: var(--app-radius-control);
+  background: none;
+  color: var(--app-text);
+  font-family: var(--face-grotesk);
+  text-align: left;
+  cursor: pointer;
+}
+.pc393 .place .ing__head:hover{
+  border: none;
+  padding: var(--gap-xs) 0;
+}
+.pc393 .place .ing__name{
+  font-size: var(--app-notebook-identity-size);
+  font-weight: 700;
+  letter-spacing: var(--app-tracking-name);
+  overflow-wrap: anywhere;
+}
+.pc393 .place .ing__meta{
+  display: contents;
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+.pc393 .place .ing__cat, .pc393 .place .ing__sum{
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc393 .place .ing__control{
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+}
+.pc393 .place .ing__detail{
+  grid-column: 2;
+  padding: var(--gap-xs) 0 var(--gap-s);
+}
+.pc393 .place .ing__figures{
+  width: 100%;
+  max-width: calc(var(--measure-prose) + var(--app-col-tally));
+  border-collapse: collapse;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  font-variant-numeric: tabular-nums;
+}
+.pc393 .place .ing__figures th, .pc393 .place .ing__figures td{
+  padding: var(--gap-xs) var(--gap-m) var(--gap-xs) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+  text-align: left;
+  vertical-align: baseline;
+  font-weight: 400;
+}
+.pc393 .place .ing__figures thead th{
+  border-top: none;
+  padding-top: 0;
+  font-size: var(--app-size-label);
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-secondary);
+}
+.pc393 .place .ing__figures tbody th{
+  font-weight: 600;
+  white-space: nowrap;
+}
+.pc393 .place .ing__figures .ing__amount{
+  text-align: right;
+  white-space: nowrap;
+}
+.pc393 .place .ing__figures .ing__unsaid{
+  color: var(--app-text-secondary);
+}
+.pc393 .place .ing__facts, .pc393 .place .ing__helper{
+  margin: var(--gap-s) 0 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+.pc393 .place .ing__note-cap{
+  margin: var(--gap-m) 0 var(--gap-xs);
+}
+.pc393 .place .ing__note{
+  margin: 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+.pc393 .place .ing__none{
+  margin: var(--gap-m) 0 0;
+  max-width: var(--measure-prose);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+.pc393 .place .ing__head{
+    grid-template-columns: minmax(0,1fr) auto;
+    grid-template-areas: 'cat cat' 'name control' 'sum sum';
+    row-gap: var(--gap-hair);
+  }
+.pc393 .place .ing__cat{
+    grid-area: cat;
+    font-size: var(--app-size-label);
+    font-weight: 500;
+    letter-spacing: var(--app-tracking-label);
+    text-transform: uppercase;
+  }
+.pc393 .place .ing__name{
+    grid-area: name;
+  }
+.pc393 .place .ing__sum{
+    grid-area: sum;
+  }
+.pc393 .place .ing__control{
+    grid-area: control;
+  }
+.pc393 .place .nb__row{
+    grid-template-columns: auto minmax(0,1fr);
+    grid-template-areas: 'rail name' 'rail desc' 'rail meta';
+  }
+.pc393 .place .nb__meta{
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: var(--gap-xs);
+    margin-top: var(--gap-xs);
+  }
+.pc393 .place .nb__dot{
+    display: inline;
+  }
+.pc393 .place .nb__draft{
+    grid-template-columns: auto minmax(0,1fr);
+    grid-template-areas: 'rail name' 'rail meta' 'rail act';
+  }
+.pc393 .place .nb__draft-act{
+    justify-self: start;
+    margin-top: var(--gap-xs);
+  }
+.pc393 .place .ing__field{
+    flex: 1 1 100%;
+    max-width: none;
+  }
+.pc393 .place .ing__field--category{
+    flex: 1 1 100%;
+  }
+.pc393 .place .ing__figures thead{
+    display: none;
+  }
+.pc393 .place .ing__figures, .pc393 .place .ing__figures tbody{
+    display: block;
+    width: 100%;
+  }
+.pc393 .place .ing__figures tr{
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    grid-template-areas: 'fig amt' 'basis basis' 'src src';
+    column-gap: var(--gap-m);
+    padding: var(--gap-xs) 0;
+    border-top: var(--app-rule-row) solid var(--app-divider);
+  }
+.pc393 .place .ing__figures th, .pc393 .place .ing__figures td{
+    display: block;
+    padding: 0;
+    border-top: none;
+  }
+.pc393 .place .ing__figures tbody th{
+    grid-area: fig;
+  }
+.pc393 .place .ing__figures .ing__amount{
+    grid-area: amt;
+  }
+.pc393 .place .ing__figures .ing__basis{
+    grid-area: basis;
+    color: var(--app-text-secondary);
+    font-size: var(--app-size-meta);
+  }
+.pc393 .place .ing__figures .ing__source{
+    grid-area: src;
+    color: var(--app-text-secondary);
+    font-size: var(--app-size-meta);
+    text-align: left;
+  }
+.pc393 .place .nb__name a{
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-min);
+  }
+.pc393 .place .ing__clear{
+    min-height: var(--touch-min);
+  }
+.pc393 .place .ing__status{
+    min-height: var(--touch-min);
+  }
 .pc393 .shell__place{
   display: flex;
   align-items: center;
@@ -5349,6 +6376,264 @@ body{margin:0}
   display: flex;
   flex-direction: column;
   gap: var(--gap-s);
+}
+.pc393 .notebook.mk-page .notebook-recipe__form{
+  max-width: var(--measure-prose);
+}
+.pc393 .notebook.mk-page .notebook-log{
+  padding-top: 0;
+}
+.pc393 .notebook .mk-add-row{
+  margin: var(--gap-xs) 0 0;
+}
+.pc393 .notebook .mk-add{
+  display: inline-flex;
+  align-items: center;
+}
+.pc393 .notebook .mk-focus{
+  outline: var(--focus-outline-width) solid var(--sheet-ink);
+  outline-offset: var(--focus-outline-offset);
+}
+.pc393 .notebook .pick{
+  margin: var(--gap-s) 0 0;
+  padding: var(--gap-s);
+  border: var(--rule-ink-field) solid var(--sheet-ink);
+}
+.pc393 .notebook .pick__head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  min-height: var(--touch-min);
+}
+.pc393 .notebook .pick .ing__filters{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--gap-s);
+  margin: 0;
+}
+.pc393 .notebook .pick .ing__field{
+  flex: 1 1 var(--measure-prose);
+  min-width: 0;
+  max-width: var(--measure-prose);
+}
+.pc393 .notebook .pick .ing__field--category{
+  flex: 0 0 auto;
+  max-width: none;
+}
+.pc393 .notebook .pick .ing__filters select.ink-field{
+  background-color: var(--app-background);
+  background-image: linear-gradient(45deg,transparent 50%,var(--app-text) 50%),linear-gradient(135deg,var(--app-text) 50%,transparent 50%);
+  background-position: calc(100% - var(--sheet-inset-select-chevron-x)) calc(50% - var(--sheet-inset-select-chevron-y)),calc(100% - var(--sheet-inset-select-chevron-x) + var(--sheet-size-select-chevron)) calc(50% - var(--sheet-inset-select-chevron-y));
+  background-size: var(--sheet-size-select-chevron) var(--sheet-size-select-chevron),var(--sheet-size-select-chevron) var(--sheet-size-select-chevron);
+  background-repeat: no-repeat;
+  padding-right: var(--gap-select-chevron-room);
+  min-width: var(--app-col-standing);
+}
+.pc393 .notebook .pick .ing__status{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  margin: var(--gap-s) 0 var(--gap-xs);
+  min-height: 0;
+}
+.pc393 .notebook .pick .ing__count{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc393 .notebook .pick .ing__clear{
+  border-radius: var(--app-radius-control);
+}
+.pc393 .notebook .pick__list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: calc(var(--touch-min) * 6);
+  overflow-y: auto;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc393 .notebook .pick__row{
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  grid-template-areas: 'name act' 'sum sum';
+  column-gap: var(--gap-m);
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: var(--touch-min);
+  margin: 0;
+  padding: var(--gap-xs) 0;
+  border: none;
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+  border-radius: 0;
+  background: none;
+  color: var(--app-text);
+  font-family: var(--face-grotesk);
+  text-align: left;
+  cursor: pointer;
+}
+.pc393 .notebook .pick__row:hover{
+  border: none;
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+  padding: var(--gap-xs) 0;
+}
+.pc393 .notebook .pick__name{
+  grid-area: name;
+  font-size: var(--app-notebook-size-body);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.pc393 .notebook .pick__sum{
+  grid-area: sum;
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pc393 .notebook .pick__act{
+  grid-area: act;
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+}
+.pc393 .notebook .pick__row--added{
+  cursor: default;
+}
+.pc393 .notebook .pick__row--added .pick__name, .pc393 .notebook .pick__row--added .pick__sum, .pc393 .notebook .pick__row--added .pick__act{
+  color: var(--app-text-secondary);
+  text-decoration: none;
+}
+.pc393 .notebook .pick__none{
+  margin: var(--gap-s) 0 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+.pc393 .notebook .mk-region{
+  padding: var(--gap-m) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc393 .notebook .mk-region .batch-row__head{
+  min-height: var(--sheet-text-control-min);
+  align-items: center;
+}
+.pc393 .notebook .mk-region:first-child{
+  border-top: none;
+  padding-top: 0;
+}
+.pc393 .notebook .mk-body{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+.pc393 .notebook .mk-field-row{
+  display: flex;
+  align-items: center;
+  column-gap: var(--gap-field-unit);
+}
+.pc393 .notebook .mk-field-row .ink-field{
+  width: var(--sheet-field-w-figure);
+  flex: none;
+}
+.pc393 .notebook .mk-field-row .ink-field[type='number']{
+  width: calc(var(--sheet-field-w-figure) * 1.5);
+}
+.pc393 .notebook .mk-unit{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  color: var(--app-text);
+}
+.pc393 .notebook .mk-menu-wrap{
+  position: relative;
+}
+.pc393 .notebook .notebook-log .mk-menu{
+  display: block;
+  width: 100%;
+  padding: var(--app-notebook-gap-tight) var(--gap-select-chevron-room) var(--app-notebook-gap-tight)
+    var(--app-notebook-field-pad-x);
+  border: var(--app-rule-row) solid var(--app-divider);
+  border-radius: var(--app-radius-control);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--sheet-leading-field);
+  color: var(--app-text);
+}
+.pc393 .notebook .mk-band{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--gap-s);
+  min-height: var(--touch-min);
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc393 .notebook .mk-band__label{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  color: var(--app-text);
+}
+.pc393 .notebook .mk-band__label small{
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
+}
+.pc393 .notebook .mk-band__ends{
+  display: flex;
+  align-items: center;
+  column-gap: var(--gap-field-unit);
+}
+.pc393 .notebook .mk-band__ends .ink-field{
+  width: var(--sheet-field-w-figure);
+}
+.pc393 .notebook .mk-band__unit{
+  min-width: var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  color: var(--app-text);
+}
+.pc393 .notebook .mk-cue{
+  margin: 0;
+}
+.pc393 .notebook .mk-core{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text);
+}
+.pc393 .notebook .mk-pair{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: var(--gap-s);
+}
+.pc393 .notebook .mk-card{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+  padding: var(--gap-s) 0;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.pc393 .notebook .mk-cue + .mk-card{
+  border-top: none;
+  padding-top: 0;
+}
+.pc393 .notebook .mk-card__head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+}
+.pc393 .notebook .mk-stops{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
 }
 .pc393 .notebook-recipe__form-actions{
   display: flex;
@@ -5945,6 +7230,9 @@ body{margin:0}
   color: var(--app-background);
   font-weight: 600;
 }
+.pc393 .notebook-log .prose-field{
+  font-family: var(--face-grotesk);
+}
 .pc393 .notebook-log .axes-cue{
   font-size: var(--app-size-meta);
   font-weight: 600;
@@ -6004,6 +7292,16 @@ body{margin:0}
 .pc393 .notebook{
     padding: 0 0 var(--app-notebook-frame-pad-b-phone);
   }
+.pc393 .notebook.mk-page .notebook-recipe, .pc393 .notebook.mk-page .notebook-ceremony{
+    align-self: stretch;
+  }
+.pc393 .notebook .pick .ing__field{
+    flex: 1 1 100%;
+    max-width: none;
+  }
+.pc393 .notebook .pick .ing__field--category{
+    flex: 1 1 100%;
+  }
 .pc393 .notebook-band{
     padding: var(--app-notebook-band-pad-t-narrow) var(--gap-m) var(--gap-m);
   }
@@ -6032,6 +7330,15 @@ body{margin:0}
   }
 .pc393 .notebook-log .batch-row__head:has(.fold-row) .fold-row{
     width: 100%;
+  }
+.pc393 .notebook .mk-add{
+    min-height: var(--touch-min);
+  }
+.pc393 .notebook .pick__head .text-control, .pc393 .notebook .pick .ing__clear{
+    min-height: var(--touch-min);
+  }
+.pc393 .notebook .mk-band .ink-field{
+    min-height: var(--touch-min);
   }
 .pc393 .notebook-field .ink-field, .pc393 .notebook-field input, .pc393 .notebook-field textarea{
     font-size: var(--sheet-type-note);
@@ -6147,6 +7454,8 @@ body{margin:0}
 .pc393 .ing__figures .ing__amount{grid-area:amt}
 .pc393 .ing__figures .ing__basis{grid-area:basis;color:var(--app-text-secondary);font-size:var(--app-size-meta)}
 .pc393 .ing__figures .ing__source{grid-area:src;color:var(--app-text-secondary);font-size:var(--app-size-meta);text-align:right}
+.pc393 .place .ing__figures tr{grid-template-areas:'fig amt' 'basis basis' 'src src'}
+.pc393 .place .ing__figures .ing__source{text-align:left}
 .pc393 .ing__field--chips{flex:1 1 100%;max-width:none}
 .pc393 .ing__chips legend{padding:0;margin-bottom:var(--gap-xs)}
 .pc393 .ing__chips{display:flex;flex-wrap:wrap;gap:var(--gap-xs);margin:0;padding:0;border:none}
@@ -6159,7 +7468,6 @@ body{margin:0}
 .pc393 .ing__status{min-height:var(--touch-min)}
 .pc393 .mk-add-row{margin:var(--gap-xs) 0 0}
 .pc393 .mk-add{display:inline-flex;align-items:center}
-.pc393 .mk-note{margin:0;font-family:var(--face-grotesk);font-size:var(--app-size-meta);line-height:var(--sheet-leading-helper);color:var(--app-text-secondary)}
 .pc393 .mk-focus{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}
 .pc393 .mk-region{padding:var(--gap-m) 0;border-top:var(--app-rule-row) solid var(--app-divider)}
 .pc393 .mk-region .batch-row__head{min-height:var(--sheet-text-control-min);align-items:center}
@@ -6170,11 +7478,17 @@ body{margin:0}
 .pc393 .mk-pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--gap-s)}
 .pc393 .mk-field-row{display:flex;align-items:center;column-gap:var(--gap-field-unit)}
 .pc393 .mk-field-row .ink-field{width:var(--sheet-field-w-figure);flex:none}
+.pc393 .mk-field-row .ink-field[type=number]{width:calc(var(--sheet-field-w-figure) * 1.5)}
 .pc393 .mk-unit{font-family:var(--face-grotesk);font-size:var(--sheet-type-control);color:var(--app-text)}
 .pc393 .mk-card{display:flex;flex-direction:column;gap:var(--gap-s);padding:var(--gap-s) 0;border-top:var(--app-rule-row) solid var(--app-divider)}
 .pc393 .mk-cue + .mk-card{border-top:none;padding-top:0}
 .pc393 .mk-card__head{display:flex;align-items:center;justify-content:space-between;column-gap:var(--gap-m)}
 .pc393 .mk-stops{margin:0;font-family:var(--face-grotesk);font-size:var(--app-size-meta);color:var(--app-text-secondary)}
+.pc393 .mk-menu-wrap{position:relative}
+.pc393 .notebook-log .mk-menu{display:block;width:100%;padding:var(--app-notebook-gap-tight) var(--gap-select-chevron-room) var(--app-notebook-gap-tight) var(--app-notebook-field-pad-x);border:var(--app-rule-row) solid var(--app-divider);border-radius:var(--app-radius-control);font-size:var(--app-notebook-size-body);line-height:var(--sheet-leading-field);color:var(--app-text)}
+.pc393 .mk-list{position:absolute;left:0;right:0;top:calc(100% + var(--gap-xs));z-index:3;list-style:none;margin:0;padding:var(--gap-xs) 0;border:var(--app-rule-row) solid var(--app-divider);border-radius:var(--app-radius-control);background:var(--app-background);box-shadow:0 var(--gap-xs) var(--gap-m) var(--app-divider)}
+.pc393 .mk-list li{display:flex;align-items:center;min-height:var(--touch-min);padding:0 var(--app-notebook-field-pad-x);font-family:var(--face-grotesk);font-size:var(--app-notebook-size-body);color:var(--app-text)}
+.pc393 .mk-list li[aria-selected=true]{background:var(--app-blue-text);color:var(--app-background)}
 .pc393 .mk-band{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:var(--gap-s);min-height:var(--touch-min);border-top:var(--app-rule-row) solid var(--app-divider)}
 .pc393 .mk-band__label{font-family:var(--face-grotesk);font-size:var(--app-notebook-size-body);color:var(--app-text)}
 .pc393 .mk-band__label small{font-size:var(--app-size-label);color:var(--app-text-secondary)}
@@ -6214,14 +7528,43 @@ body{margin:0}
 .pc393 .mk-add{min-height:var(--touch-min)}
 .pc393 .pick__head .text-control{min-height:var(--touch-min)}
 .pc393 .mk-band .ink-field{min-height:var(--touch-min)}
+.pc393 /* Revision 2 (2026-10-21, after Mark rejected revision 1: "strong(4) looks bigger and bolder than its parents; This recipe only looks smallest ... looks completely random"): the ladder governs the values too.
+   The sequence, .pc393 top to bottom, .pc393 never grows in size or weight: L1 region name 14/600 caps secondary; L2 group cue 14/600 sentence ink; L3 caption 12/600 caps secondary, .pc393 a tag on its content;
+   L4 content 14/400 ink (words, lists, figures with tabular numerals); the hand keeps its face, .pc393 colour and its 20 px floor and sits under its cue by weight; chips 13/400; fields 16/400 in their boxes (controls, the touch floor). */
+/* L1 region name: the Sheet's section size (14), .pc393 caps, .pc393 tracked, .pc393 secondary, .pc393 in the 44 px head row */
+.notebook-log .region-name, .pc393 .notebook-log .batch-row__head .region-name{font-size:var(--app-size-meta)}
+.pc393 /* L3 caption: one caption face in the log, .pc393 the App's (notebook-caption): 12/600 caps, .pc393 app-tracking-label, .pc393 secondary; the axis names and the pen's captions join it */
+.notebook-log .pen-caption{font-weight:600;letter-spacing:var(--app-tracking-label)}
+.pc393 .notebook-log .axis-mark__name{font-weight:600;letter-spacing:var(--app-tracking-label);color:var(--app-text-secondary)}
+.pc393 /* L2 group cue (sketch 011 decision 40 C): every first-level label that stands over two or more things of one kind */
+.notebook-log .axes-cue, .pc393 .notebook-log .mk-cue, .pc393 .notebook-log .mk-cue-targets, .pc393 .notebook-log .defects-head > .pen-caption, .pc393 .notebook-log .tasting-reading__group > h4.batch-row__group-label{font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:0;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
+.pc393 /* a label nested under a cue (Every recipe and This recipe only inside Any problems?) is a caption, .pc393 not a second cue */
+.notebook-log .tasting-reading__subgroup > .batch-row__group-label, .pc393 .notebook-log .defect-group > .axes-cue{font-size:var(--app-size-label);font-weight:600;text-transform:uppercase;letter-spacing:var(--app-tracking-label);line-height:normal;color:var(--app-text-secondary)}
+.pc393 /* L4 content: words, .pc393 lists and figures under a cue or a caption at the meta size, .pc393 regular, .pc393 on the cue's line; the reading cell's figure comes down from 20/600 (sketch 011's log value) */
+.notebook-log .mk-core{font-size:var(--app-size-meta);line-height:var(--app-notebook-pen-cue-line-h)}
+.pc393 .notebook-log .batch-row__cell-value{font-size:var(--app-size-meta);font-weight:400;line-height:var(--app-notebook-pen-cue-line-h)}
+.pc393 /* the hand: Caveat, .pc393 pen blue, .pc393 at its floor (size-hand-min), .pc393 under its cue by weight and face; for the maker's own written words only */
+.notebook-log .app-hand{font-size:var(--size-hand-min)}
+.pc393 /* Revision 2a (Mark, 2026-10-21, on Bitter: "I thought that the ink color was reserved for hand-written content, not selected options"): a picked problem is a selected option, .pc393 not written words, .pc393 so it is content (L4), .pc393 not the hand */
+.notebook-log .tasting-reading__problems{font-family:var(--face-grotesk);font-size:var(--app-size-meta);font-weight:400;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
+.pc393 /* the spacing scale: gap-l between groups, .pc393 gap-xs under a cue over a one-line list, .pc393 gap-s under a cue over a card, .pc393 gap-s elsewhere */
+.notebook-log .mk-cue{margin-top:var(--gap-m);margin-bottom:calc(var(--gap-xs) - var(--gap-s))}
+.pc393 .notebook-log .mk-body > .mk-cue:first-child{margin-top:0}
+.pc393 .notebook-log .mk-cue + .mk-card{margin-top:calc(var(--gap-s) - var(--gap-xs))}
+.pc393 /* the card: no head; remove stands beside the Name field */
+.notebook-log .mk-caprow{display:flex;align-items:flex-end;column-gap:var(--gap-s)}
+.pc393 .notebook-log .mk-caprow .notebook-field{flex:1 1 auto}
+.pc393 .notebook-log h3.mk-cue{margin-top:var(--gap-m);margin-bottom:calc(var(--gap-xs) - var(--gap-s));font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:normal;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
+.pc393 .notebook-log .mk-body > h3.mk-cue:first-child{margin-top:0}
+.pc393 .notebook-log h3.mk-cue-targets{display:block;margin:0 0 var(--gap-xs);font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:normal;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
 
 </style>
 </helmet>
-<div style="width: 1812px; height: 3000px; overflow: hidden; background: #ffffff; box-sizing: border-box;">
-<div style="position:relative;width:1812px;height:3000px;background:#ffffff;"><div style="position:absolute;left:0px;top:0px;width:366px;"><p class="p4-lab">Nothing defined · 1366<small>the four core scales and four core problems are named so the maker sees what every recipe already has; "This recipe only" shows only once something is added</small></p></div><div class="p4-win pc1366 sA1" style="position:absolute;left:0px;top:78px;width:366px;height:409px;"><div style="width:1366px;transform:translate(-976px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div><div style="position:absolute;left:446px;top:0px;width:366px;"><p class="p4-lab">One scale, one problem · 1366<small>kind: Right in the middle; the stops it will draw are written under it</small></p></div><div class="p4-win pc1366 sB1" style="position:absolute;left:446px;top:78px;width:366px;height:954px;"><div style="width:1366px;transform:translate(-976px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Scale 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Creaminess" aria-label="Name"></label><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="thin" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="rich" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sB1" value="Right in the middle" checked tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sB1" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">thin · leaning thin · right · leaning rich · rich</p></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Problem 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Bitter" aria-label="Name"></label></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div><div style="position:absolute;left:892px;top:0px;width:366px;"><p class="p4-lab">Two and two (the most) · 1366<small>the add controls go at the limit; the second scale is Low to high</small></p></div><div class="p4-win pc1366 sC1" style="position:absolute;left:892px;top:78px;width:366px;height:1337px;"><div style="width:1366px;transform:translate(-976px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Scale 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Creaminess" aria-label="Name"></label><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="thin" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="rich" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sC1" value="Right in the middle" checked tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sC1" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">thin · leaning thin · right · leaning rich · rich</p></div><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Scale 2</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Cinnamon" aria-label="Name"></label><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="faint" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="strong" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-2-sC1" value="Right in the middle" tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-2-sC1" value="Low to high" checked tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">faint to strong</p></div></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Problem 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Bitter" aria-label="Name"></label></div><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Problem 2</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Salty" aria-label="Name"></label></div></div></section></aside></div></div></div></div><div style="position:absolute;left:1338px;top:0px;width:366px;"><p class="p4-lab">Just added · 1366<small>nothing is pre-picked, so Required stands under each empty field and Kind has no cell filled</small></p></div><div class="p4-win pc1366 sD1" style="position:absolute;left:1338px;top:78px;width:366px;height:988px;"><div style="width:1366px;transform:translate(-976px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Scale 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="" aria-label="Name"><span class="field-requirement" aria-hidden="true">Required</span></label><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="" aria-label="Low end"><span class="field-requirement" aria-hidden="true">Required</span></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="" aria-label="High end"><span class="field-requirement" aria-hidden="true">Required</span></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sD1" value="Right in the middle" tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sD1" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Problem 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="" aria-label="Name"><span class="field-requirement" aria-hidden="true">Required</span></label></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div><div style="position:absolute;left:0px;top:1495px;width:393px;"><p class="p4-lab">Nothing defined · 393<small></small></p></div><div class="p4-win pc393 sA2" style="position:absolute;left:0px;top:1573px;width:393px;height:469px;"><div style="width:393px;transform:translate(-0px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div><div style="position:absolute;left:473px;top:1495px;width:393px;"><p class="p4-lab">One scale, one problem · 393<small></small></p></div><div class="p4-win pc393 sB2" style="position:absolute;left:473px;top:1573px;width:393px;height:1029px;"><div style="width:393px;transform:translate(-0px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Scale 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Creaminess" aria-label="Name"></label><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="thin" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="rich" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sB2" value="Right in the middle" checked tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sB2" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">thin · leaning thin · right · leaning rich · rich</p></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Problem 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Bitter" aria-label="Name"></label></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div><div style="position:absolute;left:946px;top:1495px;width:393px;"><p class="p4-lab">Two and two · 393<small></small></p></div><div class="p4-win pc393 sC2" style="position:absolute;left:946px;top:1573px;width:393px;height:1427px;"><div style="width:393px;transform:translate(-0px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Scale 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Creaminess" aria-label="Name"></label><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="thin" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="rich" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sC2" value="Right in the middle" checked tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sC2" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">thin · leaning thin · right · leaning rich · rich</p></div><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Scale 2</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Cinnamon" aria-label="Name"></label><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="faint" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="strong" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-2-sC2" value="Right in the middle" tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-2-sC2" value="Low to high" checked tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">faint to strong</p></div></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Problem 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Bitter" aria-label="Name"></label></div><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Problem 2</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Salty" aria-label="Name"></label></div></div></section></aside></div></div></div></div><div style="position:absolute;left:1419px;top:1495px;width:393px;"><p class="p4-lab">Just added · 393<small></small></p></div><div class="p4-win pc393 sD2" style="position:absolute;left:1419px;top:1573px;width:393px;height:1063px;"><div style="width:393px;transform:translate(-0px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Scale 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="" aria-label="Name"><span class="field-requirement" aria-hidden="true">Required</span></label><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="" aria-label="Low end"><span class="field-requirement" aria-hidden="true">Required</span></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="" aria-label="High end"><span class="field-requirement" aria-hidden="true">Required</span></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sD2" value="Right in the middle" tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sD2" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><p class="pen-caption mk-cue">Every recipe</p><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><p class="pen-caption mk-cue">This recipe only</p><div class="mk-card"><div class="mk-card__head"><span class="notebook-caption">Problem 1</span><button type="button" class="text-control" tabindex="0">remove</button></div><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="" aria-label="Name"><span class="field-requirement" aria-hidden="true">Required</span></label></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div></div>
+<div style="width: 1812px; height: 2592px; overflow: hidden; background: #ffffff; box-sizing: border-box;">
+<div style="position:relative;width:1812px;height:2592px;background:#ffffff;"><div style="position:absolute;left:0px;top:0px;width:366px;"><p class="p4-lab">Nothing defined · 1366<small>the four core scales and four core problems are named so the maker sees what every recipe already has; "This recipe only" shows only once something is added</small></p></div><div class="p4-win pc1366 sA1" style="position:absolute;left:0px;top:78px;width:366px;height:389px;"><div style="width:1366px;transform:translate(-976px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div><div style="position:absolute;left:446px;top:0px;width:366px;"><p class="p4-lab">One scale, one problem · 1366<small>kind: Right in the middle; the stops it will draw are written under it</small></p></div><div class="p4-win pc1366 sB1" style="position:absolute;left:446px;top:78px;width:366px;height:862px;"><div style="width:1366px;transform:translate(-976px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Creaminess" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove scale 1">remove</button></div><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="thin" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="rich" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sB1" value="Right in the middle" checked tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sB1" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">thin · leaning thin · right · leaning rich · rich</p></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Bitter" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove problem 1">remove</button></div></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div><div style="position:absolute;left:892px;top:0px;width:366px;"><p class="p4-lab">Two and two (the most) · 1366<small>the add controls go at the limit; the second scale is Low to high</small></p></div><div class="p4-win pc1366 sC1" style="position:absolute;left:892px;top:78px;width:366px;height:1133px;"><div style="width:1366px;transform:translate(-976px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Creaminess" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove scale 1">remove</button></div><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="thin" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="rich" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sC1" value="Right in the middle" checked tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sC1" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">thin · leaning thin · right · leaning rich · rich</p></div><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Cinnamon" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove scale 2">remove</button></div><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="faint" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="strong" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-2-sC1" value="Right in the middle" tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-2-sC1" value="Low to high" checked tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">faint to strong</p></div></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Bitter" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove problem 1">remove</button></div></div><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Salty" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove problem 2">remove</button></div></div></div></section></aside></div></div></div></div><div style="position:absolute;left:1338px;top:0px;width:366px;"><p class="p4-lab">Just added · 1366<small>nothing is pre-picked, so Required stands under each empty field and Kind has no cell filled</small></p></div><div class="p4-win pc1366 sD1" style="position:absolute;left:1338px;top:78px;width:366px;height:896px;"><div style="width:1366px;transform:translate(-976px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="" aria-label="Name"><span class="field-requirement" aria-hidden="true">Required</span></label><button type="button" class="text-control" tabindex="0" aria-label="Remove scale 1">remove</button></div><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="" aria-label="Low end"><span class="field-requirement" aria-hidden="true">Required</span></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="" aria-label="High end"><span class="field-requirement" aria-hidden="true">Required</span></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sD1" value="Right in the middle" tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sD1" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="" aria-label="Name"><span class="field-requirement" aria-hidden="true">Required</span></label><button type="button" class="text-control" tabindex="0" aria-label="Remove problem 1">remove</button></div></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div><div style="position:absolute;left:0px;top:1291px;width:393px;"><p class="p4-lab">Nothing defined · 393<small></small></p></div><div class="p4-win pc393 sA2" style="position:absolute;left:0px;top:1369px;width:393px;height:449px;"><div style="width:393px;transform:translate(-0px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div><div style="position:absolute;left:473px;top:1291px;width:393px;"><p class="p4-lab">One scale, one problem · 393<small></small></p></div><div class="p4-win pc393 sB2" style="position:absolute;left:473px;top:1369px;width:393px;height:937px;"><div style="width:393px;transform:translate(-0px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Creaminess" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove scale 1">remove</button></div><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="thin" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="rich" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sB2" value="Right in the middle" checked tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sB2" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">thin · leaning thin · right · leaning rich · rich</p></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Bitter" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove problem 1">remove</button></div></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div><div style="position:absolute;left:946px;top:1291px;width:393px;"><p class="p4-lab">Two and two · 393<small></small></p></div><div class="p4-win pc393 sC2" style="position:absolute;left:946px;top:1369px;width:393px;height:1223px;"><div style="width:393px;transform:translate(-0px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Creaminess" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove scale 1">remove</button></div><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="thin" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="rich" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sC2" value="Right in the middle" checked tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sC2" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">thin · leaning thin · right · leaning rich · rich</p></div><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Cinnamon" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove scale 2">remove</button></div><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="faint" aria-label="Low end"></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="strong" aria-label="High end"></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-2-sC2" value="Right in the middle" tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-2-sC2" value="Low to high" checked tabindex="0"><span>Low to high</span></label></div></div><p class="mk-stops">faint to strong</p></div></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Bitter" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove problem 1">remove</button></div></div><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="Salty" aria-label="Name"></label><button type="button" class="text-control" tabindex="0" aria-label="Remove problem 2">remove</button></div></div></div></section></aside></div></div></div></div><div style="position:absolute;left:1419px;top:1291px;width:393px;"><p class="p4-lab">Just added · 393<small></small></p></div><div class="p4-win pc393 sD2" style="position:absolute;left:1419px;top:1369px;width:393px;height:971px;"><div style="width:393px;transform:translate(-0px,-0px);"><div class="notebook mk-page"><div class="notebook-body"><div class="notebook-body__sheet"></div><aside class="notebook-log" aria-label="Setup"><section class="batch-row mk-region" aria-label="Scales"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Scales</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="" aria-label="Name"><span class="field-requirement" aria-hidden="true">Required</span></label><button type="button" class="text-control" tabindex="0" aria-label="Remove scale 1">remove</button></div><div class="mk-pair"><label class="notebook-field"><span class="notebook-caption">Low end</span><input class="ink-field" type="text" value="" aria-label="Low end"><span class="field-requirement" aria-hidden="true">Required</span></label><label class="notebook-field"><span class="notebook-caption">High end</span><input class="ink-field" type="text" value="" aria-label="High end"><span class="field-requirement" aria-hidden="true">Required</span></label></div><div class="segmented-field"><div class="segmented-field__head"><span class="segmented-field__caption pen-caption">Kind</span></div><div class="segmented" role="radiogroup" aria-label="Kind"><label class="segmented__option"><input type="radio" name="segment-kind-1-sD2" value="Right in the middle" tabindex="0"><span>Right in the middle</span></label><label class="segmented__option"><input type="radio" name="segment-kind-1-sD2" value="Low to high" tabindex="0"><span>Low to high</span></label></div></div></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add scale</button></p></div></section><section class="batch-row mk-region" aria-label="Problems"><div class="batch-row__head"><div class="batch-row__head-lead"><h2 class="region-name">Problems</h2></div></div><div class="mk-body"><h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film</p><h3 class="pen-caption mk-cue">This recipe only</h3><div class="mk-card"><div class="mk-caprow"><label class="notebook-field"><span class="notebook-caption">Name</span><input class="ink-field" type="text" value="" aria-label="Name"><span class="field-requirement" aria-hidden="true">Required</span></label><button type="button" class="text-control" tabindex="0" aria-label="Remove problem 1">remove</button></div></div><p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add problem</button></p></div></section></aside></div></div></div></div></div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview": {"width": 1812, "height": 3000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview": {"width": 1812, "height": 2592}}'>
 class Component extends DCLogic {
 renderVals() {
 return {};

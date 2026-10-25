@@ -46,7 +46,7 @@ Not a change: **the white page.** Chrome's print and WebKit's print both drop th
 The fields, labels, units, option words, axis names, anchors and group captions are the built record pens' own (`app/src/domain/battery.js`, `axes.js`, BatchRow.jsx's captions, and 03.3.1-06-SUMMARY.md's field list for Phase 4). Which field sits on which side, the side names and the geometry are the print brief's (§ 3 item 3, § 6), amended by:
 
 - **D1:** numeric fields stay ruled lines carrying their units, not boxes.
-- **D2:** both pages carry a date: Churn date on page 1, Tasted on page 2. The brief's side 2 gains the date.
+- **D2:** both pages carry a date: Churn date on page 1, Tasted on page 2. The brief's side 2 gains the date. (The page 1 caption reads Churned since 2026-10-25, `decide-p10-churn-trio`, with Duration and Temperature on the figure rows; `CONTRACT.md` carries the words.)
 - **D3:** the printed caption is "Airiness", without "(estimated)". The pen keeps its own caption.
 - **D4:** the defects keep the built caption, "Any problems?" with "select all that apply". Checked: it prints in Chrome's PDF and in WebKit's print.
 - **D5:** Next time evaluates the recipe, not the batch or the tasting. It moves to page 1 under its own heading, where there was room.

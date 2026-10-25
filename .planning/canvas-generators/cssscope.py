@@ -1,7 +1,7 @@
 # Shared by ladder.py: the media-resolving and scoping helpers copied from pen.py (see ingredientopts.py for why pen.py is not imported).
 import os, re
 HERE = os.path.dirname(os.path.abspath(__file__))
-APP_ROOT = os.path.join(HERE, '..', '..', 'app', 'src', 'styles')
+APP_ROOT = os.environ.get('SPRINKLES_STYLES') or os.path.join(HERE, '..', '..', 'app', 'src', 'styles')      # SPRINKLES_STYLES: a folder holding the four stylesheets at an older commit, so a board's as-built column stays the build it was drawn against (Sid, 2026-10-25, the P10_Pen redraw)
 _read = lambda f: open(os.path.join(APP_ROOT, f)).read() + '\n'
 TOK, APPC, NBC, SHELLC = _read('tokens.css'), _read('app.css'), _read('notebook.css'), _read('shell.css')
 
@@ -48,6 +48,7 @@ def _top_commas(sel):
 
 def scope_css(css, scope):
     """Prefix every rule with the panel's class; body becomes the panel itself."""
+    css = _strip_comments(css)      # Sid, 2026-10-25: a comment ahead of a selector took the prefix in its place, so the rule after it ran unscoped (44 of ladder revision 2's rules reached P10_Pen's as-built column); comments go first
     out = []; i = 0
     while True:
         k = css.find('{', i)

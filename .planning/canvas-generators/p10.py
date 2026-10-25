@@ -19,6 +19,8 @@ LADDER = importlib.import_module('p-ladder')      # revision 2a's faces and spac
 #   P10_Scales take ladder revision 2's faces (p-ladder.PROPOSED_CSS: region name 14/600 caps secondary, cue 14/600 sentence ink, caption 12/600 caps secondary, the core
 #   names as content 14/400, the spacing scale), the cues become h3 (Every recipe, This recipe only, Targets), and the card loses its "Scale 1" / "Problem 1" head: remove
 #   stands beside Name (.mk-caprow). P10_Notebook, P10_Picker and P10_Style are regenerated unchanged by this and not republished.
+# 2026-10-25, later (the record-keeping set after the build, quick 261025-f8n): Targets keeps 12 above and 12 below as built (the 6 under it, LADDER_P10's margin-bottom, is gone: the
+#   executor did not port it, "Nothing moves", and the app reads 12 / 12 at 1366 on the 4173 preview). P10_Editor and P10_Style republished with it (STAMP4); P10_Scales draws no Targets and is not republished.
 # 2026-10-18: boards P10_Editor and P10_Style are 1366 only (Mark does not create recipes on an iPhone); P10_Notebook, P10_Picker and P10_Scales keep their 393 panels, not redrawn.
 # The editor is the recipe page's pen with no parent (Phase 8's split RecipePage, a `creating` mode with no baseline). Every panel is the built app's own shell and markup (p10-capture.json: WebKit, a scratch
 # profile holding a stand-in recipe, 1366 and 393, both with a coarse pointer) with the app's own tokens.css, app.css, notebook.css and shell.css, their @media resolved at the panel's width and pointer.
@@ -112,7 +114,7 @@ COARSE_P10 = '''
 LADDER_P10 = '''
 .notebook-log h3.mk-cue{margin-top:var(--gap-m);margin-bottom:calc(var(--gap-xs) - var(--gap-s));font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:normal;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
 .notebook-log .mk-body > h3.mk-cue:first-child{margin-top:0}
-.notebook-log h3.mk-cue-targets{display:block;margin:0 0 var(--gap-xs);font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:normal;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
+.notebook-log h3.mk-cue-targets{display:block;margin:0;font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:normal;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)}
 '''
 LABH = 78; GAP = 80
 CSS_BY_CLS = {}
@@ -350,6 +352,7 @@ def board(key, title, bw, bh, parts, out):
 STAMP = ' (drawn 2026-10-17; for approval)'
 STAMP2 = ' (redrawn 2026-10-18; for approval)'
 STAMP3 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card head dropped; look-p10-ladder-redraw)'
+STAMP4 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card head dropped, Targets 12 above and 12 below as built; look-p10-ladder-redraw)'
 SAMPLE_NOTES = ['Chill the mix overnight before churning.', 'Keep the cream cold until it goes in.']
 SAMPLE_DESC = 'Plain and cold.'
 
@@ -391,7 +394,7 @@ def build_boards(out):
     r3 = [dict(sc(1366, 'eC1', 'phil'), cap='Remove · before · 1366', sub='five rows; the link beside Skim milk powder is "remove"'),
           dict(sc(1366, 'eC2', 'less'), cap='Remove · after · 1366', sub='the row is deleted outright; every figure follows, and the Balance says where Milk solids now stands against its band')]
     parts, bw, bh = flow([r1, r2, r3]); sizes['P10_Editor'] = (bw, bh)
-    board('P10_Editor', 'Creation editor · the recipe page with no parent and no Save, at 1366' + STAMP3, bw, bh, parts, out)
+    board('P10_Editor', 'Creation editor · the recipe page with no parent and no Save, at 1366' + STAMP4, bw, bh, parts, out)
 
     # ======== P10_Picker
     added2 = ('wholeMilk', 'heavyCream')
@@ -436,7 +439,7 @@ def build_boards(out):
            dict(ST(1366, 'tF3', 'Gelato', BANDS['Gelato']), cap='Picking another style fills it again · Gelato -12.5', sub='picking a style replaces the temperature, as it replaces the bands'),
            dict(ST(1366, 'tG1', None, BANDS['Philadelphia'], temp=''), cap='After Clear on Philadelphia · 1366', sub='the menu reads No style again; the bands stay as they stand, and the serving temperature is emptied (decide-p10-style-change, decide-p10-serve-temp-clear)')]
     parts, bw, bh = flow([r1, r2, r2b]); sizes['P10_Style'] = (bw, bh)
-    board('P10_Style', 'Choosing a style · on a menu, the four styles\' approved balance bands, edited or left blank, at 1366' + STAMP2, bw, bh, parts, out)
+    board('P10_Style', 'Choosing a style · on a menu, the four styles\' approved balance bands, edited or left blank, at 1366' + STAMP4, bw, bh, parts, out)
     return sizes
 
 def measure_html():
@@ -460,13 +463,13 @@ if __name__ == '__main__':
         titles = {'P10_Notebook': 'Notebook · New recipe, its same-name warning and Resume, at 1366 and 393', 'P10_Editor': 'Creation editor · the recipe page with no parent and no Save, at 1366',
                   'P10_Picker': 'Ingredient picker · open under the table, "Not in the library yet", and the row it adds, at 1366 and 393', 'P10_Scales': "Authoring scales and problems · each scale's kind, 0 to 2 of each, at 1366 and 393",
                   'P10_Style': "Choosing a style · on a menu, the four styles' approved balance bands, edited or left blank, at 1366"}
-        REDRAWN = ('P10_Style',); LADDERED = ('P10_Editor', 'P10_Scales'); x = 0
+        TARGETED = ('P10_Editor', 'P10_Style'); LADDERED = ('P10_Scales',); x = 0
         for gone in ('P10_Machine.dc.html',):      # retired 2026-10-18: drop the board from a canvas.json that still has it
             B.pop(gone, None)
             if gone in c['order']: c['order'].remove(gone)
         for key in ['P10_Editor', 'P10_Notebook', 'P10_Picker', 'P10_Style', 'P10_Scales']:
             w, h = sizes[key]; fn = key + '.dc.html'
-            B[fn] = {**dict(x=x, y=0, page=PAGE[0]), **B.get(fn, {}), 'w': w, 'h': h, 'title': titles[key] + (STAMP3 if key in LADDERED else STAMP2 if key in REDRAWN else STAMP)}
+            B[fn] = {**dict(x=x, y=0, page=PAGE[0]), **B.get(fn, {}), 'w': w, 'h': h, 'title': titles[key] + (STAMP4 if key in TARGETED else STAMP3 if key in LADDERED else STAMP)}
             if fn not in c['order']: c['order'].append(fn)
             x = B[fn]['x'] + w + 240
         N['p10-title'] = dict(N.get('p10-title', {}), x=0, y=-300, text='Phase 10 creation editor: Notebook entry, editor, picker, style, scales and problems', kind='title1', maxW=x, page=PAGE[0])

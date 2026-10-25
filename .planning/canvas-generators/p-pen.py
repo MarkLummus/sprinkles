@@ -10,6 +10,8 @@ PR = importlib.import_module('p-pen-rhythm')      # the 2026-10-22 change set, t
 # to "Temperature"), on the record pen with its tasting open, both entry paths (A: Record another then Add tasting, Olive Oil v1; B: Record a tasting from Home,
 # Mexican Chocolate v3), at 1366 coarse and 393 (p-pen-capture.mjs). As built beside it at 1366 (path A). Every interval and role measured on the board in WebKit
 # (p-pen-measure.mjs); in a proposed column what changes against as built is blue with "was".
+# 2026-10-25, later: redrawn after the build with three rules it settled (Clear its word at every width, the Tasting head row 44, chips 14; PROPOSED_CSS below). Regenerate with
+#   SPRINKLES_STYLES pointing at the four stylesheets of commit 71120fed (git show 71120fed:app/src/styles/<f>.css), so the as-built column stays the build the board was drawn against.
 #   node p-pen-capture.mjs <dist> ; python3 p-pen.py measure <out> ; node p-pen-measure.mjs <out>/measure.html ; python3 p-pen.py <canvas.json read from the artifact root> <out>
 CAP = json.load(open(HERE + '/p-pen-capture.json'))
 M = json.load(open(HERE + '/p-pen-measure.json')) if os.path.exists(HERE + '/p-pen-measure.json') else {}
@@ -30,6 +32,15 @@ PROPOSED_CSS = PR.PROPOSED_CSS.replace('align-items:baseline', 'align-items:flex
 {PEN} .batch-row__head-lead {{ display: flex; align-items: baseline; gap: var(--app-notebook-recipe-rail-gap); }}
 {PEN} .batch-row__head-acts {{ margin-left: auto; }}
 {PEN} .batch-row__head .tasting-status:empty {{ display: none; }}
+/* Redrawn 2026-10-25, after the build (quick-batch 261025-f8n to f8p; the 4173 preview measured in WebKit at 1366 and 393, coarse): three rules the build settled that the first draw had not.
+   1. Clear is its word at every width (quick 261025-f8o, choice 3): min-height 0 and an overflowing ::after target at the touch floor, so the head line stays 20 at 393 as at 1366 and the
+      intervals that hold a Clear read 15.8 / 17 / 25 at both widths (the first draw drew the 393 heads at 44: 39.8 / 41 / 49). */
+{PEN} .axis-mark__clear, {PEN} .segmented-field__clear {{ min-height: 0; position: relative; }}
+{PEN} .axis-mark__clear::after, {PEN} .segmented-field__clear::after {{ content: ''; position: absolute; left: calc(-1 * var(--gap-xs)); right: calc(-1 * var(--gap-xs)); top: 50%; transform: translateY(-50%); height: var(--touch-min); }}
+/* 2. The Tasting head row is 44, the decided height (quick 261025-f8p): the acts' button loses .batch-margin button's 12 px top margin, which had made the row 56 on the first draw. */
+{PEN} .batch-row__head-acts button {{ margin-top: 0; }}
+/* 3. The problem chips read 14 like the pen's other choice controls (Mark, 2026-10-25, the re-critique's P3; commit 06f96136). Greasy film stays alone on its second line at 350 and 353. */
+.notebook-log .chip-toggle {{ font-size: var(--app-size-meta); }}
 /* Mark, 2026-10-25: the churn trio on one line (Churned, Out of machine, Duration). The date field's token comes down to 120 app-wide (WebKit's intrinsic date box is 109.3 at 16 px); mirrored here as the token the app would carry in tokens.css */
 .notebook-log {{ --sheet-field-w-date: 120px; }}
 '''
@@ -78,6 +89,7 @@ KEY = ('<b>The one proposed pen (2026-10-25).</b> Every row Mark answered on 202
        '<b>"Tasting temperature" is "Temperature"</b> (Mark, 2026-10-25): the row Tasted · Tempering · Temperature fits one line at 1366 and 393 (327 in 350 / 353; the long label made 386 and wrapped); the word is Mark\'s ("Served at" is the other defensible one). '
        '<b>The churn trio on one line</b> (Mark, 2026-10-25): Churned · Out of machine · Duration, the Batch region\'s mirror of the tasting row, with the date field at 120 (the token --sheet-field-w-date, app-wide; WebKit\'s intrinsic date box is 109.3 at 16 px): 120 + 12 + 119.5 + 12 + 82 = 345.5 in 350 / 353. As built the three are one field row that wraps (128 + 12 + 111.5 + 12 + 116.3 = 380, Churn duration on a second line). The words are Mark\'s (decide-p10-churn-trio): "Churned" parallels "Tasted" and the fold\'s own "churned 2 Aug 2026"; "Duration" drops the repeated churn. '
        '<b>Reads with it:</b> every interval is measured on this board in WebKit from a label\'s text line to the next text line or control box; the token beside it is the one the interval reads. In a proposed column what changes against as built is blue with "was" or "new". '
+       '<b>Redrawn after the build (2026-10-25, later):</b> Clear is its word at 393 too, so the heads that hold one are the 20 px line at both widths (15.8 / 17 / 25, as the app reads); the Tasting head row is 44, not 56; the problem chips read 14 like the other choice controls (Mark, 2026-10-25). '
        'Path A is Record another on Olive Oil v1 then Add tasting, filled; path B is Record a tasting from Home on Mexican Chocolate v3 (an untasted batch), the same pen opened onto its tasting. Device-unverified: WebKit on the Mac, not the iPad.')
 TITLE = 'The record pen, proposed · every decided row of 2026-10-24 and Tasting as a peer region (2026-10-25), both entry paths, at 1366 beside as built and at 393 (for Mark\'s look: look-p10-ladder-redraw)'
 LW393 = 409

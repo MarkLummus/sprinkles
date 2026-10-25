@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: planning
 stopped_at: Phase 10 complete, ready to plan Phase 11
-last_updated: "2026-10-25T20:42:07.607Z"
+last_updated: "2026-10-25T21:11:19.786Z"
 last_activity: 2026-10-25
 last_activity_desc: Phase 10 complete, transitioned to Phase 11
-state_head: 06f961361dc292bf2701ed72ffe95e6194f6e2e8
+state_head: 5bbcdad35af69df7a3201fb45a02c963308d972e
 progress:
   total_phases: 5
   completed_phases: 3
@@ -595,6 +595,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 192 | The notice card's words in the maker's own: Batch saved., Save or cancel your changes before importing., Couldn't open your recipes (decide-notice-copy) | 2026-10-25 | f58c861b | — |
 | 193 | The RECORDED caption takes the ladder's caption face in the log column (decide-p10-ladder-reach; re-critique P2) | 2026-10-25 | e88eb557 | — |
 | 194 | The problem chips in the record pen read 14 like the option words and stop digits (re-critique P3; Mark 2026-10-25) | 2026-10-25 | 06f96136 | — |
+| 195 | The scales board spec reads .mk-caprow and the axis state comment matches the pen (records after 261025-f8m) | 2026-10-25 | 5bbcdad3 | — |
 
 ### Roadmap Evolution
 

@@ -802,6 +802,9 @@ describe("the record pen's App skin (sketch 011 decision 29 on decision 38's one
   });
 });
 
+// The cue face reaches the pen's cues, the creation editor's cues and Targets (quick 261025-f8n, decide-p10-log-ladder-r2 revised-h3-r2).
+const CUE_SELECTORS = '.notebook-log .axes-cue, .notebook-log .mk-cue, .notebook-log .mk-cue-targets';
+
 describe('the group cues take their own face and their own space (sketch 011 decision 40 C, Mark 2026-10-04; quick 261004-ox4)', () => {
   const find = (selector, media) => rules.find((r) => r.selector === selector && r.media === media);
   const declares = (rule, property, value) => {
@@ -816,7 +819,7 @@ describe('the group cues take their own face and their own space (sketch 011 dec
   });
 
   test("the cue reads as a heading: 14px (the meta size), weight 600, sentence case, ink, its own line height; its ink outranks the skin's caption colour", () => {
-    const cue = find('.notebook-log .axes-cue');
+    const cue = find(CUE_SELECTORS);
     declares(cue, 'font-size', 'var(--app-size-meta)');
     declares(cue, 'font-weight', '600');
     declares(cue, 'text-transform', 'none');
@@ -824,6 +827,7 @@ describe('the group cues take their own face and their own space (sketch 011 dec
     declares(cue, 'line-height', 'var(--app-notebook-pen-cue-line-h)');
     declares(cue, 'color', 'var(--app-text)');
     expect(rules.indexOf(cue)).toBeGreaterThan(rules.indexOf(find('.notebook-log .pen-caption')));
+    expect(rules.indexOf(cue)).toBeGreaterThan(rules.indexOf(find('.notebook-log .axis-mark__name')));
   });
 
   test('the space is drawn for the stacked arrangement: 32 between groups, 12 from a cue to its items, 12 from the defects head to its cue', () => {
@@ -959,5 +963,63 @@ describe('the log column\'s pen types in the grotesk (sketch 013 decision 26, Ma
     for (const r of placeholders) {
       expect(r.declarations, r.selector).not.toMatch(/font-family\s*:/);
     }
+  });
+});
+
+// The log column's ladder (quick 261025-f8n; .impeccable/proposals/2026-10-21-log-column-ladder.md; decide-p10-log-ladder-r2
+// revised-h3-r2, decide-p10-caption-level, decide-p10-card-head, decide-p10-log-figure-face). Task 1: the creation editor and
+// the log-wide faces; the pens' and the reading's rules are pinned below.
+describe("the log's ladder: region names, the one caption face and the creation editor (quick 261025-f8n)", () => {
+  const find = (selector, media) => rules.find((r) => r.selector === selector && r.media === media);
+  const declares = (rule, property, value) => {
+    expect(rule, `a rule for the declaration ${property}`).toBeDefined();
+    const found = rule.declarations.split(';').map((d) => d.trim()).filter(Boolean).find((d) => d.startsWith(`${property}:`));
+    expect(found, `${rule.selector} declares ${property}`).toBeDefined();
+    expect(found.slice(property.length + 1).trim(), `${rule.selector} ${property}`).toBe(value);
+  };
+
+  test('L1: the log region names read 14 in their own rule, the rest of the face unchanged; the group label keeps 12', () => {
+    const region = find('.notebook-log .batch-row .region-name, .notebook-log .tasting-reading .region-name');
+    declares(region, 'font-family', 'var(--face-grotesk)');
+    declares(region, 'font-size', 'var(--app-size-meta)');
+    declares(region, 'font-weight', '600');
+    declares(region, 'letter-spacing', 'var(--app-tracking-label)');
+    declares(region, 'text-transform', 'uppercase');
+    declares(region, 'color', 'var(--app-text-secondary)');
+    declares(find('.notebook-log .batch-row__group-label'), 'font-size', 'var(--app-size-label)');
+  });
+
+  test('L3: the caption skin carries weight 600 and the label tracking; the axis name takes the same face', () => {
+    const caption = find('.notebook-log .pen-caption');
+    declares(caption, 'font-weight', '600');
+    declares(caption, 'letter-spacing', 'var(--app-tracking-label)');
+    declares(caption, 'color', 'var(--app-text-secondary)');
+    const axis = find('.notebook-log .axis-mark__name');
+    declares(axis, 'font-weight', '600');
+    declares(axis, 'letter-spacing', 'var(--app-tracking-label)');
+    declares(axis, 'color', 'var(--app-text-secondary)');
+  });
+
+  test('the creation editor takes the spacing scale: 32 above a cue after a group, 6 under it, 12 to a card; the first cue and Targets keep their place', () => {
+    declares(find('.notebook .mk-cue'), 'margin', 'var(--gap-m) 0 calc(var(--gap-xs) - var(--gap-s))');
+    declares(find('.notebook .mk-body > .mk-cue:first-child'), 'margin-top', '0');
+    declares(find('.notebook .mk-cue + .mk-card'), 'margin-top', 'calc(var(--gap-s) - var(--gap-xs))');
+    declares(find('.notebook .mk-cue-targets'), 'margin', '0');
+  });
+
+  test('L4: the core names read as content, 14 on the 20px line', () => {
+    const core = find('.notebook .mk-core');
+    declares(core, 'font-size', 'var(--app-size-meta)');
+    declares(core, 'line-height', 'var(--app-notebook-pen-cue-line-h)');
+    declares(core, 'color', 'var(--app-text)');
+  });
+
+  test("the card has no head: Name and remove share the caption row, 12 apart, bottoms aligned (decide-p10-card-head)", () => {
+    expect(rules.some((r) => r.selector.includes('mk-card__head'))).toBe(false);
+    const row = find('.notebook .mk-caprow');
+    declares(row, 'display', 'flex');
+    declares(row, 'align-items', 'flex-end');
+    declares(row, 'column-gap', 'var(--gap-s)');
+    declares(find('.notebook .mk-caprow .notebook-field'), 'flex', '1 1 auto');
   });
 });

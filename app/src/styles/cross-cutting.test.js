@@ -899,16 +899,16 @@ describe('the page notice anchors above the keyed page, out of flow (260917-ewf;
     expect(ruleFor('.list-page').declarations).toMatch(/padding:\s*var\(--gap-page\)/);
   });
 
-  test('the card is in the App\'s skin with --app-shadow-notice, at the note role (16px on 24px), and .page-status:empty still collapses, with no shadow (decide-page-notice-shape BS, quick 261025-elq)', () => {
+  test('the card is the inverse card, the App\'s ink with the App\'s ground as text, with --app-shadow-notice, at the note role (16px on 24px), and .page-status:empty still collapses, with no shadow (decide-page-notice-shape BS, quick 261025-elq; decide-notice-card-palette ink, Mark 2026-10-25)', () => {
     const rule = ruleFor('.page-status');
     // Reads --app-z-notice (3), a layer of the page under the scrim and the fly-out (sketch 011 decision 53); shell.test.js pins the 3 and the order.
     expect(rule.declarations).toMatch(/z-index:\s*var\(--app-z-notice\)/);
     expect(rule.declarations).toMatch(/box-sizing:\s*border-box/);
     expect(rule.declarations).toMatch(/padding:\s*var\(--gap-s\) var\(--gap-m\)/);
-    expect(rule.declarations).toMatch(/border:\s*var\(--app-rule-row\) solid var\(--app-divider\)/);
+    expect(rule.declarations).toMatch(/border:\s*var\(--app-rule-row\) solid var\(--app-text\)/);
     expect(rule.declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
-    expect(rule.declarations).toMatch(/background:\s*var\(--app-background\)/);
-    expect(rule.declarations).toMatch(/color:\s*var\(--app-text\)/);
+    expect(rule.declarations).toMatch(/background:\s*var\(--app-text\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--app-background\)/);
     expect(rule.declarations).toMatch(/box-shadow:\s*var\(--app-shadow-notice\)/);
     expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
     expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);

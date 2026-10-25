@@ -333,12 +333,15 @@ textarea {
    the card 20 above the foot and it stays on screen at every scroll. It is
    centred by inset-inline: 0, an auto margin and max-content width; the
    max-width arm keeps --gap-page on both sides of the window, tokens
-   only. Its skin is the App's (ground, text, the row hairline in the
-   divider colour, the control radius and --app-shadow-notice), because the
-   Sheet's ground lost the card against the Sheet; the shadow lifts it off
-   both grounds. 16px on 24px is the Field Rule's coarse-pointer size
-   (--sheet-type-note). Proposal: .impeccable/proposals/2026-10-23-page-notice-shape.md,
-   "Mark's answer (2026-10-24): B, styled as the Page". */
+   only. Its skin is the inverse card: the App's ink as ground with the
+   App's ground as text (decide-notice-card-palette "ink", Mark 2026-10-25),
+   because the App ground is 1.07:1 against the Sheet's paper and the iPad
+   check of the white card failed; the ink stands off both grounds at 17:1
+   and 18:1, the control radius and --app-shadow-notice stay, and the
+   border declaration stays in the ink so the box does not move. 16px on
+   24px is the Field Rule's coarse-pointer size (--sheet-type-note).
+   Proposal: .impeccable/proposals/2026-10-23-page-notice-shape.md,
+   "Mark's check (2026-10-25): the card's ground reads as paper". */
 .page-status {
   position: absolute;
   z-index: var(--app-z-notice);
@@ -350,10 +353,10 @@ textarea {
   box-sizing: border-box;
   margin: 0 auto;
   padding: var(--gap-s) var(--gap-m);
-  border: var(--app-rule-row) solid var(--app-divider);
+  border: var(--app-rule-row) solid var(--app-text);
   border-radius: var(--app-radius-control);
-  background: var(--app-background);
-  color: var(--app-text);
+  background: var(--app-text);
+  color: var(--app-background);
   box-shadow: var(--app-shadow-notice);
   font-family: var(--face-grotesk);
   font-size: var(--sheet-type-note);

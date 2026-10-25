@@ -30,6 +30,8 @@ PROPOSED_CSS = PR.PROPOSED_CSS.replace('align-items:baseline', 'align-items:flex
 {PEN} .batch-row__head-lead {{ display: flex; align-items: baseline; gap: var(--app-notebook-recipe-rail-gap); }}
 {PEN} .batch-row__head-acts {{ margin-left: auto; }}
 {PEN} .batch-row__head .tasting-status:empty {{ display: none; }}
+/* Mark, 2026-10-25: the churn trio on one line (Churned, Out of machine, Duration). The date field's token comes down to 120 app-wide (WebKit's intrinsic date box is 109.3 at 16 px); mirrored here as the token the app would carry in tokens.css */
+.notebook-log {{ --sheet-field-w-date: 120px; }}
 '''
 
 def proposed_markup(h):
@@ -40,6 +42,7 @@ def proposed_markup(h):
     h = re.sub(r'<div class="mo-end tasting-head"><h3 class="region-name">Tasting</h3>(<p class="tasting-status[^>]*>.*?</p>)(.*?)</div>',
                r'<div class="batch-row__head batch-row__head--tasting"><div class="batch-row__head-lead"><h2 class="region-name">Tasting</h2>\1</div><div class="batch-row__head-acts">\2</div></div>', h, count=1, flags=re.S)
     h = h.replace('>Tasting temperature<', '>Temperature<')                                      # the addendum: the label under an h2 Tasting
+    h = h.replace('<span class="pen-caption">Churn date</span>', '<span class="pen-caption">Churned</span>').replace('<span class="pen-caption">Churn duration</span>', '<span class="pen-caption">Duration</span>')      # Mark, 2026-10-25: the churn trio on one line; the words are his (decide-p10-churn-trio)
     return h
 
 PANELS = [      # pid, variant, path, width, label
@@ -73,6 +76,7 @@ KEY = ('<b>The one proposed pen (2026-10-25).</b> Every row Mark answered on 202
        '<b>Tasting is a region, a peer of Batch</b> (Mark, 2026-10-25): an h2 in the Batch head\'s own grammar (the name and the status line in the lead, Restore and Remove tasting in the acts), one 44 px head row for both heads, the region seam above it (20, the row hairline, 20) where the pen had the 32 px group seam and no rule, 18 under it as under Batch. '
        'The region appears on Add tasting and Record a tasting opens the pen with it present (decide-p10-tasting-gate, recommended); the two ceremonies and Clear are untouched. '
        '<b>"Tasting temperature" is "Temperature"</b> (Mark, 2026-10-25): the row Tasted · Tempering · Temperature fits one line at 1366 and 393 (327 in 350 / 353; the long label made 386 and wrapped); the word is Mark\'s ("Served at" is the other defensible one). '
+       '<b>The churn trio on one line</b> (Mark, 2026-10-25): Churned · Out of machine · Duration, the Batch region\'s mirror of the tasting row, with the date field at 120 (the token --sheet-field-w-date, app-wide; WebKit\'s intrinsic date box is 109.3 at 16 px): 120 + 12 + 119.5 + 12 + 82 = 345.5 in 350 / 353. As built the three are one field row that wraps (128 + 12 + 111.5 + 12 + 116.3 = 380, Churn duration on a second line). The words are Mark\'s (decide-p10-churn-trio): "Churned" parallels "Tasted" and the fold\'s own "churned 2 Aug 2026"; "Duration" drops the repeated churn. '
        '<b>Reads with it:</b> every interval is measured on this board in WebKit from a label\'s text line to the next text line or control box; the token beside it is the one the interval reads. In a proposed column what changes against as built is blue with "was" or "new". '
        'Path A is Record another on Olive Oil v1 then Add tasting, filled; path B is Record a tasting from Home on Mexican Chocolate v3 (an untasted batch), the same pen opened onto its tasting. Device-unverified: WebKit on the Mac, not the iPad.')
 TITLE = 'The record pen, proposed · every decided row of 2026-10-24 and Tasting as a peer region (2026-10-25), both entry paths, at 1366 beside as built and at 393 (for Mark\'s look: look-p10-ladder-redraw)'

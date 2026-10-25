@@ -357,7 +357,7 @@ const CHURN_DATE_SENTENCE = 'Enter the date you churned.';
 const PEN = '.batch-margin--pen';
 const CHURN_DATE = `${PEN} .field-row__label--date input`;
 const OUT_OF_MACHINE = `${PEN} input[aria-label^="Out of machine"]`;
-const CHURN_DURATION = `${PEN} input[aria-label^="Churn duration"]`;
+const CHURN_DURATION = `${PEN} input[aria-label^="Duration"]`;
 const TEMPERING = `${PEN} input[aria-label^="Tempering"]`;
 const TASTING_NOTE = `${PEN} textarea[aria-label="How did it turn out?"]`;
 const SUCROSE_FIELD = 'input[aria-label="Sucrose, grams, portion 1"]';
@@ -700,7 +700,7 @@ SCENARIOS.push([
     walk.expect(await waitForNotice(page), `the notice reads "${KEPT}" after the reload`);
     const reloaded = await walk.step('reloaded', { stores: true });
     walk.expect(reloaded.snapshot.pens.record === 1, 'the record pen is open after the reload');
-    walk.expect(fieldValue(reloaded.snapshot, 'Churn date') === '2026-10-09', 'the churn date is in its field after the reload');
+    walk.expect(fieldValue(reloaded.snapshot, 'Churned') === '2026-10-09', 'the churn date is in its field after the reload');
     walk.expect(fieldValue(reloaded.snapshot, 'Out of machine') === '-6', 'Out of machine is in its field after the reload');
 
     await cancelRecordPen(page);
@@ -747,7 +747,7 @@ SCENARIOS.push([
     walk.expect(await waitForNotice(page), `the notice reads "${KEPT}" after the reload`);
     const reloaded = await walk.step('reloaded', { stores: true });
     walk.expect(reloaded.snapshot.pens.record === 1, 'the Correct pen is open after the reload');
-    walk.expect(fieldValue(reloaded.snapshot, 'Churn duration') === '31', 'the edited duration is in its field after the reload');
+    walk.expect(fieldValue(reloaded.snapshot, 'Duration') === '31', 'the edited duration is in its field after the reload');
 
     await cancelRecordPen(page);
     await walk.afterDebounce();
@@ -765,7 +765,7 @@ SCENARIOS.push([
     await walk.open(BATCH_ROUTE);
     await openCorrectPen(page);
     const opened = await walk.step('pen-opened');
-    const seeded = fieldValue(opened.snapshot, 'Tasting temperature');
+    const seeded = fieldValue(opened.snapshot, 'Temperature');
     walk.expect(Boolean(seeded), `the seeded tasting temperature shows in the pen (${seeded})`);
 
     await button(page, 'Remove tasting').click();
@@ -777,7 +777,7 @@ SCENARIOS.push([
     await button(page, 'Restore tasting').click();
     const restored = await walk.step('tasting-restored');
     walk.expect(restored.snapshot.tastingStatus === 'Tasting restored.', `the tasting status reads the restore words (${restored.snapshot.tastingStatus})`);
-    walk.expect(fieldValue(restored.snapshot, 'Tasting temperature') === seeded, 'the tasting temperature holds its seeded value again');
+    walk.expect(fieldValue(restored.snapshot, 'Temperature') === seeded, 'the tasting temperature holds its seeded value again');
 
     await button(page, 'Remove tasting').click();
     await walk.step('tasting-removed-again');

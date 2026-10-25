@@ -520,12 +520,10 @@
    "A": {
     "churnOnly": {
      "gaps": {
-      "region-name:Batch -> pen-caption:Churn date#1": 30.5625,
-      "pen-caption:Churn date -> ink-field:2026-10-18#1": 6,
+      "region-name:Batch -> pen-caption:Churned#1": 30.5625,
+      "pen-caption:Churned -> ink-field:2026-10-18#1": 6,
       "ink-field:2026-10-18 -> field-requirement:Required#1": 2,
-      "field-requirement:Required -> pen-caption:Churn duration#1": 12,
-      "pen-caption:Churn duration -> ink-field:28#1": 6,
-      "ink-field:28 -> pen-caption:At the machine#1": 12,
+      "field-requirement:Required -> pen-caption:At the machine#1": 12,
       "pen-caption:At the machine -> prose-field:Soft, held its shape#1": 6,
       "prose-field:Soft, held its shape -> pen-caption:Ingredient notes#1": 12,
       "pen-caption:Ingredient notes -> prose-field:Olive oil opened 1 O#1": 6,
@@ -549,12 +547,10 @@
     },
     "after": {
      "gaps": {
-      "region-name:Batch -> pen-caption:Churn date#1": 30.5625,
-      "pen-caption:Churn date -> ink-field:2026-10-18#1": 6,
+      "region-name:Batch -> pen-caption:Churned#1": 30.5625,
+      "pen-caption:Churned -> ink-field:2026-10-18#1": 6,
       "ink-field:2026-10-18 -> field-requirement:Required#1": 2,
-      "field-requirement:Required -> pen-caption:Churn duration#1": 12,
-      "pen-caption:Churn duration -> ink-field:28#1": 6,
-      "ink-field:28 -> pen-caption:At the machine#1": 12,
+      "field-requirement:Required -> pen-caption:At the machine#1": 12,
       "pen-caption:At the machine -> prose-field:Soft, held its shape#1": 6,
       "prose-field:Soft, held its shape -> pen-caption:Ingredient notes#1": 12,
       "pen-caption:Ingredient notes -> prose-field:Olive oil opened 1 O#1": 6,
@@ -568,9 +564,7 @@
       "segmented:Low, denseMedium, st -> region-name:Tasting#1": 53.546875,
       "region-name:Tasting -> pen-caption:Tasted#1": 30.5625,
       "pen-caption:Tasted -> ink-field:2026-10-19#1": 6,
-      "ink-field:2026-10-19 -> pen-caption:Tasting temperature#1": 12,
-      "pen-caption:Tasting temperature -> ink-field:-12#1": 6,
-      "ink-field:-12 -> note-block__eyebrow:How did it turn out?#1": 12,
+      "ink-field:2026-10-19 -> note-block__eyebrow:How did it turn out?#1": 12,
       "note-block__eyebrow:How did it turn out? -> prose-field:Rich, a chalky finis#1": 6,
       "prose-field:Rich, a chalky finis -> pen-caption:Melt test#1": 15.328125,
       "pen-caption:Melt test -> ink-field:4#1": 6,
@@ -617,18 +611,16 @@
       "h3 This recipe only",
       "h3 Any problems?"
      ],
-     "penHeight": 2384.78125
+     "penHeight": 2232
     }
    },
    "B": {
     "after": {
      "gaps": {
-      "region-name:Batch -> pen-caption:Churn date#1": 30.5625,
-      "pen-caption:Churn date -> ink-field:ink-field#1": 6,
+      "region-name:Batch -> pen-caption:Churned#1": 30.5625,
+      "pen-caption:Churned -> ink-field:ink-field#1": 6,
       "ink-field:ink-field -> field-requirement:Required#1": 2,
-      "field-requirement:Required -> pen-caption:Churn duration#1": 12,
-      "pen-caption:Churn duration -> ink-field:ink-field#1": 6,
-      "ink-field:ink-field -> pen-caption:At the machine#1": 12,
+      "field-requirement:Required -> pen-caption:At the machine#1": 12,
       "pen-caption:At the machine -> prose-field:prose-field#1": 6,
       "prose-field:prose-field -> pen-caption:Ingredient notes#1": 12,
       "pen-caption:Ingredient notes -> prose-field:prose-field#1": 6,
@@ -642,8 +634,6 @@
       "segmented:Low, denseMedium, st -> region-name:Tasting#1": 53.546875,
       "region-name:Tasting -> pen-caption:Tasted#1": 30.5625,
       "pen-caption:Tasted -> ink-field:ink-field#1": 6,
-      "ink-field:ink-field -> pen-caption:Tasting temperature#1": 12,
-      "pen-caption:Tasting temperature -> ink-field:ink-field#1": 6,
       "ink-field:ink-field -> note-block__eyebrow:How did it turn out?#1": 12,
       "note-block__eyebrow:How did it turn out? -> prose-field:prose-field#1": 6,
       "prose-field:prose-field -> pen-caption:Melt test#1": 15.328125,
@@ -681,7 +671,7 @@
       "h3 Every recipe",
       "h3 Any problems?"
      ],
-     "penHeight": 2000.59375,
+     "penHeight": 1847.8125,
      "url": "/notebook/mexican-chocolate/mexican-chocolate-v3/batch/mexican-chocolate-v3-batch-01"
     }
    }
@@ -691,12 +681,10 @@
    "A": {
     "churnOnly": {
      "gaps": {
-      "region-name:Batch -> pen-caption:Churn date#1": 30.5625,
-      "pen-caption:Churn date -> ink-field:2026-10-18#1": 6,
+      "region-name:Batch -> pen-caption:Churned#1": 30.5625,
+      "pen-caption:Churned -> ink-field:2026-10-18#1": 6,
       "ink-field:2026-10-18 -> field-requirement:Required#1": 2,
-      "field-requirement:Required -> pen-caption:Churn duration#1": 12,
-      "pen-caption:Churn duration -> ink-field:28#1": 6,
-      "ink-field:28 -> pen-caption:At the machine#1": 12,
+      "field-requirement:Required -> pen-caption:At the machine#1": 12,
       "pen-caption:At the machine -> prose-field:Soft, held its shape#1": 6,
       "prose-field:Soft, held its shape -> pen-caption:Ingredient notes#1": 12,
       "pen-caption:Ingredient notes -> prose-field:Olive oil opened 1 O#1": 6,
@@ -720,12 +708,10 @@
     },
     "after": {
      "gaps": {
-      "region-name:Batch -> pen-caption:Churn date#1": 30.5625,
-      "pen-caption:Churn date -> ink-field:2026-10-18#1": 6,
+      "region-name:Batch -> pen-caption:Churned#1": 30.5625,
+      "pen-caption:Churned -> ink-field:2026-10-18#1": 6,
       "ink-field:2026-10-18 -> field-requirement:Required#1": 2,
-      "field-requirement:Required -> pen-caption:Churn duration#1": 12,
-      "pen-caption:Churn duration -> ink-field:28#1": 6,
-      "ink-field:28 -> pen-caption:At the machine#1": 12,
+      "field-requirement:Required -> pen-caption:At the machine#1": 12,
       "pen-caption:At the machine -> prose-field:Soft, held its shape#1": 6,
       "prose-field:Soft, held its shape -> pen-caption:Ingredient notes#1": 12,
       "pen-caption:Ingredient notes -> prose-field:Olive oil opened 1 O#1": 6,
@@ -739,9 +725,7 @@
       "segmented:Low, denseMedium, st -> region-name:Tasting#1": 53.546875,
       "region-name:Tasting -> pen-caption:Tasted#1": 30.5625,
       "pen-caption:Tasted -> ink-field:2026-10-19#1": 6,
-      "ink-field:2026-10-19 -> pen-caption:Tasting temperature#1": 12,
-      "pen-caption:Tasting temperature -> ink-field:-12#1": 6,
-      "ink-field:-12 -> note-block__eyebrow:How did it turn out?#1": 12,
+      "ink-field:2026-10-19 -> note-block__eyebrow:How did it turn out?#1": 12,
       "note-block__eyebrow:How did it turn out? -> prose-field:Rich, a chalky finis#1": 6,
       "prose-field:Rich, a chalky finis -> pen-caption:Melt test#1": 15.328125,
       "pen-caption:Melt test -> ink-field:4#1": 6,
@@ -788,18 +772,16 @@
       "h3 This recipe only",
       "h3 Any problems?"
      ],
-     "penHeight": 2130.03125
+     "penHeight": 2012.75
     }
    },
    "B": {
     "after": {
      "gaps": {
-      "region-name:Batch -> pen-caption:Churn date#1": 30.5625,
-      "pen-caption:Churn date -> ink-field:ink-field#1": 6,
+      "region-name:Batch -> pen-caption:Churned#1": 30.5625,
+      "pen-caption:Churned -> ink-field:ink-field#1": 6,
       "ink-field:ink-field -> field-requirement:Required#1": 2,
-      "field-requirement:Required -> pen-caption:Churn duration#1": 12,
-      "pen-caption:Churn duration -> ink-field:ink-field#1": 6,
-      "ink-field:ink-field -> pen-caption:At the machine#1": 12,
+      "field-requirement:Required -> pen-caption:At the machine#1": 12,
       "pen-caption:At the machine -> prose-field:prose-field#1": 6,
       "prose-field:prose-field -> pen-caption:Ingredient notes#1": 12,
       "pen-caption:Ingredient notes -> prose-field:prose-field#1": 6,
@@ -813,8 +795,6 @@
       "segmented:Low, denseMedium, st -> region-name:Tasting#1": 53.546875,
       "region-name:Tasting -> pen-caption:Tasted#1": 30.5625,
       "pen-caption:Tasted -> ink-field:ink-field#1": 6,
-      "ink-field:ink-field -> pen-caption:Tasting temperature#1": 12,
-      "pen-caption:Tasting temperature -> ink-field:ink-field#1": 6,
       "ink-field:ink-field -> note-block__eyebrow:How did it turn out?#1": 12,
       "note-block__eyebrow:How did it turn out? -> prose-field:prose-field#1": 6,
       "prose-field:prose-field -> pen-caption:Melt test#1": 15.328125,
@@ -852,7 +832,7 @@
       "h3 Every recipe",
       "h3 Any problems?"
      ],
-     "penHeight": 1759.84375,
+     "penHeight": 1642.5625,
      "url": "/notebook/mexican-chocolate/mexican-chocolate-v3/batch/mexican-chocolate-v3-batch-01"
     }
    }
@@ -862,12 +842,10 @@
    "A": {
     "churnOnly": {
      "gaps": {
-      "region-name:Batch -> pen-caption:Churn date#1": 30.5625,
-      "pen-caption:Churn date -> ink-field:2026-10-18#1": 6,
+      "region-name:Batch -> pen-caption:Churned#1": 30.5625,
+      "pen-caption:Churned -> ink-field:2026-10-18#1": 6,
       "ink-field:2026-10-18 -> field-requirement:Required#1": 2,
-      "field-requirement:Required -> pen-caption:Churn duration#1": 12,
-      "pen-caption:Churn duration -> ink-field:28#1": 6,
-      "ink-field:28 -> pen-caption:At the machine#1": 12,
+      "field-requirement:Required -> pen-caption:At the machine#1": 12,
       "pen-caption:At the machine -> prose-field:Soft, held its shape#1": 6,
       "prose-field:Soft, held its shape -> pen-caption:Ingredient notes#1": 12,
       "pen-caption:Ingredient notes -> prose-field:Olive oil opened 1 O#1": 6,
@@ -891,12 +869,10 @@
     },
     "after": {
      "gaps": {
-      "region-name:Batch -> pen-caption:Churn date#1": 30.5625,
-      "pen-caption:Churn date -> ink-field:2026-10-18#1": 6,
+      "region-name:Batch -> pen-caption:Churned#1": 30.5625,
+      "pen-caption:Churned -> ink-field:2026-10-18#1": 6,
       "ink-field:2026-10-18 -> field-requirement:Required#1": 2,
-      "field-requirement:Required -> pen-caption:Churn duration#1": 12,
-      "pen-caption:Churn duration -> ink-field:28#1": 6,
-      "ink-field:28 -> pen-caption:At the machine#1": 12,
+      "field-requirement:Required -> pen-caption:At the machine#1": 12,
       "pen-caption:At the machine -> prose-field:Soft, held its shape#1": 6,
       "prose-field:Soft, held its shape -> pen-caption:Ingredient notes#1": 12,
       "pen-caption:Ingredient notes -> prose-field:Olive oil opened 1 O#1": 6,
@@ -910,9 +886,7 @@
       "segmented:Low, denseMedium, st -> region-name:Tasting#1": 53.546875,
       "region-name:Tasting -> pen-caption:Tasted#1": 30.5625,
       "pen-caption:Tasted -> ink-field:2026-10-19#1": 6,
-      "ink-field:2026-10-19 -> pen-caption:Tasting temperature#1": 12,
-      "pen-caption:Tasting temperature -> ink-field:-12#1": 6,
-      "ink-field:-12 -> note-block__eyebrow:How did it turn out?#1": 12,
+      "ink-field:2026-10-19 -> note-block__eyebrow:How did it turn out?#1": 12,
       "note-block__eyebrow:How did it turn out? -> prose-field:Rich, a chalky finis#1": 6,
       "prose-field:Rich, a chalky finis -> pen-caption:Melt test#1": 15.328125,
       "pen-caption:Melt test -> ink-field:4#1": 6,
@@ -959,18 +933,16 @@
       "h3 This recipe only",
       "h3 Any problems?"
      ],
-     "penHeight": 2384.78125
+     "penHeight": 2232
     }
    },
    "B": {
     "after": {
      "gaps": {
-      "region-name:Batch -> pen-caption:Churn date#1": 30.5625,
-      "pen-caption:Churn date -> ink-field:ink-field#1": 6,
+      "region-name:Batch -> pen-caption:Churned#1": 30.5625,
+      "pen-caption:Churned -> ink-field:ink-field#1": 6,
       "ink-field:ink-field -> field-requirement:Required#1": 2,
-      "field-requirement:Required -> pen-caption:Churn duration#1": 12,
-      "pen-caption:Churn duration -> ink-field:ink-field#1": 6,
-      "ink-field:ink-field -> pen-caption:At the machine#1": 12,
+      "field-requirement:Required -> pen-caption:At the machine#1": 12,
       "pen-caption:At the machine -> prose-field:prose-field#1": 6,
       "prose-field:prose-field -> pen-caption:Ingredient notes#1": 12,
       "pen-caption:Ingredient notes -> prose-field:prose-field#1": 6,
@@ -984,8 +956,6 @@
       "segmented:Low, denseMedium, st -> region-name:Tasting#1": 53.546875,
       "region-name:Tasting -> pen-caption:Tasted#1": 30.5625,
       "pen-caption:Tasted -> ink-field:ink-field#1": 6,
-      "ink-field:ink-field -> pen-caption:Tasting temperature#1": 12,
-      "pen-caption:Tasting temperature -> ink-field:ink-field#1": 6,
       "ink-field:ink-field -> note-block__eyebrow:How did it turn out?#1": 12,
       "note-block__eyebrow:How did it turn out? -> prose-field:prose-field#1": 6,
       "prose-field:prose-field -> pen-caption:Melt test#1": 15.328125,
@@ -1023,7 +993,7 @@
       "h3 Every recipe",
       "h3 Any problems?"
      ],
-     "penHeight": 2000.59375,
+     "penHeight": 1847.8125,
      "url": "/notebook/mexican-chocolate/mexican-chocolate-v3/batch/mexican-chocolate-v3-batch-01"
     }
    }
@@ -1031,7 +1001,10 @@
  },
  "boardDeltas": {
   "c1366/A vs pen-p-A-1366": {
+   "region-name:Batch -> pen-caption:Churned#1": 0,
+   "pen-caption:Churned -> ink-field:2026-10-18#1": 0,
    "ink-field:2026-10-18 -> field-requirement:Required#1": 0,
+   "field-requirement:Required -> pen-caption:At the machine#1": 0,
    "pen-caption:At the machine -> prose-field:Soft, held its shape#1": 0,
    "prose-field:Soft, held its shape -> pen-caption:Ingredient notes#1": 0,
    "pen-caption:Ingredient notes -> prose-field:Olive oil opened 1 O#1": 0,
@@ -1045,6 +1018,7 @@
    "segmented:Low, denseMedium, st -> region-name:Tasting#1": -6,
    "region-name:Tasting -> pen-caption:Tasted#1": -6,
    "pen-caption:Tasted -> ink-field:2026-10-19#1": 0,
+   "ink-field:2026-10-19 -> note-block__eyebrow:How did it turn out?#1": 0,
    "note-block__eyebrow:How did it turn out? -> prose-field:Rich, a chalky finis#1": 0,
    "prose-field:Rich, a chalky finis -> pen-caption:Melt test#1": 0,
    "pen-caption:Melt test -> ink-field:4#1": 0,
@@ -1083,7 +1057,10 @@
    "defects-row__chips:Bitter -> :Cancel#1": 0
   },
   "c1366/B vs pen-p-B-1366": {
+   "region-name:Batch -> pen-caption:Churned#1": 0,
+   "pen-caption:Churned -> ink-field:ink-field#1": 0,
    "ink-field:ink-field -> field-requirement:Required#1": 0,
+   "field-requirement:Required -> pen-caption:At the machine#1": 0,
    "pen-caption:At the machine -> prose-field:prose-field#1": 0,
    "prose-field:prose-field -> pen-caption:Ingredient notes#1": 0,
    "pen-caption:Ingredient notes -> prose-field:prose-field#1": 0,
@@ -1119,7 +1096,10 @@
    "defects-row__chips:Coarse, icySandy, gr -> :Cancel#1": 0
   },
   "c393/A vs pen-p-A-393": {
+   "region-name:Batch -> pen-caption:Churned#1": 0,
+   "pen-caption:Churned -> ink-field:2026-10-18#1": 0,
    "ink-field:2026-10-18 -> field-requirement:Required#1": 0,
+   "field-requirement:Required -> pen-caption:At the machine#1": 0,
    "pen-caption:At the machine -> prose-field:Soft, held its shape#1": 0,
    "prose-field:Soft, held its shape -> pen-caption:Ingredient notes#1": 0,
    "pen-caption:Ingredient notes -> prose-field:Olive oil opened 1 O#1": 0,
@@ -1133,6 +1113,7 @@
    "segmented:Low, denseMedium, st -> region-name:Tasting#1": -6,
    "region-name:Tasting -> pen-caption:Tasted#1": -6,
    "pen-caption:Tasted -> ink-field:2026-10-19#1": 0,
+   "ink-field:2026-10-19 -> note-block__eyebrow:How did it turn out?#1": 0,
    "note-block__eyebrow:How did it turn out? -> prose-field:Rich, a chalky finis#1": 0,
    "prose-field:Rich, a chalky finis -> pen-caption:Melt test#1": 0,
    "pen-caption:Melt test -> ink-field:4#1": 0,
@@ -1171,7 +1152,10 @@
    "defects-row__chips:Bitter -> :Cancel#1": 0
   },
   "c393/B vs pen-p-B-393": {
+   "region-name:Batch -> pen-caption:Churned#1": 0,
+   "pen-caption:Churned -> ink-field:ink-field#1": 0,
    "ink-field:ink-field -> field-requirement:Required#1": 0,
+   "field-requirement:Required -> pen-caption:At the machine#1": 0,
    "pen-caption:At the machine -> prose-field:prose-field#1": 0,
    "prose-field:prose-field -> pen-caption:Ingredient notes#1": 0,
    "pen-caption:Ingredient notes -> prose-field:prose-field#1": 0,

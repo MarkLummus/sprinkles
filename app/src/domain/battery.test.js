@@ -32,9 +32,13 @@ describe('BATTERY_FIELDS', () => {
     }
   });
 
-  it('signed is true on exactly the two °C fields: Out of machine and Tasting temperature', () => {
+  it('signed is true on exactly the two °C fields: Out of machine and Temperature', () => {
     const signedLabels = BATTERY_FIELDS.filter((field) => field.signed).map((field) => field.label);
-    expect(signedLabels.sort()).toEqual(['Out of machine', 'Tasting temperature']);
+    expect(signedLabels.sort()).toEqual(['Out of machine', 'Temperature']);
+  });
+
+  it("the labels read Out of machine, Duration, Tempering, Temperature, Melt test: one word each, with no region name repeated in them (decide-p10-churn-trio; Mark, 2026-10-25)", () => {
+    expect(BATTERY_FIELDS.map((field) => field.label)).toEqual(['Out of machine', 'Duration', 'Tempering', 'Temperature', 'Melt test']);
   });
 
   it('the two error strings match the contract\'s "Controls spec" character-for-character', () => {

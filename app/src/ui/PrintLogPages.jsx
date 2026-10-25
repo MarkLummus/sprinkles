@@ -119,7 +119,7 @@ export function BatchLogPage({ footText }) {
   return (
     <div className="lf">
       <div className="lf-body">
-        <LogHead dateCaption="Churn date" title="Batch log" />
+        <LogHead dateCaption="Churned" title="Batch log" />
         <div className="lf-sec lf-row">
           <LogFigure field={FIGURE_FIELDS.outOfMachineTempC} />
           <LogFigure field={FIGURE_FIELDS.churnDurationMinutes} />

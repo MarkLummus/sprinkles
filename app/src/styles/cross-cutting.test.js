@@ -731,11 +731,11 @@ describe("the sketch's field row (007 @ 2a212be lines 37-44, D-13)", () => {
     expect(resolveTokenPx(tokens, '--sheet-field-w-figure')).toBe(56);
   });
 
-  test('.field-row__label--date reads the 128px date width', () => {
+  test('.field-row__label--date reads the 120px date width (decide-p10-churn-trio)', () => {
     const rule = ruleFor('.field-row__label--date');
     expect(rule, 'expected a .field-row__label--date rule').toBeTruthy();
     expect(rule.declarations).toMatch(/width:\s*var\(--sheet-field-w-date\)/);
-    expect(resolveTokenPx(tokens, '--sheet-field-w-date')).toBe(128);
+    expect(resolveTokenPx(tokens, '--sheet-field-w-date')).toBe(120);
   });
 
   test('.method-step__on-demand sits at its own content width, not stretched by the column flex wrapper', () => {

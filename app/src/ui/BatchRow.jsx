@@ -37,7 +37,7 @@ const CHURN_MEASURED_FIELDS = BATTERY_FIELDS.filter((field) =>
 // inventory" § tasting body): Tempering, unit min — "Where sources
 // disagree (HTML wins)" § 1 places it here, never in the churn section,
 // however D-10's own wording groups it.
-// Tasting temperature, unit °C, signed — the field-row's other measured
+// Temperature, unit °C, signed — the field-row's other measured
 // field, beside Tempering. Melt test (meltTestG) is also a BATTERY_FIELDS
 // entry but belongs to the melt block at the tasting body's foot
 // (03.3.1-03 Task 3), not this field-row.
@@ -313,7 +313,7 @@ function TastingReading({ batch, foldsOpen = true }) {
   // log's content box with the tasted date at the row's end (G-03.5-4).
   const [open, toggle] = useFold(foldsOpen);
   // The conditions and the melt fields (sketch 010 D14; pen-reading.html):
-  // Tempering and Tasting temperature, then the tasting note in the hand, then
+  // Tempering and Temperature, then the tasting note in the hand, then
   // Melt test and Melt style, as the pen runs. With no note written the four
   // stand in one row.
   const tempering = (
@@ -331,7 +331,7 @@ function TastingReading({ batch, foldsOpen = true }) {
   );
   const tastingTemperature = (
     <div className="batch-row__cell">
-      <span className="batch-row__cell-label">Tasting temperature</span>
+      <span className="batch-row__cell-label">Temperature</span>
       {batch.tasting.tastingTempC != null ? (
         <span className="batch-row__cell-value">
           {churnMeasured(batch.tasting.tastingTempC, { signed: true })}
@@ -792,9 +792,10 @@ export function BatchRow({
       <div className={mode === 'recording' ? 'batch-margin batch-margin--pen' : 'batch-margin'}>
         {mode === 'recording' ? (
           <>
-            {/* The churn row (sketch 007 @ 2a212be lines 210-216; D-12
-                "Churn date" replaces "churned"): a .field-row holding the
-                128px Churn date field, this event's identifying field
+            {/* The churn row (sketch 007 @ 2a212be lines 210-216; D-12's
+                date caption, shortened to "Churned" by Mark's 2026-10-25
+                decide-p10-churn-trio): a .field-row holding the
+                120px Churned date field, this event's identifying field
                 (D-05), then the two numeric churn measurements beside
                 it (contract "DOM order inventory"). .batch-row__cells
                 stays only for the read view below — the pen no longer
@@ -805,7 +806,7 @@ export function BatchRow({
                 at either ceremony. */}
             <div className="field-row">
               <label className="field-row__label field-row__label--date">
-                <span className="pen-caption">Churn date</span>
+                <span className="pen-caption">Churned</span>
                 {/* 261003-by3, .planning/debug/ios-tasting-date-picker.md: the
                     Record a tasting open already targets the Tasted date
                     (addTastingAttempt is a number only for that opener), and a
@@ -959,8 +960,8 @@ export function BatchRow({
                   </div>
                 </div>
                 {/* The tasting field row (sketch 007 lines 249-253; UAT
-                    items 7, 8): a .field-row holding the 128px Tasted date
-                    then Tempering and Tasting temperature, MeasuredField's
+                    items 7, 8): a .field-row holding the 120px Tasted date
+                    then Tempering and Temperature, MeasuredField's
                     own field-row shape (Task 1). */}
                 <div className="field-row">
                   <label className="field-row__label field-row__label--date">
@@ -1199,7 +1200,7 @@ export function BatchRow({
                 )}
               </div>
               <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Churn duration</span>
+                <span className="batch-row__cell-label">Duration</span>
                 {openBatch.churn.churnDurationMinutes != null ? (
                   <span className="batch-row__cell-value">
                     {churnMeasured(openBatch.churn.churnDurationMinutes)}

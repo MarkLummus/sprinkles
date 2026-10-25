@@ -321,36 +321,49 @@ textarea {
 }
 
 /* Out of flow (260917-ewf; re-anchored 03.5-02 Task 3; moved beside Import,
-   decide-creation-notice-place, quick 261021-07s, sketch 013 decision 23):
-   DESIGN.md's "nothing moves" holds, so the notice overlays the page
-   instead of reflowing it, and no blank line is reserved for it in either
-   state. It anchors to .page-status-anchor, a zero-height sticky box under
-   the bar, so inset-block-start: 0 puts the notice flush with the bar's
-   bottom edge and it stays on screen however far the page scrolls. It sits
-   at the end edge, inset by --gap-page, the same property the bar's end
-   padding reads, so it lines up under the bar's tools beside Import and
-   clear of the first field's caption. The viewport arm of max-width keeps
-   the same inset plus one --gap-m of breathing room on the other side,
-   tokens only. */
+   decide-creation-notice-place, quick 261021-07s, sketch 013 decision 23;
+   a card from the bottom edge, decide-page-notice-shape BS, Mark
+   2026-10-24/25, quick 261025-elq): DESIGN.md's "nothing moves" still
+   holds, so the notice overlays the page instead of reflowing it, and no
+   blank line is reserved for it in either state. Sketch 013 decision 23's
+   place under the bar is superseded: the notice is one card, in one place
+   for every trigger (a saved batch or version, a kept or discarded draft,
+   an Import refusal). It anchors to .page-status-anchor, a zero-height
+   fixed box at the window's foot, so inset-block-end: var(--gap-m) stands
+   the card 20 above the foot and it stays on screen at every scroll. It is
+   centred by inset-inline: 0, an auto margin and max-content width; the
+   max-width arm keeps --gap-page on both sides of the window, tokens
+   only. Its skin is the App's (ground, text, the row hairline in the
+   divider colour, the control radius and --app-shadow-notice), because the
+   Sheet's ground lost the card against the Sheet; the shadow lifts it off
+   both grounds. 16px on 24px is the Field Rule's coarse-pointer size
+   (--sheet-type-note). Proposal: .impeccable/proposals/2026-10-23-page-notice-shape.md,
+   "Mark's answer (2026-10-24): B, styled as the Page". */
 .page-status {
   position: absolute;
   z-index: var(--app-z-notice);
-  inset-block-start: 0;
-  inset-inline-end: var(--gap-page);
-  max-width: min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));
-  margin: 0;
-  margin-block-start: var(--gap-xs);
-  padding: var(--gap-xs) var(--gap-s);
-  border: var(--rule-baseline) solid var(--sheet-ink);
-  background: var(--sheet-ground);
-  color: var(--sheet-ink);
+  inset-block-start: auto;
+  inset-block-end: var(--gap-m);
+  inset-inline: 0;
+  width: max-content;
+  max-width: min(var(--measure-prose), calc(100vw - 2 * var(--gap-page)));
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: var(--gap-s) var(--gap-m);
+  border: var(--app-rule-row) solid var(--app-divider);
+  border-radius: var(--app-radius-control);
+  background: var(--app-background);
+  color: var(--app-text);
+  box-shadow: var(--app-shadow-notice);
   font-family: var(--face-grotesk);
-  font-size: var(--sheet-type-control);
+  font-size: var(--sheet-type-note);
+  line-height: var(--sheet-leading-note);
 }
 
 .page-status:empty {
   padding: 0;
   border: 0;
+  box-shadow: none;
 }
 
 .headnote {
@@ -375,18 +388,24 @@ textarea {
 }
 
 /* The notice's own anchor (03.5-02 Task 3, folded todo; made sticky,
-   decide-creation-notice-place, quick 261021-07s): a zero-height box above
-   the keyed page and outside it (router.jsx), stuck under the bar at
-   --app-size-header-h, the bar's own height. It holds through the whole
-   scroll because .shell, .shell__body and .shell__main declare no
-   overflow (shell.test.js). A sticky box forms its own stacking context,
+   decide-creation-notice-place, quick 261021-07s; fixed at the window's
+   foot, decide-page-notice-shape BS, Mark 2026-10-24/25, quick 261025-elq):
+   a zero-height box above the keyed page and outside it (router.jsx),
+   fixed to the bottom edge of the window, the containing block the card
+   positions itself in. Sketch 013 decision 23's place under the bar is
+   superseded. It holds while .shell, .shell__body and .shell__main
+   declare no transform, filter, perspective, will-change, contain or
+   overflow (shell.test.js). A fixed box forms its own stacking context,
    so the anchor carries the notice's layer itself: later positioned page
    content cannot paint over the notice. The order of sketch 011 decision
    53 is unchanged. No height, no padding and no background of its own: it
-   holds nothing visible, only the notice, positioned absolutely within it. */
+   holds nothing visible, only the notice, positioned absolutely within it.
+   Proposal: .impeccable/proposals/2026-10-23-page-notice-shape.md,
+   "Mark's answer (2026-10-24): B, styled as the Page". */
 .page-status-anchor {
-  position: sticky;
-  inset-block-start: var(--app-size-header-h);
+  position: fixed;
+  inset-block: auto 0;
+  inset-inline: 0;
   z-index: var(--app-z-notice);
 }
 
@@ -2566,9 +2585,10 @@ textarea {
    field-row family lands; the prose fields keep their own
    .batch-margin__field, label-above-input shape, untouched by this rule.
    The list-form ingredient table rules follow in their own screen-only block
-   (decision 45, 03.7-02). The notice's anchor rule closes the block:
-   below 724 the bar stops sticking (shell.css), so the anchor sticks to
-   the window's own top (quick 261021-07s). */
+   (decision 45, 03.7-02). The notice's own rule closes the block: below
+   724 the tab row is fixed to the window's foot (shell.css), so the card
+   rises above it (decide-page-notice-shape BS, quick 261025-elq; the
+   place under the bar of sketch 013 decision 23 is superseded). */
 @media (max-width: 723.98px) {
   /* The one place the page's phone gutter is stated (260917-gjo; the
      running head retired 03.5-02 Task 3): three boxes step together
@@ -2601,10 +2621,9 @@ textarea {
     flex-wrap: wrap;
   }
 
-  /* Below 724 shell.css's phone block makes the bar static and scrolling,
-     so the notice sticks to the window's own top. */
-  .page-status-anchor {
-    inset-block-start: 0;
+  /* Below 724 the card rises above the fixed tab row. */
+  .page-status {
+    inset-block-end: calc(var(--app-size-tab-h) + var(--gap-m));
   }
 }
 

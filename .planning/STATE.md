@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: planning
 stopped_at: Phase 10 complete, ready to plan Phase 11
-last_updated: "2026-10-25T21:29:29.654Z"
+last_updated: "2026-10-25T23:23:54.630Z"
 last_activity: 2026-10-25
 last_activity_desc: Phase 10 complete, transitioned to Phase 11
-state_head: ea6cbd3c12f9908af8fc00de1c5810a9bdbaac2b
+state_head: 7c105a35aadecae34eb75ef20c4507931396583e
 progress:
   total_phases: 5
   completed_phases: 3
@@ -597,6 +597,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 194 | The problem chips in the record pen read 14 like the option words and stop digits (re-critique P3; Mark 2026-10-25) | 2026-10-25 | 06f96136 | — |
 | 195 | The scales board spec reads .mk-caprow and the axis state comment matches the pen (records after 261025-f8m) | 2026-10-25 | 5bbcdad3 | — |
 | 196 | Canvas boards linked by address: CLAUDE.md rule and canvaslink.mjs (Mark 2026-10-25) | 2026-10-25 | ea6cbd3c | — |
+| 197 | A todo note routes the work and hands the row to Claude; Done on a todo means built, file stays pending | 2026-10-25 | 7c105a35 | — |
 
 ### Roadmap Evolution
 

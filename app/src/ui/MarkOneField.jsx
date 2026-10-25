@@ -46,9 +46,9 @@ export function MarkOneField({ field, label, value, off = false, onChange, onCle
   return (
     <div className="segmented-field mo-group" data-mo={key}>
       <div className="segmented-field__head">
-        <span className="segmented-field__caption pen-caption axes-cue" id={captionId}>
+        <h3 className="segmented-field__caption pen-caption axes-cue" id={captionId}>
           {label}
-        </span>
+        </h3>
         {picked && (
           <Button
             className="text-control segmented-field__clear"

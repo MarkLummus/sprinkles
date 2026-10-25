@@ -1991,7 +1991,7 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
     expect(markup).toContain('>Hardness</span>');
     expect(markup).toContain('>Smoothness</span>');
     expect(markup).not.toContain(`<h3 class="${CUE}">This recipe only</h3>`);
-    expect(markup).toContain(`<h4 class="${CUE}">This recipe only</h4>`);
+    expect(markup).toContain('<h4 class="batch-row__group-label">This recipe only</h4>');
   });
 
   it('G4: with declared marks only, This recipe only is drawn over Oil and Every recipe is not', () => {
@@ -2004,7 +2004,8 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
 
   it('G5: with nothing marked, neither mark name and no axes grid is drawn', () => {
     const markup = withTasting({ marks: {} });
-    expect(markup).not.toContain(`<h3 class="${CUE}">`);
+    expect(markup).not.toContain(`<h3 class="${CUE}">Every recipe</h3>`);
+    expect(markup).not.toContain(`<h3 class="${CUE}">This recipe only</h3>`);
     expect(markup).not.toContain('tasting-reading__axes');
   });
 
@@ -2043,7 +2044,7 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
     expect(outline(withTasting({ marks: {}, defects: ['Coarse, icy'] }))).toEqual([2, 2, 3, 4, 4, 3]);
     expect(
       outline(renderBatchRow({ openPen: 'record', mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } })),
-    ).toEqual([2, 3]);
+    ).toEqual([2, 3, 3, 3, 3, 3, 3, 4, 4]);
   });
 });
 
@@ -2065,8 +2066,8 @@ function penFor(version, draftPatch = {}) {
   });
 }
 
-// The scales' This recipe only cue, as the one paragraph carrying its id.
-const scaleCues = (markup) => markup.match(/<p[^>]*id="axes-declared-cue"[^>]*>/g) ?? [];
+// The scales' This recipe only cue, as the one h3 carrying its id.
+const scaleCues = (markup) => markup.match(/<h3[^>]*id="axes-declared-cue"[^>]*>/g) ?? [];
 
 // The words of the declared problems group, in order, or null when absent.
 function declaredChips(markup) {

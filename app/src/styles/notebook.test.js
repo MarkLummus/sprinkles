@@ -1059,7 +1059,8 @@ describe("the log's content faces: figures, picked problems and the hand (quick 
   });
 
   test('the 20px log value-size token is retired: nothing reads it', () => {
-    expect(notebookCssSource).not.toContain('--app-notebook-log-value-size');
-    expect(readFileSync(TOKENS_CSS_PATH, 'utf8')).not.toContain('--app-notebook-log-value-size');
+    const retired = '--app-notebook-log-' + 'value-size';
+    expect(notebookCssSource).not.toContain(retired);
+    expect(readFileSync(TOKENS_CSS_PATH, 'utf8')).not.toContain(retired);
   });
 });

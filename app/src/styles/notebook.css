@@ -1213,12 +1213,12 @@
   margin: 0;
 }
 
-/* The reading's four group names (the two h3s over the marks, the two h4s
-   over the problems) take the pen's cue face (sketch 011 decision 58 B2,
-   board tasting-group-names.html): decision 40's .axes-cue face. Same
-   two-class specificity as the base label rule above, so its place after
-   that rule is what makes it win; Any problems? and Next time keep the
-   caps grey face. */
+/* The reading's cues (the two h3s over the marks and Any problems?) take the
+   pen's cue face (sketch 011 decision 58 B2, board tasting-group-names.html):
+   decision 40's .axes-cue face. Same two-class specificity as the base label
+   rule above, so its place after that rule is what makes it win. The two h4s
+   under Any problems? and Next time keep the caps grey caption face
+   (decide-p10-any-problems-level-r2, quick 261025-f8n). */
 .notebook-log .batch-row__group-label--cue {
   font-size: var(--app-size-meta);
   font-weight: 600;
@@ -1234,6 +1234,22 @@
 
 .notebook-log .tasting-reading__subgroup > .tasting-reading__problems {
   margin-top: 0;
+}
+
+/* A picked problem is a chosen option set in type: content, 14 / 400 on the
+   20px line in App text, not the hand (decide-p10-picked-option-face). */
+.notebook-log .tasting-reading__problems {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  line-height: var(--app-notebook-pen-cue-line-h);
+  color: var(--app-text);
+}
+
+/* The hand shows at its 1.25rem floor in the log, under its cue by weight and
+   face (the ladder's revision 2; app.css keeps the role's own size). */
+.notebook-log .app-hand {
+  font-size: var(--size-hand-min);
 }
 
 .notebook-log .batch-row__date {
@@ -1288,10 +1304,11 @@
 
 .notebook-log .batch-row__cell-value {
   font-family: var(--face-grotesk);
-  font-size: var(--app-notebook-log-value-size);
-  font-weight: 600;
-  /* G-03.5-6: the boards' value line is normal leading (app.css: 1.1). */
-  line-height: normal;
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  /* A figure reads as content, 14 / 400 on the 20px line (decide-p10-log-figure-face,
+     quick 261025-f8n); the boards' normal leading and the 20px / 600 figure are retired. */
+  line-height: var(--app-notebook-pen-cue-line-h);
   color: var(--app-text);
   font-variant-numeric: tabular-nums;
 }

@@ -211,12 +211,12 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
     return (
       <div className="axes-grid axes-grid--stacked">
         <div className="axes-grid__group">
-          <p className="pen-caption axes-cue" id={AXES_CORE_CUE_ID}>Every recipe</p>
+          <h3 className="pen-caption axes-cue" id={AXES_CORE_CUE_ID}>Every recipe</h3>
           {core.map((axis) => renderAxis(axis))}
         </div>
         {hasDeclared && (
           <div className="axes-grid__group axes-grid__group--declared">
-            <p className="pen-caption axes-cue" id={AXES_DECLARED_CUE_ID}>This recipe only</p>
+            <h3 className="pen-caption axes-cue" id={AXES_DECLARED_CUE_ID}>This recipe only</h3>
             {declared.map((axis) => renderAxis(axis))}
           </div>
         )}
@@ -232,9 +232,9 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
   return (
     <div className="axes-grid">
       {hasDeclared && <div className="axes-rule" aria-hidden="true" />}
-      <p className="pen-caption axes-cue axes-cue--core" id={AXES_CORE_CUE_ID}>Every recipe</p>
+      <h3 className="pen-caption axes-cue axes-cue--core" id={AXES_CORE_CUE_ID}>Every recipe</h3>
       {hasDeclared ? (
-        <p className="pen-caption axes-cue axes-cue--declared" id={AXES_DECLARED_CUE_ID}>This recipe only</p>
+        <h3 className="pen-caption axes-cue axes-cue--declared" id={AXES_DECLARED_CUE_ID}>This recipe only</h3>
       ) : (
         <div className="axes-grid__void" aria-hidden="true" />
       )}
@@ -258,9 +258,10 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
 // a line of the picked words, including the recipe-specific flaw by its
 // plain name; the reading heads the marks and the picked words with the
 // pen's own two names, Every recipe and This recipe only (sketch 011 README
-// decision 58, Mark's answers B and B2, 2026-10-06); Any problems? heads the
-// picked words in Next time's caption face, and melt test and melt style
-// stand with the measured cells at the top;
+// decision 58, Mark's answers B and B2, 2026-10-06); Any problems? is a cue
+// over two caption labels, and the picked words read as content, not the hand
+// (decide-p10-any-problems-level-r2, decide-p10-picked-option-face), and melt
+// test and melt style stand with the measured cells at the top;
 // and the note as prose. No aggregate, average, or overall figure is ever
 // derived (D12) — an unmarked axis is dropped entirely, never a blank
 // judgment. The caller renders this only while `batch.tasting` exists; a
@@ -294,8 +295,8 @@ function TastingReading({ batch, foldsOpen = true }) {
   const problemBlock = (name, words) =>
     words.length > 0 && (
       <div className="tasting-reading__subgroup">
-        <h4 className="batch-row__group-label batch-row__group-label--cue">{name}</h4>
-        <span className="app-hand tasting-reading__problems">{words.join(' · ')}</span>
+        <h4 className="batch-row__group-label">{name}</h4>
+        <span className="tasting-reading__problems">{words.join(' · ')}</span>
       </div>
     );
   // The Tasting fold (decisions_recorded 2/3, 03.5-16): its own full-row
@@ -398,11 +399,12 @@ function TastingReading({ batch, foldsOpen = true }) {
           {markGroup('Every recipe', coreAxes)}
           {markGroup('This recipe only', declaredAxes)}
           {/* Any problems? (sketch 011 README decision 58, Mark's answers B
-              and B2): the maker's own words, in the hand, split the pen's two
-              ways; the heading keeps Next time's caption face. */}
+              and B2): a cue over two caption labels, the picked problems split
+              the pen's two ways and read as content, not the hand
+              (decide-p10-any-problems-level-r2, decide-p10-picked-option-face). */}
           {(coreProblems.length > 0 || declaredProblems.length > 0) && (
             <div className="tasting-reading__group">
-              <h3 className="batch-row__group-label">Any problems?</h3>
+              <h3 className="batch-row__group-label batch-row__group-label--cue">Any problems?</h3>
               {problemBlock('Every recipe', coreProblems)}
               {problemBlock('This recipe only', declaredProblems)}
             </div>
@@ -1080,9 +1082,9 @@ export function BatchRow({
                           Picked state is aria-pressed, never colour alone
                           (UX1-03). */}
                       <div className="defects-head">
-                        <p className="pen-caption" id="defects-caption">
+                        <h3 className="pen-caption axes-cue" id="defects-caption">
                           Any problems?
-                        </p>
+                        </h3>
                         <p className="pen-helper defects-head__helper">select all that apply</p>
                       </div>
                       <div
@@ -1090,9 +1092,9 @@ export function BatchRow({
                         role="group"
                         aria-labelledby="defects-caption defects-core-cue"
                       >
-                        <p className="pen-caption axes-cue" id="defects-core-cue">
+                        <h4 className="pen-caption" id="defects-core-cue">
                           Every recipe
-                        </p>
+                        </h4>
                         <div className="defects-row__chips">
                           {/* Each Every recipe chip is a native toggle
                               button carrying its own aria-pressed — a picked
@@ -1116,7 +1118,7 @@ export function BatchRow({
                           role="group"
                           aria-labelledby="defects-caption defects-declared-cue"
                         >
-                          <p className="pen-caption axes-cue" id="defects-declared-cue">This recipe only</p>
+                          <h4 className="pen-caption" id="defects-declared-cue">This recipe only</h4>
                           <div className="defects-row__chips">
                             {/* A declared problem is a plain defect — no helper
                                 span, no aria-label of its own; its pressed

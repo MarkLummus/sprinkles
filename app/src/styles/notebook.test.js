@@ -829,9 +829,10 @@ describe('the group cues take their own face and their own space (sketch 011 dec
     expect(rules.indexOf(cue)).toBeGreaterThan(rules.indexOf(find('.notebook-log .axis-mark__name')));
   });
 
-  test('the space is drawn for the stacked arrangement: 32 between groups, 12 from a cue to its items, 12 from the defects head to its cue', () => {
+  test('the space is drawn for the stacked arrangement: 32 between groups, 12 from a cue to its items, 12 from the defects head to its cue, and 20 between every pair of axes (the grid\'s row gap, quick 261025-f8o)', () => {
     declares(find('.notebook-log .axes-grid--stacked'), 'gap', 'var(--gap-l)');
-    declares(find('.notebook-log .axes-grid__group > .axis-mark:first-of-type'), 'margin-top', '0');
+    declares(find('.notebook-log .axes-grid__group > .axis-mark'), 'margin-top', '0');
+    expect(rules.some((r) => r.selector.includes(':first-of-type'))).toBe(false);
     declares(find('.notebook-log .axes-grid__group > .axes-cue'), 'margin-bottom', 'calc(var(--gap-s) - var(--gap-m))');
     declares(find('.notebook-log .axes-grid--stacked > .defects-head'), 'margin-bottom', 'calc(var(--gap-s) - var(--gap-l))');
   });
@@ -1121,5 +1122,50 @@ describe("the record pen's rhythm, the 2026-10-22 change set (Mark 2026-10-24; q
       'border-top': '0',
     });
     expect(declared(find('.notebook-log .mo-group > .segmented-field__caption'))).toEqual({ 'margin-bottom': 'var(--gap-xs)' });
+  });
+
+  test('item 1: no field-row caption reserves a second line in the log', () => {
+    expect(declared(find('.notebook-log .field-row .pen-caption:not(.segmented-field__caption)'))).toEqual({ 'min-height': '0' });
+  });
+
+  test('item 2: 12 between fields, whatever component draws them; the next-time field keeps its 32 and comes later', () => {
+    expect(declared(find('.notebook-log .batch-margin--pen .field-row__label'))).toEqual({ 'margin-bottom': '0' });
+    expect(declared(find('.notebook-log .batch-margin__field'))).toEqual({ 'margin-top': 'var(--gap-s)', gap: '0' });
+    expect(declared(find('.notebook-log .batch-margin__field--next-time'))).toEqual({ 'margin-top': 'var(--gap-l)' });
+    expect(rules.indexOf(find('.notebook-log .batch-margin__field--next-time'))).toBeGreaterThan(
+      rules.indexOf(find('.notebook-log .batch-margin__field')),
+    );
+    expect(declared(find('.notebook-log .note-block'))).toEqual({
+      'margin-top': 'var(--gap-s)',
+      'padding-bottom': '0',
+      'margin-bottom': 'var(--gap-s)',
+    });
+    expect(declared(find('.notebook-log .segmented-field + .segmented-field'))).toEqual({ 'margin-top': 'var(--gap-s)' });
+  });
+
+  test('item 3: the grid\'s 20px row gap is the one 20 between axes; no axis adds its own top margin', () => {
+    expect(declared(find('.notebook-log .axes-grid__group > .axis-mark'))).toEqual({ 'margin-top': '0' });
+  });
+
+  test('item 6 and decide-p10-reading-head-interval: a head gives 18 to its first row, the Tasting head in the pen and in the reading', () => {
+    expect(declared(find('.notebook-log .tasting-head'))).toEqual({ 'margin-bottom': 'var(--app-notebook-log-group-gap)' });
+    expect(declared(find('.notebook-log .tasting-reading .tasting-reading__conditions:first-child'))).toEqual({
+      'margin-top': 'var(--app-notebook-log-group-gap)',
+    });
+  });
+
+  test("the pen's choice controls read one size, the content size 14 (decide-p10-control-text-size-r2): option words up from 13, stop digits down from 15", () => {
+    const CONTROLS = '.notebook-log .batch-margin--pen .axis-mark__stop, .notebook-log .batch-margin--pen .segmented__option';
+    expect(declared(find(CONTROLS))).toEqual({ 'font-size': 'var(--app-size-meta)' });
+    const sizing = rules.filter((r) => /\.segmented__option|\.axis-mark__stop/.test(r.selector) && /(^|;)\s*font-size:/.test(r.declarations));
+    expect(sizing.map((r) => r.selector)).toEqual([CONTROLS]);
+    expect(sizing[0].media).toBeUndefined();
+    expect(tokens['--app-size-meta']).toBe('0.875rem');
+  });
+
+  test("the app's own control size is untouched: app.css's .segmented__option still declares the Control size", () => {
+    const appRules = readAllRules(readFileSync(path.join(STYLES_DIR, 'app.css'), 'utf8'));
+    const option = appRules.find((r) => r.selector === '.segmented__option' && r.media === undefined);
+    expect(declared(option)['font-size']).toBe('var(--sheet-type-control)');
   });
 });

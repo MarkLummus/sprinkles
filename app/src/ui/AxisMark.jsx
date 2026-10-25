@@ -73,7 +73,9 @@ export function AxisMark({ axis, value, onChange, onClear, cueId }) {
         <span id={nameId} className="axis-mark__name">
           {axis.name}
         </span>
-        <span className="axis-mark__state">{isMarked ? `(${value})` : '(Not recorded)'}</span>
+        {/* A blank axis shows its name alone; only a marked axis carries its
+            stop (Mark, 2026-10-24, quick 261025-f8o). */}
+        {isMarked && <span className="axis-mark__state">{`(${value})`}</span>}
         {isMarked && (
           <Button
             className="text-control axis-mark__clear"

@@ -1213,6 +1213,14 @@
   margin: 0;
 }
 
+/* A head gives 18 to its first row everywhere, pen and reading (Mark,
+   2026-10-24, decide-p10-reading-head-interval; quick 261025-f8o): the
+   Tasting fold's first conditions grid is always its first child, so it takes
+   the Batch head row's gap instead of the cells grid's 12. */
+.notebook-log .tasting-reading .tasting-reading__conditions:first-child {
+  margin-top: var(--app-notebook-log-group-gap);
+}
+
 /* The reading's cues (the two h3s over the marks and Any problems?) take the
    pen's cue face (sketch 011 decision 58 B2, board tasting-group-names.html):
    decision 40's .axes-cue face. Same two-class specificity as the base label
@@ -1544,7 +1552,10 @@
   gap: var(--gap-l);
 }
 
-.notebook-log .axes-grid__group > .axis-mark:first-of-type {
+/* Item 3 (quick 261025-f8o): the grid's 20px row gap is the one 20 between
+   axes (DESIGN.md: "m, 20px, between axes"); no axis adds its own top margin,
+   which doubled the step to 40 in the box. */
+.notebook-log .axes-grid__group > .axis-mark {
   margin-top: 0;
 }
 
@@ -1594,6 +1605,54 @@
   top: 50%;
   transform: translateY(-50%);
   height: var(--sheet-text-control-min);
+}
+
+/* Item 1: a field-row caption is its own line; the two-line reserve is gone in
+   the log. The :not() form outranks app.css's rule of the same shape. */
+.notebook-log .field-row .pen-caption:not(.segmented-field__caption) {
+  min-height: 0;
+}
+
+/* Item 2: 12 between fields, whatever component draws them. The row's 12 gap
+   carries a wrapped field row (pen-scoped: the 03.5-13 tests keep a bare
+   .notebook-log .field-row__label out of the file's top level); 12 above a
+   prose field and the caption's own 6 under it; 32 above Next time, which
+   follows its rule and so comes after the field rule; 12 above How did it turn
+   out? (the field-row label's margin that supplied it is gone, P10_Pen's
+   addition) and 12 under it to Melt test; 12 between segmented fields. */
+.notebook-log .batch-margin--pen .field-row__label {
+  margin-bottom: 0;
+}
+
+.notebook-log .batch-margin__field {
+  margin-top: var(--gap-s);
+  gap: 0;
+}
+
+.notebook-log .batch-margin__field--next-time {
+  margin-top: var(--gap-l);
+}
+
+.notebook-log .note-block {
+  margin-top: var(--gap-s);
+  padding-bottom: 0;
+  margin-bottom: var(--gap-s);
+}
+
+.notebook-log .segmented-field + .segmented-field {
+  margin-top: var(--gap-s);
+}
+
+/* The pen's choice controls read one size, the content size 14 (Mark,
+   2026-10-24, decide-p10-control-text-size-r2, "both 14", superseding his
+   2026-10-23 fifteen; the held quick 261023-u23 was never built). Option words
+   come up from 13 and stop digits down from the 15 they inherited from body,
+   so a choice reads 14/400 under its 14/600 cue. Size only: the boxes keep
+   their geometry. Pen-scoped so the creation editor's Kind control keeps
+   app.css's control size; three classes outrank app.css's one. */
+.notebook-log .batch-margin--pen .axis-mark__stop,
+.notebook-log .batch-margin--pen .segmented__option {
+  font-size: var(--app-size-meta);
 }
 
 /* The band's rhythm moves with the folds (sketch 011 decision 18, Mark,
@@ -1844,6 +1903,12 @@
 /* The Tasting head after At draw and Exit consistency, Airiness. */
 .notebook-log .mo-end {
   margin-top: var(--gap-l);
+}
+
+/* A head gives 18 to its first row, the Batch head row's gap, here under the
+   Tasting head (quick 261025-f8o, item 6). */
+.notebook-log .tasting-head {
+  margin-bottom: var(--app-notebook-log-group-gap);
 }
 
 .notebook-log .note-block + .mo-group,

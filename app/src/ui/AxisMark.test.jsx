@@ -70,11 +70,12 @@ describe('AxisMark — five stops, digits 1–5, per-stop aria-labels from stopW
 });
 
 describe('AxisMark — inline state and the per-axis Clear (contract "Axes spec")', () => {
-  it('reads "(Not recorded)" and renders no Clear control and checks no stop when unmarked', () => {
+  it('shows its name alone when unmarked: no state span, no Clear control, no checked stop (Mark 2026-10-24, quick 261025-f8o)', () => {
     const markup = renderToStaticMarkup(
       <AxisMark axis={hardnessAxis} value={undefined} onChange={noop} onClear={noop} />,
     );
-    expect(markup).toContain('(Not recorded)');
+    expect(markup).not.toContain('axis-mark__state');
+    expect(markup).toContain('axis-mark__name');
     expect(markup).not.toContain('axis-mark__clear');
     expect(markup).not.toContain('checked');
   });
@@ -82,7 +83,7 @@ describe('AxisMark — inline state and the per-axis Clear (contract "Axes spec"
   it('reads "(N)" and renders the Clear control, checking the stop whose value is the mark', () => {
     const markup = renderToStaticMarkup(<AxisMark axis={hardnessAxis} value={4} onChange={noop} onClear={noop} />);
     expect(markup).toContain('(4)');
-    expect(markup).not.toContain('(Not recorded)');
+    expect(markup).toContain('axis-mark__state');
     expect(markup).toContain('axis-mark__clear');
     const stopIndex = markup.indexOf('value="4"');
     const tagStart = markup.lastIndexOf('<input', stopIndex);

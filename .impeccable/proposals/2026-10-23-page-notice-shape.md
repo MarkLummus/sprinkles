@@ -101,3 +101,35 @@ The fix lands by `/gsd-quick` once Mark has looked at the board (`look-page-noti
 ## Mark's approval (2026-10-25): BS
 
 On `look-page-notice-card-page-styling` Mark wrote "Approve BS". The revised change set above (items 1 to 7, with the shadow token) goes to `/gsd-quick` on 2026-10-25; that quick closes `bug-save-notice-covers-title-393`.
+
+## Mark's check (2026-10-25): the card's ground reads as paper
+
+`check-notice-card-devices` failed. Mark, verbatim: "fail. on web or at ipad width, the toast appears, but it's background color is still too similar to the sheet. is that supposed to be white? we might want Sid to define some contrasting color palette options so that it stands out". Bug row `bug-notice-card-ground-too-close-to-sheet`; decision row `decide-notice-card-palette`; board `Notice_Shape` redrawn (canvas page "Page notice shape").
+
+**Yes, it is white.** BS's ground is `--app-background` (#ffffff), 1.07:1 against the Sheet's paper (#f7f7f4) and 1.00:1 against the App ground, and § "Mark's answer" above said so: only the hairline (1.32:1) and the shadow lifted the card. The 2026-10-24 reading, that the shadow would be enough, was WebKit on the Mac; on the iPad it is not. So the ground itself has to stand off the paper.
+
+**The gate.** The card's ground at 3:1 or better against the Sheet (the WCAG non-text threshold, which the card's edge now has to meet on its own) and its text at 4.5:1 or better on the card (16px regular). Every candidate is a ground from the App context's own palette, no new hue; every one keeps the card's box, place, type and `--app-shadow-notice` (what floats casts), and drops the divider hairline where the ground no longer needs an edge.
+
+**Measured** in WebKit on a scratch build with each option's rules injected after Save batch (`noticeshape-options.json`, `noticeshape-measure.json`, 1366 × 1024 and 393 × 852, coarse; WCAG from the computed colours; the card sits over the Sheet's last Balance row at 1366 and over the log on the App ground at 393):
+
+| Option | Ground | Text | Ground against the Sheet | Ground against the App ground | Text on the card | Gate |
+|---|---|---|---|---|---|---|
+| BS as built | `--app-background` #ffffff | `--app-text` | 1.07:1 | 1.00:1 | 18.4:1 | fails (ground) |
+| **BI ink card** | `--app-text` #141414 | `--app-background` | **17.16:1** | **18.42:1** | **18.4:1** | passes |
+| BB blue card | `--app-blue-text` #1475dd | `--app-background` | 4.24:1 | 4.55:1 | 4.55:1 | passes, by a hair |
+| BG grey card | `--app-text-secondary` #595959 | `--app-background` | 6.53:1 | 7.00:1 | 7.0:1 | passes |
+| BW white, 2px ink border | `--app-background`, border `--rule-hover` solid `--app-text` | `--app-text` | 1.07:1 (border 17.16:1) | 1.00:1 (border 18.42:1) | 18.4:1 | fails (ground) |
+| BT light Notebook tint, ink text | 18% of `--app-notebook` on white (#ffe1e1; no tint token exists) | `--app-text` | 1.15:1 | 1.08:1 | 15.3:1 | fails (ground) |
+
+Ruled out: BW, whose edge lifts but whose ground does not, which is what Mark called lost at 1.5px in the Sheet-skin card; and BT, since no tint of the Notebook colour clears 3:1 (the accent itself, #fd5b57, would be 2.9:1), and a red card under "recorded" is a verdict the No-Verdict Rule forbids. BT is measured and not drawn; BW is drawn for the comparison.
+
+**Recommendation: BI, the ink card.** It is the inverse card most apps use for a transient notice, and here it is the App's own ink, the colour the App already gives to what sits over the page (the scrim is this ink at 28%, the focus ring is this ink), belonging to no destination and no action, so it carries no verdict and reads as no button. It stands off both grounds at the strength of the Sheet's own ink (17:1, 18:1) and its text is 18.4:1. BB is the filled action's exact pairing and would read as a control the maker should press; it also passes the gate by 0.05. BG is quieter and passes, but makes a text token a fill for the first time. None of the three needs a new token.
+
+**Change set per option (for `/gsd-quick`; `app.css` `.page-status` only; tokens only; no new token).** Everything else from § "Mark's answer" stands: the fixed anchor, the box, 16px on 24px, the radius, `--app-shadow-notice`, the phone inset, the print rule, `shell.test.js`'s stacking order.
+
+- **BI:** `background: var(--app-text); color: var(--app-background); border-color: var(--app-text)` (the hairline takes the ground's colour; the declaration stays so the box does not move). The comment above the rule and DESIGN.md's "The page notice" entry say the card is the App's ink with white text, because the App ground is 1.07:1 against the paper and the iPad check failed on it; Elevation & Depth unchanged (the shadow stays). Closes `bug-notice-card-ground-too-close-to-sheet` and re-opens the device check.
+- **BB:** `background: var(--app-blue-text); color: var(--app-background); border-color: var(--app-blue-text)`. DESIGN.md's Colors entry for the filled action gains the notice as a second user of the pairing, with the caveat that it is not a control.
+- **BG:** `background: var(--app-text-secondary); color: var(--app-background); border-color: var(--app-text-secondary)`. DESIGN.md's neutrals line gains the notice as the one place `app-text-secondary` is a fill.
+- **Keep BS:** nothing; the bug row closes as not a bug or defers.
+
+**Device-unverified.** WebKit on the Mac at 1366 and 393, coarse pointer. The iPad is the device that failed; the chosen option goes back to it as a check once the quick lands.

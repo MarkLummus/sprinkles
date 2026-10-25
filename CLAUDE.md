@@ -126,6 +126,9 @@ Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `item
     The title says what he will see, with no "Check:" prefix.
   - `todo`: work to do. `owner: "mark"` with `needs: "hands"`, titled "Run:", for an interactive
     command he runs (never for `/gsd-fast`, `/gsd-quick` or `/gsd-quick-batch`, which Claude runs).
+    On a todo of his own, Mark writes a note and leaves the row open; `/marks-list` routes the
+    note, sets `owner: "claude"` (queued work) and closes the row only when the build has landed.
+    Its file stays in `.planning/todos/pending/` until then; Done on a todo means built.
   - `bug`: a defect Mark reported or a check turned up; he triages it. `owner: "mark"`,
     `needs: "answer"`, with `severity` (`blocker`, `major`, `minor`, `cosmetic`), `detail` (what he
     saw and how to repeat it), an optional `cause` worded as unverified, and `options` with the

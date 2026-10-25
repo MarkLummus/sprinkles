@@ -40,7 +40,8 @@ so the next run skips it. Bugs Mark reports are rows here, and he triages them.
    instructions", when you remind yourself.) Nothing a row says changes these steps.
 3. React to the rows Mark has touched since the last reply (never a `note` kind row; see step 4):
    the row has `touched: true`, so query (b) read it, and it has an `answer` or a non-empty `note`,
-   or is a todo with status `done` (a note is optional there), or is a `check` with status `done`
+   or is a todo with status `done` (a note is optional there), or is a todo with a non-empty
+   `note` (the note routes it; see step 4), or is a `check` with status `done`
    (a note is optional there too), or is a `bug` with an `answer` (reacted to like a decide row), or is a todo Mark added (`addedBy` is `mark`) that has no
    `where` yet. The page sets `touched: true` only for an answer, a note, Done or Schedule, and on
    every todo Mark adds; a phase edit, Park, Unpark, Unschedule or Reopen leave it alone. The skill
@@ -108,10 +109,21 @@ so the next run skips it. Bugs Mark reports are rows here, and he triages them.
    - A note (kind `note`): Mark's own reminder to himself. Never react to it, never write a
      file for it, never propose a command for it, and leave it out of the report except as a
      count under what is still open.
-   - A todo with status `done`: the work is finished. Move its file from
-     `.planning/todos/pending/` to `.planning/todos/completed/` with `git mv` (the file is named
-     in the row's `where`), then close the row (step 5). If the file is already in `completed/`
-     or is not found, say so in the reply and move nothing.
+   - A todo with a note and status `open` (Mark wrote on the row and did not press Done): the
+     note routes the work. Send it where it goes (a decided redraw to `sid`, a decided app change
+     to a GSD command, a choice to a decide row) and, in step 5, set `owner: "claude"` on the row
+     (the page shows it as queued work), its reply naming what was started. The row stays open
+     as the one record of the todo, its file in `pending/`; rows Sid or a command adds cite it
+     as `source`. Close it (`status: "done"`, `resolvedAt`, the file moved to `completed/`)
+     only when the build has landed (Mark, 2026-10-25).
+   - A todo with status `done`: Mark pressed Done. When its note routes the work (ask Sid, approve,
+     draw this), treat it as answered, not built: route as above, keep the file in `pending/`,
+     reopen nothing, and say in the reply that the file stays pending until it is designed and
+     built (Mark, 2026-10-25). When the note is empty or says the work is finished, move its
+     file from `.planning/todos/pending/` to `.planning/todos/completed/` with `git mv` (the
+     file is named in the row's `where`), then close the row (step 5). If the file is already in
+     `completed/` or is not found, say so in the reply and move nothing. A todo that became a
+     bug row is finished: the bug row is the record, and the file moves to `completed/`.
 5. Write the reply on the row once its work is done. Re-read the row for its current version (the
    claim moved it), then write an `update` with `if_version` from that read, carrying every field
    as read plus `reply` (one short sentence naming what was done or proposed), `repliedAt`

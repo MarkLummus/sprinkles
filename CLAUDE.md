@@ -111,8 +111,10 @@ Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `item
   row: `"mark"` when it waits on Mark (with `needs: "answer"` when he only replies on the page,
   `needs: "hands"` when he must do something outside it: a device check, a look, a command he
   runs). The page groups rows by these. Add `links` ([{label, url}]) for an HTML view. A canvas
-  board cannot be deep-linked (the canvas ignores the URL hash and query): link the canvas root
-  and put the page and board in `where.label`, e.g. "On the canvas, page Recipe route 03.5: board
+  board is linked by its address, `https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq#artboard-<id>`
+  (a page by `#page-<id>`); the id is printed by
+  `node .planning/canvas-generators/canvaslink.mjs <board file or page id>`. Still put the page
+  and board in `where.label` for reading, e.g. "On the canvas, page Recipe route 03.5: board
   R35C_SheetTitle". Name the row in the final message.
 - Kinds and names. Choose `kind` by what Mark does:
   - `decide`: he picks an option or writes the answer. `needs: "answer"`, with `options` and one

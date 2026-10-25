@@ -1,0 +1,1058 @@
+{
+ "reading_1366": {
+  "scrollY": 0,
+  "batchHead": {
+   "box": {
+    "x": 984,
+    "y": 411.2,
+    "w": 350,
+    "h": 88
+   },
+   "name": {
+    "tag": "h2",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "BatchHidechurned 2 Aug 2026"
+   },
+   "nameBox": {
+    "x": 984,
+    "y": 411.2,
+    "w": 350,
+    "h": 44
+   },
+   "toFirstCaption": null,
+   "firstCaption": null
+  },
+  "tastingHead": null,
+  "cells": {
+   "pen": null,
+   "reading": [
+    {
+     "label": "Tempering",
+     "box": {
+      "x": 984,
+      "y": 785.2,
+      "w": 165,
+      "h": 40
+     },
+     "labelBox": {
+      "x": 984,
+      "y": 785.2,
+      "w": 165,
+      "h": 15
+     }
+    },
+    {
+     "label": "Tasting temperature",
+     "box": {
+      "x": 1169,
+      "y": 785.2,
+      "w": 165,
+      "h": 40
+     },
+     "labelBox": {
+      "x": 1169,
+      "y": 785.2,
+      "w": 165,
+      "h": 15
+     }
+    }
+   ],
+   "fold": [
+    {
+     "text": "BatchHidechurned 2 Aug 2026",
+     "box": {
+      "x": 984,
+      "y": 411.2,
+      "w": 350,
+      "h": 44
+     }
+    },
+    {
+     "text": "TastingHidetasted date unknown",
+     "box": {
+      "x": 984,
+      "y": 729.2,
+      "w": 350,
+      "h": 44
+     }
+    }
+   ],
+   "logWidth": 350
+  },
+  "outline": [
+   "h2 BatchHidechurned 2 Aug 2026 .region-name",
+   "h2 TastingHidetasted date unknown .region-name",
+   "h3 Every recipe .batch-row__group-label",
+   "h3 This recipe only .batch-row__group-label",
+   "h3 Any problems? .batch-row__group-label",
+   "h4 This recipe only .batch-row__group-label",
+   "h3 Next time .batch-row__group-label"
+  ],
+  "focused": "BODY SprinklesSearchImportExportHom",
+  "penWidth": 350
+ },
+ "churn_1366": {
+  "scrollY": 0,
+  "batchHead": {
+   "box": {
+    "x": 984,
+    "y": 355.2,
+    "w": 350,
+    "h": 16.2
+   },
+   "name": {
+    "tag": "h2",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "Batch"
+   },
+   "nameBox": {
+    "x": 984,
+    "y": 355.2,
+    "w": 46.1,
+    "h": 16.2
+   },
+   "toFirstCaption": 18,
+   "firstCaption": "Churn date"
+  },
+  "tastingHead": null,
+  "cells": {
+   "pen": null,
+   "reading": [],
+   "fold": [],
+   "logWidth": 350
+  },
+  "outline": [
+   "h2 Batch .region-name"
+  ],
+  "focused": "INPUT ",
+  "penWidth": 350
+ },
+ "addtasting_1366": {
+  "scrollY": 604,
+  "batchHead": {
+   "box": {
+    "x": 984,
+    "y": 355.2,
+    "w": 350,
+    "h": 16.2
+   },
+   "name": {
+    "tag": "h2",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "Batch"
+   },
+   "nameBox": {
+    "x": 984,
+    "y": 355.2,
+    "w": 46.1,
+    "h": 16.2
+   },
+   "toFirstCaption": 18,
+   "firstCaption": "Churn date"
+  },
+  "tastingHead": {
+   "box": {
+    "x": 984,
+    "y": 1024.7,
+    "w": 350,
+    "h": 56
+   },
+   "name": {
+    "tag": "h3",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "Tasting"
+   },
+   "nameBox": {
+    "x": 984,
+    "y": 1051.4,
+    "w": 59.7,
+    "h": 16.2
+   },
+   "status": {
+    "box": {
+     "x": 1055.7,
+     "y": 1064,
+     "w": 0,
+     "h": 0
+    },
+    "face": {
+     "tag": "p",
+     "size": "13px",
+     "weight": "400",
+     "lh": "18.199999px",
+     "color": "rgb(20, 20, 20)",
+     "transform": "none",
+     "tracking": "normal",
+     "text": ""
+    }
+   },
+   "remove": {
+    "box": {
+     "x": 1229.7,
+     "y": 1036.7,
+     "w": 104.3,
+     "h": 44
+    },
+    "face": {
+     "tag": "button",
+     "size": "14px",
+     "weight": "600",
+     "lh": "18.199999px",
+     "color": "rgb(20, 117, 221)",
+     "transform": "none",
+     "tracking": "normal",
+     "text": "Remove tasting"
+    }
+   },
+   "fromPrev": 32,
+   "prev": "segmented-field:Airiness (estimated)Low,",
+   "toNextCaption": 19.1,
+   "nextCaption": "Tasted",
+   "rules": {
+    "tastingHead": {
+     "marginTop": "32px",
+     "marginBottom": "6px",
+     "borderTop": "0px rgb(214, 218, 215)",
+     "paddingTop": "0px"
+    }
+   }
+  },
+  "cells": {
+   "pen": [
+    {
+     "label": "Tasted",
+     "box": {
+      "x": 984,
+      "y": 1086.7,
+      "w": 128,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 984,
+      "y": 1086.7,
+      "w": 128,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 49.5
+    },
+    {
+     "label": "Tempering",
+     "box": {
+      "x": 1124,
+      "y": 1086.7,
+      "w": 81.9,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 1124,
+      "y": 1086.7,
+      "w": 81.9,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 74.4
+    },
+    {
+     "label": "Tasting temperature",
+     "box": {
+      "x": 984,
+      "y": 1189.5,
+      "w": 152.3,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 984,
+      "y": 1189.5,
+      "w": 152.3,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 152.3
+    }
+   ],
+   "reading": [],
+   "fold": [],
+   "logWidth": 350
+  },
+  "outline": [
+   "h2 Batch .region-name",
+   "h3 Tasting .region-name"
+  ],
+  "focused": "INPUT ",
+  "penWidth": 350
+ },
+ "relabel_1366": {
+  "cells": {
+   "pen": [
+    {
+     "label": "Tasted",
+     "box": {
+      "x": 984,
+      "y": 1086.7,
+      "w": 128,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 984,
+      "y": 1086.7,
+      "w": 128,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 49.5
+    },
+    {
+     "label": "Tempering",
+     "box": {
+      "x": 1124,
+      "y": 1086.7,
+      "w": 81.9,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 1124,
+      "y": 1086.7,
+      "w": 81.9,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 74.4
+    },
+    {
+     "label": "Temperature",
+     "box": {
+      "x": 1217.9,
+      "y": 1086.7,
+      "w": 93.2,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 1217.9,
+      "y": 1086.7,
+      "w": 93.2,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 93.2
+    }
+   ],
+   "reading": [],
+   "fold": [],
+   "logWidth": 350
+  }
+ },
+ "recordtasting_1366": {
+  "scrollY": 809,
+  "batchHead": {
+   "box": {
+    "x": 984,
+    "y": 558.5,
+    "w": 350,
+    "h": 18.2
+   },
+   "name": {
+    "tag": "h2",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "Batch"
+   },
+   "nameBox": {
+    "x": 984,
+    "y": 560.5,
+    "w": 46.1,
+    "h": 16.2
+   },
+   "toFirstCaption": 18,
+   "firstCaption": "Churn date"
+  },
+  "tastingHead": {
+   "box": {
+    "x": 984,
+    "y": 1230.1,
+    "w": 350,
+    "h": 56
+   },
+   "name": {
+    "tag": "h3",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "Tasting"
+   },
+   "nameBox": {
+    "x": 984,
+    "y": 1256.7,
+    "w": 59.7,
+    "h": 16.2
+   },
+   "status": {
+    "box": {
+     "x": 1055.7,
+     "y": 1269.4,
+     "w": 0,
+     "h": 0
+    },
+    "face": {
+     "tag": "p",
+     "size": "13px",
+     "weight": "400",
+     "lh": "18.199999px",
+     "color": "rgb(20, 20, 20)",
+     "transform": "none",
+     "tracking": "normal",
+     "text": ""
+    }
+   },
+   "remove": {
+    "box": {
+     "x": 1229.7,
+     "y": 1242.1,
+     "w": 104.3,
+     "h": 44
+    },
+    "face": {
+     "tag": "button",
+     "size": "14px",
+     "weight": "600",
+     "lh": "18.199999px",
+     "color": "rgb(20, 117, 221)",
+     "transform": "none",
+     "tracking": "normal",
+     "text": "Remove tasting"
+    }
+   },
+   "fromPrev": 32,
+   "prev": "segmented-field:Airiness (estimated)Low,",
+   "toNextCaption": 19.2,
+   "nextCaption": "Tasted",
+   "rules": {
+    "tastingHead": {
+     "marginTop": "32px",
+     "marginBottom": "6px",
+     "borderTop": "0px rgb(214, 218, 215)",
+     "paddingTop": "0px"
+    }
+   }
+  },
+  "cells": {
+   "pen": [
+    {
+     "label": "Tasted",
+     "box": {
+      "x": 984,
+      "y": 1292.1,
+      "w": 128,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 984,
+      "y": 1292.1,
+      "w": 128,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 49.5
+    },
+    {
+     "label": "Tempering",
+     "box": {
+      "x": 1124,
+      "y": 1292.1,
+      "w": 81.9,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 1124,
+      "y": 1292.1,
+      "w": 81.9,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 74.4
+    },
+    {
+     "label": "Tasting temperature",
+     "box": {
+      "x": 984,
+      "y": 1394.9,
+      "w": 152.3,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 984,
+      "y": 1394.9,
+      "w": 152.3,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 152.3
+    }
+   ],
+   "reading": [],
+   "fold": [],
+   "logWidth": 350
+  },
+  "outline": [
+   "h2 Batch .region-name",
+   "h3 Tasting .region-name"
+  ],
+  "focused": "INPUT ",
+  "penWidth": 350
+ },
+ "reading_393": {
+  "scrollY": 3115,
+  "batchHead": {
+   "box": {
+    "x": 20,
+    "y": 3378,
+    "w": 353,
+    "h": 88
+   },
+   "name": {
+    "tag": "h2",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "BatchHidechurned 2 Aug 2026"
+   },
+   "nameBox": {
+    "x": 20,
+    "y": 3378,
+    "w": 353,
+    "h": 44
+   },
+   "toFirstCaption": null,
+   "firstCaption": null
+  },
+  "tastingHead": null,
+  "cells": {
+   "pen": null,
+   "reading": [
+    {
+     "label": "Tempering",
+     "box": {
+      "x": 20,
+      "y": 3752,
+      "w": 166.5,
+      "h": 40
+     },
+     "labelBox": {
+      "x": 20,
+      "y": 3752,
+      "w": 166.5,
+      "h": 15
+     }
+    },
+    {
+     "label": "Tasting temperature",
+     "box": {
+      "x": 206.5,
+      "y": 3752,
+      "w": 166.5,
+      "h": 40
+     },
+     "labelBox": {
+      "x": 206.5,
+      "y": 3752,
+      "w": 166.5,
+      "h": 15
+     }
+    }
+   ],
+   "fold": [
+    {
+     "text": "BatchHidechurned 2 Aug 2026",
+     "box": {
+      "x": 20,
+      "y": 3378,
+      "w": 353,
+      "h": 44
+     }
+    },
+    {
+     "text": "TastingHidetasted date unknown",
+     "box": {
+      "x": 20,
+      "y": 3696,
+      "w": 353,
+      "h": 44
+     }
+    }
+   ],
+   "logWidth": 393
+  },
+  "outline": [
+   "h2 BatchHidechurned 2 Aug 2026 .region-name",
+   "h2 TastingHidetasted date unknown .region-name",
+   "h3 Every recipe .batch-row__group-label",
+   "h3 This recipe only .batch-row__group-label",
+   "h3 Any problems? .batch-row__group-label",
+   "h4 This recipe only .batch-row__group-label",
+   "h3 Next time .batch-row__group-label"
+  ],
+  "focused": "BUTTON Tasting, Hide, tasted date unknown",
+  "penWidth": 393
+ },
+ "churn_393": {
+  "scrollY": 4576,
+  "batchHead": {
+   "box": {
+    "x": 20,
+    "y": 4911.2,
+    "w": 353,
+    "h": 16.2
+   },
+   "name": {
+    "tag": "h2",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "Batch"
+   },
+   "nameBox": {
+    "x": 20,
+    "y": 4911.2,
+    "w": 46.1,
+    "h": 16.2
+   },
+   "toFirstCaption": 18,
+   "firstCaption": "Churn date"
+  },
+  "tastingHead": null,
+  "cells": {
+   "pen": null,
+   "reading": [],
+   "fold": [],
+   "logWidth": 393
+  },
+  "outline": [
+   "h2 Batch .region-name"
+  ],
+  "focused": "INPUT ",
+  "penWidth": 353
+ },
+ "addtasting_393": {
+  "scrollY": 5318,
+  "batchHead": {
+   "box": {
+    "x": 20,
+    "y": 4910.4,
+    "w": 353,
+    "h": 16.2
+   },
+   "name": {
+    "tag": "h2",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "Batch"
+   },
+   "nameBox": {
+    "x": 20,
+    "y": 4910.4,
+    "w": 46.1,
+    "h": 16.2
+   },
+   "toFirstCaption": 18,
+   "firstCaption": "Churn date"
+  },
+  "tastingHead": {
+   "box": {
+    "x": 20,
+    "y": 5625.6,
+    "w": 353,
+    "h": 56
+   },
+   "name": {
+    "tag": "h3",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "Tasting"
+   },
+   "nameBox": {
+    "x": 20,
+    "y": 5652.2,
+    "w": 59.7,
+    "h": 16.2
+   },
+   "status": {
+    "box": {
+     "x": 91.7,
+     "y": 5664.9,
+     "w": 0,
+     "h": 0
+    },
+    "face": {
+     "tag": "p",
+     "size": "13px",
+     "weight": "400",
+     "lh": "18.199999px",
+     "color": "rgb(20, 20, 20)",
+     "transform": "none",
+     "tracking": "normal",
+     "text": ""
+    }
+   },
+   "remove": {
+    "box": {
+     "x": 268.7,
+     "y": 5637.6,
+     "w": 104.3,
+     "h": 44
+    },
+    "face": {
+     "tag": "button",
+     "size": "14px",
+     "weight": "600",
+     "lh": "18.199999px",
+     "color": "rgb(20, 117, 221)",
+     "transform": "none",
+     "tracking": "normal",
+     "text": "Remove tasting"
+    }
+   },
+   "fromPrev": 32,
+   "prev": "segmented-field:Airiness (estimated)Low,",
+   "toNextCaption": 19.2,
+   "nextCaption": "Tasted",
+   "rules": {
+    "tastingHead": {
+     "marginTop": "32px",
+     "marginBottom": "6px",
+     "borderTop": "0px rgb(214, 218, 215)",
+     "paddingTop": "0px"
+    }
+   }
+  },
+  "cells": {
+   "pen": [
+    {
+     "label": "Tasted",
+     "box": {
+      "x": 20,
+      "y": 5687.6,
+      "w": 128,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 20,
+      "y": 5687.6,
+      "w": 128,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 49.5
+    },
+    {
+     "label": "Tempering",
+     "box": {
+      "x": 160,
+      "y": 5687.6,
+      "w": 81.9,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 160,
+      "y": 5687.6,
+      "w": 81.9,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 74.4
+    },
+    {
+     "label": "Tasting temperature",
+     "box": {
+      "x": 20,
+      "y": 5790.4,
+      "w": 152.3,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 20,
+      "y": 5790.4,
+      "w": 152.3,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 152.3
+    }
+   ],
+   "reading": [],
+   "fold": [],
+   "logWidth": 393
+  },
+  "outline": [
+   "h2 Batch .region-name",
+   "h3 Tasting .region-name"
+  ],
+  "focused": "INPUT ",
+  "penWidth": 353
+ },
+ "relabel_393": {
+  "cells": {
+   "pen": [
+    {
+     "label": "Tasted",
+     "box": {
+      "x": 20,
+      "y": 5687.6,
+      "w": 128,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 20,
+      "y": 5687.6,
+      "w": 128,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 49.5
+    },
+    {
+     "label": "Tempering",
+     "box": {
+      "x": 160,
+      "y": 5687.6,
+      "w": 81.9,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 160,
+      "y": 5687.6,
+      "w": 81.9,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 74.4
+    },
+    {
+     "label": "Temperature",
+     "box": {
+      "x": 253.9,
+      "y": 5687.6,
+      "w": 93.2,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 253.9,
+      "y": 5687.6,
+      "w": 93.2,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 93.2
+    }
+   ],
+   "reading": [],
+   "fold": [],
+   "logWidth": 393
+  }
+ },
+ "recordtasting_393": {
+  "scrollY": 2618,
+  "batchHead": {
+   "box": {
+    "x": 20,
+    "y": 2207.6,
+    "w": 353,
+    "h": 18.2
+   },
+   "name": {
+    "tag": "h2",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "Batch"
+   },
+   "nameBox": {
+    "x": 20,
+    "y": 2209.6,
+    "w": 46.1,
+    "h": 16.2
+   },
+   "toFirstCaption": 18,
+   "firstCaption": "Churn date"
+  },
+  "tastingHead": {
+   "box": {
+    "x": 20,
+    "y": 2924.8,
+    "w": 353,
+    "h": 56
+   },
+   "name": {
+    "tag": "h3",
+    "size": "12px",
+    "weight": "600",
+    "lh": "16.200001px",
+    "color": "rgb(89, 89, 89)",
+    "transform": "uppercase",
+    "tracking": "0.96px",
+    "text": "Tasting"
+   },
+   "nameBox": {
+    "x": 20,
+    "y": 2951.4,
+    "w": 59.7,
+    "h": 16.2
+   },
+   "status": {
+    "box": {
+     "x": 91.7,
+     "y": 2964,
+     "w": 0,
+     "h": 0
+    },
+    "face": {
+     "tag": "p",
+     "size": "13px",
+     "weight": "400",
+     "lh": "18.199999px",
+     "color": "rgb(20, 20, 20)",
+     "transform": "none",
+     "tracking": "normal",
+     "text": ""
+    }
+   },
+   "remove": {
+    "box": {
+     "x": 268.7,
+     "y": 2936.8,
+     "w": 104.3,
+     "h": 44
+    },
+    "face": {
+     "tag": "button",
+     "size": "14px",
+     "weight": "600",
+     "lh": "18.199999px",
+     "color": "rgb(20, 117, 221)",
+     "transform": "none",
+     "tracking": "normal",
+     "text": "Remove tasting"
+    }
+   },
+   "fromPrev": 32,
+   "prev": "segmented-field:Airiness (estimated)Low,",
+   "toNextCaption": 19.2,
+   "nextCaption": "Tasted",
+   "rules": {
+    "tastingHead": {
+     "marginTop": "32px",
+     "marginBottom": "6px",
+     "borderTop": "0px rgb(214, 218, 215)",
+     "paddingTop": "0px"
+    }
+   }
+  },
+  "cells": {
+   "pen": [
+    {
+     "label": "Tasted",
+     "box": {
+      "x": 20,
+      "y": 2986.8,
+      "w": 128,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 20,
+      "y": 2986.8,
+      "w": 128,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 49.5
+    },
+    {
+     "label": "Tempering",
+     "box": {
+      "x": 160,
+      "y": 2986.8,
+      "w": 81.9,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 160,
+      "y": 2986.8,
+      "w": 81.9,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 74.4
+    },
+    {
+     "label": "Tasting temperature",
+     "box": {
+      "x": 20,
+      "y": 3089.5,
+      "w": 152.3,
+      "h": 78.8
+     },
+     "captionBox": {
+      "x": 20,
+      "y": 3089.5,
+      "w": 152.3,
+      "h": 28.8
+     },
+     "captionLines": 2,
+     "captionTextW": 152.3
+    }
+   ],
+   "reading": [],
+   "fold": [],
+   "logWidth": 393
+  },
+  "outline": [
+   "h2 Batch .region-name",
+   "h3 Tasting .region-name"
+  ],
+  "focused": "INPUT ",
+  "penWidth": 353
+ }
+}

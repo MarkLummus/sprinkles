@@ -53,10 +53,11 @@
      body added 260917-h83; the running head retired 03.5-02 Task 3): the
      left edge shared by the page itself (.recipe-page), the "no recipe
      found" page in that same position (.not-found), and the list route's
-     page body (.list-page), and the right inset of the notice that
-     anchors under the bar (.page-status), which reads the same gutter
-     from the right — four boxes, one gutter, so a future edit cannot
-     move one of them without the others. Reads --gap-xl at desktop. The
+     page body (.list-page), and the page notice (.page-status), which
+     keeps the same gutter on both sides of the window through its
+     max-width (decide-page-notice-shape, quick 261025-elq) — four
+     boxes, one gutter, so a future edit cannot move one of them without
+     the others. Reads --gap-xl at desktop. The
      step to --gap-m below the phone-forms cut is declared once, on :root
      inside app.css's existing phone-forms media block — not here — for
      two reasons: this file's own
@@ -409,6 +410,7 @@
   --app-import-errors-leading: 1.5; /* the panel's count and lines (board import-errors-placement.html B); six lines of it set the list's height */
   --app-scrim: rgba(20, 20, 20, 0.28); /* the scrim: the App text #141414 at 28% (decision 33, GO) */
   --app-shadow-flyout: 4px 0 16px rgba(20, 20, 20, 0.18); /* the panel's edge shadow (decision 33, GO) */
+  --app-shadow-notice: 0 4px 16px rgba(20, 20, 20, 0.18); /* the page notice's shadow: the fly-out's blur and alpha cast downward (decide-page-notice-shape, Mark 2026-10-24) */
   --app-tilt-menu: 90deg; /* the menu button's three dots stand upright, as --app-tilt-sprinkle turns the brand's rods (decision 33) */
 
   /* The Notebook recipe route's frame (03.5-04 Task 1, sketch 011 layout

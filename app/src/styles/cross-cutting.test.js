@@ -284,17 +284,18 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
   // rule order (723-batch.html). Since decision 45 (03.7-02) the list form is a
   // screen-only block of its own, directly after this one, so print always draws
   // the column form, whose head repeats over a table that breaks.
-  test('the phone-forms block keeps its five rules; the list form is not among them (decision 45, 03.7-02; decide-creation-notice-place, quick 261021-07s)', () => {
+  test('the phone-forms block keeps its five rules; the list form is not among them (decision 45, 03.7-02; decide-page-notice-shape BS, quick 261025-elq)', () => {
     // The record pen's own width-only block shares this condition (decision
-    // 28) and is pinned above. The notice's anchor joined the block
-    // (quick 261021-07s) because the bar stops sticking below 724.
+    // 28) and is pinned above. The notice's own rule now closes the block
+    // (decide-page-notice-shape BS, quick 261025-elq): below 724 it lifts the
+    // card above the fixed tab row.
     const phoneFormsRules = rules.filter((r) => r.media === '(max-width: 723.98px)' && !r.selector.startsWith('.axis-mark'));
     expect(phoneFormsRules.map((r) => r.selector)).toEqual([
       ':root',
       '.field-row__label',
       '.batch-margin__field',
       '.save-ceremony, .pen-foot__controls',
-      '.page-status-anchor',
+      '.page-status',
     ]);
   });
 
@@ -654,8 +655,8 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
   // .pen-helper on the same element — so they are not in this list.
   const HELPER_STATUS_SELECTORS = ['.page-status', '.form-status', '.save-ceremony__hint', '.pen-helper'];
 
-  test('the four helper and status sentences read the control role (13px)', () => {
-    for (const selector of HELPER_STATUS_SELECTORS) {
+  test('the three helper and status sentences read the control role (13px); the page notice reads the note role, pinned below (decide-page-notice-shape, quick 261025-elq)', () => {
+    for (const selector of HELPER_STATUS_SELECTORS.filter((selector) => selector !== '.page-status')) {
       const rule = ruleFor(selector);
       expect(rule, `expected ${selector} to read the helper/status role`).toBeTruthy();
       expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-control\)/);
@@ -861,54 +862,66 @@ describe('exclusion guards — registers the finding deliberately leaves in plac
   });
 });
 
-describe('the page notice anchors above the keyed page, out of flow (260917-ewf; re-anchored 03.5-02 Task 3)', () => {
-  test('.page-status is absolutely positioned at the end gutter, with no fixed-corner declarations left (decide-creation-notice-place, quick 261021-07s)', () => {
+describe('the page notice anchors above the keyed page, out of flow (260917-ewf; re-anchored 03.5-02 Task 3); a card from the bottom edge in the App\'s skin (decide-page-notice-shape BS, quick 261025-elq)', () => {
+  test('.page-status is absolutely positioned at the foot of a fixed anchor, centred by an auto margin, with no end-gutter inset left (decide-page-notice-shape BS, quick 261025-elq)', () => {
     const rule = ruleFor('.page-status');
     expect(rule, 'expected a top-level .page-status rule').toBeTruthy();
     expect(rule.declarations).toMatch(/position:\s*absolute/);
     expect(rule.declarations).not.toMatch(/position:\s*fixed/);
-    expect(rule.declarations).not.toMatch(/inset-block-end/);
+    expect(rule.declarations).toMatch(/inset-block-start:\s*auto/);
+    expect(rule.declarations).toMatch(/inset-block-end:\s*var\(--gap-m\)/);
+    expect(rule.declarations).toMatch(/inset-inline:\s*0/);
+    expect(rule.declarations).toMatch(/width:\s*max-content/);
+    expect(rule.declarations).toMatch(/margin:\s*0 auto/);
+    expect(rule.declarations).not.toMatch(/inset-inline-end/);
     expect(rule.declarations).not.toMatch(/inset-inline-start/);
-    expect(rule.declarations).toMatch(/inset-inline-end:\s*var\(--gap-page\)/);
   });
 
-  test('.page-status-anchor is a sticky containing block under the bar (below 724, under the window top), and .page-status anchors flush to its own top edge (decide-creation-notice-place, quick 261021-07s)', () => {
+  test('.page-status-anchor is a zero-height fixed box at the window foot (the card\'s containing block), and below 724 the card lifts above the fixed tab row (decide-page-notice-shape BS, quick 261025-elq)', () => {
     const anchorRule = ruleFor('.page-status-anchor');
     expect(anchorRule, 'expected a top-level .page-status-anchor rule').toBeTruthy();
-    expect(anchorRule.declarations).toMatch(/position:\s*sticky/);
-    expect(anchorRule.declarations).toMatch(/inset-block-start:\s*var\(--app-size-header-h\)/);
+    expect(anchorRule.declarations).toMatch(/position:\s*fixed/);
+    expect(anchorRule.declarations).toMatch(/inset-block:\s*auto 0/);
+    expect(anchorRule.declarations).toMatch(/inset-inline:\s*0/);
     expect(anchorRule.declarations).toMatch(/z-index:\s*var\(--app-z-notice\)/);
-    const phoneRule = rules.find((r) => r.selector === '.page-status-anchor' && r.media === '(max-width: 723.98px)');
-    expect(phoneRule, 'expected a phone-forms .page-status-anchor rule').toBeTruthy();
-    expect(phoneRule.declarations).toMatch(/inset-block-start:\s*0/);
-    expect(ruleFor('.page-status').declarations).toMatch(/inset-block-start:\s*0/);
+    expect(anchorRule.declarations).not.toMatch(/position:\s*sticky/);
+    expect(anchorRule.declarations).not.toMatch(/inset-block-start/);
+    expect(rules.find((r) => r.selector === '.page-status-anchor' && r.media === '(max-width: 723.98px)')).toBeUndefined();
+    const phoneRule = rules.find((r) => r.selector === '.page-status' && r.media === '(max-width: 723.98px)');
+    expect(phoneRule, 'expected a phone-forms .page-status rule').toBeTruthy();
+    expect(phoneRule.declarations.trim()).toMatch(/^inset-block-end:\s*calc\(var\(--app-size-tab-h\) \+ var\(--gap-m\)\);?$/);
   });
 
-  test('four boxes, one gutter, the notice reading it from the end — the notice, the page, the "no recipe found" page, and the list route\'s page body all read the shared --gap-page, so none can drift alone (260917-gjo; the fifth box, the running head, retired 03.5-02 Task 3)', () => {
-    expect(ruleFor('.page-status').declarations).toMatch(/inset-inline-end:\s*var\(--gap-page\)/);
+  test('four boxes, one gutter, the notice keeping it on both sides through its max-width — the notice, the page, the "no recipe found" page, and the list route\'s page body all read the shared --gap-page, so none can drift alone (260917-gjo; decide-page-notice-shape BS, quick 261025-elq)', () => {
+    expect(ruleFor('.page-status').declarations).toMatch(/max-width:\s*min\(var\(--measure-prose\), calc\(100vw - 2 \* var\(--gap-page\)\)\)/);
     expect(ruleFor('.not-found').declarations).toMatch(/padding:\s*var\(--gap-m\)\s+var\(--gap-page\)/);
     expect(ruleFor('.recipe-page').declarations).toMatch(/padding:\s*var\(--gap-page\)/);
     expect(ruleFor('.list-page').declarations).toMatch(/padding:\s*var\(--gap-page\)/);
   });
 
-  test('every other visual declaration on .page-status survives (margin-block-start added, 260917-ewf Task 4), and .page-status:empty still collapses', () => {
+  test('the card is in the App\'s skin with --app-shadow-notice, at the note role (16px on 24px), and .page-status:empty still collapses, with no shadow (decide-page-notice-shape BS, quick 261025-elq)', () => {
     const rule = ruleFor('.page-status');
     // Reads --app-z-notice (3), a layer of the page under the scrim and the fly-out (sketch 011 decision 53); shell.test.js pins the 3 and the order.
     expect(rule.declarations).toMatch(/z-index:\s*var\(--app-z-notice\)/);
-    expect(rule.declarations).toMatch(/max-width:\s*min\(var\(--measure-prose\), calc\(100vw - var\(--gap-page\) - var\(--gap-m\)\)\)/);
-    expect(rule.declarations).toMatch(/margin:\s*0/);
-    expect(rule.declarations).toMatch(/margin-block-start:\s*var\(--gap-xs\)/);
-    expect(rule.declarations).toMatch(/padding:\s*var\(--gap-xs\) var\(--gap-s\)/);
-    expect(rule.declarations).toMatch(/border:\s*var\(--rule-baseline\) solid var\(--sheet-ink\)/);
-    expect(rule.declarations).toMatch(/background:\s*var\(--sheet-ground\)/);
-    expect(rule.declarations).toMatch(/color:\s*var\(--sheet-ink\)/);
+    expect(rule.declarations).toMatch(/box-sizing:\s*border-box/);
+    expect(rule.declarations).toMatch(/padding:\s*var\(--gap-s\) var\(--gap-m\)/);
+    expect(rule.declarations).toMatch(/border:\s*var\(--app-rule-row\) solid var\(--app-divider\)/);
+    expect(rule.declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
+    expect(rule.declarations).toMatch(/background:\s*var\(--app-background\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--app-text\)/);
+    expect(rule.declarations).toMatch(/box-shadow:\s*var\(--app-shadow-notice\)/);
     expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
-    expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-control\)/);
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
+    expect(rule.declarations).toMatch(/line-height:\s*var\(--sheet-leading-note\)/);
+    expect(rule.declarations).not.toMatch(/--sheet-ink|--sheet-ground|--sheet-type-control/);
+    expect(rule.declarations).not.toMatch(/margin-block-start/);
+    expect(tokens['--app-shadow-notice']).toBe('0 4px 16px rgba(20, 20, 20, 0.18)');
 
     const emptyRule = ruleFor('.page-status:empty');
     expect(emptyRule, 'expected .page-status:empty to survive').toBeTruthy();
     expect(emptyRule.declarations).toMatch(/padding:\s*0/);
     expect(emptyRule.declarations).toMatch(/border:\s*0/);
+    expect(emptyRule.declarations).toMatch(/box-shadow:\s*none/);
   });
 
   test('no transition was added — the notice appears and disappears with no motion', () => {

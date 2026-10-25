@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "batch_id": "261025-f8m",
+  "created_at": "2026-10-25T14:58:21.064Z",
+  "options": {},
+  "base_revision": "49b3a0e2b03491043ae40a1e2bfb0cff9c948865",
+  "items": [
+    {
+      "quick_id": "261025-f8n",
+      "client_id": null,
+      "description": "Task 1, the log column's ladder (ladder proposal: \"The proposal: one ladder, one scale, one rule\", \"Revision 2\", \"Revision 2a\", \"After Mark answers\", and Mark's answers). Mark chose revised-h3-r2: L1 region name 14/600 caps tracked secondary (up from 12), L2 group cue 14/600 sentence ink on the 20 px line and now an h3 in the markup under its region's h2 wherever a cue is a paragraph or span today (the pens' .pen-caption.axes-cue paragraphs in BatchRow.jsx ~214-237 and ~1119, CreationSetup.jsx's .mk-cue paragraphs ~227-229 and the Problems region's equivalents, the Targets cue; the reading state's cues are already h3 since 261022-d3k), L3 caption 12/600 caps tracked secondary as the one caption face (.pen-caption, .notebook-caption, axis names .axis-mark__name and the sub-labels under Any problems? join it; the pen's captions take the 600 and the tracking), L4 content 14/400 sentence ink on the 20 px line for words, lists and figures with tabular numerals (the reading cell's mark words and figures come down from 20/600; core names 14/400). Any problems? is a cue with Every recipe and This recipe only as captions under it (decide-p10-any-problems-level-r2). A picked problem in the reading state renders in the content face, 14/400 grotesk app text, not the hand (decide-p10-picked-option-face; the saved prose fields keep the hand). The creation card's head (Scale 1, Problem 1) is dropped and remove stands beside Name (decide-p10-card-head; sketch 013's card). The spacing scale as the proposal states (region seam unchanged; gap-l between groups; gap-xs under a cue over a list; gap-s under a cue over a card; gap-s between items; the first cue after a region head keeps the head row's 18). Reach: every grouped surface in the log: the creation editor, the record and tasting pens, the batch margin's reading state (decide-p10-ladder-reach); History in the band and the Sheet are out of scope. Record: DESIGN.md typography and the log column entries per the proposal's \"After Mark answers\" step; sketch 013 README gains a decision naming revised-h3-r2, the dropped card head and the picked-problem face with Mark's dates. Verify against p10-measure.json and the P10_Pen measurements for the faces. Shared rules: Three related changes to the log column of the batch route and the creation editor, every one decided by Mark on 2026-10-24 and 2026-10-25 on Mark's List and recorded in the proposals named below (section \"Mark's answers (2026-10-24 and 2026-10-25, on Mark's List): the ladder decided\" in .impeccable/proposals/2026-10-21-log-column-ladder.md; \"Mark's answers (2026-10-24, on Mark's List): the change set decided\" in .impeccable/proposals/2026-10-22-batch-route-layout.md). The drawing to match is the canvas board P10_Pen (its generator .planning/canvas-generators/p-pen.py, measurements p-pen-measure.json, captures p-pen-capture.json) and P10_Scales / P10_Editor (.planning/canvas-generators/p10.py, p10-measure.json). App edits by the executors, tokens only, no literals; npm --prefix app test green; the strict walk .planning/phases/10-the-creation-editor-without-save/10-walk-check.sh green with snapshots updated only where these changes land; verify in Playwright WebKit at 1366 (coarse and fine pointer) and 393 on a scratch build served on a free loopback port, never the 4173 preview and never a Vite dev server. Never touch the 4173 preview server process. Commit each task atomically.",
+      "status": "pending",
+      "depends_on": [],
+      "planned_files": [
+        ".planning/quick/261025-f8n-task-1-the-log-column-s-ladder-ladder-proposal-the-proposal/261025-f8n-ladder-probe.mjs",
+        ".planning/quick/261025-f8n-task-1-the-log-column-s-ladder-ladder-proposal-the-proposal/261025-f8n-walk-rebase.mjs",
+        "app/src/ui/CreationSetup.jsx",
+        "app/src/ui/CreationSetup.test.jsx",
+        "app/src/ui/CreationFlow.test.jsx",
+        "app/src/ui/BatchRow.jsx",
+        "app/src/ui/BatchRow.test.jsx",
+        "app/src/ui/MarkOneField.jsx",
+        "app/src/ui/MarkOneField.test.jsx",
+        "app/src/styles/notebook.css",
+        "app/src/styles/notebook.test.js",
+        "app/src/styles/tokens.css",
+        ".planning/phases/10-the-creation-editor-without-save/10-walk-before.json",
+        "DESIGN.md",
+        ".planning/sketches/013-creation-editor/README.md"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": null,
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261025-f8o",
+      "client_id": null,
+      "description": "Task 2, the pen's rhythm (batch-route proposal \"The change set\", items 1 to 9, with Mark's answers). The 2026-10-22 change set applied to the record pen in app/src/styles/notebook.css and BatchRow.jsx: the caption reserve removed, 6/12/20/32 intervals as the proposal lists them, axes 20 apart under one cue, 18 from every head to its first row in pen and reading alike (decide-p10-reading-head-interval: the reading's Tasting head gives 18 too), captions on the head line aligned flex-end (decide-p10-pen-caption-align), the Clear control's hit area 44 at coarse pointers, the pen's choice controls at one size: .notebook-log .batch-margin--pen .axis-mark__stop and .segmented__option at font-size var(--app-size-meta) (14; decide-p10-control-text-size-r2; the creation editor's Kind control stays as it is), \"(Not recorded)\" no longer rendered on a blank axis in the pen (AxisMark.jsx ~76; the reading state keeps the words; item 8), and At draw and From freezer gain a 12 px caption on their two options with the word \"Why blank\" (decide-p10-at-draw-caption, word approved with the board). Match P10_Pen's dimensioned intervals (p-pen-measure.json). Record: DESIGN.md's pen entries per the proposal's Verification section. Shared rules: Three related changes to the log column of the batch route and the creation editor, every one decided by Mark on 2026-10-24 and 2026-10-25 on Mark's List and recorded in the proposals named below (section \"Mark's answers (2026-10-24 and 2026-10-25, on Mark's List): the ladder decided\" in .impeccable/proposals/2026-10-21-log-column-ladder.md; \"Mark's answers (2026-10-24, on Mark's List): the change set decided\" in .impeccable/proposals/2026-10-22-batch-route-layout.md). The drawing to match is the canvas board P10_Pen (its generator .planning/canvas-generators/p-pen.py, measurements p-pen-measure.json, captures p-pen-capture.json) and P10_Scales / P10_Editor (.planning/canvas-generators/p10.py, p10-measure.json). App edits by the executors, tokens only, no literals; npm --prefix app test green; the strict walk .planning/phases/10-the-creation-editor-without-save/10-walk-check.sh green with snapshots updated only where these changes land; verify in Playwright WebKit at 1366 (coarse and fine pointer) and 393 on a scratch build served on a free loopback port, never the 4173 preview and never a Vite dev server. Never touch the 4173 preview server process. Commit each task atomically.",
+      "status": "pending",
+      "depends_on": [
+        "261025-f8n"
+      ],
+      "planned_files": [
+        "app/src/ui/MarkOneField.jsx",
+        "app/src/ui/MarkOneField.test.jsx",
+        "app/src/ui/AxisMark.jsx",
+        "app/src/ui/AxisMark.test.jsx",
+        "app/src/ui/BatchRow.test.jsx",
+        "app/src/styles/notebook.css",
+        "app/src/styles/notebook.test.js",
+        "DESIGN.md",
+        ".planning/phases/10-the-creation-editor-without-save/10-walk-before.json",
+        ".planning/quick/261025-f8o-task-2-the-pen-s-rhythm-batch-route-proposal-the-change-set/261025-f8o-rhythm-probe.mjs"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 1,
+      "commit": null,
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261025-f8p",
+      "client_id": null,
+      "description": "Task 3, Tasting as a peer region of Batch, Temperature, and the churn trio (ladder proposal sections \"Mark's instruction (2026-10-25): Tasting a region, a peer of Batch\", items 1 to 6, and \"Mark's request (2026-10-25): the churn trio on one line\"). In the record pen the tasting block becomes a section with an h2.region-name head in the Batch head's own grammar (.batch-row__head with a lead holding the h2 and the tasting-status line in the churned-date slot, and acts holding Restore tasting and Remove tasting; .tasting-head and .tasting-head__remove retire), one 44 px head row for both heads with 18 under each, the region seam (gap-m + the row hairline in --app-divider + gap-m) above the Tasting head replacing the 32 with no rule; the region appears on Add tasting and Add tasting stays in the two ceremonies (decide-p10-tasting-gate; the 2026-09-12 and 2026-09-16 rulings kept); Next time stays where it is. The label \"Tasting temperature\" becomes \"Temperature\" at its one source (app/src/domain/battery.js ~26; pen caption, reading cell and print log follow; the Sheet has no such field), so Tasted · Tempering · Temperature share one row at 1366 and 393. The churn trio on one line (decide-p10-churn-trio, date-120): tokens.css --sheet-field-w-date from 128px to 120px app-wide with a comment naming the section; the pen caption \"Churn date\" becomes \"Churned\"; battery.js ~24 \"Churn duration\" becomes \"Duration\"; PrintLogPages.jsx ~122 dateCaption follows the pen's word; tests naming the labels follow; so Churned · Out of machine · Duration share one row at 1366 (345.4 in 350) and 393. Verify both entry paths (Add tasting after a churn on Olive Oil v1; Record a tasting on Mexican Chocolate v3) against P10_Pen's panels and the tasting-head-measure.json figures; the outline reads h2 Batch > h3 cues; h2 Tasting > h3 cues. Record: sketch 007 README notes its lines 242-246 head and the 2026-09-12 label clarification superseded with Mark's dates; DESIGN.md's log column entry names the peer head. Shared rules: Three related changes to the log column of the batch route and the creation editor, every one decided by Mark on 2026-10-24 and 2026-10-25 on Mark's List and recorded in the proposals named below (section \"Mark's answers (2026-10-24 and 2026-10-25, on Mark's List): the ladder decided\" in .impeccable/proposals/2026-10-21-log-column-ladder.md; \"Mark's answers (2026-10-24, on Mark's List): the change set decided\" in .impeccable/proposals/2026-10-22-batch-route-layout.md). The drawing to match is the canvas board P10_Pen (its generator .planning/canvas-generators/p-pen.py, measurements p-pen-measure.json, captures p-pen-capture.json) and P10_Scales / P10_Editor (.planning/canvas-generators/p10.py, p10-measure.json). App edits by the executors, tokens only, no literals; npm --prefix app test green; the strict walk .planning/phases/10-the-creation-editor-without-save/10-walk-check.sh green with snapshots updated only where these changes land; verify in Playwright WebKit at 1366 (coarse and fine pointer) and 393 on a scratch build served on a free loopback port, never the 4173 preview and never a Vite dev server. Never touch the 4173 preview server process. Commit each task atomically.",
+      "status": "pending",
+      "depends_on": [
+        "261025-f8n",
+        "261025-f8o"
+      ],
+      "planned_files": [
+        "app/src/ui/BatchRow.jsx",
+        "app/src/styles/notebook.css",
+        "app/src/styles/app.css",
+        "app/src/styles/tokens.css",
+        "app/src/domain/battery.js",
+        "app/src/ui/PrintLogPages.jsx",
+        "app/src/ui/BatchRow.test.jsx",
+        "app/src/ui/BatchRow.dates.test.jsx",
+        "app/src/ui/RecipePage.recordTasting.test.jsx",
+        "app/src/ui/RecipePage.undoRetire.test.jsx",
+        "app/src/ui/PrintLogPages.test.jsx",
+        "app/src/domain/battery.test.js",
+        "app/src/styles/notebook.test.js",
+        "app/src/styles/cross-cutting.test.js",
+        ".planning/phases/10-the-creation-editor-without-save/10-walk.mjs",
+        ".planning/phases/10-the-creation-editor-without-save/10-walk-before.json",
+        ".planning/quick/261025-f8p-task-3-tasting-as-a-peer-region-of-batch-temperature-and-the/261025-f8p-pen-probe.mjs",
+        ".planning/quick/261025-f8p-task-3-tasting-as-a-peer-region-of-batch-temperature-and-the/261025-f8p-pen-measure.json",
+        ".planning/quick/261025-f8p-task-3-tasting-as-a-peer-region-of-batch-temperature-and-the/261025-f8p-walk-normalise.mjs",
+        "DESIGN.md",
+        ".planning/sketches/007-full-battery/README.md",
+        ".impeccable/surfaces/route-print-recipe-sheet.md"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 2,
+      "commit": null,
+      "failure_reason": null
+    }
+  ]
+}

@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: planning
 stopped_at: Phase 10 complete, ready to plan Phase 11
-last_updated: "2026-10-21T11:12:54.710Z"
+last_updated: "2026-10-25T14:57:22.338Z"
 last_activity: 2026-10-21
 last_activity_desc: Phase 10 complete, transitioned to Phase 11
-state_head: 992c8bd705c5afe0ade13b44859669d9221275e5
+state_head: f43b1d321388e0f6f491da34d5b3e03842154aa0
 progress:
   total_phases: 5
   completed_phases: 3
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-21)
 Phase: 11 — Steps, structure, save and print
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-21 — Phase 10 complete, transitioned to Phase 11
+Last activity: 2026-10-25 - Completed quick task 261025-elq: the page notice as a card from the bottom edge (BS)
 
 Progress: [██████░░░░] 60%
 
@@ -587,6 +587,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261022-d3i | Log column prose fields type in the grotesk | 2026-10-22 | 1bc7ad9f | /Users/mark/Documents/projects/sprinkles/.planning/quick/261022-d3i-log-column-prose-fields-type-in-the-grotesk-the-batch-pen-s |
 | 261022-d3j | Hide "no batch yet" while the record pen is open | 2026-10-22 | ac2ff0ff | /Users/mark/Documents/projects/sprinkles/.planning/quick/261022-d3j-hide-no-batch-yet-while-the-record-pen-is-open-app-src-ui-ba |
 | 261022-d3k | Reading-state heading levels | 2026-10-22 | 11136a95 | /Users/mark/Documents/projects/sprinkles/.planning/quick/261022-d3k-reading-state-heading-levels-app-src-ui-batchrow-jsx-280-mar |
+| 261025-elq | The page notice as a card from the bottom edge in Page styling with a shadow (BS; decide-page-notice-shape, bug-save-notice-covers-title-393) | 2026-10-25 | f43b1d32 | [261025-elq-the-page-notice-as-a-card-from-the-botto](./quick/261025-elq-the-page-notice-as-a-card-from-the-botto/) |
 
 ### Roadmap Evolution
 

@@ -123,3 +123,12 @@ Typography: unchanged by this change set (2026-10-23: the pen's choice-control s
 Source: the critique of 2026-10-22, "Cognitive load" (`.impeccable/critique/2026-10-22T13-12-36Z__atch-60b9470b-3697-4a33-9c4e-40619352bbbb-32e2a32c.md`): 30 radios, 4 toggles, 5 fields, 7 Clears and 3 ceremony buttons in one unbroken column, the four identical 137 px axis blocks the valley. Mark asked whether the long form should be fixed with disclosures or tabs. He chose **A: one column**, the rhythm change set above, the ladder (revision 2a), and "(Not recorded)" out of the pen (item 8). Rejected: **tabs** (Churn | Tasting), **per-region disclosures** (open by default they shorten nothing; closed they hide the controls the sheet asks the maker to copy), and **B**, the Record a tasting path showing the churn as reading cells instead of fields (not drawn, not measured).
 
 Why: the pen is a transcription of the sheet in the sheet's order, so a column the maker can scan against the paper beats a pane he has to page, and the load he felt was the valley and the dead bands, which are rhythm faults the change set removes, not the count of controls. The pen already has its one disclosure, the tasting block behind Add tasting (2026-09-12), and the Clears and the two ceremonies stand by the 2026-09-16 ruling; tabs would have reopened both and the brief's "no wizard, stepper or modal". Board: P10_PenRhythm redrawn with item 8 (look-p10-pen-rhythm-board). Rows unchanged: decide-p10-at-draw-caption, decide-p10-pen-caption-align, decide-p10-control-text-size-r2 still gate the `/gsd-quick`.
+
+## Mark's answers (2026-10-24, on Mark's List): the change set decided
+
+- `decide-p10-pen-caption-align`: **flex-end**: nothing moves on a pick; options to the next caption read 15.8.
+- `decide-p10-control-text-size-r2`: **both 14** (`--app-size-meta`).
+- `decide-p10-at-draw-caption`: **caption**, the word "Why blank" as drawn and approved on P10_Pen.
+- `look-p10-pen-rhythm-board`: **approve**.
+
+The change set (items 1 to 9), the control size and the ladder proposal's peer and churn-trio sections land together in the `/gsd-quick-batch` of 2026-10-25.

@@ -177,3 +177,18 @@ The alternative that keeps 128: "Out of machine" → "Drawn at" (its caption 65,
 
 **Change set (into the same `/gsd-quick`):** `tokens.css` `--sheet-field-w-date: 120px` (the comment names this section); `BatchRow.jsx` the pen caption "Churn date" → "Churned" (if chosen); `battery.js:24` label "Churn duration" → "Duration"; `PrintLogPages.jsx:122` `dateCaption` to the pen's word; `PrintLogPages.test.jsx` and any test naming the labels follow. No CSS beyond the token: the row is the change set's field row (reserve gone, 12 between fields, flex-end captions). Verify in WebKit at 1366 and 393 that the three labels share one line with the sums above, and that the Tasted field at 120 still shows its date whole; the iPad check is Mark's.
 
+
+## Mark's answers (2026-10-24 and 2026-10-25, on Mark's List): the ladder decided
+
+- `decide-p10-log-ladder-r2`: **revised-h3-r2**: revision 2's ladder and scale, and the cues become headings in the markup (an h3 under the region's h2).
+- `decide-p10-any-problems-level-r2`: **cue over captions**: Any problems? a cue; Every recipe and This recipe only under it captions (revision 2, drawn).
+- `decide-p10-picked-option-face`: **content**: 14/400 grotesk, app text, for every picked problem, core or declared (revision 2a).
+- `decide-p10-card-head`: **drop** the creation card's head; remove stands beside Name (reopens sketch 013's card as approved).
+- `decide-p10-reading-head-interval`: **18**: a head gives 18 to its first row everywhere, pen and reading.
+- `decide-p10-control-text-size-r2`: **both 14** (`--app-size-meta`); supersedes his 2026-10-23 "fifteen" on `decide-p10-control-text-size`.
+- `decide-p10-at-draw-caption`: **caption** on At draw and From freezer; the word is "Why blank" as drawn on P10_Pen, which he approved.
+- `decide-p10-tasting-gate`: **the region appears on Add tasting**; Add tasting stays in the two ceremonies (2026-09-12 and D-14 kept).
+- `decide-p10-churn-trio`: **date field 120 app-wide; Churned · Out of machine · Duration** as drawn.
+- Looks approved ("approve"): `look-p10-log-ladder-board` (P10_LogLadder), `look-p10-pen-rhythm-board` (P10_PenRhythm), `look-p10-ladder-redraw` (P10_Pen, P10_Scales, P10_Editor). The words drawn on P10_Pen and left to him on the look row stand as approved with the board: "Temperature" (not "Served at") and "Churned" (not "Churn date").
+
+Nothing is open. The whole set (this ladder with the cues as h3; the 2026-10-22 change set items 1 to 9 with the control size; the peer change set; the churn trio) goes to one `/gsd-quick-batch` on 2026-10-25.

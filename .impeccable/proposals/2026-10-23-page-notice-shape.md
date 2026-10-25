@@ -97,3 +97,7 @@ On `decide-page-notice-shape` Mark chose **B**, the card rising from the bottom 
 
 The fix lands by `/gsd-quick` once Mark has looked at the board (`look-page-notice-card-page-styling`), and that quick closes `bug-save-notice-covers-title-393`. If he would rather keep the App flat, BP is drawn on the same board and is the same change set without item 1 and the `box-shadow` declaration.
 
+
+## Mark's approval (2026-10-25): BS
+
+On `look-page-notice-card-page-styling` Mark wrote "Approve BS". The revised change set above (items 1 to 7, with the shadow token) goes to `/gsd-quick` on 2026-10-25; that quick closes `bug-save-notice-covers-title-393`.

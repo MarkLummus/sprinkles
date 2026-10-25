@@ -341,10 +341,10 @@ describe("the log's vertical rhythm and the tasting grids (G-03.5-6, 03.5-25)", 
     expect(topLevel('.notebook-log .batch-row').declarations).toMatch(/gap:\s*var\(--app-notebook-log-group-gap\)/);
   });
 
-  test("the cell's label-to-value gap is the hairline and the value line is normal leading", () => {
+  test("the cell's label-to-value gap is the hairline and the value reads on the 20px line (decide-p10-log-figure-face)", () => {
     expect(topLevel('.notebook-log .batch-row__cell'), 'expected a top-level .notebook-log .batch-row__cell rule').toBeTruthy();
     expect(topLevel('.notebook-log .batch-row__cell').declarations).toMatch(/gap:\s*var\(--gap-hair\)/);
-    expect(topLevel('.notebook-log .batch-row__cell-value').declarations).toMatch(/line-height:\s*normal/);
+    expect(topLevel('.notebook-log .batch-row__cell-value').declarations).toMatch(/line-height:\s*var\(--app-notebook-pen-cue-line-h\)/);
   });
 
   test("the churn cells' own grid, a direct child of .batch-margin, has no top margin; the tasting grids keep the Sheet's", () => {
@@ -877,7 +877,7 @@ describe("the reading's four group names take the pen's cue face (sketch 011 dec
     declares(find('.notebook-log .tasting-reading__subgroup > .tasting-reading__problems'), 'margin-top', '0');
   });
 
-  test('N3: the base label rule keeps the caps grey face, so Any problems? and Next time keep theirs', () => {
+  test('N3: the base label rule keeps the caps grey face, so Next time and the two labels under Any problems? keep theirs', () => {
     const base = baseLabel();
     declares(base, 'text-transform', 'uppercase');
     declares(base, 'color', 'var(--app-text-secondary)');
@@ -1021,5 +1021,45 @@ describe("the log's ladder: region names, the one caption face and the creation 
     declares(row, 'align-items', 'flex-end');
     declares(row, 'column-gap', 'var(--gap-s)');
     declares(find('.notebook .mk-caprow .notebook-field'), 'flex', '1 1 auto');
+  });
+});
+
+// The pens' and the reading's content faces (quick 261025-f8n, Task 2): a figure is content at 14/400 on the 20px line
+// (decide-p10-log-figure-face), a picked problem is content in the grotesk, not the hand (decide-p10-picked-option-face), and the
+// hand shows at its 1.25rem floor in the log.
+describe("the log's content faces: figures, picked problems and the hand (quick 261025-f8n)", () => {
+  const find = (selector, media) => rules.find((r) => r.selector === selector && r.media === media);
+  const declares = (rule, property, value) => {
+    expect(rule, `a rule for the declaration ${property}`).toBeDefined();
+    const found = rule.declarations.split(';').map((d) => d.trim()).filter(Boolean).find((d) => d.startsWith(`${property}:`));
+    expect(found, `${rule.selector} declares ${property}`).toBeDefined();
+    expect(found.slice(property.length + 1).trim(), `${rule.selector} ${property}`).toBe(value);
+  };
+
+  test('a reading cell value is 14 / 400 on the 20px line with tabular numerals', () => {
+    const value = find('.notebook-log .batch-row__cell-value');
+    declares(value, 'font-size', 'var(--app-size-meta)');
+    declares(value, 'font-weight', '400');
+    declares(value, 'line-height', 'var(--app-notebook-pen-cue-line-h)');
+    declares(value, 'color', 'var(--app-text)');
+    declares(value, 'font-variant-numeric', 'tabular-nums');
+  });
+
+  test('a picked problem is grotesk content: 14 / 400, the 20px line, App text', () => {
+    const problems = find('.notebook-log .tasting-reading__problems');
+    declares(problems, 'font-family', 'var(--face-grotesk)');
+    declares(problems, 'font-size', 'var(--app-size-meta)');
+    declares(problems, 'font-weight', '400');
+    declares(problems, 'line-height', 'var(--app-notebook-pen-cue-line-h)');
+    declares(problems, 'color', 'var(--app-text)');
+  });
+
+  test('the hand shows at its 1.25rem floor in the log', () => {
+    declares(find('.notebook-log .app-hand'), 'font-size', 'var(--size-hand-min)');
+  });
+
+  test('the 20px log value-size token is retired: nothing reads it', () => {
+    expect(notebookCssSource).not.toContain('--app-notebook-log-value-size');
+    expect(readFileSync(TOKENS_CSS_PATH, 'utf8')).not.toContain('--app-notebook-log-value-size');
   });
 });

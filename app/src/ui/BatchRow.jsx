@@ -917,38 +917,46 @@ export function BatchRow({
                 texture block, which arrives in Task 2), then the defects
                 row and the melt block (Task 3). */}
             {draft.tastingOpen && (
-              <>
-                {/* The tasting head (sketch 007 @ 109733d lines 242-246;
-                    G-03.3.1-4; UAT items 6, 18): a bare region-name
-                    "Tasting" — the two helper spans ("· optional",
-                    "— leave anything you did not record blank") are gone,
-                    a plain .head with no reserved caption-line height (that
-                    reserve is the axes' and categories' own, not this
-                    row's). The tasting-status live region beside the
-                    action, the Restore tasting slot — the contract's own
-                    static mount; in hidden mode a removal always collapses
-                    the section, so this slot renders in practice only on a
-                    reopened section (Add tasting pressed again) while a
-                    prior removal's own restore is still pending — then the
-                    Remove control, "Remove tasting" verbatim in hidden
-                    mode (Pitfall 6: the always-visible mode's "Clear
-                    tasting" label is never built), right-aligned (007 line
-                    246, `margin-left: auto`). */}
-                <div className="mo-end tasting-head">
-                  <h3 className="region-name">Tasting</h3>
-                  <p className="tasting-status pen-helper" role="status" aria-live="polite">
-                    {tastingStatus}
-                  </p>
-                  {pendingUndo && (
-                    <Button className="text-control undo-control" onClick={onUndoRemove}>Restore tasting</Button>
-                  )}
-                  <Button
-                    className="text-control tasting-head__remove"
-                    ref={removeTastingButtonRef}
-                    onClick={onRemoveTasting}
-                  >
-                    Remove tasting
-                  </Button>
+              <section aria-label="Tasting">
+                {/* The Tasting head: a region, a peer of Batch (Mark,
+                    2026-10-25, "I want Tasting to be treated as a region like
+                    Batch"; decide-p10-tasting-gate; the ladder proposal's
+                    section "Tasting a region, a peer of Batch"). It takes
+                    the Batch head's own grammar: the lead holds the region
+                    name, an h2 as the reading's is, then the tasting-status
+                    live region (the slot the churned date uses on the Batch
+                    head; it stays rendered while empty so a removal or a
+                    restore is still announced); the acts hold the Restore
+                    tasting slot (the contract's own static mount; in hidden
+                    mode a removal always collapses the section, so it renders
+                    in practice only on a reopened section while a prior
+                    removal's restore is still pending) and Remove tasting,
+                    "Remove tasting" verbatim in hidden mode (Pitfall 6: the
+                    always-visible mode's "Clear tasting" label is never
+                    built), flush right where Correct and Record another sit
+                    on the Batch head in the reading. The region stays hidden
+                    until Add tasting opens it (2026-09-12, D-01), which stays
+                    in the two ceremonies (D-14). Its row height, its 18 under
+                    and the region seam above it are notebook.css's. */}
+                <div className="batch-row__head batch-row__head--tasting">
+                  <div className="batch-row__head-lead">
+                    <h2 className="region-name">Tasting</h2>
+                    <p className="tasting-status pen-helper" role="status" aria-live="polite">
+                      {tastingStatus}
+                    </p>
+                  </div>
+                  <div className="batch-row__head-acts">
+                    {pendingUndo && (
+                      <Button className="text-control undo-control" onClick={onUndoRemove}>Restore tasting</Button>
+                    )}
+                    <Button
+                      className="text-control"
+                      ref={removeTastingButtonRef}
+                      onClick={onRemoveTasting}
+                    >
+                      Remove tasting
+                    </Button>
+                  </div>
                 </div>
                 {/* The tasting field row (sketch 007 lines 249-253; UAT
                     items 7, 8): a .field-row holding the 128px Tasted date
@@ -1141,7 +1149,7 @@ export function BatchRow({
                     </AxesGrid>
                   </>
                 )}
-              </>
+              </section>
             )}
             {!draft.tastingOpen && renderNextTime()}
             {/* Ceremony A (D-01): closes the record body after all record

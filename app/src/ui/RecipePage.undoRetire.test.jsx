@@ -180,7 +180,7 @@ function restoreCount() {
 async function removeTastingWithInk() {
   await click(pen().querySelector('.save-ceremony__add-tasting'));
   await setValue(pen().querySelector('textarea[aria-label="How did it turn out?"]'), 'firm');
-  await click(pen().querySelector('.tasting-head__remove'));
+  await click(buttonByText(pen(), 'Remove tasting'));
 }
 
 const atDraw = () => pen().querySelector('[data-mo="atdraw"]');

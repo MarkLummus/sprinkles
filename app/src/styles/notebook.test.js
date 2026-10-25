@@ -1148,7 +1148,7 @@ describe("the record pen's rhythm, the 2026-10-22 change set (Mark 2026-10-24; q
   });
 
   test('item 6 and decide-p10-reading-head-interval: a head gives 18 to its first row, the Tasting head in the pen and in the reading', () => {
-    expect(declared(find('.notebook-log .tasting-head'))).toEqual({ 'margin-bottom': 'var(--app-notebook-log-group-gap)' });
+    expect(declared(find('.notebook-log .batch-margin--pen .batch-row__head--tasting'))['margin-bottom']).toBe('var(--app-notebook-log-group-gap)');
     expect(declared(find('.notebook-log .tasting-reading .tasting-reading__conditions:first-child'))).toEqual({
       'margin-top': 'var(--app-notebook-log-group-gap)',
     });
@@ -1167,5 +1167,49 @@ describe("the record pen's rhythm, the 2026-10-22 change set (Mark 2026-10-24; q
     const appRules = readAllRules(readFileSync(path.join(STYLES_DIR, 'app.css'), 'utf8'));
     const option = appRules.find((r) => r.selector === '.segmented__option' && r.media === undefined);
     expect(declared(option)['font-size']).toBe('var(--sheet-type-control)');
+  });
+});
+
+// Tasting a region, a peer of Batch (Mark, 2026-10-25; decide-p10-tasting-gate; quick
+// 261025-f8p): the pen's two heads are one 44 row in one grammar; the Tasting head carries
+// the region seam above it and the 18 under it; the head classes it replaced are gone.
+describe("the record pen's Tasting head, a peer of the Batch head (quick 261025-f8p)", () => {
+  const find = (selector, media) => rules.find((r) => r.selector === selector && r.media === media);
+  const declared = (rule) => {
+    expect(rule, 'expected the rule to exist').toBeDefined();
+    return Object.fromEntries(
+      rule.declarations
+        .split(';')
+        .map((d) => d.trim())
+        .filter(Boolean)
+        .map((d) => [d.slice(0, d.indexOf(':')).trim(), d.slice(d.indexOf(':') + 1).trim()]),
+    );
+  };
+
+  test('the two pen heads are one touch-floor row, centred', () => {
+    const both = '.notebook-log .batch-row:has(.batch-margin--pen) > .batch-row__head, .notebook-log .batch-margin--pen .batch-row__head';
+    expect(declared(find(both))).toEqual({ 'min-height': 'var(--touch-min)', 'align-items': 'center' });
+  });
+
+  test('the Tasting head carries the region seam above (20, the row hairline in the divider colour, 20) and 18 under', () => {
+    expect(declared(find('.notebook-log .batch-margin--pen .batch-row__head--tasting'))).toEqual({
+      'margin-top': 'var(--gap-m)',
+      'padding-top': 'var(--gap-m)',
+      'border-top': 'var(--app-rule-row) solid var(--app-divider)',
+      'margin-bottom': 'var(--app-notebook-log-group-gap)',
+    });
+  });
+
+  test("the acts sit flush right with the buttons' inherited top margin off, so the head row is the decided 44", () => {
+    expect(declared(find('.notebook-log .batch-margin--pen .batch-row__head-acts'))).toEqual({ 'margin-left': 'auto' });
+    expect(declared(find('.notebook-log .batch-margin--pen .batch-row__head-acts button'))).toEqual({ 'margin-top': '0' });
+  });
+
+  test('no rule in notebook.css or app.css names the retired head or seam classes', () => {
+    const appSource = readFileSync(path.join(STYLES_DIR, 'app.css'), 'utf8');
+    for (const source of [notebookCssSource, appSource]) {
+      expect(source).not.toMatch(/\.tasting-head/);
+      expect(source).not.toMatch(/\.mo-end/);
+    }
   });
 });

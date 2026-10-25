@@ -1165,6 +1165,40 @@
   gap: var(--app-notebook-log-head-gap);
 }
 
+/* Tasting a region, a peer of Batch (Mark, 2026-10-25, "Tasting a region, a peer
+   of Batch", .impeccable/proposals/2026-10-21-log-column-ladder.md;
+   decide-p10-tasting-gate; quick 261025-f8p). In the record pen the two heads share
+   the Batch head's grammar and stand in one row of the touch floor (the fold row's
+   own height), their contents centred. The Batch head's 18 to the pen is the
+   section's own row gap; the Tasting head, inside the pen, carries its 18 itself.
+   The region seam stands above Tasting, the one the reading draws between the Batch
+   cells and the Tasting fold: gap-m, the row hairline in the divider colour, gap-m.
+   The head's acts sit flush right, and the buttons in them drop the pen's
+   inherited top margin (app.css, .batch-margin button) so the row stays the 44.
+   The board's :empty rule that hides the status line is left out: the line is a
+   live region (a removal and a restore are announced through it) and an empty
+   paragraph draws nothing. */
+.notebook-log .batch-row:has(.batch-margin--pen) > .batch-row__head,
+.notebook-log .batch-margin--pen .batch-row__head {
+  min-height: var(--touch-min);
+  align-items: center;
+}
+
+.notebook-log .batch-margin--pen .batch-row__head--tasting {
+  margin-top: var(--gap-m);
+  padding-top: var(--gap-m);
+  border-top: var(--app-rule-row) solid var(--app-divider);
+  margin-bottom: var(--app-notebook-log-group-gap);
+}
+
+.notebook-log .batch-margin--pen .batch-row__head-acts {
+  margin-left: auto;
+}
+
+.notebook-log .batch-margin--pen .batch-row__head-acts button {
+  margin-top: 0;
+}
+
 /* Sketch 011 decision 50 A (Mark, 2026-10-05): the Batch head is the Tasting
    head's fold row. Correct and Record another follow the date 32px later, on
    the row's line. :has(.fold-row) keeps the pen and no-batch heads on
@@ -1898,17 +1932,6 @@
    combinator keeps the cue, which sits inside the head, out of it. */
 .notebook-log .mo-group > .segmented-field__caption {
   margin-bottom: var(--gap-xs);
-}
-
-/* The Tasting head after At draw and Exit consistency, Airiness. */
-.notebook-log .mo-end {
-  margin-top: var(--gap-l);
-}
-
-/* A head gives 18 to its first row, the Batch head row's gap, here under the
-   Tasting head (quick 261025-f8o, item 6). */
-.notebook-log .tasting-head {
-  margin-bottom: var(--app-notebook-log-group-gap);
 }
 
 .notebook-log .note-block + .mo-group,

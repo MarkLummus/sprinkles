@@ -453,7 +453,8 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
 describe('BatchRow — the tasting section, hidden until added (D-01, contract "Settled defaults")', () => {
   it('renders no tasting section at all on a fresh record pen', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
-    expect(markup).not.toContain('tasting-head');
+    expect(markup).not.toContain('batch-row__head--tasting');
+    expect(markup).not.toContain('<section aria-label="Tasting">');
     expect(markup).not.toContain('tasting-field-row');
     expect(markup).not.toContain('note-block');
     expect(markup).not.toContain('>Tasting<');
@@ -467,7 +468,7 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
     });
-    const headIndex = markup.indexOf('tasting-head');
+    const headIndex = markup.indexOf('batch-row__head--tasting');
     const tastedIndex = markup.indexOf('<span class="pen-caption">Tasted</span>');
     const temperingIndex = markup.indexOf('Tempering');
     const tastingTempIndex = markup.indexOf('Tasting temperature');
@@ -483,11 +484,22 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
     expect(ceremonyIndex).toBeGreaterThan(eyebrowIndex);
   });
 
-  it('renders a bare "Tasting" region-name heading, with no residual helper spans (sketch 007 line 243; G-03.3.1-4; UAT items 6, 18)', () => {
+  it('renders Tasting as a region, a peer of Batch: one section whose first child is the Batch head\'s grammar, an h2 name then the status line, then the acts (decide-p10-tasting-gate)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    expect(markup).toMatch(/<h3 class="region-name">Tasting<\/h3>/);
+    expect(markup.split('<section aria-label="Tasting">').length - 1).toBe(1);
+    expect(markup).toContain(
+      '<section aria-label="Tasting"><div class="batch-row__head batch-row__head--tasting"><div class="batch-row__head-lead"><h2 class="region-name">Tasting</h2><p class="tasting-status pen-helper" role="status" aria-live="polite">',
+    );
+    expect(markup).toMatch(/<\/p><\/div><div class="batch-row__head-acts"><button type="button" class="text-control"[^>]*>Remove tasting<\/button><\/div><\/div>/);
     expect(markup).not.toContain('tasting-head__helper');
     expect(markup).not.toContain('— leave anything you did not record blank');
+  });
+
+  it('draws no h3 Tasting and none of the retired head or seam classes in the pen', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).not.toMatch(/<h3 class="region-name">/);
+    expect(markup).not.toContain('tasting-head');
+    expect(markup).not.toContain('mo-end');
   });
 
   it('renders the Remove tasting control, verbatim — the hidden-mode label only (Pitfall 6, contract "DOM order inventory")', () => {
@@ -498,7 +510,7 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
 
   it('renders Tempering only inside the tasting section, never the churn section (contract "Where sources disagree" § 1)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    const headIndex = markup.indexOf('tasting-head');
+    const headIndex = markup.indexOf('batch-row__head--tasting');
     const firstTemperingIndex = markup.indexOf('Tempering');
     expect(firstTemperingIndex).toBeGreaterThan(headIndex);
     const churnSectionMarkup = markup.slice(0, headIndex);
@@ -604,18 +616,20 @@ describe('BatchRow — the tasting-status channel and the Remove/undo head slot 
     expect(removeIndex).toBeGreaterThan(undoIndex);
   });
 
-  it('renders Remove tasting as a right-aligned text control, the last child of the tasting head (sketch 007 line 246)', () => {
+  it('renders Remove tasting in the head\'s acts, flush right, after the status line (decide-p10-tasting-gate; the Batch head\'s acts)', () => {
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
       tastingStatus: 'Some status',
     });
     expect(markup).toMatch(
-      /<button type="button" class="text-control tasting-head__remove"[^>]*>Remove tasting<\/button>/,
+      /<div class="batch-row__head-acts"><button type="button" class="text-control"[^>]*>Remove tasting<\/button><\/div>/,
     );
     const statusIndex = markup.indexOf('class="tasting-status pen-helper"');
-    const removeIndex = markup.indexOf('class="text-control tasting-head__remove"');
-    expect(removeIndex).toBeGreaterThan(statusIndex);
+    const actsIndex = markup.indexOf('class="batch-row__head-acts"', statusIndex);
+    const removeIndex = markup.indexOf('>Remove tasting<');
+    expect(actsIndex).toBeGreaterThan(statusIndex);
+    expect(removeIndex).toBeGreaterThan(actsIndex);
   });
 });
 
@@ -836,13 +850,13 @@ describe("BatchRow — the record pen's cut at 724 (sketch 011 decision 28)", ()
 });
 
 describe("BatchRow — the record pen's outline never skips a level (decide-p10-log-ladder-r2 revised-h3-r2, decide-p10-any-problems-level-r2; quick 261025-f8n)", () => {
-  it('lists h2 Batch, the h3 cues and Tasting, then Any problems? with an h4 caption for each of its two groups', () => {
+  it('lists h2 Batch and its h3 cue, h2 Tasting and its h3 cues, then Any problems? with an h4 caption for each of its two groups', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     const outline = [...markup.matchAll(/<h([2-6])[^>]*>(.*?)<\/h\1>/g)].map((match) => `h${match[1]} ${match[2].replace(/<[^>]*>/g, '')}`);
     expect(outline).toEqual([
       'h2 Batch',
       'h3 At draw',
-      'h3 Tasting',
+      'h2 Tasting',
       'h3 From freezer',
       'h3 Every recipe',
       'h3 This recipe only',
@@ -1711,12 +1725,12 @@ describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 
     expect(markup.split('aria-label="Tasting"').length - 1).toBe(1);
   });
 
-  it('keeps the record pen\'s own Tasting head an h3 inside .tasting-head (G-03.5-8d names the reading only)', () => {
+  it('makes the record pen\'s Tasting head an h2 inside section[aria-label="Tasting"], as the reading\'s is (decide-p10-tasting-gate)', () => {
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
     });
-    expect(markup).toMatch(/<div class="mo-end tasting-head"><h3 class="region-name">Tasting<\/h3>/);
+    expect(markup).toMatch(/<section aria-label="Tasting"><div class="batch-row__head batch-row__head--tasting"><div class="batch-row__head-lead"><h2 class="region-name">Tasting<\/h2>/);
   });
 });
 
@@ -2037,14 +2051,14 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
   });
 
   // The in-page detector's skipped-heading, critique P3, Mark 2026-10-22.
-  it('G10: the heading outline steps one level at a time: Tasting h2, the group names and Any problems? h3, the problem names h4; the record pen keeps Batch h2, Tasting h3 (critique P3, Mark 2026-10-22)', () => {
+  it('G10: the heading outline steps one level at a time: Tasting h2, the group names and Any problems? h3, the problem names h4; the record pen keeps Batch h2 and Tasting h2, a peer region (critique P3, Mark 2026-10-22; decide-p10-tasting-gate)', () => {
     const outline = (markup) => [...markup.matchAll(/<h([1-6])[\s>]/g)].map((m) => Number(m[1]));
     expect(outline(renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' }))).toEqual([2, 2, 3, 3, 3, 4, 3]);
     expect(outline(withTasting({ marks: allSix, defects: ['Coarse, icy'] }))).toEqual([2, 2, 3, 3, 3, 4, 4, 3]);
     expect(outline(withTasting({ marks: {}, defects: ['Coarse, icy'] }))).toEqual([2, 2, 3, 4, 4, 3]);
     expect(
       outline(renderBatchRow({ openPen: 'record', mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } })),
-    ).toEqual([2, 3, 3, 3, 3, 3, 3, 4, 4]);
+    ).toEqual([2, 3, 2, 3, 3, 3, 3, 4, 4]);
   });
 });
 
@@ -2457,7 +2471,7 @@ describe('BatchRow — the open Tasting section in the approved order, and From 
       return index;
     };
     const order = [
-      at('<h3 class="region-name">Tasting</h3>'),
+      at('<h2 class="region-name">Tasting</h2>'),
       at('<span class="pen-caption">Tasted</span>'),
       at('aria-label="Tempering, minutes"'),
       at('aria-label="Tasting temperature, degrees Celsius"'),

@@ -381,7 +381,7 @@ async function openCorrectPen(page) {
 
 async function addTasting(page) {
   await button(ceremony(page), 'Add tasting').click();
-  await page.waitForSelector('.tasting-head');
+  await page.waitForSelector('.batch-margin--pen .batch-row__head--tasting');
 }
 
 async function markAxis(page, axisName, stop) {
@@ -768,7 +768,7 @@ SCENARIOS.push([
     const seeded = fieldValue(opened.snapshot, 'Tasting temperature');
     walk.expect(Boolean(seeded), `the seeded tasting temperature shows in the pen (${seeded})`);
 
-    await page.locator('.tasting-head__remove').click();
+    await button(page, 'Remove tasting').click();
     const removed = await walk.step('tasting-removed');
     walk.expect(removed.snapshot.recordStatus === 'Tasting removed. You can restore it.', `the record status reads the removal words (${removed.snapshot.recordStatus})`);
     walk.expect(hasButton(removed.snapshot, 'Restore tasting'), 'a Restore tasting button is present');
@@ -779,7 +779,7 @@ SCENARIOS.push([
     walk.expect(restored.snapshot.tastingStatus === 'Tasting restored.', `the tasting status reads the restore words (${restored.snapshot.tastingStatus})`);
     walk.expect(fieldValue(restored.snapshot, 'Tasting temperature') === seeded, 'the tasting temperature holds its seeded value again');
 
-    await page.locator('.tasting-head__remove').click();
+    await button(page, 'Remove tasting').click();
     await walk.step('tasting-removed-again');
     await page.fill(CHURN_DURATION, '33');
     const churnEdited = await walk.step('churn-field-edited-after-removal');

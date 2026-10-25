@@ -591,6 +591,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 188 | The page notice as the ink card (decide-notice-card-palette ink; bug-notice-card-ground-too-close-to-sheet) | 2026-10-25 | 116d259c | — |
 | 261025-f8n | The log column's ladder: revised four levels with the cues as h3, Any problems? a cue, picked problems as content, the card head dropped (quick-batch 261025-f8m) | 2026-10-25 | 9529ff18 | .planning/quick/261025-f8n-task-1-the-log-column-s-ladder-ladder-proposal-the-proposal |
 | 261025-f8o | The pen's rhythm change set, controls at 14, (Not recorded) out of the pen, flex-end captions, 18 under every head, the Why blank caption (quick-batch 261025-f8m) | 2026-10-25 | 9fc80b1d | .planning/quick/261025-f8o-task-2-the-pen-s-rhythm-batch-route-proposal-the-change-set |
+| 261025-f8p | Tasting as a peer region of Batch in the record pen, Temperature, and the churn trio on one line with the date field at 120 (quick-batch 261025-f8m) | 2026-10-25 | c1774112 | .planning/quick/261025-f8p-task-3-tasting-as-a-peer-region-of-batch-temperature-and-the |
 
 ### Roadmap Evolution
 

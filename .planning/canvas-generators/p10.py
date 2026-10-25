@@ -21,6 +21,9 @@ LADDER = importlib.import_module('p-ladder')      # revision 2a's faces and spac
 #   stands beside Name (.mk-caprow). P10_Notebook, P10_Picker and P10_Style are regenerated unchanged by this and not republished.
 # 2026-10-25, later (the record-keeping set after the build, quick 261025-f8n): Targets keeps 12 above and 12 below as built (the 6 under it, LADDER_P10's margin-bottom, is gone: the
 #   executor did not port it, "Nothing moves", and the app reads 12 / 12 at 1366 on the 4173 preview). P10_Editor and P10_Style republished with it (STAMP4); P10_Scales draws no Targets and is not republished.
+# 2026-10-25, later still (Mark's todo of 2026-10-25, approved: "move the Add ingredient link to the heading row like Add step"): Add ingredient sits on the Ingredients heading's row in
+#   the same look (head_row), not under the table; while the picker is open the control goes, as New recipe goes while its entry is open (P10_Notebook) and the picker's own Cancel closes it.
+#   P10_Editor and P10_Picker republished with it (STAMP7, STAMP8; look-p11-steps-r3). Add scale and Add problem keep .mk-add-row: the log column's regions have no fold head.
 # 2026-10-18: boards P10_Editor and P10_Style are 1366 only (Mark does not create recipes on an iPhone); P10_Notebook, P10_Picker and P10_Scales keep their 393 panels, not redrawn.
 # The editor is the recipe page's pen with no parent (Phase 8's split RecipePage, a `creating` mode with no baseline). Every panel is the built app's own shell and markup (p10-capture.json: WebKit, a scratch
 # profile holding a stand-in recipe, 1366 and 393, both with a coarse pointer) with the app's own tokens.css, app.css, notebook.css and shell.css, their @media resolved at the panel's width and pointer.
@@ -157,9 +160,15 @@ def headnote_html(title, desc):
     p = f'<p class="headnote__prose">{esc(desc)}</p>' if desc else ''
     return f'<div class="recipe-band"><header class="headnote"><h1>{esc(title)}</h1>{p}</header></div>'
 
-def head_row(name, act):
-    """The region heading with its add control on the row (Mark, 2026-10-25): the Sheet's fold head look, the control after the heading at the rail gap."""
-    return f'<div class="mk-head-row"><h2 class="region-name">{esc(name)}</h2><button type="button" class="text-control mk-head-act" tabindex="0">{esc(act)}</button></div>'
+def head_row(name, act=None):
+    """The region heading with its add control on the row (Mark, 2026-10-25): the Sheet's fold head look, the control after the heading at the rail gap. act=None: the heading alone on the row (the control is away while its entry is open)."""
+    b = f'<button type="button" class="text-control mk-head-act" tabindex="0">{esc(act)}</button>' if act else ''
+    return f'<div class="mk-head-row"><h2 class="region-name">{esc(name)}</h2>{b}</div>'
+ING_H2 = '<h2 class="region-name">Ingredients</h2>'
+def ingredients_head(h, picker_open=False):
+    """Add ingredient on the Ingredients heading's row (Mark, 2026-10-25, approved todo), gone while the picker is open."""
+    assert h.count(ING_H2) == 1
+    return h.replace(ING_H2, head_row('Ingredients', None if picker_open else 'Add ingredient'), 1)
 
 def before_html(notes):
     items = ''.join(f'<li><span class="authored__note-field">{textarea("beforeYouStart note %d" % (i + 1), t)}<button type="button" class="text-control" tabindex="0">remove</button></span></li>' for i, t in enumerate(notes))
@@ -177,8 +186,8 @@ def ingredients_html(state, W, picker='', focus_last=False, blank_last=False):
         new = re.sub(r' value="[^"]*"', ' value=""', tag)
         if focus_last: new = new.replace('class="ink-field"', 'class="ink-field mk-focus"')
         h = h[:idx] + new + h[end + 1:]
-    add = '' if picker else '<p class="mk-add-row"><button type="button" class="text-control mk-add" tabindex="0">Add ingredient</button></p>'
-    return h.replace('</section>', add + picker + '</section>', 1) if h.rstrip().endswith('</section>') else h + add + picker
+    h = ingredients_head(h, picker_open=bool(picker))      # 2026-10-25: Add ingredient on the heading's row, away while the picker is open
+    return h.replace('</section>', picker + '</section>', 1) if h.rstrip().endswith('</section>') else h + picker
 
 def side_html(state, W):
     s = cap(state, W, 'sheet'); i = s.index('<div class="side-region"'); return pod40.rescale(s[i:s.rindex('</article>')], 40)[0]   # 2026-10-18: the Sweetness rule runs 0 to 40 for every recipe (decide-p10-pod-rule-end, README D30)
@@ -365,6 +374,8 @@ STAMP3 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card 
 STAMP4 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card head dropped, Targets 12 above and 12 below as built; look-p10-ladder-redraw)'
 STAMP5 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card head dropped, Targets 12 / 12 as built, and Add note on the Before you start heading\'s row; look-p11-steps-r2)'
 STAMP6 = ' (redrawn 2026-10-25: Add note on the Before you start heading\'s row; look-p11-steps-r2)'
+STAMP7 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card head dropped, Targets 12 / 12 as built, Add note and Add ingredient on their heading\'s row; look-p11-steps-r3)'
+STAMP8 = ' (redrawn 2026-10-25: Add note and Add ingredient on their heading\'s row, the control away while the picker is open; look-p11-steps-r3)'
 SAMPLE_NOTES = ['Chill the mix overnight before churning.', 'Keep the cream cold until it goes in.']
 SAMPLE_DESC = 'Plain and cold.'
 
@@ -389,8 +400,8 @@ def build_boards(out):
     def editor(W, vid, state, name, desc, notes, **kw):
         sh = sheet_html(state, W, name, desc, notes, balance=(state != 'empty'), **kw)
         return shell_main(W, page_html(band_html(name, desc, vid=vid), sh, log_html(style_region('Philadelphia', BANDS['Philadelphia'], STYLE_TEMP['Philadelphia'] if W == 1366 else None) if state != 'empty' else style_region(None, {}, '' if W == 1366 else None), scales_region([scale_card(1, 'Creaminess', 'thin', 'rich', KINDS[0])] if state != 'empty' else [], add=True), problems_region([problem_row(1, 'Bitter')] if state != 'empty' else []))), vid)
-    r1 = [dict(pid='eA1', W=1366, html=editor(1366, 'eA1', 'empty', 'Vanilla', '', []), cap='The editor at 1366 · just arrived from New recipe (a name, nothing else)', sub='no Instructions section yet; no Balance until a row exists; every region of the log column is empty and reads as it is; Add note on the Before you start heading\'s row, as the Show/Hide control sits (Mark, 2026-10-25; the app follows in Phase 11)')]
-    r2 = [dict(pid='eB1', W=1366, html=editor(1366, 'eB1', 'phil', 'Vanilla', SAMPLE_DESC, SAMPLE_NOTES), cap='The editor at 1366 · worked on', sub='description once, five rows with grams, the live Balance, a style, one scale, one problem; Add note on the heading\'s row (Mark, 2026-10-25)')]
+    r1 = [dict(pid='eA1', W=1366, html=editor(1366, 'eA1', 'empty', 'Vanilla', '', []), cap='The editor at 1366 · just arrived from New recipe (a name, nothing else)', sub='no Instructions section yet; no Balance until a row exists; every region of the log column is empty and reads as it is; Add note and Add ingredient on their heading\'s row, as the Show/Hide control sits (Mark, 2026-10-25; the app follows in Phase 11)')]
+    r2 = [dict(pid='eB1', W=1366, html=editor(1366, 'eB1', 'phil', 'Vanilla', SAMPLE_DESC, SAMPLE_NOTES), cap='The editor at 1366 · worked on', sub='description once, five rows with grams, the live Balance, a style, one scale, one problem; Add note and Add ingredient on their heading\'s row (Mark, 2026-10-25)')]
 
     # ---- helpers for the cropped boards
     def sheet_only(W, vid, state, name=None, desc=SAMPLE_DESC, notes=SAMPLE_NOTES, **kw):
@@ -406,20 +417,20 @@ def build_boards(out):
     r3 = [dict(sc(1366, 'eC1', 'phil'), cap='Remove · before · 1366', sub='five rows; the link beside Skim milk powder is "remove"'),
           dict(sc(1366, 'eC2', 'less'), cap='Remove · after · 1366', sub='the row is deleted outright; every figure follows, and the Balance says where Milk solids now stands against its band')]
     parts, bw, bh = flow([r1, r2, r3]); sizes['P10_Editor'] = (bw, bh)
-    board('P10_Editor', 'Creation editor · the recipe page with no parent and no Save, at 1366' + STAMP5, bw, bh, parts, out)
+    board('P10_Editor', 'Creation editor · the recipe page with no parent and no Save, at 1366' + STAMP7, bw, bh, parts, out)
 
     # ======== P10_Picker
     added2 = ('wholeMilk', 'heavyCream')
-    r1 = [dict(sc(1366, 'kA1', 'two', picker=picker_html(added=added2)), h_fixed=1200, cap='Add ingredient · open · 1366', sub='opens under the table and pushes what follows; the same Name and Category fields as the Ingredients place, the list scrolls inside the box (six rows high); an ingredient already in the recipe reads Added'),
+    r1 = [dict(sc(1366, 'kA1', 'two', picker=picker_html(added=added2)), h_fixed=1200, cap='Add ingredient · open · 1366', sub='opens under the table and pushes what follows; Add ingredient on the Ingredients heading\'s row goes while the picker is open, as New recipe goes while its entry is open, and the picker\'s Cancel closes it (Mark, 2026-10-25); the same Name and Category fields as the Ingredients place, the list scrolls inside the box (six rows high); an ingredient already in the recipe reads Added'),
           dict(sc(1366, 'kA2', 'two', picker=picker_html(name='milk', added=added2)), h_fixed=1200, cap='Name typed: milk · 1366', sub='the same match as the place: the name contains the letters, any case; 5 of 26')]
     r2 = [dict(sc(1366, 'kB1', 'two', picker=picker_html(name='tonka', none=True)), h_fixed=1000, cap='Not in the library yet · 1366', sub='nothing is added and nothing can be typed in as a row; Clear filters is the way back'),
-          dict(sc(1366, 'kB2', 'three', focus_last=True), h_fixed=900, cap='After choosing Sucrose · 1366', sub='the picker closes, the row lands last at 0 g with its grams field empty and focused, and the Balance has moved')]
+          dict(sc(1366, 'kB2', 'three', focus_last=True), h_fixed=900, cap='After choosing Sucrose · 1366', sub='the picker closes and Add ingredient is back on the heading\'s row; the row lands last at 0 g with its grams field empty and focused, and the Balance has moved')]
     r3 = [dict(sc(393, 'kC1', 'two', picker=picker_html(added=added2)), cap='Open · 393', sub=''),
           dict(sc(393, 'kC2', 'two', picker=picker_html(name='milk', added=added2)), cap='Name typed: milk · 393', sub=''),
           dict(sc(393, 'kC3', 'two', picker=picker_html(name='tonka', none=True)), cap='Not in the library yet · 393', sub=''),
           dict(sc(393, 'kC4', 'three', focus_last=True), cap='After choosing · 393', sub='')]
     parts, bw, bh = flow([r1, r2, r3]); sizes['P10_Picker'] = (bw, bh)
-    board('P10_Picker', 'Ingredient picker · open under the table, "Not in the library yet", and the row it adds, at 1366 and 393' + STAMP6, bw, bh, parts, out)
+    board('P10_Picker', 'Ingredient picker · open under the table, "Not in the library yet", and the row it adds, at 1366 and 393' + STAMP8, bw, bh, parts, out)
 
     # ======== P10_Scales
     LG = lambda W, pid, *regs: dict(trim=40 if W == 1366 else 0, pid=pid, W=W, html=log_only(W, pid, *regs), w=366 if W == 1366 else 393, x0=LOGX if W == 1366 else 0)
@@ -475,7 +486,7 @@ if __name__ == '__main__':
         titles = {'P10_Notebook': 'Notebook · New recipe, its same-name warning and Resume, at 1366 and 393', 'P10_Editor': 'Creation editor · the recipe page with no parent and no Save, at 1366',
                   'P10_Picker': 'Ingredient picker · open under the table, "Not in the library yet", and the row it adds, at 1366 and 393', 'P10_Scales': "Authoring scales and problems · each scale's kind, 0 to 2 of each, at 1366 and 393",
                   'P10_Style': "Choosing a style · on a menu, the four styles' approved balance bands, edited or left blank, at 1366"}
-        STAMPS = {'P10_Editor': STAMP5, 'P10_Picker': STAMP6, 'P10_Style': STAMP4, 'P10_Scales': STAMP3, 'P10_Notebook': STAMP}; x = 0
+        STAMPS = {'P10_Editor': STAMP7, 'P10_Picker': STAMP8, 'P10_Style': STAMP4, 'P10_Scales': STAMP3, 'P10_Notebook': STAMP}; x = 0
         ONLY = sys.argv[3].split(',') if len(sys.argv) > 3 else None      # Sid, 2026-10-25: write only these boards' frames and titles into the index (the others are not republished)
         for gone in ('P10_Machine.dc.html',):      # retired 2026-10-18: drop the board from a canvas.json that still has it
             B.pop(gone, None)

@@ -421,18 +421,31 @@
 }
 
 /* The Scales and Problems regions (Phase 10, sketch 013
-   scales-and-problems.html), ported from the board's own rules like the Style
-   region above: the cue lines, the core names, a card and its head, the
-   paired end words and the stops line. */
+   scales-and-problems.html, P10_Scales on the canvas), ported from the board's
+   own rules like the Style region above: the cue lines, the core names, a card
+   whose first row holds Name and remove, the paired end words and the stops
+   line. The spacing is the log's scale (quick 261025-f8n): inside the 12-gap
+   .mk-body a cue after a group takes 32 above, 6 under it and 12 to its card;
+   the first cue keeps the head row's 18, and Targets keeps 12 and 12
+   (decide-p10-log-ladder-r2). */
 .notebook .mk-cue {
+  margin: var(--gap-m) 0 calc(var(--gap-xs) - var(--gap-s));
+}
+
+.notebook .mk-body > .mk-cue:first-child {
+  margin-top: 0;
+}
+
+.notebook .mk-cue-targets {
   margin: 0;
 }
 
+/* The core names are content, 14 on the 20px line (decide-p10-log-figure-face). */
 .notebook .mk-core {
   margin: 0;
   font-family: var(--face-grotesk);
-  font-size: var(--app-notebook-size-body);
-  line-height: var(--app-notebook-desc-leading);
+  font-size: var(--app-size-meta);
+  line-height: var(--app-notebook-pen-cue-line-h);
   color: var(--app-text);
 }
 
@@ -453,13 +466,19 @@
 .notebook .mk-cue + .mk-card {
   border-top: none;
   padding-top: 0;
+  margin-top: calc(var(--gap-s) - var(--gap-xs));
 }
 
-.notebook .mk-card__head {
+/* The card has no head: its first row is the Name field with remove beside it,
+   12 apart, bottoms aligned (decide-p10-card-head). */
+.notebook .mk-caprow {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  column-gap: var(--gap-m);
+  align-items: flex-end;
+  column-gap: var(--gap-s);
+}
+
+.notebook .mk-caprow .notebook-field {
+  flex: 1 1 auto;
 }
 
 .notebook .mk-stops {
@@ -1164,8 +1183,20 @@
   width: auto;
 }
 
+/* The log's region names are the ladder's first level: 14, 600, caps, tracked,
+   secondary (the Log Ladder Rule; decide-p10-log-ladder-r2, quick 261025-f8n,
+   .impeccable/proposals/2026-10-21-log-column-ladder.md). The fold rows in the
+   reading inherit the h2's font, so the Batch and Tasting labels follow. */
 .notebook-log .batch-row .region-name,
-.notebook-log .tasting-reading .region-name,
+.notebook-log .tasting-reading .region-name {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-secondary);
+}
+
 .notebook-log .batch-row__group-label {
   font-family: var(--face-grotesk);
   font-size: var(--app-size-label);
@@ -1385,7 +1416,20 @@
   border-top-color: var(--app-divider);
 }
 
+/* The one caption face in the log: 12, 600, caps, tracked, secondary, a tag
+   outside the level sequence (decide-p10-caption-level, quick 261025-f8n). The
+   axis name reads it too, which reopens sketch 007's ink axis name as the
+   proposal says. The cue rule below comes after both and wins at equal
+   specificity. */
 .notebook-log .pen-caption {
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
+  color: var(--app-text-secondary);
+}
+
+.notebook-log .axis-mark__name {
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
   color: var(--app-text-secondary);
 }
 
@@ -1468,7 +1512,9 @@
    stacked one only (from 1366, and below 724). The defects head's margin is
    scoped to the stacked grid because the wide grid's 20px row gap would
    bring it to 0. record-pen-cues.html is the board. */
-.notebook-log .axes-cue {
+.notebook-log .axes-cue,
+.notebook-log .mk-cue,
+.notebook-log .mk-cue-targets {
   font-size: var(--app-size-meta);
   font-weight: 600;
   text-transform: none;

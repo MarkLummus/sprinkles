@@ -145,12 +145,18 @@
   --sheet-size-ink-field: 0.9375rem;
 
   /* The record pen's field widths (sketch 007 @ 2a212be lines 41 + 43;
-     03.3.1.1 D-13 as amended by D-01/D-22): a date field reads at 128px,
-     the width its own input actually needs; a numeric field reads at
+     03.3.1.1 D-13 as amended by D-01/D-22): a date field reads at 120px
+     app-wide (Mark, 2026-10-25, decide-p10-churn-trio; the ladder
+     proposal's section "Mark's request (2026-10-25): the churn trio on
+     one line"; it was 128), so Churned, Out of machine and Duration, and
+     Tasted, Tempering and Temperature, each stand on one line in the
+     350px log column. WebKit's intrinsic box for a 16px date input is
+     109.3, so 120 keeps 10px of air; the iPad's own date control is
+     device-unverified. A numeric field reads at
      56px beside its unit word — "48px clipped '−12.5' and '120.5'; 56px
      holds both" (the sketch's own comment, measured 2026-09-14). The
      live HTML supersedes D-13's literal 48px call, per D-01. */
-  --sheet-field-w-date: 128px;
+  --sheet-field-w-date: 120px;
   --sheet-field-w-figure: 56px;
   /* The gap between a figure box and its unit word (007 line 42). */
   --gap-field-unit: 4px;

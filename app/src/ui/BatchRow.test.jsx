@@ -349,18 +349,18 @@ describe('BatchRow — the upright batch list at two or more batches (decision 1
 });
 
 describe('BatchRow — the record and amend ceremony, the battery\'s churn section (D-01, contract "DOM order inventory")', () => {
-  it('renders the churn section in the pen order: Churn date, Out of machine, Churn duration, At the machine, Ingredient notes, At draw, Exit consistency, Airiness (estimated), then the shared Next time, then ceremony A (sketch 010 CONTRACT section 7)', () => {
+  it('renders the churn section in the pen order: Churned, Out of machine, Duration, At the machine, Ingredient notes, At draw, Exit consistency, Airiness (estimated), then the shared Next time, then ceremony A (sketch 010 CONTRACT section 7)', () => {
     const markup = renderBatchRow({
       openPen: 'record',
       mode: 'recording',
       draft: { ...emptyRecordDraft, churnDate: '2026-08-09' },
     });
     expect(markup).toMatch(
-      /<label class="field-row__label field-row__label--date"><span class="pen-caption">Churn date<\/span><input[^>]*type="date"[^>]*class="ink-field"[^>]*value="2026-08-09"/,
+      /<label class="field-row__label field-row__label--date"><span class="pen-caption">Churned<\/span><input[^>]*type="date"[^>]*class="ink-field"[^>]*value="2026-08-09"/,
     );
-    const churnDateIndex = markup.indexOf('<span class="pen-caption">Churn date</span>');
+    const churnDateIndex = markup.indexOf('<span class="pen-caption">Churned</span>');
     const outOfMachineIndex = markup.indexOf('Out of machine');
-    const churnDurationIndex = markup.indexOf('Churn duration');
+    const churnDurationIndex = markup.indexOf('Duration');
     const atTheMachineIndex = markup.indexOf('aria-label="At the machine"');
     const ingredientNotesIndex = markup.indexOf('aria-label="Ingredient notes"');
     const atDrawIndex = markup.indexOf('data-mo="atdraw"');
@@ -402,9 +402,9 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
       draft: emptyRecordDraft,
     });
     expect(markup).toMatch(
-      /<span class="pen-caption">Churn duration<\/span><span class="field-unit"><input[^>]*aria-label="Churn duration, minutes"[^>]*\/><span class="field-unit__unit">min<\/span><\/span>/,
+      /<span class="pen-caption">Duration<\/span><span class="field-unit"><input[^>]*aria-label="Duration, minutes"[^>]*\/><span class="field-unit__unit">min<\/span><\/span>/,
     );
-    expect(markup).not.toContain('Churn duration, min<');
+    expect(markup).not.toContain('Duration, min<');
   });
 
   it('renders the churn row as one field row holding the date label and the two measured labels (sketch 007 lines 210-216)', () => {
@@ -414,7 +414,7 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
       draft: emptyRecordDraft,
     });
     const fieldRowIndex = markup.indexOf('<div class="field-row">');
-    const churnDateCaptionIndex = markup.indexOf('<span class="pen-caption">Churn date</span>');
+    const churnDateCaptionIndex = markup.indexOf('<span class="pen-caption">Churned</span>');
     const atTheMachineIndex = markup.indexOf('<span class="pen-caption">At the machine</span>');
     expect(fieldRowIndex).toBeGreaterThanOrEqual(0);
     expect(fieldRowIndex).toBeLessThan(churnDateCaptionIndex);
@@ -429,7 +429,7 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
       mode: 'recording',
       draft: { ...emptyRecordDraft, churnDate: '2026-08-02' },
     });
-    expect(markup).toMatch(/<span class="pen-caption">Churn date<\/span><input[^>]*type="date"[^>]*value="2026-08-02"/);
+    expect(markup).toMatch(/<span class="pen-caption">Churned<\/span><input[^>]*type="date"[^>]*value="2026-08-02"/);
     expect(markup).toContain('class="save-ceremony"');
     expect(markup).toContain('Save batch');
   });
@@ -453,12 +453,13 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
 describe('BatchRow — the tasting section, hidden until added (D-01, contract "Settled defaults")', () => {
   it('renders no tasting section at all on a fresh record pen', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
-    expect(markup).not.toContain('tasting-head');
+    expect(markup).not.toContain('batch-row__head--tasting');
+    expect(markup).not.toContain('<section aria-label="Tasting">');
     expect(markup).not.toContain('tasting-field-row');
     expect(markup).not.toContain('note-block');
     expect(markup).not.toContain('>Tasting<');
     expect(markup).not.toContain('Tempering');
-    expect(markup).not.toContain('Tasting temperature');
+    expect(markup).not.toContain('Temperature');
     expect(markup).not.toContain('How did it turn out?');
   });
 
@@ -467,10 +468,10 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
     });
-    const headIndex = markup.indexOf('tasting-head');
+    const headIndex = markup.indexOf('batch-row__head--tasting');
     const tastedIndex = markup.indexOf('<span class="pen-caption">Tasted</span>');
     const temperingIndex = markup.indexOf('Tempering');
-    const tastingTempIndex = markup.indexOf('Tasting temperature');
+    const tastingTempIndex = markup.indexOf('Temperature');
     const noteIndex = markup.indexOf('note-block');
     const eyebrowIndex = markup.indexOf('How did it turn out?');
     const ceremonyIndex = markup.indexOf('class="save-ceremony"');
@@ -483,11 +484,22 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
     expect(ceremonyIndex).toBeGreaterThan(eyebrowIndex);
   });
 
-  it('renders a bare "Tasting" region-name heading, with no residual helper spans (sketch 007 line 243; G-03.3.1-4; UAT items 6, 18)', () => {
+  it('renders Tasting as a region, a peer of Batch: one section whose first child is the Batch head\'s grammar, an h2 name then the status line, then the acts (decide-p10-tasting-gate)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    expect(markup).toMatch(/<h3 class="region-name">Tasting<\/h3>/);
+    expect(markup.split('<section aria-label="Tasting">').length - 1).toBe(1);
+    expect(markup).toContain(
+      '<section aria-label="Tasting"><div class="batch-row__head batch-row__head--tasting"><div class="batch-row__head-lead"><h2 class="region-name">Tasting</h2><p class="tasting-status pen-helper" role="status" aria-live="polite">',
+    );
+    expect(markup).toMatch(/<\/p><\/div><div class="batch-row__head-acts"><button type="button" class="text-control"[^>]*>Remove tasting<\/button><\/div><\/div>/);
     expect(markup).not.toContain('tasting-head__helper');
     expect(markup).not.toContain('— leave anything you did not record blank');
+  });
+
+  it('draws no h3 Tasting and none of the retired head or seam classes in the pen', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).not.toMatch(/<h3 class="region-name">/);
+    expect(markup).not.toContain('tasting-head');
+    expect(markup).not.toContain('mo-end');
   });
 
   it('renders the Remove tasting control, verbatim — the hidden-mode label only (Pitfall 6, contract "DOM order inventory")', () => {
@@ -498,7 +510,7 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
 
   it('renders Tempering only inside the tasting section, never the churn section (contract "Where sources disagree" § 1)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    const headIndex = markup.indexOf('tasting-head');
+    const headIndex = markup.indexOf('batch-row__head--tasting');
     const firstTemperingIndex = markup.indexOf('Tempering');
     expect(firstTemperingIndex).toBeGreaterThan(headIndex);
     const churnSectionMarkup = markup.slice(0, headIndex);
@@ -528,20 +540,20 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
     expect(noteClass('Soft set')).not.toContain('app-hand');
   });
 
-  it('renders the Tasted date input, and Tempering/Tasting temperature as measured fields with their own units', () => {
+  it('renders the Tasted date input, and Tempering/Temperature as measured fields with their own units', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     expect(markup).toMatch(
       /<label class="field-row__label field-row__label--date"><span class="pen-caption">Tasted<\/span><input[^>]*type="date"/,
     );
     expect(markup).toContain('aria-label="Tempering, minutes"');
-    expect(markup).toContain('aria-label="Tasting temperature, degrees Celsius"');
+    expect(markup).toContain('aria-label="Temperature, degrees Celsius"');
   });
 
-  it('renders the tasting row as one field row: the Tasted date label first, then Tempering and Tasting temperature, before the note (sketch 007 lines 249-253)', () => {
+  it('renders the tasting row as one field row: the Tasted date label first, then Tempering and Temperature, before the note (sketch 007 lines 249-253)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     const tastedIndex = markup.indexOf('<span class="pen-caption">Tasted</span>');
     const temperingIndex = markup.indexOf('Tempering');
-    const tastingTempIndex = markup.indexOf('Tasting temperature');
+    const tastingTempIndex = markup.indexOf('Temperature');
     const eyebrowIndex = markup.indexOf('How did it turn out?');
     expect(tastedIndex).toBeGreaterThanOrEqual(0);
     expect(temperingIndex).toBeGreaterThan(tastedIndex);
@@ -604,18 +616,20 @@ describe('BatchRow — the tasting-status channel and the Remove/undo head slot 
     expect(removeIndex).toBeGreaterThan(undoIndex);
   });
 
-  it('renders Remove tasting as a right-aligned text control, the last child of the tasting head (sketch 007 line 246)', () => {
+  it('renders Remove tasting in the head\'s acts, flush right, after the status line (decide-p10-tasting-gate; the Batch head\'s acts)', () => {
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
       tastingStatus: 'Some status',
     });
     expect(markup).toMatch(
-      /<button type="button" class="text-control tasting-head__remove"[^>]*>Remove tasting<\/button>/,
+      /<div class="batch-row__head-acts"><button type="button" class="text-control"[^>]*>Remove tasting<\/button><\/div>/,
     );
     const statusIndex = markup.indexOf('class="tasting-status pen-helper"');
-    const removeIndex = markup.indexOf('class="text-control tasting-head__remove"');
-    expect(removeIndex).toBeGreaterThan(statusIndex);
+    const actsIndex = markup.indexOf('class="batch-row__head-acts"', statusIndex);
+    const removeIndex = markup.indexOf('>Remove tasting<');
+    expect(actsIndex).toBeGreaterThan(statusIndex);
+    expect(removeIndex).toBeGreaterThan(actsIndex);
   });
 });
 
@@ -836,13 +850,13 @@ describe("BatchRow — the record pen's cut at 724 (sketch 011 decision 28)", ()
 });
 
 describe("BatchRow — the record pen's outline never skips a level (decide-p10-log-ladder-r2 revised-h3-r2, decide-p10-any-problems-level-r2; quick 261025-f8n)", () => {
-  it('lists h2 Batch, the h3 cues and Tasting, then Any problems? with an h4 caption for each of its two groups', () => {
+  it('lists h2 Batch and its h3 cue, h2 Tasting and its h3 cues, then Any problems? with an h4 caption for each of its two groups', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     const outline = [...markup.matchAll(/<h([2-6])[^>]*>(.*?)<\/h\1>/g)].map((match) => `h${match[1]} ${match[2].replace(/<[^>]*>/g, '')}`);
     expect(outline).toEqual([
       'h2 Batch',
       'h3 At draw',
-      'h3 Tasting',
+      'h2 Tasting',
       'h3 From freezer',
       'h3 Every recipe',
       'h3 This recipe only',
@@ -973,10 +987,10 @@ describe('BatchRow — no interface-policy hint while the pen is open', () => {
 describe('BatchRow — the numeric battery fields (contract "Controls spec")', () => {
   it('renders the two churn measured fields; the unsigned one is text-mode with inputMode="decimal", and no input is named for Time to draw temp. (03.7.1, D-01)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
-    for (const label of ['Out of machine', 'Churn duration']) {
+    for (const label of ['Out of machine', 'Duration']) {
       expect(markup).toContain(label);
     }
-    const churnDurationInput = markup.match(/<input[^>]*aria-label="Churn duration, minutes"[^>]*\/>/)[0];
+    const churnDurationInput = markup.match(/<input[^>]*aria-label="Duration, minutes"[^>]*\/>/)[0];
     expect(churnDurationInput).toContain('type="text"');
     expect(churnDurationInput).toContain('inputMode="decimal"');
     expect(churnDurationInput).toContain('class="ink-field"');
@@ -990,7 +1004,7 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
 
   it('gives the two °C fields type number with step any and no inputMode, autoCorrect or autoCapitalize, so the iPhone opens its numbers layer with a minus (G-03.5-R2-2)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    for (const name of ['Out of machine, degrees Celsius', 'Tasting temperature, degrees Celsius']) {
+    for (const name of ['Out of machine, degrees Celsius', 'Temperature, degrees Celsius']) {
       const input = markup.match(new RegExp(`<input[^>]*aria-label="${name}"[^>]*/>`))[0];
       expect(input).toContain('type="number"');
       expect(input).toContain('step="any"');
@@ -1003,7 +1017,7 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
   it('keeps the decimal pad on every unsigned battery field, with no autocorrect attribute (G-03.5-5b)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     for (const name of [
-      'Churn duration, minutes',
+      'Duration, minutes',
       'Tempering, minutes',
       'Melt test, g lost at 20 min',
     ]) {
@@ -1046,7 +1060,7 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
       draft: { ...emptyRecordDraft, outOfMachineTempC: '4o' },
       fieldErrors: { outOfMachineTempC: 'Enter a temperature, such as −6, or leave blank.' },
     });
-    const churnDurationInput = markup.match(/<input[^>]*aria-label="Churn duration, minutes"[^>]*\/>/)[0];
+    const churnDurationInput = markup.match(/<input[^>]*aria-label="Duration, minutes"[^>]*\/>/)[0];
     expect(churnDurationInput).not.toContain('aria-invalid');
   });
 });
@@ -1090,10 +1104,10 @@ describe('BatchRow — the signed fields carry a browser-unreadable entry (G-03.
 // route-recipe-batch.md § 3: the date is the batch's name, not its
 // content, so it alone carries `required`/`aria-required` and a visible
 // helper before refusal. The helper gives way to the one local error.
-describe('BatchRow — Churn date states its requirement beneath the control and owns its refusal (§ 3)', () => {
+describe('BatchRow — Churned states its requirement beneath the control and owns its refusal (§ 3)', () => {
   it('keeps the caption to the field name, shows Required below, and carries native required semantics', () => {
     const markup = renderBatchRow({ openPen: 'record', mode: 'recording', draft: emptyRecordDraft });
-    expect(markup).toContain('<span class="pen-caption">Churn date</span>');
+    expect(markup).toContain('<span class="pen-caption">Churned</span>');
     expect(markup).toContain('<span class="field-requirement" aria-hidden="true">Required</span>');
     const dateInput = markup.match(/<input[^>]*type="date"[^>]*class="ink-field"[^>]*\/>/)[0];
     expect(dateInput).toContain('required=""');
@@ -1345,7 +1359,7 @@ describe("BatchRow — the record's reading state, measured values as cells (con
       /<span class="batch-row__cell-label">Out of machine<\/span><span class="batch-row__cell-value">−6<span class="batch-row__unit"> °C<\/span><\/span><\/div>/,
     );
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Churn duration<\/span><span class="batch-row__cell-value">30<span class="batch-row__unit"> min<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Duration<\/span><span class="batch-row__cell-value">30<span class="batch-row__unit"> min<\/span><\/span>/,
     );
   });
 
@@ -1443,7 +1457,7 @@ describe("BatchRow — the record's reading state, measured values as cells (con
 
   it('places the notes block after the churn cells and before the Exit consistency and Airiness cells and the tasting reading (sketch 010 D12)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    const durationIndex = markup.indexOf('Churn duration');
+    const durationIndex = markup.indexOf('Duration');
     const notesIndex = markup.indexOf('class="batch-row__notes"');
     const exitIndex = markup.indexOf('Exit consistency');
     const airinessIndex = markup.indexOf('Airiness');
@@ -1553,12 +1567,12 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
   it('reads the tasting temperature signed, and the melt test with its own unit', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Tasting temperature<\/span><span class="batch-row__cell-value">−12<span class="batch-row__unit"> °C<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Temperature<\/span><span class="batch-row__cell-value">−12<span class="batch-row__unit"> °C<\/span><\/span>/,
     );
     // Sketch 011 README decision 58, Mark's answer B (2026-10-06): the melt
-    // test cell follows the Tasting temperature cell in the conditions grid.
+    // test cell follows the Temperature cell in the conditions grid.
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Tasting temperature<\/span><span class="batch-row__cell-value">−12<span class="batch-row__unit"> °C<\/span><\/span><\/div><div class="batch-row__cell"><span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__cell-value">3<span class="batch-row__unit"> g lost at 20 min<\/span><\/span><\/div>/,
+      /<span class="batch-row__cell-label">Temperature<\/span><span class="batch-row__cell-value">−12<span class="batch-row__unit"> °C<\/span><\/span><\/div><div class="batch-row__cell"><span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__cell-value">3<span class="batch-row__unit"> g lost at 20 min<\/span><\/span><\/div>/,
     );
   });
 
@@ -1569,7 +1583,7 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     };
     const markup = renderBatchRow({ openBatch: blankBatch, batches: [blankBatch], mode: 'reading' });
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Tasting temperature<\/span><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/div>/,
+      /<span class="batch-row__cell-label">Temperature<\/span><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/div>/,
     );
     expect(markup).toMatch(
       /<span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/div>/,
@@ -1711,12 +1725,12 @@ describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 
     expect(markup.split('aria-label="Tasting"').length - 1).toBe(1);
   });
 
-  it('keeps the record pen\'s own Tasting head an h3 inside .tasting-head (G-03.5-8d names the reading only)', () => {
+  it('makes the record pen\'s Tasting head an h2 inside section[aria-label="Tasting"], as the reading\'s is (decide-p10-tasting-gate)', () => {
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
     });
-    expect(markup).toMatch(/<div class="mo-end tasting-head"><h3 class="region-name">Tasting<\/h3>/);
+    expect(markup).toMatch(/<section aria-label="Tasting"><div class="batch-row__head batch-row__head--tasting"><div class="batch-row__head-lead"><h2 class="region-name">Tasting<\/h2>/);
   });
 });
 
@@ -2017,10 +2031,10 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
     expect(markup).not.toContain('<h4 class="batch-row__group-label">This recipe only</h4>');
   });
 
-  it('G7: the conditions grid holds Tempering, Tasting temperature, Melt test, Melt style in that order', () => {
+  it('G7: the conditions grid holds Tempering, Temperature, Melt test, Melt style in that order', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toContain(
-      '<div class="batch-row__cells tasting-reading__conditions"><div class="batch-row__cell"><span class="batch-row__cell-label">Tempering</span><span class="batch-row__unit batch-row__unit--absent">not measured</span></div><div class="batch-row__cell"><span class="batch-row__cell-label">Tasting temperature</span><span class="batch-row__cell-value">−12<span class="batch-row__unit"> °C</span></span></div><div class="batch-row__cell"><span class="batch-row__cell-label">Melt test</span><span class="batch-row__cell-value">3<span class="batch-row__unit"> g lost at 20 min</span></span></div><div class="batch-row__cell"><span class="batch-row__cell-label">Melt style</span><span class="batch-row__unit batch-row__unit--absent">not measured</span></div></div>',
+      '<div class="batch-row__cells tasting-reading__conditions"><div class="batch-row__cell"><span class="batch-row__cell-label">Tempering</span><span class="batch-row__unit batch-row__unit--absent">not measured</span></div><div class="batch-row__cell"><span class="batch-row__cell-label">Temperature</span><span class="batch-row__cell-value">−12<span class="batch-row__unit"> °C</span></span></div><div class="batch-row__cell"><span class="batch-row__cell-label">Melt test</span><span class="batch-row__cell-value">3<span class="batch-row__unit"> g lost at 20 min</span></span></div><div class="batch-row__cell"><span class="batch-row__cell-label">Melt style</span><span class="batch-row__unit batch-row__unit--absent">not measured</span></div></div>',
     );
   });
 
@@ -2033,18 +2047,18 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
   it('G9: a tasting with no marks and no problems draws no group, and the conditions grid still holds the four cells', () => {
     const section = sectionOf(withTasting({ marks: {}, defects: null, declaredDefects: null }));
     expect(section).not.toContain('tasting-reading__group');
-    expect(cellLabels(section)).toEqual(['Tempering', 'Tasting temperature', 'Melt test', 'Melt style']);
+    expect(cellLabels(section)).toEqual(['Tempering', 'Temperature', 'Melt test', 'Melt style']);
   });
 
   // The in-page detector's skipped-heading, critique P3, Mark 2026-10-22.
-  it('G10: the heading outline steps one level at a time: Tasting h2, the group names and Any problems? h3, the problem names h4; the record pen keeps Batch h2, Tasting h3 (critique P3, Mark 2026-10-22)', () => {
+  it('G10: the heading outline steps one level at a time: Tasting h2, the group names and Any problems? h3, the problem names h4; the record pen keeps Batch h2 and Tasting h2, a peer region (critique P3, Mark 2026-10-22; decide-p10-tasting-gate)', () => {
     const outline = (markup) => [...markup.matchAll(/<h([1-6])[\s>]/g)].map((m) => Number(m[1]));
     expect(outline(renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' }))).toEqual([2, 2, 3, 3, 3, 4, 3]);
     expect(outline(withTasting({ marks: allSix, defects: ['Coarse, icy'] }))).toEqual([2, 2, 3, 3, 3, 4, 4, 3]);
     expect(outline(withTasting({ marks: {}, defects: ['Coarse, icy'] }))).toEqual([2, 2, 3, 4, 4, 3]);
     expect(
       outline(renderBatchRow({ openPen: 'record', mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } })),
-    ).toEqual([2, 3, 3, 3, 3, 3, 3, 4, 4]);
+    ).toEqual([2, 3, 2, 3, 3, 3, 3, 4, 4]);
   });
 });
 
@@ -2428,11 +2442,11 @@ describe('BatchRow — the reading says the At draw word, or the fields, never b
     expect(markup).toMatch(/>Airiness<\/span><span class="batch-row__unit batch-row__unit--absent">not measured</);
   });
 
-  it('the churn cells hold Out of machine and Churn duration only; the At draw or fields row follows the notes', () => {
+  it('the churn cells hold Out of machine and Duration only; the At draw or fields row follows the notes', () => {
     const markup = withChurn({ atDraw: null });
     const firstGrid = markup.slice(markup.indexOf('class="batch-row__cells"'), markup.indexOf('class="batch-row__notes"'));
     expect(firstGrid).toContain('Out of machine');
-    expect(firstGrid).toContain('Churn duration');
+    expect(firstGrid).toContain('Duration');
     expect(firstGrid).not.toContain('Exit consistency');
     expect(markup.indexOf('mo-readgroup')).toBeGreaterThan(markup.indexOf('class="batch-row__notes"'));
   });
@@ -2449,7 +2463,7 @@ describe('BatchRow — the open Tasting section in the approved order, and From 
     return markup.slice(start, markup.indexOf('</div></div>', start));
   };
 
-  it('runs Tasted, Tempering, Tasting temperature, How did it turn out?, Melt test, Melt style, Next time, From freezer, the scales, Any problems?, then Cancel and Save batch', () => {
+  it('runs Tasted, Tempering, Temperature, How did it turn out?, Melt test, Melt style, Next time, From freezer, the scales, Any problems?, then Cancel and Save batch', () => {
     const markup = penMarkup({});
     const at = (needle) => {
       const index = markup.indexOf(needle);
@@ -2457,10 +2471,10 @@ describe('BatchRow — the open Tasting section in the approved order, and From 
       return index;
     };
     const order = [
-      at('<h3 class="region-name">Tasting</h3>'),
+      at('<h2 class="region-name">Tasting</h2>'),
       at('<span class="pen-caption">Tasted</span>'),
       at('aria-label="Tempering, minutes"'),
-      at('aria-label="Tasting temperature, degrees Celsius"'),
+      at('aria-label="Temperature, degrees Celsius"'),
       at('aria-label="How did it turn out?"'),
       at('aria-label="Melt test, g lost at 20 min"'),
       at('aria-label="Melt style"'),
@@ -2589,7 +2603,7 @@ describe('BatchRow — the reading follows the pen, for each of pen-reading.html
     const batch = readingBatch({ churn: { atDraw: 'Nothing to note' }, tasting: { fromFreezer: 'Nothing to note' } });
     const { tokens, markup } = readingOrder(batch);
     expect(tokens).toEqual([
-      'Batch', 'Out of machine', 'Churn duration', 'At draw', 'Tasting', 'Tempering', 'Tasting temperature', 'Melt test', 'Melt style', 'From freezer', 'Next time',
+      'Batch', 'Out of machine', 'Duration', 'At draw', 'Tasting', 'Tempering', 'Temperature', 'Melt test', 'Melt style', 'From freezer', 'Next time',
     ]);
     // The four conditions stand in one row when no note is written.
     expect(markup.split('tasting-reading__conditions').length - 1).toBe(1);
@@ -2602,7 +2616,7 @@ describe('BatchRow — the reading follows the pen, for each of pen-reading.html
     const batch = readingBatch({ churn: { atDraw: 'Not evaluated' }, tasting: { fromFreezer: 'Not evaluated' } });
     const { tokens, markup } = readingOrder(batch);
     expect(tokens).toEqual([
-      'Batch', 'Out of machine', 'Churn duration', 'At draw', 'Tasting', 'Tempering', 'Tasting temperature', 'Melt test', 'Melt style', 'From freezer', 'Next time',
+      'Batch', 'Out of machine', 'Duration', 'At draw', 'Tasting', 'Tempering', 'Temperature', 'Melt test', 'Melt style', 'From freezer', 'Next time',
     ]);
     expect(markup).toMatch(/batch-row__cell-label">At draw<\/span><span class="batch-row__cell-value">Not evaluated</);
     expect(markup).toMatch(/batch-row__cell-label">From freezer<\/span><span class="batch-row__cell-value">Not evaluated</);
@@ -2615,8 +2629,8 @@ describe('BatchRow — the reading follows the pen, for each of pen-reading.html
     });
     const { tokens, markup } = readingOrder(batch);
     expect(tokens).toEqual([
-      'Batch', 'Out of machine', 'Churn duration', NOTE_AT_MACHINE, NOTE_INGREDIENTS, 'At draw',
-      'Tasting', 'Tempering', 'Tasting temperature', NOTE_TASTING, 'Melt test', 'Melt style', 'From freezer', 'Next time',
+      'Batch', 'Out of machine', 'Duration', NOTE_AT_MACHINE, NOTE_INGREDIENTS, 'At draw',
+      'Tasting', 'Tempering', 'Temperature', NOTE_TASTING, 'Melt test', 'Melt style', 'From freezer', 'Next time',
     ]);
     // With a note the conditions split in two rows around it.
     expect(markup.split('tasting-reading__conditions').length - 1).toBe(2);
@@ -2629,8 +2643,8 @@ describe('BatchRow — the reading follows the pen, for each of pen-reading.html
     });
     const { tokens, markup } = readingOrder(batch);
     expect(tokens).toEqual([
-      'Batch', 'Out of machine', 'Churn duration', NOTE_AT_MACHINE, NOTE_INGREDIENTS, 'Exit consistency', 'Airiness',
-      'Tasting', 'Tempering', 'Tasting temperature', NOTE_TASTING, 'Melt test', 'Melt style',
+      'Batch', 'Out of machine', 'Duration', NOTE_AT_MACHINE, NOTE_INGREDIENTS, 'Exit consistency', 'Airiness',
+      'Tasting', 'Tempering', 'Temperature', NOTE_TASTING, 'Melt test', 'Melt style',
       'Every recipe', 'Sweetness', 'This recipe only', 'Oil', 'Any problems?', 'This recipe only', 'Bitter', 'Next time',
     ]);
     expect(markup).not.toContain('At draw');
@@ -2642,8 +2656,8 @@ describe('BatchRow — the reading follows the pen, for each of pen-reading.html
     const batch = readingBatch({ churn: { exitConsistency: 'Wet, soupy' }, tasting: { marks: { hardness: 4 } } });
     const { tokens, markup } = readingOrder(batch);
     expect(tokens).toEqual([
-      'Batch', 'Out of machine', 'Churn duration', 'Exit consistency', 'Airiness',
-      'Tasting', 'Tempering', 'Tasting temperature', 'Melt test', 'Melt style', 'Every recipe', 'Hardness', 'Next time',
+      'Batch', 'Out of machine', 'Duration', 'Exit consistency', 'Airiness',
+      'Tasting', 'Tempering', 'Temperature', 'Melt test', 'Melt style', 'Every recipe', 'Hardness', 'Next time',
     ]);
     expect(markup.split('tasting-reading__conditions').length - 1).toBe(1);
     expect(markup).toMatch(/>Airiness<\/span><span class="batch-row__unit batch-row__unit--absent">not measured</);

@@ -145,11 +145,11 @@ describe('BatchRow date inputs: one date focus per opener (261003-by3)', () => {
     expect(document.activeElement).toBe(dateInput('Tasted'));
   });
 
-  it('F2: Correct focuses only the Churn date', () => {
+  it('F2: Correct focuses only the Churned date', () => {
     const { rerender } = renderRow();
     rerender(correct);
-    expect(dateFocuses).toEqual(['Churn date']);
-    expect(document.activeElement).toBe(dateInput('Churn date'));
+    expect(dateFocuses).toEqual(['Churned']);
+    expect(document.activeElement).toBe(dateInput('Churned'));
     expect(dateInput('Tasted')).not.toBeNull();
   });
 
@@ -162,10 +162,10 @@ describe('BatchRow date inputs: one date focus per opener (261003-by3)', () => {
     expect(document.activeElement).toBe(dateInput('Tasted'));
   });
 
-  it('F4: Record another focuses only the Churn date', () => {
+  it('F4: Record another focuses only the Churned date', () => {
     const { rerender } = renderRow();
     rerender({ openPen: 'record', mode: 'recording', addTastingAttempt: null, draft: emptyRecordDraft });
-    expect(dateFocuses).toEqual(['Churn date']);
+    expect(dateFocuses).toEqual(['Churned']);
   });
 });
 
@@ -247,7 +247,7 @@ async function typeAtTheMachine(text) {
 describe('BatchRow date inputs: no value attribute, so iOS Reset clears (261003-by3)', () => {
   it('A1: neither date input carries a value attribute after mount, and both show their dates', async () => {
     await mountHarness();
-    const churn = dateInput('Churn date');
+    const churn = dateInput('Churned');
     const tasted = dateInput('Tasted');
     expect(churn.hasAttribute('value')).toBe(false);
     expect(tasted.hasAttribute('value')).toBe(false);
@@ -258,7 +258,7 @@ describe('BatchRow date inputs: no value attribute, so iOS Reset clears (261003-
   it('A2: a re-render from an unrelated draft change leaves no value attribute and keeps the dates', async () => {
     await mountHarness();
     await typeAtTheMachine('bowl cold');
-    const churn = dateInput('Churn date');
+    const churn = dateInput('Churned');
     const tasted = dateInput('Tasted');
     expect(churn.hasAttribute('value')).toBe(false);
     expect(tasted.hasAttribute('value')).toBe(false);
@@ -266,7 +266,7 @@ describe('BatchRow date inputs: no value attribute, so iOS Reset clears (261003-
     expect(tasted.value).toBe('2026-08-03');
   });
 
-  for (const [caption, field] of [['Churn date', 'churnDate'], ['Tasted', 'tastedDate']]) {
+  for (const [caption, field] of [['Churned', 'churnDate'], ['Tasted', 'tastedDate']]) {
     it(`A3: Reset straight after open empties the ${caption} and state follows`, async () => {
       await mountHarness();
       const input = dateInput(caption);

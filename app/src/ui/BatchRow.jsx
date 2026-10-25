@@ -37,7 +37,7 @@ const CHURN_MEASURED_FIELDS = BATTERY_FIELDS.filter((field) =>
 // inventory" § tasting body): Tempering, unit min — "Where sources
 // disagree (HTML wins)" § 1 places it here, never in the churn section,
 // however D-10's own wording groups it.
-// Tasting temperature, unit °C, signed — the field-row's other measured
+// Temperature, unit °C, signed — the field-row's other measured
 // field, beside Tempering. Melt test (meltTestG) is also a BATTERY_FIELDS
 // entry but belongs to the melt block at the tasting body's foot
 // (03.3.1-03 Task 3), not this field-row.
@@ -313,7 +313,7 @@ function TastingReading({ batch, foldsOpen = true }) {
   // log's content box with the tasted date at the row's end (G-03.5-4).
   const [open, toggle] = useFold(foldsOpen);
   // The conditions and the melt fields (sketch 010 D14; pen-reading.html):
-  // Tempering and Tasting temperature, then the tasting note in the hand, then
+  // Tempering and Temperature, then the tasting note in the hand, then
   // Melt test and Melt style, as the pen runs. With no note written the four
   // stand in one row.
   const tempering = (
@@ -331,7 +331,7 @@ function TastingReading({ batch, foldsOpen = true }) {
   );
   const tastingTemperature = (
     <div className="batch-row__cell">
-      <span className="batch-row__cell-label">Tasting temperature</span>
+      <span className="batch-row__cell-label">Temperature</span>
       {batch.tasting.tastingTempC != null ? (
         <span className="batch-row__cell-value">
           {churnMeasured(batch.tasting.tastingTempC, { signed: true })}
@@ -792,9 +792,10 @@ export function BatchRow({
       <div className={mode === 'recording' ? 'batch-margin batch-margin--pen' : 'batch-margin'}>
         {mode === 'recording' ? (
           <>
-            {/* The churn row (sketch 007 @ 2a212be lines 210-216; D-12
-                "Churn date" replaces "churned"): a .field-row holding the
-                128px Churn date field, this event's identifying field
+            {/* The churn row (sketch 007 @ 2a212be lines 210-216; D-12's
+                date caption, shortened to "Churned" by Mark's 2026-10-25
+                decide-p10-churn-trio): a .field-row holding the
+                120px Churned date field, this event's identifying field
                 (D-05), then the two numeric churn measurements beside
                 it (contract "DOM order inventory"). .batch-row__cells
                 stays only for the read view below — the pen no longer
@@ -805,7 +806,7 @@ export function BatchRow({
                 at either ceremony. */}
             <div className="field-row">
               <label className="field-row__label field-row__label--date">
-                <span className="pen-caption">Churn date</span>
+                <span className="pen-caption">Churned</span>
                 {/* 261003-by3, .planning/debug/ios-tasting-date-picker.md: the
                     Record a tasting open already targets the Tasted date
                     (addTastingAttempt is a number only for that opener), and a
@@ -917,42 +918,50 @@ export function BatchRow({
                 texture block, which arrives in Task 2), then the defects
                 row and the melt block (Task 3). */}
             {draft.tastingOpen && (
-              <>
-                {/* The tasting head (sketch 007 @ 109733d lines 242-246;
-                    G-03.3.1-4; UAT items 6, 18): a bare region-name
-                    "Tasting" — the two helper spans ("· optional",
-                    "— leave anything you did not record blank") are gone,
-                    a plain .head with no reserved caption-line height (that
-                    reserve is the axes' and categories' own, not this
-                    row's). The tasting-status live region beside the
-                    action, the Restore tasting slot — the contract's own
-                    static mount; in hidden mode a removal always collapses
-                    the section, so this slot renders in practice only on a
-                    reopened section (Add tasting pressed again) while a
-                    prior removal's own restore is still pending — then the
-                    Remove control, "Remove tasting" verbatim in hidden
-                    mode (Pitfall 6: the always-visible mode's "Clear
-                    tasting" label is never built), right-aligned (007 line
-                    246, `margin-left: auto`). */}
-                <div className="mo-end tasting-head">
-                  <h3 className="region-name">Tasting</h3>
-                  <p className="tasting-status pen-helper" role="status" aria-live="polite">
-                    {tastingStatus}
-                  </p>
-                  {pendingUndo && (
-                    <Button className="text-control undo-control" onClick={onUndoRemove}>Restore tasting</Button>
-                  )}
-                  <Button
-                    className="text-control tasting-head__remove"
-                    ref={removeTastingButtonRef}
-                    onClick={onRemoveTasting}
-                  >
-                    Remove tasting
-                  </Button>
+              <section aria-label="Tasting">
+                {/* The Tasting head: a region, a peer of Batch (Mark,
+                    2026-10-25, "I want Tasting to be treated as a region like
+                    Batch"; decide-p10-tasting-gate; the ladder proposal's
+                    section "Tasting a region, a peer of Batch"). It takes
+                    the Batch head's own grammar: the lead holds the region
+                    name, an h2 as the reading's is, then the tasting-status
+                    live region (the slot the churned date uses on the Batch
+                    head; it stays rendered while empty so a removal or a
+                    restore is still announced); the acts hold the Restore
+                    tasting slot (the contract's own static mount; in hidden
+                    mode a removal always collapses the section, so it renders
+                    in practice only on a reopened section while a prior
+                    removal's restore is still pending) and Remove tasting,
+                    "Remove tasting" verbatim in hidden mode (Pitfall 6: the
+                    always-visible mode's "Clear tasting" label is never
+                    built), flush right where Correct and Record another sit
+                    on the Batch head in the reading. The region stays hidden
+                    until Add tasting opens it (2026-09-12, D-01), which stays
+                    in the two ceremonies (D-14). Its row height, its 18 under
+                    and the region seam above it are notebook.css's. */}
+                <div className="batch-row__head batch-row__head--tasting">
+                  <div className="batch-row__head-lead">
+                    <h2 className="region-name">Tasting</h2>
+                    <p className="tasting-status pen-helper" role="status" aria-live="polite">
+                      {tastingStatus}
+                    </p>
+                  </div>
+                  <div className="batch-row__head-acts">
+                    {pendingUndo && (
+                      <Button className="text-control undo-control" onClick={onUndoRemove}>Restore tasting</Button>
+                    )}
+                    <Button
+                      className="text-control"
+                      ref={removeTastingButtonRef}
+                      onClick={onRemoveTasting}
+                    >
+                      Remove tasting
+                    </Button>
+                  </div>
                 </div>
                 {/* The tasting field row (sketch 007 lines 249-253; UAT
-                    items 7, 8): a .field-row holding the 128px Tasted date
-                    then Tempering and Tasting temperature, MeasuredField's
+                    items 7, 8): a .field-row holding the 120px Tasted date
+                    then Tempering and Temperature, MeasuredField's
                     own field-row shape (Task 1). */}
                 <div className="field-row">
                   <label className="field-row__label field-row__label--date">
@@ -1141,7 +1150,7 @@ export function BatchRow({
                     </AxesGrid>
                   </>
                 )}
-              </>
+              </section>
             )}
             {!draft.tastingOpen && renderNextTime()}
             {/* Ceremony A (D-01): closes the record body after all record
@@ -1191,7 +1200,7 @@ export function BatchRow({
                 )}
               </div>
               <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Churn duration</span>
+                <span className="batch-row__cell-label">Duration</span>
                 {openBatch.churn.churnDurationMinutes != null ? (
                   <span className="batch-row__cell-value">
                     {churnMeasured(openBatch.churn.churnDurationMinutes)}

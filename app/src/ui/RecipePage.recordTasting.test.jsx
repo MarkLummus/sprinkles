@@ -196,7 +196,7 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     await click(band());
 
     expect(pen()).not.toBeNull();
-    expect([...pen().querySelectorAll('h3')].some((h3) => h3.textContent === 'Tasting')).toBe(true);
+    expect([...pen().querySelectorAll('h2')].some((h2) => h2.textContent === 'Tasting')).toBe(true);
     expect(tastedInput()).not.toBeNull();
     expect(document.activeElement).toBe(tastedInput());
     expect(current.container.querySelector('.batch-row__correct')).toBeNull();
@@ -273,7 +273,7 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     const correct = current.container.querySelector('.batch-row__correct');
     await click(correct);
 
-    expect([...pen().querySelectorAll('h3')].some((h3) => h3.textContent === 'Tasting')).toBe(false);
+    expect([...pen().querySelectorAll('h2')].some((h2) => h2.textContent === 'Tasting')).toBe(false);
     expect(pen().querySelector('.save-ceremony__add-tasting')).not.toBeNull();
     expect(document.activeElement).toBe(pen().querySelector('input[type="date"]'));
 

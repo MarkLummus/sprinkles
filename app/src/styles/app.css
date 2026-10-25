@@ -1798,27 +1798,6 @@ textarea {
   margin: 0;
 }
 
-/* The tasting head (sketch 007 @ 2a212be line 242; UAT items 6, 18): a
-   plain .head, baseline-aligned, wrapping — NO reserved min-height, that
-   reserve belongs to .axis .head/.category .head alone (line 75). */
-.tasting-head {
-  display: flex;
-  align-items: baseline;
-  gap: var(--gap-s);
-  flex-wrap: wrap;
-  margin-bottom: var(--gap-xs);
-}
-
-.tasting-head .region-name {
-  margin: 0;
-}
-
-/* Remove tasting, right-aligned on the head row (007 line 246, inline
-   `style="margin-left:auto"`). */
-.tasting-head__remove {
-  margin-left: auto;
-}
-
 /* The sketch's field row (007 @ 2a212be lines 37-44; D-13): a label sits at
    its own content width and wraps whole rather than being forced onto the
    row's fixed grid; the numeric box's unit word is a sibling after the

@@ -12,8 +12,8 @@
 /**
  * BATTERY_FIELDS: the five numeric fields the battery carries, one entry
  * per field: key (the stored field name), label (visible), unit, signed
- * (true only for the two °C fields — Out of machine, Tasting
- * temperature), and error (the contract's verbatim sentence for a
+ * (true only for the two °C fields — Out of machine,
+ * Temperature), and error (the contract's verbatim sentence for a
  * malformed value on this field).
  */
 const TEMPERATURE_ERROR = 'Enter a temperature, such as −6, or leave blank.';
@@ -21,9 +21,9 @@ const NON_NEGATIVE_ERROR = 'Enter zero or a positive number, or leave blank.';
 
 export const BATTERY_FIELDS = [
   { key: 'outOfMachineTempC', label: 'Out of machine', unit: '°C', signed: true, error: TEMPERATURE_ERROR },
-  { key: 'churnDurationMinutes', label: 'Churn duration', unit: 'min', signed: false, error: NON_NEGATIVE_ERROR },
+  { key: 'churnDurationMinutes', label: 'Duration', unit: 'min', signed: false, error: NON_NEGATIVE_ERROR },
   { key: 'temperingMinutes', label: 'Tempering', unit: 'min', signed: false, error: NON_NEGATIVE_ERROR },
-  { key: 'tastingTempC', label: 'Tasting temperature', unit: '°C', signed: true, error: TEMPERATURE_ERROR },
+  { key: 'tastingTempC', label: 'Temperature', unit: '°C', signed: true, error: TEMPERATURE_ERROR },
   { key: 'meltTestG', label: 'Melt test', unit: 'g lost at 20 min', signed: false, error: NON_NEGATIVE_ERROR },
 ];
 

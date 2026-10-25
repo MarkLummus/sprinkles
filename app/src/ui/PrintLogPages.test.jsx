@@ -56,10 +56,12 @@ describe('the Batch log (side 1; CONTRACT § 3)', () => {
   const baseline = page1(oliveOilVersion);
 
   it('holds its fields and words, from the built pens', () => {
-    expect(baseline).toContain('Churn date');
+    expect(baseline).toContain('Churned');
     expect(baseline).toMatch(/<h2 class="region-name lf-title">Batch log<\/h2>/);
     expect(baseline).toContain('Out of machine');
-    expect(baseline).toContain('Churn duration');
+    expect(baseline).toContain('Duration');
+    expect(baseline).not.toContain('Churn date');
+    expect(baseline).not.toContain('Churn duration');
     expect(baseline).toContain('At draw');
     expect(baseline).toContain('mark one');
     for (const word of [...PRINTED_MARK_ONE_OPTIONS, ...SEGMENT_OPTIONS.exitConsistency, ...SEGMENT_OPTIONS.airiness]) {
@@ -112,12 +114,13 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
   it.each(VERSIONS.map((version) => [version.id, version]))('%s: the page holds its fields, the foot says Side 2 of 2 with this version\'s code', (_id, version) => {
     const markup = page2(version);
     expect(markup).toMatch(/<h2 class="region-name lf-title">Tasting log<\/h2>/);
-    for (const word of ['Tasted', 'Tempering', 'Tasting temperature', 'Melt test', 'g lost at 20 min', 'Melt style', 'From freezer', 'Any problems?', 'select all that apply', 'How did it turn out?']) {
+    for (const word of ['Tasted', 'Tempering', 'Temperature', 'Melt test', 'g lost at 20 min', 'Melt style', 'From freezer', 'Any problems?', 'select all that apply', 'How did it turn out?']) {
       expect(markup, word).toContain(word);
     }
     for (const word of [...PRINTED_MARK_ONE_OPTIONS, ...SEGMENT_OPTIONS.meltStyle]) expect(markup, word).toContain(word);
     expect(markup).toContain(`${sheetCode(version)} · Side 2 of 2</div>`);
     expect(markup).not.toContain('Time to draw temp');
+    expect(markup).not.toContain('Tasting temperature');
     // Melt test's unit stands under its line (CONTRACT § 4).
     expect(markup).toContain('lf-field lf-field--under');
     expect(classCount(markup, 'lf-field--under')).toBe(1);

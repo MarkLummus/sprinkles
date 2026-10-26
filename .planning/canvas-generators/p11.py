@@ -81,8 +81,10 @@ TABLE_HEAD = TABLE_HEAD.replace('<table class="ingredient-table is-developing">'
 
 DIS = ' aria-disabled="true"'
 def pct(g): return '%.1f%%' % (g / TOTAL * 100)
-def row(key, grams=None, note=None, moves=None, focus=False):
-    """One table row from the capture: its grams, a portion note, and the row acts (remove · Move up · Move down; moves=(up_on, down_on))."""
+def row(key, grams=None, note=None, moves=None, focus=False, place=None):
+    """One table row from the capture: its grams, a portion note, and the row acts (remove · Move up · Move down; moves=(up_on, down_on)).
+    place (proposed, decide-p11-place-unplaced-row; only a row under "Not in a step yet"): 'closed' adds Add to step as the acts' last word; ('open', [(n, lead), ...]) draws the
+    line as the chooser it becomes when pressed: Cancel first, then every step by number and lead-in; choosing one ticks the row in that step's uses and the row moves under its head."""
     h = ROW_HTML[key]; name = dict((k, n) for k, n, g, s in ROWS)[key]; full = dict((k, g) for k, n, g, s in ROWS)[key]
     g = full if grams is None else grams
     h = re.sub(r' value="[^"]*"', ' value="%s"' % ('' if g == '' else ('%g' % g)), h, 1)
@@ -92,6 +94,10 @@ def row(key, grams=None, note=None, moves=None, focus=False):
     if moves is not None:
         up, down = moves
         acts += ''.join(f'<span aria-hidden="true"> · </span><button type="button" class="text-control{"" if on else " mk-off"}" tabindex="0" aria-label="Move {esc(name)} {w}"{DIS if not on else ""}>Move {w}</button>' for w, on in (('up', up), ('down', down)))
+        if place == 'closed':
+            acts += f'<span aria-hidden="true"> · </span><button type="button" class="text-control" tabindex="0" aria-label="Add {esc(name)} to a step">Add to step</button>'
+        elif place and place[0] == 'open':
+            acts = f'<button type="button" class="text-control" tabindex="0" aria-label="{esc(name)}, cancel">Cancel</button>' + ''.join(f'<span aria-hidden="true"> · </span><button type="button" class="text-control" tabindex="0" aria-label="Add {esc(name)} to step {n}">Step {n}, {esc(lead)}</button>' for n, lead in place[1])
         acts = '<span class="mk-row-acts">' + acts + '</span>'
     h = re.sub(r'<button type="button" class="text-control" tabindex="0">remove</button>', acts, h, 1)
     if note: h = h.replace('</td><td class="ingredient-table__col-numeric">', f'<span class="ingredient-table__portion-note">{esc(note)}</span></td><td class="ingredient-table__col-numeric">', 1)
@@ -164,8 +170,9 @@ def steps_html(specs, with_moves=True, over=None, **common):
     return out
 
 # the table as the steps allocate it
-def grouped(steps_specs, extra_groups=(), split=None, with_moves=True):
-    """Rows under their step heads (the build's groupPortionsByStep); rows no step uses under the unplaced head at the foot. split: {key: [(step_index, grams), ...]}."""
+def grouped(steps_specs, extra_groups=(), split=None, with_moves=True, place=None):
+    """Rows under their step heads (the build's groupPortionsByStep); rows no step uses under the unplaced head at the foot. split: {key: [(step_index, grams), ...]}.
+    place: {key: 'closed' | 'open'} for rows under "Not in a step yet" (row()'s place; the open chooser lists every step)."""
     used = set(); groups = []
     for i, s in enumerate(steps_specs):
         keys = list(s['uses']); rs = []
@@ -179,7 +186,9 @@ def grouped(steps_specs, extra_groups=(), split=None, with_moves=True):
             else: rs.append(row(k, moves=mv))
         if rs: groups.append((step_head(i + 1, s['lead']), rs))      # the build prints no head for a step that uses nothing (groupPortionsByStep)
     rest = [k for k, _, _, _ in ROWS if k not in used]
-    if rest: groups.append((group_head(UNPLACED), [row(k, moves=moves_for(j, len(rest)) if with_moves else None) for j, k in enumerate(rest)]))
+    steps = [(i + 1, s['lead']) for i, s in enumerate(steps_specs)]
+    pl = lambda k: (('open', steps) if (place or {}).get(k) == 'open' else (place or {}).get(k))
+    if rest: groups.append((group_head(UNPLACED), [row(k, moves=moves_for(j, len(rest)) if with_moves else None, place=pl(k)) for j, k in enumerate(rest)]))
     return groups
 
 def sheet(table, method, notes=SAMPLE_NOTES, desc=SAMPLE_DESC, balance=True):
@@ -269,7 +278,8 @@ STAMP3 = ' (drawn 2026-10-21; redrawn 2026-10-25: Add ingredient on the Ingredie
 STAMP4 = ' (drawn 2026-10-21; redrawn 2026-10-25: Add step and Add ingredient on their heading\'s row; look-p11-steps-r3)'
 STAMP5 = ' (drawn 2026-10-21; redrawn 2026-10-25: Add step and Add ingredient on their heading\'s row, then the open step without the pen\'s box, Add step on each step\'s row, Preview step; decisions 32 to 34)'
 STAMP6 = STAMP5[:-1] + '; redrawn 2026-10-26: after remove on step 2 the grams fold back, roadmap decision 24)'
-STAMPS = {'P11_Steps': STAMP5, 'P11_Structure': STAMP6, 'P11_Save': STAMP5, 'P11_FirstVersion': STAMP5}
+STAMP7 = STAMP6[:-1] + '; a fifth panel 2026-10-26, proposed: Add to step on a row under "Not in a step yet"; decide-p11-place-unplaced-row)'
+STAMPS = {'P11_Steps': STAMP5, 'P11_Structure': STAMP7, 'P11_Save': STAMP5, 'P11_FirstVersion': STAMP5}
 TITLES = {'P11_Steps': 'Instructions while creating · a step, its targets, the rows it uses and in what portions, at 1366',
           'P11_Structure': 'Add, remove and move · steps, and rows within their step, at 1366',
           'P11_Save': 'Save · what refuses it and where it lands, at 1366',
@@ -298,7 +308,11 @@ def build_boards(out):
     r2 = [dict(SC('qC1', sheet(table_html(grouped([S1, S3])), method_html(steps_html([S1, S3])))),
                cap='After remove on step 2 (Finish cold) · 1366', sub='deleted outright, no strike and no restore (decision 10): Heavy cream and Vanilla extract keep their grams and go back under "Not in a step yet"; Whole milk\'s 200 g line in that step folds back into its line in step 1, so the row reads 600 g, 58.0%, with no portion line, and the Balance stands (decide-p11-step-removal-split-portion, grams-fold-back; roadmap decision 24)'),
           dict(SC('qD1', sheet(table_html(grouped([dict(S1, uses=('smp', 'milk', 'suc')), S2, S3])), method_html(steps_html(three)))), cap='After Move down on Whole milk · 1366', sub='a row moves within its step only (decision 9): Skim milk powder now leads step 1\'s rows; nothing else moved')]
-    parts, bw, bh = flow([r1, r2]); sizes['P11_Structure'] = (bw, bh)
+    # proposed (decide-p11-place-unplaced-row, Mark's note on look-p11-structure-r2: the unplaced rows "can't be easily added to a step"): the same state as "After remove on step 2",
+    # with Add to step on each unplaced row's acts line, Heavy cream's pressed. The four approved panels above are unchanged until Mark answers.
+    r3 = [dict(SC('qE1', sheet(table_html(grouped([S1, S3], place={'cream': 'open', 'van': 'closed'})), method_html(steps_html([S1, S3])))),
+               cap='Placing a row from "Not in a step yet" · 1366 · proposed', sub='Mark on look-p11-structure-r2: these rows "can\'t be easily added to a step"; the only way drawn was each step\'s "change the ingredients" checklist, a screen away. Proposed: a row under "Not in a step yet" ends its acts line with Add to step (Vanilla extract); pressed, the line offers the steps, Cancel first (Heavy cream); choosing one ticks the row in that step\'s uses and moves it under that step\'s head, grams kept, focus following to its remove. Other options are on the decide row, not drawn')]
+    parts, bw, bh = flow([r1, r2, r3]); sizes['P11_Structure'] = (bw, bh)
     board('P11_Structure', TITLES['P11_Structure'] + STAMPS['P11_Structure'], bw, bh, parts, out)
 
     # ======== P11_Save

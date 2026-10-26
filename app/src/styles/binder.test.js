@@ -151,6 +151,15 @@ describe('the step pen — remove on the closed step, Cancel/Done through the bi
     expect(rule.declarations).toMatch(/outline-offset:\s*var\(--sheet-open-fields-offset\)/);
   });
 
+  test('the open step\'s first field carries no top margin, so the lead-in starts level with the margin number, and the later fields keep --gap-xs between them (bug-pen-step-number-misaligned)', () => {
+    const first = ruleFor('.method-step__open-fields > .method-step__field:first-child');
+    expect(first, 'expected a .method-step__open-fields > .method-step__field:first-child rule').toBeTruthy();
+    expect(first.declarations).toMatch(/margin-top:\s*0\s*;?\s*$/);
+    const field = ruleFor('.method-step__field');
+    expect(field, 'expected a .method-step__field rule').toBeTruthy();
+    expect(field.declarations).toMatch(/margin-top:\s*var\(--gap-xs\)/);
+  });
+
   test('.method-step__edit no longer exists — remove moved to the closed step alongside edit this step, both reading plain .text-control (sketch 011 decisions_recorded 4)', () => {
     expect(ruleFor('.method-step__edit')).toBeUndefined();
   });

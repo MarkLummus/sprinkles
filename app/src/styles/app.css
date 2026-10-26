@@ -1225,6 +1225,13 @@ textarea {
   margin-top: var(--gap-xs);
 }
 
+/* The open step's first field starts at the step's top, level with its margin
+   number as the closed step's lead is; the fields after it keep the --gap-xs
+   rhythm (bug-pen-step-number-misaligned, Mark 2026-10-25). */
+.method-step__open-fields > .method-step__field:first-child {
+  margin-top: 0;
+}
+
 .target-chip__label-field,
 .target-chip__value-field {
   width: auto;

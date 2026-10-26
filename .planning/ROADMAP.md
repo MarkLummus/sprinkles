@@ -257,7 +257,7 @@ Plans:
 Plans:
 **Wave 1**
 - [ ] 11-01-PLAN.md — the walk re-recorded at BASE cf64aa70 with a method hash and the new-scenario allow-list, and the board engine with seed, anchored full pages and a type check (D-19); no app change
-- [ ] 11-02-PLAN.md — pure step, row and allocation ops (placement from uses, step 0 for unplaced rows, tombstones, fold-back) and the Sheet projection
+- [ ] 11-02-PLAN.md — pure step, row and allocation ops (placement from uses, each step ordering its own rows, step 0 for unplaced rows, tombstones, fold-back) and the Sheet projection
 - [ ] 11-03-PLAN.md — createRecipe's optional fields, the one-transaction Save and Save-over with the forced-failure tests, the first-version eligibility rule, the edit draft kind and the edit address
 
 **Wave 2** *(blocked on Wave 1 completion)*
@@ -268,10 +268,10 @@ Plans:
 - [ ] 11-06-PLAN.md — the heading rows, Add step, each step's fields, targets, purpose, aside and Preview step in the creation editor
 
 **Wave 4** *(blocked on Wave 3 completion)*
-- [ ] 11-07-PLAN.md — the Uses checklist, the table under step heads with "Not in a step yet", and split rows typed line by line
+- [ ] 11-07-PLAN.md — the Uses checklist, the table under step heads with "Not in a step yet", split rows typed line by line, each step's own row order on every surface, and the walk re-recorded at BASE plus that order
 
 **Wave 5** *(blocked on Wave 4 completion)*
-- [ ] 11-08-PLAN.md — add, remove and move for steps and rows, Add to step, focus and announcements (D-14 to D-17)
+- [ ] 11-08-PLAN.md — add, remove and move for steps and rows, Add to step, focus and announcements (D-14 to D-17), and pC1 and pD1 against the boards
 
 **Wave 6** *(blocked on Wave 5 completion)*
 - [ ] 11-09-PLAN.md — Save in one transaction, landing with "Recipe saved.", the whole refusal gate; stops for the export-first row (D-21)

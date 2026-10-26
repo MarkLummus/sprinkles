@@ -34,6 +34,9 @@ import places as PL
 #   (decision 32, drop; the version pen keeps its own box, app.css .method-step__open-fields, which is not in this decision), Add step on the heading's row AND on each step's row
 #   (decision 33, Mark: "both: Add step on the heading's row (adds at the beginning) and on each step's row (adds right after that step)"; the heading's control adds at the beginning,
 #   not at the end as proposed), Preview step after Add target, Hide preview while open (decision 34, approved as drawn). step_html's defaults are that state; PROPOSED is gone.
+# Sid, 2026-10-26 (Mark: "redraw it now"): P11_Structure's "After remove on step 2" panel follows roadmap decision 24 (decide-p11-step-removal-split-portion, grams-fold-back, Mark 2026-10-25):
+#   the removed step's 200 g of Whole milk fold back into the row's remaining line, so it reads 600 g, 58.0%, no portion line, and the Balance stands. The panel had been drawn on
+#   2026-10-21 with the recommended split (400 g, "the Balance has moved") and never redrawn for the answer (sketch 014 README, "For the plan" 1). Only P11_Structure is republished.
 #   python3 p11.py measure <out dir> ; node p11-measure.mjs <out dir>/measure.html ; python3 p11.py <canvas.json read from the artifact root> <out dir> [P11_Save,P11_Steps]
 MEAS = json.load(open(HERE + '/p11-measure.json')) if os.path.exists(HERE + '/p11-measure.json') else {}
 p10.MEAS = MEAS
@@ -265,7 +268,8 @@ STAMP2 = ' (drawn 2026-10-21; redrawn 2026-10-25; for approval)'
 STAMP3 = ' (drawn 2026-10-21; redrawn 2026-10-25: Add ingredient on the Ingredients heading\'s row; proposed: the open step without the version pen\'s box, Add step on each step\'s row, Preview step; look-p11-steps-r3)'
 STAMP4 = ' (drawn 2026-10-21; redrawn 2026-10-25: Add step and Add ingredient on their heading\'s row; look-p11-steps-r3)'
 STAMP5 = ' (drawn 2026-10-21; redrawn 2026-10-25: Add step and Add ingredient on their heading\'s row, then the open step without the pen\'s box, Add step on each step\'s row, Preview step; decisions 32 to 34)'
-STAMPS = {'P11_Steps': STAMP5, 'P11_Structure': STAMP5, 'P11_Save': STAMP5, 'P11_FirstVersion': STAMP5}
+STAMP6 = STAMP5[:-1] + '; redrawn 2026-10-26: after remove on step 2 the grams fold back, roadmap decision 24)'
+STAMPS = {'P11_Steps': STAMP5, 'P11_Structure': STAMP6, 'P11_Save': STAMP5, 'P11_FirstVersion': STAMP5}
 TITLES = {'P11_Steps': 'Instructions while creating · a step, its targets, the rows it uses and in what portions, at 1366',
           'P11_Structure': 'Add, remove and move · steps, and rows within their step, at 1366',
           'P11_Save': 'Save · what refuses it and where it lands, at 1366',
@@ -291,8 +295,8 @@ def build_boards(out):
     three = [S1, S2, S3]
     r1 = [dict(SC('qA1', sheet(table_html(grouped(three)), method_html(steps_html(three)))), cap='Three steps · remove, Move up, Move down · 1366', sub='under every step: remove · Move up · Move down (STRUCT-02\'s words); the first step\'s Move up and the last\'s Move down cannot act and read as the picker\'s Added does; the same three under every row, moving within its step; Add ingredient and Add step on their heading\'s row (Mark, 2026-10-25), and Add step as the fourth word of every step\'s row, adding right after that step, while the heading\'s adds at the beginning (decision 33); the open step has no box and its lead-in takes the number\'s top (decision 32); Preview step after Add target (decision 34)'),
           dict(SC('qB1', sheet(table_html(grouped([S2, S1, S3])), method_html(steps_html([S2, S1, S3])))), cap='After Move down on step 1 · 1366', sub='the step is second now and reads 2; the numbers follow the order (STRUCT-03: the stored number never changes); the table\'s step groups follow the method')]
-    r2 = [dict(SC('qC1', sheet(table_html(grouped([S1, S3], split={'milk': [(0, 400)]})), method_html(steps_html([S1, S3])))),
-               cap='After remove on step 2 (Finish cold) · 1366', sub='deleted outright, no strike and no restore (decision 10): Heavy cream and Vanilla extract keep their grams and go back under "Not in a step yet"; Whole milk\'s 200 g line in that step went with it, so the row reads 400 g and the Balance has moved (decide-p11-step-removal-split-portion)'),
+    r2 = [dict(SC('qC1', sheet(table_html(grouped([S1, S3])), method_html(steps_html([S1, S3])))),
+               cap='After remove on step 2 (Finish cold) · 1366', sub='deleted outright, no strike and no restore (decision 10): Heavy cream and Vanilla extract keep their grams and go back under "Not in a step yet"; Whole milk\'s 200 g line in that step folds back into its line in step 1, so the row reads 600 g, 58.0%, with no portion line, and the Balance stands (decide-p11-step-removal-split-portion, grams-fold-back; roadmap decision 24)'),
           dict(SC('qD1', sheet(table_html(grouped([dict(S1, uses=('smp', 'milk', 'suc')), S2, S3])), method_html(steps_html(three)))), cap='After Move down on Whole milk · 1366', sub='a row moves within its step only (decision 9): Skim milk powder now leads step 1\'s rows; nothing else moved')]
     parts, bw, bh = flow([r1, r2]); sizes['P11_Structure'] = (bw, bh)
     board('P11_Structure', TITLES['P11_Structure'] + STAMPS['P11_Structure'], bw, bh, parts, out)

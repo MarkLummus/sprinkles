@@ -6,6 +6,8 @@
 # The boards are taken AS SERVED by the canvas (version 1792972438-f009, canvas version 468 of 2026-10-25), as snapshot013.py does. Each is self-contained (no canvas asset links,
 # no data: URIs), so the only change is that the canvas's support.js line is dropped. p11.py regenerates all four byte for byte (boards/P11_*.dc.html match the served files, sha256 checked
 # 2026-10-26). The canvas wins.
+# 2026-10-26, later: P11_Structure redrawn for roadmap decision 24 (the removed step's grams fold back; Mark: "redraw it now") and republished as canvas version 469 (1792973563-74b9);
+# add-remove-move.html re-taken from that served file the same way (byte-identical minus the support.js line, sha256 05826a8d).
 import sys, os
 SRC, DEST = sys.argv[1], sys.argv[2]
 SERVED = {'P11_Steps': 'instructions-steps.html', 'P11_Structure': 'add-remove-move.html', 'P11_Save': 'save.html', 'P11_FirstVersion': 'first-version.html'}

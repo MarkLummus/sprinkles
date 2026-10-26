@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: planning
 stopped_at: Phase 10 complete, ready to plan Phase 11
-last_updated: "2026-10-26T00:04:38.446Z"
+last_updated: "2026-10-26T01:04:33.727Z"
 last_activity: 2026-10-25
 last_activity_desc: Phase 10 complete, transitioned to Phase 11
-state_head: 24912a123a941a079c10a2af962eea17104f9829
+state_head: 2737637b92fb07ead968d27738a06973bfdc9cd8
 progress:
   total_phases: 5
   completed_phases: 3
@@ -600,6 +600,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 197 | A todo note routes the work and hands the row to Claude; Done on a todo means built, file stays pending | 2026-10-25 | 7c105a35 | — |
 | 261025-rjq | Fix bug-pen-step-number-misaligned: the version pen open step first field carries no top margin so the step number and the lead-in field share one top | 2026-10-25 | 21878842 | [261025-rjq-fix-bug-pen-step-number-misaligned-the-v](./quick/261025-rjq-fix-bug-pen-step-number-misaligned-the-v/) |
 | 199 | The strict walk expects Batch saved. after a correction; four save-notice leaves rebaselined | 2026-10-25 | 24912a12 | — |
+| 200 | Phase 11 criterion 6: screen steps in the print treatment, heading-row controls, Add to step | 2026-10-25 | 2737637b | — |
 
 ### Roadmap Evolution
 

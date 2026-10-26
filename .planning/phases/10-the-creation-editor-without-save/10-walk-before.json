@@ -160980,7 +160980,7 @@
           "step": "saved",
           "snapshot": {
             "url": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/00000000-0000-4000-8000-000000000001",
-            "pageStatus": "recorded 14 Oct 2026",
+            "pageStatus": "Batch saved.",
             "formStatus": [],
             "tastingStatus": null,
             "recordStatus": null,
@@ -224260,7 +224260,7 @@
           "step": "saved",
           "snapshot": {
             "url": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
-            "pageStatus": "changed 14 Oct 2026",
+            "pageStatus": "Batch saved.",
             "formStatus": [],
             "tastingStatus": null,
             "recordStatus": null,
@@ -303201,7 +303201,7 @@
           "step": "recorded",
           "snapshot": {
             "url": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/00000000-0000-4000-8000-000000000001",
-            "pageStatus": "recorded 14 Oct 2026",
+            "pageStatus": "Batch saved.",
             "formStatus": [],
             "tastingStatus": null,
             "recordStatus": null,
@@ -319386,7 +319386,7 @@
           "step": "saved",
           "snapshot": {
             "url": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/00000000-0000-4000-8000-000000000001",
-            "pageStatus": "changed 14 Oct 2026",
+            "pageStatus": "Batch saved.",
             "formStatus": [],
             "tastingStatus": null,
             "recordStatus": null,

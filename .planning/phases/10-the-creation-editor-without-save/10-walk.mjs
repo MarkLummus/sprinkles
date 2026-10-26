@@ -727,7 +727,8 @@ SCENARIOS.push([
     const batch = saved.stores.batches.find((b) => b.id === BATCH_ID);
     walk.expect(Boolean(batch) && batch.churn.churnDurationMinutes === 31, 'the seeded batch carries 31 after the correction');
     walk.expect(Boolean(batch?.changed), 'the corrected batch carries a changed stamp');
-    walk.expect((saved.snapshot.pageStatus ?? '').startsWith('changed '), `the page status starts with "changed " (${saved.snapshot.pageStatus})`);
+    // "Batch saved." on both save paths since f58c861b (decide-notice-copy, Mark 2026-10-25).
+    walk.expect(saved.snapshot.pageStatus === 'Batch saved.', `the page status is "Batch saved." (${saved.snapshot.pageStatus})`);
   },
 ]);
 

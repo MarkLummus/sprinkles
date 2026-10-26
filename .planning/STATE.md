@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: planning
 stopped_at: Phase 10 complete, ready to plan Phase 11
-last_updated: "2026-10-25T23:23:54.630Z"
+last_updated: "2026-10-26T00:02:22.323Z"
 last_activity: 2026-10-25
 last_activity_desc: Phase 10 complete, transitioned to Phase 11
-state_head: 7c105a35aadecae34eb75ef20c4507931396583e
+state_head: 21878842b723ba952b2ff6f4225fe4d92309e69b
 progress:
   total_phases: 5
   completed_phases: 3
@@ -598,6 +598,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 195 | The scales board spec reads .mk-caprow and the axis state comment matches the pen (records after 261025-f8m) | 2026-10-25 | 5bbcdad3 | — |
 | 196 | Canvas boards linked by address: CLAUDE.md rule and canvaslink.mjs (Mark 2026-10-25) | 2026-10-25 | ea6cbd3c | — |
 | 197 | A todo note routes the work and hands the row to Claude; Done on a todo means built, file stays pending | 2026-10-25 | 7c105a35 | — |
+| 261025-rjq | Fix bug-pen-step-number-misaligned: the version pen open step first field carries no top margin so the step number and the lead-in field share one top | 2026-10-25 | 21878842 | [261025-rjq-fix-bug-pen-step-number-misaligned-the-v](./quick/261025-rjq-fix-bug-pen-step-number-misaligned-the-v/) |
 
 ### Roadmap Evolution
 

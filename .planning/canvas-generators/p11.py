@@ -40,6 +40,12 @@ import places as PL
 # Sid, 2026-10-26, later (Mark's answer on decide-p11-place-unplaced-row: A, row-add-to-step): Add to step is decided, so every row under "Not in a step yet" ends its acts line with it
 #   wherever a step exists (grouped() draws it by default: P11_Steps "A step just added", P11_Structure "After remove on step 2" and the fifth panel, which keeps the pressed state and is
 #   no longer proposed). A placed row has no Add to step; with no step the table is flat (Phase 10's) and the word has nothing to offer. P11_Steps and P11_Structure are republished.
+# Sid, 2026-10-26, later (Mark, in chat: the on-screen Sheet's Instructions steps take the printed method's treatment, sketch 010 D18, built in Phase 11 with its step work; sketch 014
+#   decision 2): every reading step on these boards (the Preview step on P11_Steps pE1, the after-Save page on P11_Save vC1, P11_FirstVersion fA1 and fC1) draws its targets as the
+#   tag row (caps label, bold underlined value, no box), its purpose as "why", an em dash and the sentence, and its aside as the callout behind the ink rule, all upright: the reading
+#   classes keep their names (.method-step__targets, .target-chip, .method-step__purpose, .method-step__aside) and read print.css's .mp-* values through the same tokens (reading_body
+#   below, the rules in P11_CSS). pE1's step 1 gains an aside on that panel only, so the preview shows all three. The open step's fields are unchanged. P11_Structure draws no reading
+#   step: it regenerates with the rules in its CSS and nothing visible changes.
 #   python3 p11.py measure <out dir> ; node p11-measure.mjs <out dir>/measure.html ; python3 p11.py <canvas.json read from the artifact root> <out dir> [P11_Save,P11_Steps]
 MEAS = json.load(open(HERE + '/p11-measure.json')) if os.path.exists(HERE + '/p11-measure.json') else {}
 p10.MEAS = MEAS
@@ -58,6 +64,16 @@ P11_CSS = '''
 .mk-preview{margin:var(--gap-s) 0 0;padding:0 0 0 var(--gap-s);border-left:var(--rule-graduation) solid var(--sheet-ink)}
 .mk-preview__cue{margin:0 0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--sheet-type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em}
 .mk-preview .method-step{gap:var(--gap-s)}
+/* the Sheet's steps on screen in the printed method's treatment (Mark, 2026-10-26; sketch 010 D18, CONTRACT sections 5 and 6; decide-method-why-aside-italic: upright; sketch 014 decision 2):
+   the tag row, the why line and the aside callout at the Sheet's screen sizes, print.css's .mp-* values on the reading classes through the same tokens. Scoped to a reading step
+   (.method-step without .mk-step: the preview's and the reading page's) so the open step's chips of fields and the table's estimate flag (.target-chip.ingredient-table__flag) keep their box */
+.method-step:not(.mk-step) .method-step__targets{column-gap:var(--gap-l);row-gap:var(--gap-xs);align-items:baseline}
+.method-step:not(.mk-step) .target-chip{border:0;padding:0;align-items:baseline;gap:var(--gap-xs)}
+.method-step:not(.mk-step) .target-chip__label{font-size:var(--sheet-type-label);font-weight:var(--sheet-print-weight-cue);text-transform:uppercase;letter-spacing:var(--sheet-print-tracking-caps)}
+.method-step:not(.mk-step) .target-chip__value{font-size:var(--sheet-type-section);font-weight:var(--sheet-print-weight-title);text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--sheet-print-tag-underline-offset)}
+.method-step:not(.mk-step) .method-step__purpose,.method-step:not(.mk-step) .method-step__aside{font-style:normal;line-height:var(--sheet-leading-helper)}
+.method-step__purpose-label{font-family:var(--face-grotesk);font-size:var(--sheet-type-label);font-weight:var(--sheet-print-weight-cue);text-transform:uppercase;letter-spacing:var(--sheet-print-tracking-caps)}
+.method-step:not(.mk-step) .method-step__aside{border-left:var(--rule-tick) solid var(--sheet-ink);padding-left:var(--gap-s);margin-top:var(--gap-s)}
 /* a control that cannot act now (the first step's Move up, the last row's Move down): the picker's Added look, a word in secondary with no underline */
 .mk-off{color:var(--app-text-secondary);text-decoration:none;cursor:default}
 /* the table's row acts: remove, then the moves, on the name cell's own line */
@@ -122,13 +138,18 @@ def target_chip(n, label, value):
     return (f'<span class="target-chip"><input type="text" class="ink-field target-chip__label-field" value="{esc(label)}" aria-label="Step {n}, target label">'
             f'<input type="text" class="ink-field target-chip__value-field" value="{esc(value)}" aria-label="Step {n}, target value"></span>')
 NAMES = dict((k, n) for k, n, g, s in ROWS)
-def preview_html(n, lead, text, targets, purpose):
-    """The step as the Sheet prints it (reading_step's grammar), under the open step's fields."""
-    chips = ''.join(f'<span class="target-chip"><span class="target-chip__label">{esc(l)}</span><span class="target-chip__value">{esc(v)}</span></span>' for l, v in targets)
-    t = f'<p class="method-step__targets">{chips}</p>' if chips else ''
-    pu = f'<p class="method-step__purpose">{esc(purpose)}</p>' if purpose else ''
-    return (f'<div class="mk-preview" role="group" aria-label="Step {n}, preview"><p class="mk-preview__cue">Preview</p><ol class="method-steps"><li class="method-step"><span class="method-step__n" aria-hidden="true">{n}</span>'
-            f'<div class="method-step__body"><p class="method-step__lead"><span><b>{esc(lead)}.</b> {esc(text)}</span></p>{t}{pu}</div></li></ol></div>')
+def reading_body(n, lead, text, targets=(), purpose=None, aside=None):
+    """A reading step's number and body as the Sheet shows it on screen since 2026-10-26 (sketch 014 decision 2): the printed method's grammar (PrintSheetPages.jsx .mp-tags, .mp-why,
+    .mp-aside) on the reading classes: the tag row (label span, value span), the purpose as the caps word "why", an em dash and the sentence, the aside as the callout. One source for
+    the Preview step and the reading page."""
+    tags = ''.join(f'<span class="target-chip"><span class="target-chip__label">{esc(l)}</span><span class="target-chip__value">{esc(v)}</span></span>' for l, v in targets)
+    t = f'<p class="method-step__targets">{tags}</p>' if tags else ''
+    pu = f'<p class="method-step__purpose"><span class="method-step__purpose-label">why</span> — {esc(purpose)}</p>' if purpose else ''
+    a = f'<p class="method-step__aside">{esc(aside)}</p>' if aside else ''
+    return f'<span class="method-step__n" aria-hidden="true">{n}</span><div class="method-step__body"><p class="method-step__lead"><span><b>{esc(lead)}.</b> {esc(text)}</span></p>{t}{pu}{a}</div>'
+def preview_html(n, lead, text, targets, purpose, aside):
+    """The step as the Sheet shows it (reading_body), under the open step's fields."""
+    return f'<div class="mk-preview" role="group" aria-label="Step {n}, preview"><p class="mk-preview__cue">Preview</p><ol class="method-steps"><li class="method-step">{reading_body(n, lead, text, targets, purpose, aside)}</li></ol></div>'
 def step_html(n, lead='', text='', targets=(), uses=(), purpose=None, aside=None, uses_open=False, required=False, moves=(True, True), with_moves=True, box=False, add_after=True, preview='closed'):
     """The defaults are the decided state (sketch 013 decisions 32 to 34): no box (the version pen's hairline outline, decide-open-step-box, drop), Add step on the step's own acts row
     adding right after it (decide-add-step-per-step, both), and Preview step after Add target: 'closed' (the control) or 'open' (Hide preview, the printed step under the fields); None draws no control."""
@@ -142,7 +163,7 @@ def step_html(n, lead='', text='', targets=(), uses=(), purpose=None, aside=None
     body = f'<div class="method-step__open-fields">{fields}</div>' if box else fields
     if purpose is not None: body += f'<label class="method-step__field"><textarea class="prose-field" rows="2" aria-label="Step {n}, purpose">{esc(purpose)}</textarea></label>'
     if aside is not None: body += f'<label class="method-step__field"><textarea class="prose-field" rows="2" aria-label="Step {n}, aside">{esc(aside)}</textarea></label>'
-    if preview == 'open': body += preview_html(n, lead, text, targets, purpose)      # under every content field, before the uses line
+    if preview == 'open': body += preview_html(n, lead, text, targets, purpose, aside)      # under every content field, before the uses line
     names = [NAMES[k] for k in uses]
     line = ('uses ' + ', '.join(names)) if names else 'uses nothing yet'
     line += f' <button type="button" class="text-control" tabindex="0" aria-label="Step {n}, {"done" if uses_open else "change the ingredients"}">{"done" if uses_open else "change the ingredients"}</button>'
@@ -166,6 +187,7 @@ def method_html(steps):
 
 S1 = dict(lead='Warm the milk', text='Whisk the milk powder and sugar into the milk. Heat, stirring, then take it off.', targets=(('temp', '85 °C'),), uses=('milk', 'smp', 'suc'), purpose='The powder dissolves without lumps when the milk is warm.')
 S2 = dict(lead='Finish cold', text='Stir in the cream and vanilla. Chill overnight.', uses=('cream', 'van'))
+PE1_ASIDE = 'Whisk the powder in slowly or it clumps.'      # step 1's aside on the Preview panel only, so the preview shows the callout
 S3 = dict(lead='Churn', text='Churn, then harden in the freezer.', uses=())
 def steps_html(specs, with_moves=True, over=None, **common):
     n = len(specs); out = []; over = over or {}
@@ -262,10 +284,7 @@ def reading_row(key):
     h = re.sub(r'<span class="ingredient-table__remove-gap"> </span><button[^>]*>remove</button>', '', h, 1)
     return h
 def reading_step(n, s):
-    chips = ''.join(f'<span class="target-chip"><span class="target-chip__label">{esc(l)}</span><span class="target-chip__value">{esc(v)}</span></span>' for l, v in s.get('targets', ()))
-    t = f'<p class="method-step__targets">{chips}</p>' if chips else ''
-    pu = f'<p class="method-step__purpose">{esc(s["purpose"])}</p>' if s.get('purpose') else ''
-    return f'<li id="method-step-{n}" class="method-step"><span class="method-step__n" aria-hidden="true">{n}</span><div class="method-step__body"><p class="method-step__lead"><span><b>{esc(s["lead"])}.</b> {esc(s["text"])}</span></p>{t}{pu}</div></li>'
+    return f'<li id="method-step-{n}" class="method-step">{reading_body(n, s["lead"], s["text"], s.get("targets", ()), s.get("purpose"), s.get("aside"))}</li>'
 def reading_sheet():
     notes = '<ul class="authored__notes">' + ''.join(f'<li>{esc(t)}</li>' for t in SAMPLE_NOTES) + '</ul>'
     groups = ''
@@ -285,7 +304,9 @@ STAMP6 = STAMP5[:-1] + '; redrawn 2026-10-26: after remove on step 2 the grams f
 STAMP7 = STAMP6[:-1] + '; a fifth panel 2026-10-26, proposed: Add to step on a row under "Not in a step yet"; decide-p11-place-unplaced-row)'
 STAMP8 = STAMP6[:-1] + '; Add to step on every row under "Not in a step yet" 2026-10-26, a fifth panel with it pressed; decide-p11-place-unplaced-row, A)'
 STAMP9 = STAMP5[:-1] + '; redrawn 2026-10-26: Add to step on every row under "Not in a step yet"; decide-p11-place-unplaced-row, A)'
-STAMPS = {'P11_Steps': STAMP9, 'P11_Structure': STAMP8, 'P11_Save': STAMP5, 'P11_FirstVersion': STAMP5}
+STAMP10 = STAMP9[:-1] + '; the preview in the printed method treatment 2026-10-26: tag row, why line, aside callout, upright; sketch 010 D18, sketch 014 decision 2)'
+STAMP11 = STAMP5[:-1] + '; the reading page\'s steps in the printed method treatment 2026-10-26: tag row, why line, upright; sketch 010 D18, sketch 014 decision 2)'
+STAMPS = {'P11_Steps': STAMP10, 'P11_Structure': STAMP8, 'P11_Save': STAMP11, 'P11_FirstVersion': STAMP11}
 TITLES = {'P11_Steps': 'Instructions while creating · a step, its targets, the rows it uses and in what portions, at 1366',
           'P11_Structure': 'Add, remove and move · steps, and rows within their step, at 1366',
           'P11_Save': 'Save · what refuses it and where it lands, at 1366',
@@ -302,8 +323,8 @@ def build_boards(out):
     r2 = [dict(SC('pC1', sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2], over={1: dict(uses_open=True)})))), cap='Two steps worked on · 1366', sub='step 1 has a target and a purpose; step 2\'s checklist is open (the build\'s Uses fieldset); the table reads in step order under step heads, every row in one step, so no "Not in a step yet" head; Add ingredient and Add step on their heading\'s row (Mark, 2026-10-25); each step\'s row ends in Add step, which adds a step right after it; the heading\'s adds at the beginning (decision 33)'),
           dict(SC('pD1', sheet(table_html(grouped([S1, S2], split={'milk': [(0, 400), (1, 200)]})), method_html(steps_html([S1, dict(S2, uses=('cream', 'van', 'milk'))])))),
                cap='A row in two steps · 1366', sub='Whole milk ticked in step 2 as well: the row splits into one line per step, each with its own grams field, the note "400 g of 600 g · 58.0% in all" under each (the build\'s portion line); the grams are typed in the table, not on the step (decide-p11-portion-grams-place, A); Add step on the heading\'s row (adds at the beginning) and on each step\'s row (adds right after it) (decision 33)')]
-    r3 = [dict(SC('pE1', sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2], over={0: dict(preview='open')})))), cap='Preview step on step 1 · 1366',
-               sub='Preview step (Mark\'s todo of 2026-10-25: "some of the actions may not be understandable without seeing the preview", his example a target): the control sits at the end of the targets line, after Add target, where the fields end; pressed, it reads Hide preview and the step appears under its fields as the Sheet will print it, number, bold lead-in, text, the target as its chip, the purpose in italics, set off by the Sheet\'s hairline at the left under a Preview cue in the checklist\'s legend face; the uses line and the step\'s row stay where they are. Approved as drawn (look-p11-preview-step; decision 34)')]
+    r3 = [dict(SC('pE1', sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2], over={0: dict(preview='open', aside=PE1_ASIDE)})))), cap='Preview step on step 1 · 1366',
+               sub='Preview step (Mark\'s todo of 2026-10-25: "some of the actions may not be understandable without seeing the preview", his example a target): the control sits at the end of the targets line, after Add target, where the fields end; pressed, it reads Hide preview and the step appears under its fields as the Sheet shows it, set off by the Sheet\'s hairline at the left under a Preview cue in the checklist\'s legend face; the uses line and the step\'s row stay where they are. Approved as drawn (look-p11-preview-step; decision 34). Redrawn 2026-10-26 (Mark: the Sheet\'s steps take the printed method\'s treatment, sketch 010 D18; sketch 014 decision 2): the preview reads as the print does, the target as a caps label and a bold underlined value with no box, the purpose as "why", an em dash and the sentence, the aside as a callout behind the ink rule, all upright; step 1 has an aside on this panel so the preview shows all three')]
     parts, bw, bh = flow([r1, r2, r3]); sizes['P11_Steps'] = (bw, bh)
     board('P11_Steps', TITLES['P11_Steps'] + STAMPS['P11_Steps'], bw, bh, parts, out)
 

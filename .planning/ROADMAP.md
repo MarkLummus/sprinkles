@@ -252,7 +252,40 @@ Plans:
   5. The created recipe prints as a bench sheet with its Sheet code, like the seeded ones, and typing that code finds it, also after a reorder or any other edit made after printing; a recipe with empty targets, equipment or process prints with no gap
   6. On screen, the Sheet's Instructions steps read in the printed method treatment (sketch 010 D18: the targets as a tag row with no box, Why as the caps word and the sentence, the aside as a callout, all upright) on the reading page, in the version pen's closed steps and in the creation editor's Preview step; Add note, Add ingredient and Add step sit on their heading's row, and an unplaced row offers Add to step (sketch 014; Mark, 2026-10-25 and 2026-10-26)
 
-**Plans**: TBD
+**Plans:** 13 plans in 9 waves (11-09 stops for the orchestrator to put the export-first row on Mark's List, 11-13 for the iPad check row)
+
+Plans:
+**Wave 1**
+- [ ] 11-01-PLAN.md — the walk re-recorded at BASE cf64aa70 with a method hash and the new-scenario allow-list, and the board engine with seed, anchored full pages and a type check (D-19); no app change
+- [ ] 11-02-PLAN.md — pure step, row and allocation ops (placement from uses, step 0 for unplaced rows, tombstones, fold-back) and the Sheet projection
+- [ ] 11-03-PLAN.md — createRecipe's optional fields, the one-transaction Save and Save-over with the forced-failure tests, the first-version eligibility rule, the edit draft kind and the edit address
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 11-04-PLAN.md — the on-screen steps in the printed method treatment on the reading page, the pen's closed steps and Show changes (D-18, D-26)
+- [ ] 11-05-PLAN.md — the created recipe's bench sheet, "Not in a step yet" in print, no empty section, and its Sheet code found after a Save-over
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 11-06-PLAN.md — the heading rows, Add step, each step's fields, targets, purpose, aside and Preview step in the creation editor
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 11-07-PLAN.md — the Uses checklist, the table under step heads with "Not in a step yet", and split rows typed line by line
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [ ] 11-08-PLAN.md — add, remove and move for steps and rows, Add to step, focus and announcements (D-14 to D-17)
+
+**Wave 6** *(blocked on Wave 5 completion)*
+- [ ] 11-09-PLAN.md — Save in one transaction, landing with "Recipe saved.", the whole refusal gate; stops for the export-first row (D-21)
+
+**Wave 7** *(blocked on Wave 6 completion)*
+- [ ] 11-10-PLAN.md — the edit route on a saved first version, its kept edit draft, Save-over keeping id, code and date, and the stale refusal (D-01 to D-07, D-23)
+
+**Wave 8** *(blocked on Wave 7 completion)*
+- [ ] 11-11-PLAN.md — every Save refusal shown in its own place, in both modes
+- [ ] 11-12-PLAN.md — Edit and Resume editing on the page, the Notebook and Home while an edit is kept, and import refused naming the recipe (D-04, D-05, D-24)
+
+**Wave 9** *(blocked on Wave 8 completion)*
+- [ ] 11-13-PLAN.md — the proof on the final build: the walk with five new scenarios, every sketch 014 board with evidence, the print check, the iPad steps walked in WebKit; stops for the iPad check row (D-20)
+
 **Design gate**: MET (Mark, 2026-10-25, redraws approved 2026-10-26). The four boards for the creation editor's Instructions steps with their uses and portions, the Add, Remove, Move up and Move down controls for steps and rows, Save and the saved first version with no batch and no child version (P11_Steps, P11_Structure, P11_Save, P11_FirstVersion) are approved and snapshotted as `.planning/sketches/014-steps-structure-save/` (README `## Decisions`: decisions 22 to 25 above, sketch 013's 29 to 34, and 014's 1 and 2: Add to step on an unplaced row, the on-screen steps in the printed method treatment). Print (MAKE-12) has no board: sketch 010 and the built sheet are its authority. Plans cite the snapshot by path.
 **UI hint**: yes
 **Notes**: Save lands here, once steps exist. Under decision 12 a saved first version can still gain structure until it has a batch or a child version, so Save before steps or scales is no longer a dead end; the authoring still moves before Save, as Mark instructed (2026-10-16): Phase 10 authors everything but the steps, and this phase adds the steps before the first save. This is where the reset window closes, because a recipe becomes saveable: from this phase on, no `DB_VERSION` change in v2.0, and the export-first row is on Mark's List before the first device build that can save. Save goes through the research's one-transaction `repository.createRecipeWithVersion` over recipes, versions and drafts, proven by a forced-failure test. The research's slice order for this phase: steps and their allocation, then add, remove and move, then save, then print. STRUCT-01's row half extends Phase 10's row removal: once steps use rows, removing a row prunes the `uses` that name it, removing a step prunes the portions that name it, and no removed step's key is handed out again (`nextStepKey`). Decision 10 settles removal at creation; STRUCT-01 reads the same delete-outright rule for a saved first version with no batch and no child, which nothing outside it points at, and discussion confirms it with Mark. STRUCT-04 leaves the version pen's remove and restore on later versions (Phase 3, 03.6) as it is. WebKit focus for the Move buttons is medium confidence: probe it on the iPad from the production build (`npm --prefix app run build && npm --prefix app run preview -- --host`), never the dev server. The Sheet code is fixed when the version is created (decision 19), so a printed sheet keeps finding its version after any edit, a reorder included. Print is checked as an iPad PDF, not only in Chrome. Every new button, checkbox and radio renders through `ui/Button.jsx`, `Checkbox.jsx` or `Radio.jsx`, every link carries `tabIndex={0}`, and every visual value reads a token.

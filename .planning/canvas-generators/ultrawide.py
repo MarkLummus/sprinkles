@@ -10,6 +10,8 @@ import printstart
 # Every panel is the built app's own shell (ultrawide-capture.json: WebKit, the scratch build of 2026-10-26, 2560, fine pointer) with the app's own tokens.css, app.css, home.css, notebook.css and shell.css,
 # their @media resolved at 2560 and scoped to the panel. The new rules are in RULE_A / RULE_B / LIST_CAP below; every value reads an existing token or the one proposed token, --app-frame-max, derived from
 # three existing ones (224 + 1482 + 2 x 32 = 1770). The survey's numbers are in .planning/notes/2026-10-26-ultra-wide-survey.md.
+# 2026-10-26, 01:53 and 01:54 UTC: Mark answered decide-ultrawide-frame = centred (panel A) and decide-ultrawide-lists = fill (the list-cap panel not chosen); sketch 011 README decision 59.
+# Both boards snapshotted as served (canvas version 473) by snapshotuw.py into .planning/sketches/011-recipe-route-c/ (2560-home-frame.html, 2560-recipe-frame.html), every panel kept.
 #   node ultrawide-capture.mjs ; python3 ultrawide.py <canvas.json read from the artifact root> <out dir> ; node ultrawide-measure.mjs <out dir>/project ; python3 ultrawide.py ... again (labels carry the measured numbers)
 CAP = json.load(open(HERE + '/ultrawide-capture.json'))
 MEAS = json.load(open(HERE + '/ultrawide-measure.json')) if os.path.exists(HERE + '/ultrawide-measure.json') else {}

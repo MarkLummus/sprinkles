@@ -12,7 +12,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { describe, test, expect } from 'vitest';
-import { readAllRules, readCustomProperties } from './css-source.js';
+import { readAllRules, readCustomProperties, resolveTokenPx } from './css-source.js';
 
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const SHELL_CSS_PATH = path.join(STYLES_DIR, 'shell.css');
@@ -717,7 +717,7 @@ describe('The Import error panel (sketch 011 decision 52 B; Mark 2026-10-05)', (
         'position: fixed',
         'z-index: var(--app-z-import-errors)',
         'inset-block-start: var(--app-size-header-h)',
-        'inset-inline-end: var(--gap-page)',
+        'inset-inline-end: max(var(--gap-page), calc((100% - var(--app-frame-max)) / 2 + var(--gap-page)))',
         'width: var(--app-size-import-errors-w)',
         'margin-block-start: var(--gap-xs)',
         'box-sizing: border-box',
@@ -793,5 +793,60 @@ describe('The Import error panel (sketch 011 decision 52 B; Mark 2026-10-05)', (
     expect(tokens['--app-size-import-errors-w']).toBe('480px');
     expect(tokens['--app-import-errors-title-leading']).toBe('1.3');
     expect(tokens['--app-import-errors-leading']).toBe('1.5');
+  });
+});
+
+describe('the ultra-wide frame: one block capped at --app-frame-max and centred (sketch 011 decision 59; decide-ultrawide-frame centred, Mark 2026-10-26; quick 261025-uge)', () => {
+  const declarationsOf = (rule) => rule.declarations.split(';').map((d) => d.trim()).filter(Boolean);
+  const topRule = (selector) => {
+    const rule = rules.find((r) => r.selector === selector && r.media === undefined);
+    expect(rule, `expected a top-level ${selector} rule`).toBeTruthy();
+    return rule;
+  };
+  const SHARED_EDGE = 'max(var(--gap-page), calc((100% - var(--app-frame-max)) / 2 + var(--gap-page)))';
+
+  test('--app-frame-max is the rail plus the notebook plus its two gutters, 1770', () => {
+    expect(tokens['--app-frame-max']).toBe(
+      'calc(var(--app-size-nav-w) + var(--app-notebook-content-max) + 2 * var(--app-notebook-gutter))',
+    );
+    expect(
+      resolveTokenPx(tokens, '--app-size-nav-w') +
+        resolveTokenPx(tokens, '--app-notebook-content-max') +
+        2 * resolveTokenPx(tokens, '--app-notebook-gutter'),
+    ).toBe(1770);
+  });
+
+  test('.shell__body fills the window up to the frame and centres there, and adds no containing block', () => {
+    expect(declarationsOf(topRule('.shell__body')).sort()).toEqual(
+      ['display: flex', 'flex: 1 1 auto', 'margin-inline: auto', 'max-width: var(--app-frame-max)', 'width: 100%'].sort(),
+    );
+  });
+
+  test('.shell__head sets the wordmark and the tools over the block edges, after its padding shorthand', () => {
+    const decls = declarationsOf(topRule('.shell__head'));
+    const shorthand = decls.findIndex((d) => d.startsWith('padding:'));
+    const inline = decls.indexOf(`padding-inline: ${SHARED_EDGE}`);
+    expect(shorthand, 'expected the padding shorthand to stay').toBeGreaterThan(-1);
+    expect(inline, 'expected the padding-inline declaration').toBeGreaterThan(-1);
+    expect(inline).toBeGreaterThan(shorthand);
+  });
+
+  test('the Import error panel and the bar share one edge expression, so the panel stays under Import (decision 52 B)', () => {
+    const edge = (selector, property) => {
+      const decl = declarationsOf(topRule(selector)).find((d) => d.startsWith(`${property}:`));
+      return decl ? decl.slice(property.length + 1).trim() : undefined;
+    };
+    expect(edge('.shell__head', 'padding-inline')).toBe(SHARED_EDGE);
+    expect(edge('.shell__import-errors', 'inset-inline-end')).toBe(edge('.shell__head', 'padding-inline'));
+  });
+
+  test('no media rule reads --app-frame-max and the cap adds no breakpoint', () => {
+    for (const rule of rules.filter((r) => r.media !== undefined)) {
+      expect(rule.declarations).not.toMatch(/--app-frame-max/);
+    }
+    const conditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))].sort();
+    expect(conditions).toEqual(
+      [PLACES_COLUMN_MEDIA, PLACES_PHONE_MEDIA, COARSE_MEDIA, FLYOUT_MEDIA, PHONE_MEDIA].sort(),
+    );
   });
 });

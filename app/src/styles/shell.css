@@ -12,7 +12,11 @@
      The main area is the whole window, so the Sheet is the window less 64,
      920 at 984.
    - From 1590: the 224px rail stands in the flex row under the bar
-     (224 + 3 x 32 + 350 + 920 = 1590), and the menu button is gone.
+     (224 + 3 x 32 + 350 + 920 = 1590), and the menu button is gone. From
+     1770 (decision 59), .shell__body stops at --app-frame-max and centres in
+     the window, the rail inside it; the bar's padding sets the wordmark and
+     the tools over the block's edges, and the Import error panel follows the
+     tools. No media condition is added.
 
    Two root classes only: .shell (the shell's own chrome) and .place (the
    unbuilt-place page Placeholder.jsx renders inside .shell__main) —
@@ -52,6 +56,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--gap-xs) var(--gap-page);
+  padding-inline: max(var(--gap-page), calc((100% - var(--app-frame-max)) / 2 + var(--gap-page)));
   background: var(--app-background);
   border-bottom: var(--app-rule-row) solid var(--app-divider);
 }
@@ -208,14 +213,15 @@ button.shell__place {
 }
 
 /* The Import error panel (sketch 011 decision 52 B, Mark 2026-10-05; the board
-   import-errors-placement.html B): fixed 6px under the bar at the right gutter,
-   under Import, over the page, so the bar stays 57px with one line or forty-nine.
-   Its place in the stack is in tokens.css. */
+   import-errors-placement.html B): fixed 6px under the bar at the bar's right
+   gutter, which from 1770 is the block's (decision 59), so it stays under
+   Import (decision 52 B), over the page, so the bar stays 57px with one line or
+   forty-nine. Its place in the stack is in tokens.css. */
 .shell__import-errors {
   position: fixed;
   z-index: var(--app-z-import-errors);
   inset-block-start: var(--app-size-header-h);
-  inset-inline-end: var(--gap-page);
+  inset-inline-end: max(var(--gap-page), calc((100% - var(--app-frame-max)) / 2 + var(--gap-page)));
   width: var(--app-size-import-errors-w);
   margin-block-start: var(--gap-xs);
   box-sizing: border-box;
@@ -262,9 +268,17 @@ button.shell__place {
   overflow-wrap: anywhere;
 }
 
+/* The rail and the page are one block, capped at --app-frame-max (1770) and
+   centred in the window (sketch 011 decision 59; decide-ultrawide-frame).
+   Below 1770 the block is the window. No transform, filter, contain or
+   overflow: the sticky bar and the page notice's fixed anchor still resolve
+   against the viewport. */
 .shell__body {
   display: flex;
   flex: 1 1 auto;
+  width: 100%;
+  max-width: var(--app-frame-max);
+  margin-inline: auto;
 }
 
 /* The 224px rail (D-09, G-03.4-7, board 170 line 30). Distinct from

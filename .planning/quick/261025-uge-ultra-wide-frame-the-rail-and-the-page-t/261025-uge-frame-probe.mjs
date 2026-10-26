@@ -316,7 +316,9 @@ function compare(beforeFile, afterFile) {
           nav: [415, 598],
           main: [619, 2165],
           brand: [443, 557],
-          tools: [1749.5, 2117],
+          // decision 59's 1749.5 is WebKit's text width (367.5); Chrome's tools are 364 wide at the base too, so
+          // its left edge is 2117 - 364 and only the right edge is the frame's
+          tools: [engine === 'webkit' ? 1749.5 : null, 2117],
           head: [0, 2560],
           lead: [667, 2117],
           row: [667, 2117],

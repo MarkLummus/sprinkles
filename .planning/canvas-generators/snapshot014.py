@@ -14,6 +14,10 @@
 # 2026-10-26, third: the reading steps in the printed method's treatment (sketch 014 decision 2; sketch 010 D18), all four boards republished as canvas version 472 (1792977056-dc7e) and all four files
 # re-taken from the served files the same way: instructions-steps.html 604d6cdc, add-remove-move.html 4b298a02 (CSS only), save.html 0c9a8327, first-version.html fb6343ad; each byte-identical to
 # boards/P11_*.dc.html minus the support.js line (cmp checked). P11_Save and P11_FirstVersion now also carry the pen-fix rule above.
+# 2026-10-26, fourth: each step orders its own rows (decide-p11-row-order-across-steps; sketch 014 decision 3; Mark: redraw on decide-p11-sketch-014-boards-vs-row-order): P11_Steps (pD1 gains Whole milk's
+# second line under Step 2) and P11_Structure (qD1's step 1 uses line in the moved order) republished as canvas version 489 (1793057443-4cd7); instructions-steps.html (sha256 d9550594)
+# and add-remove-move.html (f7aa930c) re-taken from the served files the same way (cmp checked against boards/). These two now also carry the app stylesheet's ultra-wide frame rules
+# (--app-frame-max, shell.css; decide-ultrawide-frame 2026-10-26), inlined as every regeneration inlines the current app CSS; nothing changes at 1366. P11_Save and P11_FirstVersion stay as served.
 import sys, os
 SRC, DEST = sys.argv[1], sys.argv[2]
 SERVED = {'P11_Steps': 'instructions-steps.html', 'P11_Structure': 'add-remove-move.html', 'P11_Save': 'save.html', 'P11_FirstVersion': 'first-version.html'}

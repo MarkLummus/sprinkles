@@ -37,6 +37,9 @@ import places as PL
 # Sid, 2026-10-26 (Mark: "redraw it now"): P11_Structure's "After remove on step 2" panel follows roadmap decision 24 (decide-p11-step-removal-split-portion, grams-fold-back, Mark 2026-10-25):
 #   the removed step's 200 g of Whole milk fold back into the row's remaining line, so it reads 600 g, 58.0%, no portion line, and the Balance stands. The panel had been drawn on
 #   2026-10-21 with the recommended split (400 g, "the Balance has moved") and never redrawn for the answer (sketch 014 README, "For the plan" 1). Only P11_Structure is republished.
+# Sid, 2026-10-26, later (Mark's answer on decide-p11-place-unplaced-row: A, row-add-to-step): Add to step is decided, so every row under "Not in a step yet" ends its acts line with it
+#   wherever a step exists (grouped() draws it by default: P11_Steps "A step just added", P11_Structure "After remove on step 2" and the fifth panel, which keeps the pressed state and is
+#   no longer proposed). A placed row has no Add to step; with no step the table is flat (Phase 10's) and the word has nothing to offer. P11_Steps and P11_Structure are republished.
 #   python3 p11.py measure <out dir> ; node p11-measure.mjs <out dir>/measure.html ; python3 p11.py <canvas.json read from the artifact root> <out dir> [P11_Save,P11_Steps]
 MEAS = json.load(open(HERE + '/p11-measure.json')) if os.path.exists(HERE + '/p11-measure.json') else {}
 p10.MEAS = MEAS
@@ -83,8 +86,9 @@ DIS = ' aria-disabled="true"'
 def pct(g): return '%.1f%%' % (g / TOTAL * 100)
 def row(key, grams=None, note=None, moves=None, focus=False, place=None):
     """One table row from the capture: its grams, a portion note, and the row acts (remove · Move up · Move down; moves=(up_on, down_on)).
-    place (proposed, decide-p11-place-unplaced-row; only a row under "Not in a step yet"): 'closed' adds Add to step as the acts' last word; ('open', [(n, lead), ...]) draws the
-    line as the chooser it becomes when pressed: Cancel first, then every step by number and lead-in; choosing one ticks the row in that step's uses and the row moves under its head."""
+    place (decide-p11-place-unplaced-row, A, 2026-10-26; only a row under "Not in a step yet"): 'closed' adds Add to step as the acts' last word; ('open', [(n, lead), ...]) draws the
+    line as the chooser it becomes when pressed: Cancel first, then every step by number and lead-in (the number alone while a step has no lead-in yet); choosing one ticks the row in
+    that step's uses and the row moves under its head as its last row."""
     h = ROW_HTML[key]; name = dict((k, n) for k, n, g, s in ROWS)[key]; full = dict((k, g) for k, n, g, s in ROWS)[key]
     g = full if grams is None else grams
     h = re.sub(r' value="[^"]*"', ' value="%s"' % ('' if g == '' else ('%g' % g)), h, 1)
@@ -97,7 +101,7 @@ def row(key, grams=None, note=None, moves=None, focus=False, place=None):
         if place == 'closed':
             acts += f'<span aria-hidden="true"> · </span><button type="button" class="text-control" tabindex="0" aria-label="Add {esc(name)} to a step">Add to step</button>'
         elif place and place[0] == 'open':
-            acts = f'<button type="button" class="text-control" tabindex="0" aria-label="{esc(name)}, cancel">Cancel</button>' + ''.join(f'<span aria-hidden="true"> · </span><button type="button" class="text-control" tabindex="0" aria-label="Add {esc(name)} to step {n}">Step {n}, {esc(lead)}</button>' for n, lead in place[1])
+            acts = f'<button type="button" class="text-control" tabindex="0" aria-label="{esc(name)}, cancel">Cancel</button>' + ''.join(f'<span aria-hidden="true"> · </span><button type="button" class="text-control" tabindex="0" aria-label="Add {esc(name)} to step {n}">Step {n}{", " + esc(lead) if lead else ""}</button>' for n, lead in place[1])
         acts = '<span class="mk-row-acts">' + acts + '</span>'
     h = re.sub(r'<button type="button" class="text-control" tabindex="0">remove</button>', acts, h, 1)
     if note: h = h.replace('</td><td class="ingredient-table__col-numeric">', f'<span class="ingredient-table__portion-note">{esc(note)}</span></td><td class="ingredient-table__col-numeric">', 1)
@@ -172,7 +176,7 @@ def steps_html(specs, with_moves=True, over=None, **common):
 # the table as the steps allocate it
 def grouped(steps_specs, extra_groups=(), split=None, with_moves=True, place=None):
     """Rows under their step heads (the build's groupPortionsByStep); rows no step uses under the unplaced head at the foot. split: {key: [(step_index, grams), ...]}.
-    place: {key: 'closed' | 'open'} for rows under "Not in a step yet" (row()'s place; the open chooser lists every step)."""
+    place: {key: 'open'} for a row under "Not in a step yet" drawn with its chooser pressed; every other unplaced row ends in Add to step once a step exists (decision 014 1)."""
     used = set(); groups = []
     for i, s in enumerate(steps_specs):
         keys = list(s['uses']); rs = []
@@ -187,7 +191,7 @@ def grouped(steps_specs, extra_groups=(), split=None, with_moves=True, place=Non
         if rs: groups.append((step_head(i + 1, s['lead']), rs))      # the build prints no head for a step that uses nothing (groupPortionsByStep)
     rest = [k for k, _, _, _ in ROWS if k not in used]
     steps = [(i + 1, s['lead']) for i, s in enumerate(steps_specs)]
-    pl = lambda k: (('open', steps) if (place or {}).get(k) == 'open' else (place or {}).get(k))
+    pl = lambda k: (('open', steps) if (place or {}).get(k) == 'open' else ('closed' if steps else None))
     if rest: groups.append((group_head(UNPLACED), [row(k, moves=moves_for(j, len(rest)) if with_moves else None, place=pl(k)) for j, k in enumerate(rest)]))
     return groups
 
@@ -279,7 +283,9 @@ STAMP4 = ' (drawn 2026-10-21; redrawn 2026-10-25: Add step and Add ingredient on
 STAMP5 = ' (drawn 2026-10-21; redrawn 2026-10-25: Add step and Add ingredient on their heading\'s row, then the open step without the pen\'s box, Add step on each step\'s row, Preview step; decisions 32 to 34)'
 STAMP6 = STAMP5[:-1] + '; redrawn 2026-10-26: after remove on step 2 the grams fold back, roadmap decision 24)'
 STAMP7 = STAMP6[:-1] + '; a fifth panel 2026-10-26, proposed: Add to step on a row under "Not in a step yet"; decide-p11-place-unplaced-row)'
-STAMPS = {'P11_Steps': STAMP5, 'P11_Structure': STAMP7, 'P11_Save': STAMP5, 'P11_FirstVersion': STAMP5}
+STAMP8 = STAMP6[:-1] + '; Add to step on every row under "Not in a step yet" 2026-10-26, a fifth panel with it pressed; decide-p11-place-unplaced-row, A)'
+STAMP9 = STAMP5[:-1] + '; redrawn 2026-10-26: Add to step on every row under "Not in a step yet"; decide-p11-place-unplaced-row, A)'
+STAMPS = {'P11_Steps': STAMP9, 'P11_Structure': STAMP8, 'P11_Save': STAMP5, 'P11_FirstVersion': STAMP5}
 TITLES = {'P11_Steps': 'Instructions while creating · a step, its targets, the rows it uses and in what portions, at 1366',
           'P11_Structure': 'Add, remove and move · steps, and rows within their step, at 1366',
           'P11_Save': 'Save · what refuses it and where it lands, at 1366',
@@ -292,7 +298,7 @@ def build_boards(out):
     # ======== P11_Steps
     r1 = [dict(SC('pA1', sheet(table_html([(None, flat_rows(['milk', 'cream', 'smp', 'suc', 'van'])) ]), method_html([]))), cap='No step yet · 1366', sub='the Instructions heading stands under the table with Add step on its row, as Before you start stands with Add note on its and, since Mark\'s todo of 2026-10-25, Ingredients with Add ingredient on its; the rows have no step head yet (Phase 10\'s flat table), only their own moves. The three controls in the Show/Hide control\'s look (Mark, 2026-10-25; the app follows in Phase 11: CreationPage.jsx\'s beforeFoot and notebook.css .mk-add-row move onto the heading\'s row)'),
           dict(SC('pB1', sheet(table_html(grouped([dict(lead='', uses=())])), method_html(steps_html([dict(lead='', text='', uses=())], over={0: dict(required=True)})))),
-               cap='A step just added · 1366', sub='the pen\'s open step, kept open as every creation field is: lead-in, text, Add target · Preview step, "uses nothing yet · change the ingredients · add a purpose · add an aside", then remove · Move up · Move down · Add step; Required under the two empty fields; the table now heads its rows "Not in a step yet". Decided 2026-10-25: no box around the fields, since every step is open here and the version pen\'s box only marked the one open step among closed ones (decide-open-step-box, drop), so the number and the lead-in share one top; Add step on the step\'s own row adds the next step right after it and the heading\'s Add step adds at the beginning of the list (decide-add-step-per-step, both), focus in the new step\'s lead-in either way; Preview step shows the step as the Sheet prints it (look-p11-preview-step, approved)')]
+               cap='A step just added · 1366', sub='the pen\'s open step, kept open as every creation field is: lead-in, text, Add target · Preview step, "uses nothing yet · change the ingredients · add a purpose · add an aside", then remove · Move up · Move down · Add step; Required under the two empty fields; the table now heads its rows "Not in a step yet", each ending its acts line with Add to step (decide-p11-place-unplaced-row, A, 2026-10-26: the line offers the steps when pressed, this one reading "Step 1" alone until the lead-in is typed). Decided 2026-10-25: no box around the fields, since every step is open here and the version pen\'s box only marked the one open step among closed ones (decide-open-step-box, drop), so the number and the lead-in share one top; Add step on the step\'s own row adds the next step right after it and the heading\'s Add step adds at the beginning of the list (decide-add-step-per-step, both), focus in the new step\'s lead-in either way; Preview step shows the step as the Sheet prints it (look-p11-preview-step, approved)')]
     r2 = [dict(SC('pC1', sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2], over={1: dict(uses_open=True)})))), cap='Two steps worked on · 1366', sub='step 1 has a target and a purpose; step 2\'s checklist is open (the build\'s Uses fieldset); the table reads in step order under step heads, every row in one step, so no "Not in a step yet" head; Add ingredient and Add step on their heading\'s row (Mark, 2026-10-25); each step\'s row ends in Add step, which adds a step right after it; the heading\'s adds at the beginning (decision 33)'),
           dict(SC('pD1', sheet(table_html(grouped([S1, S2], split={'milk': [(0, 400), (1, 200)]})), method_html(steps_html([S1, dict(S2, uses=('cream', 'van', 'milk'))])))),
                cap='A row in two steps · 1366', sub='Whole milk ticked in step 2 as well: the row splits into one line per step, each with its own grams field, the note "400 g of 600 g · 58.0% in all" under each (the build\'s portion line); the grams are typed in the table, not on the step (decide-p11-portion-grams-place, A); Add step on the heading\'s row (adds at the beginning) and on each step\'s row (adds right after it) (decision 33)')]
@@ -306,12 +312,12 @@ def build_boards(out):
     r1 = [dict(SC('qA1', sheet(table_html(grouped(three)), method_html(steps_html(three)))), cap='Three steps · remove, Move up, Move down · 1366', sub='under every step: remove · Move up · Move down (STRUCT-02\'s words); the first step\'s Move up and the last\'s Move down cannot act and read as the picker\'s Added does; the same three under every row, moving within its step; Add ingredient and Add step on their heading\'s row (Mark, 2026-10-25), and Add step as the fourth word of every step\'s row, adding right after that step, while the heading\'s adds at the beginning (decision 33); the open step has no box and its lead-in takes the number\'s top (decision 32); Preview step after Add target (decision 34)'),
           dict(SC('qB1', sheet(table_html(grouped([S2, S1, S3])), method_html(steps_html([S2, S1, S3])))), cap='After Move down on step 1 · 1366', sub='the step is second now and reads 2; the numbers follow the order (STRUCT-03: the stored number never changes); the table\'s step groups follow the method')]
     r2 = [dict(SC('qC1', sheet(table_html(grouped([S1, S3])), method_html(steps_html([S1, S3])))),
-               cap='After remove on step 2 (Finish cold) · 1366', sub='deleted outright, no strike and no restore (decision 10): Heavy cream and Vanilla extract keep their grams and go back under "Not in a step yet"; Whole milk\'s 200 g line in that step folds back into its line in step 1, so the row reads 600 g, 58.0%, with no portion line, and the Balance stands (decide-p11-step-removal-split-portion, grams-fold-back; roadmap decision 24)'),
+               cap='After remove on step 2 (Finish cold) · 1366', sub='deleted outright, no strike and no restore (decision 10): Heavy cream and Vanilla extract keep their grams and go back under "Not in a step yet", each with Add to step at the end of its acts line (decide-p11-place-unplaced-row, A); Whole milk\'s 200 g line in that step folds back into its line in step 1, so the row reads 600 g, 58.0%, with no portion line, and the Balance stands (decide-p11-step-removal-split-portion, grams-fold-back; roadmap decision 24)'),
           dict(SC('qD1', sheet(table_html(grouped([dict(S1, uses=('smp', 'milk', 'suc')), S2, S3])), method_html(steps_html(three)))), cap='After Move down on Whole milk · 1366', sub='a row moves within its step only (decision 9): Skim milk powder now leads step 1\'s rows; nothing else moved')]
-    # proposed (decide-p11-place-unplaced-row, Mark's note on look-p11-structure-r2: the unplaced rows "can't be easily added to a step"): the same state as "After remove on step 2",
-    # with Add to step on each unplaced row's acts line, Heavy cream's pressed. The four approved panels above are unchanged until Mark answers.
+    # decided 2026-10-26 (decide-p11-place-unplaced-row, A, row-add-to-step; Mark's note on look-p11-structure-r2: the unplaced rows "can't be easily added to a step"): the same state
+    # as "After remove on step 2", Heavy cream's Add to step pressed. The one panel that shows the pressed state.
     r3 = [dict(SC('qE1', sheet(table_html(grouped([S1, S3], place={'cream': 'open', 'van': 'closed'})), method_html(steps_html([S1, S3])))),
-               cap='Placing a row from "Not in a step yet" · 1366 · proposed', sub='Mark on look-p11-structure-r2: these rows "can\'t be easily added to a step"; the only way drawn was each step\'s "change the ingredients" checklist, a screen away. Proposed: a row under "Not in a step yet" ends its acts line with Add to step (Vanilla extract); pressed, the line offers the steps, Cancel first (Heavy cream); choosing one ticks the row in that step\'s uses and moves it under that step\'s head, grams kept, focus following to its remove. Other options are on the decide row, not drawn')]
+               cap='Placing a row from "Not in a step yet" · Add to step pressed · 1366', sub='Mark on look-p11-structure-r2: these rows "can\'t be easily added to a step"; the step\'s own "change the ingredients" checklist was a screen away. Decided (decide-p11-place-unplaced-row, A, 2026-10-26): a row under "Not in a step yet" ends its acts line with Add to step (Vanilla extract); pressed, the line becomes the chooser, Cancel first, then each step by number and lead-in (Heavy cream); choosing one ticks the row in that step\'s uses, moves it under that step\'s head as its last row with its grams, the step\'s uses line names it, and focus follows the row to its remove. A placed row has no Add to step; the checklist stays for a row in two steps or a move between steps')]
     parts, bw, bh = flow([r1, r2, r3]); sizes['P11_Structure'] = (bw, bh)
     board('P11_Structure', TITLES['P11_Structure'] + STAMPS['P11_Structure'], bw, bh, parts, out)
 

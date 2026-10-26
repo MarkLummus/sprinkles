@@ -8,6 +8,9 @@
 # 2026-10-26). The canvas wins.
 # 2026-10-26, later: P11_Structure redrawn for roadmap decision 24 (the removed step's grams fold back; Mark: "redraw it now") and republished as canvas version 469 (1792973563-74b9);
 # add-remove-move.html re-taken from that served file the same way (byte-identical minus the support.js line, sha256 05826a8d).
+# 2026-10-26, latest: Add to step on every row under "Not in a step yet" (decide-p11-place-unplaced-row, A; sketch 014 decision 1), P11_Steps and P11_Structure republished as canvas version 471
+# (1792976158-3b8d); instructions-steps.html (sha256 163cc881) and add-remove-move.html (92c82da8) re-taken from the served files the same way. These two boards now also carry app.css's
+# .method-step__open-fields > .method-step__field:first-child rule (the pen fix 21878842), inlined from the app's stylesheet; no P11 panel has that element. P11_Save and P11_FirstVersion stay as served.
 import sys, os
 SRC, DEST = sys.argv[1], sys.argv[2]
 SERVED = {'P11_Steps': 'instructions-steps.html', 'P11_Structure': 'add-remove-move.html', 'P11_Save': 'save.html', 'P11_FirstVersion': 'first-version.html'}

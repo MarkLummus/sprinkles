@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-10-26T15:41:53.419Z"
+last_updated: "2026-10-26T16:01:45.375Z"
 last_activity: 2026-10-25
 last_activity_desc: Phase 10 complete, transitioned to Phase 11
-state_head: b2e97477634cbb294810911e121980730e8f8ee5
+state_head: 51cd75e5d050afb90c3f6c9b57088cf6d409dcd0
 progress:
   total_phases: 5
   completed_phases: 3
@@ -603,6 +603,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 200 | Phase 11 criterion 6: screen steps in the print treatment, heading-row controls, Add to step | 2026-10-25 | 2737637b | — |
 | 261025-uge | Ultra-wide frame: the rail and the page travel as one block capped at 1770 and centred in the window (decide-ultrawide-frame centred, decide-ultrawide-lists fill) | 2026-10-25 | 7816aa05 | [261025-uge-ultra-wide-frame-the-rail-and-the-page-t](./quick/261025-uge-ultra-wide-frame-the-rail-and-the-page-t/) |
 | 202 | Mark the Phase 11 design gate MET in ROADMAP.md, modelled on Phase 9's line | 2026-10-25 | c44c6153 | — |
+| 203 | Record Mark's answers on row order and step-key reuse (decide-p11-row-order-across-steps, decide-p11-step-key-reuse) | 2026-10-26 | 51cd75e5 | — |
 
 ### Roadmap Evolution
 

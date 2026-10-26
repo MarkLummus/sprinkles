@@ -17,7 +17,7 @@ Rule: a board moves between canvases only after Mark approves `CANVAS-INVENTORY.
 | Page | Generator(s) |
 |---|---|
 | Page notice shape | `noticeshape.py` (`noticeshape-capture.mjs`, `noticeshape-measure.mjs`, `noticeshape-options.json`; screenshots `noticeshape-shots/`) |
-| Phase 11 steps, structure and save | `p11.py` (`p11-measure.mjs`) |
+| Phase 11 steps, structure and save | `p11.py` (`p11-measure.mjs`), snapshot `snapshot014.py` |
 | Log column rhythm | `p-rhythm.py` (`p-rhythm-measure.mjs`), `p-ladder.py` (`p-ladder-measure.mjs`), `p-pen-rhythm.py` (`p-pen-rhythm-capture.mjs`, `p-pen-rhythm-measure.mjs`; the control-size row's real-app probe `p-pen-rhythm-size-probe.mjs`, screenshots `p-pen-rhythm-shots/`); a board still in play is kept as generated under `boards/` until Mark approves it and it is snapshotted |
 | Phase 10 creation editor | `p10.py` (`p10-run.sh`, `p10-measure.mjs`, `p10-restyle.py`), snapshot `snapshot013.py` |
 | Phase 9 places | `places.py`, snapshot `snapshot012.py` |

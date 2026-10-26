@@ -48,6 +48,14 @@ Not in this phase: structure edits on any later version (the version pen keeps i
 - **D-20:** One iPad check at the end of the phase, from the production build (`npm --prefix app run build && npm --prefix app run preview -- --host`), as one check row on Mark's List: create a recipe with two steps and a split row, Move and remove by touch and by keyboard (the Move buttons' focus is the roadmap's medium-confidence item), Save, print to PDF and read the Sheet code, type it in Search, Edit and Save-over, type the code again. The steps are walked in WebKit first (verify-device-check-steps rule). Print is checked as the iPad PDF, not only in Chrome. (Mark, 2026-10-26)
 - **D-21:** Before the first device build that can save a recipe, the export-first row goes on Mark's List (roadmap, the reset window), as a `check` row with `needs: "hands"`: export the store before testing Save on the device. The plan that lands Save adds the row; the orchestrator writes it (executors have no `ArtifactData`). (roadmap Notes; confirmed in discussion)
 
+### Settled after research (Mark, 2026-10-26, in chat during /gsd-plan-phase 11)
+- **D-22:** A target chip whose label and value are both empty is dropped at Save, and each target chip in the creation editor gains a remove control (the editor's row-remove look); a one-sided chip still refuses Save with Required (D-10). No board draws the chip's remove; Sid is told, no redraw. (Mark, 2026-10-26; research open question 1)
+- **D-23:** Pressing Edit on a saved first version keeps no draft until the first change; the version is "editing" (import refused, Next version and Record a batch hidden, Resume editing shown) only once an edit draft exists. (Mark, 2026-10-26; research G-7)
+- **D-24:** While an edit draft is kept on a version, Home hides that recipe's Next version and Record a batch shortcuts as well as the version page (D-04). (Mark, 2026-10-26; research G-8)
+- **D-25:** Two declared problems with the same words refuse Save with a field message under the second, so every saved recipe re-imports (`transfer.js` rejects duplicates); the sentence is the planner's, within the existing shape. (Mark, 2026-10-26; research G-6)
+- **D-26:** In Show changes on a later version an added target reads plain, as an added step does; changed targets strike the old value and underline the new, removed targets are one struck tag (D-18). No added mark is built. (Mark, 2026-10-26; research G-9)
+- **D-27:** Success criterion 5's print clause reads: a recipe with no Before you start notes, no steps, or steps without targets prints with no empty heading and no blank band. The sheet has no Equipment or Process section; nothing new is built, a test and a WebKit print check prove it (D-13). (Mark, 2026-10-26; research G-5)
+
 ### Fixed by sketch 014 and the roadmap (carry forward; do not re-decide)
 - The four boards and their inlined CSS are the authority; `CONTRACT.md` sections 1 to 7 name every element, word and measure. Conformance is the board and the build side by side in WebKit, never prose or a test count. The boards add no token.
 - Add note, Add ingredient and Add step sit on their heading's row in the Show/Hide control's look (013 decisions 29, 31, 33); Add ingredient is gone while the picker is open. Add step on the heading adds at the **beginning**; Add step on a step's acts row adds right after it; focus goes to the new step's lead-in. The heading's is the only Add step while there is no step.
@@ -62,7 +70,8 @@ Not in this phase: structure edits on any later version (the version pen keeps i
 
 ### Claude's Discretion
 - Module homes and names: the step and structure ops as pure functions beside `domain/creation.js` (add, remove, move for steps and rows, place a row, set a step's uses, fold grams back), the edit route's component beside `CreationRoute.jsx`, how the saved version becomes a create-shaped draft and back, and the shape of the edit flag within D-02's constraint.
-- The exact sentences of the stale-edit refusal (D-06), the step and row announcements (D-14 to D-16) and the import-refusal notice for a kept edit, within the existing sentences' shape.
+- The exact sentences of the stale-edit refusal (D-06), the duplicate-problem message (D-25), the step and row announcements (D-14 to D-16) and the import-refusal notice for a kept edit, within the existing sentences' shape.
+- Research open questions 5, 8 and 9 (Edit below the editor's width, a library entry gone at Save-over, the unplaced sentinel): the planner decides once and states it in the plan.
 - How the print omits empty sections (D-13) and where the printed "Not in a step yet" head sits, following sketch 010's grammar.
 - How the walk's allow-list names the edit route and the created records (D-19).
 

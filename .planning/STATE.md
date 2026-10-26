@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: planning
 stopped_at: Phase 10 complete, ready to plan Phase 11
-last_updated: "2026-10-26T02:26:50.723Z"
+last_updated: "2026-10-26T02:36:00.432Z"
 last_activity: 2026-10-25
 last_activity_desc: Phase 10 complete, transitioned to Phase 11
-state_head: 7816aa05b19a33faa339e0e9ff9d71acfcdf5a09
+state_head: c44c61535b38e1f9b4de909afee1f849ecc24a1f
 progress:
   total_phases: 5
   completed_phases: 3
@@ -602,6 +602,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 199 | The strict walk expects Batch saved. after a correction; four save-notice leaves rebaselined | 2026-10-25 | 24912a12 | — |
 | 200 | Phase 11 criterion 6: screen steps in the print treatment, heading-row controls, Add to step | 2026-10-25 | 2737637b | — |
 | 261025-uge | Ultra-wide frame: the rail and the page travel as one block capped at 1770 and centred in the window (decide-ultrawide-frame centred, decide-ultrawide-lists fill) | 2026-10-25 | 7816aa05 | [261025-uge-ultra-wide-frame-the-rail-and-the-page-t](./quick/261025-uge-ultra-wide-frame-the-rail-and-the-page-t/) |
+| 202 | Mark the Phase 11 design gate MET in ROADMAP.md, modelled on Phase 9's line | 2026-10-25 | c44c6153 | — |
 
 ### Roadmap Evolution
 
@@ -644,6 +645,6 @@ Resume file: None
 
 ## Operator Next Steps
 
-- Phase 11's design gate is open: Sid draws the Instructions steps (uses, portions) and the Add/Remove/Move controls for steps and rows, while creating and on a saved first version; Mark approves; snapshot to sketch 014; then /gsd-discuss-phase 11
+- Phase 11's design gate is MET (sketch 014, approved 2026-10-25, redraws 2026-10-26; ROADMAP updated c44c6153); next is /gsd-discuss-phase 11, then /gsd-plan-phase 11
 - Before the first device build that can save a recipe (Phase 11), put the export-first row on Mark's List (ROADMAP, the reset window)
 - Phase 10 leftovers: 10-REVIEW-DISPOSITION.md rows WR-01 to WR-03 (worth a /gsd-quick-batch), Sid's P1 cue-face fix via p10.py and the P10_Scales republish, DESIGN.md notice line

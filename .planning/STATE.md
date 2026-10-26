@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: planning
 stopped_at: Phase 10 complete, ready to plan Phase 11
-last_updated: "2026-10-26T01:04:33.727Z"
+last_updated: "2026-10-26T02:26:50.723Z"
 last_activity: 2026-10-25
 last_activity_desc: Phase 10 complete, transitioned to Phase 11
-state_head: 2737637b92fb07ead968d27738a06973bfdc9cd8
+state_head: 7816aa05b19a33faa339e0e9ff9d71acfcdf5a09
 progress:
   total_phases: 5
   completed_phases: 3
@@ -601,6 +601,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261025-rjq | Fix bug-pen-step-number-misaligned: the version pen open step first field carries no top margin so the step number and the lead-in field share one top | 2026-10-25 | 21878842 | [261025-rjq-fix-bug-pen-step-number-misaligned-the-v](./quick/261025-rjq-fix-bug-pen-step-number-misaligned-the-v/) |
 | 199 | The strict walk expects Batch saved. after a correction; four save-notice leaves rebaselined | 2026-10-25 | 24912a12 | — |
 | 200 | Phase 11 criterion 6: screen steps in the print treatment, heading-row controls, Add to step | 2026-10-25 | 2737637b | — |
+| 261025-uge | Ultra-wide frame: the rail and the page travel as one block capped at 1770 and centred in the window (decide-ultrawide-frame centred, decide-ultrawide-lists fill) | 2026-10-25 | 7816aa05 | [261025-uge-ultra-wide-frame-the-rail-and-the-page-t](./quick/261025-uge-ultra-wide-frame-the-rail-and-the-page-t/) |
 
 ### Roadmap Evolution
 

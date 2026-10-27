@@ -110,16 +110,13 @@ export default {
       //   - Edit (`.notebook-version__acts .notebook-link`) is plan 11-12's;
       //   - the board's table draws a Step 3 head with no row beneath it, which the build does not
       //     draw for a step that uses nothing (CONTRACT section 2);
-      //   - `.notebook-version__identity` [text]: the board reads "Version 1 · Latest" and the
-      //     build's identity line is `Version ${n} · ${versionLabel}` plus " · Latest"
-      //     (lineage.js versionIdentity), so the new recipe's default Version name "Version 1"
-      //     reads "Version 1 · Version 1 · Latest"; no stored label can read the board's words
-      //     (plan 11-01 found the same). Only the "Latest" tail, which both draw, is compared;
       //   - `.notebook-history .fold-row__count` [text]: the board draws History as a fold with one
       //     node and "1 version", where the build's established rule (RecipeHistory.jsx, 03.5-18)
       //     reads a lone saved version as one plain line, "Only this version so far", with no fold
       //     and no count. Only the History caption, which both draw, is compared.
-      // Both differences are reported to Mark and Sid in the summary; neither is patched into app
+      // The identity line is compared whole: a default Version name now reads once
+      // (decide-p11-default-version-name-repeats, Mark 2026-10-27).
+      // The one difference is reported to Mark and Sid in the summary; it is not patched into app
       // code from here.
       id: 'vC1',
       steps: async (page) => {
@@ -129,7 +126,7 @@ export default {
       },
       elements: [
         { selector: '.page-status', checks: ['size', 'font', 'color', 'text'] },
-        { selector: '.notebook-version__latest', checks: ['text'] },
+        { selector: '.notebook-version__identity', checks: ['text'] },
         { selector: '.version-row__reason', checks: ['text'] },
         { selector: '.notebook-version__acts .notebook-action', checks: ['size', 'text'] },
         { selector: '.notebook-history .notebook-caption', checks: ['count', 'text'] },

@@ -53,12 +53,19 @@ export function versionsForRecipe(versions, recipeId) {
  * `Latest`'s positional read (VersionStrip.jsx) already refused. A version
  * absent from `ordered` (the pre-load paint, before the recipe's version
  * list has resolved) has no position yet, so it is named by its authored
- * line alone rather than a guessed number.
+ * line alone rather than a guessed number. When the authored name is the
+ * ordinal's own words (trimmed, any case), the default a new recipe's first
+ * version carries, the identity prints them once, so the page reads
+ * "Version 1 · Latest", Home's lead "Version 1" and the print foot
+ * "{sheet title} · Version 1 · {sheet code}" (decide-p11-default-version-name-repeats,
+ * Mark 2026-10-27).
  */
 export function versionIdentity(ordered, version) {
   const index = ordered.findIndex((candidate) => candidate.id === version.id);
   if (index < 0) return version.versionLabel;
-  return `Version ${ordered.length - index} · ${version.versionLabel}`;
+  const ordinal = `Version ${ordered.length - index}`;
+  if (version.versionLabel.trim().toLowerCase() === ordinal.toLowerCase()) return ordinal;
+  return `${ordinal} · ${version.versionLabel}`;
 }
 
 /**

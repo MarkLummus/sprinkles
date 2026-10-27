@@ -11,6 +11,7 @@ import { createRoot } from 'react-dom/client';
 import { IngredientTable } from './IngredientTable.jsx';
 import { creationSheetVersion, addRow, setRowGrams } from '../domain/creation.js';
 import { blankCreateDraft } from '../domain/draft.js';
+import { addStep, toggleStepUses } from '../domain/creationSteps.js';
 import { library } from '../data/library.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -29,10 +30,10 @@ function startingDraft() {
 
 let current = null;
 
-function mount() {
+function mount(initial = startingDraft) {
   const onBlurGrams = vi.fn();
   function Harness() {
-    const [draft, setDraft] = useState(startingDraft);
+    const [draft, setDraft] = useState(initial);
     const version = creationSheetVersion(draft, records);
     const gramsByRow = new Map(draft.rows.map((row) => [row.id, row.portions[0]?.grams ?? '']));
     return (
@@ -167,5 +168,30 @@ describe('IngredientTable, creating: the per-row grams message', () => {
     expect(share(WHOLE_MILK)).toBe('trace');
     const total = current.container.querySelector('tfoot tr').textContent;
     expect(total).toContain('150');
+  });
+});
+
+describe('IngredientTable, creating: step heads', () => {
+  // Phase 11 plan 07: the table mounted alone, with no currentStepNumbers,
+  // still groups its lines under their heads (it reads the numbers off the
+  // steps it is given).
+  it('with one step using one row, draws that step head over the row and Not in a step yet over the other', () => {
+    mount(() => {
+      const draft = addStep(startingDraft(), { afterN: null });
+      return toggleStepUses(draft, draft.method[0].n, 'milk-row');
+    });
+    const bodies = [...current.container.querySelectorAll('tbody')];
+    expect(bodies.map((body) => body.querySelector('tr.ingredient-table__step-head').textContent)).toEqual([
+      'Step 1',
+      'Not in a step yet',
+    ]);
+    expect(bodies[0].querySelector(`input[aria-label="${WHOLE_MILK}, grams"]`)).not.toBeNull();
+    expect(bodies[1].querySelector('input[aria-label="Sucrose, grams"]')).not.toBeNull();
+  });
+
+  it('with no step the table stays flat: one group and no head', () => {
+    mount();
+    expect(current.container.querySelectorAll('tr.ingredient-table__step-head')).toHaveLength(0);
+    expect(current.container.querySelectorAll('tbody')).toHaveLength(1);
   });
 });

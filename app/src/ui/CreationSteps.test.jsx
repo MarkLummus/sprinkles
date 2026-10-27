@@ -54,6 +54,7 @@ function Holder({ initial, spies }) {
         spies?.onRemoveTarget?.(n, index);
         setDraft((prev) => removeTarget(prev, n, index));
       }}
+      onToggleUses={(n, rowId) => setDraft((prev) => toggleStepUses(prev, n, rowId))}
     />
   );
 }
@@ -184,23 +185,28 @@ describe('targets (D-10, D-22)', () => {
 });
 
 describe('purpose and aside on demand', () => {
-  it('offers add a purpose and add an aside while closed, separated by a middot, and opens each into its field', () => {
+  it('offers add a purpose and add an aside while closed, a middot before each, and opens each into its field', () => {
     mount(withStep(blank()));
     const line = q('p.method-step__uses-line');
     expect(line.textContent).toContain('uses nothing yet');
-    expect([...line.querySelectorAll('button')].map((node) => node.textContent)).toEqual(['add a purpose', 'add an aside']);
-    expect(line.querySelector('span[aria-hidden="true"]').textContent).toBe('·');
+    expect([...line.querySelectorAll('button')].map((node) => node.textContent)).toEqual([
+      'change the ingredients',
+      'add a purpose',
+      'add an aside',
+    ]);
+    expect([...line.querySelectorAll('span[aria-hidden="true"]')].map((node) => node.textContent)).toEqual(['·', '·']);
     press(field('Step 1, add a purpose'));
     expect(field('Step 1, purpose').getAttribute('rows')).toBe('2');
     expect(field('Step 1, add a purpose')).toBeNull();
     expect(document.activeElement).toBe(field('Step 1, purpose'));
-    expect(line.querySelector('span[aria-hidden="true"]')).toBeNull();
+    expect(line.querySelectorAll('span[aria-hidden="true"]')).toHaveLength(1);
     // An empty purpose closes when the maker leaves it (Method's own rule), so
     // the aside is opened after the purpose has words.
     type(field('Step 1, purpose'), 'Dissolves.');
     press(field('Step 1, add an aside'));
     expect(field('Step 1, aside')).not.toBeNull();
-    expect([...line.querySelectorAll('button')]).toHaveLength(0);
+    expect([...line.querySelectorAll('button')].map((node) => node.textContent)).toEqual(['change the ingredients']);
+    expect(line.querySelector('span[aria-hidden="true"]')).toBeNull();
   });
 
   it('draws the fields open for a step that already holds a purpose and an aside, and an empty blur closes one', () => {
@@ -215,14 +221,79 @@ describe('purpose and aside on demand', () => {
     expect(held.method[0].aside).toBe('');
   });
 
-  it('names the rows the step uses on the uses line, in the table order', () => {
+  it("names the rows the step uses on the uses line, in the step's own order, not the table's", () => {
     let draft = withStep(blank());
     draft = addRow(draft, { rowId: 'row-cream', libraryId: 'heavyCream' });
     draft = addRow(draft, { rowId: 'row-milk', libraryId: 'wholeMilk' });
     const n = draft.method[0].n;
     draft = toggleStepUses(toggleStepUses(draft, n, 'row-milk'), n, 'row-cream');
     mount(draft);
-    expect(q('p.method-step__uses-line').textContent.startsWith('uses Heavy cream, 36% fat, Whole milk, 3.5% fat')).toBe(true);
+    expect(q('p.method-step__uses-line').textContent.startsWith('uses Whole milk, 3.5% fat, Heavy cream, 36% fat')).toBe(true);
+    // The checklist lists the rows as the table does, whatever the step's order.
+    press(field('Step 1, change the ingredients'));
+    expect(qa('label.method-step__uses-item span').map((node) => node.textContent)).toEqual([
+      'Heavy cream, 36% fat',
+      'Whole milk, 3.5% fat',
+    ]);
+  });
+});
+
+describe('the Uses checklist (sketch 014 pC1, CONTRACT section 2)', () => {
+  const twoRows = () => {
+    let draft = withStep(blank());
+    draft = addRow(draft, { rowId: 'row-cream', libraryId: 'heavyCream' });
+    draft = addRow(draft, { rowId: 'row-milk', libraryId: 'wholeMilk' });
+    return draft;
+  };
+
+  it('reads change the ingredients while closed and done while open, and the checklist has the legend Uses', () => {
+    mount(twoRows());
+    const toggle = field('Step 1, change the ingredients');
+    expect(toggle.textContent).toBe('change the ingredients');
+    expect(q('fieldset.method-step__uses')).toBeNull();
+    press(toggle);
+    expect(field('Step 1, done').textContent).toBe('done');
+    expect(field('Step 1, change the ingredients')).toBeNull();
+    const fieldset = q('fieldset.method-step__uses');
+    expect(fieldset.getAttribute('aria-label')).toBe('Step 1, uses');
+    expect(fieldset.querySelector('legend').textContent).toBe('Uses');
+    expect(qa('fieldset.method-step__uses input[type="checkbox"]')).toHaveLength(2);
+    press(field('Step 1, done'));
+    expect(q('fieldset.method-step__uses')).toBeNull();
+  });
+
+  it('ticking a row makes the step use it, joining the end of its uses, and unticking drops it', () => {
+    mount(twoRows());
+    press(field('Step 1, change the ingredients'));
+    const [cream, milk] = qa('label.method-step__uses-item input');
+    expect([cream.checked, milk.checked]).toEqual([false, false]);
+    press(milk);
+    press(cream);
+    expect(held.method[0].uses).toEqual(['row-milk', 'row-cream']);
+    expect(q('p.method-step__uses-line').textContent.startsWith('uses Whole milk, 3.5% fat, Heavy cream, 36% fat')).toBe(true);
+    expect(qa('label.method-step__uses-item input').map((box) => box.checked)).toEqual([true, true]);
+    press(qa('label.method-step__uses-item input')[0]);
+    expect(held.method[0].uses).toEqual(['row-milk']);
+    expect(q('p.method-step__uses-line').textContent.startsWith('uses Whole milk, 3.5% fat ')).toBe(true);
+  });
+
+  it('closes on Escape from the checklist or the uses line and returns focus to the toggle', () => {
+    mount(twoRows());
+    press(field('Step 1, change the ingredients'));
+    const box = q('label.method-step__uses-item input');
+    act(() => {
+      box.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+    });
+    expect(q('fieldset.method-step__uses')).toBeNull();
+    expect(document.activeElement).toBe(field('Step 1, change the ingredients'));
+    // A closed checklist lets Escape travel on.
+    const seen = vi.fn();
+    document.addEventListener('keydown', seen);
+    act(() => {
+      field('Step 1, change the ingredients').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+    });
+    document.removeEventListener('keydown', seen);
+    expect(seen).toHaveBeenCalledTimes(1);
   });
 });
 

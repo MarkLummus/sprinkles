@@ -3,7 +3,8 @@ import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue, form
 import { asMadeForPortion, asMadeTotals } from '../domain/batch.js';
 import { activeRows, isLineRemoved, isStepRemoved, rowGrams } from '../domain/rows.js';
 import { orphanedRows } from '../domain/uses.js';
-import { displayNumberOf } from '../domain/stepNumbers.js';
+import { displayNumberOf, displayNumbers } from '../domain/stepNumbers.js';
+import { UNPLACED_STEP } from '../domain/creationSteps.js';
 import { gramsDraftMessage, parseGramsDraft } from '../domain/lineage.js';
 import { penDraftRow } from '../domain/penDraft.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
@@ -23,8 +24,8 @@ const BLOCKED_ROW_ERROR_ID = 'ingredient-field-error';
 // precedes it, before the next one), its entries flagged `stepRemoved`
 // (sketch 011 decision 51, Mark's answer 2). A portion whose step does not
 // resolve (a null map, or a step this map has no entry for) is never
-// dropped: it joins one trailing "Unallocated" group instead (RESEARCH.md
-// Pitfall 4). Active groups sort by display number, with Unallocated (when
+// dropped: it joins one trailing "Not in a step yet" group instead (RESEARCH.md
+// Pitfall 4). Active groups sort by display number, with that group (when
 // non-empty) always last; entries within a group keep `rows`' own iteration
 // order, then portion order — never re-sorted, matching the sketch's own
 // ING.forEach iteration (index.html:390-406).
@@ -413,10 +414,12 @@ export function IngredientsHead({ parentVersion, openPen, below724, showingChang
 // under its resolved step, a split ingredient's name repeated once per
 // step it participates in with a sub-line naming its share of the row
 // (formatPortionLine, domain/composition.js). A portion whose step cannot
-// be resolved groups under a trailing "Unallocated" head instead of being
+// be resolved groups under a trailing "Not in a step yet" head instead of being
 // dropped; when that is the only group the head is not drawn, since a lone
-// Unallocated head labels nothing and the label earns its place only beside a
-// numbered group (Mark, 2026-10-02, option 1). `markedRowIds` is the focused figure's contributorRowIds
+// head labels nothing and the label earns its place only beside a numbered
+// group (Mark, 2026-10-02, option 1), except over a version with a live step
+// whose lines all sit at UNPLACED_STEP, whose steps use no row: there the head
+// says so (D-09). `markedRowIds` is the focused figure's contributorRowIds
 // (route-recipe.md § 3, § 5) — marking changes only outline and weight,
 // and moves nothing. `draftVersion` is the pen's own draft, built once by
 // RecipePage (03-02) — present only in developing mode, and read here for
@@ -603,8 +606,20 @@ export function IngredientTable({
   // pen's own live draftVersion.method while developing (its own comment
   // above states why), the `steps` prop everywhere else.
   const stepsForGrouping = isDeveloping ? draftVersion.method : steps;
-  const groups = groupPortionsByStep(rows, stepsForGrouping, currentStepNumbers, isDeveloping || isShowingChanges);
-  const showStepHeads = !(groups.length === 1 && groups[0].kind === 'unallocated');
+  // The creation editor mounts the table with the page's numbers; one mounted
+  // alone reads them off the steps it is given, so its lines still group under
+  // their heads.
+  const stepNumbers = currentStepNumbers ?? (isCreating ? displayNumbers(stepsForGrouping) : null);
+  const groups = groupPortionsByStep(rows, stepsForGrouping, stepNumbers, isDeveloping || isShowingChanges);
+  // A lone unplaced group draws no head, unless the version has a live step and
+  // every line of the group sits at UNPLACED_STEP (a row placed nowhere on
+  // purpose, as the projection and Save write it): then D-09 reads every row
+  // under 'Not in a step yet'. An empty method, portions naming a step that
+  // does not exist and a removed step all stay flat.
+  const liveStepCount = stepsForGrouping.filter((step) => !step.removed).length;
+  const showStepHeads =
+    !(groups.length === 1 && groups[0].kind === 'unallocated') ||
+    (liveStepCount > 0 && groups[0].entries.every((entry) => entry.portion.step === UNPLACED_STEP));
 
   // Style 6's reading row (sketch 011 decisions 2, 3; D-19; 03.5-06 Task
   // 1) — also the recording state's row (Task 2): GramsCell's own
@@ -857,7 +872,7 @@ export function IngredientTable({
             <RemoveRowControl
               removed={lineOut}
               onToggle={() => onTogglePenLineRemoved(row.id, portionIndex)}
-              lineName={isSplit ? `${row.ingredientName}, ${displayNumber != null ? `Step ${displayNumber}` : 'Unallocated'}` : undefined}
+              lineName={isSplit ? `${row.ingredientName}, ${displayNumber != null ? `Step ${displayNumber}` : 'Not in a step yet'}` : undefined}
             />
           )}
           {/* A line that is out is outside the live batch, so its portion line reads
@@ -937,7 +952,7 @@ export function IngredientTable({
               <tr className="ingredient-table__step-head">
                 <td colSpan={columnCount}>
                   {group.kind === 'unallocated' ? (
-                    'Unallocated'
+                    'Not in a step yet'
                   ) : (
                     <>
                       {group.kind === 'removed' ? 'Removed' : `Step ${group.displayNumber}`}

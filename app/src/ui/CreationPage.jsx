@@ -14,7 +14,7 @@ import { repository } from '../store/repository.js';
 import { draftMatchesCreate } from '../domain/draft.js';
 import { NOTEBOOK_PLACE_PATH } from './notebookPaths.js';
 import { freshId } from '../domain/id.js';
-import { addStep, addTarget, removeTarget, setStepField, setTarget } from '../domain/creationSteps.js';
+import { addStep, addTarget, normalizeAllocation, removeTarget, setStepField, setTarget, toggleStepUses } from '../domain/creationSteps.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import {
   addNote,
@@ -44,8 +44,9 @@ export function CreationPage({ record, justStarted = false }) {
   const writer = useDraftWriter(record.versionId);
   // The editor never holds a payload as it was stored: a stored create draft
   // may hold only recipeId, versionId and name, so the first state and every
-  // restore lay the payload over the blank one.
-  const [createDraft, setCreateDraft] = useState(() => normalizeCreateDraft(record.payload));
+  // restore lay the payload over the blank one, then repair a draft whose uses
+  // and portions disagree without losing a typed amount (normalizeAllocation).
+  const [createDraft, setCreateDraft] = useState(() => normalizeAllocation(normalizeCreateDraft(record.payload)));
   const penOpenedAtRef = useRef(null);
   // Focus follows an add or a remove (MAKE-08): a handler leaves a request, and
   // the effect below acts on it after the render that drew its target, so focus
@@ -81,7 +82,7 @@ export function CreationPage({ record, justStarted = false }) {
     onRestoreRecord: doNothing,
     creating: true,
     createDraft,
-    onRestoreCreate: (payload) => setCreateDraft(normalizeCreateDraft(payload)),
+    onRestoreCreate: (payload) => setCreateDraft(normalizeAllocation(normalizeCreateDraft(payload))),
     // Right after Start the draft is kept but the maker knows it: say nothing.
     onPageStatus: (message, options) => {
       if (justStarted && message === DRAFT_KEPT_STATUS) return;
@@ -257,6 +258,12 @@ export function CreationPage({ record, justStarted = false }) {
     focusRequestRef.current = { kind: 'target-after-remove', n, index };
   };
 
+  // The Uses checklist (MAKE-07): ticking a row makes the step use it, and the
+  // draft keeps the row's grams lines as the domain op moves them.
+  const handleToggleUses = (n, rowId) => {
+    setCreateDraft((prev) => toggleStepUses(prev, n, rowId));
+  };
+
   const gramsByRow = new Map(createDraft.rows.map((row) => [row.id, row.portions[0]?.grams ?? '']));
   const addedIds = new Set(createDraft.rows.map((row) => row.libraryId));
 
@@ -389,6 +396,7 @@ export function CreationPage({ record, justStarted = false }) {
                     onAddTarget={handleAddTarget}
                     onChangeTarget={handleChangeTarget}
                     onRemoveTarget={handleRemoveTarget}
+                    onToggleUses={handleToggleUses}
                   />
                 }
               />

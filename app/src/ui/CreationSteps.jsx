@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from './Button.jsx';
+import { Checkbox } from './Checkbox.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { useOnDemandField } from './Method.jsx';
 import { StepReading } from './StepReading.jsx';
@@ -22,11 +23,13 @@ function targetFieldName(number, count, index, side) {
   return count === 1 ? `Step ${number}, target ${side}` : `Step ${number}, target ${index + 1} ${side}`;
 }
 
-// The uses line's sentence: the names of the rows the step uses, in the
-// table's order, or that it uses nothing yet.
+// The uses line's sentence: the names of the rows the step uses, in the step's
+// own order (its uses list, which is also the order of its rows in the table:
+// CONTRACT section 2), or that it uses nothing yet. A row the Sheet leaves out
+// (its library entry is gone) is left out here too.
 function usesSentence(step, rows) {
-  const used = new Set(step.uses ?? []);
-  const names = rows.filter((row) => used.has(row.id)).map((row) => row.ingredientName);
+  const nameById = new Map(rows.map((row) => [row.id, row.ingredientName]));
+  const names = (step.uses ?? []).filter((id) => nameById.has(id)).map((id) => nameById.get(id));
   return names.length > 0 ? `uses ${names.join(', ')}` : 'uses nothing yet';
 }
 
@@ -39,11 +42,25 @@ function CreationStep({
   onAddTarget,
   onChangeTarget,
   onRemoveTarget,
+  onToggleUses,
 }) {
   const [previewing, setPreviewing] = useState(false);
+  // The Uses checklist is open or closed per step, and local to it.
+  const [usesOpen, setUsesOpen] = useState(false);
+  const usesControlRef = useRef(null);
   const purpose = useOnDemandField(Boolean(step.purpose), () => onChangeStepField(step.n, 'purpose', ''));
   const aside = useOnDemandField(Boolean(step.aside), () => onChangeStepField(step.n, 'aside', ''));
   const targets = step.targets ?? [];
+
+  // Escape inside the uses line or the checklist closes the checklist and
+  // returns focus to its toggle (Method.jsx's pen, the same shape). Gated on
+  // the checklist being open, so a closed one lets the key travel on.
+  function handleUsesKeyDown(event) {
+    if (!usesOpen || event.key !== 'Escape') return;
+    event.stopPropagation();
+    setUsesOpen(false);
+    usesControlRef.current?.focus();
+  }
 
   return (
     <li className="method-step mk-step" data-step={step.n}>
@@ -154,26 +171,62 @@ function CreationStep({
             </ol>
           </div>
         )}
-        <p className="method-step__uses-line">
+        <p className="method-step__uses-line" onKeyDown={handleUsesKeyDown}>
           {usesSentence(step, rows)}{' '}
+          <Button
+            className="text-control"
+            ref={usesControlRef}
+            aria-label={`Step ${number}, ${usesOpen ? 'done' : 'change the ingredients'}`}
+            onClick={() => setUsesOpen((open) => !open)}
+          >
+            {usesOpen ? 'done' : 'change the ingredients'}
+          </Button>
           {!purpose.isOpen && (
-            <Button className="text-control" aria-label={`Step ${number}, add a purpose`} onClick={purpose.openField}>
-              add a purpose
-            </Button>
+            <>
+              <span aria-hidden="true">·</span>
+              <Button className="text-control" aria-label={`Step ${number}, add a purpose`} onClick={purpose.openField}>
+                add a purpose
+              </Button>
+            </>
           )}
-          {!purpose.isOpen && !aside.isOpen && <span aria-hidden="true">·</span>}
           {!aside.isOpen && (
-            <Button className="text-control" aria-label={`Step ${number}, add an aside`} onClick={aside.openField}>
-              add an aside
-            </Button>
+            <>
+              <span aria-hidden="true">·</span>
+              <Button className="text-control" aria-label={`Step ${number}, add an aside`} onClick={aside.openField}>
+                add an aside
+              </Button>
+            </>
           )}
         </p>
+        {usesOpen && (
+          // Every row of the table, in the table's order, whatever the step's own
+          // order: ticking one makes the step use it, the row joining the end of
+          // the step's uses.
+          <fieldset className="method-step__uses" aria-label={`Step ${number}, uses`} onKeyDown={handleUsesKeyDown}>
+            <legend>Uses</legend>
+            {rows.map((row) => (
+              <label key={row.id} className="method-step__uses-item">
+                <Checkbox checked={(step.uses ?? []).includes(row.id)} onChange={() => onToggleUses(step.n, row.id)} />
+                <span>{row.ingredientName}</span>
+              </label>
+            ))}
+          </fieldset>
+        )}
       </div>
     </li>
   );
 }
 
-export function CreationSteps({ draft, version, onAddStep, onChangeStepField, onAddTarget, onChangeTarget, onRemoveTarget }) {
+export function CreationSteps({
+  draft,
+  version,
+  onAddStep,
+  onChangeStepField,
+  onAddTarget,
+  onChangeTarget,
+  onRemoveTarget,
+  onToggleUses,
+}) {
   const steps = liveSteps(draft);
   const numbers = displayNumbers(draft.method);
   return (
@@ -197,6 +250,7 @@ export function CreationSteps({ draft, version, onAddStep, onChangeStepField, on
               onAddTarget={onAddTarget}
               onChangeTarget={onChangeTarget}
               onRemoveTarget={onRemoveTarget}
+              onToggleUses={onToggleUses}
             />
           ))}
         </ol>

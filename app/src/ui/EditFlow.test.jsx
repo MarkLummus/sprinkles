@@ -673,3 +673,69 @@ describe('a refused Save shows each message in its place on the edit route (MAKE
     expect(document.activeElement).toBe(field('Step 2, lead-in'));
   });
 });
+
+describe('a refused Save on the edit route names the rest of the gate in its places (MAKE-10, D-11, D-25, T-11-51)', () => {
+  async function openEdit() {
+    seedVanilla();
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name') !== null);
+  }
+
+  async function pressSave() {
+    field('Recipe description').focus();
+    await click(buttonByText('Save'));
+    await flush();
+  }
+
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-head-act');
+  const problemsRegion = () => root().querySelector('section[aria-label="Problems"]');
+  const problemName = (n) => problemsRegion().querySelector(`.mk-card[aria-label="Problem ${n}"] input[aria-label="Name"]`);
+
+  it('a blank Version name and a repeated problem show together, focus goes to the Version name, and nothing is written', async () => {
+    await openEdit();
+    await type(field('Version name'), '');
+    await click(problemsRegion().querySelector('.mk-add'));
+    await click(problemsRegion().querySelector('.mk-add'));
+    await type(problemName(1), 'Bitter');
+    await type(problemName(2), 'Bitter');
+    await pressSave();
+
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    expect(root().querySelector('#creation-version-error').textContent).toBe('Required');
+    expect(field('Version name').getAttribute('aria-invalid')).toBe('true');
+    expect(root().querySelector('#create-problem-1-error').textContent).toBe('This problem is already listed.');
+    expect(problemName(2).getAttribute('aria-describedby')).toBe('create-problem-1-error');
+    expect(document.activeElement).toBe(field('Version name'));
+
+    await type(field('Version name'), 'Version 1');
+    await pressSave();
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(problemName(2));
+  });
+
+  it('removing every row shows Add at least one ingredient. under the Ingredients heading and focuses Add ingredient, a second press included', async () => {
+    await openEdit();
+    for (let i = 0; i < 2; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await click(root().querySelector('tr[data-line] [data-act="remove"]'));
+    }
+    expect(root().querySelectorAll('tr[data-line]')).toHaveLength(0);
+    await pressSave();
+
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    const message = root().querySelector('#create-no-rows-error');
+    expect(message.textContent).toBe('Add at least one ingredient.');
+    expect(addButton().getAttribute('aria-describedby')).toBe('create-no-rows-error');
+    expect(document.activeElement).toBe(addButton());
+
+    await pressSave();
+    expect(document.activeElement).toBe(addButton());
+
+    // With the picker open in Add ingredient's place, the picker's Name field takes the description and the focus.
+    await click(addButton());
+    await pressSave();
+    const pickerName = root().querySelector('.ingredient-table-region .pick .ing__filters input');
+    expect(pickerName.getAttribute('aria-describedby')).toBe('create-no-rows-error');
+    expect(document.activeElement).toBe(pickerName);
+  });
+});

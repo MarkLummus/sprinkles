@@ -2162,6 +2162,83 @@ describe('Save refuses everything the store file would refuse, all at once, writ
     expect(last.getAttribute('aria-invalid')).toBeNull();
   });
 
+  it('no rows shows Add at least one ingredient. under the Ingredients heading, describes and focuses Add ingredient, and picking a row clears it (D-11)', async () => {
+    await startVanilla();
+    await pressSave();
+
+    expectRefused();
+    const message = root().querySelector('#create-no-rows-error');
+    expect(message.textContent).toBe('Add at least one ingredient.');
+    expect(message.className).toBe('field-error');
+    expect(message.previousElementSibling.classList.contains('mk-head-row')).toBe(true);
+    expect(addButton().getAttribute('aria-describedby')).toBe('create-no-rows-error');
+    expect(document.activeElement).toBe(addButton());
+
+    await pressSave();
+    expectRefused();
+    expect(document.activeElement).toBe(addButton());
+
+    await pick(SUGAR);
+    expect(root().querySelector('#create-no-rows-error')).toBeNull();
+  });
+
+  it("no rows with the picker open shows the message, describes the picker's Name field by it and focuses that field (T-11-51)", async () => {
+    await startVanilla();
+    await click(addButton());
+    await pressSave();
+
+    expectRefused();
+    const pickerName = root().querySelector('.ingredient-table-region .pick .ing__filters input');
+    expect(root().querySelector('#create-no-rows-error').textContent).toBe('Add at least one ingredient.');
+    expect(pickerName.getAttribute('aria-describedby')).toBe('create-no-rows-error');
+    expect(document.activeElement).toBe(pickerName);
+  });
+
+  it('a draft with two problems Bitter shows the sentence under the second only and writes nothing (D-25, T-11-33)', async () => {
+    await startReady();
+    const problemsRegion = () => root().querySelector('section[aria-label="Problems"]');
+    const problemName = (n) => problemsRegion().querySelector(`.mk-card[aria-label="Problem ${n}"] input[aria-label="Name"]`);
+    await click(problemsRegion().querySelector('.mk-add'));
+    await click(problemsRegion().querySelector('.mk-add'));
+    await type(problemName(1), 'Bitter');
+    await type(problemName(2), 'Bitter');
+    await pressSave();
+
+    expectRefused();
+    expect(root().querySelector('#create-problem-1-error').textContent).toBe('This problem is already listed.');
+    expect(problemName(2).getAttribute('aria-invalid')).toBe('true');
+    expect(problemName(2).getAttribute('aria-describedby')).toBe('create-problem-1-error');
+    expect(root().querySelector('#create-problem-0-error')).toBeNull();
+    expect(problemName(1).getAttribute('aria-invalid')).toBeNull();
+    expect(document.activeElement).toBe(problemName(2));
+
+    await type(problemName(2), 'Icy');
+    expect(root().querySelector('#create-problem-1-error')).toBeNull();
+  });
+
+  it('an unpicked kind and a blank Low end show Required under their fields at once, the radiogroup described', async () => {
+    await startReady();
+    await click(scalesRegion().querySelector('.mk-add'));
+    await type(inCard('Scale 1', 'Name'), 'Chew');
+    await type(inCard('Scale 1', 'High end'), 'firm');
+    await pressSave();
+
+    expectRefused();
+    expect(scalesRegion().querySelectorAll('.field-error')).toHaveLength(2);
+    const lowMessage = scalesRegion().querySelector('.mk-card[aria-label="Scale 1"] .mk-pair label:first-child .field-error');
+    expect(lowMessage.textContent).toBe('Required');
+    expect(inCard('Scale 1', 'Low end').getAttribute('aria-describedby')).toBe(lowMessage.id);
+    const group = scalesRegion().querySelector('.mk-card[aria-label="Scale 1"] [role="radiogroup"]');
+    expect(group.getAttribute('aria-invalid')).toBe('true');
+    const kindMessage = root().querySelector(`#${group.getAttribute('aria-describedby')}`);
+    expect(kindMessage.textContent).toBe('Required');
+    expect(group.parentElement.contains(kindMessage)).toBe(true);
+    expect(document.activeElement).toBe(inCard('Scale 1', 'Low end'));
+
+    await click(kindRadio('Scale 1', 'Low to high'));
+    expect(group.getAttribute('aria-invalid')).toBeNull();
+  });
+
   it('with the draft fixed, the same press saves', async () => {
     await startReady();
     await click(buttonByText('Add step'));

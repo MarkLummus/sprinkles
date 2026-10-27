@@ -22,7 +22,7 @@ function rowSummary(entry) {
   return [category, summaryText(entry)].filter((part) => part !== '').join(' · ');
 }
 
-export function IngredientPicker({ records, addedIds, onPick, onCancel }) {
+export function IngredientPicker({ records, addedIds, onPick, onCancel, describedBy }) {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState(ALL);
   const nameRef = useRef(null);
@@ -61,6 +61,7 @@ export function IngredientPicker({ records, addedIds, onPick, onCancel }) {
             ref={nameRef}
             className="ink-field"
             type="text"
+            aria-describedby={describedBy}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             autoComplete="off"

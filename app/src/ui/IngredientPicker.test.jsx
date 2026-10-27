@@ -219,4 +219,15 @@ describe('IngredientPicker rows (decisions 4 and 7, T-10-19, T-10-28)', () => {
     expect(container.querySelector('.pick__name').textContent).toBe('<b>Bold</b>');
     expect(container.querySelector('.pick__name b')).toBeNull();
   });
+
+  it("describes the Name field by the given message id, and by nothing when none is given (a refused Save with no ingredient)", async () => {
+    const withIt = await mount({ describedBy: 'create-no-rows-error' });
+    expect(withIt.container.querySelector('.ing__filters input').getAttribute('aria-describedby')).toBe('create-no-rows-error');
+    await act(async () => mounted.root.unmount());
+    mounted.container.remove();
+    mounted = null;
+
+    const without = await mount();
+    expect(without.container.querySelector('.ing__filters input').hasAttribute('aria-describedby')).toBe(false);
+  });
 });

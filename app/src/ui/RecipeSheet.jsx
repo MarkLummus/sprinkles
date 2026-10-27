@@ -38,6 +38,7 @@ export function RecipeSheet({
   creationMethod = null,
   creationRows = null,
   ingredientsFoot = null,
+  ingredientsMessage = null,
   onChangePenField,
   onChangePenNoteText,
   onRemovePenNote,
@@ -143,6 +144,12 @@ export function RecipeSheet({
           onToggleShowChanges={onToggleShowChanges}
           act={ingredientsAct}
         />
+        {ingredientsMessage && (
+          // A refused Save with no ingredient (Phase 11, D-11): under the heading row.
+          <p className="field-error" id="create-no-rows-error">
+            {ingredientsMessage}
+          </p>
+        )}
         {hasRows ? (
           <IngredientTable
             rows={version.rows}

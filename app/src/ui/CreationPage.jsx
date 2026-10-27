@@ -48,6 +48,10 @@ import {
 
 function doNothing() {}
 
+// The refused Save's line under the Ingredients heading row, which Add ingredient
+// and the picker's Name field are described by while it stands.
+const NO_ROWS_ERROR_ID = 'create-no-rows-error';
+
 // The field a refused Save puts focus on (D-11): found by the block's target kind,
 // each mapped to the control the editor really draws, after the render that drew
 // its message. A scale's card is found by the scale's place in the draft; the
@@ -563,6 +567,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // so each message clears as its field is fixed.
   const saveMessages = saveAttempts > 0 ? new Map(refusals.map((block) => [block.id, block.message])) : null;
   const lineMessages = saveAttempts > 0 ? lineSaveMessages(refusals) : null;
+  const noRowsMessage = saveMessages?.get('no-rows') ?? null;
   const formRefusal = refusals.find((block) => block.target.kind === 'form')?.message ?? null;
   const underSave = saveFailed ? (editing ? EDIT_SAVE_ERROR : RECIPE_CREATE_ERROR) : (editRefusalLine(editRefusal) ?? formRefusal);
 
@@ -741,9 +746,14 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                     Add note
                   </Button>
                 }
+                ingredientsMessage={noRowsMessage}
                 ingredientsAct={
                   picking ? null : (
-                    <Button className="text-control mk-head-act" onClick={() => setPicking(true)}>
+                    <Button
+                      className="text-control mk-head-act"
+                      aria-describedby={noRowsMessage ? NO_ROWS_ERROR_ID : undefined}
+                      onClick={() => setPicking(true)}
+                    >
                       Add ingredient
                     </Button>
                   )
@@ -755,6 +765,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                       addedIds={addedIds}
                       onPick={handlePick}
                       onCancel={handleCancelPicker}
+                      describedBy={noRowsMessage ? NO_ROWS_ERROR_ID : undefined}
                     />
                   ) : null
                 }
@@ -776,7 +787,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
               />
             </div>
             <aside className="notebook-log" aria-label="Setup">
-              <CreationSetup createDraft={createDraft} onChange={setCreateDraft} />
+              <CreationSetup createDraft={createDraft} onChange={setCreateDraft} saveMessages={saveMessages} />
             </aside>
           </div>
         )}

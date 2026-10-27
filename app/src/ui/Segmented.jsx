@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { Button } from './Button.jsx';
+import { FieldFeedback } from './FieldFeedback.jsx';
 import { Radio } from './Radio.jsx';
 
 // The battery's one 3-way segmented control (contract "Controls spec"): a
@@ -25,11 +26,13 @@ import { Radio } from './Radio.jsx';
 // re-fire for a click that leaves its value unchanged, so onClick is the
 // one path that always fires. No option is ever pre-picked: `value` is
 // expected to be '' (or any string matching no option) for a fresh field.
-// Two optional props change nothing for a caller that omits them: `name` is the
+// Four optional props change nothing for a caller that omits them: `name` is the
 // radio group's name and the caption id's stem (two groups with one label, as
 // the creation editor's scale cards both read Kind, must not share a DOM radio
-// group), and `clearable` false draws no Clear.
-export function Segmented({ groupLabel, options, value, onChange, onClear, name, clearable = true }) {
+// group), `clearable` false draws no Clear, and `error` with `errorId` (Phase 11,
+// a refused Save) marks the group invalid, ties it to the message and draws the
+// message under the radios.
+export function Segmented({ groupLabel, options, value, onChange, onClear, name, clearable = true, error = null, errorId }) {
   const groupName = name ?? `segment-${groupLabel.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`;
   const captionId = `${groupName}-caption`;
   const picked = options.includes(value);
@@ -56,7 +59,13 @@ export function Segmented({ groupLabel, options, value, onChange, onClear, name,
           </Button>
         )}
       </div>
-      <div className="segmented" role="radiogroup" aria-label={groupLabel}>
+      <div
+        className="segmented"
+        role="radiogroup"
+        aria-label={groupLabel}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={error ? errorId : undefined}
+      >
         {options.map((option, index) => (
           <label key={option} className="segmented__option">
             <Radio
@@ -71,6 +80,7 @@ export function Segmented({ groupLabel, options, value, onChange, onClear, name,
           </label>
         ))}
       </div>
+      <FieldFeedback error={error} errorId={errorId} />
     </div>
   );
 }

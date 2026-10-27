@@ -616,3 +616,60 @@ describe('a kept edit whose version has since gained a batch or a later version 
     expect(repository.deleteDraft).not.toHaveBeenCalled();
   });
 });
+
+describe('a refused Save shows each message in its place on the edit route (MAKE-10, D-08, D-11, T-11-65)', () => {
+  const MILK = 'Whole milk, 3.5% fat';
+
+  // Focus is somewhere else when Save is pressed, so a focus that lands is a move.
+  async function pressSave() {
+    field('Recipe description').focus();
+    await click(buttonByText('Save'));
+    await flush();
+  }
+
+  async function openEdit() {
+    seedVanilla();
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name') !== null);
+  }
+
+  it('two 308-digit lines of one row show the not-a-number sentence under its last line only, wired, focused, and nothing is written', async () => {
+    await openEdit();
+    await type(field(`${MILK}, grams, portion 1`), '9'.repeat(308));
+    await type(field(`${MILK}, grams, portion 2`), '9'.repeat(308));
+    await pressSave();
+
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    expect(location.pathname).toBe(EDIT_PATH);
+    const last = field(`${MILK}, grams, portion 2`);
+    const row = last.closest('tr');
+    const message = row.querySelector('.field-error');
+    expect(message.textContent).toBe(`${MILK}'s amount is not a number`);
+    expect(row.classList.contains('is-marked')).toBe(true);
+    expect(last.getAttribute('aria-invalid')).toBe('true');
+    expect(last.getAttribute('aria-describedby')).toBe(message.id);
+    expect(document.activeElement).toBe(last);
+    const first = field(`${MILK}, grams, portion 1`);
+    expect(first.closest('tr').querySelector('.field-error')).toBeNull();
+    expect(first.getAttribute('aria-invalid')).toBeNull();
+
+    await type(first, '400');
+    expect(row.querySelector('.field-error')).toBeNull();
+  });
+
+  it('a blank lead-in shows Required under it, focuses it, and a second refused press brings focus back', async () => {
+    await openEdit();
+    await type(field('Step 2, lead-in'), '');
+    await pressSave();
+
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    expect(field('Step 2, lead-in').getAttribute('aria-invalid')).toBe('true');
+    expect(field('Step 2, lead-in').getAttribute('aria-describedby')).toBe('create-step-2-lead-error');
+    expect(root().querySelector('#create-step-2-lead-error').textContent).toBe('Required');
+    expect(document.activeElement).toBe(field('Step 2, lead-in'));
+
+    await pressSave();
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(field('Step 2, lead-in'));
+  });
+});

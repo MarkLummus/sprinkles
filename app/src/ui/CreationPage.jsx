@@ -34,7 +34,7 @@ import {
   UNPLACED_STEP,
 } from '../domain/creationSteps.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
-import { applyEditToVersion, buildCreation, creationSaveBlock } from '../domain/creationSave.js';
+import { applyEditToVersion, buildCreation, creationSaveBlock, lineSaveMessages } from '../domain/creationSave.js';
 import {
   addNote,
   addRow,
@@ -557,6 +557,12 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   const refusals = saveAttempts > 0 ? creationSaveBlock(createDraft, { libraryById }) : [];
   const nameRefusal = refusals.find((block) => block.id === 'recipe-name')?.message ?? null;
   const versionRefusal = refusals.find((block) => block.id === 'version-name')?.message ?? null;
+  // Every refusal by its block id, for the step fields and the setup cards, and
+  // every line-targeted one by its line's key, for the table (D-08, D-11). Both
+  // are null before the first refused press and are recomputed from the draft,
+  // so each message clears as its field is fixed.
+  const saveMessages = saveAttempts > 0 ? new Map(refusals.map((block) => [block.id, block.message])) : null;
+  const lineMessages = saveAttempts > 0 ? lineSaveMessages(refusals) : null;
   const formRefusal = refusals.find((block) => block.target.kind === 'form')?.message ?? null;
   const underSave = saveFailed ? (editing ? EDIT_SAVE_ERROR : RECIPE_CREATE_ERROR) : (editRefusalLine(editRefusal) ?? formRefusal);
 
@@ -721,6 +727,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                   gramsByLine,
                   // The row just added from the picker is unplaced, so its one line is at step 0.
                   focusLine: focusRowId ? `${focusRowId}:0` : null,
+                  lineMessages,
                   onChangeGrams: handleChangeGrams,
                   onBlurGrams: handleBlurGrams,
                   onRemoveRow: handleRemoveRow,
@@ -755,6 +762,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                   <CreationSteps
                     draft={createDraft}
                     version={version}
+                    saveMessages={saveMessages}
                     onAddStep={handleAddStep}
                     onRemoveStep={handleRemoveStep}
                     onMoveStep={handleMoveStep}

@@ -1,7 +1,7 @@
 {
   "dataset": {
     "version": "0.2-draft (as-is PAC + legacy merge)",
-    "count": 103
+    "count": 104
   },
   "rows": {
     "buffalo-milk": {
@@ -534,6 +534,7 @@
     "maltodextrin-5de": "maltodextrin5de",
     "maltose": "maltose",
     "mango": "mango",
+    "mango-nectar": "mangoNectar",
     "maple-syrup": "mapleSyrup",
     "milk-chocolate": "milkChocolate",
     "mono-diglycerides": "monoDiglycerides",

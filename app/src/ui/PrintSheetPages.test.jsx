@@ -21,6 +21,7 @@ import { BasisNote } from './BasisNote.jsx';
 import { createRecipe } from '../domain/newRecipe.js';
 import { rowFromLibraryRecord } from '../domain/versionRow.js';
 import { library } from '../data/library.js';
+import { UNPLACED_STEP } from '../domain/creationSteps.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -616,5 +617,173 @@ describe('sheetBlocks — a recipe created from library records (Phase 7 D-02, D
     const created = sheetBlocks(createdVersion([0, 0, 0]), 'first try');
     expect(created.figures).toEqual([]);
     expect(created.totalText).toBe('0.0 g');
+  });
+});
+
+// Phase 11, plan 11-05: a created recipe prints as the bench sheet. Its rows
+// that no step uses sit at UNPLACED_STEP and read under "Not in a step yet"
+// beside a numbered group, and over a lone unplaced group whenever the version
+// has a live step (D-09, D-12); an empty method or a portion naming a step that
+// does not exist prints a flat table (quick task 261002-wdn).
+const CREATED_NOW = '2026-10-26T12:00:00.000Z';
+
+function createdSheetVersion({ steps = [], placements, extra = {} }) {
+  const rows = [
+    rowFromLibraryRecord({ id: 'wholeMilk', entry: library.wholeMilk }, { id: 'row-a', grams: 500, step: placements[0] }),
+    rowFromLibraryRecord({ id: 'heavyCream', entry: library.heavyCream }, { id: 'row-b', grams: 250, step: placements[1] }),
+    rowFromLibraryRecord({ id: 'sucrose', entry: library.sucrose }, { id: 'row-c', grams: 100, step: placements[2] }),
+  ];
+  return createRecipe(
+    { name: 'Plain base', versionLabel: 'first try', rows, method: steps, ...extra },
+    { recipeId: 'recipe-plain', versionId: 'version-plain-1', now: CREATED_NOW },
+  ).version;
+}
+
+const createdStep = (n, overrides = {}) => ({
+  n,
+  leadIn: `Lead ${n}`,
+  instruction: `Do thing ${n}.`,
+  uses: [],
+  targets: [],
+  purpose: '',
+  aside: '',
+  removed: false,
+  ...overrides,
+});
+
+describe('sheetBlocks — the unplaced head of a created recipe (11-05; D-09, D-12, 261002-wdn)', () => {
+  const headsOf = (version) => sheetBlocks(version, 'first try').groups.map((group) => group.head);
+
+  it('heads a numbered group and the unplaced group beside it: Step 1 with its lead-in, then Not in a step yet', () => {
+    const version = createdSheetVersion({ steps: [createdStep(1)], placements: [1, UNPLACED_STEP, UNPLACED_STEP] });
+    expect(headsOf(version)).toEqual([
+      { label: 'Step 1', leadIn: 'Lead 1' },
+      { label: 'Not in a step yet', leadIn: null },
+    ]);
+  });
+
+  it('prints a flat table, no head, when the version has no steps and every row is unplaced', () => {
+    const version = createdSheetVersion({ placements: [UNPLACED_STEP, UNPLACED_STEP, UNPLACED_STEP] });
+    const groups = sheetBlocks(version, 'first try').groups;
+    expect(groups).toHaveLength(1);
+    expect(groups[0].head).toBeNull();
+  });
+
+  it('heads the lone unplaced group when a live step uses no row (D-09)', () => {
+    const version = createdSheetVersion({ steps: [createdStep(1)], placements: [UNPLACED_STEP, UNPLACED_STEP, UNPLACED_STEP] });
+    const groups = sheetBlocks(version, 'first try').groups;
+    expect(groups).toHaveLength(1);
+    expect(groups[0].head).toEqual({ label: 'Not in a step yet', leadIn: null });
+    expect(groups[0].lines).toHaveLength(3);
+  });
+
+  it('stays flat for an empty method whose portions name a step that does not exist (the Coconut shape)', () => {
+    const version = createdSheetVersion({ placements: [1, 1, 1] });
+    expect(headsOf(version)).toEqual([null]);
+  });
+
+  it('stays flat when the one live step is 2 and every portion names step 1', () => {
+    const version = createdSheetVersion({ steps: [createdStep(2)], placements: [1, 1, 1] });
+    expect(headsOf(version)).toEqual([null]);
+  });
+
+  it('stays flat when the only step is removed and every row is unplaced', () => {
+    const version = createdSheetVersion({ steps: [createdStep(1, { removed: true })], placements: [UNPLACED_STEP, UNPLACED_STEP, UNPLACED_STEP] });
+    expect(headsOf(version)).toEqual([null]);
+  });
+
+  it('ends the foot with the stored Sheet code, never one recomputed from content', () => {
+    const version = { ...createdSheetVersion({ steps: [createdStep(1)], placements: [1, UNPLACED_STEP, 1] }), sheetCode: 'ABCD-2345' };
+    const created = sheetBlocks(version, 'first try');
+    expect(created.footText).toBe('Plain base · first try · ABCD-2345');
+    expect(created.footText).not.toContain(sheetCode(version));
+  });
+});
+
+// D-13, D-27: the sheet has no Equipment or Process section, so a created
+// recipe missing notes, steps or targets leaves nothing empty on paper: no
+// heading over nothing and no blank band. Rendered through useSheetPages with
+// the default read, which lays one page in jsdom; only the laid page is read,
+// never the hidden measuring copy.
+describe('useSheetPages — a created recipe with parts missing leaves no empty section (11-05; D-13, D-27)', () => {
+  let host = null;
+  let root = null;
+
+  afterEach(async () => {
+    await act(async () => root?.unmount());
+    host?.remove();
+    host = null;
+    root = null;
+  });
+
+  function LaidPages({ version }) {
+    const sheet = useSheetPages(version, undefined, 'first try');
+    return (
+      <div>
+        <div className="laid">{sheet.pages && sheet.pages.map((plan, i) => <SheetPage key={i} plan={plan} blocks={sheet.blocks} columns={sheet.columns} />)}</div>
+        {sheet.measureElement}
+      </div>
+    );
+  }
+
+  async function laid(version) {
+    host = document.createElement('div');
+    document.body.appendChild(host);
+    root = createRoot(host);
+    await act(async () => {
+      root.render(<LaidPages version={version} />);
+    });
+    return host.querySelector('.laid');
+  }
+
+  it('lays no Before you start section and no heading for a version with no notes', async () => {
+    const pages = await laid(createdSheetVersion({ steps: [createdStep(1)], placements: [1, UNPLACED_STEP, UNPLACED_STEP] }));
+    expect(pages.querySelectorAll('.ps-page')).toHaveLength(1);
+    expect(pages.querySelector('.ps-before')).toBeNull();
+    expect([...pages.querySelectorAll('h2.region-name')].map((heading) => heading.textContent)).not.toContain('Before you start');
+  });
+
+  it('lays Before you start when the version has notes', async () => {
+    const version = createdSheetVersion({ placements: [UNPLACED_STEP, UNPLACED_STEP, UNPLACED_STEP], extra: { authored: { beforeYouStart: [{ text: 'Chill the base the night before.' }] } } });
+    const pages = await laid(version);
+    expect(pages.querySelector('.ps-before h2.region-name').textContent).toBe('Before you start');
+  });
+
+  it('lays no Instructions heading and no step for a version with no steps, and the foot once', async () => {
+    const version = createdSheetVersion({ placements: [UNPLACED_STEP, UNPLACED_STEP, UNPLACED_STEP] });
+    const pages = await laid(version);
+    expect(pages.querySelector('.ps-instructions')).toBeNull();
+    expect(pages.querySelector('.mp-step')).toBeNull();
+    expect([...pages.querySelectorAll('h2.region-name')].map((heading) => heading.textContent)).not.toContain('Instructions');
+    const feet = pages.querySelectorAll('.mp-foot');
+    expect(feet).toHaveLength(1);
+    expect(feet[0].textContent).toBe(`Plain base · first try · ${version.sheetCode}`);
+  });
+
+  it('prints no target tags for steps without targets, and no why or aside line without a purpose or aside', async () => {
+    const pages = await laid(createdSheetVersion({ steps: [createdStep(1), createdStep(2)], placements: [1, 2, UNPLACED_STEP] }));
+    expect(pages.querySelectorAll('.mp-step')).toHaveLength(2);
+    expect(pages.querySelector('.mp-tags')).toBeNull();
+    expect(pages.querySelector('.mp-why')).toBeNull();
+    expect(pages.querySelector('.mp-aside')).toBeNull();
+  });
+
+  it('follows every region heading, inside its section, with content', async () => {
+    const version = createdSheetVersion({
+      steps: [createdStep(1, { targets: [{ label: 'temp', value: '4 °C' }], purpose: 'Because.', aside: 'Careful.' })],
+      placements: [1, UNPLACED_STEP, UNPLACED_STEP],
+      extra: { authored: { beforeYouStart: [{ text: 'Chill the base the night before.' }] } },
+    });
+    const pages = await laid(version);
+    const headings = [...pages.querySelectorAll('h2.region-name')];
+    expect(headings.map((heading) => heading.textContent)).toEqual(expect.arrayContaining(['Before you start', 'Ingredients', 'Instructions']));
+    for (const heading of headings) {
+      const next = heading.nextElementSibling;
+      expect(next, heading.textContent).not.toBeNull();
+      expect(next.textContent.trim(), heading.textContent).not.toBe('');
+    }
+    expect(pages.querySelectorAll('.mp-tags')).toHaveLength(1);
+    expect(pages.querySelector('.mp-why')).not.toBeNull();
+    expect(pages.querySelector('.mp-aside')).not.toBeNull();
   });
 });

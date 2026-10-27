@@ -2,6 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { computeBalance, formatGrams, formatPortionLine } from '../domain/composition.js';
 import { activeRows, activeSteps, rowGrams } from '../domain/rows.js';
 import { displayNumberOf, displayNumbers } from '../domain/stepNumbers.js';
+import { UNPLACED_STEP } from '../domain/creationSteps.js';
 import { buildFigures } from '../domain/figures.js';
 import { layPages, pagesOverflow } from '../domain/sheetPages.js';
 import { groupPortionsByStep, dataFlagFor } from './IngredientTable.jsx';
@@ -49,8 +50,14 @@ export function sheetBlocks(version, identity) {
   const mass = balance ? balance.mass : 0;
   const activeById = new Map(active.map((row) => [row.id, row]));
   const groups = groupPortionsByStep(version.rows, steps, displayNumbers(steps), false);
-  // A lone Unallocated head labels nothing (IngredientTable.jsx draws none).
-  const showHeads = !(groups.length === 1 && groups[0].kind === 'unallocated');
+  // A lone "Not in a step yet" head labels nothing (IngredientTable.jsx draws
+  // none), except over a version with a live step whose lines sit at
+  // UNPLACED_STEP: its steps use no row, and the head says so (D-09). An empty
+  // method, or portions naming a step that does not exist, stay flat.
+  const loneUnplaced = groups.length === 1 && groups[0].kind === 'unallocated';
+  const showHeads =
+    !loneUnplaced ||
+    (activeSteps(version).length > 0 && groups[0].entries.every((entry) => entry.portion.step === UNPLACED_STEP));
   return {
     version,
     readingVersion,
@@ -59,7 +66,7 @@ export function sheetBlocks(version, identity) {
       key: group.kind === 'removed' ? `removed:${group.n}` : String(group.displayNumber ?? 'unallocated'),
       head: showHeads
         ? {
-            label: group.kind === 'unallocated' ? 'Unallocated' : group.kind === 'removed' ? 'Removed' : `Step ${group.displayNumber}`,
+            label: group.kind === 'unallocated' ? 'Not in a step yet' : group.kind === 'removed' ? 'Removed' : `Step ${group.displayNumber}`,
             leadIn: group.kind === 'unallocated' ? null : group.leadIn,
           }
         : null,

@@ -1213,3 +1213,32 @@ describe("the record pen's Tasting head, a peer of the Batch head (quick 261025-
     }
   });
 });
+
+// A read-only step in the printed treatment (decision 014 2, sketch 014
+// CONTRACT section 7, plan 11-04): the tag value's underline lives here (app.css
+// declares underline only on .text-control and a), and the purpose and aside
+// read upright, scoped so the table's estimate flag and the open pen step's
+// chips of fields keep their box.
+describe('a read-only step reads as the Sheet prints it (plan 11-04)', () => {
+  const find = (selector) => rules.find((rule) => rule.selector === selector && rule.media === undefined);
+
+  test('the tag value is bold and underlined at the print offset, under the --tags modifier only', () => {
+    const rule = find('.notebook .method-step__targets--tags .target-chip__value');
+    expect(rule, 'expected the tag value rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/text-decoration:\s*underline/);
+    expect(rule.declarations).toMatch(/text-underline-offset:\s*var\(--sheet-print-tag-underline-offset\)/);
+    expect(rules.some((r) => r.selector === '.notebook .target-chip__value')).toBe(false);
+  });
+
+  test('the chip loses its box only inside the tag row', () => {
+    const rule = find('.notebook .method-step__targets--tags .target-chip');
+    expect(rule.declarations).toMatch(/border:\s*0/);
+    expect(rule.declarations).toMatch(/padding:\s*0/);
+  });
+
+  test('the purpose and aside read upright, as direct children of the step body', () => {
+    const rule = find('.notebook .method-step__body > .method-step__purpose, .notebook .method-step__body > .method-step__aside');
+    expect(rule, 'expected the upright rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/font-style:\s*normal/);
+  });
+});

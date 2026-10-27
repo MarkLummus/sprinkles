@@ -435,6 +435,47 @@ describe('buildDiff — targets', () => {
     const tempDiff = step8Diff.targets.find((target) => target.label === 'temp');
     expect(tempDiff).toEqual({ label: 'temp', from: '4 °C', to: null, changed: true });
   });
+
+  // A label is not an identity (the import validator allows repeats): the k-th
+  // occurrence of a label in current pairs with the k-th in the baseline.
+  describe('repeated labels', () => {
+    const targetsOf = (...values) => values.map((value) => ({ label: 'temp', value }));
+    const diffFor = (currentValues, baselineValues) => {
+      const baseline = clone();
+      const current = clone();
+      findStep(baseline, 8).targets = targetsOf(...baselineValues);
+      findStep(current, 8).targets = targetsOf(...currentValues);
+      return buildDiff(current, baseline).steps.find((step) => step.n === 8).targets;
+    };
+
+    it('keeps two equal targets as two unchanged descriptors, in order', () => {
+      expect(diffFor(['80', '85'], ['80', '85'])).toEqual([
+        { label: 'temp', from: '80', to: '80', changed: false },
+        { label: 'temp', from: '85', to: '85', changed: false },
+      ]);
+    });
+
+    it('changes only the occurrence whose value differs', () => {
+      expect(diffFor(['80', '90'], ['80', '85'])).toEqual([
+        { label: 'temp', from: '80', to: '80', changed: false },
+        { label: 'temp', from: '85', to: '90', changed: true },
+      ]);
+    });
+
+    it('lists the baseline occurrence nothing in current pairs with as removed', () => {
+      expect(diffFor(['80'], ['80', '85'])).toEqual([
+        { label: 'temp', from: '80', to: '80', changed: false },
+        { label: 'temp', from: '85', to: null, changed: true },
+      ]);
+    });
+
+    it('lists an occurrence only current carries as added', () => {
+      expect(diffFor(['80', '85'], ['80'])).toEqual([
+        { label: 'temp', from: '80', to: '80', changed: false },
+        { label: 'temp', from: null, to: '85', changed: true },
+      ]);
+    });
+  });
 });
 
 describe('buildDiff — uses', () => {

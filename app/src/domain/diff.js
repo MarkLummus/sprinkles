@@ -149,24 +149,35 @@ function buildRowDiff(row, baseRow, currentMass, baselineMass, method, baseMetho
   };
 }
 
-// Matched by label, in current's chip order followed by any chip only the
-// baseline carries — a chip present on one side and absent on the other
-// still gets a descriptor, with null on the absent side.
+// A label is not an identity: the import validator allows two targets with
+// one label on a step. So a chip is matched by label AND occurrence: the
+// k-th 'temp' in current pairs with the k-th 'temp' in the baseline. Listed
+// in current's chip order, followed by the baseline occurrences nothing in
+// current paired with, in the baseline's order. A chip present on one side
+// and absent on the other still gets a descriptor, with null on the absent
+// side.
 function buildTargetDiff(currentTargets, baselineTargets) {
-  const currentByLabel = new Map(currentTargets.map((target) => [target.label, target.value]));
-  const baselineByLabel = new Map(baselineTargets.map((target) => [target.label, target.value]));
-  const labels = [];
-  for (const target of currentTargets) {
-    if (!labels.includes(target.label)) labels.push(target.label);
-  }
+  const baselineByKey = new Map();
+  const baselineSeen = new Map();
   for (const target of baselineTargets) {
-    if (!labels.includes(target.label)) labels.push(target.label);
+    const occurrence = baselineSeen.get(target.label) ?? 0;
+    baselineSeen.set(target.label, occurrence + 1);
+    baselineByKey.set(`${occurrence}:${target.label}`, target.value);
   }
-  return labels.map((label) => {
-    const from = baselineByLabel.has(label) ? baselineByLabel.get(label) : null;
-    const to = currentByLabel.has(label) ? currentByLabel.get(label) : null;
-    return { label, from, to, changed: from !== to };
-  });
+  const descriptors = [];
+  const currentSeen = new Map();
+  for (const target of currentTargets) {
+    const occurrence = currentSeen.get(target.label) ?? 0;
+    currentSeen.set(target.label, occurrence + 1);
+    const key = `${occurrence}:${target.label}`;
+    const from = baselineByKey.has(key) ? baselineByKey.get(key) : null;
+    baselineByKey.delete(key);
+    descriptors.push({ label: target.label, from, to: target.value, changed: from !== target.value });
+  }
+  for (const [key, from] of baselineByKey) {
+    descriptors.push({ label: key.slice(key.indexOf(':') + 1), from, to: null, changed: true });
+  }
+  return descriptors;
 }
 
 function buildStepDiff(step, baseStep) {

@@ -902,3 +902,49 @@ describe('VersionRow — the waiting draft line (04-09)', () => {
     }
   });
 });
+
+// Phase 11 plan 12 (STRUCT-04, CONTRACT section 5, D-04): Edit beside Next
+// version while the version is editable, Resume editing in its place while an
+// edit draft is kept; null and 'loading' draw today's row.
+describe('VersionRow — Edit and Resume editing (STRUCT-04)', () => {
+  const actsOf = (markup) => markup.slice(markup.indexOf('notebook-version__acts'));
+
+  it('draws Edit, an underlined notebook-link button, after Next version and before Print sheet when editable', () => {
+    const acts = actsOf(renderVersionRow({ editState: 'editable', onEdit: noop }));
+    expect(acts).toMatch(/<button[^>]*class="notebook-link"[^>]*>Edit<\/button>/);
+    expect(acts.indexOf('>Edit<')).toBeGreaterThan(acts.indexOf('Next version'));
+    expect(acts.indexOf('Print sheet')).toBeGreaterThan(acts.indexOf('>Edit<'));
+    expect(acts).not.toContain('Resume editing');
+  });
+
+  it('draws Edit below 724 as well, after the record act and Next version', () => {
+    const acts = actsOf(renderVersionRow({ editState: 'editable', below724: true }));
+    expect(acts.indexOf('>Edit<')).toBeGreaterThan(acts.indexOf('Next version'));
+    expect(acts.indexOf('Next version')).toBeGreaterThan(acts.indexOf('Record a batch'));
+  });
+
+  it('draws Resume editing in Edit’s place, with no Next version, no Edit and no record act, when editing', () => {
+    for (const below724 of [false, true]) {
+      const acts = actsOf(renderVersionRow({ editState: 'editing', below724 }));
+      expect(acts).toMatch(/<button[^>]*class="notebook-link"[^>]*>Resume editing<\/button>/);
+      expect(acts).not.toContain('Next version');
+      expect(acts).not.toContain('>Edit<');
+      expect(acts).not.toContain('Record a batch');
+      expect(acts.indexOf('Print sheet')).toBeGreaterThan(acts.indexOf('Resume editing'));
+    }
+  });
+
+  it('is byte-identical for null, loading and omitted', () => {
+    const omitted = renderVersionRow({});
+    expect(renderVersionRow({ editState: null })).toBe(omitted);
+    expect(renderVersionRow({ editState: 'loading' })).toBe(omitted);
+    expect(omitted).not.toContain('>Edit<');
+    expect(omitted).not.toContain('Resume editing');
+  });
+
+  it('draws neither while a pen is open', () => {
+    const markup = renderVersionRow({ editState: 'editable', openPen: 'plan', mode: 'developing', penDraft: emptyPenDraft() });
+    expect(markup).not.toContain('>Edit<');
+    expect(markup).not.toContain('Resume editing');
+  });
+});

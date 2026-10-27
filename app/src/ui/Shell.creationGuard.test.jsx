@@ -12,7 +12,7 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { MemoryRouter, Routes, Route, useOutletContext } from 'react-router';
+import { MemoryRouter, Routes, Route, useNavigate, useOutletContext } from 'react-router';
 
 const store = vi.hoisted(() => ({
   drafts: new Map(),
@@ -75,8 +75,9 @@ vi.mock('../store/transfer.js', async (importOriginal) => {
 
 import { repository } from '../store/repository.js';
 import { importStore } from '../store/transfer.js';
-import { Shell, CREATION_IMPORT_BLOCKED_STATUS, IMPORT_BLOCKED_STATUS } from './Shell.jsx';
+import { Shell, CREATION_IMPORT_BLOCKED_STATUS, IMPORT_BLOCKED_STATUS, editImportBlockedStatus } from './Shell.jsx';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
+import { Button } from './Button.jsx';
 import { CatalogFixture } from './catalog.fixtures.jsx';
 import { blankCreateDraft, buildDraftRecord } from '../domain/draft.js';
 import { NotebookPlace } from './NotebookPlace.jsx';
@@ -99,6 +100,22 @@ function Revision({ children }) {
 
 function Home() {
   return <p>Home stand-in</p>;
+}
+
+// Phase 11 plan 12: a stand-in for the edit route (the guard reads only its
+// address), and a page whose one button lands elsewhere with the route state a
+// Save writes, so a case can press Import in the first tick after that landing.
+function EditStandIn() {
+  return <p>Edit stand-in</p>;
+}
+
+let leaveWith = { to: '/', state: null };
+
+function Leave() {
+  const navigate = useNavigate();
+  return (
+    <Button onClick={() => navigate(leaveWith.to, { replace: true, state: leaveWith.state })}>Land</Button>
+  );
 }
 
 const VERSION_PATH = `/notebook/${oliveOilVersion.recipeId}/${oliveOilVersion.id}`;
@@ -144,6 +161,8 @@ async function mountAt(path = '/', until = () => false) {
               <Route path="/notebook" element={<Revision><NotebookPlace /></Revision>} />
               <Route path="/notebook/new" element={<Revision><CreationRoute /></Revision>} />
               <Route path="/notebook/:recipeId/:versionId" element={<Revision><RecipePageForRoute /></Revision>} />
+              <Route path="/notebook/:recipeId/:versionId/edit" element={<Revision><EditStandIn /></Revision>} />
+              <Route path="/leave" element={<Revision><Leave /></Revision>} />
             </Route>
           </Routes>
         </MemoryRouter>
@@ -172,6 +191,7 @@ afterEach(async () => {
   store.batches = [];
   store.shellReads = null;
   store.pageReads = null;
+  leaveWith = { to: '/', state: null };
 });
 
 function buttonByText(text, scope) {
@@ -545,5 +565,163 @@ describe('Start and Cancel reach the Shell in the render that carries them (orch
 
     await click(headerImport());
     expectRefused(CREATION_IMPORT_BLOCKED_STATUS);
+  });
+});
+
+// Phase 11 plan 12 (STRUCT-04, D-04, D-23; T-11-35, T-11-36, T-11-57): an edit
+// draft kept on a saved first version refuses Import on every route and names
+// the recipe; the open edit route with nothing kept refuses with the open-form
+// sentence and never the creation's; the order is open pen, kept creation, kept
+// edit, the edit address, an unknown read; and the route words of a landing
+// settle the Shell at the route's commit.
+function editDraftRecord(name = 'Vanilla', ids = { recipeId: 'r-vanilla', versionId: 'v-vanilla' }) {
+  return buildDraftRecord({
+    versionId: ids.versionId,
+    kind: 'edit',
+    payload: blankCreateDraft({ recipeId: ids.recipeId, versionId: ids.versionId, name }),
+    now: '2026-10-21T08:00:00.000Z',
+  });
+}
+
+const EDIT_STATUS = 'Save or cancel your changes to Vanilla before importing.';
+
+describe('Import is refused while an edit draft is kept, naming the recipe (D-04)', () => {
+  beforeEach(() => {
+    store.drafts.set('v-vanilla', editDraftRecord());
+  });
+
+  it('words the sentence from the recipe’s name', () => {
+    expect(editImportBlockedStatus('Vanilla')).toBe(EDIT_STATUS);
+    expect(editImportBlockedStatus('')).toBe('Save or cancel your changes to Untitled before importing.');
+  });
+
+  it('refuses the header and More’s Import on Home, with no chooser and no import', async () => {
+    await mountAt('/');
+    await click(headerImport());
+    expectRefused(EDIT_STATUS);
+    await click(moreImport());
+    expectRefused(EDIT_STATUS);
+  });
+
+  it('refuses on /notebook, which has no draft row for it', async () => {
+    await mountAt('/notebook', () => current.container.querySelector('.nb__count') !== null);
+    expect(current.container.querySelector('li.nb__draft')).toBeNull();
+    await click(headerImport());
+    expectRefused(EDIT_STATUS);
+  });
+
+  it('refuses on a recipe page', async () => {
+    await mountAt(VERSION_PATH, () => buttonByText('Next version') !== null);
+    await click(headerImport());
+    expectRefused(EDIT_STATUS);
+  });
+
+  it('refuses with the creation sentence when a creation is kept as well', async () => {
+    store.drafts.set('v-kept', createDraftRecord());
+    await mountAt('/');
+    await click(headerImport());
+    expectRefused(CREATION_IMPORT_BLOCKED_STATUS);
+  });
+
+  it('refuses on the edit address with the edit sentence while the edit is kept', async () => {
+    await mountAt('/notebook/r-vanilla/v-vanilla/edit', () => current.container.textContent.includes('Edit stand-in'));
+    await click(headerImport());
+    expectRefused(EDIT_STATUS);
+  });
+
+  it('renders a recipe name holding angle brackets as text in the notice', async () => {
+    store.drafts.set('v-vanilla', editDraftRecord('<b>Vanilla</b>'));
+    await mountAt('/');
+    await click(headerImport());
+    expectRefused('Save or cancel your changes to <b>Vanilla</b> before importing.');
+    expect(notices()[0].querySelector('b')).toBeNull();
+  });
+});
+
+describe('the open edit route with nothing kept yet (D-23)', () => {
+  it('refuses with the open-form sentence, not the creation’s, and opens no chooser', async () => {
+    await mountAt('/notebook/r-vanilla/v-vanilla/edit', () => current.container.textContent.includes('Edit stand-in'));
+    await click(headerImport());
+    expectRefused(IMPORT_BLOCKED_STATUS);
+    expect(notice()).not.toBe(CREATION_IMPORT_BLOCKED_STATUS);
+  });
+
+  it('refuses before an unknown read is reported: the open form wins over the store sentence', async () => {
+    store.shellReads = () => Promise.reject(new Error('store'));
+    await mountAt('/notebook/r-vanilla/v-vanilla/edit', () => current.container.textContent.includes('Edit stand-in'));
+    await click(headerImport());
+    expectRefused(IMPORT_BLOCKED_STATUS);
+  });
+
+  it('opens the chooser again on the page once the edit has ended', async () => {
+    await mountAt(VERSION_PATH, () => buttonByText('Next version') !== null);
+    await click(headerImport());
+    expect(chooserClick).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('the route words of a landing settle the Shell at the route’s commit (T-11-57)', () => {
+  async function landAfterKeeping(record, state) {
+    store.drafts.set(record.versionId, structuredClone(record));
+    await mountAt('/leave', () => buttonByText('Land') !== null);
+    // The Shell has read the kept draft; Save deletes it in its own transaction.
+    store.drafts.delete(record.versionId);
+    const pending = deferShellReads();
+    leaveWith = { to: '/', state };
+    await click(buttonByText('Land'));
+    await flush(() => current.container.textContent.includes('Home stand-in'));
+    expect(pending.length).toBeGreaterThan(0);
+    return pending;
+  }
+
+  it('without a word, a stale sight of a kept creation refuses', async () => {
+    await landAfterKeeping(createDraftRecord(), { focusVersion: true });
+    await click(headerImport());
+    expectRefused(CREATION_IMPORT_BLOCKED_STATUS);
+  });
+
+  it('saved created: no kept creation, so Import pressed in the first tick opens the chooser', async () => {
+    await landAfterKeeping(createDraftRecord(), { focusVersion: true, saved: 'created' });
+    await click(headerImport());
+    expect(chooserClick).toHaveBeenCalledTimes(1);
+    expect(notice()).not.toBe(CREATION_IMPORT_BLOCKED_STATUS);
+  });
+
+  it('without a word, a stale sight of a kept edit refuses', async () => {
+    await landAfterKeeping(editDraftRecord(), { focusVersion: true });
+    await click(headerImport());
+    expectRefused(EDIT_STATUS);
+  });
+
+  it('saved edited: no kept edit, so Import pressed in the first tick opens the chooser', async () => {
+    await landAfterKeeping(editDraftRecord(), { focusVersion: true, saved: 'edited' });
+    await click(headerImport());
+    expect(chooserClick).toHaveBeenCalledTimes(1);
+    expect(notice()).not.toBe(EDIT_STATUS);
+  });
+});
+
+describe('an import already past the chooser checks again for a kept edit (T-11-57)', () => {
+  it('a kept edit that appeared after the Shell’s last read: importStore is not called and the edit sentence is said', async () => {
+    await mountAt('/');
+    await click(headerImport());
+    expect(chooserClick).toHaveBeenCalledTimes(1);
+
+    const text = await chooseDeferredFile();
+    store.drafts.set('v-vanilla', editDraftRecord());
+    await settleImport(text, '{}');
+
+    expect(importStore).not.toHaveBeenCalled();
+    expect(revisionNow).toBe(0);
+    expect(notices()).toHaveLength(1);
+    expect(notice()).toBe(EDIT_STATUS);
+  });
+
+  it('with no draft kept the re-check lets the import through', async () => {
+    await mountAt('/');
+    await click(headerImport());
+    const text = await chooseDeferredFile();
+    await settleImport(text, '{}');
+    expect(importStore).toHaveBeenCalledTimes(1);
   });
 });

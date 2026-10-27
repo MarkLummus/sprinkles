@@ -2740,3 +2740,20 @@ describe('BatchRow — a new record pen reads its scales and Every recipe chips 
     expect(SEED_CATALOG).toEqual(SEED_CATALOG_BEFORE);
   });
 });
+
+// Phase 11 plan 12 (D-04): while an edit draft is kept on the version, either
+// record act would close the edit window, so neither is drawn.
+describe('BatchRow — recordingLocked (D-04)', () => {
+  it('draws no Record a batch in the no-batch state while locked, and draws it unlocked', () => {
+    expect(renderBatchRow({ openPen: null, openBatch: null, batches: [], recordingLocked: true })).not.toContain('Record a batch');
+    expect(renderBatchRow({ openPen: null, openBatch: null, batches: [], recordingLocked: false })).toContain('Record a batch');
+  });
+
+  it('draws no Record another while locked, keeps Correct, and draws it unlocked', () => {
+    const props = { openPen: null, openBatch: augustSecondBatch, batches: [augustSecondBatch] };
+    const locked = renderBatchRow({ ...props, recordingLocked: true });
+    expect(locked).not.toContain('Record another');
+    expect(locked).toContain('>Correct<');
+    expect(renderBatchRow(props)).toContain('Record another');
+  });
+});

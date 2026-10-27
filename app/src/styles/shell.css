@@ -396,6 +396,16 @@ button.shell__place {
   border-top: var(--app-rule-row) solid var(--app-divider);
 }
 
+.place .nb__row--resume {
+  grid-template-columns: auto minmax(0,1fr) var(--app-col-tally) auto;
+  grid-template-areas: 'rail name meta act' 'rail desc desc act';
+}
+
+.place .nb__row-act {
+  grid-area: act;
+  align-self: center;
+}
+
 .place .nb__rail {
   grid-area: rail;
   align-self: stretch;
@@ -774,6 +784,16 @@ button.shell__place {
   .place .nb__row {
     grid-template-columns: auto minmax(0,1fr);
     grid-template-areas: 'rail name' 'rail desc' 'rail meta';
+  }
+
+  .place .nb__row--resume {
+    grid-template-columns: auto minmax(0,1fr);
+    grid-template-areas: 'rail name' 'rail desc' 'rail meta' 'rail act';
+  }
+
+  .place .nb__row-act {
+    justify-self: start;
+    margin-top: var(--gap-xs);
   }
 
   .place .nb__meta {

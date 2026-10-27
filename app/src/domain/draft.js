@@ -13,6 +13,11 @@
 // A fourth kind, `create`, is the half-made first version of a new recipe
 // (Phase 9, D-18). It belongs to no stored version, so it has its own fit
 // check, draftMatchesCreate, which takes neither a version nor batches.
+//
+// A fifth kind, `edit`, is the create payload of an already saved first version
+// (Phase 11, D-02), kept under that version's id. It is a sibling of `create`:
+// the same payload, its own fit check, draftMatchesEdit, and no creation rule
+// ever matches it. draftFamily names whose a version's one draft key is.
 import { STOPS } from './axes.js';
 import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS } from './battery.js';
 import { SCALE_KINDS, MAX_RECIPE_SCALES, MAX_RECIPE_PROBLEMS, coreScaleDefinitions, problemNames } from './catalog.js';
@@ -50,7 +55,7 @@ const RECORD_DRAFT_FIELD_TYPES = {
 
 export const RECORD_DRAFT_KEYS = Object.keys(RECORD_DRAFT_FIELD_TYPES);
 
-const KINDS = ['plan', 'record', 'amend', 'create'];
+const KINDS = ['plan', 'record', 'amend', 'create', 'edit'];
 const AMEND_OPENERS = ['correct', 'record-a-tasting'];
 
 // The keys that change an object's prototype or reach its constructor when a
@@ -306,7 +311,9 @@ export function draftMatchesVersion(record, version, batches, catalog) {
   // draftMatchesCreate. Refused here by name, so the recipe page's restore and
   // Home's draft filter can never act on one, even when its versionId happens
   // to equal a stored version's id.
-  if (record.kind === 'create') return false;
+  // An edit draft is refused the same way, by name: it is a creation payload kept
+  // under a version's id.
+  if (record.kind === 'create' || record.kind === 'edit') return false;
   if (!KINDS.includes(record.kind)) return false;
   if (record.versionId !== version.id) return false;
   if (carriesUnsafeKey(record)) return false;
@@ -498,19 +505,12 @@ export const CREATE_DRAFT_KEYS = Object.keys(CREATE_DRAFT_FIELD_CHECKS);
 
 const CREATE_REQUIRED_KEYS = ['recipeId', 'versionId', 'name'];
 
-/**
- * draftMatchesCreate(record) -> whether a stored draft is a create draft the
- * creation editor can restore. False unless the shape version matches, the
- * kind is create, versionId is a non-empty string, updatedAt is a string, no
- * object anywhere in the record has an own `__proto__`, `constructor` or
- * `prototype` key, and the payload holds only CREATE_DRAFT_KEYS, each passing
- * its check, with payload.versionId equal to the record's. A name alone fits.
- * It needs no version and no batches.
- */
-export function draftMatchesCreate(record) {
+// The one fit check the create and the edit kinds share: the create payload, held
+// to the record's kind.
+function fitsCreationRecord(record, kind) {
   if (!isPlainObject(record)) return false;
   if (record.shapeVersion !== DRAFT_SHAPE_VERSION) return false;
-  if (record.kind !== 'create') return false;
+  if (record.kind !== kind) return false;
   if (!isNonEmptyString(record.versionId)) return false;
   if (typeof record.updatedAt !== 'string') return false;
   if (carriesUnsafeKey(record)) return false;
@@ -521,6 +521,44 @@ export function draftMatchesCreate(record) {
     if (!has(CREATE_DRAFT_FIELD_CHECKS, key) || !CREATE_DRAFT_FIELD_CHECKS[key](payload[key])) return false;
   }
   return payload.versionId === record.versionId;
+}
+
+/**
+ * draftMatchesCreate(record) -> whether a stored draft is a create draft the
+ * creation editor can restore. False unless the shape version matches, the
+ * kind is create, versionId is a non-empty string, updatedAt is a string, no
+ * object anywhere in the record has an own `__proto__`, `constructor` or
+ * `prototype` key, and the payload holds only CREATE_DRAFT_KEYS, each passing
+ * its check, with payload.versionId equal to the record's. A name alone fits.
+ * It needs no version and no batches.
+ */
+export function draftMatchesCreate(record) {
+  return fitsCreationRecord(record, 'create');
+}
+
+/**
+ * draftMatchesEdit(record) -> whether a stored draft is an edit draft: the
+ * create payload of a saved first version, kept under that version's id
+ * (Phase 11, D-02). The same checks as draftMatchesCreate with the kind
+ * 'edit'; a create record does not fit it and an edit record does not fit
+ * draftMatchesCreate or draftMatchesVersion, so every one-creation rule and
+ * every pen restore ignores it.
+ */
+export function draftMatchesEdit(record) {
+  return fitsCreationRecord(record, 'edit');
+}
+
+/**
+ * draftFamily(kindOrFamily) -> 'pen' for plan, record, amend (and 'pen'
+ * itself), 'edit' for edit and 'create' for create; any other value throws a
+ * TypeError. A version's one draft key is shared by the pens and the edit,
+ * and the store lets neither family write over or delete the other's.
+ */
+export function draftFamily(kindOrFamily) {
+  if (kindOrFamily === 'plan' || kindOrFamily === 'record' || kindOrFamily === 'amend' || kindOrFamily === 'pen') return 'pen';
+  if (kindOrFamily === 'edit') return 'edit';
+  if (kindOrFamily === 'create') return 'create';
+  throw new TypeError(`${JSON.stringify(kindOrFamily)} is not a draft kind`);
 }
 
 /**

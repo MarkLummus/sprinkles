@@ -1,19 +1,37 @@
 import { openStore } from './db.js';
 import { normaliseCode, sheetCodeProblems, SheetCodeError } from '../domain/sheetCode.js';
+import { firstVersionRefusal, sameRecord, VersionChangedError } from '../domain/firstVersion.js';
+import { draftFamily } from '../domain/draft.js';
 import { catalogConflicts, mergeById, CatalogConflictError } from './seedTables.js';
 
 // The one write both createVersion and saveVersion make: the read of every stored
 // version, the pure check and the put share one readwrite transaction. A problem
 // throws a SheetCodeError and aborts it by hand, as importAll does, so nothing is
 // written.
-async function putVersionChecked(db, version) {
-  const tx = db.transaction('versions', 'readwrite');
+//
+// With `expected` (the record the writer read) the same transaction also spans the
+// batches store, and the checks run before the Sheet code rule: no stored version
+// under the id is a VersionChangedError 'gone', a batch stored for it is
+// 'has-batch', and a stored version that is not sameRecord-equal to expected is
+// 'changed'. Each goes down the same catch, so nothing is written and no
+// AbortError goes unhandled. Without expected the transaction is exactly the one
+// createVersion has always made.
+async function putVersionChecked(db, version, expected = null) {
+  const tx = expected === null ? db.transaction('versions', 'readwrite') : db.transaction(['versions', 'batches'], 'readwrite');
   const done = tx.done;
   const queued = [];
   try {
-    const problems = sheetCodeProblems(await tx.store.getAll(), [version]);
+    const stored = await tx.objectStore('versions').getAll();
+    if (expected !== null) {
+      const batches = await tx.objectStore('batches').index('by-version').getAll(version.id);
+      const current = stored.find((existing) => existing.id === version.id);
+      if (!current) throw new VersionChangedError(version.id, 'gone');
+      if (batches.length > 0) throw new VersionChangedError(version.id, 'has-batch');
+      if (!sameRecord(current, expected)) throw new VersionChangedError(version.id, 'changed');
+    }
+    const problems = sheetCodeProblems(stored, [version]);
     if (problems.length > 0) throw new SheetCodeError(problems);
-    queued.push(tx.store.put(version));
+    queued.push(tx.objectStore('versions').put(version));
     await Promise.all([...queued, done]);
   } catch (error) {
     try {
@@ -23,6 +41,16 @@ async function putVersionChecked(db, version) {
     }
     for (const request of [...queued, done]) request.catch(() => {});
     throw error;
+  }
+}
+
+// The family a stored or incoming draft belongs to, or null for a record whose
+// kind is not a draft kind (draftFamily throws for those).
+function familyOrNull(kind) {
+  try {
+    return draftFamily(kind);
+  } catch {
+    return null;
   }
 }
 
@@ -95,8 +123,20 @@ export function createRepository() {
     // D-04b): a stored version's code is written once, so a save carrying a
     // different code for the same id is refused, and a version's own code is
     // never a clash with itself.
-    async saveVersion(version) {
-      return putVersionChecked(await dbPromise, version);
+    //
+    // With `{ expected }`, the record the writer read, the same transaction
+    // also checks that the version is still that record and has no batch, and
+    // throws a VersionChangedError ('gone', 'has-batch' or 'changed') writing
+    // nothing: another tab's edit route or record pen can save between the
+    // pen's read and its Save over, and no live cross-tab refresh is built, so
+    // the transaction is the guard (T-11-63). It throws where
+    // saveFirstVersionOver resolves its refusals on purpose: saveVersion
+    // already throws a SheetCodeError for a refused code, and every caller and
+    // page-test stub reads its resolve as saved, so a resolved refusal would
+    // read as a successful save in each of them. Called without `expected`
+    // (the store's tests and fixtures) it writes as it always did.
+    async saveVersion(version, { expected } = {}) {
+      return putVersionChecked(await dbPromise, version, expected ?? null);
     },
     // A new version is stored the same way. IndexedDB serialises the
     // transaction against any other versions transaction, so two tabs creating
@@ -109,6 +149,103 @@ export function createRepository() {
         throw new TypeError(`version ${version?.id} needs a sheetCode in the form XXXX-XXXX`);
       }
       return putVersionChecked(await dbPromise, version);
+    },
+    // A creation's Save (MAKE-10): the recipe, its root version and the removal
+    // of the version's create draft are ONE readwrite transaction over recipes,
+    // versions and drafts, so a failed save leaves neither a recipe without its
+    // version nor a version without its recipe, and the maker's draft is still
+    // there to try again. A version id that is already stored is a caller bug
+    // (a root is only ever created, never written over here), thrown as a
+    // TypeError; a Sheet code that clashes with a stored one throws a
+    // SheetCodeError, as createVersion does. A put the store cannot clone throws
+    // before it queues and leaves the transaction open, so the catch aborts it
+    // by hand, as importAll does, or the puts already queued would commit.
+    async createRecipeWithVersion({ recipe, version }) {
+      const db = await dbPromise;
+      const tx = db.transaction(['recipes', 'versions', 'drafts'], 'readwrite');
+      const done = tx.done;
+      const queued = [];
+      try {
+        const storedVersions = await tx.objectStore('versions').getAll();
+        if (storedVersions.some((stored) => stored.id === version.id)) {
+          throw new TypeError(`version ${version.id} already exists`);
+        }
+        const problems = sheetCodeProblems(storedVersions, [version]);
+        if (problems.length > 0) throw new SheetCodeError(problems);
+        queued.push(tx.objectStore('recipes').put(recipe));
+        queued.push(tx.objectStore('versions').put(version));
+        queued.push(tx.objectStore('drafts').delete(version.id));
+        await Promise.all([...queued, done]);
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
+    },
+    // Save over a first version (STRUCT-04, D-03, D-06): the recipe, the version
+    // and the removal of the kept edit draft are ONE readwrite transaction, and
+    // the checks run inside it, over what it reads, because another tab can
+    // record a batch, save a child, open a pen or save over the version between
+    // the edit route's read and this write. `expected` is { version, recipe }
+    // as the edit route read them when it opened; without it the call is a
+    // caller bug (TypeError). A business refusal is RESOLVED, never thrown, as
+    // { saved: false, reason }: 'gone', 'not-first', 'has-batch', 'has-child',
+    // 'unlinked-row' (firstVersionRefusal), then 'draft-held' (a draft of
+    // another kind holds the version's key: restructuring the version beneath a
+    // pen's draft would make its next restore delete it), then 'changed' (the
+    // stored version or recipe is no longer expected). A refusal writes nothing
+    // and leaves every draft where it is. Nothing has been queued when a
+    // refusal aborts the transaction, and an aborted transaction rejects its
+    // done promise, so done is quieted first. Save-over keeps identity: a
+    // different Sheet code or createdAt is a caller bug (TypeError), and the
+    // Sheet code rule is run over the stored versions as every write does.
+    async saveFirstVersionOver({ recipe, version, expected }) {
+      if (!expected?.version || !expected?.recipe) {
+        throw new TypeError('saveFirstVersionOver needs the records the edit read, as expected');
+      }
+      const db = await dbPromise;
+      const tx = db.transaction(['recipes', 'versions', 'batches', 'drafts'], 'readwrite');
+      const done = tx.done;
+      const queued = [];
+      try {
+        const storedVersions = await tx.objectStore('versions').getAll();
+        const batches = await tx.objectStore('batches').index('by-version').getAll(version.id);
+        const storedRecipe = await tx.objectStore('recipes').get(recipe.id);
+        const draft = await tx.objectStore('drafts').get(version.id);
+        const stored = storedVersions.find((existing) => existing.id === version.id);
+        let reason = firstVersionRefusal({ version: stored, versions: storedVersions, batches });
+        if (reason === null && draft && draft.kind !== 'edit') reason = 'draft-held';
+        if (reason === null && (!sameRecord(stored, expected.version) || !sameRecord(storedRecipe, expected.recipe))) {
+          reason = 'changed';
+        }
+        if (reason !== null) {
+          done.catch(() => {});
+          tx.abort();
+          return { saved: false, reason };
+        }
+        if (stored.sheetCode !== version.sheetCode || stored.createdAt !== version.createdAt) {
+          throw new TypeError(`version ${version.id} keeps its Sheet code and its date when it is saved over`);
+        }
+        const problems = sheetCodeProblems(storedVersions, [version]);
+        if (problems.length > 0) throw new SheetCodeError(problems);
+        queued.push(tx.objectStore('recipes').put(recipe));
+        queued.push(tx.objectStore('versions').put(version));
+        if (draft && draft.kind === 'edit') queued.push(tx.objectStore('drafts').delete(version.id));
+        await Promise.all([...queued, done]);
+        return { saved: true };
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
     },
     async getAll() {
       const db = await dbPromise;
@@ -311,13 +448,75 @@ export function createRepository() {
       const db = await dbPromise;
       return db.get('drafts', versionId);
     },
+    // A version's one draft key is shared by the pens (plan, record, amend) and
+    // the edit, and UI exclusivity is not storage exclusivity: a second tab's
+    // pen writes and discards the same key. So the store guards ownership
+    // (T-11-46, D-06). saveDraft reads the stored record and the put in ONE
+    // readwrite transaction: when the key holds a record of another family
+    // (draftFamily) it writes nothing and resolves false, else it writes and
+    // resolves true. A stored record whose kind is not a draft kind belongs to
+    // no family and is written over, as it always was.
     async saveDraft(record) {
       const db = await dbPromise;
-      return db.put('drafts', record);
+      const tx = db.transaction('drafts', 'readwrite');
+      const done = tx.done;
+      const queued = [];
+      try {
+        const stored = await tx.store.get(record.versionId);
+        const storedFamily = stored ? familyOrNull(stored.kind) : null;
+        if (storedFamily !== null && storedFamily !== familyOrNull(record.kind)) {
+          done.catch(() => {});
+          tx.abort();
+          return false;
+        }
+        queued.push(tx.store.put(record));
+        await Promise.all([...queued, done]);
+        return true;
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
     },
-    async deleteDraft(versionId) {
+    // deleteDraft(versionId, kind): with a kind it deletes only when the stored
+    // record's family is that kind's family, and resolves whether it deleted: a
+    // pen's discard after a batch save in another tab cannot delete a kept edit
+    // draft, and an edit's Cancel cannot delete a pen's (T-11-46). With no kind
+    // it deletes whatever is stored, as it always did, for a caller that names
+    // none.
+    async deleteDraft(versionId, kind = null) {
       const db = await dbPromise;
-      return db.delete('drafts', versionId);
+      if (kind === null) {
+        await db.delete('drafts', versionId);
+        return true;
+      }
+      const wanted = draftFamily(kind);
+      const tx = db.transaction('drafts', 'readwrite');
+      const done = tx.done;
+      const queued = [];
+      try {
+        const stored = await tx.store.get(versionId);
+        if (!stored || familyOrNull(stored.kind) !== wanted) {
+          done.catch(() => {});
+          tx.abort();
+          return false;
+        }
+        queued.push(tx.store.delete(versionId));
+        await Promise.all([...queued, done]);
+        return true;
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
     },
     async listDrafts() {
       const db = await dbPromise;

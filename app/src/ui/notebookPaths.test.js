@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import {
   notebookPath,
   printPath,
+  editPath,
   legacyRecipePath,
   latestVersionPath,
   NOTEBOOK_PLACE_PATH,
@@ -46,6 +47,20 @@ describe('printPath — the print route address (D-04; research C8)', () => {
   it('keeps a .. segment a single segment: it adds no separator of its own', () => {
     expect(printPath('..', 'v').split('/')).toEqual(['', 'notebook', '..', 'v', 'print']);
     expect(printPath('r', '../x').split('/')).toEqual(['', 'notebook', 'r', '..%2Fx', 'print']);
+  });
+});
+
+describe('editPath — the edit route address (Phase 11 D-01)', () => {
+  it('builds /notebook/:recipeId/:versionId/edit', () => {
+    expect(editPath('olive-oil-ice-cream', 'olive-oil-ice-cream-v1')).toBe(
+      '/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/edit',
+    );
+  });
+
+  it('encodes each segment, so a stored id holding / cannot change the path shape (T-11-12)', () => {
+    expect(editPath('a b', 'c/d')).toBe('/notebook/a%20b/c%2Fd/edit');
+    expect(editPath('a/b', 'c/d').split('/')).toEqual(['', 'notebook', 'a%2Fb', 'c%2Fd', 'edit']);
+    expect(editPath('..', 'v').split('/')).toEqual(['', 'notebook', '..', 'v', 'edit']);
   });
 });
 

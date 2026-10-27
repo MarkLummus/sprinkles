@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { repository } from '../store/repository.js';
 import { freshId } from '../domain/id.js';
 import { createChildVersion, saveOverVersion, versionsForRecipe } from '../domain/lineage.js';
+import { VersionChangedError } from '../domain/firstVersion.js';
 import {
   removePenNote,
   restoreStepFromVersion,
@@ -21,6 +22,10 @@ import { usePenDraft } from './usePenDraft.js';
 export const VERSION_SAVED_STATUS = 'Version saved.';
 export const VERSION_SAVE_ERROR = 'Couldn’t save the version. Try again.';
 export const VERSION_BLOCKED_STATUS = 'Check the version. Your changes have been kept.';
+// The store's refusals of Save over this version (T-11-63): another tab saved over the
+// version, or recorded a batch on it, since this page read it.
+export const VERSION_CHANGED_STATUS = 'This version changed in another tab. Cancel, then reload the page.';
+export const VERSION_HAS_BATCH_STATUS = 'This version has a batch now. Save as a new version instead.';
 
 // The version-pen job (Phase 8 cut 5, EDIT-05, D-08): the plan's pen state
 // (usePenDraft), the save lock, the day the pen opened, start and cancel, the
@@ -221,7 +226,9 @@ export function useVersionPen({ version, versions, batches, setMode, setVersion,
   // Available only on a version with zero batches (D-01). The control's
   // absence from the headnote is the design; this re-check is the
   // guarantee — a churned version's own record is never written to (D04)
-  // even if this handler were somehow reached with the control hidden.
+  // even if this handler were somehow reached with the control hidden. The
+  // store repeats the check, and one more, inside its own transaction: the
+  // record this page read must still be the stored one (T-11-63).
   function handleSaveOverVersion() {
     if (batches.length > 0 || versionSaveLockRef.current) return;
     const penFields = buildPenFields(version.id);
@@ -239,7 +246,7 @@ export function useVersionPen({ version, versions, batches, setMode, setVersion,
       announce(VERSION_SAVE_ERROR);
       return;
     }
-    Promise.resolve().then(() => repository.saveVersion(updated)).then(() => {
+    Promise.resolve().then(() => repository.saveVersion(updated, { expected: version })).then(() => {
       discardDraft();
       setVersion(updated);
       setVersions((prev) => prev.map((existing) => (existing.id === updated.id ? updated : existing)));
@@ -249,10 +256,16 @@ export function useVersionPen({ version, versions, batches, setMode, setVersion,
       versionSaveLockRef.current = false;
       setVersionSaveAction(null);
       onPageStatus(VERSION_SAVED_STATUS);
-    }).catch(() => {
+    }).catch((error) => {
       versionSaveLockRef.current = false;
       setVersionSaveAction(null);
-      announce(VERSION_SAVE_ERROR);
+      // The store refuses a version another tab changed, or that gained a batch, since
+      // this page read it: the pen stays open with what was typed, and says why.
+      if (error instanceof VersionChangedError) {
+        announce(error.reason === 'has-batch' ? VERSION_HAS_BATCH_STATUS : VERSION_CHANGED_STATUS);
+      } else {
+        announce(VERSION_SAVE_ERROR);
+      }
     });
   }
 

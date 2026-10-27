@@ -172,6 +172,84 @@ describe('createRecipe — refusals (D-03, D-08)', () => {
   });
 });
 
+describe('createRecipe — what a creation saves (Phase 11, MAKE-10, D-03)', () => {
+  const METHOD = [
+    { n: 1, leadIn: 'Heat', instruction: 'Warm the milk.', uses: ['row-01'], targets: [], removed: false },
+  ];
+  const AUTHORED = { beforeYouStart: [{ text: 'Chill the bowl.', inheritedFrom: null }] };
+  const SCALE = { key: 'scale-a', name: 'Chew', low: 'soft', high: 'firm', kind: 'goldilocks', group: 'declared' };
+  const ICE_ED = { style: 'Philadelphia', servingTemperatureC: -14, hardness: null, overrunPercent: null };
+
+  it('a description fills the recipe and the Sheet description, one box for both', () => {
+    const { recipe, version } = create({ description: 'Plain and cold.' });
+    expect(recipe.description).toBe('Plain and cold.');
+    expect(version.sheetDescription).toBe('Plain and cold.');
+  });
+
+  it('copies the given method, authored, declared scales and problems, targets, iceEd and serve temperature', () => {
+    const given = {
+      method: METHOD,
+      authored: AUTHORED,
+      declaredAxes: [SCALE],
+      declaredFlaws: ['icy'],
+      targets: { fat: [10, 16] },
+      iceEd: ICE_ED,
+      serveTempC: -14,
+    };
+    const { version } = create(given);
+    expect(version.method).toEqual(METHOD);
+    expect(version.authored).toEqual(AUTHORED);
+    expect(version.declaredAxes).toEqual([SCALE]);
+    expect(version.declaredFlaws).toEqual(['icy']);
+    expect(version.targets).toEqual({ fat: [10, 16] });
+    expect(version.iceEd).toEqual(ICE_ED);
+    expect(version.serveTempC).toBe(-14);
+    // structuredClone copies: nothing is shared with the caller's values.
+    expect(version.method).not.toBe(METHOD);
+    expect(version.method[0]).not.toBe(METHOD[0]);
+    expect(version.authored).not.toBe(AUTHORED);
+    expect(version.declaredAxes[0]).not.toBe(SCALE);
+    expect(version.targets).not.toBe(given.targets);
+    expect(version.iceEd).not.toBe(ICE_ED);
+  });
+
+  it('leaves targets and iceEd absent when not given, and the three-field call returns what it did before', () => {
+    const { version } = create();
+    expect(Object.hasOwn(version, 'targets')).toBe(false);
+    expect(Object.hasOwn(version, 'iceEd')).toBe(false);
+    // undefined means absent, as a missing key.
+    const withUndefined = create({ targets: undefined, iceEd: undefined, description: undefined }).version;
+    expect(withUndefined).toEqual(version);
+    expect(Object.hasOwn(withUndefined, 'targets')).toBe(false);
+    expect(Object.hasOwn(withUndefined, 'iceEd')).toBe(false);
+  });
+
+  it('a serve temperature of null stays null', () => {
+    expect(create({ serveTempC: null }).version.serveTempC).toBeNull();
+  });
+
+  it.each([
+    ['description', 7],
+    ['method', {}],
+    ['authored', []],
+    ['authored', null],
+    ['declaredAxes', 'x'],
+    ['declaredFlaws', {}],
+    ['targets', null],
+    ['targets', []],
+    ['targets', 'x'],
+    ['iceEd', null],
+    ['iceEd', []],
+    ['iceEd', 3],
+    ['serveTempC', '-14'],
+    ['serveTempC', Number.NaN],
+    ['serveTempC', Infinity],
+  ])('refuses %s given as %j with a TypeError naming the field', (field, value) => {
+    expect(() => create({ [field]: value })).toThrow(TypeError);
+    expect(() => create({ [field]: value })).toThrow(new RegExp(field));
+  });
+});
+
 describe('newRecipe.js stays pure (criterion 4)', () => {
   it('newRecipe.js imports only sibling domain modules and reads no clock or random source', () => {
     const source = readFileSync(new URL('./newRecipe.js', import.meta.url), 'utf8')

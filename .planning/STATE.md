@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-10-27T04:42:10.884Z"
+last_updated: "2026-10-27T11:10:42.851Z"
 last_activity: 2026-10-26
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: d099a88912e225d1261eb191468d329fa0379d9f
+state_head: b7897ae7dbafe4d96adf2357b7b8c934758265c0
 progress:
   total_phases: 5
   completed_phases: 3
@@ -604,6 +604,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261025-uge | Ultra-wide frame: the rail and the page travel as one block capped at 1770 and centred in the window (decide-ultrawide-frame centred, decide-ultrawide-lists fill) | 2026-10-25 | 7816aa05 | [261025-uge-ultra-wide-frame-the-rail-and-the-page-t](./quick/261025-uge-ultra-wide-frame-the-rail-and-the-page-t/) |
 | 202 | Mark the Phase 11 design gate MET in ROADMAP.md, modelled on Phase 9's line | 2026-10-25 | c44c6153 | — |
 | 203 | Record Mark's answers on row order and step-key reuse (decide-p11-row-order-across-steps, decide-p11-step-key-reuse) | 2026-10-26 | 51cd75e5 | — |
+| 204 | Fix bug-p11-target-required-under-wrong-field: a refused target chip's message stands under its own field (three selectors read :is(.field-requirement, .field-error)) | 2026-10-27 | b7897ae7 | — |
 
 ### Roadmap Evolution
 

@@ -24,6 +24,45 @@ describe('StepTargets', () => {
   });
 });
 
+describe('StepTargets with a target diff (D-18, D-26)', () => {
+  it('reads a changed target as the label once, the old value struck, then the new value', () => {
+    const markup = html(<StepTargets targets={[]} targetDiffs={[{ label: 'temp', from: '80 °C', to: '85 °C', changed: true }]} />);
+    expect(markup).toContain(
+      '<span class="target-chip"><span class="target-chip__label">temp</span><span class="struck-value">80 °C</span><span class="target-chip__value">85 °C</span></span>',
+    );
+  });
+
+  it('reads a removed target as one struck tag', () => {
+    const markup = html(<StepTargets targets={[]} targetDiffs={[{ label: 'hold', from: '2 min', to: null, changed: true }]} />);
+    expect(markup).toContain('<span class="target-chip"><span class="struck-value">hold 2 min</span></span>');
+    expect(markup).not.toContain('target-chip__label');
+  });
+
+  it('reads an added target plain', () => {
+    const markup = html(<StepTargets targets={[]} targetDiffs={[{ label: 'temp', from: null, to: '85 °C', changed: true }]} />);
+    expect(markup).toContain('<span class="target-chip__label">temp</span><span class="target-chip__value">85 °C</span>');
+    expect(markup).not.toContain('struck-value');
+  });
+
+  it('reads an unchanged target plain', () => {
+    const markup = html(<StepTargets targets={[]} targetDiffs={[{ label: 'temp', from: '85 °C', to: '85 °C', changed: false }]} />);
+    expect(markup).not.toContain('struck-value');
+    expect(markup).toContain('<span class="target-chip__value">85 °C</span>');
+  });
+
+  it('draws the one removed tag of a step with no targets of its own, and nothing when both lists are empty', () => {
+    const removed = [{ label: 'hold', from: '2 min', to: null, changed: true }];
+    expect(html(<StepTargets targets={[]} targetDiffs={removed} />)).toContain('hold 2 min');
+    expect(html(<StepTargets targets={[]} targetDiffs={[]} />)).toBe('');
+  });
+
+  it('escapes markup in a struck old value', () => {
+    const markup = html(<StepTargets targets={[]} targetDiffs={[{ label: 'a', from: '<b>', to: '<i>', changed: true }]} />);
+    expect(markup).not.toContain('<b>');
+    expect(markup).not.toContain('<i>');
+  });
+});
+
 describe('StepPurpose and StepAside', () => {
   it('the purpose reads the caps word why, an em dash and the sentence', () => {
     expect(html(<StepPurpose text="The powder dissolves." />)).toBe(

@@ -393,22 +393,7 @@ export function StepPenBody({
         </p>
       )}
 
-      {draftStep.targets?.length > 0 && (
-        <p className="method-step__targets">
-          {draftStep.targets.map((target, index) => {
-            const targetDiff = stepDiff.targets[index];
-            return (
-              <span className="target-chip" key={index}>
-                {targetDiff?.changed && targetDiff.from != null && (
-                  <span className="struck-value">{`${targetDiff.label} ${targetDiff.from}`}</span>
-                )}
-                <span className="target-chip__label">{target.label}</span>
-                <span className="target-chip__value">{target.value}</span>
-              </span>
-            );
-          })}
-        </p>
-      )}
+      <StepTargets targets={draftStep.targets} targetDiffs={stepDiff.targets} />
 
       {staleFlagVisible && staleEntry && (
         <p className="method-step__stale-flag">
@@ -418,9 +403,9 @@ export function StepPenBody({
         </p>
       )}
 
-      {draftStep.purpose && <p className="method-step__purpose">{draftStep.purpose}</p>}
+      <StepPurpose text={draftStep.purpose} />
       {showPurposeStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.purpose}</p>}
-      {draftStep.aside && <p className="method-step__aside">{draftStep.aside}</p>}
+      <StepAside text={draftStep.aside} />
       {showAsideStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.aside}</p>}
 
       {/* The coverage cue (D-UAT-3, option B): stays on the closed step
@@ -758,22 +743,7 @@ export function Method({
                     </p>
                   )}
 
-                  {step.targets?.length > 0 && (
-                    <p className="method-step__targets">
-                      {step.targets.map((target, index) => {
-                        const targetDiff = stepDiff.targets[index];
-                        return (
-                          <span className="target-chip" key={target.label}>
-                            {targetDiff?.changed && targetDiff.from != null && (
-                              <span className="struck-value">{`${targetDiff.label} ${targetDiff.from}`}</span>
-                            )}
-                            <span className="target-chip__label">{target.label}</span>
-                            <span className="target-chip__value">{target.value}</span>
-                          </span>
-                        );
-                      })}
-                    </p>
-                  )}
+                  <StepTargets targets={step.targets} targetDiffs={stepDiff.targets} />
 
                   {/* The stale-amount flag, in the show-changes state too
                       (route-recipe-version.md § 3): the same visibility
@@ -787,9 +757,9 @@ export function Method({
                     </p>
                   )}
 
-                  {step.purpose && <p className="method-step__purpose">{step.purpose}</p>}
+                  <StepPurpose text={step.purpose} />
                   {showPurposeStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.purpose}</p>}
-                  {step.aside && <p className="method-step__aside">{step.aside}</p>}
+                  <StepAside text={step.aside} />
                   {showAsideStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.aside}</p>}
                 </div>
               </li>

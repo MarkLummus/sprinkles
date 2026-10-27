@@ -215,7 +215,8 @@ describe('Method — developing mode', () => {
     );
 
     expect(markup).toContain('struck-value');
-    expect(markup).toContain('temp 10 C');
+    // The label reads once (11-04): the old value struck alone, then the new value.
+    expect(markup).toContain('<span class="target-chip__label">temp</span><span class="struck-value">10 C</span>');
     expect(markup).toContain('<span class="target-chip__value">20 C</span>');
   });
 
@@ -731,7 +732,9 @@ describe('Method — purpose and aside on demand, behind edit this step (D-23, 0
       />,
     );
 
-    expect(markup).toContain('<p class="method-step__purpose">Original purpose.</p>');
+    expect(markup).toContain(
+      '<p class="method-step__purpose"><span class="method-step__purpose-label">why</span> — Original purpose.</p>',
+    );
     expect(markup).toContain('<p class="method-step__aside">Original aside.</p>');
     // The on-demand opener/field toggle itself (unchanged from before
     // this plan) is verified once the step is revealed via "edit this
@@ -1543,5 +1546,86 @@ describe('Method — the steps list keeps its list semantics', () => {
     const markup = renderToStaticMarkup(<Method steps={[unstruckStep]} stepChanges={{}} />);
     expect(markup).toMatch(/<ol class="method-steps" role="list">/);
     expect(markup).toMatch(/<h2 class="region-name">Instructions<\/h2>/);
+  });
+});
+
+// The three read-only branches draw targets through StepTargets (11-04): the
+// version pen's closed step, Show changes and the reading page. A removed
+// target is one struck tag, also when it was the step's only target; an added
+// target reads plain; two targets with one label read as two tags.
+describe('Method — targets in the tag row on every read-only branch (D-18, D-26)', () => {
+  const closedPen = (current, baseline) =>
+    renderToStaticMarkup(
+      <Method
+        steps={baseline.method}
+        mode="developing"
+        draftVersion={current}
+        baselineVersion={baseline}
+        penDiff={buildDiff(current, baseline)}
+        rows={baseline.rows}
+      />,
+    );
+  const showChanges = (current, baseline) =>
+    renderToStaticMarkup(
+      <Method
+        steps={current.method}
+        mode="reading"
+        showingChanges
+        changeDiff={buildDiff(current, baseline)}
+        staleSteps={[]}
+        rows={current.rows}
+      />,
+    );
+  const reading = (current) => renderToStaticMarkup(<Method steps={current.method} mode="reading" rows={current.rows} />);
+
+  it('draws a removed target as one struck tag in Show changes', () => {
+    const baseline = makeBaselineVersion();
+    baseline.method[0].targets = [
+      { label: 'temp', value: '10 C' },
+      { label: 'hold', value: '2 min' },
+    ];
+    const current = structuredClone(baseline);
+    current.method[0].targets = [{ label: 'temp', value: '10 C' }];
+
+    const markup = showChanges(current, baseline);
+    expect(markup).toContain('<span class="target-chip"><span class="struck-value">hold 2 min</span></span>');
+  });
+
+  it('draws a step whose only target was removed, in Show changes and in the closed pen', () => {
+    const baseline = makeBaselineVersion();
+    baseline.method[0].targets = [{ label: 'hold', value: '2 min' }];
+    const current = structuredClone(baseline);
+    current.method[0].targets = [];
+
+    const tag = '<span class="target-chip"><span class="struck-value">hold 2 min</span></span>';
+    expect(showChanges(current, baseline)).toContain(tag);
+    expect(closedPen(current, baseline)).toContain(tag);
+  });
+
+  it('draws an added target plain, with no struck value', () => {
+    const baseline = makeBaselineVersion();
+    const current = structuredClone(baseline);
+    current.method[0].targets = [...current.method[0].targets, { label: 'hold', value: '2 min' }];
+
+    for (const markup of [showChanges(current, baseline), closedPen(current, baseline)]) {
+      expect(markup).toContain(
+        '<span class="target-chip"><span class="target-chip__label">hold</span><span class="target-chip__value">2 min</span></span>',
+      );
+      expect(markup).not.toContain('struck-value');
+    }
+  });
+
+  it('reads two targets with one label as two tags on the reading page, in the closed pen and in Show changes', () => {
+    const baseline = makeBaselineVersion();
+    baseline.method[0].targets = [
+      { label: 'temp', value: '80 C' },
+      { label: 'temp', value: '85 C' },
+    ];
+    const current = structuredClone(baseline);
+
+    for (const markup of [reading(current), closedPen(current, baseline), showChanges(current, baseline)]) {
+      expect(markup.split('target-chip__label">temp<').length - 1).toBe(2);
+      expect(markup.indexOf('80 C')).toBeLessThan(markup.indexOf('85 C'));
+    }
   });
 });

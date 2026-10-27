@@ -18,6 +18,7 @@
 import { library } from '../../../app/src/data/library.js';
 import { createRecipe } from '../../../app/src/domain/newRecipe.js';
 import { rowFromLibraryRecord } from '../../../app/src/domain/versionRow.js';
+import { codeFromVersionId } from '../../../app/src/domain/sheetCode.js';
 
 const SAVE = '.planning/sketches/014-steps-structure-save/save.html';
 const FIRST_VERSION = '.planning/sketches/014-steps-structure-save/first-version.html';
@@ -89,6 +90,26 @@ const RECIPES = [{ id: 'vanilla', name: 'Vanilla', description: 'Plain and cold.
 // The root: what the reading page (vC1, fA1) and the Next version pen hold.
 const ROOT_SEED = { recipes: RECIPES, versions: [seededRoot()] };
 
+// A child of the root for Show changes: step 1 unchanged, step 2 given a changed and a removed target
+// against the root. The root of this seed carries two targets on step 2 for the child to change and drop.
+function showChangesSeed() {
+  const rootMethod = structuredClone(METHOD);
+  rootMethod[1].targets = [
+    { label: 'hold', value: '2 min' },
+    { label: 'chill', value: '8 h' },
+  ];
+  const root = seededRoot(rootMethod);
+  const child = structuredClone(root);
+  child.id = 'vanilla-v2';
+  child.parentVersionId = 'vanilla-v1';
+  child.parentVersionLabel = 'Version 1';
+  child.versionLabel = 'Version 2';
+  child.reason = 'Warmer';
+  child.sheetCode = codeFromVersionId('vanilla-v2');
+  child.method[1].targets = [{ label: 'hold', value: '3 min' }];
+  return { recipes: RECIPES, versions: [root, child] };
+}
+
 const ROUTE = '/notebook/vanilla/vanilla-v1';
 
 // The reading steps, element by element. Every typography check reads the properties the tag row,
@@ -102,6 +123,14 @@ const READING_ELEMENTS = [
   { selector: '.target-chip__value', checks: ['box', 'font', 'text', 'type'] },
   { selector: '.method-step__purpose', checks: ['box', 'font', 'text', 'type'] },
   { selector: '.method-step__purpose-label', checks: ['box', 'font', 'text', 'type'] },
+];
+
+// The pen's closed steps and Show changes: step 1's tag, why label and type against fA1's (index 0 on
+// both sides). The pen's acts and the child's struck tags are app-only and not compared by position.
+const TYPOGRAPHY_ELEMENTS = [
+  { selector: '.target-chip__label', checks: ['font', 'type', 'text'] },
+  { selector: '.target-chip__value', checks: ['font', 'type', 'text'] },
+  { selector: '.method-step__purpose-label', checks: ['font', 'type', 'text'] },
 ];
 
 const METHOD_REGION = 'section.method-region';
@@ -137,6 +166,32 @@ export default [
         seed: ROOT_SEED,
         elements: READING_ELEMENTS,
         absent: ['.method-step__aside'],
+      }),
+      panel({
+        // The Next version pen opened on the seeded root: every step closed, drawn by StepPenBody's
+        // closed form. The pen's acts are app-only and not compared by position.
+        id: 'fA1',
+        label: 'fA1-pen',
+        route: ROUTE,
+        seed: ROOT_SEED,
+        steps: async (page) => {
+          await page.getByRole('button', { name: 'Next version' }).first().click();
+          await page.waitForSelector('form[aria-label="Next version"]');
+        },
+        elements: TYPOGRAPHY_ELEMENTS,
+      }),
+      panel({
+        // A seeded child of the root, Show changes on: the child's step 2 changes one target and drops
+        // another against the root.
+        id: 'fA1',
+        label: 'fA1-changes',
+        route: '/notebook/vanilla/vanilla-v2',
+        seed: showChangesSeed(),
+        steps: async (page) => {
+          await page.getByRole('button', { name: 'Show changes' }).first().click();
+          await page.waitForSelector('.method-region .struck-value');
+        },
+        elements: TYPOGRAPHY_ELEMENTS,
       }),
     ],
   },

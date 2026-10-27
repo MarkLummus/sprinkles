@@ -5,7 +5,8 @@ import { exportStore, importStore } from '../store/transfer.js';
 import { useBelow724, useBelowRail } from './useBelowDesktop.js';
 import { Button } from './Button.jsx';
 import { useCatalog } from './CatalogContext.jsx';
-import { draftMatchesCreate } from '../domain/draft.js';
+import { draftMatchesCreate, draftMatchesEdit, newestDraft } from '../domain/draft.js';
+import { creationTitle } from '../domain/creation.js';
 import { NEW_RECIPE_PATH } from './notebookPaths.js';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { PageNotice, PageNoticeContext, usePageNotice } from './PageNotice.jsx';
@@ -36,13 +37,34 @@ export const IMPORT_BLOCKED_STATUS = 'Save or cancel your changes before importi
 // points at Cancel, which Resume reaches.
 export const CREATION_IMPORT_BLOCKED_STATUS = 'Cancel the new recipe draft before importing.';
 
+// The page notice for Import while an edit draft is kept on a saved first
+// version (Phase 11 D-04): an import replaces the library the edit's rows link
+// to, so it is refused on every route, and the notice names the recipe so the
+// maker knows what to save or cancel. The recipe name is a React text child
+// wherever the notice is drawn, never markup; 'Untitled' stands for a blank one.
+// Claude's wording within the shape of IMPORT_BLOCKED_STATUS.
+export function editImportBlockedStatus(name) {
+  return `Save or cancel your changes to ${creationTitle(name)} before importing.`;
+}
+
+// The edit route's address, /notebook/:recipeId/:versionId/edit: the editor is an
+// open form, so Import is refused there even before the first change keeps a
+// draft (D-23).
+function isEditPath(pathname) {
+  return /^\/notebook\/[^/]+\/[^/]+\/edit$/.test(pathname);
+}
+
 // What the address and the route state alone say about a kept creation (D-10a):
 // 'present' on the creation editor's address, and on Cancel's landing when
 // another creation remains (createKept true); 'absent' when none remains
 // (createKept false); 'unknown' when Cancel's own drafts read failed (createKept
-// left out), never absent on `discarded` alone. null: the route says nothing.
+// left out), never absent on `discarded` alone; 'absent' too on the landing a
+// creation's Save writes (state.saved 'created': Save deleted the draft in its
+// own transaction). null: the route says nothing. The edit address is not the
+// creation's, so it answers nothing here.
 function creationStateFromRoute(pathname, state) {
   if (pathname === NEW_RECIPE_PATH) return 'present';
+  if (state?.saved === 'created') return 'absent';
   if (state?.discarded === true) {
     if (state.createKept === true) return 'present';
     if (state.createKept === false) return 'absent';
@@ -242,6 +264,11 @@ export function Shell() {
   // Only the newest read counts; a rejected read leaves the state as it was.
   const creationStateRef = useRef('unknown');
   const creationReadRef = useRef(0);
+  // The name of the newest kept edit draft the same read found, or null when
+  // none is kept (D-04): the third state beside the creation's and the open edit
+  // route's. A Save-over's landing (state.saved 'edited') settles it to null at
+  // the route's commit; any other stale moment can only refuse an import.
+  const editNameRef = useRef(null);
   // The routed page's own notice announcer, when it has registered one; until
   // then the Shell shows the notice itself.
   const pageNoticeRef = useRef(null);
@@ -270,6 +297,8 @@ export function Shell() {
       .then((records) => {
         if (mine !== creationReadRef.current) return;
         creationStateRef.current = records.some(draftMatchesCreate) ? 'present' : 'absent';
+        const keptEdit = newestDraft(records.filter(draftMatchesEdit));
+        editNameRef.current = keptEdit ? keptEdit.payload.name : null;
       })
       .catch(() => {});
   }
@@ -282,6 +311,10 @@ export function Shell() {
     if (fromRoute) {
       creationReadRef.current += 1;
       creationStateRef.current = fromRoute;
+    }
+    if (location.state?.saved === 'edited') {
+      creationReadRef.current += 1;
+      editNameRef.current = null;
     }
     readCreationState();
   }, [pathname, location.state]);
@@ -418,8 +451,11 @@ export function Shell() {
   // recipe-pens = refuse): no chooser, no file read, a notice instead. So does a
   // kept new recipe draft (D-10): only the state 'absent' opens the chooser. The
   // route's own word for this render comes before the ref, so it is never a
-  // commit late. 'unknown' says the store sentence and reads again. Nothing here
-  // awaits.
+  // commit late. Three states are kept apart and refused in this order: an open
+  // pen, a kept creation, a kept edit (named by its recipe, D-04), the open edit
+  // route with nothing kept yet (the editor is an open form, D-23), and last an
+  // unknown drafts read, which says the store sentence and reads again. Nothing
+  // here awaits.
   function chooseImportFile() {
     if (importGuardRef.current) {
       importGuardRef.current(IMPORT_BLOCKED_STATUS);
@@ -428,6 +464,14 @@ export function Shell() {
     const creationState = creationStateFromRoute(pathname, location.state) ?? creationStateRef.current;
     if (creationState === 'present') {
       refuseImport(CREATION_IMPORT_BLOCKED_STATUS);
+      return;
+    }
+    if (editNameRef.current !== null) {
+      refuseImport(editImportBlockedStatus(editNameRef.current));
+      return;
+    }
+    if (isEditPath(pathname)) {
+      refuseImport(IMPORT_BLOCKED_STATUS);
       return;
     }
     if (creationState === 'unknown') {
@@ -471,6 +515,13 @@ export function Shell() {
     }
     if (creationStateRef.current === 'present' || records.some(draftMatchesCreate)) {
       refuseImport(CREATION_IMPORT_BLOCKED_STATUS);
+      return;
+    }
+    // The same for a kept edit: an older sight of none cannot say none exists
+    // now, so a stale ref can only ever refuse here, never let an import through.
+    const keptEdit = newestDraft(records.filter(draftMatchesEdit));
+    if (keptEdit) {
+      refuseImport(editImportBlockedStatus(keptEdit.payload.name));
       return;
     }
 

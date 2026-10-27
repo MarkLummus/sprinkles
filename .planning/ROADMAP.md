@@ -252,7 +252,7 @@ Plans:
   5. The created recipe prints as a bench sheet with its Sheet code, like the seeded ones, and typing that code finds it, also after a reorder or any other edit made after printing; a recipe with empty targets, equipment or process prints with no gap
   6. On screen, the Sheet's Instructions steps read in the printed method treatment (sketch 010 D18: the targets as a tag row with no box, Why as the caps word and the sentence, the aside as a callout, all upright) on the reading page, in the version pen's closed steps and in the creation editor's Preview step; Add note, Add ingredient and Add step sit on their heading's row, and an unplaced row offers Add to step (sketch 014; Mark, 2026-10-25 and 2026-10-26)
 
-**Plans:** 8/14 plans executed in 9 waves (11-09 stops for the orchestrator to put the export-first row on Mark's List, 11-13 for the iPad check row; 11-14 was split out of 11-07 in the plan-check revision)
+**Plans:** 9/14 plans executed in 9 waves (11-09 stops for the orchestrator to put the export-first row on Mark's List, 11-13 for the iPad check row; 11-14 was split out of 11-07 in the plan-check revision)
 
 Plans:
 **Wave 1**
@@ -272,7 +272,7 @@ Plans:
 - [x] 11-07-PLAN.md — the Uses checklist, the table under step heads with "Not in a step yet", split rows typed line by line, each step's own row order on every surface, and the walk re-recorded at BASE plus that order
 
 **Wave 5** *(blocked on Wave 4 completion)*
-- [ ] 11-08-PLAN.md — add, remove and move for steps and rows, Add to step, focus and announcements (D-14 to D-17), and pC1 and pD1 against the boards
+- [x] 11-08-PLAN.md — add, remove and move for steps and rows, Add to step, focus and announcements (D-14 to D-17), and pC1 and pD1 against the boards
 
 **Wave 6** *(blocked on Wave 5 completion)*
 - [ ] 11-09-PLAN.md — Save in one transaction, landing with "Recipe saved.", the whole refusal gate; stops for the export-first row (D-21)
@@ -316,7 +316,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | 8. Split the recipe page along its jobs | v2.0 | 6/6 | Complete    | 2026-10-17 |
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
 | 10. The creation editor, without Save | v2.0 | 12/12 | Complete    | 2026-10-21 |
-| 11. Steps, structure, save and print | v2.0 | 8/14 | In Progress | - |
+| 11. Steps, structure, save and print | v2.0 | 9/14 | In Progress | - |
 | 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/TBD | Not started | - |
 
 ## Later

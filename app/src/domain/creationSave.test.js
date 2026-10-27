@@ -4,18 +4,33 @@
 // framework, DOM or store.
 import { describe, it, expect } from 'vitest';
 import {
+  applyEditToVersion,
   buildCreation,
   creationSaveBlock,
+  draftFromVersion,
   lineSaveMessages,
   LIBRARY_ENTRY_GONE,
   NO_ROWS_MESSAGE,
   PROBLEM_REPEATED,
+  sameCreateDraft,
 } from './creationSave.js';
-import { blankCreateDraft } from './draft.js';
-import { addRow, addNote, addProblem, addScale, applyStyle, setBandEnd, updateNote, updateProblem, updateScale } from './creation.js';
+import { blankCreateDraft, buildDraftRecord, draftMatchesEdit } from './draft.js';
+import {
+  addRow,
+  addNote,
+  addProblem,
+  addScale,
+  applyStyle,
+  creationSheetVersion,
+  setBandEnd,
+  updateNote,
+  updateProblem,
+  updateScale,
+} from './creation.js';
 import {
   addStep,
   addTarget,
+  checkAllocation,
   moveRow,
   removeStep,
   setLineGrams,
@@ -23,6 +38,9 @@ import {
   setTarget,
   toggleStepUses,
 } from './creationSteps.js';
+import { computeBalance } from './composition.js';
+import { saveOverVersion } from './lineage.js';
+import { activeRows, activeSteps } from './rows.js';
 import { codeFromVersionId } from './sheetCode.js';
 import { library } from '../data/library.js';
 import { STYLE_ROWS } from '../data/styles.js';
@@ -416,5 +434,268 @@ describe('lineSaveMessages: the one projection the table reads (T-11-53)', () =>
       { id: 'recipe-name', message: 'Enter a recipe name.', target: { kind: 'recipeName' } },
     ]);
     expect([...messages]).toEqual([['row-a:1', 'first']]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Edit (STRUCT-04, D-03): a saved first version becomes a draft, and the draft
+// is written back over it.
+
+describe('draftFromVersion and applyEditToVersion: Edit (STRUCT-04, D-03)', () => {
+  const savedWorked = (draft = worked()) => build(draft);
+  const reopen = ({ version, recipe }) => draftFromVersion(version, recipe, STYLE_ROWS);
+  const writeBack = ({ version, recipe }, draft) =>
+    applyEditToVersion({ version, recipe, draft, libraryById, styles: STYLE_ROWS });
+
+  // What the version pen's Save over stores on a zero-batch root (useVersionPen:
+  // saveOverVersion with the pen's rows and method, struck flags kept).
+  function penSaveOver(version, change) {
+    const rows = structuredClone(version.rows);
+    const method = structuredClone(version.method);
+    change({ rows, method });
+    return saveOverVersion(version, {
+      versionLabel: version.versionLabel,
+      reason: null,
+      citedBatchId: null,
+      rows,
+      method,
+      sheetTitle: version.sheetTitle,
+      sheetDescription: version.sheetDescription,
+      authored: version.authored,
+    });
+  }
+
+  const linesOf = (rows) => rows.map((row) => [row.id, row.libraryId, row.portions.map(({ step, grams }) => [step, grams])]);
+  const stepsOf = (method) => method.map((step) => [step.n, step.uses]);
+
+  it('gives back an equivalent draft: the round trip of buildCreation', () => {
+    const records = savedWorked();
+    const draft = reopen(records);
+    expect(draft).toEqual(worked());
+    expect(checkAllocation(draft)).toBeNull();
+    const record = buildDraftRecord({ versionId: draft.versionId, kind: 'edit', payload: draft, now: NOW });
+    expect(draftMatchesEdit(record)).toBe(true);
+  });
+
+  it('reads the style, targets, serving temperature, notes, scales and problems as the editor holds them', () => {
+    let draft = worked();
+    draft = applyStyle(draft, STYLE_ROWS[0]);
+    draft = setBandEnd(draft, 'fat', 0, '8');
+    draft = setBandEnd(draft, 'fat', 1, '14');
+    draft = addNote(draft);
+    draft = updateNote(draft, 0, 'Chill the base overnight.');
+    draft = addScale(draft, 'scale-1');
+    draft = updateScale(draft, 'scale-1', 'name', 'Silky');
+    draft = updateScale(draft, 'scale-1', 'low', 'Icy');
+    draft = updateScale(draft, 'scale-1', 'high', 'Smooth');
+    draft = updateScale(draft, 'scale-1', 'kind', 'magnitude');
+    draft = addProblem(draft);
+    draft = updateProblem(draft, 0, 'Too sweet');
+    const reopened = reopen(savedWorked(draft));
+    expect(reopened.style).toBe(STYLE_ROWS[0].id);
+    expect(reopened.targets).toEqual(draft.targets);
+    expect(reopened.serveTempC).toBe(draft.serveTempC);
+    expect(reopened.beforeYouStart).toEqual([{ text: 'Chill the base overnight.' }]);
+    expect(reopened.scales).toEqual(draft.scales);
+    expect(reopened.problems).toEqual(['Too sweet']);
+  });
+
+  it('keeps a step\'s own row order: Edit then Save-over never reorders its rows', () => {
+    const draft = moveRow(worked(), 'row-b', 1, 'up');
+    expect(draft.method[0].uses).toEqual(['row-b', 'row-a']);
+    const records = savedWorked(draft);
+    expect(records.version.method[0].uses).toEqual(['row-b', 'row-a']);
+    const reopened = reopen(records);
+    expect(reopened.method[0].uses).toEqual(['row-b', 'row-a']);
+    const { version } = writeBack(records, reopened);
+    expect(version.method[0].uses).toEqual(['row-b', 'row-a']);
+    expect(version.method[1].uses).toEqual(['row-a']);
+  });
+
+  it('keeps id, Sheet code and createdAt, and the fields the editor does not author', () => {
+    const records = savedWorked();
+    const stored = {
+      ...records.version,
+      reason: 'kept',
+      iceEd: { style: null, servingTemperatureC: null, hardness: 7, overrunPercent: 30 },
+    };
+    const draft = { ...reopen({ version: stored, recipe: records.recipe }), name: 'Vanilla bean', description: 'Colder.' };
+    const { recipe, version } = writeBack({ version: stored, recipe: records.recipe }, draft);
+    expect(version.id).toBe(stored.id);
+    expect(version.sheetCode).toBe(stored.sheetCode);
+    expect(version.createdAt).toBe(stored.createdAt);
+    expect(version.parentVersionId).toBeNull();
+    expect(version.reason).toBe('kept');
+    expect(version.iceEd).toEqual({ style: null, servingTemperatureC: null, hardness: 7, overrunPercent: 30 });
+    expect(version.sheetTitle).toBe('Vanilla bean');
+    expect(version.sheetDescription).toBe('Colder.');
+    expect(recipe).toEqual({ id: 'recipe-1', name: 'Vanilla bean', description: 'Colder.' });
+  });
+
+  it('a no-op Edit then Save-over stores the same rows, placement, step order and grams', () => {
+    const records = savedWorked(moveRow(worked(), 'row-b', 1, 'up'));
+    const { version, recipe } = writeBack(records, reopen(records));
+    expect(version).toEqual(records.version);
+    expect(recipe).toEqual(records.recipe);
+  });
+
+  describe('the step key promise (decide-p11-step-key-reuse)', () => {
+    it('a key removed while creating, before the first Save, may be issued again after Edit', () => {
+      const draft = removeStep(worked(), 2);
+      const records = savedWorked(draft);
+      expect(records.version.method.map((step) => step.n)).toEqual([1]);
+      const reopened = reopen(records);
+      expect(addStep(reopened, { afterN: null }).method.map((step) => step.n)).toContain(2);
+    });
+
+    it('a key the pen struck stays a tombstone on Edit, so addStep gives the next one', () => {
+      const root = penSaveOver(savedWorked().version, ({ method }) => {
+        method.find((step) => step.n === 2).removed = true;
+      });
+      const reopened = draftFromVersion(root, savedWorked().recipe, STYLE_ROWS);
+      expect(reopened.method.map((step) => [step.n, step.removed === true])).toEqual([
+        [1, false],
+        [2, true],
+      ]);
+      expect(reopened.method[1]).toEqual({ n: 2, leadIn: '', instruction: '', uses: [], targets: [], removed: true });
+      expect(addStep(reopened, { afterN: null }).method.map((step) => step.n).sort()).toEqual([1, 2, 3]);
+      expect(checkAllocation(reopened)).toBeNull();
+    });
+  });
+
+  describe('a root the version pen saved over keeps its strikes out (review L231@d52488be)', () => {
+    // Milk and cream split over steps 1 and 3 (cream first in step 1), sugar only in
+    // step 2, salt unplaced, skim milk powder unplaced. The pen strikes: salt whole,
+    // cream's line in step 3, and step 2 (sugar's only line goes with it).
+    function struckRoot() {
+      let draft = blank();
+      for (const [rowId, libraryId] of [
+        ['row-a', 'wholeMilk'],
+        ['row-b', 'heavyCream'],
+        ['row-c', 'sucrose'],
+        ['row-d', 'salt'],
+        ['row-e', 'skimMilkPowder'],
+      ]) {
+        draft = addRow(draft, { rowId, libraryId });
+      }
+      draft = addStep(draft, { afterN: null });
+      draft = addStep(draft, { afterN: 1 });
+      draft = addStep(draft, { afterN: 2 });
+      for (const n of [1, 2, 3]) {
+        draft = setStepField(draft, n, 'leadIn', `Lead ${n}`);
+        draft = setStepField(draft, n, 'instruction', `Do ${n}.`);
+      }
+      for (const [n, rowId, grams] of [
+        [1, 'row-a', '300'],
+        [1, 'row-b', '250'],
+        [2, 'row-c', '100'],
+        [3, 'row-a', '100'],
+        [3, 'row-b', '50'],
+      ]) {
+        draft = toggleStepUses(draft, n, rowId);
+        draft = setLineGrams(draft, rowId, n, grams);
+      }
+      draft = setLineGrams(draft, 'row-d', 0, '5');
+      draft = setLineGrams(draft, 'row-e', 0, '20');
+      draft = moveRow(draft, 'row-b', 1, 'up');
+      const records = build(draft);
+      const root = penSaveOver(records.version, ({ rows, method }) => {
+        rows.find((row) => row.id === 'row-d').removed = true;
+        rows.find((row) => row.id === 'row-b').portions.find((portion) => portion.step === 3).removed = true;
+        method.find((step) => step.n === 2).removed = true;
+      });
+      return { root, recipe: records.recipe };
+    }
+
+    it('opens on the active rows and live steps only, the struck step a tombstone', () => {
+      const { root, recipe } = struckRoot();
+      const draft = draftFromVersion(root, recipe, STYLE_ROWS);
+      expect(draft.rows.map((row) => row.id)).toEqual(['row-a', 'row-b', 'row-e']);
+      expect(draft.method.map((step) => [step.n, step.removed === true, step.uses])).toEqual([
+        [1, false, ['row-b', 'row-a']],
+        [2, true, []],
+        [3, false, ['row-a']],
+      ]);
+      expect(draft.rows.find((row) => row.id === 'row-b').portions).toEqual([{ step: 1, grams: '250' }]);
+      expect(draft.rows.find((row) => row.id === 'row-e').portions).toEqual([{ step: 1, grams: '20' }]);
+      expect(checkAllocation(draft)).toBeNull();
+      expect(draftMatchesEdit(buildDraftRecord({ versionId: draft.versionId, kind: 'edit', payload: draft, now: NOW }))).toBe(true);
+    });
+
+    it('a no-op Edit then Save-over keeps the active rows, links, placement, order and Balance, and stores no strike', () => {
+      const { root, recipe } = struckRoot();
+      const { version } = writeBack({ version: root, recipe }, draftFromVersion(root, recipe, STYLE_ROWS));
+      expect(linesOf(activeRows(version))).toEqual(linesOf(activeRows(root)));
+      expect(computeBalance(activeRows(version))).toEqual(computeBalance(activeRows(root)));
+      expect(version.rows.some((row) => row.removed !== false)).toBe(false);
+      expect(version.rows.some((row) => row.portions.some((portion) => 'removed' in portion))).toBe(false);
+      expect(version.method.some((step) => step.removed !== false)).toBe(false);
+      expect(version.method.map((step) => step.n)).toEqual([1, 3]);
+      expect(stepsOf(version.method)).toEqual([
+        [1, ['row-b', 'row-a']],
+        [3, ['row-a']],
+      ]);
+      // The root's live steps name the same rows, cream's struck line aside.
+      expect(stepsOf(activeSteps(root)).map(([n]) => n)).toEqual(stepsOf(activeSteps(version)).map(([n]) => n));
+    });
+  });
+
+  describe('lines that do not place', () => {
+    it('folds two lines on one step into one and a line at a step that does not exist into the first placed line', () => {
+      const { version, recipe } = savedWorked();
+      const stored = structuredClone(version);
+      stored.rows[0].portions = [
+        { step: 1, grams: 400 },
+        { step: 2, grams: 200 },
+        { step: 1, grams: 25.5 },
+        { step: 9, grams: 10 },
+      ];
+      const draft = draftFromVersion(stored, recipe, STYLE_ROWS);
+      expect(draft.rows[0].portions).toEqual([
+        { step: 1, grams: '435.5' },
+        { step: 2, grams: '200' },
+      ]);
+      expect(checkAllocation(draft)).toBeNull();
+    });
+
+    it('reads a row whose only line is at a step that does not exist as one unplaced line with its grams', () => {
+      const { version, recipe } = savedWorked();
+      const stored = structuredClone(version);
+      stored.rows[1].portions = [{ step: 9, grams: 250 }];
+      const draft = draftFromVersion(stored, recipe, STYLE_ROWS);
+      expect(draft.rows[1].portions).toEqual([{ step: 1, grams: '250' }]);
+      expect(draft.method[0].uses).toEqual(['row-a']);
+      expect(checkAllocation(draft)).toBeNull();
+    });
+  });
+
+  it("a no-op Edit takes today's library entries (D-03)", () => {
+    const records = savedWorked();
+    const stored = structuredClone(records.version);
+    const older = structuredClone(library.wholeMilk);
+    older.composition.fat = 0.02;
+    stored.rows[0].ingredient = older;
+    const draft = draftFromVersion(stored, records.recipe, STYLE_ROWS);
+    const { version } = writeBack({ version: stored, recipe: records.recipe }, draft);
+    const milk = version.rows[0];
+    expect(milk.id).toBe('row-a');
+    expect(milk.libraryId).toBe('wholeMilk');
+    expect(milk.portions).toEqual([
+      { step: 1, grams: 400 },
+      { step: 2, grams: 200 },
+    ]);
+    expect(milk.ingredient).toEqual(library.wholeMilk);
+    expect(computeBalance(version.rows)).toEqual(computeBalance(records.version.rows));
+    expect(computeBalance(version.rows)).not.toEqual(computeBalance(stored.rows));
+    // The editor's own Balance already reads today's figures when Edit opens.
+    expect(computeBalance(creationSheetVersion(draft, libraryById).rows)).toEqual(computeBalance(version.rows));
+  });
+
+  it('sameCreateDraft compares the payload by every leaf, whatever the key order', () => {
+    const draft = worked();
+    expect(sameCreateDraft(draft, structuredClone(draft))).toBe(true);
+    expect(sameCreateDraft(draft, { ...draft, targets: { fat: ['1', '2'] } })).toBe(false);
+    expect(sameCreateDraft({ ...draft, targets: { fat: ['1', '2'], pac: ['3', '4'] } }, { ...draft, targets: { pac: ['3', '4'], fat: ['1', '2'] } })).toBe(true);
+    expect(sameCreateDraft(draft, setLineGrams(draft, 'row-a', 1, '401'))).toBe(false);
   });
 });

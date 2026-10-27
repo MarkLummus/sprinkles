@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { repository } from '../store/repository.js';
-import { buildDraftRecord, draftMatchesCreate, draftMatchesVersion } from '../domain/draft.js';
+import { buildDraftRecord, draftMatchesCreate, draftMatchesEdit, draftMatchesVersion } from '../domain/draft.js';
+import { sameCreateDraft } from '../domain/creationSave.js';
 import { derivePenState, isPenDraftDirty } from '../domain/penDraft.js';
 import { isDraftDirty } from '../domain/recordDraft.js';
 import { notebookPath } from './notebookPaths.js';
@@ -154,6 +155,8 @@ export function useKeptDraft({
   onRestorePlan,
   onRestoreRecord,
   creating = false,
+  creationKind = 'create',
+  cleanPayload = null,
   createDraft,
   onRestoreCreate,
   onPageStatus,
@@ -210,7 +213,12 @@ export function useKeptDraft({
           setDraftRestoreDone(true);
           return;
         }
-        if (!(creating ? draftMatchesCreate(record) : draftMatchesVersion(record, version, batches, catalog))) {
+        const fits = creating
+          ? creationKind === 'edit'
+            ? draftMatchesEdit(record)
+            : draftMatchesCreate(record)
+          : draftMatchesVersion(record, version, batches, catalog);
+        if (!fits) {
           Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
           setDraftRestoreDone(true);
           return;
@@ -266,13 +274,20 @@ export function useKeptDraft({
     let record = null;
     if (creating) {
       // A creation is kept until Cancel, even when every field is blank
-      // (D-04a): its draft is overwritten, never deleted, by an edit.
-      record = buildDraftRecord({
-        versionId,
-        kind: 'create',
-        payload: createDraft,
-        now: new Date().toISOString(),
-      });
+      // (D-04a): its draft is overwritten, never deleted, by an edit. An edit
+      // of a saved version is the exception (D-23, RESEARCH G-7): its
+      // cleanPayload is what the version already says, so an edit equal to it
+      // builds no record, and the no-record branch below deletes a stored one.
+      // An untouched Edit therefore leaves no trace, and a change made back to
+      // the saved content ends the edit.
+      if (cleanPayload === null || !sameCreateDraft(createDraft, cleanPayload)) {
+        record = buildDraftRecord({
+          versionId,
+          kind: creationKind,
+          payload: createDraft,
+          now: new Date().toISOString(),
+        });
+      }
     } else if (persistedPen === 'plan' && isPenDraftDirty(mode, penDraft, version)) {
       record = buildDraftRecord({
         versionId,

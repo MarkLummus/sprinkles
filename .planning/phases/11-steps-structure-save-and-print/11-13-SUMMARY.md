@@ -3,7 +3,7 @@ phase: 11-steps-structure-save-and-print
 plan: 13
 subsystem: testing
 tags: [playwright, webkit, walk, board-conformance, print-check, device-steps, ipad]
-status: checkpoint
+status: complete
 
 requires:
   - phase: 11-steps-structure-save-and-print
@@ -162,6 +162,18 @@ None: harness scripts and two moved todo files; no network, auth or schema surfa
 ## Checkpoint: Task 3 (human-action, blocking)
 
 The executor has no ArtifactData tool. The orchestrator writes the row `check-p11-ipad-create-steps-save-print-edit` on Mark's List with the content returned in the checkpoint message, closes the two folded todos' rows if open, reads both back, and a continuation records the readback (id, status, version) here. **iPad verification pending.**
+
+### Readback (recorded by the continuation)
+
+The orchestrator wrote the row and read it back with ArtifactData `get`:
+
+- id: `check-p11-ipad-create-steps-save-print-edit`
+- status: `open`
+- version: `1`
+- owner: `mark`, needs: `hands`, kind: `check`
+- createdAt: `2026-10-27T04:11:29.000Z`
+
+No todo rows were open on the list for "Add a Preview Step link while editing a Step" or "Move the Add ingredient link to the heading row like Add step", so none was closed; their files are already in `.planning/todos/completed/` from Task 2. The executor made no ArtifactData call. No other row was added. The iPad check itself stays open on Mark's List for Mark to run.
 
 ## Self-Check: PASSED
 

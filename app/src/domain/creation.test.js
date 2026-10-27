@@ -28,6 +28,7 @@ import {
 } from './creation.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate } from './draft.js';
 import { rowFromLibraryRecord } from './versionRow.js';
+import { UNPLACED_STEP, addStep, toggleStepUses } from './creationSteps.js';
 import { library } from '../data/library.js';
 import { STYLE_ROWS } from '../data/styles.js';
 
@@ -103,7 +104,7 @@ describe('creationSheetVersion (D-05, D-08)', () => {
 
   it('projects a draft row through rowFromLibraryRecord with the grams parsed', () => {
     const version = creationSheetVersion(withRows([rowOf('600')]), records);
-    expect(version.rows).toEqual([rowFromLibraryRecord(records.get('wholeMilk'), { id: 'row-a', grams: 600, step: 1 })]);
+    expect(version.rows).toEqual([rowFromLibraryRecord(records.get('wholeMilk'), { id: 'row-a', grams: 600, step: UNPLACED_STEP })]);
     expect(version.rows[0].ingredient).toEqual(library.wholeMilk);
     expect(version.rows[0].ingredient).not.toBe(records.get('wholeMilk').entry);
   });
@@ -111,7 +112,7 @@ describe('creationSheetVersion (D-05, D-08)', () => {
   it.each(['', 'abc', '-5', '1.234'])('projects grams %j to a row of 0 g that stays in rows', (grams) => {
     const version = creationSheetVersion(withRows([rowOf(grams)]), records);
     expect(version.rows).toHaveLength(1);
-    expect(version.rows[0].portions).toEqual([{ step: 1, grams: 0 }]);
+    expect(version.rows[0].portions).toEqual([{ step: UNPLACED_STEP, grams: 0 }]);
   });
 
   it('leaves out a row whose library entry is not in the map, without throwing', () => {
@@ -119,9 +120,9 @@ describe('creationSheetVersion (D-05, D-08)', () => {
     expect(version.rows.map((row) => row.id)).toEqual(['row-b']);
   });
 
-  it('projects a row with no portion to 0 g at step 1, without throwing', () => {
+  it('projects a row with no portion to 0 g, unplaced, without throwing', () => {
     const version = creationSheetVersion(withRows([rowOf('600', { portions: [] })]), records);
-    expect(version.rows[0].portions).toEqual([{ step: 1, grams: 0 }]);
+    expect(version.rows[0].portions).toEqual([{ step: UNPLACED_STEP, grams: 0 }]);
   });
 
   it('projects a grams value that reads as Infinity at 0 g and throws nothing', () => {
@@ -136,6 +137,55 @@ describe('creationSheetVersion (D-05, D-08)', () => {
     const version = creationSheetVersion(draft, records);
     expect(draft).toEqual(before);
     expect(JSON.stringify(version.rows)).not.toContain('"600"');
+  });
+});
+
+describe('creationSheetVersion with steps (D-09, D-10, D-12, D-22)', () => {
+  const twoRows = () => withRows([rowOf('600'), rowOf('150', { id: 'row-b', libraryId: 'sucrose' })]);
+
+  it('writes an unplaced row at UNPLACED_STEP and a placed row at its step key', () => {
+    const draft = toggleStepUses(addStep(twoRows()), 1, 'row-a');
+    const version = creationSheetVersion(draft, records);
+    expect(version.rows.map((row) => row.portions)).toEqual([
+      [{ step: 1, grams: 600 }],
+      [{ step: UNPLACED_STEP, grams: 150 }],
+    ]);
+    expect(version.method).toEqual([{ n: 1, leadIn: '', instruction: '', uses: ['row-a'], targets: [] }]);
+  });
+
+  it('writes a row in two steps as two portions in method order, not in the order they were ticked', () => {
+    let draft = addStep(addStep(twoRows()));
+    // method reads [2, 1]: step 2 first
+    draft = toggleStepUses(draft, 1, 'row-a');
+    draft = {
+      ...draft,
+      rows: draft.rows.map((row) =>
+        row.id === 'row-a'
+          ? { ...row, portions: [{ step: 1, grams: '400' }, { step: 2, grams: '200' }] }
+          : row,
+      ),
+      method: draft.method.map((step) => (step.n === 2 ? { ...step, uses: ['row-a'] } : step)),
+    };
+    const version = creationSheetVersion(draft, records);
+    expect(version.rows[0].portions).toEqual([
+      { step: 2, grams: 200 },
+      { step: 1, grams: 400 },
+    ]);
+    expect(version.rows[0].portions[0].step).toBe(version.method[0].n);
+  });
+
+  it('leaves a removed step out and keeps a half-empty target and blank purpose and aside out', () => {
+    const draft = {
+      ...twoRows(),
+      method: [
+        { n: 1, leadIn: 'Warm', instruction: 'the milk', uses: [], targets: [{ label: 'temp', value: '40' }, { label: 'time', value: ' ' }, { label: '', value: '5' }], purpose: '  ', aside: 'Gently.' },
+        { n: 2, leadIn: '', instruction: '', uses: [], targets: [], removed: true },
+      ],
+    };
+    const version = creationSheetVersion(draft, records);
+    expect(version.method).toEqual([
+      { n: 1, leadIn: 'Warm', instruction: 'the milk', uses: [], targets: [{ label: 'temp', value: '40' }], aside: 'Gently.' },
+    ]);
   });
 });
 

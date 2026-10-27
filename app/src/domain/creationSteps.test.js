@@ -115,8 +115,10 @@ describe('tracer: a step added to a Phase 10 draft and a row ticked into it', ()
 
 describe('checkAllocation names the first violation', () => {
   it('names the row when a step uses it but the row holds no portion at that step', () => {
-    const draft = addStep(phaseTenDraft());
-    draft.method[0].uses = ['rowA'];
+    const draft = addStep(addStep(phaseTenDraft()));
+    draft.method[1].uses = [];
+    draft.method[0].uses = ['rowA']; // step 2, while rowA's only portion sits at the placeholder 1
+    expect(draft.method[0].n).toBe(2);
     expect(checkAllocation(draft)).toContain('rowA');
   });
 

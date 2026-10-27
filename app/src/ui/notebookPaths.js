@@ -34,6 +34,16 @@ export function printPath(recipeId, versionId) {
 }
 
 /**
+ * editPath(recipeId, versionId) -> '/notebook/:recipeId/:versionId/edit', the
+ * edit route of a first version (Phase 11 D-01). Built on notebookPath, so
+ * every segment runs through encodeURIComponent and a stored id holding '/' or
+ * '..' can never change the path's shape.
+ */
+export function editPath(recipeId, versionId) {
+  return `${notebookPath(recipeId, versionId)}/edit`;
+}
+
+/**
  * legacyRecipePath(version, batchId) -> the Notebook address a /recipe/:id
  * (or /recipe/:id/batch/:batchId) redirect resolves to (D-16), or null when
  * version is missing (undefined or null) rather than throwing.

@@ -5,6 +5,7 @@
 // may edit (RESEARCH G-8).
 
 import { activeRows } from './rows.js';
+import { draftMatchesEdit } from './draft.js';
 
 /**
  * firstVersionRefusal({ version, versions, batches }) -> null when the stored
@@ -33,6 +34,25 @@ export function firstVersionRefusal({ version, versions, batches }) {
 /** isEditableFirstVersion(args) -> true when firstVersionRefusal(args) is null. */
 export function isEditableFirstVersion(args) {
   return firstVersionRefusal(args) === null;
+}
+
+/**
+ * editStateFor({ version, versions, batches, drafts }) -> 'editing' | 'editable'
+ * | null, for the version page and the Notebook. Of the records in `drafts`
+ * under the version's id:
+ *   one that fits draftMatchesEdit -> 'editing', whatever firstVersionRefusal
+ *       says: while an edit is kept the page reads Resume editing and offers no
+ *       pen (D-04), and a stale edit stays reachable until Cancel (D-06)
+ *   any other record -> null: a pen's draft is kept, so Edit is not offered
+ *       (RESEARCH G-1c, D-23)
+ *   none -> 'editable' when the version is eligible, else null
+ */
+export function editStateFor({ version, versions, batches, drafts }) {
+  if (!version) return null;
+  const kept = drafts.filter((record) => record.versionId === version.id);
+  if (kept.some(draftMatchesEdit)) return 'editing';
+  if (kept.length > 0) return null;
+  return firstVersionRefusal({ version, versions, batches }) === null ? 'editable' : null;
 }
 
 // A value as a string that is the same for two values equal by every leaf,

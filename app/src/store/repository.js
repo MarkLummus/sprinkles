@@ -1,6 +1,7 @@
 import { openStore } from './db.js';
 import { normaliseCode, sheetCodeProblems, SheetCodeError } from '../domain/sheetCode.js';
 import { firstVersionRefusal, sameRecord, VersionChangedError } from '../domain/firstVersion.js';
+import { draftFamily } from '../domain/draft.js';
 import { catalogConflicts, mergeById, CatalogConflictError } from './seedTables.js';
 
 // The one write both createVersion and saveVersion make: the read of every stored
@@ -40,6 +41,16 @@ async function putVersionChecked(db, version, expected = null) {
     }
     for (const request of [...queued, done]) request.catch(() => {});
     throw error;
+  }
+}
+
+// The family a stored or incoming draft belongs to, or null for a record whose
+// kind is not a draft kind (draftFamily throws for those).
+function familyOrNull(kind) {
+  try {
+    return draftFamily(kind);
+  } catch {
+    return null;
   }
 }
 
@@ -437,13 +448,75 @@ export function createRepository() {
       const db = await dbPromise;
       return db.get('drafts', versionId);
     },
+    // A version's one draft key is shared by the pens (plan, record, amend) and
+    // the edit, and UI exclusivity is not storage exclusivity: a second tab's
+    // pen writes and discards the same key. So the store guards ownership
+    // (T-11-46, D-06). saveDraft reads the stored record and the put in ONE
+    // readwrite transaction: when the key holds a record of another family
+    // (draftFamily) it writes nothing and resolves false, else it writes and
+    // resolves true. A stored record whose kind is not a draft kind belongs to
+    // no family and is written over, as it always was.
     async saveDraft(record) {
       const db = await dbPromise;
-      return db.put('drafts', record);
+      const tx = db.transaction('drafts', 'readwrite');
+      const done = tx.done;
+      const queued = [];
+      try {
+        const stored = await tx.store.get(record.versionId);
+        const storedFamily = stored ? familyOrNull(stored.kind) : null;
+        if (storedFamily !== null && storedFamily !== familyOrNull(record.kind)) {
+          done.catch(() => {});
+          tx.abort();
+          return false;
+        }
+        queued.push(tx.store.put(record));
+        await Promise.all([...queued, done]);
+        return true;
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
     },
-    async deleteDraft(versionId) {
+    // deleteDraft(versionId, kind): with a kind it deletes only when the stored
+    // record's family is that kind's family, and resolves whether it deleted: a
+    // pen's discard after a batch save in another tab cannot delete a kept edit
+    // draft, and an edit's Cancel cannot delete a pen's (T-11-46). With no kind
+    // it deletes whatever is stored, as it always did, for a caller that names
+    // none.
+    async deleteDraft(versionId, kind = null) {
       const db = await dbPromise;
-      return db.delete('drafts', versionId);
+      if (kind === null) {
+        await db.delete('drafts', versionId);
+        return true;
+      }
+      const wanted = draftFamily(kind);
+      const tx = db.transaction('drafts', 'readwrite');
+      const done = tx.done;
+      const queued = [];
+      try {
+        const stored = await tx.store.get(versionId);
+        if (!stored || familyOrNull(stored.kind) !== wanted) {
+          done.catch(() => {});
+          tx.abort();
+          return false;
+        }
+        queued.push(tx.store.delete(versionId));
+        await Promise.all([...queued, done]);
+        return true;
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
     },
     async listDrafts() {
       const db = await dbPromise;

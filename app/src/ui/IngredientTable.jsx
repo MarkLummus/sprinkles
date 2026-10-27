@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue, formatPortionLine } from '../domain/composition.js';
 import { asMadeForPortion, asMadeTotals } from '../domain/batch.js';
 import { activeRows, isLineRemoved, isStepRemoved, rowGrams } from '../domain/rows.js';
@@ -231,6 +231,93 @@ function RemoveRowControl({ removed, onToggle, lineName }) {
         {removed ? 'restore' : 'remove'}
       </Button>
     </>
+  );
+}
+
+// A creating row's acts (Phase 11, STRUCT-01 to STRUCT-03, D-15 to D-17; sketch
+// 014 add-remove-move.html): remove · Move up · Move down, and Add to step for a
+// row no step uses once a step exists. A Move that cannot act (the group's first
+// row's up, its last row's down) is .mk-off and aria-disabled, stays in the tab
+// order and does nothing. Every line of a split row carries remove, since each
+// removes the whole row, and names its Move controls by step so no two share a
+// name. Pressed, Add to step turns the span into the chooser: Cancel, then one
+// control per step.
+const ACT_DOT = <span aria-hidden="true"> · </span>;
+
+function RowActs({
+  name,
+  group,
+  stepNumber,
+  isFirst,
+  isLast,
+  canAddToStep,
+  choosing,
+  steps,
+  onRemove,
+  onMove,
+  onOpenChooser,
+  onCancelChooser,
+  onChoose,
+}) {
+  if (choosing) {
+    return (
+      <span
+        className="mk-row-acts mk-row-acts--choosing"
+        onKeyDown={(event) => {
+          if (event.key !== 'Escape') return;
+          event.stopPropagation();
+          onCancelChooser();
+        }}
+      >
+        <Button className="text-control" data-act="cancel" aria-label={`${name}, cancel`} onClick={onCancelChooser}>
+          Cancel
+        </Button>
+        {steps.map((step) => (
+          <Fragment key={step.n}>
+            {ACT_DOT}
+            <Button className="text-control" data-act={`choose-${step.n}`} aria-label={`Add ${name} to step ${step.number}`} onClick={() => onChoose(step.n)}>
+              {step.leadIn.trim() === '' ? `Step ${step.number}` : `Step ${step.number}, ${step.leadIn}`}
+            </Button>
+          </Fragment>
+        ))}
+      </span>
+    );
+  }
+  const inStep = stepNumber != null ? ` in step ${stepNumber}` : '';
+  return (
+    <span className="mk-row-acts">
+      <Button className="text-control" data-act="remove" aria-label={`remove ${name}`} onClick={onRemove}>
+        remove
+      </Button>
+      {ACT_DOT}
+      <Button
+        className={isFirst ? 'text-control mk-off' : 'text-control'}
+        data-act="move-up"
+        aria-label={`Move ${name} up${inStep}`}
+        aria-disabled={isFirst ? 'true' : undefined}
+        onClick={isFirst ? undefined : () => onMove(group, 'up')}
+      >
+        Move up
+      </Button>
+      {ACT_DOT}
+      <Button
+        className={isLast ? 'text-control mk-off' : 'text-control'}
+        data-act="move-down"
+        aria-label={`Move ${name} down${inStep}`}
+        aria-disabled={isLast ? 'true' : undefined}
+        onClick={isLast ? undefined : () => onMove(group, 'down')}
+      >
+        Move down
+      </Button>
+      {canAddToStep && (
+        <>
+          {ACT_DOT}
+          <Button className="text-control" data-act="add-to-step" aria-label={`Add ${name} to a step`} onClick={onOpenChooser}>
+            Add to step
+          </Button>
+        </>
+      )}
+    </span>
   );
 }
 
@@ -538,6 +625,23 @@ export function IngredientTable({
   // object, so typing alone never raises a line and each line of a split row
   // speaks for itself.
   const [leftUnreadable, setLeftUnreadable] = useState(() => new Set());
+
+  // The Add to step chooser (decision 014 1, D-17): one row's acts line at a time
+  // is open as the chooser, and opening another closes the first. Its focus
+  // moves are requests, acted on after the render that drew their target, since
+  // the Cancel button and the Add to step button are not in the DOM until the
+  // chooser state commits: { line, act: 'cancel' | 'add-to-step' }.
+  const [chooserRowId, setChooserRowId] = useState(null);
+  const chooserFocusRef = useRef(null);
+  const tableRef = useRef(null);
+  useEffect(() => {
+    const request = chooserFocusRef.current;
+    if (!request) return;
+    chooserFocusRef.current = null;
+    tableRef.current
+      ?.querySelector(`tr[data-line="${CSS.escape(request.line)}"] [data-act="${request.act}"]`)
+      ?.focus();
+  });
   function handleCreatingGramsBlur(row, portion, raw) {
     if (gramsDraftMessage(row.ingredientName, raw) !== null) {
       setLeftUnreadable((prev) => new Set(prev).add(`${row.id}:${portion.step}`));
@@ -630,6 +734,13 @@ export function IngredientTable({
   // their heads.
   const stepNumbers = currentStepNumbers ?? (isCreating ? displayNumbers(stepsForGrouping) : null);
   const groups = groupPortionsByStep(rows, stepsForGrouping, stepNumbers, isDeveloping || isShowingChanges);
+  // The steps the Add to step chooser offers, in order, by display number.
+  const creatingSteps = isCreating
+    ? stepsForGrouping
+        .filter((step) => !step.removed)
+        .map((step) => ({ n: step.n, number: displayNumberOf(stepNumbers, step.n), leadIn: step.leadIn }))
+    : [];
+
   // A lone unplaced group draws no head, unless the version has a live step and
   // every line of the group sits at UNPLACED_STEP (a row placed nowhere on
   // purpose, as the projection and Save write it): then D-09 reads every row
@@ -695,7 +806,7 @@ export function IngredientTable({
   // more than one line says what share of the row and of the batch each holds,
   // as the reading branch does (roadmap decision 23); and the share reads the
   // live Balance's mass.
-  function renderCreatingEntry(row, portion, portionIndex) {
+  function renderCreatingEntry(row, portion, portionIndex, displayNumber, place) {
     const dataFlag = dataFlagFor(row);
     const isMarked = markedRowIds.includes(row.id);
     const ariaLabel = rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, null);
@@ -735,7 +846,31 @@ export function IngredientTable({
               <span className="target-chip__value">{dataFlag}</span>
             </span>
           )}
-          {portionIndex === 0 && <RemoveRowControl removed={false} onToggle={() => creationRows.onRemoveRow(row.id)} />}
+          <span className="ingredient-table__remove-gap">{' '}</span>
+          <RowActs
+            name={row.ingredientName}
+            group={portion.step}
+            stepNumber={isSplit ? displayNumber : null}
+            isFirst={place.index === 0}
+            isLast={place.index === place.size - 1}
+            canAddToStep={portion.step === UNPLACED_STEP && creatingSteps.length > 0}
+            choosing={chooserRowId === row.id && portion.step === UNPLACED_STEP}
+            steps={creatingSteps}
+            onRemove={() => creationRows.onRemoveRow(row.id, portion.step)}
+            onMove={(group, direction) => creationRows.onMoveRow(row.id, group, direction)}
+            onOpenChooser={() => {
+              chooserFocusRef.current = { line: lineKey, act: 'cancel' };
+              setChooserRowId(row.id);
+            }}
+            onCancelChooser={() => {
+              chooserFocusRef.current = { line: lineKey, act: 'add-to-step' };
+              setChooserRowId(null);
+            }}
+            onChoose={(n) => {
+              setChooserRowId(null);
+              creationRows.onPlaceRow(row.id, n);
+            }}
+          />
           {isSplit && (
             <span className="ingredient-table__portion-note">{formatPortionLine(portion.grams, rowGrams(row), baselineMass)}</span>
           )}
@@ -944,8 +1079,8 @@ export function IngredientTable({
     );
   }
 
-  function renderEntry({ row, portion, portionIndex, displayNumber, stepRemoved }) {
-    if (isCreating) return renderCreatingEntry(row, portion, portionIndex);
+  function renderEntry({ row, portion, portionIndex, displayNumber, stepRemoved }, place) {
+    if (isCreating) return renderCreatingEntry(row, portion, portionIndex, displayNumber, place);
     if (isShowingChanges) return renderShowChangesEntry(row, portion, portionIndex);
     if (isDeveloping) return renderDevelopingEntry(row, portion, portionIndex, displayNumber, stepRemoved);
     return renderReadingEntry(row, portion, portionIndex);
@@ -957,6 +1092,7 @@ export function IngredientTable({
           decisions 31 and 32; decision 33 brief (c)); the DOM already omits the As made cells
           when there is no layer. */}
       <table
+        ref={tableRef}
         className={`ingredient-table${hasAsMadeLayer ? ' ingredient-table--as-made' : ''}${isDeveloping || isCreating ? ' is-developing' : ''}`}
       >
         {comparisonBatchLabel && <caption className="ingredient-table__comparison">{comparisonBatchLabel}</caption>}
@@ -995,7 +1131,7 @@ export function IngredientTable({
                 </td>
               </tr>
             )}
-            {group.entries.map((entry) => renderEntry(entry))}
+            {group.entries.map((entry, index) => renderEntry(entry, { index, size: group.entries.length }))}
           </tbody>
         ))}
         <tfoot>

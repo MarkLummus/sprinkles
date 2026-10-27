@@ -17,9 +17,12 @@ import { freshId } from '../domain/id.js';
 import {
   addStep,
   addTarget,
+  groupRows,
   liveSteps,
+  moveRow,
   moveStep,
   normalizeAllocation,
+  placeRow,
   removeStep,
   removeTarget,
   rowLines,
@@ -27,6 +30,7 @@ import {
   setStepField,
   setTarget,
   toggleStepUses,
+  UNPLACED_STEP,
 } from '../domain/creationSteps.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import {
@@ -251,14 +255,50 @@ export function CreationPage({ record, justStarted = false }) {
     focusRequestRef.current = 'ingredient-target';
   };
 
-  // Remove deletes the row outright (decision 5): its control goes with it, so
-  // a row is never removed twice. Focus lands, after the render, on the table
-  // region's add control: Add ingredient, or the picker's Cancel while the
-  // picker is open in its place.
-  const handleRemoveRow = (rowId) => {
+  const rowName = (rowId) => version.rows.find((row) => row.id === rowId)?.ingredientName ?? '';
+
+  // Remove deletes the row outright (decision 5, STRUCT-01, D-15), whole, from
+  // every step it is in: its control goes with it, so a row is never removed
+  // twice. Focus goes, after the render, to the next row's remove in the group
+  // the press was in, else the previous row's, else the table region's add
+  // control: Add ingredient, or the picker's Cancel while the picker is open in
+  // its place.
+  const handleRemoveRow = (rowId, group = UNPLACED_STEP) => {
+    const name = rowName(rowId);
+    const ids = groupRows(createDraft, group);
+    const at = ids.indexOf(rowId);
+    const neighbour = at === -1 ? undefined : (ids[at + 1] ?? ids[at - 1]);
     setCreateDraft((prev) => removeRow(prev, rowId));
     setFocusRowId((prev) => (prev === rowId ? null : prev));
-    focusRequestRef.current = 'ingredient-target';
+    focusRequestRef.current = neighbour ? { kind: 'row-act', line: `${neighbour}:${group}`, act: 'remove' } : 'ingredient-target';
+    announceStructure(`${name} removed`);
+  };
+
+  // Move a row within its own group only (STRUCT-02, D-16): one step's rows, or
+  // the rows under Not in a step yet. Another step's order is as it was. Focus
+  // stays on the same Move button of the row (the other one when it turned
+  // off), and the word says where the row went.
+  const handleMoveRow = (rowId, group, direction) => {
+    const ids = groupRows(createDraft, group);
+    const at = ids.indexOf(rowId);
+    const to = at + (direction === 'up' ? -1 : 1);
+    if (at === -1 || to < 0 || to >= ids.length) return;
+    const position = `row ${to + 1} of ${ids.length}`;
+    let where = '';
+    if (group !== UNPLACED_STEP) where = ` in step ${displayNumbers(createDraft.method).get(group)}`;
+    else if (liveSteps(createDraft).length > 0) where = ', not in a step yet';
+    setCreateDraft((prev) => moveRow(prev, rowId, group, direction));
+    focusRequestRef.current = { kind: 'row-act', line: `${rowId}:${group}`, act: direction === 'up' ? 'move-up' : 'move-down' };
+    announceStructure(`${rowName(rowId)}, ${position}${where}`);
+  };
+
+  // Add to step (decision 014 1, D-17): the row joins the end of that step's
+  // uses, so it reads as that step's last row, and focus goes to its remove.
+  const handlePlaceRow = (rowId, n) => {
+    const number = displayNumbers(createDraft.method).get(n);
+    setCreateDraft((prev) => placeRow(prev, rowId, n));
+    focusRequestRef.current = { kind: 'row-act', line: `${rowId}:${n}`, act: 'remove' };
+    announceStructure(`${rowName(rowId)} added to step ${number}`);
   };
 
   // One grams field per line of a row (MAKE-07): a line is named by its row and
@@ -448,6 +488,8 @@ export function CreationPage({ record, justStarted = false }) {
                   onChangeGrams: handleChangeGrams,
                   onBlurGrams: handleBlurGrams,
                   onRemoveRow: handleRemoveRow,
+                  onMoveRow: handleMoveRow,
+                  onPlaceRow: handlePlaceRow,
                 }}
                 onChangePenNoteText={handleChangeNote}
                 onRemovePenNote={handleRemoveNote}

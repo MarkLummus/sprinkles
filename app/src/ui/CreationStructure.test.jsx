@@ -376,3 +376,257 @@ describe('Add step on a step (sketch 013 decision 33)', () => {
     expect(document.activeElement).toBe(field('Step 2, lead-in'));
   });
 });
+
+const MILK = 'Whole milk, 3.5% fat';
+const CREAM = 'Heavy cream, 36% fat';
+
+const draftRow = (id, libraryId, portions) => ({ id, libraryId, portions });
+
+// The table as a maker reads it: each group's head, and its lines in order.
+const groups = () =>
+  [...root().querySelectorAll('.ingredient-table tbody')].map((body) => ({
+    head: body.querySelector('.ingredient-table__step-head')?.textContent ?? null,
+    lines: [...body.querySelectorAll('tr[data-line]')].map((row) => row.getAttribute('data-line')),
+  }));
+
+const ctl = (line, name) => root().querySelector(`tr[data-line="${line}"] [data-act="${name}"]`);
+
+describe('remove on a row (STRUCT-01, D-15)', () => {
+  it('in a step group deletes the whole row, leaves no strike or restore, and focuses the next row\'s remove', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    keep((draft) => ({
+      ...draft,
+      rows: [draftRow('milk-row', 'wholeMilk', [{ step: 1, grams: '600' }]), draftRow('sucrose-row', 'sucrose', [{ step: 1, grams: '150' }])],
+      method: [step(1, 'Warm', ['milk-row', 'sucrose-row'])],
+    }));
+    await open();
+    await click(ctl('milk-row:1', 'remove'));
+    expect(groups()).toEqual([{ head: 'Step 1Warm', lines: ['sucrose-row:1'] }]);
+    expect(root().querySelector('.struck-value')).toBeNull();
+    expect(root().textContent).not.toContain('restore');
+    expect(document.activeElement).toBe(ctl('sucrose-row:1', 'remove'));
+    await nextFrames();
+    expect(said()).toBe(`${MILK} removed`);
+
+    repository.saveDraft.mockClear();
+    await advance();
+    expect(lastSaved().rows.map((row) => row.id)).toEqual(['sucrose-row']);
+    expect(lastSaved().method[0].uses).toEqual(['sucrose-row']);
+  });
+
+  it('the last row of its group focuses the previous row\'s remove, and a row under Not in a step yet follows the same rule', async () => {
+    keep((draft) => ({
+      ...draft,
+      rows: [
+        draftRow('milk-row', 'wholeMilk', [{ step: 1, grams: '600' }]),
+        draftRow('sucrose-row', 'sucrose', [{ step: 1, grams: '150' }]),
+        draftRow('cream-row', 'heavyCream', [{ step: 1, grams: '250' }]),
+      ],
+      method: [step(1, 'Warm')],
+    }));
+    await open();
+    expect(groups()).toEqual([{ head: 'Not in a step yet', lines: ['milk-row:0', 'sucrose-row:0', 'cream-row:0'] }]);
+    await click(ctl('sucrose-row:0', 'remove'));
+    expect(document.activeElement).toBe(ctl('cream-row:0', 'remove'));
+    await click(ctl('cream-row:0', 'remove'));
+    expect(document.activeElement).toBe(ctl('milk-row:0', 'remove'));
+    await click(ctl('milk-row:0', 'remove'));
+    expect(groups()).toEqual([]);
+    expect(document.activeElement).toBe(root().querySelector('.ingredient-table-region .mk-head-act'));
+    expect(document.activeElement.textContent).toBe('Add ingredient');
+  });
+
+  it('the only row while the picker is open focuses the picker\'s Cancel', async () => {
+    keep((draft) => ({ ...draft, rows: [draftRow('milk-row', 'wholeMilk', [{ step: 1, grams: '600' }])] }));
+    await open();
+    await click(root().querySelector('.ingredient-table-region .mk-head-act'));
+    expect(root().querySelector('div.pick')).not.toBeNull();
+    await click(ctl('milk-row:0', 'remove'));
+    expect(root().querySelector('div.pick')).not.toBeNull();
+    expect(document.activeElement).toBe(root().querySelector('.ingredient-table-region .pick__head button'));
+  });
+
+  it('a split row removed from either line is gone from every step, and the kept draft prunes every uses', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    keep((draft) => ({
+      ...draft,
+      rows: [
+        draftRow('milk-row', 'wholeMilk', [{ step: 1, grams: '400' }, { step: 2, grams: '200' }]),
+        draftRow('sucrose-row', 'sucrose', [{ step: 2, grams: '150' }]),
+      ],
+      method: [step(1, 'Warm', ['milk-row']), step(2, 'Churn', ['milk-row', 'sucrose-row'])],
+    }));
+    await open();
+    expect(groups()).toEqual([
+      { head: 'Step 1Warm', lines: ['milk-row:1'] },
+      { head: 'Step 2Churn', lines: ['milk-row:2', 'sucrose-row:2'] },
+    ]);
+    // Pressed on step 2's line: the whole row goes, and focus follows that group.
+    await click(ctl('milk-row:2', 'remove'));
+    expect(groups()).toEqual([{ head: 'Step 2Churn', lines: ['sucrose-row:2'] }]);
+    expect(root().querySelector(`input[aria-label^="${MILK}"]`)).toBeNull();
+    expect(document.activeElement).toBe(ctl('sucrose-row:2', 'remove'));
+    repository.saveDraft.mockClear();
+    await advance();
+    const kept = lastSaved();
+    expect(kept.rows.map((row) => row.id)).toEqual(['sucrose-row']);
+    expect(kept.method.map((candidate) => candidate.uses)).toEqual([[], ['sucrose-row']]);
+  });
+});
+
+describe('Move on a row stays within its own step (STRUCT-02, roadmap decision 9, D-16)', () => {
+  it('keeps the row in its step and its id, moves focus to the other Move button when one turns off, and says where it went', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    keep((draft) => ({
+      ...draft,
+      rows: [draftRow('milk-row', 'wholeMilk', [{ step: 1, grams: '600' }]), draftRow('sucrose-row', 'sucrose', [{ step: 1, grams: '150' }])],
+      method: [step(1, 'Warm', ['milk-row', 'sucrose-row'])],
+    }));
+    await open();
+    await press(ctl('milk-row:1', 'move-down'));
+    expect(groups()).toEqual([{ head: 'Step 1Warm', lines: ['sucrose-row:1', 'milk-row:1'] }]);
+    // Last in its group now: Move down is off, so focus is on the row's Move up.
+    expect(ctl('milk-row:1', 'move-down').getAttribute('aria-disabled')).toBe('true');
+    expect(document.activeElement).toBe(ctl('milk-row:1', 'move-up'));
+    await nextFrames();
+    expect(said()).toBe(`${MILK}, row 2 of 2 in step 1`);
+
+    repository.saveDraft.mockClear();
+    await advance();
+    expect(lastSaved().method[0].uses).toEqual(['sucrose-row', 'milk-row']);
+    expect(lastSaved().rows.map((row) => row.id)).toEqual(['milk-row', 'sucrose-row']);
+  });
+
+  it('keeps the same Move button when it can still act, so repeated presses keep moving the row', async () => {
+    keep((draft) => ({
+      ...draft,
+      rows: [
+        draftRow('milk-row', 'wholeMilk', [{ step: 1, grams: '600' }]),
+        draftRow('sucrose-row', 'sucrose', [{ step: 1, grams: '150' }]),
+        draftRow('cream-row', 'heavyCream', [{ step: 1, grams: '250' }]),
+      ],
+      method: [step(1, 'Warm', ['milk-row', 'sucrose-row', 'cream-row'])],
+    }));
+    await open();
+    await press(ctl('milk-row:1', 'move-down'));
+    expect(document.activeElement).toBe(ctl('milk-row:1', 'move-down'));
+    await press(ctl('milk-row:1', 'move-down'));
+    expect(groups()[0].lines).toEqual(['sucrose-row:1', 'cream-row:1', 'milk-row:1']);
+    expect(document.activeElement).toBe(ctl('milk-row:1', 'move-up'));
+  });
+
+  it('under Not in a step yet it moves among the unplaced rows and says so; in a flat table it says only the place', async () => {
+    keep((draft) => ({
+      ...draft,
+      rows: [
+        draftRow('milk-row', 'wholeMilk', [{ step: 1, grams: '600' }]),
+        draftRow('sucrose-row', 'sucrose', [{ step: 1, grams: '150' }]),
+        draftRow('cream-row', 'heavyCream', [{ step: 1, grams: '250' }]),
+      ],
+    }));
+    await open();
+    await press(ctl('cream-row:0', 'move-up'));
+    expect(groups()).toEqual([{ head: null, lines: ['milk-row:0', 'cream-row:0', 'sucrose-row:0'] }]);
+    await nextFrames();
+    expect(said()).toBe(`${CREAM}, row 2 of 3`);
+
+    await click(buttonByText('Add step'));
+    await press(ctl('cream-row:0', 'move-up'));
+    expect(groups()[0]).toEqual({ head: 'Not in a step yet', lines: ['cream-row:0', 'milk-row:0', 'sucrose-row:0'] });
+    await nextFrames();
+    expect(said()).toBe(`${CREAM}, row 1 of 3, not in a step yet`);
+  });
+
+  it('each step orders its own rows: moving B up in step 1 leaves step 2 reading A, B (Mark, decide-p11-row-order-across-steps)', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    keep((draft) => ({
+      ...draft,
+      rows: [
+        draftRow('row-a', 'wholeMilk', [{ step: 1, grams: '400' }, { step: 2, grams: '200' }]),
+        draftRow('row-b', 'sucrose', [{ step: 1, grams: '90' }, { step: 2, grams: '60' }]),
+      ],
+      method: [step(1, 'Warm', ['row-a', 'row-b']), step(2, 'Churn', ['row-a', 'row-b'])],
+    }));
+    await open();
+    expect(groups().map((group) => group.lines)).toEqual([
+      ['row-a:1', 'row-b:1'],
+      ['row-a:2', 'row-b:2'],
+    ]);
+    // A split row's Move names its step.
+    expect(ctl('row-b:1', 'move-up').getAttribute('aria-label')).toBe('Move Sucrose up in step 1');
+    expect(ctl('row-b:2', 'move-up').getAttribute('aria-label')).toBe('Move Sucrose up in step 2');
+
+    await press(ctl('row-b:1', 'move-up'));
+    expect(groups().map((group) => group.lines)).toEqual([
+      ['row-b:1', 'row-a:1'],
+      ['row-a:2', 'row-b:2'],
+    ]);
+    await nextFrames();
+    expect(said()).toBe('Sucrose, row 1 of 2 in step 1');
+    repository.saveDraft.mockClear();
+    await advance();
+    expect(lastSaved().method.map((candidate) => candidate.uses)).toEqual([['row-b', 'row-a'], ['row-a', 'row-b']]);
+    expect(lastSaved().rows.map((row) => row.id)).toEqual(['row-a', 'row-b']);
+
+    // Then step 2 on its own: step 1 stays as it was.
+    await press(ctl('row-b:2', 'move-up'));
+    expect(groups().map((group) => group.lines)).toEqual([
+      ['row-b:1', 'row-a:1'],
+      ['row-b:2', 'row-a:2'],
+    ]);
+    await advance();
+    expect(lastSaved().method.map((candidate) => candidate.uses)).toEqual([['row-b', 'row-a'], ['row-b', 'row-a']]);
+    expect(lastSaved().rows.map((row) => row.id)).toEqual(['row-a', 'row-b']);
+  });
+});
+
+describe('Add to step (decision 014 1, D-17)', () => {
+  const draftWithCream = () =>
+    keep((draft) => ({
+      ...draft,
+      rows: [
+        draftRow('milk-row', 'wholeMilk', [{ step: 1, grams: '600' }]),
+        draftRow('cream-row', 'heavyCream', [{ step: 1, grams: '250' }]),
+      ],
+      method: [step(1, 'Warm', ['milk-row']), step(2, '')],
+    }));
+
+  it('is offered only under Not in a step yet, and opening it puts focus on Cancel after the render', async () => {
+    draftWithCream();
+    await open();
+    expect(ctl('milk-row:1', 'add-to-step')).toBeNull();
+    expect(ctl('cream-row:0', 'add-to-step')).not.toBeNull();
+    await click(ctl('cream-row:0', 'add-to-step'));
+    expect([...root().querySelectorAll('.mk-row-acts--choosing button')].map((button) => button.textContent)).toEqual([
+      'Cancel',
+      'Step 1, Warm',
+      'Step 2',
+    ]);
+    expect(document.activeElement).toBe(ctl('cream-row:0', 'cancel'));
+  });
+
+  it('Escape acts as Cancel and returns focus to Add to step', async () => {
+    draftWithCream();
+    await open();
+    await click(ctl('cream-row:0', 'add-to-step'));
+    await pressKey(ctl('cream-row:0', 'cancel'), 'Escape');
+    expect(root().querySelector('.mk-row-acts--choosing')).toBeNull();
+    expect(document.activeElement).toBe(ctl('cream-row:0', 'add-to-step'));
+  });
+
+  it('choosing a step ticks the row there as its last row and puts focus on its remove', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    draftWithCream();
+    await open();
+    await click(ctl('cream-row:0', 'add-to-step'));
+    await click(ctl('cream-row:0', 'choose-1'));
+    expect(groups()).toEqual([{ head: 'Step 1Warm', lines: ['milk-row:1', 'cream-row:1'] }]);
+    expect(document.activeElement).toBe(ctl('cream-row:1', 'remove'));
+    await nextFrames();
+    expect(said()).toBe(`${CREAM} added to step 1`);
+    repository.saveDraft.mockClear();
+    await advance();
+    expect(lastSaved().method[0].uses).toEqual(['milk-row', 'cream-row']);
+    expect(lastSaved().rows.find((row) => row.id === 'cream-row').portions).toEqual([{ step: 1, grams: '250' }]);
+  });
+});

@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-10-27T11:23:41.144Z"
+last_updated: "2026-10-27T11:39:51.036Z"
 last_activity: 2026-10-26
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: 777fccfc63248392be026c775715cebb76f197d8
+state_head: 12ffa065dd875afef11418323614851c380b3df1
 progress:
   total_phases: 5
   completed_phases: 3
@@ -606,6 +606,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 203 | Record Mark's answers on row order and step-key reuse (decide-p11-row-order-across-steps, decide-p11-step-key-reuse) | 2026-10-26 | 51cd75e5 | — |
 | 204 | Fix bug-p11-target-required-under-wrong-field: a refused target chip's message stands under its own field (three selectors read :is(.field-requirement, .field-error)) | 2026-10-27 | b7897ae7 | — |
 | 261027-9zn | A default Version name reads once in the version identity: Version 1 · Latest on the page, Home and the print foot (decide-p11-default-version-name-repeats, build-once) | 2026-10-27 | 777fccfc | [261027-9zn-decide-p11-default-version-name-repeats-](./quick/261027-9zn-decide-p11-default-version-name-repeats-/) |
+| 206 | Struck target value in Show changes reads at the new value's size (decide-p11-struck-target-size) | 2026-10-27 | 12ffa065 | — |
 
 ### Roadmap Evolution
 

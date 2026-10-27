@@ -808,3 +808,78 @@ describe('Recording reads like the Sheet when one line is left (sketch 011 decis
     expect(totalRowLabel()).toBe('Total, plan 679.7 grams, as made 673.8 grams');
   });
 });
+
+// These imports sit here, hoisted as every import is, so that no line above moves: plan 11-07
+// cites line numbers in this file.
+import { VersionChangedError } from '../domain/firstVersion.js';
+import { VERSION_CHANGED_STATUS, VERSION_HAS_BATCH_STATUS } from './useVersionPen.js';
+
+// Review round 2 (L82@45089779, L275@45089779): the pen's Save over this version hands the
+// store the version its page read, and the store's refusal is named under the pen, which
+// stays open with everything typed. The editor-first flow over the real store is plan 11-12's.
+describe('Save over this version is guarded by the store (T-11-63)', () => {
+  const statusText = () => [...current.container.querySelectorAll('.form-status')].map((el) => el.textContent).join('');
+  const field = (label) => current.container.querySelector(`input[aria-label="${label}"]`);
+
+  async function typeIntoThePen() {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await setValue(field('Version name'), 'less milk');
+    await setValue(field('Whole milk, grams, portion 1'), '100');
+    return container;
+  }
+
+  it('calls saveVersion once with the updated version and the version the page read as expected', async () => {
+    const container = await typeIntoThePen();
+
+    await click(buttonByText(container, 'Save over this version'));
+    await flush(() => store.saveVersion.mock.calls.length > 0);
+
+    expect(store.saveVersion).toHaveBeenCalledTimes(1);
+    const [updated, options] = store.saveVersion.mock.calls[0];
+    expect(updated.id).toBe(VERSION);
+    expect(updated.versionLabel).toBe('less milk');
+    expect(options).toEqual({ expected: oliveOilVersion });
+  });
+
+  it('shows VERSION_CHANGED_STATUS under the pen when the store says the version changed, keeping the open pen and what was typed', async () => {
+    const container = await typeIntoThePen();
+    store.saveVersion.mockRejectedValueOnce(new VersionChangedError(VERSION, 'changed'));
+
+    await click(buttonByText(container, 'Save over this version'));
+    await flush(() => statusText().includes(VERSION_CHANGED_STATUS));
+
+    expect(statusText()).toContain(VERSION_CHANGED_STATUS);
+    expect(statusText()).not.toContain(VERSION_SAVE_ERROR);
+    expect(store.saveVersion).toHaveBeenCalledTimes(1);
+    expect(field('Version name').value).toBe('less milk');
+    expect(field('Whole milk, grams, portion 1').value).toBe('100');
+    expect(buttonByText(current.container, 'Save as a new version')).not.toBeNull();
+    expect(buttonByText(current.container, 'Save over this version')).not.toBeNull();
+    expect(store.versions.map((version) => version.versionLabel)).toEqual([oliveOilVersion.versionLabel]);
+  });
+
+  it('shows VERSION_HAS_BATCH_STATUS when the store says the version has a batch now', async () => {
+    const container = await typeIntoThePen();
+    store.saveVersion.mockRejectedValueOnce(new VersionChangedError(VERSION, 'has-batch'));
+
+    await click(buttonByText(container, 'Save over this version'));
+    await flush(() => statusText().includes(VERSION_HAS_BATCH_STATUS));
+
+    expect(statusText()).toContain(VERSION_HAS_BATCH_STATUS);
+    expect(field('Version name').value).toBe('less milk');
+    expect(buttonByText(current.container, 'Save as a new version')).not.toBeNull();
+  });
+
+  it('still shows VERSION_SAVE_ERROR for any other rejection', async () => {
+    const container = await typeIntoThePen();
+    store.saveVersion.mockRejectedValueOnce(new Error('disk full'));
+
+    await click(buttonByText(container, 'Save over this version'));
+    await flush(() => statusText().includes(VERSION_SAVE_ERROR));
+
+    expect(statusText()).toContain(VERSION_SAVE_ERROR);
+    expect(statusText()).not.toContain(VERSION_CHANGED_STATUS);
+  });
+});

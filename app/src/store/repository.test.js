@@ -12,6 +12,8 @@ import { codeFromVersionId, SheetCodeError } from '../domain/sheetCode.js';
 import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { createRecipe } from '../domain/newRecipe.js';
 import { rowFromLibraryRecord } from '../domain/versionRow.js';
+import { VersionChangedError } from '../domain/firstVersion.js';
+import { saveOverVersion } from '../domain/lineage.js';
 
 beforeEach(() => {
   // A fresh database per test — the repository opens its connection when
@@ -580,5 +582,286 @@ describe('createRecipeWithVersion, through the repository seam (MAKE-10, T-11-07
     await expect(repository.createRecipeWithVersion(again)).rejects.toThrow(TypeError);
     expect(await stores(repository)).toEqual(before);
     expect(await repository.getRecipe('recipe-other')).toBeUndefined();
+  });
+});
+
+// Runs `action` and reports every unhandled rejection Node saw while it ran and a
+// moment after: a hand-aborted transaction whose done promise nobody quieted
+// would surface here (addresses review concern L672@d52488be).
+async function unhandledDuring(action) {
+  const seen = [];
+  const listener = (reason) => seen.push(reason);
+  process.on('unhandledRejection', listener);
+  try {
+    const result = await action();
+    await new Promise((resolve) => setTimeout(resolve, 25));
+    return { result, seen };
+  } finally {
+    process.off('unhandledRejection', listener);
+  }
+}
+
+// A stored root, and the edited records an edit route would hand to
+// saveFirstVersionOver: the same id, Sheet code and createdAt, new content.
+async function storedRoot(repository) {
+  const pair = createdPair();
+  await repository.createRecipeWithVersion(pair);
+  const expected = { version: await repository.getVersion(pair.version.id), recipe: await repository.getRecipe(pair.recipe.id) };
+  return { pair, expected };
+}
+
+function editedFrom(expected, { name = 'Renamed base', label = 'second thoughts' } = {}) {
+  const rows = structuredClone(expected.version.rows);
+  rows[0].portions = [{ step: 1, grams: 450 }];
+  return {
+    recipe: { ...expected.recipe, name, description: 'Now with a description.' },
+    version: {
+      ...expected.version,
+      versionLabel: label,
+      sheetTitle: name,
+      sheetDescription: 'Now with a description.',
+      rows,
+      method: [{ n: 1, leadIn: 'Warm', instruction: 'Warm the milk.', uses: ['row-a'], targets: [], removed: false }],
+    },
+  };
+}
+
+describe('saveFirstVersionOver, through the repository seam (STRUCT-04, D-03, D-06)', () => {
+  it('writes over the same version with its id, Sheet code and createdAt, updates the recipe and deletes the kept edit draft', async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    await repository.saveDraft(makeDraft(expected.version.id, { kind: 'edit' }));
+    const edited = editedFrom(expected);
+
+    expect(await repository.saveFirstVersionOver({ ...edited, expected })).toEqual({ saved: true });
+
+    const stored = await repository.getVersion(expected.version.id);
+    expect(stored).toEqual(edited.version);
+    expect(stored.sheetCode).toBe(expected.version.sheetCode);
+    expect(stored.createdAt).toBe(expected.version.createdAt);
+    expect(stored.rows[0].portions).toEqual([{ step: 1, grams: 450 }]);
+    expect(await repository.getRecipe(expected.recipe.id)).toEqual(edited.recipe);
+    expect(await repository.getDraft(expected.version.id)).toBeUndefined();
+    expect(await repository.listVersions()).toHaveLength(1);
+  });
+
+  it("refuses 'has-batch' when a batch is stored for the version, writes nothing and keeps the edit draft", async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    const draft = makeDraft(expected.version.id, { kind: 'edit' });
+    await repository.saveDraft(draft);
+    await repository.saveBatch({ id: 'b1', versionId: expected.version.id });
+    const before = await stores(repository);
+
+    const { result, seen } = await unhandledDuring(() => repository.saveFirstVersionOver({ ...editedFrom(expected), expected }));
+
+    expect(result).toEqual({ saved: false, reason: 'has-batch' });
+    expect(seen).toEqual([]);
+    expect(await stores(repository)).toEqual(before);
+    expect(await repository.getDraft(expected.version.id)).toEqual(draft);
+  });
+
+  it("refuses 'has-child' when a version names it as parent", async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    await repository.createVersion(makeVersion('v-child', { parentVersionId: expected.version.id }));
+    const before = await stores(repository);
+
+    const { result, seen } = await unhandledDuring(() => repository.saveFirstVersionOver({ ...editedFrom(expected), expected }));
+
+    expect(result).toEqual({ saved: false, reason: 'has-child' });
+    expect(seen).toEqual([]);
+    expect(await stores(repository)).toEqual(before);
+  });
+
+  it("refuses 'gone' when the version is no longer stored, and 'not-first' for a version with a parent", async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    const absent = editedFrom({ version: { ...expected.version, id: 'v-absent' }, recipe: expected.recipe });
+    expect(await repository.saveFirstVersionOver({ ...absent, expected: { version: absent.version, recipe: expected.recipe } })).toEqual({
+      saved: false,
+      reason: 'gone',
+    });
+
+    const child = makeVersion('v-child2', { parentVersionId: expected.version.id });
+    await repository.createVersion(child);
+    expect(
+      await repository.saveFirstVersionOver({
+        recipe: expected.recipe,
+        version: { ...child, versionLabel: 'edited' },
+        expected: { version: child, recipe: expected.recipe },
+      }),
+    ).toEqual({ saved: false, reason: 'not-first' });
+    expect(await repository.getVersion('v-child2')).toEqual(child);
+  });
+
+  it("refuses 'unlinked-row' when an active row has no library link", async () => {
+    const repository = createRepository();
+    const pair = createdPair();
+    pair.version.rows[1].libraryId = null;
+    await repository.createRecipeWithVersion(pair);
+    const expected = { version: await repository.getVersion(pair.version.id), recipe: await repository.getRecipe(pair.recipe.id) };
+
+    expect(await repository.saveFirstVersionOver({ ...editedFrom(expected), expected })).toEqual({ saved: false, reason: 'unlinked-row' });
+    expect(await repository.getVersion(pair.version.id)).toEqual(expected.version);
+  });
+
+  it.each(['plan', 'record', 'amend', 'create'])(
+    "refuses 'draft-held' when a %s draft holds the version's key, and leaves that draft untouched (T-11-47)",
+    async (kind) => {
+      const repository = createRepository();
+      const { expected } = await storedRoot(repository);
+      // Another tab opened a pen on the version after the edit opened.
+      const foreign = makeDraft(expected.version.id, { kind });
+      await repository.saveDraft(foreign);
+      const before = await stores(repository);
+
+      const { result, seen } = await unhandledDuring(() => repository.saveFirstVersionOver({ ...editedFrom(expected), expected }));
+
+      expect(result).toEqual({ saved: false, reason: 'draft-held' });
+      expect(seen).toEqual([]);
+      expect(await stores(repository)).toEqual(before);
+      expect(await repository.getDraft(expected.version.id)).toEqual(foreign);
+    },
+  );
+
+  it("refuses 'changed' when another tab saved over the version since expected was read (T-11-48)", async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    // Another edit tab saved first.
+    const other = editedFrom(expected, { label: 'the other tab' });
+    expect(await repository.saveFirstVersionOver({ ...other, expected })).toEqual({ saved: true });
+    const before = await stores(repository);
+
+    const { result, seen } = await unhandledDuring(() => repository.saveFirstVersionOver({ ...editedFrom(expected), expected }));
+
+    expect(result).toEqual({ saved: false, reason: 'changed' });
+    expect(seen).toEqual([]);
+    expect(await stores(repository)).toEqual(before);
+    expect((await repository.getVersion(expected.version.id)).versionLabel).toBe('the other tab');
+  });
+
+  it("refuses 'changed' when the recipe was renamed since expected was read", async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    await repository.saveRecipe({ ...expected.recipe, name: 'Renamed elsewhere' });
+    const before = await stores(repository);
+
+    expect(await repository.saveFirstVersionOver({ ...editedFrom(expected), expected })).toEqual({ saved: false, reason: 'changed' });
+    expect(await stores(repository)).toEqual(before);
+  });
+
+  it('rejects with a TypeError, writing nothing, when the incoming Sheet code or createdAt differs from the stored one (T-11-09)', async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    const edited = editedFrom(expected);
+    const before = await stores(repository);
+
+    await expect(
+      repository.saveFirstVersionOver({ recipe: edited.recipe, version: { ...edited.version, sheetCode: 'ZZZZ-0000' }, expected }),
+    ).rejects.toThrow(TypeError);
+    await expect(
+      repository.saveFirstVersionOver({ recipe: edited.recipe, version: { ...edited.version, createdAt: '2020-01-01T00:00:00.000Z' }, expected }),
+    ).rejects.toThrow(TypeError);
+    expect(await stores(repository)).toEqual(before);
+  });
+
+  it('rejects with a TypeError when no expected records are given', async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    const edited = editedFrom(expected);
+    await expect(repository.saveFirstVersionOver(edited)).rejects.toThrow(TypeError);
+    await expect(repository.saveFirstVersionOver({ ...edited, expected: { version: expected.version } })).rejects.toThrow(TypeError);
+    expect(await repository.getVersion(expected.version.id)).toEqual(expected.version);
+  });
+
+  it('rejects, writing nothing, when the incoming version cannot be cloned, and the edit draft stays', async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    const draft = makeDraft(expected.version.id, { kind: 'edit' });
+    await repository.saveDraft(draft);
+    const edited = editedFrom(expected);
+    const before = await stores(repository);
+
+    await expect(
+      repository.saveFirstVersionOver({ recipe: edited.recipe, version: { ...edited.version, notClonable: () => {} }, expected }),
+    ).rejects.toThrow();
+
+    expect(await stores(repository)).toEqual(before);
+    expect(await repository.getDraft(expected.version.id)).toEqual(draft);
+  });
+});
+
+describe('saveVersion with expected, through the repository seam (T-11-63)', () => {
+  function penFieldsOf(version, versionLabel) {
+    return {
+      versionLabel,
+      reason: null,
+      citedBatchId: null,
+      rows: structuredClone(version.rows),
+      method: structuredClone(version.method),
+      sheetTitle: version.sheetTitle,
+      sheetDescription: version.sheetDescription,
+      authored: structuredClone(version.authored),
+    };
+  }
+
+  it('writes the version when the stored one is still the record the writer read and has no batch', async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    const updated = saveOverVersion(expected.version, penFieldsOf(expected.version, 'pen label'));
+
+    await repository.saveVersion(updated, { expected: expected.version });
+
+    expect(await repository.getVersion(updated.id)).toEqual(updated);
+  });
+
+  it('writes as it always did when called without expected', async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    const edited = { ...expected.version, versionLabel: 'no guard' };
+    await repository.saveVersion(edited);
+    expect(await repository.getVersion(edited.id)).toEqual(edited);
+  });
+
+  it("throws a VersionChangedError 'changed' for a stale pen after the editor saved first, and the stored version stays the editor's", async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    // The pen's page read V0; another tab's edit route then saved V1 over it.
+    const edited = editedFrom(expected);
+    expect(await repository.saveFirstVersionOver({ ...edited, expected })).toEqual({ saved: true });
+    const stale = saveOverVersion(expected.version, penFieldsOf(expected.version, 'stale pen'));
+
+    const { result, seen } = await unhandledDuring(() => repository.saveVersion(stale, { expected: expected.version }).catch((e) => e));
+
+    expect(result).toBeInstanceOf(VersionChangedError);
+    expect(result.name).toBe('VersionChangedError');
+    expect(result.reason).toBe('changed');
+    expect(result.versionId).toBe(expected.version.id);
+    expect(seen).toEqual([]);
+    expect(await repository.getVersion(expected.version.id)).toEqual(edited.version);
+  });
+
+  it("throws 'has-batch' when a batch was stored for the version after expected was read, writing nothing", async () => {
+    const repository = createRepository();
+    const { expected } = await storedRoot(repository);
+    await repository.saveBatch({ id: 'b1', versionId: expected.version.id });
+    const updated = saveOverVersion(expected.version, penFieldsOf(expected.version, 'churned'));
+
+    const { result, seen } = await unhandledDuring(() => repository.saveVersion(updated, { expected: expected.version }).catch((e) => e));
+
+    expect(result).toBeInstanceOf(VersionChangedError);
+    expect(result.reason).toBe('has-batch');
+    expect(seen).toEqual([]);
+    expect(await repository.getVersion(expected.version.id)).toEqual(expected.version);
+  });
+
+  it("throws 'gone' when no version is stored under the id", async () => {
+    const repository = createRepository();
+    const version = makeVersion('v-never-stored');
+    const error = await repository.saveVersion(version, { expected: version }).catch((e) => e);
+    expect(error).toBeInstanceOf(VersionChangedError);
+    expect(error.reason).toBe('gone');
+    expect(await repository.listVersions()).toEqual([]);
   });
 });

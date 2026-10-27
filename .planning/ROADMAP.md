@@ -252,7 +252,7 @@ Plans:
   5. The created recipe prints as a bench sheet with its Sheet code, like the seeded ones, and typing that code finds it, also after a reorder or any other edit made after printing; a recipe with empty targets, equipment or process prints with no gap
   6. On screen, the Sheet's Instructions steps read in the printed method treatment (sketch 010 D18: the targets as a tag row with no box, Why as the caps word and the sentence, the aside as a callout, all upright) on the reading page, in the version pen's closed steps and in the creation editor's Preview step; Add note, Add ingredient and Add step sit on their heading's row, and an unplaced row offers Add to step (sketch 014; Mark, 2026-10-25 and 2026-10-26)
 
-**Plans:** 3/14 plans executed in 9 waves (11-09 stops for the orchestrator to put the export-first row on Mark's List, 11-13 for the iPad check row; 11-14 was split out of 11-07 in the plan-check revision)
+**Plans:** 6/14 plans executed in 9 waves (11-09 stops for the orchestrator to put the export-first row on Mark's List, 11-13 for the iPad check row; 11-14 was split out of 11-07 in the plan-check revision)
 
 Plans:
 **Wave 1**
@@ -261,9 +261,9 @@ Plans:
 - [x] 11-03-PLAN.md — createRecipe's optional fields, the one-transaction Save and Save-over with the forced-failure tests, the first-version eligibility rule, the edit draft kind and the edit address
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 11-04-PLAN.md — the on-screen steps in the printed method treatment on the reading page, the pen's closed steps and Show changes (D-18, D-26)
-- [ ] 11-05-PLAN.md — the created recipe's bench sheet, "Not in a step yet" in print, no empty section, and its Sheet code found after a Save-over
-- [ ] 11-14-PLAN.md — the walk-baseline tools 11-07 re-records with: the record script's patch, output and text knobs with the patch checked against the checkout, and ordercheck and ordertest (D-19); no app change
+- [x] 11-04-PLAN.md — the on-screen steps in the printed method treatment on the reading page, the pen's closed steps and Show changes (D-18, D-26)
+- [x] 11-05-PLAN.md — the created recipe's bench sheet, "Not in a step yet" in print, no empty section, and its Sheet code found after a Save-over
+- [x] 11-14-PLAN.md — the walk-baseline tools 11-07 re-records with: the record script's patch, output and text knobs with the patch checked against the checkout, and ordercheck and ordertest (D-19); no app change
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 11-06-PLAN.md — the heading rows, Add step, each step's fields, targets, purpose, aside and Preview step in the creation editor
@@ -316,7 +316,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | 8. Split the recipe page along its jobs | v2.0 | 6/6 | Complete    | 2026-10-17 |
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
 | 10. The creation editor, without Save | v2.0 | 12/12 | Complete    | 2026-10-21 |
-| 11. Steps, structure, save and print | v2.0 | 3/14 | In Progress | - |
+| 11. Steps, structure, save and print | v2.0 | 6/14 | In Progress | - |
 | 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/TBD | Not started | - |
 
 ## Later

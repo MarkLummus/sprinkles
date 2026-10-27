@@ -504,6 +504,10 @@ export function BatchRow({
   // The Batch fold's state, owned by RecipePage (decision 50); open by default for the component tests.
   batchOpen = true,
   onToggleBatch,
+  // True while an edit draft is kept on the version (plan 11-12, D-04): a
+  // batch would close the edit window, so neither Record a batch nor Record
+  // another is drawn.
+  recordingLocked = false,
 }) {
   // Focus-return for the Correct opener this row owns — closing the pen
   // returns focus to the control that opened it. Must sit above the
@@ -771,7 +775,7 @@ export function BatchRow({
               with no pen open and a batch in view — the no-batch state's
               own "Record a batch" (below) is the same handler, offered
               where the sketch draws it instead. */}
-          {openPen === null && openBatch && (
+          {openPen === null && openBatch && !recordingLocked && (
             <Button
               ref={recordButtonRef}
               className="text-control batch-row__record"
@@ -1304,7 +1308,7 @@ export function BatchRow({
                 one of the two ever mounts. The board's other control
                 there is Phase 4's, out of scope here. */}
             <p>{NO_BATCH_PROSE}</p>
-            {openPen === null && (
+            {openPen === null && !recordingLocked && (
               <Button ref={recordButtonRef} className="notebook-action" onClick={onStartRecording}>
                 Record a batch
               </Button>

@@ -79,6 +79,13 @@ export function VersionRow({
   // sketch 011 decision 19's band line): the stored record, or null. Named
   // under the identity line only while no pen is open here.
   draft = null,
+  // Whether this version can be edited (STRUCT-04, plan 11-12), from
+  // editStateFor: 'editable' draws Edit beside Next version, 'editing' (an edit
+  // draft is kept, a stale one included) draws Resume editing in Edit's place
+  // and no Next version or record act, and null or 'loading' (a read is still
+  // out) draw today's row. onEdit opens the edit route.
+  editState = null,
+  onEdit = () => {},
 }) {
   const [detailsOpen, toggleDetailsOpen] = useFold(foldsOpen);
   // Focus-return for the Develop opener: closing the plan's pen returns
@@ -422,7 +429,7 @@ export function VersionRow({
             30 addendum). */}
         {openPen === null && (
           <div className="notebook-version__acts">
-            {below724 && (
+            {editState !== 'editing' && below724 && (
               <Button
                 ref={standing === AWAITING_TASTING ? recordTastingButtonRef : undefined}
                 className="notebook-action"
@@ -431,13 +438,29 @@ export function VersionRow({
                 {RECORD_ACT_WORDS[standing]}
               </Button>
             )}
-            <Button
-              ref={developButtonRef}
-              className={below724 ? 'notebook-link' : 'notebook-action'}
-              onClick={onStartDeveloping}
-            >
-              Next version
-            </Button>
+            {editState !== 'editing' && (
+              <Button
+                ref={developButtonRef}
+                className={below724 ? 'notebook-link' : 'notebook-action'}
+                onClick={onStartDeveloping}
+              >
+                Next version
+              </Button>
+            )}
+            {/* STRUCT-04 (CONTRACT section 5, fA1): Edit is an underlined
+                word beside the filled Next version, at every width, only
+                while the version is editable; with an edit kept the same
+                place reads Resume editing (D-04). */}
+            {editState === 'editable' && (
+              <Button className="notebook-link" onClick={onEdit}>
+                Edit
+              </Button>
+            )}
+            {editState === 'editing' && (
+              <Button className="notebook-link" onClick={onEdit}>
+                Resume editing
+              </Button>
+            )}
             {parentVersion && !below724 && (
               // 03.5-15 Task 2, decisions_recorded 5: names the action by
               // its own state instead of carrying aria-pressed — a toggle

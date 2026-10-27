@@ -4,6 +4,7 @@ import { repository } from '../store/repository.js';
 import { versionsForRecipe } from '../domain/lineage.js';
 import { draftMatchesVersion, newestDraft } from '../domain/draft.js';
 import { derivePenState, isPenDraftDirty } from '../domain/penDraft.js';
+import { editStateFor } from '../domain/firstVersion.js';
 import { isDraftDirty } from '../domain/recordDraft.js';
 import { BatchRow } from './BatchRow.jsx';
 import { RecipeBand } from './RecipeBand.jsx';
@@ -21,6 +22,7 @@ import { useAnnouncer } from './useAnnouncer.js';
 import { useRecipeData } from './useRecipeData.js';
 import { sheetView } from './sheetView.js';
 import { useCatalog } from './CatalogContext.jsx';
+import { editPath } from './notebookPaths.js';
 
 export { VERSION_SAVED_STATUS, VERSION_SAVE_ERROR, VERSION_BLOCKED_STATUS } from './useVersionPen.js';
 
@@ -126,7 +128,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     focusBatchAttempt,
     focusBatch,
     restoreRecord,
-    handleStartRecording,
+    handleStartRecording: startRecording,
     handleChangeRecordField,
     handleChangeSegment,
     handleChangeRecordMark,
@@ -153,7 +155,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     versionSaveAction,
     penOpenedAtRef,
     restorePlan,
-    handleStartDeveloping,
+    handleStartDeveloping: startDeveloping,
     handleCancelDeveloping,
     handleChangePenField,
     handleChangePenGrams,
@@ -169,6 +171,26 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     handleSaveAsNewVersion,
     handleSaveOverVersion,
   } = useVersionPen({ version, versions, batches, setMode, setVersion, setVersions, announce, onPageStatus, discardDraft, navigate });
+
+  // STRUCT-04 (plan 11-12): whether this version can be edited, is being
+  // edited, or neither. 'loading' until the version, its own batches, every
+  // version and the drafts are all read (allBatches carries no readiness flag,
+  // so the eligibility reads the version's own batches): while a read is out
+  // neither Edit nor Resume editing is drawn, so Edit never shows before a
+  // disqualifying batch, child or draft has arrived (T-11-56).
+  const editState = version && batchesLoaded && versionsLoaded && draftsLoaded ? editStateFor({ version, versions, batches, drafts }) : 'loading';
+  // D-04's safety net: while an edit is kept, neither pen opens, whatever asks
+  // (the buttons are not drawn, and a route intent that waits for the drafts
+  // read finds the edit and is consumed opening nothing). While 'loading' the
+  // handlers act as today: a pen opened in that moment cannot write over or
+  // delete a kept edit draft (plan 11-03's family guard, plan 11-10's
+  // family-scoped deletes).
+  const handleStartDeveloping = () => {
+    if (editState !== 'editing') startDeveloping();
+  };
+  const handleStartRecording = () => {
+    if (editState !== 'editing') startRecording();
+  };
 
   // D-20: the tab title leads with the recipe name while the page is mounted
   // (a plain string, never markup, T-04-27); the print route sets its own.
@@ -397,6 +419,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
             onStartTasting={handleStartTasting}
             amendOpener={amendOpener}
             draft={openPen === null ? waitingPlanDraft : null}
+            editState={editState}
+            onEdit={() => navigate(editPath(version.recipeId, version.id))}
           />
 
           <GoToBatch batches={batches} onGo={handleGoToBatch} />
@@ -510,6 +534,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
             foldsOpen={!belowDesktop}
             batchOpen={batchOpen}
             onToggleBatch={toggleBatch}
+            recordingLocked={editState === 'editing'}
           />
         </aside>
       </div>

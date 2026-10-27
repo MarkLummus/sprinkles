@@ -821,10 +821,10 @@ describe('Before you start while creating (MAKE-08, decision 19, T-01)', () => {
     const region = root().querySelector('section.before-region');
     expect(region.querySelector('h2.region-name').textContent).toBe('Before you start');
     expect(region.querySelector('.authored__notes')).toBeNull();
-    const add = region.querySelector('p.mk-add-row > button.text-control.mk-add');
+    const add = region.querySelector('div.mk-head-row > button.text-control.mk-head-act');
     expect(add.textContent).toBe('Add note');
     expect(add.getAttribute('tabindex')).toBe('0');
-    expect(root().querySelector('.method-region')).toBeNull();
+    expect(region.querySelector('div.mk-head-row > h2.region-name')).not.toBeNull();
   });
 
   it('Add note puts focus in the new note; two notes keep their order; editing the second changes only the second', async () => {
@@ -909,10 +909,82 @@ describe('Before you start while creating (MAKE-08, decision 19, T-01)', () => {
   });
 });
 
+describe('Instructions while creating: the heading row and Add step (MAKE-07, sketch 013 decisions 31 and 33)', () => {
+  const region = () => root().querySelector('section.method-region');
+  const stepsOf = () => [...root().querySelectorAll('.method-region li.mk-step')];
+
+  it('draws the Instructions heading row with Add step and no step on arrival', async () => {
+    await startVanilla();
+    const row = region().querySelector('div.mk-head-row');
+    expect(row.querySelector('h2.region-name').textContent).toBe('Instructions');
+    const add = row.querySelector('button.text-control.mk-head-act');
+    expect(add.textContent).toBe('Add step');
+    expect(add.getAttribute('tabindex')).toBe('0');
+    expect(region().querySelector('ol.method-steps')).toBeNull();
+  });
+
+  it('Add step draws Step 1 with Required under its two fields and focus in its lead-in', async () => {
+    await startVanilla();
+    await click(buttonByText('Add step'));
+    expect(stepsOf()).toHaveLength(1);
+    expect(document.activeElement).toBe(field('Step 1, lead-in'));
+    expect(field('Step 1, instruction')).not.toBeNull();
+    expect(stepsOf()[0].querySelectorAll('.field-requirement')).toHaveLength(2);
+  });
+
+  it('a lead-in and an instruction typed are in the kept draft after the debounce, and the Sheet keeps them', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await click(buttonByText('Add step'));
+    await type(field('Step 1, lead-in'), 'Warm the milk');
+    await type(field('Step 1, instruction'), 'Heat, stirring, then take it off.');
+    expect(stepsOf()[0].querySelectorAll('.field-requirement')).toHaveLength(0);
+    repository.saveDraft.mockClear();
+    await advance();
+    expect(lastSaved().payload.method[0]).toMatchObject({ leadIn: 'Warm the milk', instruction: 'Heat, stirring, then take it off.' });
+    expectNoRecordWrites();
+  });
+
+  it('Add step on the heading adds the new step at the beginning', async () => {
+    await startVanilla();
+    await click(buttonByText('Add step'));
+    await type(field('Step 1, lead-in'), 'Second in the end');
+    await click(buttonByText('Add step'));
+    expect(field('Step 1, lead-in').value).toBe('');
+    expect(field('Step 2, lead-in').value).toBe('Second in the end');
+    expect(document.activeElement).toBe(field('Step 1, lead-in'));
+  });
+
+  it('a kept step comes back on Resume', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await click(buttonByText('Add step'));
+    await type(field('Step 1, lead-in'), 'Warm the milk');
+    await advance();
+    await act(async () => current.root.unmount());
+    current.container.remove();
+    current = null;
+    await mountAt('/notebook/new');
+    await flush(() => field('Recipe name') !== null);
+    expect(field('Step 1, lead-in').value).toBe('Warm the milk');
+  });
+
+  it('shows Add note and Add ingredient on their heading rows, and Add ingredient is absent while the picker is open', async () => {
+    await startVanilla();
+    expect(root().querySelector('.before-region .mk-head-row .mk-head-act').textContent).toBe('Add note');
+    const ingredientsRow = () => root().querySelector('.ingredient-table-region .mk-head-row');
+    expect(ingredientsRow().querySelector('.mk-head-act').textContent).toBe('Add ingredient');
+    await click(ingredientsRow().querySelector('.mk-head-act'));
+    expect(root().querySelector('.pick')).not.toBeNull();
+    expect(root().querySelector('.ingredient-table-region .mk-head-act')).toBeNull();
+    expect(buttonByText('Add ingredient')).toBeNull();
+  });
+});
+
 describe('Add ingredient, pick, type grams (MAKE-06, D-07, D-08)', () => {
   const MILK = 'Whole milk, 3.5% fat';
   const CREAM = 'Heavy cream, 36% fat';
-  const addButton = () => root().querySelector('.ingredient-table-region .mk-add');
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-head-act');
   const pickerCancel = () => root().querySelector('.ingredient-table-region .pick__head button');
   const gramsField = (name) => field(`${name}, grams`);
   const tableNames = () =>
@@ -970,7 +1042,7 @@ describe('Add ingredient, pick, type grams (MAKE-06, D-07, D-08)', () => {
     expect(root().querySelectorAll('.ingredient-table tbody').length).toBe(1);
     expect(root().querySelector('.ingredient-table__step-head')).toBeNull();
     expect(root().querySelector('.struck-value')).toBeNull();
-    expect(root().querySelector('.method-region')).toBeNull();
+    expect(root().querySelector('.method-region ol.method-steps')).toBeNull();
     expect(root().querySelector('.ingredient-table').classList.contains('is-developing')).toBe(true);
   });
 
@@ -1080,7 +1152,7 @@ describe('Add ingredient, pick, type grams (MAKE-06, D-07, D-08)', () => {
 describe('remove deletes a creation row outright (MAKE-06, decision 5, T-01)', () => {
   const MILK = 'Whole milk, 3.5% fat';
   const CREAM = 'Heavy cream, 36% fat';
-  const addButton = () => root().querySelector('.ingredient-table-region .mk-add');
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-head-act');
   const pickerCancel = () => root().querySelector('.ingredient-table-region .pick__head button');
   const gramsField = (name) => field(`${name}, grams`);
   const tableNames = () =>
@@ -1159,7 +1231,7 @@ describe('remove deletes a creation row outright (MAKE-06, decision 5, T-01)', (
 
 describe('the Style region fills the bands and the temperature (MAKE-09, decisions 6, 9, 14, 17)', () => {
   const MILK = 'Whole milk, 3.5% fat';
-  const addButton = () => root().querySelector('.ingredient-table-region .mk-add');
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-head-act');
   const gramsField = (name) => field(`${name}, grams`);
   const menu = () => root().querySelector('select.mk-menu');
   const clearButton = () => root().querySelector('.mk-region .batch-row__head-acts button');

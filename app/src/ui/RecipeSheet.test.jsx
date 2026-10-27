@@ -138,7 +138,7 @@ describe('RecipeSheet in creating mode (T-01, D-08a)', () => {
   const rowDraft = (grams) =>
     draftOf({ rows: [{ id: 'row-a', libraryId: 'wholeMilk', portions: [{ step: 1, grams }] }] });
 
-  function renderCreating(draft, beforeFoot = <p className="test-before-foot">add here</p>, extra = {}) {
+  function renderCreating(draft, beforeAct = <button type="button" className="test-before-act">add here</button>, extra = {}) {
     const version = creationSheetVersion(draft, records);
     const view = sheetView({
       version,
@@ -152,25 +152,36 @@ describe('RecipeSheet in creating mode (T-01, D-08a)', () => {
     });
     return renderToStaticMarkup(
       <MemoryRouter>
-        <RecipeSheet view={view} version={version} mode="creating" penDraft={null} beforeFoot={beforeFoot} {...extra} />
+        <RecipeSheet view={view} version={version} mode="creating" penDraft={null} beforeAct={beforeAct} {...extra} />
       </MemoryRouter>,
     );
   }
 
-  it('draws the article without a method, and Before you start with its heading and the foot it is given inside the section', () => {
+  it('draws the article with its Instructions region, and Before you start with its heading row holding the act it is given', () => {
     const markup = renderCreating(draftOf());
-    expect(markup).toContain('class="recipe-page recipe-page--no-method"');
+    expect(markup).toContain('<article class="recipe-page">');
     const section = markup.slice(markup.indexOf('<section class="before-region"'), markup.indexOf('</section>', markup.indexOf('<section class="before-region"')));
-    expect(section).toContain('<h2 class="region-name">Before you start</h2>');
-    expect(section).toContain('test-before-foot');
+    expect(section).toContain('<div class="mk-head-row"><h2 class="region-name">Before you start</h2><button type="button" class="test-before-act">add here</button></div>');
     expect(section).not.toContain('authored__notes');
   });
 
-  it('draws no Instructions, step head or Sheet code', () => {
+  it('draws the Instructions region and no step head or Sheet code', () => {
     const markup = renderCreating(draftOf());
-    expect(markup).not.toContain('method-region');
-    expect(markup).not.toContain('aria-label="Instructions"');
+    expect(markup).toContain('<section class="method-region" aria-label="Instructions">');
+    expect(markup).not.toContain('ingredient-table__step-head');
     expect(markup).not.toContain('Sheet code');
+  });
+
+  it('gives the Ingredients and Instructions regions the heading rows it is given, and the Instructions slot in place of Method', () => {
+    const markup = renderCreating(draftOf(), undefined, {
+      ingredientsAct: <button type="button" className="test-ingredients-act">add</button>,
+      creationMethod: <p className="test-creation-method">steps here</p>,
+    });
+    const ingredients = markup.slice(markup.indexOf('<section class="ingredient-table-region"'));
+    expect(ingredients).toContain('<div class="mk-head-row"><h2 class="region-name">Ingredients</h2><button type="button" class="test-ingredients-act">add</button></div>');
+    const method = markup.slice(markup.indexOf('<section class="method-region"'));
+    expect(method).toContain('<p class="test-creation-method">steps here</p>');
+    expect(method).not.toContain('method-steps');
   });
 
   it('reads the name as the h1 and draws no headnote prose for an empty or blank description', () => {

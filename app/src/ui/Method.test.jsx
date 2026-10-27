@@ -1509,6 +1509,11 @@ describe('showsMethodRegion: the Instructions section renders only when it has a
     expect(showsMethodRegion({ mode: 'recording', steps: [unstruckStep] })).toBe(true);
   });
 
+  it('G: the creation editor keeps the empty section, for the Instructions heading row and its Add step', () => {
+    expect(showsMethodRegion({ mode: 'creating', steps: [] })).toBe(true);
+    expect(showsMethodRegion({ mode: 'creating', steps: [unstruckStep] })).toBe(true);
+  });
+
   it('F: Show changes passes the unfiltered method, so a version with only removed steps keeps the section', () => {
     expect(showsMethodRegion({ mode: 'reading', steps: [{ ...unstruckStep, removed: true }] })).toBe(true);
     expect(showsMethodRegion({ mode: 'reading', steps: [] })).toBe(false);

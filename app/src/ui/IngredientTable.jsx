@@ -381,8 +381,18 @@ function AsMadeCell({ row, drawnRow = row, portionIndex, mode, draft, openBatch,
 // version and while any pen is open, and from 724 up the band carries it
 // instead, so exactly one Show changes control exists at any width. Hook-free:
 // the width signal arrives as `below724`.
-export function IngredientsHead({ parentVersion, openPen, below724, showingChanges, onToggleShowChanges }) {
+export function IngredientsHead({ parentVersion, openPen, below724, showingChanges, onToggleShowChanges, act = null }) {
   const heading = <h2 className="region-name">Ingredients</h2>;
+  // The creation editor's heading row (Phase 11, sketch 013 decision 31): the
+  // region name and Add ingredient, drawn in the Show/Hide control's look.
+  if (act) {
+    return (
+      <div className="mk-head-row">
+        {heading}
+        {act}
+      </div>
+    );
+  }
   if (!(below724 && openPen === null && parentVersion)) return heading;
   return (
     <div className="ingredient-table-region__head">

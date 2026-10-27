@@ -156,6 +156,39 @@
   align-items: center;
 }
 
+/* The heading rows while creating (Phase 11, sketch 013 decisions 29, 31 and
+   33; sketch 014 instructions-steps.html P11_CSS): a region's name with its add
+   control beside it, in the Show/Hide control's look. Add scale and Add problem
+   keep .mk-add-row and .mk-add under their lists. */
+.notebook .mk-head-row {
+  display: flex;
+  align-items: center;
+  gap: var(--app-notebook-recipe-rail-gap);
+  min-height: var(--touch-min);
+  margin: 0 0 var(--gap-xs);
+}
+
+.notebook .mk-head-row .region-name {
+  margin: 0;
+}
+
+.notebook .mk-head-act {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  text-underline-offset: var(--app-notebook-link-underline-offset);
+}
+
+/* The open step, drawn with no box (sketch 013 decision 32): the first field
+   starts level with the step number, and Required sits flush under its field. */
+.notebook .mk-step .method-step__field .field-requirement {
+  margin-top: 0;
+}
+
+.notebook .mk-step .method-step__body > .method-step__field:first-child {
+  margin-top: 0;
+}
+
 /* The focus the page puts on the landing row's grams field after a pick: script
    focus after a pointer press draws no :focus-visible outline in WebKit, so the
    class draws it (plan 10-06 names it, plan 10-12 styles it). */

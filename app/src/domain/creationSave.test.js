@@ -3,7 +3,14 @@
 // lists every refusal at once. Node environment: the domain imports no
 // framework, DOM or store.
 import { describe, it, expect } from 'vitest';
-import { buildCreation } from './creationSave.js';
+import {
+  buildCreation,
+  creationSaveBlock,
+  lineSaveMessages,
+  LIBRARY_ENTRY_GONE,
+  NO_ROWS_MESSAGE,
+  PROBLEM_REPEATED,
+} from './creationSave.js';
 import { blankCreateDraft } from './draft.js';
 import { addRow, addNote, addProblem, addScale, applyStyle, setBandEnd, updateNote, updateProblem, updateScale } from './creation.js';
 import {
@@ -207,5 +214,207 @@ describe('buildCreation: the records a creation saves', () => {
     const before = structuredClone(draft);
     build(draft);
     expect(draft).toEqual(before);
+  });
+});
+
+const gate = (draft, extra = {}) => creationSaveBlock(draft, { libraryById, ...extra });
+const ids = (blocks) => blocks.map((block) => block.id);
+const blankLines = (draft) => {
+  let next = draft;
+  for (const [rowId, step] of [['row-a', 1], ['row-a', 2], ['row-b', 1], ['row-c', 0]]) next = setLineGrams(next, rowId, step, '');
+  return next;
+};
+
+describe('creationSaveBlock: every refusal at once, in page order (D-08 to D-11, D-22, D-25)', () => {
+  it('gives nothing for a draft that can be saved', () => {
+    expect(gate(worked())).toEqual([]);
+  });
+
+  it('a blank draft gives the recipe name, then no rows', () => {
+    expect(gate(blank(''))).toEqual([
+      { id: 'recipe-name', message: 'Enter a recipe name.', target: { kind: 'recipeName' } },
+      { id: 'no-rows', message: 'Add at least one ingredient.', target: { kind: 'ingredients' } },
+    ]);
+    expect(NO_ROWS_MESSAGE).toBe('Add at least one ingredient.');
+  });
+
+  it('a name of spaces is blank', () => {
+    expect(ids(gate({ ...worked(), name: '   ' }))).toEqual(['recipe-name']);
+  });
+
+  it('a blank Version name gives Required right after the name', () => {
+    const blocks = gate({ ...blank(''), versionLabel: '  ' });
+    expect(blocks.slice(0, 2)).toEqual([
+      { id: 'recipe-name', message: 'Enter a recipe name.', target: { kind: 'recipeName' } },
+      { id: 'version-name', message: 'Required', target: { kind: 'versionName' } },
+    ]);
+    expect(ids(blocks)).toEqual(['recipe-name', 'version-name', 'no-rows']);
+  });
+
+  it('a blank line and an unreadable one give the two grams sentences, with their line ids', () => {
+    let draft = addRow(addRow(blank(), { rowId: 'row-a', libraryId: 'wholeMilk' }), { rowId: 'row-b', libraryId: 'sucrose' });
+    draft = setLineGrams(draft, 'row-b', 0, 'abc');
+    expect(gate(draft)).toEqual([
+      { id: 'grams:row-a:0', message: `${library.wholeMilk.name} needs an amount, or remove it`, target: { kind: 'line', rowId: 'row-a', step: 0 } },
+      { id: 'grams:row-b:0', message: `${library.sucrose.name}'s amount is not a number`, target: { kind: 'line', rowId: 'row-b', step: 0 } },
+    ]);
+  });
+
+  it("walks the lines in the table's order: each step in method order, its rows in its own order, then the unplaced rows", () => {
+    expect(ids(gate(blankLines(worked())))).toEqual(['grams:row-a:1', 'grams:row-b:1', 'grams:row-a:2', 'grams:row-c:0']);
+    expect(ids(gate(blankLines(moveRow(worked(), 'row-b', 1, 'up'))))).toEqual([
+      'grams:row-b:1',
+      'grams:row-a:1',
+      'grams:row-a:2',
+      'grams:row-c:0',
+    ]);
+  });
+
+  it('a step with a blank lead-in and a blank instruction gives both, Required', () => {
+    let draft = worked();
+    draft = setStepField(setStepField(draft, 2, 'leadIn', ''), 2, 'instruction', '');
+    expect(gate(draft)).toEqual([
+      { id: 'lead:2', message: 'Required', target: { kind: 'stepLeadIn', n: 2 } },
+      { id: 'instruction:2', message: 'Required', target: { kind: 'stepInstruction', n: 2 } },
+    ]);
+  });
+
+  it('a target with one side blank is refused under that side; both blank, and an empty purpose or aside, give nothing', () => {
+    let draft = worked();
+    draft = addTarget(addTarget(addTarget(draft, 1), 1), 1);
+    draft = setTarget(draft, 1, 0, 'label', 'Heat to');
+    draft = setTarget(draft, 1, 2, 'value', '80 C');
+    draft = setStepField(setStepField(draft, 1, 'purpose', ''), 1, 'aside', '   ');
+    expect(gate(draft)).toEqual([
+      { id: 'target:1:0:value', message: 'Required', target: { kind: 'stepTarget', n: 1, index: 0, side: 'value' } },
+      { id: 'target:1:2:label', message: 'Required', target: { kind: 'stepTarget', n: 1, index: 2, side: 'label' } },
+    ]);
+  });
+
+  it('reads every field trimmed: a lead-in, a target side, a scale field and a problem of spaces are blank', () => {
+    let draft = setStepField(worked(), 1, 'leadIn', '   ');
+    draft = addTarget(draft, 2);
+    draft = setTarget(setTarget(draft, 2, 0, 'label', 'Heat to'), 2, 0, 'value', '  ');
+    draft = addScale(draft, 'scale-a');
+    draft = updateScale(updateScale(draft, 'scale-a', 'name', '  '), 'scale-a', 'low', ' ');
+    draft = updateScale(updateScale(draft, 'scale-a', 'high', '\t'), 'scale-a', 'kind', 'magnitude');
+    draft = updateProblem(addProblem(draft), 0, '   ');
+    expect(ids(gate(draft))).toEqual([
+      'lead:1',
+      'target:2:0:value',
+      'scale:scale-a:name',
+      'scale:scale-a:low',
+      'scale:scale-a:high',
+      'problem:0',
+    ]);
+  });
+
+  it('a scale with a blank name and no kind gives the name and the kind; a blank low and high give theirs', () => {
+    let draft = addScale(worked(), 'scale-a');
+    expect(gate(draft)).toEqual([
+      { id: 'scale:scale-a:name', message: 'Required', target: { kind: 'scaleField', key: 'scale-a', field: 'name' } },
+      { id: 'scale:scale-a:low', message: 'Required', target: { kind: 'scaleField', key: 'scale-a', field: 'low' } },
+      { id: 'scale:scale-a:high', message: 'Required', target: { kind: 'scaleField', key: 'scale-a', field: 'high' } },
+      { id: 'scale:scale-a:kind', message: 'Required', target: { kind: 'scaleField', key: 'scale-a', field: 'kind' } },
+    ]);
+    draft = updateScale(updateScale(updateScale(draft, 'scale-a', 'name', 'Chew'), 'scale-a', 'low', 'soft'), 'scale-a', 'high', 'firm');
+    expect(ids(gate(draft))).toEqual(['scale:scale-a:kind']);
+  });
+
+  it('a blank problem is Required and a repeated one (trimmed, case as typed) is refused on the second', () => {
+    let draft = updateProblem(addProblem(addProblem(worked())), 0, '');
+    expect(gate(draft)).toEqual([{ id: 'problem:0', message: 'Required', target: { kind: 'problem', index: 0 } }]);
+    draft = updateProblem(updateProblem(draft, 0, 'Bitter'), 1, ' Bitter ');
+    expect(gate(draft)).toEqual([
+      { id: 'problem-repeat:1', message: 'This problem is already listed.', target: { kind: 'problem', index: 1 } },
+    ]);
+    expect(PROBLEM_REPEATED).toBe('This problem is already listed.');
+    expect(ids(gate(updateProblem(draft, 1, 'bitter')))).toEqual([]);
+  });
+
+  it('a row whose library entry is missing is refused, never dropped', () => {
+    expect(gate(worked(), { libraryById: new Map([...libraryById].filter(([id]) => id !== 'sucrose')) })).toEqual([
+      { id: 'gone:row-c', message: 'An ingredient on this recipe is no longer in the library.', target: { kind: 'form' } },
+    ]);
+    expect(LIBRARY_ENTRY_GONE).toBe('An ingredient on this recipe is no longer in the library.');
+  });
+
+  it('an empty Before you start note is dropped, not refused', () => {
+    expect(gate(addNote(worked()))).toEqual([]);
+  });
+
+  it('lists every refusal at once, in page order', () => {
+    let draft = blank('');
+    draft = addRow(draft, { rowId: 'row-a', libraryId: 'wholeMilk' });
+    draft = addStep(draft, { afterN: null });
+    draft = addScale(draft, 'scale-a');
+    draft = addProblem(draft);
+    expect(ids(gate({ ...draft, versionLabel: '' }))).toEqual([
+      'recipe-name',
+      'version-name',
+      'grams:row-a:0',
+      'lead:1',
+      'instruction:1',
+      'scale:scale-a:name',
+      'scale:scale-a:low',
+      'scale:scale-a:high',
+      'scale:scale-a:kind',
+      'problem:0',
+    ]);
+  });
+
+  describe('an amount that overflows', () => {
+    const NINES = '9'.repeat(309);
+    const BIG = '9'.repeat(308);
+
+    it('a line of 309 nines is not a number', () => {
+      expect(gate(setLineGrams(worked(), 'row-c', 0, NINES))).toEqual([
+        { id: 'grams:row-c:0', message: `${library.sucrose.name}'s amount is not a number`, target: { kind: 'line', rowId: 'row-c', step: 0 } },
+      ]);
+    });
+
+    it("two lines that each read but whose sum does not give grams-total, at the row's last line, and no per-line block", () => {
+      const draft = setLineGrams(setLineGrams(worked(), 'row-a', 1, BIG), 'row-a', 2, BIG);
+      expect(gate(draft)).toEqual([
+        {
+          id: 'grams-total:row-a',
+          message: `${library.wholeMilk.name}'s amount is not a number`,
+          target: { kind: 'line', rowId: 'row-a', step: 2 },
+        },
+      ]);
+    });
+
+    it('a row with a blank line is judged line by line only, with no total', () => {
+      const draft = setLineGrams(setLineGrams(worked(), 'row-a', 1, BIG), 'row-a', 2, '');
+      expect(ids(gate(draft))).toEqual(['grams:row-a:2']);
+    });
+
+    it('a row of lines that read and add up finite gives nothing', () => {
+      expect(gate(setLineGrams(setLineGrams(worked(), 'row-a', 1, '400'), 'row-a', 2, '200'))).toEqual([]);
+    });
+  });
+});
+
+describe('lineSaveMessages: the one projection the table reads (T-11-53)', () => {
+  it('maps a refused line to its sentence, a total refusal to its last line, and holds no key for a clean line', () => {
+    const BIG = '9'.repeat(308);
+    let draft = setLineGrams(setLineGrams(worked(), 'row-a', 1, BIG), 'row-a', 2, BIG);
+    draft = setLineGrams(draft, 'row-c', 0, '');
+    const messages = lineSaveMessages(gate(draft));
+    expect(messages).toBeInstanceOf(Map);
+    expect(messages.get('row-a:2')).toBe(`${library.wholeMilk.name}'s amount is not a number`);
+    expect(messages.get('row-c:0')).toBe(`${library.sucrose.name} needs an amount, or remove it`);
+    expect(messages.has('row-a:1')).toBe(false);
+    expect(messages.has('row-b:1')).toBe(false);
+    expect([...messages.keys()].sort()).toEqual(['row-a:2', 'row-c:0']);
+  });
+
+  it('keeps the first of two blocks on one line, and leaves out a block that targets no line', () => {
+    const messages = lineSaveMessages([
+      { id: 'a', message: 'first', target: { kind: 'line', rowId: 'row-a', step: 1 } },
+      { id: 'b', message: 'second', target: { kind: 'line', rowId: 'row-a', step: 1 } },
+      { id: 'recipe-name', message: 'Enter a recipe name.', target: { kind: 'recipeName' } },
+    ]);
+    expect([...messages]).toEqual([['row-a:1', 'first']]);
   });
 });

@@ -543,6 +543,7 @@ async function checkExtraWidths(panel, rep) {
 // --selftest) re-run with every font size at 1 px and expect a FAIL.
 // ---------------------------------------------------------------------------
 const evidenceRows = [];
+const evidenceBases = new Set();
 
 const intersect = (r, box) => {
   if (!r || !box) return r;
@@ -551,10 +552,17 @@ const intersect = (r, box) => {
   return { x, y, w: Math.max(0, Math.min(r.x + r.w, box.x + box.w) - x), h: Math.max(0, Math.min(r.y + r.h, box.y + box.h) - y) };
 };
 
-async function pictures(spec, panel, label, kind, boardPage, other, b, a, rep) {
+async function pictures(spec, panel, label, kind, boardPage, other, b, a, rep, measureBoard) {
   const dir = path.resolve(EVIDENCE_DIR);
   await mkdir(dir, { recursive: true });
   const base = `${path.basename(spec.board, '.html')}-${label}`;
+  // Two panels writing one file would leave the later picture standing for both, so a repeated
+  // name is a FAIL (plan 11-13): give the panel a distinct `label` in its spec.
+  if (evidenceBases.has(base)) {
+    rep.check(false, `evidence: ${base} is written by two panels; give one a distinct label`, '', 'evidence');
+    return;
+  }
+  evidenceBases.add(base);
   if (!panel.against) {
     // A notice (plan 10-11's kept-draft line) clears itself after 5 s and is absolutely placed, so
     // the picture waits for it to clear. A panel that measures the notice itself (an element
@@ -596,13 +604,30 @@ async function pictures(spec, panel, label, kind, boardPage, other, b, a, rep) {
   const shoot = (page, clip, file) =>
     page.screenshot({ path: path.join(dir, file), fullPage: true, clip: { x: clip.x, y: clip.y, width: clip.w, height: clip.h } });
   if (anchoredFull) {
+    // A board window sits in a canvas of fixed height that clips what runs past it, so every
+    // ancestor's clip is lifted too, or a page whose reading steps begin below the canvas's end
+    // cannot be pictured at all (save.html's vC1: plan 11-13).
+    await boardPage.evaluate((id) => {
+      for (let node = document.querySelector(`.p4-win.${id}`)?.parentElement; node; node = node.parentElement) {
+        node.setAttribute('data-evidence-lift', '');
+      }
+    }, panel.id);
     const lift = await boardPage.addStyleTag({
-      content: `.p4-win.${panel.id}{overflow:visible !important}.p4-win:not(.${panel.id}){display:none !important}`,
+      content: `.p4-win.${panel.id},[data-evidence-lift]{overflow:visible !important}.p4-win:not(.${panel.id}){display:none !important}`,
     });
     try {
+      // The lift moves the window (its siblings no longer take room above it), so the scope is
+      // measured again inside the lifted layout: the clip taken before it can fall outside the
+      // page, or silently picture another region of it (plan 11-13).
+      const lifted = await measureBoard();
+      if (lifted.errors.length > 0 || !lifted.rects.scope) throw new Error(`the lifted board window could not be measured: ${lifted.errors.join('; ')}`);
+      boardClip = lifted.rects.scope;
       await shoot(boardPage, boardClip, `${base}-board.png`);
     } finally {
       await lift.evaluate((node) => node.remove());
+      await boardPage.evaluate(() => {
+        for (const node of document.querySelectorAll('[data-evidence-lift]')) node.removeAttribute('data-evidence-lift');
+      });
     }
   } else {
     await shoot(boardPage, boardClip, `${base}-board.png`);
@@ -656,7 +681,7 @@ async function processPanel(spec, panel) {
     if (!panel.against) await checkExtraWidths(panel, rep);
 
     if (ok && EVIDENCE_DIR && !panel.refuses && !(panel.frame && (b.frameError || a.frameError || kind === 'full'))) {
-      await pictures(spec, panel, label, kind, boardPage, other, b, a, rep);
+      await pictures(spec, panel, label, kind, boardPage, other, b, a, rep, () => boardPage.evaluate(GATHER, cfg('panel', panel.id)));
     }
 
     if (SELFTEST && !(panel.elements ?? []).some((e) => e.checks.some((check) => check === 'box' || check === 'size' || check === 'font'))) {

@@ -1305,6 +1305,105 @@ SCENARIOS.push([
   },
 ]);
 
+// ---------------------------------------------------------------------------
+// 11-13: a kept edit survives a reload and shows everywhere (STRUCT-04, D-04, D-05, D-19). Vanilla is
+// made through makeVanilla, its edit address is opened and the Recipe name changed; after a reload
+// the edit route restores it, the version page reads Resume editing with no Next version and no
+// Record a batch, Import is refused naming the recipe with no file chooser, and the Notebook's
+// Vanilla row holds Resume editing with no draft row and the New recipe entry still offered.
+// ---------------------------------------------------------------------------
+const IMPORT_BUTTON = '.shell__tools button';
+SCENARIOS.push([
+  'edit-kept',
+  async (walk) => {
+    const { page } = walk;
+    const made = await makeVanilla(walk, quietMark(walk));
+    let chooserOpened = false;
+    page.on('filechooser', () => {
+      chooserOpened = true;
+    });
+
+    await walk.open(editRoute(made));
+    await page.waitForSelector('form[aria-label="Edit version"]');
+    await page.fill('input[aria-label="Recipe name"]', 'Vanilla bean');
+    await walk.afterDebounce();
+    const kept = await walk.step('kept', { stores: true });
+    walk.expect(
+      kept.stores.drafts.length === 1 && kept.stores.drafts[0].kind === 'edit',
+      `the change is kept as one edit draft (${JSON.stringify(kept.stores.drafts.map((draft) => draft.kind))})`,
+    );
+    walk.expectSeedKept(kept, made.recipeId);
+
+    await reload(page);
+    await page.waitForSelector('form[aria-label="Edit version"]');
+    await untilIn(
+      page,
+      () => document.querySelector('.page-status')?.textContent === 'Draft kept. Cancel discards it.',
+      null,
+      'the reloaded edit shows the kept notice',
+    );
+    const resumed = await walk.step('resumed', { stores: true });
+    const restoredName = await page.inputValue('input[aria-label="Recipe name"]');
+    walk.expect(restoredName === 'Vanilla bean', `the reloaded edit holds the changed name (${restoredName})`);
+    walk.expect(resumed.snapshot.pageStatus === 'Draft kept. Cancel discards it.', `the notice reads "Draft kept. Cancel discards it." (${resumed.snapshot.pageStatus})`);
+    walk.expect(resumed.stores.drafts.length === 1, `the edit draft is still kept after the reload (${resumed.stores.drafts.length})`);
+    walk.expectSeedKept(resumed, made.recipeId);
+
+    await walk.open(pageRoute(made));
+    await page.waitForSelector('.notebook-version__acts');
+    const onPage = await walk.step('page', { stores: true });
+    const acts = await page.evaluate(() => {
+      const names = [...document.querySelectorAll('button')].map((node) => node.textContent.trim());
+      return {
+        resume: names.filter((name) => name === 'Resume editing').length,
+        next: names.filter((name) => name === 'Next version').length,
+        record: names.filter((name) => name.startsWith('Record a batch') || name.startsWith('Record another')).length,
+      };
+    });
+    walk.expect(acts.resume >= 1, `the version page offers Resume editing (${acts.resume})`);
+    walk.expect(acts.next === 0, `the version page offers no Next version (${acts.next})`);
+    walk.expect(acts.record === 0, `the version page offers no Record a batch (${acts.record})`);
+    walk.expectSeedKept(onPage, made.recipeId);
+
+    chooserOpened = false;
+    await page.locator(IMPORT_BUTTON, { hasText: 'Import' }).click();
+    await untilIn(
+      page,
+      () => document.querySelector('.page-status')?.textContent === 'Save or cancel your changes to Vanilla bean before importing.',
+      null,
+      'Import is refused naming the recipe',
+    );
+    await page.waitForTimeout(300);
+    const imported = await walk.step('import', { stores: true });
+    walk.expect(!chooserOpened, 'no file chooser opened');
+    walk.expect(
+      imported.snapshot.pageStatus === 'Save or cancel your changes to Vanilla bean before importing.',
+      `the notice reads "Save or cancel your changes to Vanilla bean before importing." (${imported.snapshot.pageStatus})`,
+    );
+    walk.expectSeedKept(imported, made.recipeId);
+
+    await walk.open('/notebook');
+    await page.waitForSelector('.nb__count');
+    const listing = await page.evaluate(() => {
+      const row = [...document.querySelectorAll('.nb__row')].find((node) => node.querySelector('.nb__name')?.textContent.trim() === 'Vanilla');
+      return {
+        resume: row ? [...row.querySelectorAll('button')].filter((node) => node.textContent.trim() === 'Resume editing').length : -1,
+        draftRows: document.querySelectorAll('.nb__draft').length,
+        newRecipe: [...document.querySelectorAll('.nb__head .notebook-action')].filter((node) => node.textContent.trim() === 'New recipe').length,
+      };
+    });
+    const notebook = await walk.step('notebook', { stores: true });
+    walk.expect(listing.resume === 1, `Vanilla's row holds Resume editing (${listing.resume})`);
+    walk.expect(listing.draftRows === 0, `the Notebook draws no draft row (${listing.draftRows})`);
+    walk.expect(listing.newRecipe === 1, `New recipe is still offered (${listing.newRecipe})`);
+    walk.expect(
+      notebook.stores.drafts.length === 1 && notebook.stores.drafts[0].kind === 'edit',
+      `the drafts store holds the one edit record (${JSON.stringify(notebook.stores.drafts.map((draft) => draft.kind))})`,
+    );
+    walk.expectSeedKept(notebook, made.recipeId);
+  },
+]);
+
 async function record(outPath, withText = false) {
   keepText = withText;
   const { appUrl, close } = await startServers({ appRoot: DIST });

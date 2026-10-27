@@ -40,6 +40,7 @@ function CreationStep({
   isLast,
   projected,
   rows,
+  saveMessages,
   onAddStep,
   onRemoveStep,
   onMoveStep,
@@ -56,6 +57,12 @@ function CreationStep({
   const purpose = useOnDemandField(Boolean(step.purpose), () => onChangeStepField(step.n, 'purpose', ''));
   const aside = useOnDemandField(Boolean(step.aside), () => onChangeStepField(step.n, 'aside', ''));
   const targets = step.targets ?? [];
+  // A refused Save's sentence for a field (Phase 11, D-10, D-11), by the gate's
+  // block id; the field carries it as its error, invalid and described by it.
+  const leadError = saveMessages?.get(`lead:${step.n}`) ?? null;
+  const instructionError = saveMessages?.get(`instruction:${step.n}`) ?? null;
+  const leadErrorId = `create-step-${step.n}-lead-error`;
+  const instructionErrorId = `create-step-${step.n}-instruction-error`;
 
   // Escape inside the uses line or the checklist closes the checklist and
   // returns focus to its toggle (Method.jsx's pen, the same shape). Gated on
@@ -80,9 +87,11 @@ function CreationStep({
             data-field="lead-in"
             value={step.leadIn}
             aria-label={`Step ${number}, lead-in`}
+            aria-invalid={leadError ? 'true' : undefined}
+            aria-describedby={leadError ? leadErrorId : undefined}
             onChange={(event) => onChangeStepField(step.n, 'leadIn', event.target.value)}
           />
-          <FieldFeedback required={isBlank(step.leadIn)} />
+          <FieldFeedback error={leadError} errorId={leadErrorId} required={isBlank(step.leadIn)} />
         </label>
         <label className="method-step__field">
           <textarea
@@ -90,43 +99,55 @@ function CreationStep({
             rows="2"
             value={step.instruction}
             aria-label={`Step ${number}, instruction`}
+            aria-invalid={instructionError ? 'true' : undefined}
+            aria-describedby={instructionError ? instructionErrorId : undefined}
             onChange={(event) => onChangeStepField(step.n, 'instruction', event.target.value)}
           />
-          <FieldFeedback required={isBlank(step.instruction)} />
+          <FieldFeedback error={instructionError} errorId={instructionErrorId} required={isBlank(step.instruction)} />
         </label>
         <p className="method-step__targets">
-          {targets.map((target, index) => (
+          {targets.map((target, index) => {
+            const labelError = saveMessages?.get(`target:${step.n}:${index}:label`) ?? null;
+            const valueError = saveMessages?.get(`target:${step.n}:${index}:value`) ?? null;
+            const labelErrorId = `create-step-${step.n}-target-${index}-label-error`;
+            const valueErrorId = `create-step-${step.n}-target-${index}-value-error`;
             // The remove control sits inside its own chip, after the value field,
             // so Add target and Preview step stay the line's direct controls
             // (D-22; drawn on no board). A target with one side blank refuses
             // Save, so Required stands under that side (D-10); both blank is
             // dropped at Save.
-            <span className="target-chip" key={index}>
-              <input
-                type="text"
-                className="ink-field target-chip__label-field"
-                value={target.label}
-                aria-label={targetFieldName(number, targets.length, index, 'label')}
-                onChange={(event) => onChangeTarget(step.n, index, 'label', event.target.value)}
-              />
-              <FieldFeedback required={isBlank(target.label) && !isBlank(target.value)} />
-              <input
-                type="text"
-                className="ink-field target-chip__value-field"
-                value={target.value}
-                aria-label={targetFieldName(number, targets.length, index, 'value')}
-                onChange={(event) => onChangeTarget(step.n, index, 'value', event.target.value)}
-              />
-              <FieldFeedback required={isBlank(target.value) && !isBlank(target.label)} />
-              <Button
-                className="text-control"
-                aria-label={`Step ${number}, remove target ${index + 1}`}
-                onClick={() => onRemoveTarget(step.n, index)}
-              >
-                remove
-              </Button>
-            </span>
-          ))}
+            return (
+              <span className="target-chip" key={index}>
+                <input
+                  type="text"
+                  className="ink-field target-chip__label-field"
+                  value={target.label}
+                  aria-label={targetFieldName(number, targets.length, index, 'label')}
+                  aria-invalid={labelError ? 'true' : undefined}
+                  aria-describedby={labelError ? labelErrorId : undefined}
+                  onChange={(event) => onChangeTarget(step.n, index, 'label', event.target.value)}
+                />
+                <FieldFeedback error={labelError} errorId={labelErrorId} required={isBlank(target.label) && !isBlank(target.value)} />
+                <input
+                  type="text"
+                  className="ink-field target-chip__value-field"
+                  value={target.value}
+                  aria-label={targetFieldName(number, targets.length, index, 'value')}
+                  aria-invalid={valueError ? 'true' : undefined}
+                  aria-describedby={valueError ? valueErrorId : undefined}
+                  onChange={(event) => onChangeTarget(step.n, index, 'value', event.target.value)}
+                />
+                <FieldFeedback error={valueError} errorId={valueErrorId} required={isBlank(target.value) && !isBlank(target.label)} />
+                <Button
+                  className="text-control"
+                  aria-label={`Step ${number}, remove target ${index + 1}`}
+                  onClick={() => onRemoveTarget(step.n, index)}
+                >
+                  remove
+                </Button>
+              </span>
+            );
+          })}
           <Button className="text-control" aria-label={`Step ${number}, add a target`} onClick={() => onAddTarget(step.n)}>
             Add target
           </Button>
@@ -263,6 +284,7 @@ function CreationStep({
 export function CreationSteps({
   draft,
   version,
+  saveMessages = null,
   onAddStep,
   onRemoveStep,
   onMoveStep,
@@ -293,6 +315,7 @@ export function CreationSteps({
               isLast={index === steps.length - 1}
               projected={version.method.find((candidate) => candidate.n === step.n)}
               rows={version.rows}
+              saveMessages={saveMessages}
               onAddStep={onAddStep}
               onRemoveStep={onRemoveStep}
               onMoveStep={onMoveStep}

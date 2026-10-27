@@ -41,7 +41,7 @@ let current = null;
 
 let setDraftRef = null;
 
-function mount(initial = startingDraft) {
+function mount(initial = startingDraft, lineMessages = null) {
   const onBlurGrams = vi.fn();
   const onRemoveRow = vi.fn();
   const onMoveRow = vi.fn();
@@ -61,6 +61,7 @@ function mount(initial = startingDraft) {
         creationRows={{
           gramsByLine,
           focusLine: null,
+          lineMessages,
           onChangeGrams: (rowId, step, value) => setDraft((prev) => setLineGrams(prev, rowId, step, value)),
           onBlurGrams,
           onRemoveRow: (rowId, group) => {
@@ -312,6 +313,26 @@ describe('IngredientTable, creating: a row in two steps reads one line per step'
     expect(line('milk-row:1').querySelector('.field-error')).toBeNull();
     expect(lineField('milk-row:2').getAttribute('aria-describedby')).toBe(line('milk-row:2').querySelector('.field-error').id);
     expect(current.onBlurGrams).toHaveBeenCalledWith('milk-row', 2);
+  });
+
+  it("shows a refused Save's sentence on a split row's last line only, marked, invalid and described by it (T-11-65)", () => {
+    const sentence = `${WHOLE_MILK}'s amount is not a number`;
+    mount(splitDraft, new Map([['milk-row:2', sentence]]));
+    const last = line('milk-row:2');
+    const message = last.querySelector('.field-error');
+    expect(message.textContent).toBe(sentence);
+    expect(last.classList.contains('is-marked')).toBe(true);
+    expect(lineField('milk-row:2').getAttribute('aria-invalid')).toBe('true');
+    expect(lineField('milk-row:2').getAttribute('aria-describedby')).toBe(message.id);
+    expect(line('milk-row:1').querySelector('.field-error')).toBeNull();
+    expect(line('milk-row:1').classList.contains('is-marked')).toBe(false);
+    expect(lineField('milk-row:1').getAttribute('aria-invalid')).toBeNull();
+  });
+
+  it("lets a refused Save's sentence stand over a blur message, with no blur at all", () => {
+    mount(splitDraft, new Map([['milk-row:1', 'Enter an amount.']]));
+    expect(line('milk-row:1').querySelector('.field-error').textContent).toBe('Enter an amount.');
+    expect(line('milk-row:2').querySelector('.field-error')).toBeNull();
   });
 
   it('a split row with one line left reads as a one-line row with no portion line and the plain label', () => {

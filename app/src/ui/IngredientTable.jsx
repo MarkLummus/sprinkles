@@ -813,7 +813,10 @@ export function IngredientTable({
     const lineKey = `${row.id}:${portion.step}`;
     const isSplit = row.portions.length > 1;
     const raw = creationRows.gramsByLine.get(lineKey) ?? '';
-    const message = leftUnreadable.has(lineKey) ? gramsDraftMessage(row.ingredientName, raw) : null;
+    // A refused Save's sentence for this line, read by the line's key alone
+    // (Phase 11, D-08), else the blur message.
+    const message =
+      creationRows.lineMessages?.get(lineKey) ?? (leftUnreadable.has(lineKey) ? gramsDraftMessage(row.ingredientName, raw) : null);
     const messageId = message ? `create-grams-error-${row.id}-${portion.step}` : null;
     return (
       <tr

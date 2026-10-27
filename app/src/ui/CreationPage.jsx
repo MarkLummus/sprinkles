@@ -34,7 +34,7 @@ import {
   UNPLACED_STEP,
 } from '../domain/creationSteps.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
-import { applyEditToVersion, buildCreation, creationSaveBlock } from '../domain/creationSave.js';
+import { applyEditToVersion, buildCreation, creationSaveBlock, lineSaveMessages } from '../domain/creationSave.js';
 import {
   addNote,
   addRow,
@@ -47,6 +47,10 @@ import {
 } from '../domain/creation.js';
 
 function doNothing() {}
+
+// The refused Save's line under the Ingredients heading row, which Add ingredient
+// and the picker's Name field are described by while it stands.
+const NO_ROWS_ERROR_ID = 'create-no-rows-error';
 
 // The field a refused Save puts focus on (D-11): found by the block's target kind,
 // each mapped to the control the editor really draws, after the render that drew
@@ -557,6 +561,13 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   const refusals = saveAttempts > 0 ? creationSaveBlock(createDraft, { libraryById }) : [];
   const nameRefusal = refusals.find((block) => block.id === 'recipe-name')?.message ?? null;
   const versionRefusal = refusals.find((block) => block.id === 'version-name')?.message ?? null;
+  // Every refusal by its block id, for the step fields and the setup cards, and
+  // every line-targeted one by its line's key, for the table (D-08, D-11). Both
+  // are null before the first refused press and are recomputed from the draft,
+  // so each message clears as its field is fixed.
+  const saveMessages = saveAttempts > 0 ? new Map(refusals.map((block) => [block.id, block.message])) : null;
+  const lineMessages = saveAttempts > 0 ? lineSaveMessages(refusals) : null;
+  const noRowsMessage = saveMessages?.get('no-rows') ?? null;
   const formRefusal = refusals.find((block) => block.target.kind === 'form')?.message ?? null;
   const underSave = saveFailed ? (editing ? EDIT_SAVE_ERROR : RECIPE_CREATE_ERROR) : (editRefusalLine(editRefusal) ?? formRefusal);
 
@@ -721,6 +732,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                   gramsByLine,
                   // The row just added from the picker is unplaced, so its one line is at step 0.
                   focusLine: focusRowId ? `${focusRowId}:0` : null,
+                  lineMessages,
                   onChangeGrams: handleChangeGrams,
                   onBlurGrams: handleBlurGrams,
                   onRemoveRow: handleRemoveRow,
@@ -734,9 +746,14 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                     Add note
                   </Button>
                 }
+                ingredientsMessage={noRowsMessage}
                 ingredientsAct={
                   picking ? null : (
-                    <Button className="text-control mk-head-act" onClick={() => setPicking(true)}>
+                    <Button
+                      className="text-control mk-head-act"
+                      aria-describedby={noRowsMessage ? NO_ROWS_ERROR_ID : undefined}
+                      onClick={() => setPicking(true)}
+                    >
                       Add ingredient
                     </Button>
                   )
@@ -748,6 +765,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                       addedIds={addedIds}
                       onPick={handlePick}
                       onCancel={handleCancelPicker}
+                      describedBy={noRowsMessage ? NO_ROWS_ERROR_ID : undefined}
                     />
                   ) : null
                 }
@@ -755,6 +773,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                   <CreationSteps
                     draft={createDraft}
                     version={version}
+                    saveMessages={saveMessages}
                     onAddStep={handleAddStep}
                     onRemoveStep={handleRemoveStep}
                     onMoveStep={handleMoveStep}
@@ -768,7 +787,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
               />
             </div>
             <aside className="notebook-log" aria-label="Setup">
-              <CreationSetup createDraft={createDraft} onChange={setCreateDraft} />
+              <CreationSetup createDraft={createDraft} onChange={setCreateDraft} saveMessages={saveMessages} />
             </aside>
           </div>
         )}

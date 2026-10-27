@@ -38,7 +38,7 @@ function withStep(draft, fields = {}, targets = []) {
 let current = null;
 let held = null;
 
-function Holder({ initial, spies }) {
+function Holder({ initial, spies, saveMessages = null }) {
   const [draft, setDraft] = useState(initial);
   held = draft;
   const version = creationSheetVersion(draft, records);
@@ -46,6 +46,7 @@ function Holder({ initial, spies }) {
     <CreationSteps
       draft={draft}
       version={version}
+      saveMessages={saveMessages}
       onAddStep={(afterN) => setDraft((prev) => addStep(prev, { afterN }))}
       onChangeStepField={(n, field, value) => setDraft((prev) => setStepField(prev, n, field, value))}
       onAddTarget={(n) => setDraft((prev) => addTarget(prev, n))}
@@ -59,13 +60,13 @@ function Holder({ initial, spies }) {
   );
 }
 
-function mount(initial, spies) {
+function mount(initial, spies, saveMessages = null) {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
   current = { container, root };
   act(() => {
-    root.render(<Holder initial={initial} spies={spies} />);
+    root.render(<Holder initial={initial} spies={spies} saveMessages={saveMessages} />);
   });
   return container;
 }
@@ -342,5 +343,55 @@ describe('Preview step (sketch 013 decision 34, decision 014 2)', () => {
     expect(preview.querySelector('b b')).toBeNull();
     expect(preview.querySelector('.method-step__aside i')).toBeNull();
     expect(preview.querySelector('.method-step__aside').textContent).toBe('<i>x</i>');
+  });
+});
+
+describe("a refused Save's messages (MAKE-10, D-10, D-11, T-11-32)", () => {
+  it('puts Required as a field-error under the named fields, invalid and described by it, and leaves the others quiet', () => {
+    const draft = withStep(blank(), { leadIn: '', instruction: '' }, [['temp', '']]);
+    const messages = new Map([
+      ['lead:1', 'Required'],
+      ['target:1:0:value', 'Required'],
+    ]);
+    mount(draft, null, messages);
+
+    const lead = field('Step 1, lead-in');
+    expect(lead.getAttribute('aria-invalid')).toBe('true');
+    expect(lead.getAttribute('aria-describedby')).toBe('create-step-1-lead-error');
+    const leadMessage = q('#create-step-1-lead-error');
+    expect(leadMessage.className).toBe('field-error');
+    expect(leadMessage.textContent).toBe('Required');
+    expect(lead.closest('label').contains(leadMessage)).toBe(true);
+
+    const value = field('Step 1, target value');
+    expect(value.getAttribute('aria-invalid')).toBe('true');
+    expect(value.getAttribute('aria-describedby')).toBe('create-step-1-target-0-value-error');
+    expect(q('#create-step-1-target-0-value-error').textContent).toBe('Required');
+
+    // The instruction and the target label were not refused: no error, no
+    // aria-invalid, and the quiet guidance is still the aria-hidden one.
+    expect(field('Step 1, instruction').getAttribute('aria-invalid')).toBeNull();
+    expect(field('Step 1, instruction').getAttribute('aria-describedby')).toBeNull();
+    expect(q('#create-step-1-instruction-error')).toBeNull();
+    expect(field('Step 1, target label').getAttribute('aria-invalid')).toBeNull();
+    const quiet = qa('.field-requirement');
+    expect(quiet.length).toBeGreaterThan(0);
+    expect(quiet.every((node) => node.getAttribute('aria-hidden') === 'true')).toBe(true);
+    // An error replaces the quiet Required in its place: never two lines.
+    expect(lead.closest('label').querySelector('.field-requirement')).toBeNull();
+  });
+
+  it('a step with no message draws exactly what it drew before', () => {
+    mount(withStep(blank()), null, new Map());
+    expect(qa('.field-error')).toHaveLength(0);
+    expect(qa('[aria-invalid]')).toHaveLength(0);
+    expect(qa('.field-requirement')).toHaveLength(2);
+  });
+
+  it('names the instruction and the label side by their block ids', () => {
+    mount(withStep(blank(), {}, [['', '85']]), null, new Map([['instruction:1', 'Required'], ['target:1:0:label', 'Required']]));
+    expect(field('Step 1, instruction').getAttribute('aria-describedby')).toBe('create-step-1-instruction-error');
+    expect(field('Step 1, target label').getAttribute('aria-describedby')).toBe('create-step-1-target-0-label-error');
+    expect(q('#create-step-1-target-0-label-error').className).toBe('field-error');
   });
 });

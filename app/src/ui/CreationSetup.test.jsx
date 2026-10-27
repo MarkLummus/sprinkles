@@ -14,6 +14,7 @@ import { CreationSetup } from './CreationSetup.jsx';
 import { MALFORMED_NUMBER_ENTRY } from './BatchRow.jsx';
 import { CatalogFixture } from './catalog.fixtures.jsx';
 import { blankCreateDraft } from '../domain/draft.js';
+import { addProblem, addScale, updateProblem } from '../domain/creation.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -22,12 +23,13 @@ const start = () => blankCreateDraft({ recipeId: 'r1', versionId: 'v1', name: 'V
 let current = null;
 let held = null;
 
-function Holder({ onCall }) {
-  const [draft, setDraft] = useState(start);
+function Holder({ onCall, saveMessages = null, initial = start }) {
+  const [draft, setDraft] = useState(initial);
   held = draft;
   return (
     <CreationSetup
       createDraft={draft}
+      saveMessages={saveMessages}
       onChange={(updater) => {
         onCall?.(updater);
         setDraft(updater);
@@ -36,7 +38,7 @@ function Holder({ onCall }) {
   );
 }
 
-function mount(onCall) {
+function mount(onCall, saveMessages = null, initial = start) {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
@@ -44,7 +46,7 @@ function mount(onCall) {
   act(() => {
     root.render(
       <CatalogFixture>
-        <Holder onCall={onCall} />
+        <Holder onCall={onCall} saveMessages={saveMessages} initial={initial} />
       </CatalogFixture>,
     );
   });
@@ -421,5 +423,60 @@ describe('CreationSetup, the Scales and Problems regions (TASTE-01, TASTE-02, de
     expect(held.scales.map((scale) => scale.name)).toEqual(['Body', 'Body']);
     expect(held.problems).toEqual(['Icy', 'Icy']);
     expect(new Set(held.scales.map((scale) => scale.key)).size).toBe(2);
+  });
+});
+
+describe("a refused Save's messages (MAKE-10, D-11, D-25, T-11-32, T-11-51)", () => {
+  const withScale = () => addScale(start(), 'scale-a');
+
+  it("puts each scale field's message under it, invalid and described by it, and leaves the others quiet", () => {
+    mount(undefined, new Map([['scale:scale-a:name', 'Required'], ['scale:scale-a:high', 'Required']]), withScale);
+    const name = q('.mk-card[aria-label="Scale 1"] input[aria-label="Name"]');
+    expect(name.getAttribute('aria-invalid')).toBe('true');
+    expect(name.getAttribute('aria-describedby')).toBe('create-scale-scale-a-name-error');
+    expect(q('#create-scale-scale-a-name-error').className).toBe('field-error');
+    expect(q('#create-scale-scale-a-name-error').textContent).toBe('Required');
+    const high = q('.mk-card[aria-label="Scale 1"] input[aria-label="High end"]');
+    expect(high.getAttribute('aria-describedby')).toBe('create-scale-scale-a-high-error');
+    const low = q('.mk-card[aria-label="Scale 1"] input[aria-label="Low end"]');
+    expect(low.getAttribute('aria-invalid')).toBeNull();
+    expect(q('#create-scale-scale-a-low-error')).toBeNull();
+    // An error replaces the quiet Required in the same place: never two lines.
+    expect(name.closest('label').querySelector('.field-requirement')).toBeNull();
+    expect(low.closest('label').querySelector('.field-requirement').getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('an unpicked Kind shows Required under the radios, the radiogroup invalid and described by it', () => {
+    mount(undefined, new Map([['scale:scale-a:kind', 'Required']]), withScale);
+    const group = q('.mk-card[aria-label="Scale 1"] [role="radiogroup"]');
+    expect(group.getAttribute('aria-invalid')).toBe('true');
+    expect(group.getAttribute('aria-describedby')).toBe('create-scale-scale-a-kind-error');
+    const message = q('#create-scale-scale-a-kind-error');
+    expect(message.textContent).toBe('Required');
+    expect(group.parentElement.contains(message)).toBe(true);
+  });
+
+  it("a repeated problem's sentence stands under the second only; a blank one reads Required", () => {
+    const twice = () => updateProblem(updateProblem(addProblem(addProblem(start())), 0, 'Icy'), 1, 'Icy');
+    mount(undefined, new Map([['problem-repeat:1', 'This problem is already listed.']]), twice);
+    const first = q('.mk-card[aria-label="Problem 1"] input[aria-label="Name"]');
+    const second = q('.mk-card[aria-label="Problem 2"] input[aria-label="Name"]');
+    expect(q('#create-problem-1-error').textContent).toBe('This problem is already listed.');
+    expect(second.getAttribute('aria-invalid')).toBe('true');
+    expect(second.getAttribute('aria-describedby')).toBe('create-problem-1-error');
+    expect(q('#create-problem-0-error')).toBeNull();
+    expect(first.getAttribute('aria-invalid')).toBeNull();
+  });
+
+  it('a blank problem reads Required in place of the quiet one', () => {
+    mount(undefined, new Map([['problem:0', 'Required']]), () => addProblem(start()));
+    expect(q('#create-problem-0-error').textContent).toBe('Required');
+    expect(q('.mk-card[aria-label="Problem 1"] .field-requirement')).toBeNull();
+  });
+
+  it('with no messages draws what it drew before', () => {
+    mount(undefined, null, withScale);
+    expect(current.container.querySelectorAll('.field-error')).toHaveLength(0);
+    expect(current.container.querySelectorAll('[aria-invalid]')).toHaveLength(0);
   });
 });

@@ -38,18 +38,27 @@ const KIND_BY_WORD = { 'Right in the middle': 'goldilocks', 'Low to high': 'magn
 const isBlank = (text) => text.trim() === '';
 
 // One labelled text field of a card: the caption, the input named by it and,
-// while it is blank, the Required line under it. Words are React text only.
-function CardField({ label, value, onChange }) {
+// while it is blank, the Required line under it, or the refused Save's message
+// in its place. Words are React text only.
+function CardField({ label, value, onChange, error = null, errorId }) {
   return (
     <label className="notebook-field">
       <span className="notebook-caption">{label}</span>
-      <input className="ink-field" type="text" aria-label={label} value={value} onChange={onChange} />
-      <FieldFeedback required={isBlank(value)} />
+      <input
+        className="ink-field"
+        type="text"
+        aria-label={label}
+        value={value}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={error ? errorId : undefined}
+        onChange={onChange}
+      />
+      <FieldFeedback error={error} errorId={errorId} required={isBlank(value)} />
     </label>
   );
 }
 
-export function CreationSetup({ createDraft, onChange }) {
+export function CreationSetup({ createDraft, onChange, saveMessages = null }) {
   const { catalog } = useCatalog();
   // Focus follows an add or a remove, after the render that drew its target
   // (at the two-scale limit Add scale is absent until the remove's render). A
@@ -229,17 +238,38 @@ export function CreationSetup({ createDraft, onChange }) {
           {createDraft.scales.length > 0 && <h3 className="pen-caption mk-cue">This recipe only</h3>}
           {createDraft.scales.map((scale, index) => {
             const stops = scaleStopsLine(scale);
+            // A refused Save's message for a field of this card, by the gate's block id.
+            const refused = (field) => saveMessages?.get(`scale:${scale.key}:${field}`) ?? null;
+            const errorId = (field) => `create-scale-${scale.key}-${field}-error`;
             return (
               <div className="mk-card" role="group" aria-label={`Scale ${index + 1}`} key={scale.key}>
                 <div className="mk-caprow">
-                  <CardField label="Name" value={scale.name} onChange={handleScaleField(scale.key, 'name')} />
+                  <CardField
+                    label="Name"
+                    value={scale.name}
+                    onChange={handleScaleField(scale.key, 'name')}
+                    error={refused('name')}
+                    errorId={errorId('name')}
+                  />
                   <Button className="text-control" onClick={() => handleRemoveScale(scale.key)}>
                     remove
                   </Button>
                 </div>
                 <div className="mk-pair">
-                  <CardField label="Low end" value={scale.low} onChange={handleScaleField(scale.key, 'low')} />
-                  <CardField label="High end" value={scale.high} onChange={handleScaleField(scale.key, 'high')} />
+                  <CardField
+                    label="Low end"
+                    value={scale.low}
+                    onChange={handleScaleField(scale.key, 'low')}
+                    error={refused('low')}
+                    errorId={errorId('low')}
+                  />
+                  <CardField
+                    label="High end"
+                    value={scale.high}
+                    onChange={handleScaleField(scale.key, 'high')}
+                    error={refused('high')}
+                    errorId={errorId('high')}
+                  />
                 </div>
                 <Segmented
                   groupLabel="Kind"
@@ -248,6 +278,8 @@ export function CreationSetup({ createDraft, onChange }) {
                   options={KIND_OPTIONS}
                   value={KIND_WORDS[scale.kind] ?? ''}
                   onChange={(word) => handleScaleKind(scale.key, word)}
+                  error={refused('kind')}
+                  errorId={errorId('kind')}
                 />
                 {stops !== null && <p className="mk-stops">{stops}</p>}
               </div>
@@ -276,7 +308,13 @@ export function CreationSetup({ createDraft, onChange }) {
             // A problem is words only, with no key of its own: its place is its identity.
             <div className="mk-card" role="group" aria-label={`Problem ${index + 1}`} key={index}>
               <div className="mk-caprow">
-                <CardField label="Name" value={problem} onChange={handleProblemName(index)} />
+                <CardField
+                  label="Name"
+                  value={problem}
+                  onChange={handleProblemName(index)}
+                  error={saveMessages?.get(`problem:${index}`) ?? saveMessages?.get(`problem-repeat:${index}`) ?? null}
+                  errorId={`create-problem-${index}-error`}
+                />
                 <Button className="text-control" onClick={() => handleRemoveProblem(index)}>
                   remove
                 </Button>

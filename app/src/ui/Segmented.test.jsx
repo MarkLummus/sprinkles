@@ -170,4 +170,23 @@ describe('Segmented — an optional radio name and an optional Clear (Phase 10 p
     );
     expect(markup).toContain('segmented-field__clear');
   });
+
+  it('with an error, marks the radiogroup invalid, ties it to the visible message and draws the message under the radios (T-11-51)', () => {
+    const markup = renderToStaticMarkup(
+      <Segmented groupLabel="Kind" options={['A', 'B']} value="" error="Required" errorId="kind-error" onChange={noop} />,
+    );
+    const group = markup.match(/<div[^>]*role="radiogroup"[^>]*>/)[0];
+    expect(group).toContain('aria-invalid="true"');
+    expect(group).toContain('aria-describedby="kind-error"');
+    expect(markup).toContain('<span id="kind-error" class="field-error">Required</span>');
+    // Under the radios: the message comes after the last option, inside the field.
+    expect(markup.indexOf('field-error')).toBeGreaterThan(markup.lastIndexOf('segmented__option'));
+  });
+
+  it('with no error, carries neither attribute nor element, as before', () => {
+    const markup = renderToStaticMarkup(<Segmented groupLabel="Kind" options={['A', 'B']} value="" onChange={noop} />);
+    expect(markup).not.toContain('aria-invalid');
+    expect(markup).not.toContain('aria-describedby');
+    expect(markup).not.toContain('field-error');
+  });
 });

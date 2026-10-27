@@ -616,3 +616,126 @@ describe('a kept edit whose version has since gained a batch or a later version 
     expect(repository.deleteDraft).not.toHaveBeenCalled();
   });
 });
+
+describe('a refused Save shows each message in its place on the edit route (MAKE-10, D-08, D-11, T-11-65)', () => {
+  const MILK = 'Whole milk, 3.5% fat';
+
+  // Focus is somewhere else when Save is pressed, so a focus that lands is a move.
+  async function pressSave() {
+    field('Recipe description').focus();
+    await click(buttonByText('Save'));
+    await flush();
+  }
+
+  async function openEdit() {
+    seedVanilla();
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name') !== null);
+  }
+
+  it('two 308-digit lines of one row show the not-a-number sentence under its last line only, wired, focused, and nothing is written', async () => {
+    await openEdit();
+    await type(field(`${MILK}, grams, portion 1`), '9'.repeat(308));
+    await type(field(`${MILK}, grams, portion 2`), '9'.repeat(308));
+    await pressSave();
+
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    expect(location.pathname).toBe(EDIT_PATH);
+    const last = field(`${MILK}, grams, portion 2`);
+    const row = last.closest('tr');
+    const message = row.querySelector('.field-error');
+    expect(message.textContent).toBe(`${MILK}'s amount is not a number`);
+    expect(row.classList.contains('is-marked')).toBe(true);
+    expect(last.getAttribute('aria-invalid')).toBe('true');
+    expect(last.getAttribute('aria-describedby')).toBe(message.id);
+    expect(document.activeElement).toBe(last);
+    const first = field(`${MILK}, grams, portion 1`);
+    expect(first.closest('tr').querySelector('.field-error')).toBeNull();
+    expect(first.getAttribute('aria-invalid')).toBeNull();
+
+    await type(first, '400');
+    expect(row.querySelector('.field-error')).toBeNull();
+  });
+
+  it('a blank lead-in shows Required under it, focuses it, and a second refused press brings focus back', async () => {
+    await openEdit();
+    await type(field('Step 2, lead-in'), '');
+    await pressSave();
+
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    expect(field('Step 2, lead-in').getAttribute('aria-invalid')).toBe('true');
+    expect(field('Step 2, lead-in').getAttribute('aria-describedby')).toBe('create-step-2-lead-error');
+    expect(root().querySelector('#create-step-2-lead-error').textContent).toBe('Required');
+    expect(document.activeElement).toBe(field('Step 2, lead-in'));
+
+    await pressSave();
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(field('Step 2, lead-in'));
+  });
+});
+
+describe('a refused Save on the edit route names the rest of the gate in its places (MAKE-10, D-11, D-25, T-11-51)', () => {
+  async function openEdit() {
+    seedVanilla();
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name') !== null);
+  }
+
+  async function pressSave() {
+    field('Recipe description').focus();
+    await click(buttonByText('Save'));
+    await flush();
+  }
+
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-head-act');
+  const problemsRegion = () => root().querySelector('section[aria-label="Problems"]');
+  const problemName = (n) => problemsRegion().querySelector(`.mk-card[aria-label="Problem ${n}"] input[aria-label="Name"]`);
+
+  it('a blank Version name and a repeated problem show together, focus goes to the Version name, and nothing is written', async () => {
+    await openEdit();
+    await type(field('Version name'), '');
+    await click(problemsRegion().querySelector('.mk-add'));
+    await click(problemsRegion().querySelector('.mk-add'));
+    await type(problemName(1), 'Bitter');
+    await type(problemName(2), 'Bitter');
+    await pressSave();
+
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    expect(root().querySelector('#creation-version-error').textContent).toBe('Required');
+    expect(field('Version name').getAttribute('aria-invalid')).toBe('true');
+    expect(root().querySelector('#create-problem-1-error').textContent).toBe('This problem is already listed.');
+    expect(problemName(2).getAttribute('aria-describedby')).toBe('create-problem-1-error');
+    expect(document.activeElement).toBe(field('Version name'));
+
+    await type(field('Version name'), 'Version 1');
+    await pressSave();
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(problemName(2));
+  });
+
+  it('removing every row shows Add at least one ingredient. under the Ingredients heading and focuses Add ingredient, a second press included', async () => {
+    await openEdit();
+    for (let i = 0; i < 2; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await click(root().querySelector('tr[data-line] [data-act="remove"]'));
+    }
+    expect(root().querySelectorAll('tr[data-line]')).toHaveLength(0);
+    await pressSave();
+
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    const message = root().querySelector('#create-no-rows-error');
+    expect(message.textContent).toBe('Add at least one ingredient.');
+    expect(addButton().getAttribute('aria-describedby')).toBe('create-no-rows-error');
+    expect(document.activeElement).toBe(addButton());
+
+    await pressSave();
+    expect(document.activeElement).toBe(addButton());
+
+    // With the picker open in Add ingredient's place, the picker's Name field takes the description and the focus.
+    await click(addButton());
+    await pressSave();
+    const pickerName = root().querySelector('.ingredient-table-region .pick .ing__filters input');
+    expect(pickerName.getAttribute('aria-describedby')).toBe('create-no-rows-error');
+    expect(document.activeElement).toBe(pickerName);
+  });
+});

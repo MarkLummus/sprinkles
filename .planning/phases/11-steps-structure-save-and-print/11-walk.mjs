@@ -950,6 +950,128 @@ SCENARIOS.push([
 // calling walk.seed() right after its first walk.open and walk.expectSeedKept(entry, recipeId)
 // on every step recorded with stores. The twelve above are the baseline and stay as they are.
 
+// ---------------------------------------------------------------------------
+// 11-09: a recipe made through the editor and saved (MAKE-10, D-19). Two steps, a row split
+// across both, a step moved from the keyboard, then Save: one new recipe, one version with a
+// stored Sheet code, no draft, and every seeded record as it was.
+// ---------------------------------------------------------------------------
+const MILK_NAME = 'Whole milk, 3.5% fat';
+const SUGAR_NAME = 'Sucrose';
+const NEW_ROUTE = /^\/notebook\/[^/]+\/[^/]+$/;
+
+// The id of the recipe this scenario made: the one recipe the stores hold beyond the seed's, else
+// the kept draft's while it stands.
+function madeRecipeId(walk, stores) {
+  const seeded = new Set((walk.seedDump?.recipes ?? []).map((recipe) => recipe.id));
+  return stores.recipes.find((recipe) => !seeded.has(recipe.id))?.id ?? stores.drafts[0]?.payload?.recipeId ?? null;
+}
+
+SCENARIOS.push([
+  'create-recipe',
+  async (walk) => {
+    const { page } = walk;
+    const pickRow = (name) =>
+      page.locator('.pick__row', { has: page.locator('.pick__name', { hasText: new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`) }) });
+    const labelled = (label) => page.locator(`[aria-label="${label}"]`);
+    // A wait that names itself when it times out.
+    const until = (condition, label) =>
+      page.waitForFunction(condition, null, { timeout: 8000 }).catch((error) => {
+        throw new Error(`${label}: ${String(error.message).split('\n')[0]}`);
+      });
+    const addIngredient = async (name, grams) => {
+      await clickUntil(page, () => page.locator('.ingredient-table-region .mk-head-act'), '.pick', `open the picker for ${name}`);
+      await clickUntil(page, () => pickRow(name), `input[aria-label="${name}, grams"]`, `pick ${name}`);
+      await page.fill(`input[aria-label="${name}, grams"]`, grams);
+    };
+
+    await walk.open('/notebook');
+    await walk.seed();
+    await clickUntil(page, () => page.locator('.nb__head .notebook-action'), '.nb__new input', 'open the New recipe entry');
+    await page.fill('.nb__new input', 'Vanilla');
+    await page.locator('.nb__new-actions button', { hasText: /^Start$/ }).click();
+    await until(() => location.pathname === '/notebook/new', 'Start opens /notebook/new');
+    await page.waitForSelector('.notebook.mk-page');
+    await page.fill('textarea[aria-label="Recipe description"]', 'Plain and cold.');
+
+    await addIngredient(MILK_NAME, '600');
+    await addIngredient(SUGAR_NAME, '150');
+
+    // Two steps: the heading's Add step, then Add step after step 1.
+    await clickUntil(page, () => page.locator('.method-region .mk-head-act'), 'input[aria-label="Step 1, lead-in"]', 'Add step');
+    await page.fill('input[aria-label="Step 1, lead-in"]', 'Warm the milk');
+    await page.fill('textarea[aria-label="Step 1, instruction"]', 'Heat the milk with the sugar.');
+    await clickUntil(page, () => labelled('Step 1, add a step after it'), 'input[aria-label="Step 2, lead-in"]', 'Add step after step 1');
+    await page.fill('input[aria-label="Step 2, lead-in"]', 'Churn');
+    await page.fill('textarea[aria-label="Step 2, instruction"]', 'Churn, then harden.');
+
+    // Place Whole milk in step 1 and Sucrose in step 2 from Not in a step yet.
+    await clickUntil(page, () => labelled(`Add ${MILK_NAME} to a step`), `[aria-label="Add ${MILK_NAME} to step 1"]`, 'open the chooser for Whole milk');
+    await labelled(`Add ${MILK_NAME} to step 1`).click();
+    await page.waitForSelector(`[aria-label="Add ${MILK_NAME} to a step"]`, { state: 'detached' });
+    await clickUntil(page, () => labelled(`Add ${SUGAR_NAME} to a step`), `[aria-label="Add ${SUGAR_NAME} to step 2"]`, 'open the chooser for Sucrose');
+    await labelled(`Add ${SUGAR_NAME} to step 2`).click();
+    await page.waitForSelector(`[aria-label="Add ${SUGAR_NAME} to a step"]`, { state: 'detached' });
+
+    // Whole milk is split: step 2 also uses it, with its own line.
+    await clickUntil(page, () => labelled('Step 2, change the ingredients'), 'fieldset[aria-label="Step 2, uses"]', 'open step 2 uses');
+    await page
+      .locator('fieldset[aria-label="Step 2, uses"] label.method-step__uses-item', { hasText: MILK_NAME })
+      .locator('input')
+      .check();
+    await page.waitForSelector(`input[aria-label="${MILK_NAME}, grams, portion 2"]`);
+    await page.fill(`input[aria-label="${MILK_NAME}, grams, portion 1"]`, '400');
+    await page.fill(`input[aria-label="${MILK_NAME}, grams, portion 2"]`, '200');
+
+    // Step 1 moves down from the keyboard. It is now the last step, so its Move down is off and
+    // focus lands on its other Move button (D-16).
+    await page.focus('[aria-label="Step 1, move down"]');
+    await page.keyboard.press('Enter');
+    await until(() => document.activeElement?.getAttribute('aria-label') === 'Step 2, move up', 'focus lands on the moved step\'s Move up');
+    await walk.afterDebounce();
+    const worked = await walk.step('worked', { stores: true });
+    walk.expect(worked.stores.drafts.length === 1, `the create draft is kept before Save (${worked.stores.drafts.length})`);
+    walk.expectSeedKept(worked, madeRecipeId(walk, worked.stores));
+
+    await page.click('.notebook-ceremony__actions .notebook-action:not(.notebook-action--outline)');
+    await until(() => location.pathname !== '/notebook/new' && location.pathname.split('/').length === 4, 'Save lands on the new version');
+    await page.waitForSelector('.notebook-version__identity');
+    await until(() => document.querySelector('.page-status')?.textContent === 'Recipe saved.', 'the notice reads Recipe saved.');
+    const saved = await walk.step('saved', { stores: true });
+    walk.expect(NEW_ROUTE.test(saved.snapshot.url), `the page is on the new recipe's version (${saved.snapshot.url})`);
+    walk.expect(saved.snapshot.pageStatus === 'Recipe saved.', `the notice reads "Recipe saved." (${saved.snapshot.pageStatus})`);
+    const seededRecipes = walk.seedDump.recipes.length;
+    const seededVersions = walk.seedDump.versions.length;
+    walk.expect(saved.stores.recipes.length === seededRecipes + 1, `one new recipe (${saved.stores.recipes.length} against ${seededRecipes} seeded)`);
+    walk.expect(saved.stores.versions.length === seededVersions + 1, `one new version (${saved.stores.versions.length} against ${seededVersions} seeded)`);
+    walk.expect(saved.stores.drafts.length === 0, `no draft stands after Save (${saved.stores.drafts.length})`);
+    const recipeId = madeRecipeId(walk, saved.stores);
+    const recipe = saved.stores.recipes.find((candidate) => candidate.id === recipeId);
+    const version = saved.stores.versions.find((candidate) => candidate.recipeId === recipeId);
+    walk.expect(recipe?.name === 'Vanilla', `the new recipe is named Vanilla (${recipe?.name})`);
+    walk.expect(typeof version?.sheetCode === 'string' && version.sheetCode !== '', `the version carries a stored Sheet code (${version?.sheetCode})`);
+    const order = JSON.stringify(version?.method.map((step) => [step.n, step.leadIn]));
+    walk.expect(order === JSON.stringify([[2, 'Churn'], [1, 'Warm the milk']]), `the two steps are in the moved order with their stored keys unchanged (${order})`);
+    const milk = version?.rows.find((row) => row.ingredientName === MILK_NAME);
+    walk.expect(
+      milk?.portions.length === 2 && milk.portions.reduce((sum, portion) => sum + portion.grams, 0) === 600,
+      `Whole milk holds two portions summing to 600 (${JSON.stringify(milk?.portions)})`,
+    );
+    walk.expectSeedKept(saved, recipeId);
+
+    await walk.open('/notebook');
+    await page.waitForSelector('.nb__count');
+    const listed = await walk.step('listed', { stores: true });
+    const listing = await page.evaluate(() => ({
+      text: document.querySelector('.nb')?.innerText ?? '',
+      drafts: document.querySelectorAll('.nb__draft').length,
+      resume: [...document.querySelectorAll('button')].filter((node) => node.textContent.trim() === 'Resume').length,
+    }));
+    walk.expect(listing.text.includes('Vanilla'), 'the Notebook lists Vanilla');
+    walk.expect(listing.drafts === 0 && listing.resume === 0, `the Notebook offers no draft row and no Resume (${listing.drafts} rows, ${listing.resume} buttons)`);
+    walk.expectSeedKept(listed, recipeId);
+  },
+]);
+
 async function record(outPath, withText = false) {
   keepText = withText;
   const { appUrl, close } = await startServers({ appRoot: DIST });

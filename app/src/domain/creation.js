@@ -9,6 +9,7 @@ import { MAX_RECIPE_PROBLEMS, MAX_RECIPE_SCALES, SCALE_KINDS } from './catalog.j
 import { blankCreateDraft } from './draft.js';
 import { FIGURE_SPECS } from './figures.js';
 import { parseGramsDraft } from './lineage.js';
+import { liveSteps, rowLines } from './creationSteps.js';
 import { rowFromLibraryRecord } from './versionRow.js';
 
 export const UNTITLED = 'Untitled';
@@ -43,6 +44,10 @@ export function normalizeCreateDraft(payload) {
   };
 }
 
+function hasWords(value) {
+  return typeof value === 'string' && value.trim() !== '';
+}
+
 // A typed amount reaches the projection only as a finite number: the parser's
 // pattern admits a 309-digit amount that Number reads as Infinity, and
 // rowFromLibraryRecord throws on one (D-08). Anything else reads as 0 g.
@@ -54,35 +59,54 @@ function finiteGrams(raw) {
 /**
  * creationSheetVersion(draft, libraryById = new Map()) -> the version-shaped
  * object the Sheet reads. One description box fills both descriptions (the
- * Sheet's prose and the recipe's), the method is empty until Phase 11 (D-05),
- * and its targets are the bands both of whose ends read (creationTargets,
- * D-08b). A row is projected
- * through rowFromLibraryRecord from its first portion, its grams parsed with
- * parseGramsDraft and read as 0 g when they do not parse or are not finite (D-08), so a row the
- * maker is still typing stays on the Sheet. A row whose library entry is gone
- * is left out rather than thrown over (the map holds { id, entry } records).
+ * Sheet's prose and the recipe's), and its targets are the bands both of whose
+ * ends read (creationTargets, D-08b). A row is projected through
+ * rowFromLibraryRecord with one portion per line it sits on (rowLines): an
+ * unplaced row's single portion is written at UNPLACED_STEP, a placed row's at
+ * the live steps' keys in method order (D-09, D-12). Each line's grams are
+ * parsed with parseGramsDraft and read as 0 g when they do not parse or are
+ * not finite (D-08), so a row the maker is still typing stays on the Sheet. A
+ * row whose library entry is gone is left out rather than thrown over (the map
+ * holds { id, entry } records). The method is the live steps in order: their
+ * uses keep only rows that were projected, in the step's own order; a target
+ * stays only when its label and value both hold words, and a purpose or aside
+ * only when it does (D-10, D-22). A removed step is left out.
  */
 export function creationSheetVersion(draft, libraryById = new Map()) {
   const rows = [];
   for (const row of draft.rows) {
     const record = libraryById.get(row.libraryId);
     if (!record) continue;
-    const portion = row.portions[0];
-    rows.push(
-      rowFromLibraryRecord(record, {
-        id: row.id,
-        grams: portion ? finiteGrams(portion.grams) : 0,
-        step: portion ? portion.step : 1,
-      }),
-    );
+    const lines = rowLines(draft, row.id);
+    const projected = rowFromLibraryRecord(record, {
+      id: row.id,
+      grams: finiteGrams(lines[0].grams),
+      step: lines[0].step,
+    });
+    rows.push({ ...projected, portions: lines.map(({ step, grams }) => ({ step, grams: finiteGrams(grams) })) });
   }
+  const projectedIds = new Set(rows.map((row) => row.id));
+  const method = liveSteps(draft).map((step) => {
+    const projectedStep = {
+      n: step.n,
+      leadIn: step.leadIn,
+      instruction: step.instruction,
+      uses: (step.uses ?? []).filter((id) => projectedIds.has(id)),
+      targets: (step.targets ?? [])
+        .filter((target) => hasWords(target.label) && hasWords(target.value))
+        .map((target) => ({ label: target.label, value: target.value })),
+    };
+    if (hasWords(step.purpose)) projectedStep.purpose = step.purpose;
+    if (hasWords(step.aside)) projectedStep.aside = step.aside;
+    return projectedStep;
+  });
   return {
     id: draft.versionId,
     recipeId: draft.recipeId,
     sheetTitle: creationTitle(draft.name),
     sheetDescription: draft.description,
     rows,
-    method: [],
+    method,
     authored: { beforeYouStart: draft.beforeYouStart },
     targets: creationTargets(draft),
   };
@@ -159,11 +183,18 @@ export function setRowGrams(draft, rowId, grams) {
 
 /**
  * removeRow(draft, rowId) -> a new draft without that row; the others keep
- * their order. An unknown row id throws a RangeError.
+ * their order, and the id is pruned from every step's uses so no dangling
+ * reference is left (STRUCT-01). An unknown row id throws a RangeError.
  */
 export function removeRow(draft, rowId) {
   assertRowId(draft, rowId);
-  return { ...draft, rows: draft.rows.filter((row) => row.id !== rowId) };
+  return {
+    ...draft,
+    rows: draft.rows.filter((row) => row.id !== rowId),
+    method: draft.method.map((step) =>
+      step.uses?.includes(rowId) ? { ...step, uses: step.uses.filter((id) => id !== rowId) } : step,
+    ),
+  };
 }
 
 // The six band keys, in the Balance's order. A typed band key is only ever a

@@ -1234,7 +1234,7 @@ describe('remove deletes a creation row outright (MAKE-06, decision 5, T-01)', (
     await type(gramsField(name), grams);
   }
 
-  it('removes Heavy cream from the table and the saved draft, the figures follow, and focus is on Add ingredient', async () => {
+  it("removes Heavy cream from the table and the saved draft, the figures follow, and focus goes to the previous row's remove (D-15)", async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     await startVanilla();
     await pickAt(MILK, '600');
@@ -1246,7 +1246,8 @@ describe('remove deletes a creation row outright (MAKE-06, decision 5, T-01)', (
     await click(removeOf(CREAM));
     expect(tableNames()).toEqual([MILK]);
     expect(root().querySelector('.side-region').textContent).not.toBe(withCream);
-    expect(document.activeElement).toBe(addButton());
+    // No next row in the group, so the previous row's remove (D-15).
+    expect(document.activeElement).toBe(removeOf(MILK));
     noStruckOrStepHeads();
 
     await advance();

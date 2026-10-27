@@ -9,9 +9,18 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { IngredientTable } from './IngredientTable.jsx';
-import { creationSheetVersion, addRow } from '../domain/creation.js';
+import { creationSheetVersion, addRow, removeRow } from '../domain/creation.js';
 import { blankCreateDraft } from '../domain/draft.js';
-import { addStep, rowLines, setLineGrams, toggleStepUses, UNPLACED_STEP } from '../domain/creationSteps.js';
+import {
+  addStep,
+  moveRow,
+  placeRow,
+  rowLines,
+  setLineGrams,
+  setStepField,
+  toggleStepUses,
+  UNPLACED_STEP,
+} from '../domain/creationSteps.js';
 import { library } from '../data/library.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -34,6 +43,9 @@ let setDraftRef = null;
 
 function mount(initial = startingDraft) {
   const onBlurGrams = vi.fn();
+  const onRemoveRow = vi.fn();
+  const onMoveRow = vi.fn();
+  const onPlaceRow = vi.fn();
   function Harness() {
     const [draft, setDraft] = useState(initial);
     setDraftRef = setDraft;
@@ -51,7 +63,18 @@ function mount(initial = startingDraft) {
           focusLine: null,
           onChangeGrams: (rowId, step, value) => setDraft((prev) => setLineGrams(prev, rowId, step, value)),
           onBlurGrams,
-          onRemoveRow: () => {},
+          onRemoveRow: (rowId, group) => {
+            onRemoveRow(rowId, group);
+            setDraft((prev) => removeRow(prev, rowId));
+          },
+          onMoveRow: (rowId, group, direction) => {
+            onMoveRow(rowId, group, direction);
+            setDraft((prev) => moveRow(prev, rowId, group, direction));
+          },
+          onPlaceRow: (rowId, n) => {
+            onPlaceRow(rowId, n);
+            setDraft((prev) => placeRow(prev, rowId, n));
+          },
         }}
       />
     );
@@ -62,7 +85,7 @@ function mount(initial = startingDraft) {
   act(() => {
     root.render(<Harness />);
   });
-  current = { container, root, onBlurGrams };
+  current = { container, root, onBlurGrams, onRemoveRow, onMoveRow, onPlaceRow };
   return current;
 }
 
@@ -237,18 +260,42 @@ describe('IngredientTable, creating: a row in two steps reads one line per step'
     expect(lineField('sucrose-row:0').getAttribute('aria-label')).toBe('Sucrose, grams');
   });
 
-  it('says what each line is of the row and of the batch, and offers one remove for the row', () => {
+  it('says what each line is of the row and of the batch', () => {
     mount(splitDraft);
     const note = (key) => line(key).querySelector('.ingredient-table__portion-note')?.textContent ?? null;
     expect(note('milk-row:1')).toBe('400 g of 600.0 g · 58.0% in all');
     expect(note('milk-row:2')).toBe('200 g of 600.0 g · 58.0% in all');
     expect(note('sucrose-row:0')).toBeNull();
-    const removes = [...current.container.querySelectorAll('tbody td.ingredient-table__col-name button')].filter(
-      (button) => button.textContent === 'remove',
+  });
+
+  it("names each line's Move controls and grams field by its step, so no two share a name", () => {
+    mount(splitDraft);
+    const move = (key, direction) => line(key).querySelector(`[data-act="move-${direction}"]`).getAttribute('aria-label');
+    expect(move('milk-row:1', 'up')).toBe(`Move ${WHOLE_MILK} up in step 1`);
+    expect(move('milk-row:2', 'down')).toBe(`Move ${WHOLE_MILK} down in step 2`);
+    // A row with one line keeps the board's plain name.
+    expect(move('sucrose-row:0', 'up')).toBe('Move Sucrose up');
+    // Every line-specific control on the table has a name of its own: each Move
+    // button and each grams field. The removes are left out: each removes the row.
+    const names = [...current.container.querySelectorAll('tbody [data-act^="move-"], tbody input')].map((control) =>
+      control.getAttribute('aria-label'),
     );
-    expect(removes).toHaveLength(2);
-    expect(line('milk-row:1').querySelector('button')).not.toBeNull();
-    expect(line('milk-row:2').querySelector('button')).toBeNull();
+    expect(names).toHaveLength(3 * 2 + 3);
+    expect(new Set(names).size).toBe(names.length);
+  });
+
+  it('both lines of a split row carry remove for the row, and a press on either removes the whole row', () => {
+    mount(splitDraft);
+    for (const key of ['milk-row:1', 'milk-row:2']) {
+      const remove = line(key).querySelector('[data-act="remove"]');
+      expect(remove.getAttribute('aria-label')).toBe(`remove ${WHOLE_MILK}`);
+      expect(remove.textContent).toBe('remove');
+    }
+    act(() => line('milk-row:2').querySelector('[data-act="remove"]').click());
+    expect(current.onRemoveRow).toHaveBeenCalledWith('milk-row', 2);
+    expect(line('milk-row:1')).toBeNull();
+    expect(line('milk-row:2')).toBeNull();
+    expect(line('sucrose-row:0')).not.toBeNull();
   });
 
   it("shows each line's message on its own blur and leaves its sibling line alone", () => {
@@ -274,5 +321,139 @@ describe('IngredientTable, creating: a row in two steps reads one line per step'
     expect(lineField('milk-row:1').value).toBe('600');
     expect(lineField('milk-row:1').getAttribute('aria-label')).toBe(`${WHOLE_MILK}, grams`);
     expect(current.container.querySelector('.ingredient-table__portion-note')).toBeNull();
+  });
+});
+
+describe('IngredientTable, creating: the acts line (STRUCT-01 to STRUCT-03, D-15 to D-17)', () => {
+  // Two steps, Warm (milk, sucrose) and Churn (no lead-in, no rows), plus a
+  // cream row that no step uses.
+  function threeRows() {
+    let draft = blankCreateDraft({ recipeId: 'r1', versionId: 'v1', name: 'Vanilla' });
+    draft = addRow(draft, { rowId: 'milk-row', libraryId: 'wholeMilk' });
+    draft = addRow(draft, { rowId: 'sucrose-row', libraryId: 'sucrose' });
+    draft = addRow(draft, { rowId: 'cream-row', libraryId: 'heavyCream' });
+    for (const id of ['milk-row', 'sucrose-row', 'cream-row']) draft = setLineGrams(draft, id, UNPLACED_STEP, '100');
+    draft = addStep(addStep(draft, { afterN: null }), { afterN: 1 });
+    draft = setStepField(draft, 1, 'leadIn', 'Warm');
+    draft = toggleStepUses(draft, 1, 'milk-row');
+    return toggleStepUses(draft, 1, 'sucrose-row');
+  }
+
+  const line = (key) => current.container.querySelector(`tr[data-line="${key}"]`);
+  const control = (key, name) => line(key).querySelector(`[data-act="${name}"]`);
+  const actsText = (key) => line(key).querySelector('.mk-row-acts').textContent;
+  const press = (element) => act(() => element.click());
+  const firstGroup = () =>
+    [...current.container.querySelector('tbody').querySelectorAll('tr[data-line]')].map((row) => row.getAttribute('data-line'));
+
+  it('reads remove, Move up, Move down on each row, and Add to step on a row no step uses once a step exists', () => {
+    mount(threeRows);
+    expect(actsText('milk-row:1')).toBe('remove · Move up · Move down');
+    expect(actsText('sucrose-row:1')).toBe('remove · Move up · Move down');
+    expect(actsText('cream-row:0')).toBe('remove · Move up · Move down · Add to step');
+    expect(control('cream-row:0', 'add-to-step').getAttribute('aria-label')).toBe('Add Heavy cream, 36% fat to a step');
+    expect(line('milk-row:1').querySelector('.ingredient-table__remove-gap')).not.toBeNull();
+    for (const button of current.container.querySelectorAll('.mk-row-acts button')) expect(button.getAttribute('tabindex')).toBe('0');
+    // The names the board gives.
+    expect(control('milk-row:1', 'remove').getAttribute('aria-label')).toBe(`remove ${WHOLE_MILK}`);
+    expect(control('milk-row:1', 'move-down').getAttribute('aria-label')).toBe(`Move ${WHOLE_MILK} down`);
+  });
+
+  it('offers no Add to step while no step exists', () => {
+    mount();
+    expect(current.container.querySelector('[data-act="add-to-step"]')).toBeNull();
+    expect(actsText('sucrose-row:0')).toBe('remove · Move up · Move down');
+  });
+
+  it("marks the group's first Move up and last Move down off, focusable, and doing nothing", () => {
+    mount(threeRows);
+    for (const [key, name] of [
+      ['milk-row:1', 'move-up'],
+      ['sucrose-row:1', 'move-down'],
+      ['cream-row:0', 'move-up'],
+      ['cream-row:0', 'move-down'],
+    ]) {
+      const button = control(key, name);
+      expect(button.classList.contains('mk-off')).toBe(true);
+      expect(button.getAttribute('aria-disabled')).toBe('true');
+      expect(button.getAttribute('tabindex')).toBe('0');
+      press(button);
+    }
+    expect(current.onMoveRow).not.toHaveBeenCalled();
+    // The others in their groups stay on.
+    expect(control('milk-row:1', 'move-down').classList.contains('mk-off')).toBe(false);
+    expect(control('sucrose-row:1', 'move-up').hasAttribute('aria-disabled')).toBe(false);
+  });
+
+  it('a Move asks for its own group and direction, and the table reads the new order', () => {
+    mount(threeRows);
+    press(control('milk-row:1', 'move-down'));
+    expect(current.onMoveRow).toHaveBeenCalledWith('milk-row', 1, 'down');
+    expect(firstGroup()).toEqual(['sucrose-row:1', 'milk-row:1']);
+  });
+
+  it('the chooser reads Cancel, then one control per step by number and lead-in, Step n alone with no lead-in', () => {
+    mount(threeRows);
+    press(control('cream-row:0', 'add-to-step'));
+    const acts = line('cream-row:0').querySelector('.mk-row-acts');
+    expect(acts.classList.contains('mk-row-acts--choosing')).toBe(true);
+    expect([...acts.querySelectorAll('button')].map((button) => button.textContent)).toEqual(['Cancel', 'Step 1, Warm', 'Step 2']);
+    expect([...acts.querySelectorAll('button')].map((button) => button.getAttribute('aria-label'))).toEqual([
+      'Heavy cream, 36% fat, cancel',
+      'Add Heavy cream, 36% fat to step 1',
+      'Add Heavy cream, 36% fat to step 2',
+    ]);
+    expect(acts.textContent).toBe('Cancel · Step 1, Warm · Step 2');
+    // Opening puts focus on Cancel, after the render that drew it.
+    expect(document.activeElement).toBe(control('cream-row:0', 'cancel'));
+  });
+
+  it('Cancel and Escape close it and return focus to Add to step; one chooser is open at a time', () => {
+    mount(() => {
+      const draft = addRow(threeRows(), { rowId: 'salt-row', libraryId: 'salt' });
+      return setLineGrams(draft, 'salt-row', UNPLACED_STEP, '2');
+    });
+    press(control('cream-row:0', 'add-to-step'));
+    press(control('salt-row:0', 'add-to-step'));
+    expect(current.container.querySelectorAll('.mk-row-acts--choosing')).toHaveLength(1);
+    expect(line('salt-row:0').querySelector('.mk-row-acts--choosing')).not.toBeNull();
+    expect(line('cream-row:0').querySelector('.mk-row-acts--choosing')).toBeNull();
+
+    press(control('salt-row:0', 'cancel'));
+    expect(current.container.querySelector('.mk-row-acts--choosing')).toBeNull();
+    expect(document.activeElement).toBe(control('salt-row:0', 'add-to-step'));
+
+    press(control('salt-row:0', 'add-to-step'));
+    expect(document.activeElement).toBe(control('salt-row:0', 'cancel'));
+    act(() => {
+      control('salt-row:0', 'cancel').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+    });
+    expect(current.container.querySelector('.mk-row-acts--choosing')).toBeNull();
+    expect(document.activeElement).toBe(control('salt-row:0', 'add-to-step'));
+  });
+
+  it('draws no move, remove or Add to step control on a table that is not the creation editor (STRUCT-04)', () => {
+    const version = creationSheetVersion(threeRows(), records);
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    act(() => {
+      root.render(<IngredientTable rows={version.rows} mode="reading" steps={version.method} />);
+    });
+    expect(container.querySelectorAll('tbody tr').length).toBeGreaterThan(0);
+    expect(container.querySelector('.mk-row-acts')).toBeNull();
+    expect(container.querySelector('[data-act]')).toBeNull();
+    expect(container.querySelector('button')).toBeNull();
+    act(() => root.unmount());
+    container.remove();
+  });
+
+  it("choosing a step places the row as that step's last row and closes the chooser", () => {
+    mount(threeRows);
+    press(control('cream-row:0', 'add-to-step'));
+    press(control('cream-row:0', 'choose-1'));
+    expect(current.onPlaceRow).toHaveBeenCalledWith('cream-row', 1);
+    expect(current.container.querySelector('.mk-row-acts--choosing')).toBeNull();
+    expect(firstGroup()).toEqual(['milk-row:1', 'sucrose-row:1', 'cream-row:1']);
   });
 });

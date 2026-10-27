@@ -36,8 +36,13 @@ function usesSentence(step, rows) {
 function CreationStep({
   step,
   number,
+  isFirst,
+  isLast,
   projected,
   rows,
+  onAddStep,
+  onRemoveStep,
+  onMoveStep,
   onChangeStepField,
   onAddTarget,
   onChangeTarget,
@@ -212,6 +217,44 @@ function CreationStep({
             ))}
           </fieldset>
         )}
+        {/* The step's own structure controls (Phase 11, STRUCT-01 to STRUCT-03,
+            sketch 014 add-remove-move.html). A move that cannot act is .mk-off
+            and aria-disabled: it stays in the tab order and does nothing (D-16).
+            Add step here adds right after this step. */}
+        <p className="method-step__acts">
+          <Button className="text-control" data-act="remove" aria-label={`Step ${number}, remove`} onClick={() => onRemoveStep(step.n)}>
+            remove
+          </Button>
+          <span aria-hidden="true">·</span>
+          <Button
+            className={isFirst ? 'text-control mk-off' : 'text-control'}
+            data-act="move-up"
+            aria-label={`Step ${number}, move up`}
+            aria-disabled={isFirst ? 'true' : undefined}
+            onClick={isFirst ? undefined : () => onMoveStep(step.n, 'up')}
+          >
+            Move up
+          </Button>
+          <span aria-hidden="true">·</span>
+          <Button
+            className={isLast ? 'text-control mk-off' : 'text-control'}
+            data-act="move-down"
+            aria-label={`Step ${number}, move down`}
+            aria-disabled={isLast ? 'true' : undefined}
+            onClick={isLast ? undefined : () => onMoveStep(step.n, 'down')}
+          >
+            Move down
+          </Button>
+          <span aria-hidden="true">·</span>
+          <Button
+            className="text-control"
+            data-act="add-after"
+            aria-label={`Step ${number}, add a step after it`}
+            onClick={() => onAddStep(step.n)}
+          >
+            Add step
+          </Button>
+        </p>
       </div>
     </li>
   );
@@ -221,6 +264,8 @@ export function CreationSteps({
   draft,
   version,
   onAddStep,
+  onRemoveStep,
+  onMoveStep,
   onChangeStepField,
   onAddTarget,
   onChangeTarget,
@@ -239,13 +284,18 @@ export function CreationSteps({
       </div>
       {steps.length > 0 && (
         <ol className="method-steps">
-          {steps.map((step) => (
+          {steps.map((step, index) => (
             <CreationStep
               key={step.n}
               step={step}
               number={numbers.get(step.n)}
+              isFirst={index === 0}
+              isLast={index === steps.length - 1}
               projected={version.method.find((candidate) => candidate.n === step.n)}
               rows={version.rows}
+              onAddStep={onAddStep}
+              onRemoveStep={onRemoveStep}
+              onMoveStep={onMoveStep}
               onChangeStepField={onChangeStepField}
               onAddTarget={onAddTarget}
               onChangeTarget={onChangeTarget}

@@ -17,13 +17,20 @@ import { freshId } from '../domain/id.js';
 import {
   addStep,
   addTarget,
+  groupRows,
+  liveSteps,
+  moveRow,
+  moveStep,
   normalizeAllocation,
+  placeRow,
+  removeStep,
   removeTarget,
   rowLines,
   setLineGrams,
   setStepField,
   setTarget,
   toggleStepUses,
+  UNPLACED_STEP,
 } from '../domain/creationSteps.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import {
@@ -62,6 +69,10 @@ export function CreationPage({ record, justStarted = false }) {
   // never goes to a control that is not there yet.
   const pageRef = useRef(null);
   const focusRequestRef = useRef(null);
+  // The polite word for every structure change (D-14 to D-16): the region's
+  // text is the latest sentence, form-scoped.
+  const [structureWord, setStructureWord] = useState('');
+  const structureFrameRef = useRef(0);
   // The library is read once and shared by the picker and the Sheet's
   // projection (D-07). null until loaded; libraryFailed when the read rejects.
   const [library, setLibrary] = useState(null);
@@ -146,6 +157,9 @@ export function CreationPage({ record, justStarted = false }) {
     };
   }, [title]);
 
+  // A pending announcement frame goes with the page.
+  useEffect(() => () => cancelAnimationFrame(structureFrameRef.current), []);
+
   useEffect(() => {
     const request = focusRequestRef.current;
     const page = pageRef.current;
@@ -154,6 +168,29 @@ export function CreationPage({ record, justStarted = false }) {
     let target;
     if (typeof request === 'object' && request.kind === 'lead-in') {
       target = page.querySelector(`input[aria-label="Step ${request.position}, lead-in"]`);
+    } else if (typeof request === 'object' && request.kind === 'step-act') {
+      // After a move: the same Move button of the moved step, or its other Move
+      // button when that one is now off (D-16). Found after the render that
+      // reordered the steps, never trusted to a DOM node a keyed reorder moved.
+      const step = page.querySelector(`li.mk-step[data-step="${request.n}"]`);
+      target = step?.querySelector(`:scope > .method-step__body > .method-step__acts [data-act="${request.act}"]`);
+      if (target?.getAttribute('aria-disabled') === 'true') {
+        const other = request.act === 'move-up' ? 'move-down' : 'move-up';
+        target = step.querySelector(`:scope > .method-step__body > .method-step__acts [data-act="${other}"]`);
+      }
+    } else if (typeof request === 'object' && request.kind === 'step-field') {
+      target = page.querySelector(`li.mk-step[data-step="${request.n}"] [data-field="${request.field}"]`);
+    } else if (typeof request === 'object' && request.kind === 'add-step-head') {
+      target = page.querySelector('.method-region .mk-head-act');
+    } else if (typeof request === 'object' && request.kind === 'row-act') {
+      // A row's act, found by its line (`${rowId}:${group}`). After a move the
+      // other Move button stands in when the pressed one is now off (D-16).
+      const line = page.querySelector(`tr[data-line="${CSS.escape(request.line)}"]`);
+      target = line?.querySelector(`[data-act="${request.act}"]`);
+      if (target?.getAttribute('aria-disabled') === 'true') {
+        const other = request.act === 'move-up' ? 'move-down' : 'move-up';
+        target = line.querySelector(`[data-act="${other}"]`);
+      }
     } else if (typeof request === 'object') {
       // A target added or removed: the step's targets line holds its chips, then
       // its own Add target (the line's first direct control).
@@ -218,14 +255,50 @@ export function CreationPage({ record, justStarted = false }) {
     focusRequestRef.current = 'ingredient-target';
   };
 
-  // Remove deletes the row outright (decision 5): its control goes with it, so
-  // a row is never removed twice. Focus lands, after the render, on the table
-  // region's add control: Add ingredient, or the picker's Cancel while the
-  // picker is open in its place.
-  const handleRemoveRow = (rowId) => {
+  const rowName = (rowId) => version.rows.find((row) => row.id === rowId)?.ingredientName ?? '';
+
+  // Remove deletes the row outright (decision 5, STRUCT-01, D-15), whole, from
+  // every step it is in: its control goes with it, so a row is never removed
+  // twice. Focus goes, after the render, to the next row's remove in the group
+  // the press was in, else the previous row's, else the table region's add
+  // control: Add ingredient, or the picker's Cancel while the picker is open in
+  // its place.
+  const handleRemoveRow = (rowId, group = UNPLACED_STEP) => {
+    const name = rowName(rowId);
+    const ids = groupRows(createDraft, group);
+    const at = ids.indexOf(rowId);
+    const neighbour = at === -1 ? undefined : (ids[at + 1] ?? ids[at - 1]);
     setCreateDraft((prev) => removeRow(prev, rowId));
     setFocusRowId((prev) => (prev === rowId ? null : prev));
-    focusRequestRef.current = 'ingredient-target';
+    focusRequestRef.current = neighbour ? { kind: 'row-act', line: `${neighbour}:${group}`, act: 'remove' } : 'ingredient-target';
+    announceStructure(`${name} removed`);
+  };
+
+  // Move a row within its own group only (STRUCT-02, D-16): one step's rows, or
+  // the rows under Not in a step yet. Another step's order is as it was. Focus
+  // stays on the same Move button of the row (the other one when it turned
+  // off), and the word says where the row went.
+  const handleMoveRow = (rowId, group, direction) => {
+    const ids = groupRows(createDraft, group);
+    const at = ids.indexOf(rowId);
+    const to = at + (direction === 'up' ? -1 : 1);
+    if (at === -1 || to < 0 || to >= ids.length) return;
+    const position = `row ${to + 1} of ${ids.length}`;
+    let where = '';
+    if (group !== UNPLACED_STEP) where = ` in step ${displayNumbers(createDraft.method).get(group)}`;
+    else if (liveSteps(createDraft).length > 0) where = ', not in a step yet';
+    setCreateDraft((prev) => moveRow(prev, rowId, group, direction));
+    focusRequestRef.current = { kind: 'row-act', line: `${rowId}:${group}`, act: direction === 'up' ? 'move-up' : 'move-down' };
+    announceStructure(`${rowName(rowId)}, ${position}${where}`);
+  };
+
+  // Add to step (decision 014 1, D-17): the row joins the end of that step's
+  // uses, so it reads as that step's last row, and focus goes to its remove.
+  const handlePlaceRow = (rowId, n) => {
+    const number = displayNumbers(createDraft.method).get(n);
+    setCreateDraft((prev) => placeRow(prev, rowId, n));
+    focusRequestRef.current = { kind: 'row-act', line: `${rowId}:${n}`, act: 'remove' };
+    announceStructure(`${rowName(rowId)} added to step ${number}`);
   };
 
   // One grams field per line of a row (MAKE-07): a line is named by its row and
@@ -245,6 +318,42 @@ export function CreationPage({ record, justStarted = false }) {
     const position = afterN === null ? 1 : (displayNumbers(createDraft.method).get(afterN) ?? 0) + 1;
     setCreateDraft((prev) => addStep(prev, { afterN }));
     focusRequestRef.current = { kind: 'lead-in', position };
+  };
+
+  // Every structure change is heard, a repeat included: the region is emptied
+  // and the sentence written on the next frame (SheetCodeSearch's pattern), so
+  // two moves that both end at "Step 2 of 3" are two changes to a polite region.
+  const announceStructure = (sentence) => {
+    cancelAnimationFrame(structureFrameRef.current);
+    setStructureWord('');
+    structureFrameRef.current = requestAnimationFrame(() => setStructureWord(sentence));
+  };
+
+  // Move a step (STRUCT-02): the stored keys stay as they are and the numbers on
+  // screen follow the order. Focus stays on the same Move button of the moved
+  // step (D-16). An off button never gets here; the guard is for a stale press.
+  const handleMoveStep = (n, direction) => {
+    const live = liveSteps(createDraft);
+    const target = live.findIndex((step) => step.n === n) + (direction === 'up' ? -1 : 1);
+    if (target < 0 || target >= live.length) return;
+    setCreateDraft((prev) => moveStep(prev, n, direction));
+    focusRequestRef.current = { kind: 'step-act', n, act: direction === 'up' ? 'move-up' : 'move-down' };
+    announceStructure(`Step ${target + 1} of ${live.length}`);
+  };
+
+  // Remove a step outright, no strike and no restore (STRUCT-01, D-14): its rows
+  // go back under Not in a step yet, and a split row folds its grams into the
+  // line left. Focus goes to the next step's lead-in, else the previous one's,
+  // else the heading's Add step.
+  const handleRemoveStep = (n) => {
+    const live = liveSteps(createDraft);
+    const at = live.findIndex((step) => step.n === n);
+    if (at === -1) return;
+    const neighbour = live[at + 1] ?? live[at - 1];
+    const leadIn = live[at].leadIn.trim();
+    setCreateDraft((prev) => removeStep(prev, n));
+    focusRequestRef.current = neighbour ? { kind: 'step-field', n: neighbour.n, field: 'lead-in' } : { kind: 'add-step-head' };
+    announceStructure(leadIn === '' ? `Step ${at + 1} removed` : `Step ${at + 1}, ${leadIn}, removed`);
   };
 
   const handleChangeStepField = (n, field, value) => {
@@ -309,6 +418,9 @@ export function CreationPage({ record, justStarted = false }) {
     <>
       <PageNotice message={notice} />
       <div className="notebook mk-page" ref={pageRef}>
+        <p className="visually-hidden" role="status" aria-live="polite">
+          {structureWord}
+        </p>
         <header className="notebook-band">
           <div className="notebook-band__grid">
             <section className="notebook-recipe" aria-label="Recipe">
@@ -376,6 +488,8 @@ export function CreationPage({ record, justStarted = false }) {
                   onChangeGrams: handleChangeGrams,
                   onBlurGrams: handleBlurGrams,
                   onRemoveRow: handleRemoveRow,
+                  onMoveRow: handleMoveRow,
+                  onPlaceRow: handlePlaceRow,
                 }}
                 onChangePenNoteText={handleChangeNote}
                 onRemovePenNote={handleRemoveNote}
@@ -406,6 +520,8 @@ export function CreationPage({ record, justStarted = false }) {
                     draft={createDraft}
                     version={version}
                     onAddStep={handleAddStep}
+                    onRemoveStep={handleRemoveStep}
+                    onMoveStep={handleMoveStep}
                     onChangeStepField={handleChangeStepField}
                     onAddTarget={handleAddTarget}
                     onChangeTarget={handleChangeTarget}

@@ -179,6 +179,28 @@
   text-underline-offset: var(--app-notebook-link-underline-offset);
 }
 
+/* A Move that cannot act (the first item's Move up, the last's Move down): it
+   stays in the tab order and does nothing, and reads as the picker's Added does
+   (Phase 11, D-16; sketch 014 P11_CSS). */
+.notebook .mk-off {
+  color: var(--app-text-secondary);
+  text-decoration: none;
+  cursor: default;
+}
+
+/* A row's acts in the creating table's name cell: remove · Move up · Move down,
+   and Add to step. They stay on one line; pressed, Add to step turns the span
+   into the chooser, which wraps in the cell when there are many steps (sketch
+   014 README "For the plan" 2). */
+.notebook .mk-row-acts {
+  white-space: nowrap;
+}
+
+.notebook .mk-row-acts--choosing {
+  display: inline-block;
+  white-space: normal;
+}
+
 /* The open step, drawn with no box (sketch 013 decision 32): the first field
    starts level with the step number, and Required sits flush under its field. */
 .notebook .mk-step .method-step__field .field-requirement {

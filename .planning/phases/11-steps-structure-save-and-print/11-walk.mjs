@@ -187,8 +187,11 @@ function readMethodText(region, canon) {
   return clone.textContent.replace(/\s+/g, ' ').trim();
 }
 
+// Set by `record <out> --keep-text`; read by takeSnapshot.
+let keepText = false;
+
 // The two sources, rebuilt inside a page.
-const IN_PAGE = { canon: canonicalTargetText.toString(), readMethod: readMethodText.toString() };
+const IN_PAGE ={ canon: canonicalTargetText.toString(), readMethod: readMethodText.toString() };
 
 // -> { snapshot, methodCut }: methodCut says the method region's innerText was found in the
 // page root's, so the cut that makes textHash is a real cut (a FAIL in step(), never a
@@ -261,6 +264,9 @@ async function takeSnapshot(page) {
       ...rest,
       textHash: createHash('sha256').update(text).digest('hex'),
       methodHash: createHash('sha256').update(methodText).digest('hex'),
+      // record --keep-text (D-19): the strings the two hashes are made of, so ordercheck can
+      // tell a reordered page from a changed one. Without the flag the snapshot is as before.
+      ...(keepText ? { text, methodText } : {}),
     },
     methodCut,
   };
@@ -944,7 +950,8 @@ SCENARIOS.push([
 // calling walk.seed() right after its first walk.open and walk.expectSeedKept(entry, recipeId)
 // on every step recorded with stores. The twelve above are the baseline and stay as they are.
 
-async function record(outPath) {
+async function record(outPath, withText = false) {
+  keepText = withText;
   const { appUrl, close } = await startServers({ appRoot: DIST });
   const browser = await webkit.launch();
   const scenarios = [];
@@ -1448,9 +1455,160 @@ async function normtest() {
   if (failed > 0) process.exit(1);
 }
 
+// ---------------------------------------------------------------------------
+// ordercheck: two recordings made with --keep-text, one plain and one ordered, may differ in
+// the order of each page's text lines, fields, buttons and marked fields, and in nothing else
+// (D-19; Mark, 2026-10-26, decide-p11-row-order-across-steps). orderProblems(plain, ordered)
+// -> { problems, reordered, compared }: problems are "<scenario> / <step>: <what>" lines;
+// reordered counts the snapshots whose text, fields, buttons or invalid differ in order alone.
+// Every stores leaf and every snapshot leaf but textHash, text, fields, buttons and invalid is
+// compared by diffLeaves, methodHash and methodText included: the walked pens open no step, so
+// the method region does not move.
+// ---------------------------------------------------------------------------
+const ORDER_FREE = ['textHash', 'text', 'fields', 'buttons', 'invalid'];
+
+function orderProblems(plain, ordered) {
+  const problems = [];
+  let reordered = 0;
+  let compared = 0;
+  for (const key of ['walk', 'engine', 'width']) {
+    if (plain[key] !== ordered[key]) problems.push(`(file) / ${key}: before=${JSON.stringify(plain[key])} after=${JSON.stringify(ordered[key])}`);
+  }
+  const names = (file) => file.scenarios.map((scenario) => scenario.name);
+  if (JSON.stringify(names(plain)) !== JSON.stringify(names(ordered))) {
+    problems.push(`(file) / scenarios: the scenario names differ (${names(plain).join(', ')} / ${names(ordered).join(', ')})`);
+    return { problems, reordered, compared };
+  }
+  // A list as a multiset: its items' JSON, sorted.
+  const asSet = (list) => list.map((item) => JSON.stringify(item)).sort();
+  const sameSet = (a, b) => JSON.stringify(asSet(a)) === JSON.stringify(asSet(b));
+  for (let s = 0; s < plain.scenarios.length; s += 1) {
+    const left = plain.scenarios[s];
+    const right = ordered.scenarios[s];
+    const labels = (scenario) => scenario.steps.map((step) => step.step);
+    if (JSON.stringify(labels(left)) !== JSON.stringify(labels(right))) {
+      problems.push(`${left.name} / (steps): the step labels differ (${labels(left).join(', ')} / ${labels(right).join(', ')})`);
+      continue;
+    }
+    for (let i = 0; i < left.steps.length; i += 1) {
+      const a = left.steps[i];
+      const b = right.steps[i];
+      const where = `${left.name} / ${a.step}`;
+      compared += 1;
+      if (typeof a.snapshot.text !== 'string' || typeof b.snapshot.text !== 'string') {
+        problems.push(`${where}: recorded without --keep-text`);
+        continue;
+      }
+      const stores = [];
+      diffLeaves(a.stores, b.stores, 'stores', stores);
+      for (const [path, was, now] of stores) problems.push(`${where}: ${path} changed, before=${JSON.stringify(was)} after=${JSON.stringify(now)}`);
+      const rest = (snap) => Object.fromEntries(Object.entries(snap).filter(([key]) => !ORDER_FREE.includes(key)));
+      const others = [];
+      diffLeaves(rest(a.snapshot), rest(b.snapshot), '', others);
+      for (const [path, was, now] of others) problems.push(`${where}: ${path} changed, before=${JSON.stringify(was)} after=${JSON.stringify(now)}`);
+      let moved = false;
+      if (!sameSet(a.snapshot.text.split('\n'), b.snapshot.text.split('\n'))) problems.push(`${where}: the text lines are not the same lines`);
+      else if (a.snapshot.text !== b.snapshot.text) moved = true;
+      for (const key of ['fields', 'buttons', 'invalid']) {
+        if (!sameSet(a.snapshot[key], b.snapshot[key])) problems.push(`${where}: ${key} are not the same ${key}`);
+        else if (JSON.stringify(a.snapshot[key]) !== JSON.stringify(b.snapshot[key])) moved = true;
+      }
+      if (moved) reordered += 1;
+    }
+  }
+  return { problems, reordered, compared };
+}
+
+async function ordercheck(pathPlain, pathOrdered) {
+  const [plain, ordered] = await Promise.all([pathPlain, pathOrdered].map(readWalk));
+  const { problems, reordered, compared } = orderProblems(plain, ordered);
+  if (problems.length > 0) {
+    for (const line of problems) console.log(`FAIL ordercheck ${line}`);
+    process.exit(1);
+  }
+  if (reordered === 0) {
+    console.log('FAIL ordercheck: no snapshot reordered');
+    process.exit(1);
+  }
+  console.log(`PASS ordercheck ${reordered} of ${compared} snapshots reordered; stores, method and every other leaf equal`);
+}
+
+// ordertest: orderProblems against in-memory copies of a plain recording made with
+// --keep-text. Exits 1 on any FAIL.
+async function ordertest(pathPlain) {
+  const plain = await readWalk(pathPlain);
+  let failed = 0;
+  const verdict = (name, ok, detail) => {
+    if (ok) console.log(`PASS ordertest ${name}`);
+    else {
+      console.log(`FAIL ordertest ${name}: ${detail}`);
+      failed += 1;
+    }
+  };
+  const steps = plain.scenarios.flatMap((scenario) => scenario.steps.map((entry) => ({ scenario: scenario.name, entry })));
+  const hasText = steps.length > 0 && steps.every(({ entry }) => typeof entry.snapshot.text === 'string');
+  if (!hasText) {
+    console.log('FAIL ordertest: the file was recorded without --keep-text');
+    process.exit(1);
+  }
+  // The same step in a clone: [scenarioName, stepLabel] -> the clone's entry.
+  const inClone = (clone, found) => clone.scenarios.find((s) => s.name === found.scenario).steps.find((e) => e.step === found.entry.step);
+  const refusedAt = (result, found) => result.problems.some((line) => line.startsWith(`${found.scenario} / ${found.entry.step}:`));
+
+  const same = orderProblems(plain, structuredClone(plain));
+  verdict('same', same.problems.length === 0 && same.reordered === 0, `${same.problems.length} problems, reordered ${same.reordered}`);
+
+  const withLines = steps.find(({ entry }) => new Set(entry.snapshot.text.split('\n')).size >= 2);
+  if (!withLines) {
+    for (const name of ['reorder', 'changed-line']) verdict(name, false, 'no step has two different text lines');
+  } else {
+    const swapped = structuredClone(plain);
+    const lines = inClone(swapped, withLines).snapshot.text.split('\n');
+    const first = 0;
+    const other = lines.findIndex((line) => line !== lines[first]);
+    [lines[first], lines[other]] = [lines[other], lines[first]];
+    inClone(swapped, withLines).snapshot.text = lines.join('\n');
+    const result = orderProblems(plain, swapped);
+    verdict('reorder', result.problems.length === 0 && result.reordered === 1, `${result.problems.length} problems, reordered ${result.reordered}`);
+
+    const changed = structuredClone(plain);
+    const changedEntry = inClone(changed, withLines);
+    changedEntry.snapshot.text = `${changedEntry.snapshot.text}\nA line the walk never drew`;
+    const refused = orderProblems(plain, changed);
+    verdict('changed-line', refusedAt(refused, withLines), `not refused at ${withLines.scenario} / ${withLines.entry.step}`);
+  }
+
+  const withStores = steps.find(({ entry }) => entry.stores?.recipes?.[0]);
+  if (!withStores) verdict('store', false, 'no step holds a stores dump with a recipe');
+  else {
+    const doctored = structuredClone(plain);
+    inClone(doctored, withStores).stores.recipes[0].name = 'Doctored recipe name';
+    verdict('store', refusedAt(orderProblems(plain, doctored), withStores), `not refused at ${withStores.scenario} / ${withStores.entry.step}`);
+  }
+
+  const firstStep = steps[0];
+  const doctoredMethod = structuredClone(plain);
+  inClone(doctoredMethod, firstStep).snapshot.methodHash = 'doctored';
+  verdict('method', refusedAt(orderProblems(plain, doctoredMethod), firstStep), `not refused at ${firstStep.scenario} / ${firstStep.entry.step}`);
+
+  const withField = steps.find(({ entry }) => entry.snapshot.fields.length > 0);
+  if (!withField) verdict('field', false, 'no snapshot holds a field');
+  else {
+    const doctored = structuredClone(plain);
+    const field = inClone(doctored, withField).snapshot.fields[0];
+    field[1] = `${field[1]}x`;
+    verdict('field', refusedAt(orderProblems(plain, doctored), withField), `not refused at ${withField.scenario} / ${withField.entry.step}`);
+  }
+  if (failed > 0) process.exit(1);
+}
+
 const [, , mode, first, second] = process.argv;
-if (mode === 'record' && first) {
-  await record(first);
+if (mode === 'record' && first && (second === undefined || second === '--keep-text')) {
+  await record(first, second === '--keep-text');
+} else if (mode === 'ordercheck' && first && second) {
+  await ordercheck(first, second);
+} else if (mode === 'ordertest' && first) {
+  await ordertest(first);
 } else if (mode === 'compare' && first && second) {
   await compare(first, second);
 } else if (mode === 'selftest' && first) {
@@ -1461,7 +1619,7 @@ if (mode === 'record' && first) {
   await normtest();
 } else {
   console.error(
-    'Usage: node 11-walk.mjs record <out.json> | compare <a.json> <b.json> | selftest <before.json> | seedtest <before.json> | normtest (PROBE_DIST=<dist>)',
+    'Usage: node 11-walk.mjs record <out.json> [--keep-text] | compare <a.json> <b.json> | selftest <before.json> | seedtest <before.json> | normtest | ordercheck <plain.json> <ordered.json> | ordertest <plain.json> (PROBE_DIST=<dist>)',
   );
   process.exit(1);
 }

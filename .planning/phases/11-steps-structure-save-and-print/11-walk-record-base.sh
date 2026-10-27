@@ -13,6 +13,11 @@
 # The script refuses to record (FAIL, exit 1, nothing written) when a commit after BASE
 # touches app/ and is neither a Phase 11 plan's commit nor an executor worktree merge:
 # such a commit would move the base again. It never writes app/dist and never starts Vite.
+#
+# Knobs (environment): WALK_OUT is the file recorded into (default $PHASE/11-walk-before.json,
+# the committed baseline: set it to a scratch file for any other recording); WALK_KEEP_TEXT=1
+# passes --keep-text to record, so each snapshot keeps the text and methodText it hashes
+# (any other value passes nothing).
 set -eu
 
 cd "$(git rev-parse --show-toplevel)"
@@ -20,6 +25,7 @@ ROOT=$(pwd)
 
 PHASE=.planning/phases/11-steps-structure-save-and-print
 BASE=cf64aa70
+OUT="${WALK_OUT:-$PHASE/11-walk-before.json}"
 SCRATCH="${TMPDIR:-/tmp}/sprinkles-11"
 
 # A Phase 11 plan's commit reads "type(11):" or "type(11-NN):"; a merge of an executor worktree
@@ -43,4 +49,7 @@ trap 'git worktree remove --force "$SCRATCH/base" >/dev/null 2>&1 || true' EXIT
 ln -s "$ROOT/app/node_modules" "$SCRATCH/base/app/node_modules"
 npm --prefix "$SCRATCH/base/app" run build -- --outDir "$SCRATCH/dist-base" --emptyOutDir
 
-PROBE_DIST="$SCRATCH/dist-base" node "$PHASE/11-walk.mjs" record "$PHASE/11-walk-before.json"
+KEEP=""
+if [ "${WALK_KEEP_TEXT:-}" = "1" ]; then KEEP="--keep-text"; fi
+# $KEEP is empty or one word, so it is left unquoted on purpose.
+PROBE_DIST="$SCRATCH/dist-base" node "$PHASE/11-walk.mjs" record "$OUT" $KEEP

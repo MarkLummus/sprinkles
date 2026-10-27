@@ -17,7 +17,10 @@ import { freshId } from '../domain/id.js';
 import {
   addStep,
   addTarget,
+  liveSteps,
+  moveStep,
   normalizeAllocation,
+  removeStep,
   removeTarget,
   rowLines,
   setLineGrams,
@@ -62,6 +65,10 @@ export function CreationPage({ record, justStarted = false }) {
   // never goes to a control that is not there yet.
   const pageRef = useRef(null);
   const focusRequestRef = useRef(null);
+  // The polite word for every structure change (D-14 to D-16): the region's
+  // text is the latest sentence, form-scoped.
+  const [structureWord, setStructureWord] = useState('');
+  const structureFrameRef = useRef(0);
   // The library is read once and shared by the picker and the Sheet's
   // projection (D-07). null until loaded; libraryFailed when the read rejects.
   const [library, setLibrary] = useState(null);
@@ -146,6 +153,9 @@ export function CreationPage({ record, justStarted = false }) {
     };
   }, [title]);
 
+  // A pending announcement frame goes with the page.
+  useEffect(() => () => cancelAnimationFrame(structureFrameRef.current), []);
+
   useEffect(() => {
     const request = focusRequestRef.current;
     const page = pageRef.current;
@@ -154,6 +164,29 @@ export function CreationPage({ record, justStarted = false }) {
     let target;
     if (typeof request === 'object' && request.kind === 'lead-in') {
       target = page.querySelector(`input[aria-label="Step ${request.position}, lead-in"]`);
+    } else if (typeof request === 'object' && request.kind === 'step-act') {
+      // After a move: the same Move button of the moved step, or its other Move
+      // button when that one is now off (D-16). Found after the render that
+      // reordered the steps, never trusted to a DOM node a keyed reorder moved.
+      const step = page.querySelector(`li.mk-step[data-step="${request.n}"]`);
+      target = step?.querySelector(`:scope > .method-step__body > .method-step__acts [data-act="${request.act}"]`);
+      if (target?.getAttribute('aria-disabled') === 'true') {
+        const other = request.act === 'move-up' ? 'move-down' : 'move-up';
+        target = step.querySelector(`:scope > .method-step__body > .method-step__acts [data-act="${other}"]`);
+      }
+    } else if (typeof request === 'object' && request.kind === 'step-field') {
+      target = page.querySelector(`li.mk-step[data-step="${request.n}"] [data-field="${request.field}"]`);
+    } else if (typeof request === 'object' && request.kind === 'add-step-head') {
+      target = page.querySelector('.method-region .mk-head-act');
+    } else if (typeof request === 'object' && request.kind === 'row-act') {
+      // A row's act, found by its line (`${rowId}:${group}`). After a move the
+      // other Move button stands in when the pressed one is now off (D-16).
+      const line = page.querySelector(`tr[data-line="${CSS.escape(request.line)}"]`);
+      target = line?.querySelector(`[data-act="${request.act}"]`);
+      if (target?.getAttribute('aria-disabled') === 'true') {
+        const other = request.act === 'move-up' ? 'move-down' : 'move-up';
+        target = line.querySelector(`[data-act="${other}"]`);
+      }
     } else if (typeof request === 'object') {
       // A target added or removed: the step's targets line holds its chips, then
       // its own Add target (the line's first direct control).
@@ -247,6 +280,42 @@ export function CreationPage({ record, justStarted = false }) {
     focusRequestRef.current = { kind: 'lead-in', position };
   };
 
+  // Every structure change is heard, a repeat included: the region is emptied
+  // and the sentence written on the next frame (SheetCodeSearch's pattern), so
+  // two moves that both end at "Step 2 of 3" are two changes to a polite region.
+  const announceStructure = (sentence) => {
+    cancelAnimationFrame(structureFrameRef.current);
+    setStructureWord('');
+    structureFrameRef.current = requestAnimationFrame(() => setStructureWord(sentence));
+  };
+
+  // Move a step (STRUCT-02): the stored keys stay as they are and the numbers on
+  // screen follow the order. Focus stays on the same Move button of the moved
+  // step (D-16). An off button never gets here; the guard is for a stale press.
+  const handleMoveStep = (n, direction) => {
+    const live = liveSteps(createDraft);
+    const target = live.findIndex((step) => step.n === n) + (direction === 'up' ? -1 : 1);
+    if (target < 0 || target >= live.length) return;
+    setCreateDraft((prev) => moveStep(prev, n, direction));
+    focusRequestRef.current = { kind: 'step-act', n, act: direction === 'up' ? 'move-up' : 'move-down' };
+    announceStructure(`Step ${target + 1} of ${live.length}`);
+  };
+
+  // Remove a step outright, no strike and no restore (STRUCT-01, D-14): its rows
+  // go back under Not in a step yet, and a split row folds its grams into the
+  // line left. Focus goes to the next step's lead-in, else the previous one's,
+  // else the heading's Add step.
+  const handleRemoveStep = (n) => {
+    const live = liveSteps(createDraft);
+    const at = live.findIndex((step) => step.n === n);
+    if (at === -1) return;
+    const neighbour = live[at + 1] ?? live[at - 1];
+    const leadIn = live[at].leadIn.trim();
+    setCreateDraft((prev) => removeStep(prev, n));
+    focusRequestRef.current = neighbour ? { kind: 'step-field', n: neighbour.n, field: 'lead-in' } : { kind: 'add-step-head' };
+    announceStructure(leadIn === '' ? `Step ${at + 1} removed` : `Step ${at + 1}, ${leadIn}, removed`);
+  };
+
   const handleChangeStepField = (n, field, value) => {
     setCreateDraft((prev) => setStepField(prev, n, field, value));
   };
@@ -309,6 +378,9 @@ export function CreationPage({ record, justStarted = false }) {
     <>
       <PageNotice message={notice} />
       <div className="notebook mk-page" ref={pageRef}>
+        <p className="visually-hidden" role="status" aria-live="polite">
+          {structureWord}
+        </p>
         <header className="notebook-band">
           <div className="notebook-band__grid">
             <section className="notebook-recipe" aria-label="Recipe">
@@ -406,6 +478,8 @@ export function CreationPage({ record, justStarted = false }) {
                     draft={createDraft}
                     version={version}
                     onAddStep={handleAddStep}
+                    onRemoveStep={handleRemoveStep}
+                    onMoveStep={handleMoveStep}
                     onChangeStepField={handleChangeStepField}
                     onAddTarget={handleAddTarget}
                     onChangeTarget={handleChangeTarget}

@@ -179,6 +179,15 @@
   text-underline-offset: var(--app-notebook-link-underline-offset);
 }
 
+/* A Move that cannot act (the first item's Move up, the last's Move down): it
+   stays in the tab order and does nothing, and reads as the picker's Added does
+   (Phase 11, D-16; sketch 014 P11_CSS). */
+.notebook .mk-off {
+  color: var(--app-text-secondary);
+  text-decoration: none;
+  cursor: default;
+}
+
 /* The open step, drawn with no box (sketch 013 decision 32): the first field
    starts level with the step number, and Required sits flush under its field. */
 .notebook .mk-step .method-step__field .field-requirement {

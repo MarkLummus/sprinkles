@@ -18,6 +18,9 @@
 # second line under Step 2) and P11_Structure (qD1's step 1 uses line in the moved order) republished as canvas version 489 (1793057443-4cd7); instructions-steps.html (sha256 d9550594)
 # and add-remove-move.html (f7aa930c) re-taken from the served files the same way (cmp checked against boards/). These two now also carry the app stylesheet's ultra-wide frame rules
 # (--app-frame-max, shell.css; decide-ultrawide-frame 2026-10-26), inlined as every regeneration inlines the current app CSS; nothing changes at 1366. P11_Save and P11_FirstVersion stay as served.
+# 2026-10-27: the build's settled decisions and Mark's answers of 2026-10-27 drawn back (sketch 014 decisions 5 to 7; the chip's remove, Print sheet, the one-line History, "600.0 g",
+# three P11_FirstVersion panels), all four boards republished as canvas version 492 (1793099733-26a6) and all four files re-taken from the served files the same way:
+# instructions-steps.html 44249bb6, add-remove-move.html e3f5b6b3, save.html 0144edf9, first-version.html f547c81d (served = generated, cmp checked against boards/).
 import sys, os
 SRC, DEST = sys.argv[1], sys.argv[2]
 SERVED = {'P11_Steps': 'instructions-steps.html', 'P11_Structure': 'add-remove-move.html', 'P11_Save': 'save.html', 'P11_FirstVersion': 'first-version.html'}

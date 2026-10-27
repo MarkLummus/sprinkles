@@ -52,6 +52,15 @@ import places as PL
 #   build's portion line "200 g of 600 g · 58.0% in all", from the same step spec as the method. P11_Structure qD1 ("After Move down on Whole milk") drew the table in the moved
 #   order but step 1's uses line in the order from before the move: the uses line now reads the moved order (Skim milk powder, Whole milk, Sucrose); steps 2 and 3 are untouched.
 #   Both panels are drawn from one spec per step, so the table and the uses line cannot part again. Only P11_Steps and P11_Structure are republished.
+# Sid, 2026-10-27 (Mark's answers of 2026-10-27 and the Phase 11 audit, 11-UI-REVIEW.md "Board matters for Sid"): the build's settled decisions drawn back so the boards stay the authority.
+#   - decide-p11-struck-target-size, value-size: in Show changes a changed target's struck old value takes the new value's size (14 px, weight 400, struck; the table's struck figure
+#     already matches its live figure). Drawn on P11_FirstVersion's new panel fD1: Version 2 of Vanilla with Show changes pressed, step 1's target "temp" reading 80 °C struck then 85 °C.
+#     The app follows with one /gsd-fast rule (.notebook .method-step__targets--tags .struck-value { font-size: var(--sheet-type-section) }).
+#   - decide-p11-default-version-name-repeats, build-once: the identity prints the label once when it equals the ordinal's words, so "Version 1 · Latest" stands as drawn. No redraw.
+#   - bug-p11-target-required-under-wrong-field, fix: a CSS fix in the build; no board draws the one-sided chip and none is added (the refused panel keeps the two Save fields).
+#   - the audit's board matters: the target chip's remove after its value (D-22; target_chip); Resume editing in Edit's place on the version page and as the Notebook row's outline
+#     control at 1366 (D-04, D-05; P11_FirstVersion fE1 and fF1); Print sheet after Edit on the saved page (D-05); a lone version's History as the one line "Only this version so far"
+#     (03.5-18, RecipeHistory.jsx); the split line's "600.0 g" (formatPortionLine's one-decimal total); fC1's Go to batch status "Awaiting tasting" (STANDING_WORDS) under a churned batch.
 #   python3 p11.py measure <out dir> ; node p11-measure.mjs <out dir>/measure.html ; python3 p11.py <canvas.json read from the artifact root> <out dir> [P11_Save,P11_Steps]
 MEAS = json.load(open(HERE + '/p11-measure.json')) if os.path.exists(HERE + '/p11-measure.json') else {}
 p10.MEAS = MEAS
@@ -80,6 +89,9 @@ P11_CSS = '''
 .method-step:not(.mk-step) .method-step__purpose,.method-step:not(.mk-step) .method-step__aside{font-style:normal;line-height:var(--sheet-leading-helper)}
 .method-step__purpose-label{font-family:var(--face-grotesk);font-size:var(--sheet-type-label);font-weight:var(--sheet-print-weight-cue);text-transform:uppercase;letter-spacing:var(--sheet-print-tracking-caps)}
 .method-step:not(.mk-step) .method-step__aside{border-left:var(--rule-tick) solid var(--sheet-ink);padding-left:var(--gap-s);margin-top:var(--gap-s)}
+/* Show changes on a later version (decide-p11-struck-target-size, value-size, 2026-10-27): a changed target reads its label once, the old value struck at the new value's size, then the new
+   value bold and underlined; the strike itself is app.css .struck-value (--rule-strike, --gap-strike) */
+.method-step:not(.mk-step) .target-chip .struck-value{font-size:var(--sheet-type-section)}
 /* a control that cannot act now (the first step's Move up, the last row's Move down): the picker's Added look, a word in secondary with no underline */
 .mk-off{color:var(--app-text-secondary);text-decoration:none;cursor:default}
 /* the table's row acts: remove, then the moves, on the name cell's own line */
@@ -140,15 +152,19 @@ def flat_rows(keys, with_moves=True): return [row(k, moves=moves_for(i, len(keys
 
 # ---- the steps: the pen's open step, kept open
 def _req(): return '<span class="field-requirement" aria-hidden="true">Required</span>'
-def target_chip(n, label, value):
+def target_chip(n, label, value, i=1):
+    """A target's two fields and, after the value, its remove (D-22, 2026-10-27; the build's chip grid in notebook.css stands Required under the empty field)."""
     return (f'<span class="target-chip"><input type="text" class="ink-field target-chip__label-field" value="{esc(label)}" aria-label="Step {n}, target label">'
-            f'<input type="text" class="ink-field target-chip__value-field" value="{esc(value)}" aria-label="Step {n}, target value"></span>')
+            f'<input type="text" class="ink-field target-chip__value-field" value="{esc(value)}" aria-label="Step {n}, target value">'
+            f'<button type="button" class="text-control" tabindex="0" aria-label="Step {n}, remove target {i}">remove</button></span>')
 NAMES = dict((k, n) for k, n, g, s in ROWS)
 def reading_body(n, lead, text, targets=(), purpose=None, aside=None):
     """A reading step's number and body as the Sheet shows it on screen since 2026-10-26 (sketch 014 decision 2): the printed method's grammar (PrintSheetPages.jsx .mp-tags, .mp-why,
     .mp-aside) on the reading classes: the tag row (label span, value span), the purpose as the caps word "why", an em dash and the sentence, the aside as the callout. One source for
     the Preview step and the reading page."""
-    tags = ''.join(f'<span class="target-chip"><span class="target-chip__label">{esc(l)}</span><span class="target-chip__value">{esc(v)}</span></span>' for l, v in targets)
+    # a target given as (label, old, new) is a changed one under Show changes: the old value struck before the new (StepReading.jsx StepTargets; decide-p11-struck-target-size)
+    struck = lambda t: ('<span class="struck-value">%s</span>' % esc(t[1])) if len(t) == 3 else ''
+    tags = ''.join(f'<span class="target-chip"><span class="target-chip__label">{esc(t[0])}</span>{struck(t)}<span class="target-chip__value">{esc(t[-1])}</span></span>' for t in targets)
     t = f'<p class="method-step__targets">{tags}</p>' if tags else ''
     pu = f'<p class="method-step__purpose"><span class="method-step__purpose-label">why</span> — {esc(purpose)}</p>' if purpose else ''
     a = f'<p class="method-step__aside">{esc(aside)}</p>' if aside else ''
@@ -162,7 +178,7 @@ def step_html(n, lead='', text='', targets=(), uses=(), purpose=None, aside=None
     req = required and not lead
     fields = (f'<label class="method-step__field"><input type="text" class="prose-field prose-field--lead-in" value="{esc(lead)}" aria-label="Step {n}, lead-in">{_req() if req else ""}</label>'
               f'<label class="method-step__field"><textarea class="prose-field" rows="2" aria-label="Step {n}, instruction">{esc(text)}</textarea>{_req() if required and not text else ""}</label>')
-    chips = ''.join(target_chip(n, l, v) for l, v in targets)
+    chips = ''.join(target_chip(n, l, v, i + 1) for i, (l, v) in enumerate(targets))
     pv = ''
     if preview: pv = f'<button type="button" class="text-control" tabindex="0" aria-label="Step {n}, {"hide the preview" if preview == "open" else "preview the step"}">{"Hide preview" if preview == "open" else "Preview step"}</button>'
     fields += f'<p class="method-step__targets">{chips}<button type="button" class="text-control" tabindex="0" aria-label="Step {n}, add a target">Add target</button>{pv}</p>'
@@ -216,7 +232,7 @@ def grouped(steps_specs, extra_groups=(), split=None, with_moves=True, place=Non
             if split and k in split:
                 g = dict(split[k]).get(i); full = dict((kk, gg) for kk, _, gg, _ in ROWS)[k]
                 # one line per step; a split row with one line left reads like a one-line row, with no portion line (sketch 011 decision 56)
-                note = f'{"%g" % g if g != "" else "0"} g of {full:.0f} g · {pct(full)} in all' if len(split[k]) > 1 else None
+                note = f'{"%g" % g if g != "" else "0"} g of {full:.1f} g · {pct(full)} in all' if len(split[k]) > 1 else None      # the row's total through formatGrams, one decimal (2026-10-27)
                 rs.append(row(k, grams=g, note=note, moves=mv, focus=(g == '')))
             else: rs.append(row(k, moves=mv))
         if rs: groups.append((step_head(i + 1, s['lead']), rs))      # the build prints no head for a step that uses nothing (groupPortionsByStep)
@@ -250,34 +266,50 @@ def balanced(h, i):
         if depth == 0: return h[i:i + m.end()]
     raise ValueError('unbalanced')
 # ---- the page after Save: the built reading page of a version with no batch (bys-capture base2_1366), re-worded for the new recipe
-def after_save_page(edit_act=True, with_batch=False, notice=None):
+PRINT_LINK = '<a class="notebook-link" href="/notebook/vanilla/vanilla-v1/print" tabindex="0">Print sheet</a>'      # D-05: the underlined text control that ends the acts row (VersionRow.jsx)
+def after_save_page(edit_act=True, with_batch=False, notice=None, editing=False, later=None):
+    """The saved page. editing: an edit draft is kept, so Edit's place reads Resume editing and Next version is gone (D-04). later: a changed target (label, old, new) draws the page as
+    Version 2 of Vanilla, from Version 1, with Show changes pressed (Hide changes in the acts row): the one panel that shows a struck target value in the tag row."""
     h = BYS['base2_1366']['html'] if isinstance(BYS['base2_1366'], dict) else BYS['base2_1366']
     h = PL.clean(h)
     nb = balanced(h, h.index('<div class="notebook">'))[:-len('</div>')]      # the page root; the shell around it is p10's chrome_1366
     # the recipe column
     nb = re.sub(r'<h1 class="notebook-recipe__name">[^<]*</h1>', '<h1 class="notebook-recipe__name">Vanilla</h1>', nb, 1)
     nb = nb.replace('</div><button type="button" class="notebook-link" tabindex="0">Rename</button>', f'</div><p class="notebook-recipe__description">{esc(SAMPLE_DESC)}</p><button type="button" class="notebook-link" tabindex="0">Rename</button>', 1)
-    # the version column: a root version has no From version; Why reads as built when none is recorded
-    nb = re.sub(r'<h2 class="notebook-version__identity">.*?</h2>', '<h2 class="notebook-version__identity">Version 1<span class="notebook-version__latest"> · Latest</span></h2>', nb, 1, flags=re.S)
-    nb = re.sub(r'<dd class="versions__lineage version-row__written">[^<]*</dd>', '<dd class="versions__lineage version-row__written">21 Oct 2026</dd>', nb, 1)
-    nb = re.sub(r'<dt class="versions__lineage-label">From version</dt><dd class="versions__lineage">.*?</dd>', '', nb, 1, flags=re.S)
-    acts = '<button type="button" class="notebook-action" tabindex="0">Next version</button>' + ('<button type="button" class="notebook-link" tabindex="0">Edit</button>' if edit_act else '')
-    nb = re.sub(r'<div class="notebook-version__acts">.*?</div>', '<div class="notebook-version__acts">' + acts + '</div>', nb, 1, flags=re.S)
-    # History: one version
-    nb = re.sub(r'aria-label="History, (Hide|Show), \d+ versions"', r'aria-label="History, \1, 1 version"', nb, 1).replace('<span class="fold-row__count">2 versions</span>', '<span class="fold-row__count">1 version</span>', 1)
-    nb = nb.replace('--app-notebook-history-count: 2;', '--app-notebook-history-count: 1;', 1)
-    nb = re.sub(r'<ol class="notebook-history__nodes">.*?</ol>',
-                '<ol class="notebook-history__nodes"><li class="notebook-history__node" data-in-view="true"><span class="notebook-history__node-inner" aria-current="page"><span class="notebook-history__date">21 Oct</span><span aria-hidden="true" class="notebook-history__mark notebook-history__mark--in-view"></span><span class="notebook-history__name notebook-history__name--in-view">Version 1</span><span class="notebook-history__state">not churned</span></span></li></ol>', nb, 1, flags=re.S)
+    # the version column: a root version has no From version; Why reads as built when none is recorded. The label "Version 1" equals the ordinal's words, so the identity prints it
+    # once (decide-p11-default-version-name-repeats, build-once, 2026-10-27)
+    vn = 'Version 2' if later else 'Version 1'
+    nb = re.sub(r'<h2 class="notebook-version__identity">.*?</h2>', f'<h2 class="notebook-version__identity">{vn}<span class="notebook-version__latest"> · Latest</span></h2>', nb, 1, flags=re.S)
+    nb = re.sub(r'<dd class="versions__lineage version-row__written">[^<]*</dd>', '<dd class="versions__lineage version-row__written">%s</dd>' % ('23 Oct 2026' if later else '21 Oct 2026'), nb, 1)
+    if later:
+        nb = re.sub(r'<dt class="versions__lineage-label">From version</dt><dd class="versions__lineage">.*?</dd>',
+                    '<dt class="versions__lineage-label">From version</dt><dd class="versions__lineage"><span class="version-row__parent-name"><a tabindex="0" href="/notebook/vanilla/vanilla-v1">Version 1</a></span></dd>', nb, 1, flags=re.S)
+    else:
+        nb = re.sub(r'<dt class="versions__lineage-label">From version</dt><dd class="versions__lineage">.*?</dd>', '', nb, 1, flags=re.S)
+    if editing: acts = '<button type="button" class="notebook-link" tabindex="0">Resume editing</button>'
+    elif later: acts = '<button type="button" class="notebook-action" tabindex="0">Next version</button><button type="button" class="notebook-link" tabindex="0">Hide changes</button>'
+    else: acts = '<button type="button" class="notebook-action" tabindex="0">Next version</button>' + ('<button type="button" class="notebook-link" tabindex="0">Edit</button>' if edit_act else '')
+    nb = re.sub(r'<div class="notebook-version__acts">.*?</div>', '<div class="notebook-version__acts">' + acts + PRINT_LINK + '</div>', nb, 1, flags=re.S)
+    if later:
+        # History: two versions, Version 2 in view
+        nb = re.sub(r'<ol class="notebook-history__nodes">.*?</ol>',
+                    '<ol class="notebook-history__nodes"><li class="notebook-history__node"><a class="notebook-history__node-inner" href="/notebook/vanilla/vanilla-v1" tabindex="0"><span class="notebook-history__date">21 Oct</span><span aria-hidden="true" class="notebook-history__mark"></span><span class="notebook-history__name">Version 1</span><span class="notebook-history__state">not churned</span></a></li>'
+                    '<li class="notebook-history__node" data-in-view="true"><span class="notebook-history__node-inner" aria-current="page"><span class="notebook-history__date">23 Oct</span><span aria-hidden="true" class="notebook-history__mark notebook-history__mark--in-view"></span><span class="notebook-history__name notebook-history__name--in-view">Version 2</span><span class="notebook-history__state">not yet churned · Latest</span></span></li></ol>', nb, 1, flags=re.S)
+    else:
+        # History: a lone version is the one line "Only this version so far", no fold, no rail (RecipeHistory.jsx, 03.5-18; drawn 2026-10-27)
+        nb, k = re.subn(r'<section class="notebook-history".*?</section>', '<section class="notebook-history" aria-label="History"><span class="notebook-caption">History</span><p class="notebook-history__only">Only this version so far</p></section>', nb, 1, flags=re.S)
+        assert k == 1
     # the Sheet: the new recipe read as the seeded ones read
     i = nb.index('<article'); j = nb.index('</article>') + len('</article>')
-    nb = nb[:i] + reading_sheet() + nb[j:]
+    nb = nb[:i] + reading_sheet(later) + nb[j:]
     if with_batch:
         # the Batch margin of a version with one untasted batch, as built (empty-capture.json closed_1366, Mexican Chocolate v3), in place of the no-batch margin
         other = EMPTY['closed_1366']['html'] if isinstance(EMPTY['closed_1366'], dict) else EMPTY['closed_1366']
         aside = re.search(r'<aside class="notebook-log".*?</aside>', other, re.S).group(0).replace('churned date unknown', 'churned 22 Oct 2026').replace('<dd>13 Jan 2026</dd>', '<dd>22 Oct 2026</dd>')
         nb = re.sub(r'<aside class="notebook-log".*?</aside>', lambda m: aside, nb, 1, flags=re.S)
-        nb = nb.replace('<a class="notebook-jump"', '<a class="notebook-jump"', 1)
-        nb = nb.replace('<span class="notebook-history__state">not churned</span>', '<span class="notebook-history__state">churned 22 Oct</span>', 1).replace('notebook-history__mark notebook-history__mark--in-view', 'notebook-history__mark notebook-history__mark--churned notebook-history__mark--in-view', 1)
+        # the Go to batch row (hidden from 1366 up by notebook.css) reads the batch's standing, STANDING_WORDS: a churned, untasted batch is "Awaiting tasting" (the fC1 slip, 2026-10-27)
+        nb, k = re.subn(r'Go to batch, Not yet churned"(.*?)<span class="notebook-jump__status">Not yet churned</span>', r'Go to batch, Awaiting tasting"\1<span class="notebook-jump__status">Awaiting tasting</span>', nb, 1, flags=re.S)
+        assert k == 1
     assert notice is None      # 2026-10-25: the notice is the built card at the window's foot, drawn by window_foot, not in the page
     return nb + '</div>'
 def notice_html(text): return f'<div class="page-status-anchor mk-win-foot"><p class="page-status" role="status" aria-live="polite">{esc(text)}</p></div>'
@@ -294,13 +326,14 @@ def reading_row(key):
     return h
 def reading_step(n, s):
     return f'<li id="method-step-{n}" class="method-step">{reading_body(n, s["lead"], s["text"], s.get("targets", ()), s.get("purpose"), s.get("aside"))}</li>'
-def reading_sheet():
+def reading_sheet(later=None):
     notes = '<ul class="authored__notes">' + ''.join(f'<li>{esc(t)}</li>' for t in SAMPLE_NOTES) + '</ul>'
     groups = ''
     for i, s in enumerate((S1, S2, S3)):
         groups += step_head(i + 1, s['lead']) + ''.join(reading_row(k) for k in s['uses'])
     table = TABLE_HEAD.replace(' is-developing', '') + '<tbody>' + groups + '</tbody>' + TABLE_FOOT
-    method = '<section class="method-region" aria-label="Instructions"><h2 class="region-name">Instructions</h2><ol class="method-steps">' + ''.join(reading_step(i + 1, s) for i, s in enumerate((S1, S2, S3))) + '</ol></section>'
+    steps = (dict(S1, targets=(later,)), S2, S3) if later else (S1, S2, S3)      # later: step 1's target as changed (label, old, new) under Show changes
+    method = '<section class="method-region" aria-label="Instructions"><h2 class="region-name">Instructions</h2><ol class="method-steps">' + ''.join(reading_step(i + 1, s) for i, s in enumerate(steps)) + '</ol></section>'
     return ('<article class="recipe-page">' + headnote_html('Vanilla', SAMPLE_DESC) + f'<section class="before-region" aria-label="Before you start"><h2 class="region-name">Before you start</h2>{notes}</section>'
             + table + side_html('phil', 1366) + method + '</article>')
 
@@ -317,7 +350,12 @@ STAMP10 = STAMP9[:-1] + '; the preview in the printed method treatment 2026-10-2
 STAMP11 = STAMP5[:-1] + '; the reading page\'s steps in the printed method treatment 2026-10-26: tag row, why line, upright; sketch 010 D18, sketch 014 decision 2)'
 STAMP12 = STAMP10[:-1] + '; redrawn 2026-10-26: Whole milk\'s second line under Step 2 where its uses line names it; decide-p11-row-order-across-steps)'
 STAMP13 = STAMP8[:-1] + '; redrawn 2026-10-26: after Move down on Whole milk the uses line reads the moved order; decide-p11-row-order-across-steps)'
-STAMPS = {'P11_Steps': STAMP12, 'P11_Structure': STAMP13, 'P11_Save': STAMP11, 'P11_FirstVersion': STAMP11}
+R27 = '; redrawn 2026-10-27 for the build\'s settled decisions and the Phase 11 audit: '
+STAMP14 = STAMP12[:-1] + R27 + 'the target chip\'s remove, "600.0 g" on the split lines)'
+STAMP15 = STAMP13[:-1] + R27 + 'the target chip\'s remove)'
+STAMP16 = STAMP11[:-1] + R27 + 'the target chip\'s remove, Print sheet after Edit, History as "Only this version so far")'
+STAMP17 = STAMP11[:-1] + R27 + 'Print sheet after Edit, History as one line, the target chip\'s remove, "Awaiting tasting" once a batch exists, three panels added: Show changes with a struck target at the value\'s size (decide-p11-struck-target-size), Resume editing on the page and on the Notebook row)'
+STAMPS = {'P11_Steps': STAMP14, 'P11_Structure': STAMP15, 'P11_Save': STAMP16, 'P11_FirstVersion': STAMP17}
 TITLES = {'P11_Steps': 'Instructions while creating · a step, its targets, the rows it uses and in what portions, at 1366',
           'P11_Structure': 'Add, remove and move · steps, and rows within their step, at 1366',
           'P11_Save': 'Save · what refuses it and where it lands, at 1366',
@@ -331,9 +369,9 @@ def build_boards(out):
     r1 = [dict(SC('pA1', sheet(table_html([(None, flat_rows(['milk', 'cream', 'smp', 'suc', 'van'])) ]), method_html([]))), cap='No step yet · 1366', sub='the Instructions heading stands under the table with Add step on its row, as Before you start stands with Add note on its and, since Mark\'s todo of 2026-10-25, Ingredients with Add ingredient on its; the rows have no step head yet (Phase 10\'s flat table), only their own moves. The three controls in the Show/Hide control\'s look (Mark, 2026-10-25; the app follows in Phase 11: CreationPage.jsx\'s beforeFoot and notebook.css .mk-add-row move onto the heading\'s row)'),
           dict(SC('pB1', sheet(table_html(grouped([dict(lead='', uses=())])), method_html(steps_html([dict(lead='', text='', uses=())], over={0: dict(required=True)})))),
                cap='A step just added · 1366', sub='the pen\'s open step, kept open as every creation field is: lead-in, text, Add target · Preview step, "uses nothing yet · change the ingredients · add a purpose · add an aside", then remove · Move up · Move down · Add step; Required under the two empty fields; the table now heads its rows "Not in a step yet", each ending its acts line with Add to step (decide-p11-place-unplaced-row, A, 2026-10-26: the line offers the steps when pressed, this one reading "Step 1" alone until the lead-in is typed). Decided 2026-10-25: no box around the fields, since every step is open here and the version pen\'s box only marked the one open step among closed ones (decide-open-step-box, drop), so the number and the lead-in share one top; Add step on the step\'s own row adds the next step right after it and the heading\'s Add step adds at the beginning of the list (decide-add-step-per-step, both), focus in the new step\'s lead-in either way; Preview step shows the step as the Sheet prints it (look-p11-preview-step, approved)')]
-    r2 = [dict(SC('pC1', sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2], over={1: dict(uses_open=True)})))), cap='Two steps worked on · 1366', sub='step 1 has a target and a purpose; step 2\'s checklist is open (the build\'s Uses fieldset); the table reads in step order under step heads, every row in one step, so no "Not in a step yet" head; Add ingredient and Add step on their heading\'s row (Mark, 2026-10-25); each step\'s row ends in Add step, which adds a step right after it; the heading\'s adds at the beginning (decision 33)'),
+    r2 = [dict(SC('pC1', sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2], over={1: dict(uses_open=True)})))), cap='Two steps worked on · 1366', sub='step 1 has a target and a purpose, the target\'s remove after its value field inside the chip (D-22, drawn 2026-10-27); step 2\'s checklist is open (the build\'s Uses fieldset); the table reads in step order under step heads, every row in one step, so no "Not in a step yet" head; Add ingredient and Add step on their heading\'s row (Mark, 2026-10-25); each step\'s row ends in Add step, which adds a step right after it; the heading\'s adds at the beginning (decision 33)'),
           dict(SC('pD1', sheet(table_html(grouped([S1, S2_MILK], split={'milk': [(0, 400), (1, 200)]})), method_html(steps_html([S1, S2_MILK])))),
-               cap='A row in two steps · 1366', sub='Whole milk ticked in step 2 as well: the row splits into one line per step, each with its own grams field, the note "400 g of 600 g · 58.0% in all" under each (the build\'s portion line); the grams are typed in the table, not on the step (decide-p11-portion-grams-place, A); Add step on the heading\'s row (adds at the beginning) and on each step\'s row (adds right after it) (decision 33). Redrawn 2026-10-26 (decide-p11-row-order-across-steps: each step orders its own rows, the table draws a step\'s rows in its uses order): Whole milk\'s second line stands under Step 2 as its last row, where step 2\'s uses line names it, with its own grams field, 200 g, and the portion line "200 g of 600 g · 58.0% in all"')]
+               cap='A row in two steps · 1366', sub='Whole milk ticked in step 2 as well: the row splits into one line per step, each with its own grams field, the note "400 g of 600.0 g · 58.0% in all" under each (the build\'s portion line, the row\'s total at the Sheet\'s one decimal; drawn 2026-10-27); the grams are typed in the table, not on the step (decide-p11-portion-grams-place, A); Add step on the heading\'s row (adds at the beginning) and on each step\'s row (adds right after it) (decision 33). Redrawn 2026-10-26 (decide-p11-row-order-across-steps: each step orders its own rows, the table draws a step\'s rows in its uses order): Whole milk\'s second line stands under Step 2 as its last row, where step 2\'s uses line names it, with its own grams field, 200 g, and the portion line "200 g of 600 g · 58.0% in all"')]
     r3 = [dict(SC('pE1', sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2], over={0: dict(preview='open', aside=PE1_ASIDE)})))), cap='Preview step on step 1 · 1366',
                sub='Preview step (Mark\'s todo of 2026-10-25: "some of the actions may not be understandable without seeing the preview", his example a target): the control sits at the end of the targets line, after Add target, where the fields end; pressed, it reads Hide preview and the step appears under its fields as the Sheet shows it, set off by the Sheet\'s hairline at the left under a Preview cue in the checklist\'s legend face; the uses line and the step\'s row stay where they are. Approved as drawn (look-p11-preview-step; decision 34). Redrawn 2026-10-26 (Mark: the Sheet\'s steps take the printed method\'s treatment, sketch 010 D18; sketch 014 decision 2): the preview reads as the print does, the target as a caps label and a bold underlined value with no box, the purpose as "why", an em dash and the sentence, the aside as a callout behind the ink rule, all upright; step 1 has an aside on this panel so the preview shows all three')]
     parts, bw, bh = flow([r1, r2, r3]); sizes['P11_Steps'] = (bw, bh)
@@ -358,16 +396,30 @@ def build_boards(out):
     worked = sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2])))
     r1 = [dict(pid='vA1', W=1366, html=editor_page('vA1', band_save(vid='vA1'), worked), max=900, cap='Ready to save · 1366', sub='the ceremony reads New recipe · draft, Version name, then Cancel and Save (the filled action); the page under it is the editor as worked on'),
           dict(pid='vB1', W=1366, html=editor_page('vB1', band_save(name='', vname='', vid='vB1', name_error='Enter a recipe name.'), worked), max=900, cap='Save refused · 1366', sub='the two fields Save needs: "Enter a recipe name." under the empty name (the Notebook\'s own sentence) and Required under the empty version name; nothing is saved and the page stays; a step with Required standing refuses the same way')]
-    r2 = [dict(pid='vC1', W=1366, html=shell_main(1366, after_save_page(), 'vC1'), h_fixed=1024, cap='After Save · the new recipe\'s page in a 1366 × 1024 window · 1366', sub='the recipe and its first version in one step (MAKE-10): the band reads Vanilla and its description with Rename; Version 1 · Latest, Written today, no From version, "no reason recorded"; Next version and Edit; History with one node; the Sheet as the seeded ones read, its steps numbered and the table under step heads; the Batch margin not yet churned; "Recipe saved." as the built page notice: the ink card at the window\'s foot, centred, 20 above the foot, the shape of "Batch saved." (decide-page-notice-shape and decide-notice-card-palette, Mark 2026-10-24/25; decision 23\'s place under the bar beside Import is superseded); it clears after 5 s as the others do')]
+    r2 = [dict(pid='vC1', W=1366, html=shell_main(1366, after_save_page(), 'vC1'), h_fixed=1024, cap='After Save · the new recipe\'s page in a 1366 × 1024 window · 1366', sub='the recipe and its first version in one step (MAKE-10): the band reads Vanilla and its description with Rename; Version 1 · Latest (the label printed once when it equals the ordinal\'s words: decide-p11-default-version-name-repeats, build-once), Written today, no From version, "no reason recorded"; Next version, Edit and Print sheet (D-05); History as the one line "Only this version so far" (03.5-18; drawn 2026-10-27); the Sheet as the seeded ones read, its steps numbered and the table under step heads; the Batch margin not yet churned; "Recipe saved." as the built page notice: the ink card at the window\'s foot, centred, 20 above the foot, the shape of "Batch saved." (decide-page-notice-shape and decide-notice-card-palette, Mark 2026-10-24/25; decision 23\'s place under the bar beside Import is superseded); it clears after 5 s as the others do')]
     parts, bw, bh = flow([r1, r2]); sizes['P11_Save'] = (bw, bh)
     window_foot(parts, 'vC1', notice_html('Recipe saved.'))
     board('P11_Save', TITLES['P11_Save'] + STAMPS['P11_Save'], bw, bh, parts, out)
 
     # ======== P11_FirstVersion
-    r1 = [dict(pid='fA1', W=1366, html=shell_main(1366, after_save_page(), 'fA1'), max=620, cap='A first version with no batch and no child · Edit · 1366', sub='Edit stands beside Next version as an underlined word (the acts row\'s own link look) only while the version has no batch and no child (STRUCT-04); Show changes needs a parent, so it is absent on a root'),
-          dict(pid='fB1', W=1366, html=editor_page('fB1', band_save(vid='fB1', caption='Version 1 · editing', form_label='Edit version'), worked), max=900, cap='Editing the first version · 1366', sub='Edit reopens the creation editor on the saved version, its steps, rows, style, scales and problems as saved (decide-p11-first-version-editor, A): the same Add, Remove and Move controls as while creating; the ceremony reads Version 1 · editing, Cancel and Save; Save writes over the version, Cancel keeps it as it was'),
-          dict(pid='fC1', W=1366, html=shell_main(1366, after_save_page(edit_act=False, with_batch=True), 'fC1'), max=620, cap='Once a batch exists · 1366', sub='Edit is gone: the acts row reads Next version alone; the Batch margin holds the batch as built (one untasted batch); from here the version pen\'s own remove and restore apply to its children, as before (STRUCT-04)')]
-    parts, bw, bh = flow([r1]); sizes['P11_FirstVersion'] = (bw, bh)
+    r1 = [dict(pid='fA1', W=1366, html=shell_main(1366, after_save_page(), 'fA1'), max=620, cap='A first version with no batch and no child · Edit · 1366', sub='Edit stands beside Next version as an underlined word (the acts row\'s own link look) only while the version has no batch and no child (STRUCT-04); Show changes needs a parent, so it is absent on a root; Print sheet, the same underlined word, ends the row (D-05). History is the one line "Only this version so far" while the recipe has one version (03.5-18), drawn 2026-10-27'),
+          dict(pid='fB1', W=1366, html=editor_page('fB1', band_save(vid='fB1', caption='Version 1 · editing', form_label='Edit version'), worked), max=900, cap='Editing the first version · 1366', sub='Edit reopens the creation editor on the saved version, its steps, rows, style, scales and problems as saved (decide-p11-first-version-editor, A): the same Add, Remove and Move controls as while creating; the ceremony reads Version 1 · editing, Cancel and Save; Save writes over the version, Cancel keeps it as it was; each target\'s remove stands after its value field (D-22)'),
+          dict(pid='fC1', W=1366, html=shell_main(1366, after_save_page(edit_act=False, with_batch=True), 'fC1'), max=620, cap='Once a batch exists · 1366', sub='Edit is gone: the acts row reads Next version, then Print sheet; the Batch margin holds the batch as built (one untasted batch; the Go to batch row, hidden at 1366, reads "Awaiting tasting"); from here the version pen\'s own remove and restore apply to its children, as before (STRUCT-04)')]
+    # 2026-10-27: the build's settled states drawn back (11-UI-REVIEW.md, Board matters for Sid)
+    def nb_resume_row():
+        return ('<li class="nb__row nb__row--resume"><span class="nb__rail" aria-hidden="true"></span><h2 class="nb__name"><a href="/notebook/vanilla/vanilla-v1" tabindex="0">Vanilla</a></h2>'
+                f'<p class="nb__desc">{esc(SAMPLE_DESC)}</p><p class="nb__meta"><span>1 version</span><span class="nb__dot" aria-hidden="true">·</span><span>not yet made</span></p>'
+                '<span class="nb__row-act"><button type="button" class="notebook-action--outline" tabindex="0">Resume editing</button></span></li>')
+    def nb_with_resume(vid):
+        n = len(PL.ORDER) + 1
+        main = ('<div class="list-page place nb">' + p10.nb_head(True) + f'<p class="nb__count">{n} recipes</p><ul class="nb__list">' + nb_resume_row()
+                + ''.join(PL.nb_row(h, r, nm) for h, r, v, nm in PL.ORDER) + '</ul></div>')
+        return unique_ids(PL.clean(PL.CAP['chrome_notebook_1366']).replace('@@MAIN@@', main), vid)
+    r2 = [dict(pid='fD1', W=1366, html=shell_main(1366, after_save_page(later=('temp', '80 °C', '85 °C')), 'fD1'), max=1400, cap='A later version · Show changes pressed · a changed target · 1366',
+               sub='Version 2 of Vanilla, from Version 1, with Show changes pressed (Hide changes in the acts row; no Edit, since only the first version is editable). In the tag row a changed target reads its label once, the old value struck, then the new value bold and underlined (D-18): the struck value takes the new value\'s size, 14 px at weight 400 with the app\'s one strike, as the table\'s struck figure matches its live figure (decide-p11-struck-target-size, value-size, Mark 2026-10-27); it had read at the label\'s 12 px. The app follows with one rule'),
+          dict(pid='fE1', W=1366, html=shell_main(1366, after_save_page(editing=True), 'fE1'), max=620, cap='An edit kept · the version page · 1366', sub='while an edit of the first version is kept (a draft since the first change on the edit route), Edit\'s place reads Resume editing, the same underlined word, and Next version and Record a batch are gone until the edit is saved or cancelled (D-04); Print sheet stays'),
+          dict(pid='fF1', W=1366, html=nb_with_resume('fF1'), max=620, cap='An edit kept · the Notebook row · 1366', sub='the recipe\'s row gains Resume editing as the outline control at the row\'s right, in the New recipe row\'s own look; no second draft row (D-05); below 760 it stands under the counts (not drawn: 1366 only)')]
+    parts, bw, bh = flow([r1, r2]); sizes['P11_FirstVersion'] = (bw, bh)
     board('P11_FirstVersion', TITLES['P11_FirstVersion'] + STAMPS['P11_FirstVersion'], bw, bh, parts, out)
     return sizes
 

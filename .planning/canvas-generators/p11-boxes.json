@@ -72,13 +72,13 @@
   "balW": 264
  },
  "vC1": {
-  "balY": 685,
+  "balY": 571,
   "balH": 919,
   "balX": 640,
   "balW": 264
  },
  "fA1": {
-  "balY": 685,
+  "balY": 571,
   "balH": 919,
   "balX": 640,
   "balW": 264
@@ -90,9 +90,22 @@
   "balW": 264
  },
  "fC1": {
-  "balY": 685,
+  "balY": 571,
   "balH": 919,
   "balX": 640,
   "balW": 264
- }
+ },
+ "fD1": {
+  "balY": 710,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "fE1": {
+  "balY": 571,
+  "balH": 919,
+  "balX": 640,
+  "balW": 264
+ },
+ "fF1": null
 }

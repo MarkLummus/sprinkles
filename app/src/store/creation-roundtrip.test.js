@@ -6,6 +6,11 @@ import { describe, it, expect } from 'vitest';
 import { validateStoreFile } from './transfer.js';
 import { storeFileOf } from './storeFile.fixtures.js';
 import { createRecipe } from '../domain/newRecipe.js';
+import { buildCreation } from '../domain/creationSave.js';
+import { blankCreateDraft } from '../domain/draft.js';
+import { addNote, addProblem, addRow, addScale, applyStyle, updateNote, updateProblem, updateScale } from '../domain/creation.js';
+import { addStep, addTarget, setLineGrams, setStepField, setTarget, toggleStepUses } from '../domain/creationSteps.js';
+import { STYLE_ROWS } from '../data/styles.js';
 import { rowFromLibraryRecord } from '../domain/versionRow.js';
 import { nextStepKey } from '../domain/stepKeys.js';
 import { buildFigures } from '../domain/figures.js';
@@ -240,5 +245,66 @@ describe('a recipe created with steps, scales, problems and targets (Phase 11, M
     const draft = penDraftFromVersion(version);
     expect(draft.rows['row-b'].portions.map((portion) => portion.step)).toEqual([1, 2]);
     expect(draft.rows['row-c'].portions.map((portion) => portion.step)).toEqual([0]);
+  });
+});
+
+// A creation as the Phase 11 editor saves it (MAKE-10, T-11-27): buildCreation
+// over a worked draft yields a version the import check accepts, so every
+// saved recipe exports and re-imports.
+describe('a recipe built by buildCreation (Phase 11, MAKE-10, T-11-27)', () => {
+  const libraryById = new Map(Object.entries(library).map(([id, entry]) => [id, { id, entry }]));
+
+  function workedDraft() {
+    let draft = blankCreateDraft({ recipeId: 'recipe-built', versionId: 'version-built-1', name: 'Vanilla' });
+    draft = addRow(draft, { rowId: 'row-a', libraryId: 'wholeMilk' });
+    draft = addRow(draft, { rowId: 'row-b', libraryId: 'heavyCream' });
+    draft = addRow(draft, { rowId: 'row-c', libraryId: 'sucrose' });
+    draft = addStep(addStep(draft, { afterN: null }), { afterN: 1 });
+    draft = setStepField(setStepField(draft, 1, 'leadIn', 'Warm'), 1, 'instruction', 'Warm the milk.');
+    draft = setStepField(setStepField(draft, 2, 'leadIn', 'Churn'), 2, 'instruction', 'Churn, then harden.');
+    draft = addTarget(draft, 1);
+    draft = setTarget(setTarget(draft, 1, 0, 'label', 'Heat to'), 1, 0, 'value', '80 C');
+    for (const [n, rowId] of [[1, 'row-a'], [1, 'row-b'], [2, 'row-a']]) draft = toggleStepUses(draft, n, rowId);
+    draft = setLineGrams(setLineGrams(draft, 'row-a', 1, '400'), 'row-a', 2, '200');
+    draft = setLineGrams(setLineGrams(draft, 'row-b', 1, '250'), 'row-c', 0, '100');
+    draft = updateNote(addNote(draft), 0, 'Chill the bowl.');
+    draft = addScale(draft, 'scale-chew');
+    for (const [field, value] of [['name', 'Chew'], ['low', 'soft'], ['high', 'firm'], ['kind', 'goldilocks']]) {
+      draft = updateScale(draft, 'scale-chew', field, value);
+    }
+    draft = updateProblem(addProblem(draft), 0, 'Icy');
+    draft = applyStyle(draft, STYLE_ROWS[0]);
+    return draft;
+  }
+
+  function built() {
+    return buildCreation(workedDraft(), { libraryById, styles: STYLE_ROWS, now: NOW });
+  }
+
+  it('passes the import check, with its recipe', () => {
+    const { recipe, version } = built();
+    expect(validateStoreFile(storeFile({ recipes: [recipe], versions: [version] }))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('a child of it builds, passes the import check and compares with it', () => {
+    const { recipe, version } = built();
+    const child = createChildVersion(
+      version,
+      {
+        versionLabel: 'second try',
+        reason: null,
+        citedBatchId: null,
+        rows: version.rows,
+        method: version.method,
+        sheetTitle: version.sheetTitle,
+        sheetDescription: version.sheetDescription,
+        authored: version.authored,
+      },
+      { id: 'version-built-2', now: NOW },
+    );
+    expect(child.rows.find((row) => row.id === 'row-c').portions).toEqual([{ step: 0, grams: 100 }]);
+    expect(validateStoreFile(storeFile({ recipes: [recipe], versions: [version, child] }))).toEqual({ ok: true, errors: [] });
+    expect(() => buildDiff(child, version)).not.toThrow();
+    expect(penDraftFromVersion(version).rows['row-a'].portions.map((portion) => portion.step)).toEqual([1, 2]);
   });
 });

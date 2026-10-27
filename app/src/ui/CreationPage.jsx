@@ -7,12 +7,13 @@ import { sheetView } from './sheetView.js';
 import { DRAFT_KEPT_STATUS, useDraftWriter, useKeptDraft } from './useKeptDraft.js';
 import { PageNotice, usePageNotice } from './PageNotice.jsx';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
+import { useCatalog } from './CatalogContext.jsx';
 import { IngredientPicker } from './IngredientPicker.jsx';
 import { CreationSetup } from './CreationSetup.jsx';
 import { CreationSteps } from './CreationSteps.jsx';
 import { repository } from '../store/repository.js';
 import { draftMatchesCreate } from '../domain/draft.js';
-import { NOTEBOOK_PLACE_PATH } from './notebookPaths.js';
+import { NOTEBOOK_PLACE_PATH, notebookPath } from './notebookPaths.js';
 import { freshId } from '../domain/id.js';
 import {
   addStep,
@@ -33,6 +34,7 @@ import {
   UNPLACED_STEP,
 } from '../domain/creationSteps.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
+import { buildCreation } from '../domain/creationSave.js';
 import {
   addNote,
   addRow,
@@ -46,11 +48,15 @@ import {
 
 function doNothing() {}
 
+// The line under Save when a save fails (MAKE-10, D-19). The curly apostrophe
+// is the one recipe.js's RECIPE_SAVE_ERROR uses.
+export const RECIPE_CREATE_ERROR = 'Couldn’t save the recipe. Try again.';
+
 // The creation editor (Phase 10, MAKE-05, sketch 013 creation-editor.html
 // panel eA1): the band holds Recipe name and Recipe description in Rename's
 // open form, and the ceremony form 'New recipe' holds the Version name and
-// Cancel. There is no Save here (Phase 11 adds it). The kept draft is the
-// create record the Notebook's Start wrote; useKeptDraft keeps it as typed.
+// Cancel, then Save (Phase 11, MAKE-10). The kept draft is the create record the
+// Notebook's Start wrote; useKeptDraft keeps it as typed.
 // `record` is the stored create draft CreationRoute found; `justStarted` is
 // true when the maker has just pressed Start, so 'Draft kept' is not announced.
 export function CreationPage({ record, justStarted = false }) {
@@ -62,7 +68,20 @@ export function CreationPage({ record, justStarted = false }) {
   // may hold only recipeId, versionId and name, so the first state and every
   // restore lay the payload over the blank one, then repair a draft whose uses
   // and portions disagree without losing a typed amount (normalizeAllocation).
-  const [createDraft, setCreateDraft] = useState(() => normalizeAllocation(normalizeCreateDraft(record.payload)));
+  const [createDraft, setCreateDraftState] = useState(() => normalizeAllocation(normalizeCreateDraft(record.payload)));
+  const { catalog } = useCatalog();
+  // Save (MAKE-10). savingRef is the lock and the gate in one: it is set before
+  // the first await, so a second press does nothing, and setCreateDraft below
+  // drops every change while it is set, so no keystroke typed after
+  // buildCreation took its payload is accepted and then lost. `saving` is the
+  // same fact for the render (Save reads Saving…, the fields and Cancel are
+  // disabled). mountedRef lets a save that resolves after the maker left the
+  // page navigate nowhere.
+  const savingRef = useRef(false);
+  const [saving, setSaving] = useState(false);
+  const [saveFailed, setSaveFailed] = useState(false);
+  const mountedRef = useRef(true);
+  const saveButtonRef = useRef(null);
   const penOpenedAtRef = useRef(null);
   // Focus follows an add or a remove (MAKE-08): a handler leaves a request, and
   // the effect below acts on it after the render that drew its target, so focus
@@ -157,6 +176,13 @@ export function CreationPage({ record, justStarted = false }) {
     };
   }, [title]);
 
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
   // A pending announcement frame goes with the page.
   useEffect(() => () => cancelAnimationFrame(structureFrameRef.current), []);
 
@@ -166,7 +192,9 @@ export function CreationPage({ record, justStarted = false }) {
     if (!request || !page) return;
     focusRequestRef.current = null;
     let target;
-    if (typeof request === 'object' && request.kind === 'lead-in') {
+    if (request === 'save') {
+      target = saveButtonRef.current;
+    } else if (typeof request === 'object' && request.kind === 'lead-in') {
       target = page.querySelector(`input[aria-label="Step ${request.position}, lead-in"]`);
     } else if (typeof request === 'object' && request.kind === 'step-act') {
       // After a move: the same Move button of the moved step, or its other Move
@@ -211,6 +239,13 @@ export function CreationPage({ record, justStarted = false }) {
     }
     target?.focus();
   });
+
+  // The one place a draft change enters: every handler, CreationSetup's onChange
+  // and the restore go through it, and while a save is out it does nothing.
+  function setCreateDraft(update) {
+    if (savingRef.current) return;
+    setCreateDraftState(update);
+  }
 
   // Nothing is drawn until the kept-draft hook's own restore read has settled,
   // so nothing can be typed into a read still out and no keystroke is lost to a
@@ -398,6 +433,7 @@ export function CreationPage({ record, justStarted = false }) {
   // Notebook's route state says whether another creation remains (createKept,
   // a boolean computed here, left out when that read fails).
   async function handleCancel() {
+    if (savingRef.current) return;
     try {
       await writer.discardDraft({ final: true });
     } catch {
@@ -412,6 +448,42 @@ export function CreationPage({ record, justStarted = false }) {
       // Nothing is known about other drafts; the flag is left out.
     }
     navigate(NOTEBOOK_PLACE_PATH, { replace: true, state });
+  }
+
+  // Save (MAKE-10): the creation becomes a recipe and its first version in one
+  // transaction. The lock is taken before the first await. The draft writer is
+  // ended before the transaction so no pending write can put the create draft
+  // back after the transaction deletes it (RESEARCH G-10). Success leaves for
+  // the new recipe's page only while this page is still mounted; any failure
+  // writes nothing, gives the writer back and says so under Save, with the
+  // draft as it was.
+  async function handleSave() {
+    if (savingRef.current) return;
+    savingRef.current = true;
+    setSaving(true);
+    setSaveFailed(false);
+    let ended = false;
+    try {
+      const { recipe, version } = buildCreation(createDraft, {
+        libraryById,
+        styles: catalog.styles,
+        now: new Date().toISOString(),
+      });
+      writer.endDraft();
+      ended = true;
+      await repository.createRecipeWithVersion({ recipe, version });
+      if (mountedRef.current) {
+        navigate(notebookPath(recipe.id, version.id), { replace: true, state: { focusVersion: true, saved: 'created' } });
+      }
+    } catch {
+      if (ended) writer.resumeDraft();
+      savingRef.current = false;
+      if (mountedRef.current) {
+        setSaving(false);
+        setSaveFailed(true);
+        focusRequestRef.current = 'save';
+      }
+    }
   }
 
   return (
@@ -430,6 +502,7 @@ export function CreationPage({ record, justStarted = false }) {
                   <input
                     type="text"
                     className="ink-field"
+                    disabled={saving}
                     value={createDraft.name}
                     aria-label="Recipe name"
                     onChange={(event) => setField('name', event.target.value)}
@@ -440,6 +513,7 @@ export function CreationPage({ record, justStarted = false }) {
                   <textarea
                     className="prose-field"
                     rows="3"
+                    disabled={saving}
                     value={createDraft.description}
                     aria-label="Recipe description"
                     onChange={(event) => setField('description', event.target.value)}
@@ -455,6 +529,7 @@ export function CreationPage({ record, justStarted = false }) {
                   type="text"
                   className="ink-field"
                   required
+                  disabled={saving}
                   value={createDraft.versionLabel}
                   aria-label="Version name"
                   onChange={(event) => setField('versionLabel', event.target.value)}
@@ -462,10 +537,18 @@ export function CreationPage({ record, justStarted = false }) {
                 <FieldFeedback required />
               </label>
               <div className="notebook-ceremony__actions">
-                <Button className="notebook-action--outline" onClick={handleCancel}>
+                <Button className="notebook-action--outline" disabled={saving} onClick={handleCancel}>
                   Cancel
                 </Button>
+                <Button ref={saveButtonRef} className="notebook-action" disabled={saving} onClick={handleSave}>
+                  {saving ? 'Saving…' : 'Save'}
+                </Button>
               </div>
+              {saveFailed && (
+                <p className="field-error" role="status">
+                  {RECIPE_CREATE_ERROR}
+                </p>
+              )}
             </form>
           </div>
         </header>

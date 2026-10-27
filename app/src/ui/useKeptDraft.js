@@ -29,6 +29,9 @@ export function useDraftWriter(versionId) {
   //    delete is out and left set once the delete has succeeded, so nothing
   //    writes the record back; a failed delete clears it.
   const endedRef = useRef(false);
+  //  - heldRef: the record endDraft set aside, so resumeDraft can write it back
+  //    if the save that ended the draft fails.
+  const heldRef = useRef(null);
 
   // Writes the record waiting out the debounce at once. Reads refs only, so
   // the listener below can hold the first render's copy for the page's life.
@@ -82,7 +85,33 @@ export function useDraftWriter(versionId) {
     return deleted;
   }
 
-  return { draftStoredRef, pendingDraftRef, draftTimerRef, endedRef, flushPendingDraft, discardDraft };
+  // Save ends a creation's draft without deleting it (Phase 11, MAKE-10): the
+  // save transaction deletes the record itself, in the same transaction that
+  // writes the recipe and its version, so a failed save leaves the draft where
+  // it was. Until then nothing may write the record back, or a pending write
+  // would put it in the store after the transaction deleted it (RESEARCH
+  // G-10): the timer is cleared, the waiting record is held aside, and endedRef
+  // makes the persist effect and the unmount flush write nothing.
+  function endDraft() {
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    draftTimerRef.current = null;
+    heldRef.current = pendingDraftRef.current ?? heldRef.current;
+    pendingDraftRef.current = null;
+    endedRef.current = true;
+  }
+
+  // A save that failed gives the writer back: the newest record held since
+  // endDraft (the persist effect keeps filling pendingDraftRef while ended), or
+  // the one set aside, is written at once, and later edits are debounced as before.
+  function resumeDraft() {
+    endedRef.current = false;
+    draftStoredRef.current = true;
+    pendingDraftRef.current = pendingDraftRef.current ?? heldRef.current;
+    heldRef.current = null;
+    flushPendingDraft();
+  }
+
+  return { draftStoredRef, pendingDraftRef, draftTimerRef, endedRef, flushPendingDraft, discardDraft, endDraft, resumeDraft };
 }
 
 // The kept-draft effects (Phase 8 cut 6, EDIT-05, D-08, D-10). `catalog` is the

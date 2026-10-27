@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { createBrowserRouter, useParams } from 'react-router';
+import { createBrowserRouter, useLocation, useNavigate, useParams } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import { RecipeList } from './ui/RecipeList.jsx';
 import { RecipePage } from './ui/RecipePage.jsx';
@@ -36,6 +36,9 @@ import { PageNoticeContext } from './ui/PageNotice.jsx';
 // parameters and the key.
 export function RecipePageForRoute() {
   const { recipeId, versionId, batchId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const savedHandledRef = useRef(false);
   const [pageStatus, setPageStatus] = useState('');
   const pageStatusTimerRef = useRef(null);
   const [penOpen, setPenOpen] = useState(false);
@@ -75,6 +78,22 @@ export function RecipePageForRoute() {
   // Shell's fallback notice is never drawn on a recipe route.
   useEffect(() => registerPageNotice(announcePageStatus), [registerPageNotice, announcePageStatus]);
 
+  // The landing after Save carries the enum word 'created' in route state, never
+  // text: the page says its own constant sentence (D-07, T-10-05's rule), which
+  // clears after the notice's five seconds. The word is then dropped from the
+  // entry's state once (a ref guards it under StrictMode), keeping what else the
+  // state holds (focusVersion). The announcement itself may repeat: a simulated
+  // remount clears the timer, and the repeat sets it again.
+  const saved = location.state?.saved;
+  useEffect(() => {
+    if (saved !== 'created') return;
+    announcePageStatus(RECIPE_SAVED_STATUS);
+    if (savedHandledRef.current) return;
+    savedHandledRef.current = true;
+    const { saved: _consumed, ...rest } = location.state;
+    navigate({ pathname: location.pathname, search: location.search, hash: location.hash }, { replace: true, state: rest });
+  }, [saved]);
+
   return (
     <>
       {/* The running head is gone (folded todo, 03.5-02 Task 3) — the App
@@ -90,6 +109,8 @@ export function RecipePageForRoute() {
     </>
   );
 }
+
+export const RECIPE_SAVED_STATUS = 'Recipe saved.';
 
 export function PageStatus({ message }) {
   return (

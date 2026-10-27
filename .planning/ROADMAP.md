@@ -252,7 +252,7 @@ Plans:
   5. The created recipe prints as a bench sheet with its Sheet code, like the seeded ones, and typing that code finds it, also after a reorder or any other edit made after printing; a recipe with empty targets, equipment or process prints with no gap
   6. On screen, the Sheet's Instructions steps read in the printed method treatment (sketch 010 D18: the targets as a tag row with no box, Why as the caps word and the sentence, the aside as a callout, all upright) on the reading page, in the version pen's closed steps and in the creation editor's Preview step; Add note, Add ingredient and Add step sit on their heading's row, and an unplaced row offers Add to step (sketch 014; Mark, 2026-10-25 and 2026-10-26)
 
-**Plans:** 13/14 plans executed in 9 waves (11-09 stops for the orchestrator to put the export-first row on Mark's List, 11-13 for the iPad check row; 11-14 was split out of 11-07 in the plan-check revision)
+**Plans:** 14/14 plans executed in 9 waves (11-09 stops for the orchestrator to put the export-first row on Mark's List, 11-13 for the iPad check row; 11-14 was split out of 11-07 in the plan-check revision)
 
 Plans:
 **Wave 1**
@@ -285,7 +285,7 @@ Plans:
 - [x] 11-12-PLAN.md — Edit and Resume editing on the page, the Notebook and Home while an edit is kept, and import refused naming the recipe (D-04, D-05, D-24)
 
 **Wave 9** *(blocked on Wave 8 completion)*
-- [ ] 11-13-PLAN.md — the proof on the final build: the walk with five new scenarios, every sketch 014 board with evidence, the print check, the iPad steps walked in WebKit; stops for the iPad check row (D-20)
+- [x] 11-13-PLAN.md — the proof on the final build: the walk with five new scenarios, every sketch 014 board with evidence, the print check, the iPad steps walked in WebKit; stops for the iPad check row (D-20)
 
 **Design gate**: MET (Mark, 2026-10-25, redraws approved 2026-10-26). The four boards for the creation editor's Instructions steps with their uses and portions, the Add, Remove, Move up and Move down controls for steps and rows, Save and the saved first version with no batch and no child version (P11_Steps, P11_Structure, P11_Save, P11_FirstVersion) are approved and snapshotted as `.planning/sketches/014-steps-structure-save/` (README `## Decisions`: decisions 22 to 25 above, sketch 013's 29 to 34, and 014's 1 and 2: Add to step on an unplaced row, the on-screen steps in the printed method treatment). Print (MAKE-12) has no board: sketch 010 and the built sheet are its authority. Plans cite the snapshot by path.
 **UI hint**: yes
@@ -316,7 +316,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | 8. Split the recipe page along its jobs | v2.0 | 6/6 | Complete    | 2026-10-17 |
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
 | 10. The creation editor, without Save | v2.0 | 12/12 | Complete    | 2026-10-21 |
-| 11. Steps, structure, save and print | v2.0 | 13/14 | In Progress | - |
+| 11. Steps, structure, save and print | v2.0 | 14/14 | In Progress | - |
 | 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/TBD | Not started | - |
 
 ## Later

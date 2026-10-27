@@ -10,6 +10,8 @@ import { createRepository } from './repository.js';
 import { library } from '../data/library.js';
 import { codeFromVersionId, SheetCodeError } from '../domain/sheetCode.js';
 import { SEED_CATALOG } from '../data/seed-catalog.js';
+import { createRecipe } from '../domain/newRecipe.js';
+import { rowFromLibraryRecord } from '../domain/versionRow.js';
 
 beforeEach(() => {
   // A fresh database per test — the repository opens its connection when
@@ -496,5 +498,87 @@ describe('onBlocked, through the repository seam (WR-08)', () => {
 
     held.close();
     expect(await repository.listVersions()).toEqual([]);
+  });
+});
+
+// A recipe and its root as the creation editor saves them (Phase 11, MAKE-10).
+const CREATED_AT = '2026-10-26T12:00:00.000Z';
+function createdPair({ recipeId = 'recipe-new', versionId = 'version-new-1', name = 'Plain base', fields = {} } = {}) {
+  const rows = [
+    rowFromLibraryRecord({ id: 'wholeMilk', entry: library.wholeMilk }, { id: 'row-a', grams: 500 }),
+    rowFromLibraryRecord({ id: 'sucrose', entry: library.sucrose }, { id: 'row-b', grams: 100 }),
+  ];
+  return createRecipe({ name, versionLabel: 'first try', rows, ...fields }, { recipeId, versionId, now: CREATED_AT });
+}
+
+async function stores(repository) {
+  return {
+    recipes: await repository.listRecipes(),
+    versions: await repository.listVersions(),
+    batches: await repository.getAllBatches(),
+    drafts: await repository.listDrafts(),
+  };
+}
+
+describe('createRecipeWithVersion, through the repository seam (MAKE-10, T-11-07)', () => {
+  it('stores the recipe and the version, and the create draft under the version id is gone', async () => {
+    const repository = createRepository();
+    const { recipe, version } = createdPair();
+    await repository.saveDraft(makeDraft(version.id, { kind: 'create' }));
+    await repository.saveDraft(makeDraft('other-version', { kind: 'create' }));
+
+    await repository.createRecipeWithVersion({ recipe, version });
+
+    expect(await repository.getRecipe(recipe.id)).toEqual(recipe);
+    expect(await repository.getVersion(version.id)).toEqual(version);
+    expect(await repository.getDraft(version.id)).toBeUndefined();
+    // A draft under another id is another creation's, and stays.
+    expect(await repository.getDraft('other-version')).toEqual(makeDraft('other-version', { kind: 'create' }));
+  });
+
+  it('writes neither the recipe nor the version when the version cannot be cloned, and the create draft stays', async () => {
+    const repository = createRepository();
+    const { recipe, version } = createdPair();
+    const draft = makeDraft(version.id, { kind: 'create' });
+    await repository.saveDraft(draft);
+    const before = await stores(repository);
+
+    // A function value cannot be structured-cloned: the version put throws a
+    // DataCloneError after the recipe put was already queued.
+    await expect(
+      repository.createRecipeWithVersion({ recipe, version: { ...version, notClonable: () => {} } }),
+    ).rejects.toThrow();
+
+    expect(await stores(repository)).toEqual(before);
+    expect(await repository.listRecipes()).toEqual([]);
+    expect(await repository.listVersions()).toEqual([]);
+    expect(await repository.getDraft(version.id)).toEqual(draft);
+  });
+
+  it('refuses a version whose Sheet code is a stored one, with a SheetCodeError, and stores nothing', async () => {
+    const repository = createRepository();
+    const first = createdPair({ recipeId: 'r-a', versionId: COLLIDING_ID_A });
+    await repository.createRecipeWithVersion(first);
+    const second = createdPair({ recipeId: 'r-b', versionId: COLLIDING_ID_B });
+    const draft = makeDraft(COLLIDING_ID_B, { kind: 'create' });
+    await repository.saveDraft(draft);
+    const before = await stores(repository);
+
+    const error = await repository.createRecipeWithVersion(second).catch((e) => e);
+    expect(error).toBeInstanceOf(SheetCodeError);
+    expect(await stores(repository)).toEqual(before);
+    expect(await repository.getRecipe('r-b')).toBeUndefined();
+  });
+
+  it('refuses a version id that is already stored with a TypeError, and stores nothing', async () => {
+    const repository = createRepository();
+    const first = createdPair();
+    await repository.createRecipeWithVersion(first);
+    const again = createdPair({ recipeId: 'recipe-other', name: 'Another name' });
+    const before = await stores(repository);
+
+    await expect(repository.createRecipeWithVersion(again)).rejects.toThrow(TypeError);
+    expect(await stores(repository)).toEqual(before);
+    expect(await repository.getRecipe('recipe-other')).toBeUndefined();
   });
 });

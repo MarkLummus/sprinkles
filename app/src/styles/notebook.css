@@ -197,6 +197,7 @@
 }
 
 .notebook .mk-row-acts--choosing {
+  display: inline-block;
   white-space: normal;
 }
 

@@ -322,7 +322,7 @@ describe('creationSaveBlock: every refusal at once, in page order (D-08 to D-11,
   });
 
   it('a blank problem is Required and a repeated one (trimmed, case as typed) is refused on the second', () => {
-    let draft = updateProblem(addProblem(addProblem(worked())), 0, '');
+    let draft = updateProblem(addProblem(addProblem(worked())), 1, 'Icy');
     expect(gate(draft)).toEqual([{ id: 'problem:0', message: 'Required', target: { kind: 'problem', index: 0 } }]);
     draft = updateProblem(updateProblem(draft, 0, 'Bitter'), 1, ' Bitter ');
     expect(gate(draft)).toEqual([

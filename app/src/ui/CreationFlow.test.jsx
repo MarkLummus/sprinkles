@@ -1898,3 +1898,200 @@ describe('Save creates the recipe and its first version (MAKE-10, T-11-24, T-11-
     });
   });
 });
+
+describe('Save refuses everything the store file would refuse, all at once, writing nothing (MAKE-10, D-08 to D-11, T-11-27, T-11-53)', () => {
+  const MILK = 'Whole milk, 3.5% fat';
+  const SUGAR = 'Sucrose';
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-head-act');
+  const gramsField = (name) => field(`${name}, grams`);
+  const saveButton = () => buttonByText('Save');
+  const scalesRegion = () => root().querySelector('section[aria-label="Scales"]');
+  const inCard = (card, label) => scalesRegion().querySelector(`.mk-card[aria-label="${card}"] [aria-label="${label}"]`);
+  const kindRadio = (card, word) =>
+    [...scalesRegion().querySelectorAll(`.mk-card[aria-label="${card}"] .segmented__option`)]
+      .find((option) => option.textContent === word)
+      .querySelector('input');
+
+  async function pick(name) {
+    await click(addButton());
+    const row = [...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === name);
+    await click(row);
+  }
+
+  // A creation that can be saved, then one thing broken per case.
+  async function startReady() {
+    await startVanilla();
+    await pick(SUGAR);
+    await type(gramsField(SUGAR), '150');
+  }
+
+  // Focus is somewhere else when Save is pressed, so a focus that lands is a move.
+  async function pressSave() {
+    field('Recipe description').focus();
+    await click(saveButton());
+    await flush();
+  }
+
+  const expectRefused = () => {
+    expect(repository.createRecipeWithVersion).not.toHaveBeenCalled();
+    expect(location.pathname).toBe('/notebook/new');
+    expect(store.drafts.size).toBe(1);
+  };
+
+  it('a blank draft writes nothing, shows Enter a recipe name. under the name and focuses it; fixing the name clears the message', async () => {
+    await startVanilla();
+    await type(field('Recipe name'), '');
+    await pressSave();
+
+    expectRefused();
+    const nameField = field('Recipe name');
+    const message = root().querySelector('#creation-name-error');
+    expect(message.textContent).toBe('Enter a recipe name.');
+    expect(nameField.getAttribute('aria-invalid')).toBe('true');
+    expect(nameField.getAttribute('aria-describedby')).toBe('creation-name-error');
+    expect(document.activeElement).toBe(nameField);
+    expect(root().querySelector('.notebook-ceremony p.field-error')).toBeNull();
+
+    await type(nameField, 'Vanilla');
+    expect(root().querySelector('#creation-name-error')).toBeNull();
+    expect(nameField.getAttribute('aria-invalid')).toBeNull();
+  });
+
+  it('a blank Version name shows Required as an error under it and takes focus', async () => {
+    await startReady();
+    await type(field('Version name'), '   ');
+    await pressSave();
+
+    expectRefused();
+    const versionField = field('Version name');
+    const message = root().querySelector('#creation-version-error');
+    expect(message.textContent).toBe('Required');
+    expect(message.classList.contains('field-error')).toBe(true);
+    expect(versionField.getAttribute('aria-invalid')).toBe('true');
+    expect(versionField.getAttribute('aria-describedby')).toBe('creation-version-error');
+    expect(document.activeElement).toBe(versionField);
+  });
+
+  it('no rows focuses Add ingredient, or the picker\'s Name field while the picker is open in its place', async () => {
+    await startVanilla();
+    await pressSave();
+    expectRefused();
+    expect(document.activeElement).toBe(addButton());
+
+    await click(addButton());
+    expect(addButton()).toBeNull();
+    await pressSave();
+    expectRefused();
+    expect(document.activeElement).toBe(root().querySelector('.ingredient-table-region .pick .ing__filters input'));
+  });
+
+  it('a draft whose only problem is a blank step lead-in focuses "Step 1, lead-in"', async () => {
+    await startReady();
+    await click(buttonByText('Add step'));
+    await type(field('Step 1, instruction'), 'Heat the sugar.');
+    await pressSave();
+
+    expectRefused();
+    expect(document.activeElement).toBe(field('Step 1, lead-in'));
+  });
+
+  it('a blank instruction, and a target with one side blank, focus their own fields', async () => {
+    await startReady();
+    await click(buttonByText('Add step'));
+    await type(field('Step 1, lead-in'), 'Warm');
+    await pressSave();
+    expect(document.activeElement).toBe(field('Step 1, instruction'));
+
+    await type(field('Step 1, instruction'), 'Heat the sugar.');
+    await click(field('Step 1, add a target'));
+    await type(field('Step 1, target label'), 'Heat to');
+    await pressSave();
+    expectRefused();
+    expect(document.activeElement).toBe(field('Step 1, target value'));
+  });
+
+  it('a draft whose only problem is a scale\'s blank High end focuses that card\'s High end field', async () => {
+    await startReady();
+    await click(scalesRegion().querySelector('.mk-add'));
+    await type(inCard('Scale 1', 'Name'), 'Chew');
+    await type(inCard('Scale 1', 'Low end'), 'soft');
+    await click(kindRadio('Scale 1', 'Right in the middle'));
+    await pressSave();
+
+    expectRefused();
+    expect(document.activeElement).toBe(inCard('Scale 1', 'High end'));
+  });
+
+  it('a draft whose only problem is an unpicked kind focuses the card\'s first Kind radio', async () => {
+    await startReady();
+    await click(scalesRegion().querySelector('.mk-add'));
+    await type(inCard('Scale 1', 'Name'), 'Chew');
+    await type(inCard('Scale 1', 'Low end'), 'soft');
+    await type(inCard('Scale 1', 'High end'), 'firm');
+    await pressSave();
+
+    expectRefused();
+    expect(document.activeElement).toBe(scalesRegion().querySelector('.mk-card[aria-label="Scale 1"] input[type="radio"]'));
+  });
+
+  it('a blank problem focuses its card\'s Name, and a repeated one refuses too', async () => {
+    await startReady();
+    const problemsRegion = () => root().querySelector('section[aria-label="Problems"]');
+    await click(problemsRegion().querySelector('.mk-add'));
+    await click(problemsRegion().querySelector('.mk-add'));
+    await type(problemsRegion().querySelector('.mk-card[aria-label="Problem 2"] input[aria-label="Name"]'), 'Icy');
+    await pressSave();
+    expectRefused();
+    expect(document.activeElement).toBe(problemsRegion().querySelector('.mk-card[aria-label="Problem 1"] input[aria-label="Name"]'));
+
+    await type(problemsRegion().querySelector('.mk-card[aria-label="Problem 1"] input[aria-label="Name"]'), ' Icy ');
+    await pressSave();
+    expectRefused();
+    expect(document.activeElement).toBe(problemsRegion().querySelector('.mk-card[aria-label="Problem 2"] input[aria-label="Name"]'));
+  });
+
+  it('a draft whose only problem is a 309-digit grams line writes nothing and focuses that line', async () => {
+    await startReady();
+    await type(gramsField(SUGAR), '9'.repeat(309));
+    await pressSave();
+
+    expectRefused();
+    expect(document.activeElement).toBe(gramsField(SUGAR));
+  });
+
+  it('Whole milk split across steps 1 and 2 with 308 nines in each line (each finite, their sum not) writes nothing and focuses the step 2 line', async () => {
+    await startVanilla();
+    await pick(MILK);
+    await click(buttonByText('Add step'));
+    await click(buttonByText('Add step'));
+    for (const n of [1, 2]) {
+      await type(field(`Step ${n}, lead-in`), `Step ${n}`);
+      await type(field(`Step ${n}, instruction`), 'Do it.');
+      await click(field(`Step ${n}, change the ingredients`));
+      await click(
+        [...root().querySelectorAll(`fieldset[aria-label="Step ${n}, uses"] label.method-step__uses-item`)]
+          .find((label) => label.textContent === MILK)
+          .querySelector('input'),
+      );
+    }
+    await type(field(`${MILK}, grams, portion 1`), '9'.repeat(308));
+    await type(field(`${MILK}, grams, portion 2`), '9'.repeat(308));
+    await pressSave();
+
+    expectRefused();
+    expect(document.activeElement).toBe(field(`${MILK}, grams, portion 2`));
+  });
+
+  it('with the draft fixed, the same press saves', async () => {
+    await startReady();
+    await click(buttonByText('Add step'));
+    await pressSave();
+    expectRefused();
+    await type(field('Step 1, lead-in'), 'Warm');
+    await type(field('Step 1, instruction'), 'Heat the sugar.');
+    await click(saveButton());
+    await flush(() => location.pathname !== '/notebook/new');
+    expect(repository.createRecipeWithVersion).toHaveBeenCalledTimes(1);
+    expect(repository.createRecipeWithVersion.mock.calls[0][0].version.method.map((step) => step.leadIn)).toEqual(['Warm']);
+  });
+});

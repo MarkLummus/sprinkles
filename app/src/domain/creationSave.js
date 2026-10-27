@@ -10,10 +10,21 @@
 // the draft kept (never as a stored version).
 
 import { creationTargets } from './creation.js';
-import { checkAllocation, liveSteps, rowLines } from './creationSteps.js';
-import { parseGramsDraft } from './lineage.js';
+import { checkAllocation, groupRows, liveSteps, rowLines, UNPLACED_STEP } from './creationSteps.js';
+import { gramsDraftMessage, parseGramsDraft } from './lineage.js';
 import { createRecipe } from './newRecipe.js';
+import { recipeNameMessage } from './recipe.js';
 import { rowFromLibraryRecord } from './versionRow.js';
+
+// The sentences this gate adds to the existing ones (recipe.js, lineage.js, the
+// field's own Required). Claude's wording within their shape, for Mark in chat.
+export const NO_ROWS_MESSAGE = 'Add at least one ingredient.';
+export const PROBLEM_REPEATED = 'This problem is already listed.';
+// Unreachable in v2.0 (the library never deletes an entry and Import is refused
+// while a draft is kept): a row whose entry is gone is refused, never dropped.
+export const LIBRARY_ENTRY_GONE = 'An ingredient on this recipe is no longer in the library.';
+
+const REQUIRED = 'Required';
 
 function hasWords(value) {
   return typeof value === 'string' && value.trim() !== '';
@@ -115,4 +126,118 @@ export function buildCreation(draft, { libraryById, styles, now }) {
     },
     { recipeId: draft.recipeId, versionId: draft.versionId, now },
   );
+}
+
+// gramsDraftMessage's one source for the not-a-number sentence: any text
+// parseGramsDraft rejects earns it, so a row whose lines add up past what a
+// number holds says exactly what a single unreadable line says.
+const NOT_A_NUMBER_PROBE = 'not a number';
+
+/**
+ * creationSaveBlock(draft, { libraryById }) -> [{ id, message, target }]: every
+ * refusal that stands, at once, in page order (D-11): the recipe name, the
+ * Version name, the Ingredients (no rows, then each line's grams, then a row's
+ * total), the Instructions, the Setup column (scales, then problems), then the
+ * form-level blocks. An empty list means the draft can be saved. The gate
+ * mirrors transfer.js, so a saved recipe always exports and re-imports, and
+ * reads every text trimmed, so a field of spaces is blank. Empty notes, empty
+ * purposes and asides and both-blank targets are dropped at Save, not refused.
+ *
+ * target says which field the block belongs to: { kind: 'recipeName' },
+ * { kind: 'versionName' }, { kind: 'ingredients' }, { kind: 'line', rowId, step },
+ * { kind: 'stepLeadIn', n }, { kind: 'stepInstruction', n }, { kind: 'stepTarget',
+ * n, index, side }, { kind: 'scaleField', key, field }, { kind: 'problem', index }
+ * or { kind: 'form' }. The grams blocks, `grams:${rowId}:${step}` and
+ * `grams-total:${rowId}` alike, all target the line they are shown under: the
+ * total's is the row's last line, in rowLines order. A row holds one kind or
+ * the other, never both (the total is checked only when every line reads).
+ *
+ * Lines are walked in the order the table draws them: each live step in method
+ * order, its rows in that step's own order (groupRows), then the rows no step
+ * uses in draft.rows order (decide-p11-row-order-across-steps).
+ */
+export function creationSaveBlock(draft, { libraryById }) {
+  const blocks = [];
+  const add = (id, message, target) => blocks.push({ id, message, target });
+
+  const nameMessage = recipeNameMessage(draft.name);
+  if (nameMessage !== null) add('recipe-name', nameMessage, { kind: 'recipeName' });
+  if (!hasWords(draft.versionLabel)) add('version-name', REQUIRED, { kind: 'versionName' });
+
+  // Ingredients.
+  if (draft.rows.length === 0) add('no-rows', NO_ROWS_MESSAGE, { kind: 'ingredients' });
+  const rowById = new Map(draft.rows.map((row) => [row.id, row]));
+  const lineOrder = [];
+  for (const step of liveSteps(draft)) for (const rowId of groupRows(draft, step.n)) lineOrder.push([rowId, step.n]);
+  for (const rowId of groupRows(draft, UNPLACED_STEP)) lineOrder.push([rowId, UNPLACED_STEP]);
+  const refusedRows = new Set();
+  for (const [rowId, step] of lineOrder) {
+    const record = libraryById.get(rowById.get(rowId).libraryId);
+    if (!record) continue;
+    const name = record.entry.name;
+    const lines = rowLines(draft, rowId);
+    const message = gramsDraftMessage(name, lines.find((line) => line.step === step).grams);
+    if (message !== null) {
+      refusedRows.add(rowId);
+      add(`grams:${rowId}:${step}`, message, { kind: 'line', rowId, step });
+    } else if (step === lines[lines.length - 1].step && !refusedRows.has(rowId)) {
+      const total = lines.reduce((sum, line) => sum + parseGramsDraft(line.grams), 0);
+      if (!Number.isFinite(total)) {
+        add(`grams-total:${rowId}`, gramsDraftMessage(name, NOT_A_NUMBER_PROBE), { kind: 'line', rowId, step });
+      }
+    }
+  }
+
+  // Instructions.
+  for (const step of liveSteps(draft)) {
+    const { n } = step;
+    if (!hasWords(step.leadIn)) add(`lead:${n}`, REQUIRED, { kind: 'stepLeadIn', n });
+    if (!hasWords(step.instruction)) add(`instruction:${n}`, REQUIRED, { kind: 'stepInstruction', n });
+    (step.targets ?? []).forEach((target, index) => {
+      const labelBlank = !hasWords(target.label);
+      const valueBlank = !hasWords(target.value);
+      if (labelBlank === valueBlank) return;
+      const side = labelBlank ? 'label' : 'value';
+      add(`target:${n}:${index}:${side}`, REQUIRED, { kind: 'stepTarget', n, index, side });
+    });
+  }
+
+  // The recipe's own scales and problems.
+  for (const scale of draft.scales) {
+    for (const field of ['name', 'low', 'high', 'kind']) {
+      if (!hasWords(scale[field])) add(`scale:${scale.key}:${field}`, REQUIRED, { kind: 'scaleField', key: scale.key, field });
+    }
+  }
+  const seen = new Set();
+  draft.problems.forEach((problem, index) => {
+    if (!hasWords(problem)) {
+      add(`problem:${index}`, REQUIRED, { kind: 'problem', index });
+      return;
+    }
+    const words = problem.trim();
+    if (seen.has(words)) add(`problem-repeat:${index}`, PROBLEM_REPEATED, { kind: 'problem', index });
+    seen.add(words);
+  });
+
+  // Form-level.
+  for (const row of draft.rows) {
+    if (!libraryById.get(row.libraryId)) add(`gone:${row.id}`, LIBRARY_ENTRY_GONE, { kind: 'form' });
+  }
+  return blocks;
+}
+
+/**
+ * lineSaveMessages(blocks) -> a Map from `${rowId}:${step}` to the first message
+ * whose target is that line: the one projection the table reads for a line's
+ * refusal. A total refusal shows under its row's last line exactly as a
+ * per-line one does, and no reader recognises a block by its id prefix.
+ */
+export function lineSaveMessages(blocks) {
+  const messages = new Map();
+  for (const block of blocks) {
+    if (block.target.kind !== 'line') continue;
+    const key = `${block.target.rowId}:${block.target.step}`;
+    if (!messages.has(key)) messages.set(key, block.message);
+  }
+  return messages;
 }

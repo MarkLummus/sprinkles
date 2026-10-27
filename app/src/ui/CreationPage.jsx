@@ -147,7 +147,11 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // Hooks first, in this order, above any early return.
   const navigate = useNavigate();
   const [notice, announce] = usePageNotice();
-  const writer = useDraftWriter(record.versionId);
+  // Edit mode (STRUCT-04) keeps an 'edit' draft, a creation a 'create' one; the
+  // writer's deletes name that family.
+  const editing = mode === 'edit';
+  const creationKind = editing ? 'edit' : 'create';
+  const writer = useDraftWriter(record.versionId, creationKind);
   // The editor never holds a payload as it was stored: a stored create draft
   // may hold only recipeId, versionId and name, so the first state and every
   // restore lay the payload over the blank one, then repair a draft whose uses
@@ -164,11 +168,8 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   const savingRef = useRef(false);
   const [saving, setSaving] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
-  // Edit mode (STRUCT-04): why the version can no longer be edited, from the
-  // first render when a kept edit opened on one, or as the Save-over
-  // transaction found it.
-  const editing = mode === 'edit';
-  const creationKind = editing ? 'edit' : 'create';
+  // Edit mode: why the version can no longer be edited, from the first render
+  // when a kept edit opened on one, or as the Save-over transaction found it.
   const [editRefusal, setEditRefusal] = useState(closedReason);
   // Once Save has been refused, the refusals are recomputed live from the draft,
   // so each message clears as its field is fixed (D-11). Each refused press

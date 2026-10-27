@@ -285,7 +285,7 @@ describe('New recipe, a name and Start open the creation editor (MAKE-04)', () =
     await flush(() => location.pathname === '/notebook' && buttonByText('New recipe') !== null);
 
     expect(repository.deleteDraft).toHaveBeenCalledTimes(1);
-    expect(repository.deleteDraft).toHaveBeenCalledWith(versionId);
+    expect(repository.deleteDraft).toHaveBeenCalledWith(versionId, 'create');
     expect(store.drafts.size).toBe(0);
     expect(location.pathname).toBe('/notebook');
     expect(buttonByText('New recipe')).not.toBeNull();
@@ -703,7 +703,7 @@ describe('a kept creation shows on the Notebook at load (MAKE-11, D-04b)', () =>
     await click(buttonByText('Cancel'));
     await flush(() => location.pathname === '/notebook' && root().querySelector('li.nb__draft') !== null);
     expect(repository.deleteDraft).toHaveBeenCalledTimes(1);
-    expect(repository.deleteDraft).toHaveBeenCalledWith('v-new');
+    expect(repository.deleteDraft).toHaveBeenCalledWith('v-new', 'create');
     expect([...store.drafts.keys()]).toEqual(['v-old']);
     const resurfaced = root().querySelectorAll('li.nb__draft');
     expect(resurfaced).toHaveLength(1);

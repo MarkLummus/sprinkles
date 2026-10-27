@@ -106,6 +106,7 @@ function Harness(props) {
       setMode('developing');
     },
     setPenDraft,
+    discardDraft: writer.discardDraft,
   };
   renders.push({ mode, penDraft, draftRestoreDone });
   return null;
@@ -296,7 +297,7 @@ describe('a pen opened while the read is out owns the stored draft (bug-stale-dr
     await flush();
 
     expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
-    expect(repo.deleteDraft).toHaveBeenCalledWith(oliveOilVersion.id);
+    expect(repo.deleteDraft).toHaveBeenCalledWith(oliveOilVersion.id, 'pen');
     expect(repo.saveDraft).not.toHaveBeenCalled();
   });
 
@@ -326,7 +327,7 @@ let createControls = null;
 let createRenders = [];
 
 function CreateHarness({ initial }) {
-  const writer = useDraftWriter('v-new');
+  const writer = useDraftWriter('v-new', 'create');
   const [createDraft, setCreateDraft] = useState(initial);
   const penOpenedAtRef = useRef(null);
   const { draftRestoreDone } = useKeptDraft({
@@ -439,7 +440,7 @@ describe('a create draft is kept through the same hook with no version (D-18)', 
 
     expect(onRestoreCreate).not.toHaveBeenCalled();
     expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
-    expect(repo.deleteDraft).toHaveBeenCalledWith('v-new');
+    expect(repo.deleteDraft).toHaveBeenCalledWith('v-new', 'create');
     expect(createRenders[createRenders.length - 1].draftRestoreDone).toBe(true);
 
     // A mounted creation is always kept (D-04a): once the restore has settled
@@ -667,7 +668,7 @@ describe('a create draft is kept through the same hook with no version (D-18)', 
       expect(onPageStatus).not.toHaveBeenCalled();
       expect(repo.saveDraft).not.toHaveBeenCalled();
       expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
-      expect(repo.deleteDraft).toHaveBeenCalledWith('v-new');
+      expect(repo.deleteDraft).toHaveBeenCalledWith('v-new', 'create');
     });
 
     it('schedules no write for an edit made after it', async () => {
@@ -931,5 +932,230 @@ describe('a create draft is kept through the same hook with no version (D-18)', 
     expect(restored.method).toEqual(method);
     expect(nextStepKey(restored.method)).toBe(4);
     expect(repo.deleteDraft).not.toHaveBeenCalled();
+  });
+});
+
+// Phase 11 plan 10 (STRUCT-04, D-02, D-06, D-23): an edit of a saved first
+// version is kept through the same hook, under the version's own key, as a
+// draft of kind 'edit'. Nothing is written until the content differs from the
+// saved version, a change made back deletes it, and a version's one draft key is
+// guarded by family, so neither the recipe page, nor a pen, nor another tab's
+// batch save can read, overwrite or delete the other family's record.
+let editControls = null;
+let editRenders = [];
+
+const EDIT_CLEAN = {
+  ...blankCreateDraft({ recipeId: 'r-saved', versionId: 'v-saved', name: 'Vanilla' }),
+  description: 'Plain and cold.',
+};
+
+function EditHarness({ clean }) {
+  const writer = useDraftWriter('v-saved', 'edit');
+  const [createDraft, setCreateDraft] = useState(clean);
+  const penOpenedAtRef = useRef(null);
+  const { draftRestoreDone } = useKeptDraft({
+    writer,
+    versionId: 'v-saved',
+    recipeId: 'r-saved',
+    batchId: undefined,
+    version: null,
+    batches: [],
+    batchesLoaded: false,
+    loadFailed: false,
+    mode: 'creating',
+    amendingBatchId: null,
+    penDraft: null,
+    draft: null,
+    amendBaseline: null,
+    amendOpener: null,
+    penOpenedAtRef,
+    onRestorePlan: restorePlanSpy,
+    onRestoreRecord,
+    creating: true,
+    creationKind: 'edit',
+    cleanPayload: clean,
+    createDraft,
+    onRestoreCreate(payload) {
+      onRestoreCreate(payload);
+      setCreateDraft(payload);
+    },
+    onPageStatus,
+    navigate,
+  });
+  editControls = { setCreateDraft, discardDraft: writer.discardDraft };
+  editRenders.push({ createDraft, draftRestoreDone });
+  return null;
+}
+
+async function mountEdit(clean = EDIT_CLEAN) {
+  const container = document.createElement('div');
+  document.body.appendChild(container);
+  const root = createRoot(container);
+  current = { container, root };
+  await act(async () => {
+    root.render(
+      <StrictMode>
+        <EditHarness clean={clean} />
+      </StrictMode>,
+    );
+  });
+  await flush();
+}
+
+function editRecordOf(payload) {
+  return buildDraftRecord({ versionId: 'v-saved', kind: 'edit', payload, now: WRITTEN_AT });
+}
+
+describe('an edit of a saved version is kept as an edit draft (D-02, D-23)', () => {
+  beforeEach(() => {
+    editRenders = [];
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+  });
+
+  async function advance(ms = 250) {
+    await act(async () => {
+      vi.advanceTimersByTime(ms);
+    });
+    await flush();
+  }
+
+  it('writes nothing for an untouched edit, however long it is open', async () => {
+    repo.getDraft.mockResolvedValue(undefined);
+    await mountEdit();
+    await advance(2000);
+    expect(repo.saveDraft).not.toHaveBeenCalled();
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it("writes a record of kind edit under the version's id once the content differs", async () => {
+    repo.getDraft.mockResolvedValue(undefined);
+    await mountEdit();
+    await act(async () => {
+      editControls.setCreateDraft({ ...EDIT_CLEAN, name: 'Vanilla bean' });
+    });
+    await advance();
+    expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+    const record = repo.saveDraft.mock.calls[0][0];
+    expect(record.kind).toBe('edit');
+    expect(record.versionId).toBe('v-saved');
+    expect(record.payload.name).toBe('Vanilla bean');
+  });
+
+  it('a change made back to the saved content deletes the edit draft, naming its family', async () => {
+    repo.getDraft.mockResolvedValue(undefined);
+    await mountEdit();
+    await act(async () => {
+      editControls.setCreateDraft({ ...EDIT_CLEAN, name: 'Vanilla bean' });
+    });
+    await advance();
+    await act(async () => {
+      editControls.setCreateDraft(structuredClone(EDIT_CLEAN));
+    });
+    await advance();
+    expect(repo.deleteDraft).toHaveBeenCalledTimes(1);
+    expect(repo.deleteDraft).toHaveBeenCalledWith('v-saved', 'edit');
+    expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+  });
+
+  it('restores a kept edit draft once and announces it', async () => {
+    const payload = { ...EDIT_CLEAN, name: 'Vanilla bean' };
+    repo.getDraft.mockResolvedValue(editRecordOf(payload));
+    await mountEdit();
+    expect(onRestoreCreate).toHaveBeenCalledTimes(1);
+    expect(onRestoreCreate).toHaveBeenCalledWith(payload);
+    expect(onPageStatus).toHaveBeenCalledWith(DRAFT_KEPT_STATUS);
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it("leaves another tab's pen draft alone: nothing restored, nothing deleted, nothing written over it", async () => {
+    const plan = buildDraftRecord({
+      versionId: 'v-saved',
+      kind: 'plan',
+      payload: penDraftFromVersion(oliveOilVersion),
+      penOpenedAt: OPENED_AT,
+      now: WRITTEN_AT,
+    });
+    repo.getDraft.mockResolvedValue(plan);
+    await mountEdit();
+    expect(onRestoreCreate).not.toHaveBeenCalled();
+    expect(onPageStatus).not.toHaveBeenCalled();
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+    expect(editRenders[editRenders.length - 1].draftRestoreDone).toBe(true);
+    await advance(2000);
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it('deletes a stored edit draft that no longer fits, by its kind', async () => {
+    repo.getDraft.mockResolvedValue(editRecordOf({ ...EDIT_CLEAN, machine: {} }));
+    await mountEdit();
+    expect(onRestoreCreate).not.toHaveBeenCalled();
+    expect(repo.deleteDraft).toHaveBeenCalledWith('v-saved', 'edit');
+  });
+});
+
+describe("a version's one draft key is guarded by family (T-11-28, T-11-55)", () => {
+  beforeEach(() => {
+    renders = [];
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+  });
+
+  it("the recipe page's restore over a kept edit draft deletes nothing and opens no pen", async () => {
+    const edit = buildDraftRecord({
+      versionId: oliveOilVersion.id,
+      kind: 'edit',
+      payload: blankCreateDraft({ recipeId: oliveOilVersion.recipeId, versionId: oliveOilVersion.id, name: 'Olive oil' }),
+      now: WRITTEN_AT,
+    });
+    repo.getDraft.mockResolvedValue(edit);
+    await mountStrict([]);
+    expect(restorePlanSpy).not.toHaveBeenCalled();
+    expect(onRestoreRecord).not.toHaveBeenCalled();
+    expect(onPageStatus).not.toHaveBeenCalled();
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+    const last = renders[renders.length - 1];
+    expect(last.draftRestoreDone).toBe(true);
+    expect(last.mode).toBe('reading');
+    await act(async () => {
+      vi.advanceTimersByTime(2000);
+    });
+    await flush();
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+    expect(repo.saveDraft).not.toHaveBeenCalled();
+  });
+
+  it("a pen's discard after a batch save in another tab leaves a kept edit draft in the store", async () => {
+    // A store that keeps families, as repository.deleteDraft does.
+    const stored = new Map([['v-saved', { kind: 'edit', versionId: 'v-saved' }]]);
+    repo.deleteDraft.mockImplementation(async (versionId, family) => {
+      const found = stored.get(versionId);
+      if (family !== null && found && (family === 'pen' ? found.kind === 'edit' : found.kind !== family)) return false;
+      stored.delete(versionId);
+      return true;
+    });
+    repo.getDraft.mockResolvedValue(undefined);
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    current = { container, root };
+    await act(async () => {
+      root.render(
+        <Harness
+          versionId="v-saved"
+          recipeId="r-saved"
+          version={{ ...oliveOilVersion, id: 'v-saved', recipeId: 'r-saved' }}
+          batches={[]}
+          batchId={undefined}
+          batchesLoaded
+          loadFailed={false}
+        />,
+      );
+    });
+    await flush();
+    await act(async () => {
+      controls.discardDraft();
+    });
+    await flush();
+    expect(repo.deleteDraft).toHaveBeenCalledWith('v-saved', 'pen');
+    expect(stored.get('v-saved')).toEqual({ kind: 'edit', versionId: 'v-saved' });
   });
 });

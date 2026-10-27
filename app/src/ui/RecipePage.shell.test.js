@@ -263,11 +263,12 @@ const JOBS = [
     markers: [
       ['repository.getDraft(versionId)', 1],
       ['repository.saveDraft(record)', 1],
-      ['repository.deleteDraft(versionId)', 3],
+      ['repository.deleteDraft(versionId, ', 3],
       ['draftMatchesVersion(', 1],
       ['buildDraftRecord(', 3],
       ['draftMatchesCreate(record)', 1],
       ['draftMatchesEdit(record)', 1],
+      ['draftFamily(record.kind) !== family', 1],
       ['onRestoreCreate(record.payload)', 1],
       ['kind: creationKind', 1],
       ['setTimeout(flushPendingDraft, 250)', 1],

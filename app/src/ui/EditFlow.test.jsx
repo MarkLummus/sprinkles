@@ -72,15 +72,21 @@ vi.mock('../store/repository.js', async () => {
 import { repository } from '../store/repository.js';
 import { RecipePageForRoute } from '../router.jsx';
 import { EditRoute } from './EditRoute.jsx';
+import { CreationRoute } from './CreationRoute.jsx';
+import { NotebookPlace } from './NotebookPlace.jsx';
+import { EDIT_CHANGED, EDIT_CLOSED, EDIT_DRAFT_HELD, EDIT_HAS_BATCH, EDIT_HAS_CHILD } from './CreationPage.jsx';
+import { DRAFT_KEPT_STATUS } from './useKeptDraft.js';
 import { CatalogFixture } from './catalog.fixtures.jsx';
-import { buildCreation } from '../domain/creationSave.js';
+import { buildCreation, draftFromVersion } from '../domain/creationSave.js';
+import { createBatch } from '../domain/batch.js';
 import { buildDraftRecord, blankCreateDraft } from '../domain/draft.js';
-import { addRow } from '../domain/creation.js';
+import { addRow, normalizeCreateDraft } from '../domain/creation.js';
 import { addStep, normalizeAllocation, setLineGrams, setStepField, toggleStepUses } from '../domain/creationSteps.js';
+import { penDraftFromVersion } from '../domain/penDraft.js';
+import { codeFromVersionId } from '../domain/sheetCode.js';
 import { library } from '../data/library.js';
+import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { STYLE_ROWS } from '../data/styles.js';
-import { draftFromVersion } from '../domain/creationSave.js';
-import { normalizeCreateDraft } from '../domain/creation.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -136,6 +142,8 @@ async function mountAt(path) {
             <Probe />
             <Routes>
               <Route element={<Outlet context={0} />}>
+                <Route path="/notebook" element={<NotebookPlace />} />
+                <Route path="/notebook/new" element={<CreationRoute />} />
                 <Route path="/notebook/:recipeId/:versionId" element={<RecipePageForRoute />} />
                 <Route path="/notebook/:recipeId/:versionId/edit" element={<EditRoute />} />
               </Route>
@@ -370,5 +378,241 @@ describe('Save writes over the same version (D-03, D-07)', () => {
     await advance(400);
     expect(store.drafts.get(VERSION_ID).kind).toBe('edit');
     expect(store.drafts.get(VERSION_ID).payload.name).toBe('Vanilla bean');
+  });
+});
+
+describe('the kept edit draft (D-02, D-06, D-23)', () => {
+  it('typing writes an edit record under the version id, 250 ms after the change', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    seedVanilla();
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name') !== null);
+    await type(field('Recipe name'), 'Vanilla bean');
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    await advance(300);
+    expect(repository.saveDraft).toHaveBeenCalledTimes(1);
+    const record = store.drafts.get(VERSION_ID);
+    expect(record.kind).toBe('edit');
+    expect(record.payload.name).toBe('Vanilla bean');
+  });
+
+  it('a change made back to the saved content deletes the draft again', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    seedVanilla();
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name') !== null);
+    await type(field('Recipe name'), 'Vanilla bean');
+    await advance(300);
+    expect(store.drafts.size).toBe(1);
+    await type(field('Recipe name'), 'Vanilla');
+    await advance(300);
+    expect(store.drafts.size).toBe(0);
+    expect(repository.deleteDraft).toHaveBeenCalledWith(VERSION_ID, 'edit');
+  });
+
+  it('Cancel deletes the draft and lands on the version page with no state', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    seedVanilla();
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name') !== null);
+    await type(field('Recipe name'), 'Vanilla bean');
+    await advance(300);
+    await click(buttonByText('Cancel'));
+    await flush(() => location.pathname === PAGE_PATH);
+
+    expect(location.pathname).toBe(PAGE_PATH);
+    expect(location.state).toBeNull();
+    expect(store.drafts.size).toBe(0);
+    expect(repository.deleteDraft).toHaveBeenCalledWith(VERSION_ID, 'edit');
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    // Nothing written back after the delete.
+    await advance(1000);
+    expect(store.drafts.size).toBe(0);
+  });
+
+  it('a reload with an edit kept restores its payload and announces Draft kept.', async () => {
+    seedVanilla();
+    store.drafts.set(VERSION_ID, keptEdit({ name: 'Vanilla bean' }));
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name') !== null);
+    await flush(() => field('Recipe name').value === 'Vanilla bean');
+
+    expect(field('Recipe name').value).toBe('Vanilla bean');
+    expect(root().textContent).toContain(DRAFT_KEPT_STATUS);
+    expect(store.drafts.get(VERSION_ID).kind).toBe('edit');
+  });
+});
+
+describe('the route redirects and deletes nothing (D-01, D-06; RESEARCH G-1, G-8)', () => {
+  function addBatch() {
+    store.batches = [
+      createBatch(store.versions[0], { churnDate: '2026-10-09' }, null, { id: 'b-1', now: '2026-10-09T12:00:00.000Z', catalog: SEED_CATALOG }),
+    ];
+  }
+
+  function addChild() {
+    const parent = store.versions[0];
+    store.versions.push({
+      ...structuredClone(parent),
+      id: 'v-child',
+      parentVersionId: parent.id,
+      parentVersionLabel: parent.versionLabel,
+      versionLabel: 'Version 2',
+      reason: 'Less sweet',
+      sheetCode: codeFromVersionId('v-child'),
+      createdAt: '2026-10-05T09:00:00.000Z',
+    });
+  }
+
+  it('sends a version with a batch and no kept edit to its page', async () => {
+    seedVanilla();
+    addBatch();
+    await mountAt(EDIT_PATH);
+    await flush(() => location.pathname === PAGE_PATH);
+    expect(location.pathname).toBe(PAGE_PATH);
+    expect(field('Recipe name')).toBeNull();
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it('sends a version with a later version to its page', async () => {
+    seedVanilla();
+    addChild();
+    await mountAt(EDIT_PATH);
+    await flush(() => location.pathname === PAGE_PATH);
+    expect(location.pathname).toBe(PAGE_PATH);
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it("sends a version holding a pen's draft to its page and leaves the draft in place", async () => {
+    seedVanilla();
+    const plan = buildDraftRecord({
+      versionId: VERSION_ID,
+      kind: 'plan',
+      payload: { ...penDraftFromVersion(store.versions[0]), versionLabel: 'Version 2 typed' },
+      penOpenedAt: '2026-10-02T08:00:00.000Z',
+      now: '2026-10-02T08:00:00.000Z',
+    });
+    store.drafts.set(VERSION_ID, plan);
+    await mountAt(EDIT_PATH);
+    await flush(() => location.pathname === PAGE_PATH);
+    expect(location.pathname).toBe(PAGE_PATH);
+    expect(store.drafts.get(VERSION_ID)).toEqual(plan);
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it('shows not found for a version of another recipe, an unknown version and an unknown recipe, deleting nothing', async () => {
+    seedVanilla();
+    for (const path of [`/notebook/other/${VERSION_ID}/edit`, `/notebook/${RECIPE_ID}/nope/edit`]) {
+      // eslint-disable-next-line no-await-in-loop
+      await mountAt(path);
+      // eslint-disable-next-line no-await-in-loop
+      await flush(() => root().querySelector('.not-found') !== null);
+      expect(root().querySelector('.not-found')).not.toBeNull();
+      expect(field('Recipe name')).toBeNull();
+      // eslint-disable-next-line no-await-in-loop
+      await act(async () => current.root.unmount());
+      current.container.remove();
+      current = null;
+    }
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it("the Notebook's draft row and /notebook/new ignore a kept edit draft", async () => {
+    seedVanilla();
+    store.drafts.set(VERSION_ID, keptEdit({ name: 'Vanilla bean' }));
+    await mountAt('/notebook/new');
+    await flush(() => location.pathname === '/notebook');
+    expect(location.pathname).toBe('/notebook');
+    await flush(() => buttonByText('New recipe') !== null);
+    expect(root().querySelector('li.nb__draft')).toBeNull();
+    expect(buttonByText('Resume')).toBeNull();
+    expect(store.drafts.get(VERSION_ID).kind).toBe('edit');
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+  });
+});
+
+describe('a kept edit whose version has since gained a batch or a later version stays reachable (D-06)', () => {
+  it('opens the editor on the kept draft with the refusal already standing under Save, and Cancel discards it', async () => {
+    seedVanilla();
+    store.drafts.set(VERSION_ID, keptEdit({ name: 'Vanilla bean' }));
+    store.batches = [
+      createBatch(store.versions[0], { churnDate: '2026-10-09' }, null, { id: 'b-1', now: '2026-10-09T12:00:00.000Z', catalog: SEED_CATALOG }),
+    ];
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name')?.value === 'Vanilla bean');
+
+    expect(location.pathname).toBe(EDIT_PATH);
+    expect(underSave()).toBe(EDIT_HAS_BATCH);
+    expect(EDIT_HAS_BATCH).toBe('This version has a batch now and can no longer be edited.');
+    expect(store.drafts.get(VERSION_ID).kind).toBe('edit');
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+
+    // A reload shows the same state.
+    await act(async () => current.root.unmount());
+    current.container.remove();
+    current = null;
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name')?.value === 'Vanilla bean');
+    expect(underSave()).toBe(EDIT_HAS_BATCH);
+
+    await click(buttonByText('Cancel'));
+    await flush(() => location.pathname === PAGE_PATH);
+    expect(location.pathname).toBe(PAGE_PATH);
+    expect(store.drafts.size).toBe(0);
+  });
+
+  it('names the later version when the version gained a child', async () => {
+    seedVanilla();
+    store.drafts.set(VERSION_ID, keptEdit({ name: 'Vanilla bean' }));
+    const parent = store.versions[0];
+    store.versions.push({
+      ...structuredClone(parent),
+      id: 'v-child',
+      parentVersionId: parent.id,
+      parentVersionLabel: parent.versionLabel,
+      versionLabel: 'Version 2',
+      reason: 'Less sweet',
+      sheetCode: codeFromVersionId('v-child'),
+      createdAt: '2026-10-05T09:00:00.000Z',
+    });
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name')?.value === 'Vanilla bean');
+    expect(underSave()).toBe(EDIT_HAS_CHILD);
+    expect(EDIT_HAS_CHILD).toBe('This version has a later version now and can no longer be edited.');
+  });
+
+  it('Save re-checks inside the transaction and shows the refusal it returns, writing nothing and keeping the draft', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    seedVanilla();
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name') !== null);
+    await type(field('Recipe name'), 'Vanilla bean');
+    await advance(300);
+
+    const lines = {
+      'has-batch': EDIT_HAS_BATCH,
+      'has-child': EDIT_HAS_CHILD,
+      'draft-held': EDIT_DRAFT_HELD,
+      changed: EDIT_CHANGED,
+      gone: EDIT_CLOSED,
+    };
+    for (const [reason, line] of Object.entries(lines)) {
+      repository.saveFirstVersionOver.mockResolvedValueOnce({ saved: false, reason });
+      // eslint-disable-next-line no-await-in-loop
+      await click(buttonByText('Save'));
+      // eslint-disable-next-line no-await-in-loop
+      await flush(() => underSave() === line);
+      expect(underSave()).toBe(line);
+      expect(location.pathname).toBe(EDIT_PATH);
+      expect(buttonByText('Save')).not.toBeNull();
+      expect(store.drafts.get(VERSION_ID).kind).toBe('edit');
+    }
+    expect(EDIT_DRAFT_HELD).toBe('This version has a Next version or a batch open in another tab. Close it there, then save.');
+    expect(EDIT_CHANGED).toBe('This version changed in another tab. Cancel, then open it again.');
+    expect(EDIT_CLOSED).toBe('This version can no longer be edited.');
+    // The store itself was never written to (the stand-in's refusals write nothing).
+    expect(store.versions[0].sheetTitle).toBe('Vanilla');
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
   });
 });

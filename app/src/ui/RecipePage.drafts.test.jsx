@@ -350,7 +350,7 @@ describe('a Next version draft is kept through a reload (04-09, Task 1)', () => 
     await click(buttonByText('Cancel'));
     await flush(() => false);
     expect(nextVersionPen()).toBeNull();
-    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION, 'pen');
     expect(store.drafts.has(VERSION)).toBe(false);
 
     await elapse(1000);
@@ -390,7 +390,7 @@ describe('a Next version draft is kept through a reload (04-09, Task 1)', () => 
     await setValue(versionNameField(), '');
     await setValue(gramsField('Whole milk, grams, portion 1'), '120');
     await elapse(400);
-    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION, 'pen');
     expect(store.drafts.has(VERSION)).toBe(false);
   });
 
@@ -402,7 +402,7 @@ describe('a Next version draft is kept through a reload (04-09, Task 1)', () => 
     await mountAt(VERSION_PATH);
     await flush(() => store.deleteDraft.mock.calls.length > 0);
 
-    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION, 'plan');
     expect(store.drafts.has(VERSION)).toBe(false);
     expect(nextVersionPen()).toBeNull();
     expect(current.container.querySelector('.notebook-version__acts')).not.toBeNull();
@@ -532,7 +532,7 @@ describe('the record pen keeps its draft, its tasting section included (04-09, T
     await flush(() => store.deleteDraft.mock.calls.length > 0);
     expect(store.saveBatch).toHaveBeenCalledTimes(1);
     expect(store.saveBatch.mock.calls[0][0].churn.churnDate).toBe('2026-10-09');
-    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION, 'pen');
     expect(store.drafts.has(VERSION)).toBe(false);
 
     await elapse(1000);
@@ -549,7 +549,7 @@ describe('the record pen keeps its draft, its tasting section included (04-09, T
     await click(buttonByText('Cancel'));
     await elapse(1000);
     expect(pen()).toBeNull();
-    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION, 'pen');
     expect(store.drafts.has(VERSION)).toBe(false);
     expect(store.saveDraft).not.toHaveBeenCalled();
     expect(store.saveBatch).not.toHaveBeenCalled();
@@ -634,7 +634,7 @@ describe('the Correct pen keeps its draft and reopens beside its own batch (04-0
     expect(store.saveBatch).toHaveBeenCalledTimes(1);
     expect(store.saveBatch.mock.calls[0][0].id).toBe(augustSecondBatch.id);
     expect(store.saveBatch.mock.calls[0][0].tasting.note).toBe('a little firmer than I wrote');
-    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION, 'pen');
     await elapse(1000);
     expect(store.drafts.has(VERSION)).toBe(false);
     expect(store.saveDraft).not.toHaveBeenCalled();
@@ -648,7 +648,7 @@ describe('the Correct pen keeps its draft and reopens beside its own batch (04-0
     await click(buttonByText('Cancel'));
     await flush(() => false);
     expect(pen()).toBeNull();
-    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION, 'pen');
     expect(store.drafts.has(VERSION)).toBe(false);
     expect(store.saveBatch).not.toHaveBeenCalled();
   });
@@ -658,7 +658,7 @@ describe('the Correct pen keeps its draft and reopens beside its own batch (04-0
     storeDraft(amendDraftRecord());
     await mountAt(VERSION_PATH);
     await flush(() => store.deleteDraft.mock.calls.length > 0);
-    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION, 'amend');
     expect(store.drafts.has(VERSION)).toBe(false);
     expect(pen()).toBeNull();
     expect(locationNow.pathname).toBe(VERSION_PATH);
@@ -835,7 +835,7 @@ describe('a failed read on the recipe page (WR-05)', () => {
     await flush(() => store.deleteDraft.mock.calls.length > 0);
     await flush(() => false);
 
-    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION, 'plan');
     expect(nextVersionPen()).toBeNull();
     expect(current.container.querySelector('.notebook-version__acts')).not.toBeNull();
   });

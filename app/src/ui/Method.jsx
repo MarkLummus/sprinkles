@@ -49,7 +49,7 @@ function coverageSentence(coveredRows, currentStepNumbers) {
 // caution, carried into this mechanism). The focus effect only fires for a
 // field the maker's own press opened, so the version line's autoFocus wins
 // on mount instead of losing to whichever already-texted field renders last.
-function useOnDemandField(initialOpen, onCollapse) {
+export function useOnDemandField(initialOpen, onCollapse) {
   const [isOpen, setIsOpen] = useState(initialOpen);
   const fieldRef = useRef(null);
   const openedByUser = useRef(false);
@@ -501,9 +501,10 @@ function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) 
 // their only controls and marks (the strike, the line, the changed-line mark,
 // the removed strike) hang on a step, so a method with no step has none to
 // lose. The pen keeps the empty section, as asked (Mark, 2026-10-03), although
-// it has no add-step control today.
+// it has no add-step control today. The creation editor keeps it too: the
+// Instructions heading row carries Add step (Phase 11, sketch 013 decision 33).
 export function showsMethodRegion({ mode, steps }) {
-  return mode === 'developing' || steps.length > 0;
+  return mode === 'developing' || mode === 'creating' || steps.length > 0;
 }
 
 // The numbered method, in the sheet's order. The step number sits in a

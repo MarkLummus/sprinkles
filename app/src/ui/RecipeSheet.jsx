@@ -33,7 +33,9 @@ export function RecipeSheet({
   versionSaveAction = null,
   batchSaveAction = null,
   foot = null,
-  beforeFoot = null,
+  beforeAct = null,
+  ingredientsAct = null,
+  creationMethod = null,
   creationRows = null,
   ingredientsFoot = null,
   onChangePenField,
@@ -112,7 +114,14 @@ export function RecipeSheet({
           Tab key and the printer meet (sketch 011 decision 36). */}
       {beforeRegionShown && (
         <section className="before-region" aria-label="Before you start">
-          <h2 className="region-name">Before you start</h2>
+          {beforeAct ? (
+            <div className="mk-head-row">
+              <h2 className="region-name">Before you start</h2>
+              {beforeAct}
+            </div>
+          ) : (
+            <h2 className="region-name">Before you start</h2>
+          )}
           {beforeNotes.length > 0 && (
             <NoteList
               listKey="beforeYouStart"
@@ -122,7 +131,6 @@ export function RecipeSheet({
               onRemoveNote={onRemovePenNote}
             />
           )}
-          {beforeFoot}
         </section>
       )}
 
@@ -133,6 +141,7 @@ export function RecipeSheet({
           below724={below724}
           showingChanges={showingChanges}
           onToggleShowChanges={onToggleShowChanges}
+          act={ingredientsAct}
         />
         {hasRows ? (
           <IngredientTable
@@ -172,28 +181,30 @@ export function RecipeSheet({
           decision 36, Mark's answer 5). */}
       {methodRegionShown && (
         <section className="method-region" aria-label="Instructions">
-          <Method
-            steps={methodSteps}
-            stepChanges={mode === 'recording' ? (draft?.stepChanges ?? {}) : evidenceBatch ? evidenceBatch.churn.stepChanges : {}}
-            mode={mode}
-            onChangeStepChange={onChangeStepChange}
-            rows={version.rows}
-            draftVersion={draftVersion}
-            baselineVersion={baseline}
-            penDiff={penDiff}
-            penStaleSteps={penStaleSteps}
-            showingChanges={showingChanges}
-            changeDiff={changeDiff}
-            staleSteps={changeStaleSteps}
-            staleFlagVisible={mode === 'developing' || showingChanges}
-            currentStepNumbers={currentStepNumbers}
-            baselineStepNumbers={baselineStepNumbers}
-            onChangePenStepField={onChangePenStepField}
-            onChangePenStepTarget={onChangePenStepTarget}
-            onTogglePenStepUses={onTogglePenStepUses}
-            onTogglePenStepRemoved={onTogglePenStepRemoved}
-            onRestorePenStep={onRestorePenStep}
-          />
+          {creationMethod ?? (
+            <Method
+              steps={methodSteps}
+              stepChanges={mode === 'recording' ? (draft?.stepChanges ?? {}) : evidenceBatch ? evidenceBatch.churn.stepChanges : {}}
+              mode={mode}
+              onChangeStepChange={onChangeStepChange}
+              rows={version.rows}
+              draftVersion={draftVersion}
+              baselineVersion={baseline}
+              penDiff={penDiff}
+              penStaleSteps={penStaleSteps}
+              showingChanges={showingChanges}
+              changeDiff={changeDiff}
+              staleSteps={changeStaleSteps}
+              staleFlagVisible={mode === 'developing' || showingChanges}
+              currentStepNumbers={currentStepNumbers}
+              baselineStepNumbers={baselineStepNumbers}
+              onChangePenStepField={onChangePenStepField}
+              onChangePenStepTarget={onChangePenStepTarget}
+              onTogglePenStepUses={onTogglePenStepUses}
+              onTogglePenStepRemoved={onTogglePenStepRemoved}
+              onRestorePenStep={onRestorePenStep}
+            />
+          )}
         </section>
       )}
 

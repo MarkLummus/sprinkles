@@ -9,10 +9,13 @@ import { PageNotice, usePageNotice } from './PageNotice.jsx';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { IngredientPicker } from './IngredientPicker.jsx';
 import { CreationSetup } from './CreationSetup.jsx';
+import { CreationSteps } from './CreationSteps.jsx';
 import { repository } from '../store/repository.js';
 import { draftMatchesCreate } from '../domain/draft.js';
 import { NOTEBOOK_PLACE_PATH } from './notebookPaths.js';
 import { freshId } from '../domain/id.js';
+import { addStep, addTarget, removeTarget, setStepField, setTarget } from '../domain/creationSteps.js';
+import { displayNumbers } from '../domain/stepNumbers.js';
 import {
   addNote,
   addRow,
@@ -139,15 +142,24 @@ export function CreationPage({ record, justStarted = false }) {
     if (!request || !page) return;
     focusRequestRef.current = null;
     let target;
-    if (request === 'new-note') {
+    if (typeof request === 'object' && request.kind === 'lead-in') {
+      target = page.querySelector(`input[aria-label="Step ${request.position}, lead-in"]`);
+    } else if (typeof request === 'object') {
+      // A target added or removed: the step's targets line holds its chips, then
+      // its own Add target (the line's first direct control).
+      const line = page.querySelector(`li.mk-step[data-step="${request.n}"] > .method-step__body > .method-step__targets`);
+      const chips = line ? [...line.querySelectorAll(':scope > .target-chip')] : [];
+      const chip = request.kind === 'target-label' ? chips[request.index] : (chips[request.index] ?? chips[request.index - 1]);
+      target = chip ? chip.querySelector('.target-chip__label-field') : line?.querySelector(':scope > .text-control');
+    } else if (request === 'new-note') {
       target = page.querySelector(`textarea[aria-label="beforeYouStart note ${createDraft.beforeYouStart.length}"]`);
     } else if (request === 'add-note') {
-      target = page.querySelector('.before-region .mk-add');
+      target = page.querySelector('.before-region .mk-head-act');
     } else {
       // The table region's add control: Add ingredient, or, while the picker is
       // open in its place, the picker's Cancel.
       target =
-        page.querySelector('.ingredient-table-region .mk-add') ??
+        page.querySelector('.ingredient-table-region .mk-head-act') ??
         page.querySelector('.ingredient-table-region .pick__head button');
     }
     target?.focus();
@@ -212,6 +224,37 @@ export function CreationPage({ record, justStarted = false }) {
 
   const handleBlurGrams = (rowId) => {
     setFocusRowId((prev) => (prev === rowId ? null : prev));
+  };
+
+  // Instructions (MAKE-07). Add step on the heading adds a step at the
+  // beginning; a step added after step afterN goes one place past it. Focus goes
+  // to the new step's lead-in, found by the display number it will carry.
+  const handleAddStep = (afterN = null) => {
+    const position = afterN === null ? 1 : (displayNumbers(createDraft.method).get(afterN) ?? 0) + 1;
+    setCreateDraft((prev) => addStep(prev, { afterN }));
+    focusRequestRef.current = { kind: 'lead-in', position };
+  };
+
+  const handleChangeStepField = (n, field, value) => {
+    setCreateDraft((prev) => setStepField(prev, n, field, value));
+  };
+
+  // Targets (D-22). Add target puts focus in the new target's label field; a
+  // remove puts it, after the render, in the next target's label field, else the
+  // previous one's, else the step's Add target.
+  const handleAddTarget = (n) => {
+    const index = (createDraft.method.find((step) => step.n === n)?.targets ?? []).length;
+    setCreateDraft((prev) => addTarget(prev, n));
+    focusRequestRef.current = { kind: 'target-label', n, index };
+  };
+
+  const handleChangeTarget = (n, index, side, value) => {
+    setCreateDraft((prev) => setTarget(prev, n, index, side, value));
+  };
+
+  const handleRemoveTarget = (n, index) => {
+    setCreateDraft((prev) => removeTarget(prev, n, index));
+    focusRequestRef.current = { kind: 'target-after-remove', n, index };
   };
 
   const gramsByRow = new Map(createDraft.rows.map((row) => [row.id, row.portions[0]?.grams ?? '']));
@@ -315,12 +358,17 @@ export function CreationPage({ record, justStarted = false }) {
                 }}
                 onChangePenNoteText={handleChangeNote}
                 onRemovePenNote={handleRemoveNote}
-                beforeFoot={
-                  <p className="mk-add-row">
-                    <Button className="text-control mk-add" onClick={handleAddNote}>
-                      Add note
+                beforeAct={
+                  <Button className="text-control mk-head-act" onClick={handleAddNote}>
+                    Add note
+                  </Button>
+                }
+                ingredientsAct={
+                  picking ? null : (
+                    <Button className="text-control mk-head-act" onClick={() => setPicking(true)}>
+                      Add ingredient
                     </Button>
-                  </p>
+                  )
                 }
                 ingredientsFoot={
                   picking ? (
@@ -330,13 +378,18 @@ export function CreationPage({ record, justStarted = false }) {
                       onPick={handlePick}
                       onCancel={handleCancelPicker}
                     />
-                  ) : (
-                    <p className="mk-add-row">
-                      <Button className="text-control mk-add" onClick={() => setPicking(true)}>
-                        Add ingredient
-                      </Button>
-                    </p>
-                  )
+                  ) : null
+                }
+                creationMethod={
+                  <CreationSteps
+                    draft={createDraft}
+                    version={version}
+                    onAddStep={handleAddStep}
+                    onChangeStepField={handleChangeStepField}
+                    onAddTarget={handleAddTarget}
+                    onChangeTarget={handleChangeTarget}
+                    onRemoveTarget={handleRemoveTarget}
+                  />
                 }
               />
             </div>

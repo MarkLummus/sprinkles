@@ -8,7 +8,9 @@ import {
   CREATE_DRAFT_KEYS,
   blankCreateDraft,
   buildDraftRecord,
+  draftFamily,
   draftMatchesCreate,
+  draftMatchesEdit,
   draftMatchesVersion,
   isCreateDraftDirty,
   newestDraft,
@@ -787,5 +789,79 @@ describe('CREATE_DRAFT_KEYS', () => {
     expect(new Set(CREATE_DRAFT_KEYS).size).toBe(CREATE_DRAFT_KEYS.length);
     expect(CREATE_DRAFT_KEYS).not.toContain('machine');
     expect(CREATE_DRAFT_KEYS).not.toContain('process');
+  });
+});
+
+// Phase 11 (STRUCT-04, D-02): the edit kind. An edit draft is the create payload
+// of a saved first version, kept under that version's id; it is a sibling of the
+// create kind, so every one-creation rule keeps matching 'create' alone.
+function editRecord(payloadOverrides = {}, recordOverrides = {}) {
+  return {
+    ...buildDraftRecord({
+      versionId: 'v-saved',
+      kind: 'edit',
+      payload: { ...blankCreateDraft({ recipeId: 'r-saved', versionId: 'v-saved', name: 'Lemon' }), ...payloadOverrides },
+      now: NOW,
+    }),
+    ...recordOverrides,
+  };
+}
+
+describe('draftMatchesEdit: a saved first version as typed again (D-02)', () => {
+  it('accepts an edit record holding the create payload', () => {
+    expect(draftMatchesEdit(editRecord())).toBe(true);
+    expect(draftMatchesEdit(editRecord({ description: 'Bright', serveTempC: '-14' }))).toBe(true);
+  });
+
+  it('does not fit draftMatchesCreate, and does not fit draftMatchesVersion against any version', () => {
+    const record = editRecord({ recipeId: 'r-saved', versionId: oliveOilVersion.id }, { versionId: oliveOilVersion.id });
+    expect(draftMatchesEdit(record)).toBe(true);
+    expect(draftMatchesCreate(record)).toBe(false);
+    expect(matches(record, oliveOilVersion, [])).toBe(false);
+    expect(matches(editRecord(), oliveOilVersion, [])).toBe(false);
+  });
+
+  it('is not fitted by a create record', () => {
+    expect(draftMatchesEdit(createRecord())).toBe(false);
+    expect(draftMatchesEdit(createRecord({}, { kind: 'plan' }))).toBe(false);
+  });
+
+  it('refuses an unknown payload key and a payload.versionId that is not the record’s', () => {
+    expect(draftMatchesEdit(editRecord({ colour: 'red' }))).toBe(false);
+    expect(draftMatchesEdit(editRecord({ versionId: 'other' }))).toBe(false);
+    expect(draftMatchesEdit(editRecord({}, { shapeVersion: 99 }))).toBe(false);
+    expect(draftMatchesEdit(editRecord({}, { updatedAt: 5 }))).toBe(false);
+    expect(draftMatchesEdit(editRecord({ rows: [{ id: '__proto__', libraryId: 'x', portions: [] }] }))).toBe(false);
+  });
+
+  it('leaves CREATE_DRAFT_KEYS and what draftMatchesCreate accepts for kind create unchanged', () => {
+    expect(CREATE_DRAFT_KEYS).toEqual([
+      'recipeId',
+      'versionId',
+      'name',
+      'description',
+      'versionLabel',
+      'beforeYouStart',
+      'rows',
+      'method',
+      'scales',
+      'problems',
+      'style',
+      'targets',
+      'serveTempC',
+    ]);
+    expect(draftMatchesCreate(createRecord())).toBe(true);
+  });
+});
+
+describe('draftFamily: whose a version’s one draft key is (D-06)', () => {
+  it('names the pens’ kinds one family, and the edit and the create kinds their own', () => {
+    for (const kind of ['plan', 'record', 'amend', 'pen']) expect(draftFamily(kind)).toBe('pen');
+    expect(draftFamily('edit')).toBe('edit');
+    expect(draftFamily('create')).toBe('create');
+  });
+
+  it('throws a TypeError for any other value', () => {
+    for (const value of ['', 'other', undefined, null, 7]) expect(() => draftFamily(value)).toThrow(TypeError);
   });
 });

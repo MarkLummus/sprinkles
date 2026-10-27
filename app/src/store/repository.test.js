@@ -865,3 +865,60 @@ describe('saveVersion with expected, through the repository seam (T-11-63)', () 
     expect(await repository.listVersions()).toEqual([]);
   });
 });
+
+describe('a version’s one draft key is guarded by family (T-11-46, D-06)', () => {
+  const edit = (id = 'v-guard') => makeDraft(id, { kind: 'edit' });
+  const plan = (id = 'v-guard') => makeDraft(id, { kind: 'plan' });
+  const record = (id = 'v-guard') => makeDraft(id, { kind: 'record' });
+
+  it('saveDraft of a record draft over a stored edit draft writes nothing and resolves false', async () => {
+    const repository = createRepository();
+    await repository.saveDraft(edit());
+    expect(await repository.saveDraft(record())).toBe(false);
+    expect(await repository.getDraft('v-guard')).toEqual(edit());
+  });
+
+  it('saveDraft of an edit draft over a stored plan draft writes nothing and resolves false', async () => {
+    const repository = createRepository();
+    await repository.saveDraft(plan());
+    expect(await repository.saveDraft(edit())).toBe(false);
+    expect(await repository.getDraft('v-guard')).toEqual(plan());
+  });
+
+  it('saveDraft within one family writes and resolves true, as does saveDraft on an empty key', async () => {
+    const repository = createRepository();
+    expect(await repository.saveDraft(plan())).toBe(true);
+    expect(await repository.saveDraft(record())).toBe(true);
+    expect(await repository.getDraft('v-guard')).toEqual(record());
+    expect(await repository.saveDraft(makeDraft('v-amend', { kind: 'amend' }))).toBe(true);
+    expect(await repository.saveDraft(edit('v-other'))).toBe(true);
+    expect(await repository.saveDraft(edit('v-other'))).toBe(true);
+  });
+
+  it('deleteDraft names a kind and deletes only a stored draft of that kind’s family', async () => {
+    const repository = createRepository();
+    await repository.saveDraft(edit());
+    // Another tab’s batch save discards its pen’s draft: the kept edit stays.
+    expect(await repository.deleteDraft('v-guard', 'record')).toBe(false);
+    expect(await repository.getDraft('v-guard')).toEqual(edit());
+    expect(await repository.deleteDraft('v-guard', 'edit')).toBe(true);
+    expect(await repository.getDraft('v-guard')).toBeUndefined();
+
+    await repository.saveDraft(plan());
+    expect(await repository.deleteDraft('v-guard', 'edit')).toBe(false);
+    expect(await repository.getDraft('v-guard')).toEqual(plan());
+    expect(await repository.deleteDraft('v-guard', 'amend')).toBe(true);
+    expect(await repository.getDraft('v-guard')).toBeUndefined();
+  });
+
+  it('deleteDraft on an empty key resolves false', async () => {
+    expect(await createRepository().deleteDraft('v-nothing', 'plan')).toBe(false);
+  });
+
+  it('deleteDraft with no kind deletes whatever is stored, as it did before', async () => {
+    const repository = createRepository();
+    await repository.saveDraft(edit());
+    await repository.deleteDraft('v-guard');
+    expect(await repository.getDraft('v-guard')).toBeUndefined();
+  });
+});

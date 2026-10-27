@@ -4,7 +4,8 @@
 // store, no component and no framework.
 import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
-import { firstVersionRefusal, isEditableFirstVersion, sameRecord, VersionChangedError } from './firstVersion.js';
+import { editStateFor, firstVersionRefusal, isEditableFirstVersion, sameRecord, VersionChangedError } from './firstVersion.js';
+import { blankCreateDraft, buildDraftRecord } from './draft.js';
 
 function row(id, overrides = {}) {
   return { id, ingredientName: id, libraryId: 'wholeMilk', portions: [{ step: 1, grams: 100 }], removed: false, ...overrides };
@@ -112,5 +113,53 @@ describe('firstVersion.js stays pure', () => {
     const specifiers = [...source.matchAll(/from\s+(['"])([^'"]+)\1/g)].map((match) => match[2]);
     for (const specifier of specifiers) expect(specifier).toMatch(/^\.\/[\w.-]+\.js$/);
     expect(source).not.toMatch(/\bnew Date\b|\bDate\.now\b|\bcrypto\b|\bMath\.random\b/);
+  });
+});
+
+describe('editStateFor (D-04, D-06, D-23, RESEARCH G-1c)', () => {
+  const draftOf = (kind, versionId = 'v1') =>
+    buildDraftRecord({
+      versionId,
+      kind,
+      payload: kind === 'edit' ? blankCreateDraft({ recipeId: 'r1', versionId, name: 'Lemon' }) : {},
+      now: '2026-10-26T12:00:00.000Z',
+    });
+
+  it("is 'editable' for an eligible version with nothing kept on it", () => {
+    const version = root();
+    expect(editStateFor({ version, versions: [version], batches: [], drafts: [] })).toBe('editable');
+    // A draft under another version’s id is not this version’s.
+    expect(editStateFor({ version, versions: [version], batches: [], drafts: [draftOf('edit', 'other')] })).toBe('editable');
+  });
+
+  it("is 'editing' while an edit draft that fits is kept on it", () => {
+    const version = root();
+    expect(editStateFor({ version, versions: [version], batches: [], drafts: [draftOf('edit')] })).toBe('editing');
+  });
+
+  it("stays 'editing' for a kept edit on a version that now has a batch or a child: a stale edit stays reachable (D-06)", () => {
+    const version = root();
+    const child = root({ id: 'v2', parentVersionId: 'v1' });
+    expect(editStateFor({ version, versions: [version], batches: [{ id: 'b1', versionId: 'v1' }], drafts: [draftOf('edit')] })).toBe('editing');
+    expect(editStateFor({ version, versions: [version, child], batches: [], drafts: [draftOf('edit')] })).toBe('editing');
+  });
+
+  it('is null when a pen’s draft is kept on it, whatever the pen', () => {
+    const version = root();
+    for (const kind of ['plan', 'record', 'amend']) {
+      expect(editStateFor({ version, versions: [version], batches: [], drafts: [draftOf(kind)] })).toBeNull();
+    }
+  });
+
+  it('is null for a version that is not eligible with no edit kept', () => {
+    const version = root();
+    expect(editStateFor({ version, versions: [version], batches: [{ id: 'b1', versionId: 'v1' }], drafts: [] })).toBeNull();
+    expect(editStateFor({ version: undefined, versions: [], batches: [], drafts: [] })).toBeNull();
+  });
+
+  it('is null when the kept record under the id does not fit as an edit draft', () => {
+    const version = root();
+    const misfit = { ...draftOf('edit'), payload: { colour: 'red' } };
+    expect(editStateFor({ version, versions: [version], batches: [], drafts: [misfit] })).toBeNull();
   });
 });

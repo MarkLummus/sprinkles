@@ -1,0 +1,35 @@
+diff --git a/app/src/ui/IngredientTable.jsx b/app/src/ui/IngredientTable.jsx
+index ae96488d..604d63b0 100644
+--- a/app/src/ui/IngredientTable.jsx
++++ b/app/src/ui/IngredientTable.jsx
+@@ -60,6 +60,17 @@ export function groupPortionsByStep(rows, steps, stepNumberMap, keepOutLines) {
+       numbered.get(displayNumber).entries.push(entry);
+     });
+   }
++  // A step's group reads in that step's uses order; an id its uses does not name
++  // sorts after every id it names, and those keep rows order among themselves
++  // (the sort is stable).
++  const usesPlace = (n, rowId) => {
++    const uses = steps.find((candidate) => candidate.n === n)?.uses ?? [];
++    const at = uses.indexOf(rowId);
++    return at === -1 ? uses.length : at;
++  };
++  for (const group of [...numbered.values(), ...removedSteps.values()]) {
++    group.entries.sort((a, b) => usesPlace(group.n, a.row.id) - usesPlace(group.n, b.row.id));
++  }
+   const methodIndex = (n) => steps.findIndex((candidate) => candidate.n === n);
+   const removedGroups = [...removedSteps.values()].sort((a, b) => methodIndex(a.n) - methodIndex(b.n));
+   const groups = [];
+diff --git a/app/src/ui/Method.jsx b/app/src/ui/Method.jsx
+index aa44de0b..4dde8641 100644
+--- a/app/src/ui/Method.jsx
++++ b/app/src/ui/Method.jsx
+@@ -119,7 +119,7 @@ export function StepPenBody({
+   // checklist updates as boxes change while it is open.
+   const [usesOpen, setUsesOpen] = useState(false);
+   const usesControlRef = useRef(null);
+-  const usesNames = rows.filter((row) => (draftStep.uses ?? []).includes(row.id)).map((row) => row.ingredientName);
++  const usesNames = rows.filter((row) => (draftStep.uses ?? []).includes(row.id)).sort((a, b) => draftStep.uses.indexOf(a.id) - draftStep.uses.indexOf(b.id)).map((row) => row.ingredientName);
+ 
+   function handleUsesKeyDown(event) {
+     // Gated on usesOpen (G-03.3-2 fix, gap plan 05): a closed checklist's

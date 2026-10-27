@@ -3,7 +3,8 @@ import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue, form
 import { asMadeForPortion, asMadeTotals } from '../domain/batch.js';
 import { activeRows, isLineRemoved, isStepRemoved, rowGrams } from '../domain/rows.js';
 import { orphanedRows } from '../domain/uses.js';
-import { displayNumberOf } from '../domain/stepNumbers.js';
+import { displayNumberOf, displayNumbers } from '../domain/stepNumbers.js';
+import { UNPLACED_STEP } from '../domain/creationSteps.js';
 import { gramsDraftMessage, parseGramsDraft } from '../domain/lineage.js';
 import { penDraftRow } from '../domain/penDraft.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
@@ -23,11 +24,13 @@ const BLOCKED_ROW_ERROR_ID = 'ingredient-field-error';
 // precedes it, before the next one), its entries flagged `stepRemoved`
 // (sketch 011 decision 51, Mark's answer 2). A portion whose step does not
 // resolve (a null map, or a step this map has no entry for) is never
-// dropped: it joins one trailing "Unallocated" group instead (RESEARCH.md
-// Pitfall 4). Active groups sort by display number, with Unallocated (when
-// non-empty) always last; entries within a group keep `rows`' own iteration
-// order, then portion order — never re-sorted, matching the sketch's own
-// ING.forEach iteration (index.html:390-406).
+// dropped: it joins one trailing "Not in a step yet" group instead (RESEARCH.md
+// Pitfall 4). Active groups sort by display number, with that group (when
+// non-empty) always last. Within a step's group (numbered or removed) the
+// entries read in that step's uses order, a row its uses does not name after
+// the ones it names, in rows order (Mark, 2026-10-26,
+// decide-p11-row-order-across-steps: each step orders its own rows); the
+// unplaced group reads in rows order, then portion order.
 //
 // `rows` are the stored rows. A line that is out (its own flag, or its step
 // removed) is skipped before any group is created for it, so no empty step
@@ -59,6 +62,17 @@ export function groupPortionsByStep(rows, steps, stepNumberMap, keepOutLines) {
       }
       numbered.get(displayNumber).entries.push(entry);
     });
+  }
+  // A step's group reads in that step's uses order; an id its uses does not name
+  // sorts after every id it names, and those keep rows order among themselves
+  // (the sort is stable).
+  const usesPlace = (n, rowId) => {
+    const uses = steps.find((candidate) => candidate.n === n)?.uses ?? [];
+    const at = uses.indexOf(rowId);
+    return at === -1 ? uses.length : at;
+  };
+  for (const group of [...numbered.values(), ...removedSteps.values()]) {
+    group.entries.sort((a, b) => usesPlace(group.n, a.row.id) - usesPlace(group.n, b.row.id));
   }
   const methodIndex = (n) => steps.findIndex((candidate) => candidate.n === n);
   const removedGroups = [...removedSteps.values()].sort((a, b) => methodIndex(a.n) - methodIndex(b.n));
@@ -413,10 +427,12 @@ export function IngredientsHead({ parentVersion, openPen, below724, showingChang
 // under its resolved step, a split ingredient's name repeated once per
 // step it participates in with a sub-line naming its share of the row
 // (formatPortionLine, domain/composition.js). A portion whose step cannot
-// be resolved groups under a trailing "Unallocated" head instead of being
+// be resolved groups under a trailing "Not in a step yet" head instead of being
 // dropped; when that is the only group the head is not drawn, since a lone
-// Unallocated head labels nothing and the label earns its place only beside a
-// numbered group (Mark, 2026-10-02, option 1). `markedRowIds` is the focused figure's contributorRowIds
+// head labels nothing and the label earns its place only beside a numbered
+// group (Mark, 2026-10-02, option 1), except over a version with a live step
+// whose lines all sit at UNPLACED_STEP, whose steps use no row: there the head
+// says so (D-09). `markedRowIds` is the focused figure's contributorRowIds
 // (route-recipe.md § 3, § 5) — marking changes only outline and weight,
 // and moves nothing. `draftVersion` is the pen's own draft, built once by
 // RecipePage (03-02) — present only in developing mode, and read here for
@@ -459,8 +475,11 @@ export function IngredientTable({
   // 2026-10-05).
   blockedRowMessage = null,
   mode = 'reading',
-  // The creation editor's rows (Phase 10, MAKE-06): { gramsByRow, focusRowId,
-  // onChangeGrams, onBlurGrams, onRemoveRow }, present only while creating.
+  // The creation editor's rows (Phase 10, MAKE-06; Phase 11, MAKE-07):
+  // { gramsByLine, focusLine, onChangeGrams(rowId, step, value),
+  // onBlurGrams(rowId, step), onRemoveRow(rowId) }, present only while
+  // creating. A line's key is `${rowId}:${step}`, the step being the
+  // projection's (a live step's key, or UNPLACED_STEP).
   creationRows = null,
   draft = null,
   penDraft = null,
@@ -505,33 +524,36 @@ export function IngredientTable({
   }
 
   // A row just added from the picker takes focus in its empty grams field, once,
-  // after the render that drew it.
-  const creationFocusRowId = creationRows?.focusRowId ?? null;
+  // after the render that drew it. The creating lines register under their own
+  // keys (`${rowId}:${step}`), beside the pen's (`${rowId}:${lineIndex}`) in the
+  // same Map without sharing one: the two modes never render in one table.
+  const creationFocusLine = creationRows?.focusLine ?? null;
   useEffect(() => {
-    if (creationFocusRowId) gramsInputsRef.current.get(`${creationFocusRowId}:0`)?.focus();
-  }, [creationFocusRowId]);
+    if (creationFocusLine) gramsInputsRef.current.get(creationFocusLine)?.focus();
+  }, [creationFocusLine]);
 
-  // The creation rows whose grams field was left empty or unreadable (D-08): a
-  // blur fills it, a readable change empties it, and a row's line is derived
-  // from the field's current text at render. A Set keyed by row id, never a
-  // bare object, so typing alone never raises a line.
+  // The creation lines whose grams field was left empty or unreadable (D-08): a
+  // blur fills it, a readable change empties it, and a line's message is derived
+  // from the field's current text at render. A Set keyed by line, never a bare
+  // object, so typing alone never raises a line and each line of a split row
+  // speaks for itself.
   const [leftUnreadable, setLeftUnreadable] = useState(() => new Set());
-  function handleCreatingGramsBlur(row, raw) {
+  function handleCreatingGramsBlur(row, portion, raw) {
     if (gramsDraftMessage(row.ingredientName, raw) !== null) {
-      setLeftUnreadable((prev) => new Set(prev).add(row.id));
+      setLeftUnreadable((prev) => new Set(prev).add(`${row.id}:${portion.step}`));
     }
-    creationRows.onBlurGrams(row.id);
+    creationRows.onBlurGrams(row.id, portion.step);
   }
-  function handleCreatingGramsChange(row, value) {
+  function handleCreatingGramsChange(row, portion, value) {
     if (gramsDraftMessage(row.ingredientName, value) === null) {
       setLeftUnreadable((prev) => {
-        if (!prev.has(row.id)) return prev;
+        if (!prev.has(`${row.id}:${portion.step}`)) return prev;
         const next = new Set(prev);
-        next.delete(row.id);
+        next.delete(`${row.id}:${portion.step}`);
         return next;
       });
     }
-    creationRows.onChangeGrams(row.id, value);
+    creationRows.onChangeGrams(row.id, portion.step, value);
   }
 
   const activeRowsOnly = activeRows({ rows, method: steps });
@@ -603,8 +625,20 @@ export function IngredientTable({
   // pen's own live draftVersion.method while developing (its own comment
   // above states why), the `steps` prop everywhere else.
   const stepsForGrouping = isDeveloping ? draftVersion.method : steps;
-  const groups = groupPortionsByStep(rows, stepsForGrouping, currentStepNumbers, isDeveloping || isShowingChanges);
-  const showStepHeads = !(groups.length === 1 && groups[0].kind === 'unallocated');
+  // The creation editor mounts the table with the page's numbers; one mounted
+  // alone reads them off the steps it is given, so its lines still group under
+  // their heads.
+  const stepNumbers = currentStepNumbers ?? (isCreating ? displayNumbers(stepsForGrouping) : null);
+  const groups = groupPortionsByStep(rows, stepsForGrouping, stepNumbers, isDeveloping || isShowingChanges);
+  // A lone unplaced group draws no head, unless the version has a live step and
+  // every line of the group sits at UNPLACED_STEP (a row placed nowhere on
+  // purpose, as the projection and Save write it): then D-09 reads every row
+  // under 'Not in a step yet'. An empty method, portions naming a step that
+  // does not exist and a removed step all stay flat.
+  const liveStepCount = stepsForGrouping.filter((step) => !step.removed).length;
+  const showStepHeads =
+    !(groups.length === 1 && groups[0].kind === 'unallocated') ||
+    (liveStepCount > 0 && groups[0].entries.every((entry) => entry.portion.step === UNPLACED_STEP));
 
   // Style 6's reading row (sketch 011 decisions 2, 3; D-19; 03.5-06 Task
   // 1) — also the recording state's row (Task 2): GramsCell's own
@@ -654,31 +688,42 @@ export function IngredientTable({
     );
   }
 
-  // The creation row (sketch 013 creation-editor.html eB1): the grams field
-  // holds the maker's raw text, the name carries its estimated flag and a remove
-  // that deletes the row outright, and the share reads the live Balance's mass.
+  // The creation row (sketch 013 creation-editor.html eB1; sketch 014 pC1): one
+  // line per portion, keyed `${rowId}:${step}`. The grams field holds the
+  // maker's raw text for that line; the name carries its estimated flag and, on
+  // the row's first line, a remove that deletes the row outright; a row with
+  // more than one line says what share of the row and of the batch each holds,
+  // as the reading branch does (roadmap decision 23); and the share reads the
+  // live Balance's mass.
   function renderCreatingEntry(row, portion, portionIndex) {
     const dataFlag = dataFlagFor(row);
     const isMarked = markedRowIds.includes(row.id);
     const ariaLabel = rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, null);
-    const raw = creationRows.gramsByRow.get(row.id) ?? '';
-    const message = leftUnreadable.has(row.id) ? gramsDraftMessage(row.ingredientName, raw) : null;
-    const messageId = message ? `create-grams-error-${row.id}` : null;
+    const lineKey = `${row.id}:${portion.step}`;
+    const isSplit = row.portions.length > 1;
+    const raw = creationRows.gramsByLine.get(lineKey) ?? '';
+    const message = leftUnreadable.has(lineKey) ? gramsDraftMessage(row.ingredientName, raw) : null;
+    const messageId = message ? `create-grams-error-${row.id}-${portion.step}` : null;
     return (
-      <tr key={`${row.id}:${portionIndex}`} className={isMarked || message ? 'is-marked' : undefined} aria-label={ariaLabel}>
+      <tr
+        key={lineKey}
+        data-line={lineKey}
+        className={isMarked || message ? 'is-marked' : undefined}
+        aria-label={ariaLabel}
+      >
         <td className="ingredient-table__col-grams">
           <span className="ingredient-table__plan-grams">
             <input
-              ref={(element) => registerGramsInput(row.id, 0, element)}
+              ref={(element) => registerGramsInput(row.id, portion.step, element)}
               type="text"
               inputMode="decimal"
-              className={row.id === creationRows.focusRowId ? 'ink-field mk-focus' : 'ink-field'}
+              className={lineKey === creationRows.focusLine ? 'ink-field mk-focus' : 'ink-field'}
               value={raw}
-              aria-label={`${row.ingredientName}, grams`}
+              aria-label={isSplit ? `${row.ingredientName}, grams, portion ${portionIndex + 1}` : `${row.ingredientName}, grams`}
               aria-invalid={messageId ? 'true' : undefined}
               aria-describedby={messageId ?? undefined}
-              onChange={(event) => handleCreatingGramsChange(row, event.target.value)}
-              onBlur={() => handleCreatingGramsBlur(row, raw)}
+              onChange={(event) => handleCreatingGramsChange(row, portion, event.target.value)}
+              onBlur={() => handleCreatingGramsBlur(row, portion, raw)}
             />
             {' g'}
           </span>
@@ -690,7 +735,10 @@ export function IngredientTable({
               <span className="target-chip__value">{dataFlag}</span>
             </span>
           )}
-          <RemoveRowControl removed={false} onToggle={() => creationRows.onRemoveRow(row.id)} />
+          {portionIndex === 0 && <RemoveRowControl removed={false} onToggle={() => creationRows.onRemoveRow(row.id)} />}
+          {isSplit && (
+            <span className="ingredient-table__portion-note">{formatPortionLine(portion.grams, rowGrams(row), baselineMass)}</span>
+          )}
           <FieldFeedback error={message} errorId={messageId} />
         </td>
         <td className="ingredient-table__col-numeric">{formatShareOfBatch(portion.grams, baselineMass)}</td>
@@ -857,7 +905,7 @@ export function IngredientTable({
             <RemoveRowControl
               removed={lineOut}
               onToggle={() => onTogglePenLineRemoved(row.id, portionIndex)}
-              lineName={isSplit ? `${row.ingredientName}, ${displayNumber != null ? `Step ${displayNumber}` : 'Unallocated'}` : undefined}
+              lineName={isSplit ? `${row.ingredientName}, ${displayNumber != null ? `Step ${displayNumber}` : 'Not in a step yet'}` : undefined}
             />
           )}
           {/* A line that is out is outside the live batch, so its portion line reads
@@ -937,7 +985,7 @@ export function IngredientTable({
               <tr className="ingredient-table__step-head">
                 <td colSpan={columnCount}>
                   {group.kind === 'unallocated' ? (
-                    'Unallocated'
+                    'Not in a step yet'
                   ) : (
                     <>
                       {group.kind === 'removed' ? 'Removed' : `Step ${group.displayNumber}`}

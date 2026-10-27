@@ -167,21 +167,6 @@ function assertRowId(draft, rowId) {
 }
 
 /**
- * setRowGrams(draft, rowId, grams) -> a new draft with that row's grams kept
- * as typed; every other row is untouched. An unknown row id throws a
- * RangeError.
- */
-export function setRowGrams(draft, rowId, grams) {
-  assertRowId(draft, rowId);
-  return {
-    ...draft,
-    rows: draft.rows.map((row) =>
-      row.id === rowId ? { ...row, portions: [{ ...(row.portions[0] ?? { step: 1 }), grams }] } : row,
-    ),
-  };
-}
-
-/**
  * removeRow(draft, rowId) -> a new draft without that row; the others keep
  * their order, and the id is pruned from every step's uses so no dangling
  * reference is left (STRUCT-01). An unknown row id throws a RangeError.

@@ -6,12 +6,16 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Children } from 'react';
-import { IngredientTable, IngredientsHead } from './IngredientTable.jsx';
+import { IngredientTable, IngredientsHead, groupPortionsByStep } from './IngredientTable.jsx';
 import { Button } from './Button.jsx';
 import { buildDiff } from '../domain/diff.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { formatShareOfBatch } from '../domain/composition.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { addRow, creationSheetVersion } from '../domain/creation.js';
+import { addStep, setLineGrams, toggleStepUses, UNPLACED_STEP } from '../domain/creationSteps.js';
+import { blankCreateDraft } from '../domain/draft.js';
+import { library } from '../data/library.js';
 
 // The row fixture factory (D-01, D-02): a row is built with portions, an
 // amount and a step for the common one-portion case, with an `overrides`
@@ -812,7 +816,7 @@ describe('IngredientTable — the reading state groups portions by step (LD-01, 
     expect(heavyCreamCell).not.toContain('ingredient-table__portion-note');
   });
 
-  it('groups a portion whose step is not in the method under a trailing "Unallocated" head, positioned after every numbered group, never dropped', () => {
+  it('groups a portion whose step is not in the method under a trailing "Not in a step yet" head, positioned after every numbered group, never dropped', () => {
     const version = makeVersion([
       makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 9, grams: 5 }] }),
     ]);
@@ -824,16 +828,16 @@ describe('IngredientTable — the reading state groups portions by step (LD-01, 
     );
 
     const step1Index = markup.indexOf('Step 1<span');
-    const unallocatedIndex = markup.indexOf('>Unallocated<');
+    const unplacedIndex = markup.indexOf('>Not in a step yet<');
     expect(step1Index).toBeGreaterThan(-1);
-    expect(unallocatedIndex).toBeGreaterThan(step1Index);
-    // The portion still renders, under Unallocated — never silently dropped
+    expect(unplacedIndex).toBeGreaterThan(step1Index);
+    // The portion still renders, under Not in a step yet — never silently dropped
     // (RESEARCH.md Pitfall 4, extended from rows to portions).
-    const unallocatedSection = markup.slice(unallocatedIndex);
-    expect(unallocatedSection).toContain('5 g of 10.0 g · 100.0% in all');
+    const unplacedSection = markup.slice(unplacedIndex);
+    expect(unplacedSection).toContain('5 g of 10.0 g · 100.0% in all');
   });
 
-  it('draws no line of a removed step in the reading state, and no Unallocated head for it (plan 03.6-05)', () => {
+  it('draws no line of a removed step in the reading state, and no unplaced head for it (plan 03.6-05)', () => {
     const version = makeVersion([
       makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] }),
     ]);
@@ -846,6 +850,8 @@ describe('IngredientTable — the reading state groups portions by step (LD-01, 
     );
 
     expect(markup).not.toContain('Unallocated');
+
+    expect(markup).not.toContain('Not in a step yet');
     expect(markup).not.toContain('>Two<');
     // One line left reads like a one-line row, with no portion line (Mark's List row
     // per-step-one-line-left, Mark's answer drop, 2026-10-05). This case used to pin
@@ -1577,13 +1583,13 @@ describe('IngredientTable: the As made total is blank until a value is written (
   });
 });
 
-// Quick task 261002-wdn (Mark, 2026-10-02, option 1): a lone "Unallocated"
+// Quick task 261002-wdn (Mark, 2026-10-02, option 1): a lone "Not in a step yet"
 // head labels nothing, so it is hidden when it is the only group; it stays
 // whenever a numbered group sits beside it. Coconut v1 and v2 assign every
 // portion to step 1 but carry an empty method, so no step resolves and every
 // portion lands in that one group. Heads are counted by the exact class with
 // its closing quote, so the "-lead" span is not counted.
-describe('IngredientTable — a lone Unallocated group renders no step head (261002-wdn)', () => {
+describe('IngredientTable — a lone unplaced group renders no step head (261002-wdn)', () => {
   const STEP_HEAD = 'class="ingredient-table__step-head"';
   const countStepHeads = (markup) => markup.split(STEP_HEAD).length - 1;
   const countTrs = (markup) => (markup.match(/<tr[ >]/g) || []).length;
@@ -1598,6 +1604,7 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
 
       expect(countStepHeads(markup)).toBe(0);
       expect(markup).not.toContain('Unallocated');
+      expect(markup).not.toContain('Not in a step yet');
       const tbody = sectionMarkup(markup, 'tbody');
       expect(countTrs(tbody)).toBe(2);
       expect(tbody).toContain('Row A');
@@ -1617,6 +1624,7 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
 
     expect(countStepHeads(markup)).toBe(0);
     expect(markup).not.toContain('Unallocated');
+    expect(markup).not.toContain('Not in a step yet');
     expect(markup).toContain('struck-value');
     expect(countTrs(sectionMarkup(markup, 'tbody'))).toBe(2);
   });
@@ -1640,6 +1648,7 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
 
     expect(countStepHeads(markup)).toBe(0);
     expect(markup).not.toContain('Unallocated');
+    expect(markup).not.toContain('Not in a step yet');
     expect(markup).toContain('aria-label="Row A, grams"');
     expect(markup).toContain('aria-label="Row B, grams"');
     expect((sectionMarkup(markup, 'tbody').match(/<input /g) || []).length).toBe(2);
@@ -1665,6 +1674,7 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
     expect(countStepHeads(markup)).toBe(1);
     expect(markup).toContain('Removed<span class="ingredient-table__step-head-lead">One</span>');
     expect(markup).not.toContain('Unallocated');
+    expect(markup).not.toContain('Not in a step yet');
     // Struck, with the grams field still present and no remove or restore control.
     const tbody = sectionMarkup(markup, 'tbody');
     expect(tbody).toContain('<span class="struck-value">Row A</span>');
@@ -1673,7 +1683,7 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
     expect((tbody.match(/<input /g) || []).length).toBe(2);
   });
 
-  it('D (guard): a table mixing a numbered group and Unallocated keeps both heads, in reading and in the pen', () => {
+  it('D (guard): a table mixing a numbered group and the unplaced group keeps both heads, in reading and in the pen', () => {
     const version = makeVersion([
       makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 9, grams: 5 }] }),
     ]);
@@ -1685,7 +1695,7 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
     );
     expect(countStepHeads(reading)).toBe(2);
     expect(reading.indexOf('Step 1<span')).toBeGreaterThan(-1);
-    expect(reading.indexOf('>Unallocated<')).toBeGreaterThan(reading.indexOf('Step 1<span'));
+    expect(reading.indexOf('>Not in a step yet<')).toBeGreaterThan(reading.indexOf('Step 1<span'));
 
     const draftVersion = structuredClone(version);
     const penDraft = {
@@ -1703,10 +1713,10 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
       />,
     );
     expect(countStepHeads(pen)).toBe(2);
-    expect(pen.indexOf('>Unallocated<')).toBeGreaterThan(pen.indexOf('Step 1<span'));
+    expect(pen.indexOf('>Not in a step yet<')).toBeGreaterThan(pen.indexOf('Step 1<span'));
   });
 
-  it('E (guard): a table with only numbered groups keeps one head per group and no Unallocated', () => {
+  it('E (guard): a table with only numbered groups keeps one head per group and no unplaced head', () => {
     const version = makeVersion([makeRow('a', 'Row A', 10, 1), makeRow('b', 'Row B', 20, 2)]);
     version.method = [
       { n: 1, leadIn: 'One', instruction: 'Do one.' },
@@ -1721,6 +1731,75 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
     expect(markup).toContain('Step 1<span class="ingredient-table__step-head-lead">One</span>');
     expect(markup).toContain('Step 2<span class="ingredient-table__step-head-lead">Two</span>');
     expect(markup).not.toContain('Unallocated');
+    expect(markup).not.toContain('Not in a step yet');
+  });
+
+  // Phase 11, D-09 (plan 11-07): a version with a live step whose lines all sit
+  // at UNPLACED_STEP (its steps use no row, as the creation projection and Save
+  // write it) reads every row under 'Not in a step yet', in every mode. The
+  // cases above stay headless: an empty method, portions naming a step that is
+  // not there, and a removed step.
+  describe('D-09: a lone unplaced group is headed when the version has a live step', () => {
+    const liveStepVersion = () => {
+      const version = makeVersion([makeRow('a', 'Row A', 10, 0), makeRow('b', 'Row B', 20, 0)]);
+      version.method = [{ n: 1, leadIn: 'Heat', instruction: 'Heat it.', uses: [] }];
+      return version;
+    };
+
+    it('reading: every row reads under one Not in a step yet head, and the step that uses nothing draws none', () => {
+      const version = liveStepVersion();
+      const markup = renderToStaticMarkup(
+        <IngredientTable rows={version.rows} mode="reading" steps={version.method} currentStepNumbers={displayNumbers(version.method)} />,
+      );
+
+      expect(countStepHeads(markup)).toBe(1);
+      expect(markup).toContain('>Not in a step yet<');
+      expect(markup).not.toContain('Unallocated');
+      expect(markup).not.toContain('Step 1<span');
+      const tbody = sectionMarkup(markup, 'tbody');
+      expect(tbody.indexOf('Not in a step yet')).toBeLessThan(tbody.indexOf('Row A'));
+      expect(tbody.indexOf('Row A')).toBeLessThan(tbody.indexOf('Row B'));
+    });
+
+    it('the pen: the same head over one grams field per row', () => {
+      const version = liveStepVersion();
+      const draftVersion = structuredClone(version);
+      const penDraft = { rows: { a: onePortionDraftRow(0, '10'), b: onePortionDraftRow(0, '20') }, asMade: {} };
+      const markup = renderToStaticMarkup(
+        <IngredientTable
+          rows={version.rows}
+          draftVersion={draftVersion}
+          mode="developing"
+          penDraft={penDraft}
+          openBatch={null}
+          currentStepNumbers={displayNumbers(draftVersion.method)}
+        />,
+      );
+
+      expect(countStepHeads(markup)).toBe(1);
+      expect(markup).toContain('>Not in a step yet<');
+      expect((sectionMarkup(markup, 'tbody').match(/<input /g) || []).length).toBe(2);
+    });
+
+    it('an empty method stays flat even when every line sits at UNPLACED_STEP', () => {
+      const version = makeVersion([makeRow('a', 'Row A', 10, 0), makeRow('b', 'Row B', 20, 0)]);
+      const markup = renderToStaticMarkup(
+        <IngredientTable rows={version.rows} mode="reading" steps={version.method} currentStepNumbers={displayNumbers([])} />,
+      );
+
+      expect(countStepHeads(markup)).toBe(0);
+      expect(markup).not.toContain('Not in a step yet');
+    });
+
+    it('a removed step is not a live step: the lone group stays flat', () => {
+      const version = makeVersion([makeRow('a', 'Row A', 10, 0)]);
+      version.method = [{ n: 1, leadIn: 'Heat', instruction: 'Heat it.', removed: true }];
+      const markup = renderToStaticMarkup(
+        <IngredientTable rows={version.rows} mode="reading" steps={version.method} currentStepNumbers={displayNumbers(version.method)} />,
+      );
+
+      expect(countStepHeads(markup)).toBe(0);
+    });
   });
 });
 
@@ -2545,5 +2624,86 @@ describe('IngredientTable — one tbody per step group (sketch 011 decision 45)'
 
     expect(markup).toContain('<tbody></tbody>');
     expect(markup.match(/<tbody/g)).toHaveLength(1);
+  });
+});
+
+// Mark, 2026-10-26 (decide-p11-row-order-across-steps): each step orders its own
+// rows. A numbered or removed step's group reads in the order of that step's
+// uses; a row the uses does not name reads after the named ones, in rows order;
+// the unplaced group reads in rows order.
+describe('groupPortionsByStep reads each step in its own uses order (decide-p11-row-order-across-steps)', () => {
+  const idsOf = (group) => group.entries.map((entry) => entry.row.id);
+  const olive = () =>
+    groupPortionsByStep(oliveOilVersion.rows, oliveOilVersion.method, displayNumbers(oliveOilVersion.method), false);
+  const groupFor = (groups, displayNumber) => groups.find((group) => group.displayNumber === displayNumber);
+
+  it("Olive Oil v1's steps 2 and 3 read as their seeded uses list them, and steps 6 and 8 as before", () => {
+    const groups = olive();
+    expect(idsOf(groupFor(groups, 2))).toEqual(['row-10', 'row-11', 'row-12', 'row-05', 'row-01']);
+    expect(idsOf(groupFor(groups, 3))).toEqual(['row-05', 'row-04', 'row-07', 'row-08', 'row-01', 'row-02']);
+    expect(idsOf(groupFor(groups, 6))).toEqual(['row-06']);
+    expect(idsOf(groupFor(groups, 8))).toEqual(['row-03', 'row-09']);
+  });
+
+  it("reads a row its step's uses does not name after the named ones, in rows order", () => {
+    const rows = [makeRow('a', 'Row A', 1, 1), makeRow('b', 'Row B', 2, 1), makeRow('c', 'Row C', 3, 1), makeRow('d', 'Row D', 4, 1)];
+    const method = [{ n: 1, leadIn: 'One', instruction: 'Do one.', uses: ['d', 'b'] }];
+    const [group] = groupPortionsByStep(rows, method, displayNumbers(method), false);
+    expect(idsOf(group)).toEqual(['d', 'b', 'a', 'c']);
+  });
+
+  it('reads a step with no uses list in rows order', () => {
+    const rows = [makeRow('a', 'Row A', 1, 1), makeRow('b', 'Row B', 2, 1)];
+    const method = [{ n: 1, leadIn: 'One', instruction: 'Do one.' }];
+    const [group] = groupPortionsByStep(rows, method, displayNumbers(method), false);
+    expect(idsOf(group)).toEqual(['a', 'b']);
+  });
+
+  it("reads a removed step's group in its uses order", () => {
+    const rows = [makeRow('a', 'Row A', 1, 2), makeRow('b', 'Row B', 2, 2), makeRow('c', 'Row C', 3, 2)];
+    const method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.', uses: [] },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.', uses: ['c', 'a', 'b'], removed: true },
+    ];
+    const groups = groupPortionsByStep(rows, method, displayNumbers(method), true);
+    const removed = groups.find((group) => group.kind === 'removed');
+    expect(idsOf(removed)).toEqual(['c', 'a', 'b']);
+  });
+
+  it('reads the unplaced group in rows order', () => {
+    const rows = [makeRow('a', 'Row A', 1, 9), makeRow('b', 'Row B', 2, 9), makeRow('c', 'Row C', 3, 9)];
+    const method = [{ n: 1, leadIn: 'One', instruction: 'Do one.', uses: ['c', 'b'] }];
+    const [group] = groupPortionsByStep(rows, method, displayNumbers(method), false);
+    expect(group.kind).toBe('unallocated');
+    expect(idsOf(group)).toEqual(['a', 'b', 'c']);
+  });
+
+  it("groups a creation projection in the step's uses order, not the draft rows' order", () => {
+    const records = new Map(Object.entries(library).map(([id, entry]) => [id, { id, entry }]));
+    let draft = blankCreateDraft({ recipeId: 'r1', versionId: 'v1', name: 'Vanilla' });
+    draft = addRow(addRow(draft, { rowId: 'row-a', libraryId: 'sucrose' }), { rowId: 'row-b', libraryId: 'wholeMilk' });
+    draft = setLineGrams(setLineGrams(draft, 'row-a', UNPLACED_STEP, '10'), 'row-b', UNPLACED_STEP, '20');
+    draft = addStep(draft);
+    draft = toggleStepUses(toggleStepUses(draft, draft.method[0].n, 'row-b'), draft.method[0].n, 'row-a');
+    const version = creationSheetVersion(draft, records);
+    expect(version.rows.map((row) => row.id)).toEqual(['row-a', 'row-b']);
+    const [group] = groupPortionsByStep(version.rows, version.method, displayNumbers(version.method), false);
+    expect(idsOf(group)).toEqual(['row-b', 'row-a']);
+  });
+
+  it("the reading table lists Olive Oil v1's Step 2 as Locust bean gum, Guar gum, Lambda carrageenan, Sucrose, Whole milk", () => {
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={oliveOilVersion.rows}
+        mode="reading"
+        steps={oliveOilVersion.method}
+        currentStepNumbers={displayNumbers(oliveOilVersion.method)}
+      />,
+    );
+    const start = markup.indexOf('Step 2<span');
+    const section = markup.slice(start, markup.indexOf('Step 3<span'));
+    const order = ['Locust bean gum', 'Guar gum', 'Lambda carrageenan', 'Sucrose', 'Whole milk'].map((name) => section.indexOf(name));
+    expect(order.every((at) => at > -1)).toBe(true);
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
   });
 });

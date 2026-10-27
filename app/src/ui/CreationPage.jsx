@@ -14,7 +14,17 @@ import { repository } from '../store/repository.js';
 import { draftMatchesCreate } from '../domain/draft.js';
 import { NOTEBOOK_PLACE_PATH } from './notebookPaths.js';
 import { freshId } from '../domain/id.js';
-import { addStep, addTarget, removeTarget, setStepField, setTarget } from '../domain/creationSteps.js';
+import {
+  addStep,
+  addTarget,
+  normalizeAllocation,
+  removeTarget,
+  rowLines,
+  setLineGrams,
+  setStepField,
+  setTarget,
+  toggleStepUses,
+} from '../domain/creationSteps.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import {
   addNote,
@@ -24,7 +34,6 @@ import {
   normalizeCreateDraft,
   removeNote,
   removeRow,
-  setRowGrams,
   updateNote,
 } from '../domain/creation.js';
 
@@ -44,8 +53,9 @@ export function CreationPage({ record, justStarted = false }) {
   const writer = useDraftWriter(record.versionId);
   // The editor never holds a payload as it was stored: a stored create draft
   // may hold only recipeId, versionId and name, so the first state and every
-  // restore lay the payload over the blank one.
-  const [createDraft, setCreateDraft] = useState(() => normalizeCreateDraft(record.payload));
+  // restore lay the payload over the blank one, then repair a draft whose uses
+  // and portions disagree without losing a typed amount (normalizeAllocation).
+  const [createDraft, setCreateDraft] = useState(() => normalizeAllocation(normalizeCreateDraft(record.payload)));
   const penOpenedAtRef = useRef(null);
   // Focus follows an add or a remove (MAKE-08): a handler leaves a request, and
   // the effect below acts on it after the render that drew its target, so focus
@@ -81,7 +91,7 @@ export function CreationPage({ record, justStarted = false }) {
     onRestoreRecord: doNothing,
     creating: true,
     createDraft,
-    onRestoreCreate: (payload) => setCreateDraft(normalizeCreateDraft(payload)),
+    onRestoreCreate: (payload) => setCreateDraft(normalizeAllocation(normalizeCreateDraft(payload))),
     // Right after Start the draft is kept but the maker knows it: say nothing.
     onPageStatus: (message, options) => {
       if (justStarted && message === DRAFT_KEPT_STATUS) return;
@@ -218,8 +228,10 @@ export function CreationPage({ record, justStarted = false }) {
     focusRequestRef.current = 'ingredient-target';
   };
 
-  const handleChangeGrams = (rowId, value) => {
-    setCreateDraft((prev) => setRowGrams(prev, rowId, value));
+  // One grams field per line of a row (MAKE-07): a line is named by its row and
+  // the step it sits in, UNPLACED_STEP for a row no step uses.
+  const handleChangeGrams = (rowId, step, value) => {
+    setCreateDraft((prev) => setLineGrams(prev, rowId, step, value));
   };
 
   const handleBlurGrams = (rowId) => {
@@ -257,7 +269,15 @@ export function CreationPage({ record, justStarted = false }) {
     focusRequestRef.current = { kind: 'target-after-remove', n, index };
   };
 
-  const gramsByRow = new Map(createDraft.rows.map((row) => [row.id, row.portions[0]?.grams ?? '']));
+  // The Uses checklist (MAKE-07): ticking a row makes the step use it, and the
+  // draft keeps the row's grams lines as the domain op moves them.
+  const handleToggleUses = (n, rowId) => {
+    setCreateDraft((prev) => toggleStepUses(prev, n, rowId));
+  };
+
+  const gramsByLine = new Map(
+    createDraft.rows.flatMap((row) => rowLines(createDraft, row.id).map((line) => [`${row.id}:${line.step}`, line.grams])),
+  );
   const addedIds = new Set(createDraft.rows.map((row) => row.libraryId));
 
   // Cancel ends the creation for good, and only once the delete has succeeded
@@ -350,8 +370,9 @@ export function CreationPage({ record, justStarted = false }) {
                 mode="creating"
                 penDraft={null}
                 creationRows={{
-                  gramsByRow,
-                  focusRowId,
+                  gramsByLine,
+                  // The row just added from the picker is unplaced, so its one line is at step 0.
+                  focusLine: focusRowId ? `${focusRowId}:0` : null,
                   onChangeGrams: handleChangeGrams,
                   onBlurGrams: handleBlurGrams,
                   onRemoveRow: handleRemoveRow,
@@ -389,6 +410,7 @@ export function CreationPage({ record, justStarted = false }) {
                     onAddTarget={handleAddTarget}
                     onChangeTarget={handleChangeTarget}
                     onRemoveTarget={handleRemoveTarget}
+                    onToggleUses={handleToggleUses}
                   />
                 }
               />

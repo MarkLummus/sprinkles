@@ -65,16 +65,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "100",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -90,23 +80,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "100",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -117,6 +107,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -186,7 +186,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "75e2190d2c74e00cdf8e12d988aad889111f2f6f503aeb9b343a8532a5acc6b3",
+            "textHash": "04a903a9a0dfa0017cca44f65767b4cda47fd224481f02f499df4894d48bb275",
             "methodHash": "8f44b99a0b2c6c7dc0a62389fc81ca37576531c5c4a6bdd97f4a6aaf53e22314"
           }
         },
@@ -249,16 +249,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "100",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -274,23 +264,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "100",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -301,6 +291,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -370,7 +370,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "75e2190d2c74e00cdf8e12d988aad889111f2f6f503aeb9b343a8532a5acc6b3",
+            "textHash": "04a903a9a0dfa0017cca44f65767b4cda47fd224481f02f499df4894d48bb275",
             "methodHash": "8f44b99a0b2c6c7dc0a62389fc81ca37576531c5c4a6bdd97f4a6aaf53e22314"
           },
           "stores": {
@@ -15968,16 +15968,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "100",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -15993,23 +15983,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "100",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -16020,6 +16010,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -16089,7 +16089,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "75e2190d2c74e00cdf8e12d988aad889111f2f6f503aeb9b343a8532a5acc6b3",
+            "textHash": "04a903a9a0dfa0017cca44f65767b4cda47fd224481f02f499df4894d48bb275",
             "methodHash": "8f44b99a0b2c6c7dc0a62389fc81ca37576531c5c4a6bdd97f4a6aaf53e22314"
           },
           "stores": {
@@ -31655,7 +31655,7 @@
               "Record another",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "9bd8cab0c38664fcf6dddc188d91770885d994a7d6e006baf66c2c858c155781",
+            "textHash": "fd56d9c78737e8b74182a02197a6095d0ce726c89cec6def8a826d7e1d16b066",
             "methodHash": "3cc4a312cee1463791a98922fd90842c7f1388b8d62264fbf05e2d09d3abbc2e"
           },
           "stores": {
@@ -46923,16 +46923,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -46948,23 +46938,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "120",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -46975,6 +46965,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -47044,7 +47044,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "c88cd9713c60999f3a7023fa9d6d7fa752e6a8b9d7d466aa6118b8d57d7c6582",
+            "textHash": "02826e900f64a5187fd2c978d6dcd4e5cc660f443659541405d5873e597f916e",
             "methodHash": "303f0b9c7d6916e05a54cc170ba96c4702dabf1b15075a4489b4d893cedeacf5"
           }
         },
@@ -47109,16 +47109,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -47134,23 +47124,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "120",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -47161,6 +47151,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -47230,7 +47230,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "3032fc633ec8493e5d4d49ed2ed69ee6d6298503de8a989c38f9dba48ff98838",
+            "textHash": "70e551bd75eeaf8c0bdb4f3fdb877c9f3cf051356224dcbd7ed8d914809eba4f",
             "methodHash": "303f0b9c7d6916e05a54cc170ba96c4702dabf1b15075a4489b4d893cedeacf5"
           }
         },
@@ -47295,16 +47295,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -47320,23 +47310,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "120",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -47347,6 +47337,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -47416,7 +47416,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "3032fc633ec8493e5d4d49ed2ed69ee6d6298503de8a989c38f9dba48ff98838",
+            "textHash": "70e551bd75eeaf8c0bdb4f3fdb877c9f3cf051356224dcbd7ed8d914809eba4f",
             "methodHash": "303f0b9c7d6916e05a54cc170ba96c4702dabf1b15075a4489b4d893cedeacf5"
           }
         },
@@ -47479,16 +47479,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -47504,23 +47494,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -47531,6 +47521,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -47600,7 +47600,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "b278cb454e637ca526969d3cc15b5484bf2bf121b69c2a99e6e3b40ae16f5a37",
+            "textHash": "f37b548905b5454bc5332002c7b1532a767dc48690595e3e2d7e16ac5d0d0370",
             "methodHash": "70b031edec1e21d916139b4fa367d50a549a1d7bd3180ed5c36d9ed90c6b6b4d"
           }
         },
@@ -47665,16 +47665,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -47690,23 +47680,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -47717,6 +47707,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -47786,7 +47786,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "e47dc28e62cce191ca415a04fdb99566c91ffa9bca598a89b6b034d08f375b16",
+            "textHash": "74299b48195deb210b3bac4cb942b7a6aec2042e40d8237734c34798a32d9f4e",
             "methodHash": "70b031edec1e21d916139b4fa367d50a549a1d7bd3180ed5c36d9ed90c6b6b4d"
           }
         },
@@ -47849,16 +47849,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -47874,23 +47864,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -47901,6 +47891,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -47970,7 +47970,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "12513ffe81fb3b64ccb1a3e7d492b5092e87cdff12593a4c39067140e2388a92",
+            "textHash": "c534b451084337d3b124bc6508a13578524c29c4b6c885c18cead230d2a8ef00",
             "methodHash": "70b031edec1e21d916139b4fa367d50a549a1d7bd3180ed5c36d9ed90c6b6b4d"
           }
         },
@@ -48035,16 +48035,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -48060,23 +48050,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -48087,6 +48077,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -48156,7 +48156,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "3525a859507fdffa5c9deae0885ac1498f68db153c9441b7fd4888c1b3f85926",
+            "textHash": "a4eef0b7b7f135e0e67e8a588e7aabaa787e4a367b4e0abbfaa613ce0040c044",
             "methodHash": "303f0b9c7d6916e05a54cc170ba96c4702dabf1b15075a4489b4d893cedeacf5"
           }
         },
@@ -48219,16 +48219,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -48244,23 +48234,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -48271,6 +48261,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -48340,7 +48340,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "12513ffe81fb3b64ccb1a3e7d492b5092e87cdff12593a4c39067140e2388a92",
+            "textHash": "c534b451084337d3b124bc6508a13578524c29c4b6c885c18cead230d2a8ef00",
             "methodHash": "70b031edec1e21d916139b4fa367d50a549a1d7bd3180ed5c36d9ed90c6b6b4d"
           }
         },
@@ -48405,16 +48405,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -48430,23 +48420,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -48457,6 +48447,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -48526,7 +48526,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "e47dc28e62cce191ca415a04fdb99566c91ffa9bca598a89b6b034d08f375b16",
+            "textHash": "74299b48195deb210b3bac4cb942b7a6aec2042e40d8237734c34798a32d9f4e",
             "methodHash": "70b031edec1e21d916139b4fa367d50a549a1d7bd3180ed5c36d9ed90c6b6b4d"
           }
         },
@@ -48589,16 +48589,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -48614,23 +48604,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -48641,6 +48631,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -48710,7 +48710,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "6982015d330f9472e84dce657b053f851b601c43a40929acd2deac4d3970771d",
+            "textHash": "ed101dc9c0f08a3dbe9cdff5aad53da6793ab2d6f26abd3d2dc10c885c8ecbe9",
             "methodHash": "70b031edec1e21d916139b4fa367d50a549a1d7bd3180ed5c36d9ed90c6b6b4d"
           }
         },
@@ -48775,16 +48775,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -48800,23 +48790,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -48827,6 +48817,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -48896,7 +48896,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "e47dc28e62cce191ca415a04fdb99566c91ffa9bca598a89b6b034d08f375b16",
+            "textHash": "74299b48195deb210b3bac4cb942b7a6aec2042e40d8237734c34798a32d9f4e",
             "methodHash": "70b031edec1e21d916139b4fa367d50a549a1d7bd3180ed5c36d9ed90c6b6b4d"
           }
         },
@@ -48959,16 +48959,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -48984,23 +48974,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -49011,6 +49001,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -49080,7 +49080,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "088a2a60aba99c5cf2d0bf7e084498ff8190751ca96c98b89ff2610ce2f87a46",
+            "textHash": "e2a033e7ac2e9ac02005efce2368640f641dfeee273ead56b270dea0d9ba3368",
             "methodHash": "70b031edec1e21d916139b4fa367d50a549a1d7bd3180ed5c36d9ed90c6b6b4d"
           }
         },
@@ -49145,16 +49145,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -49170,23 +49160,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -49197,6 +49187,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -49266,7 +49266,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "4e980b320cc64e9b2968d862cb653f4f04aa7516609915c0929f19432538a5a8",
+            "textHash": "d3910693318c7be229bc68875199ee4c3862f038b3baa8214906b71cd6dd68af",
             "methodHash": "70b031edec1e21d916139b4fa367d50a549a1d7bd3180ed5c36d9ed90c6b6b4d"
           }
         },
@@ -49329,16 +49329,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -49354,23 +49344,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -49381,6 +49371,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -49450,7 +49450,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "a66a10736b902f558fca5fef0e7d9f5da1b63d59a53e48762da4ce9dc52d2401",
+            "textHash": "98cbbe399e020fb82c8d7d3f4fa7518d64f20be47a78a928123b6bd314237861",
             "methodHash": "70b031edec1e21d916139b4fa367d50a549a1d7bd3180ed5c36d9ed90c6b6b4d"
           }
         },
@@ -49515,16 +49515,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -49540,23 +49530,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -49567,6 +49557,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -49636,7 +49636,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "4e980b320cc64e9b2968d862cb653f4f04aa7516609915c0929f19432538a5a8",
+            "textHash": "d3910693318c7be229bc68875199ee4c3862f038b3baa8214906b71cd6dd68af",
             "methodHash": "70b031edec1e21d916139b4fa367d50a549a1d7bd3180ed5c36d9ed90c6b6b4d"
           }
         },
@@ -49699,16 +49699,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "70",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -49724,23 +49714,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "70",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -49751,6 +49741,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -49820,7 +49820,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "1af2187f2804c7fe07d1e5133a97a34966bf23801dd403ead70b5f25e6f34a46",
+            "textHash": "a383f467e2bbd331a5754eb51a61d5c9458129be85eec30ac0d3f799cddec095",
             "methodHash": "5b3c4ba921314f4a0b38ed25da9fdf47e16679c3e55499a27c96e6718af3b27d"
           }
         },
@@ -49885,16 +49885,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "90",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "70",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -49910,23 +49900,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "70",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "90",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -49937,6 +49927,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -50006,7 +50006,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "484b89d170f51af5f7f297ce8c00fea4cb97c9151a22f3c7d2a51c754e77bdd9",
+            "textHash": "cd56eadbd6051286e374eabdc242d1d4e3573ec525e1bee76a32e44df7f82b01",
             "methodHash": "5b3c4ba921314f4a0b38ed25da9fdf47e16679c3e55499a27c96e6718af3b27d"
           }
         },
@@ -50037,7 +50037,7 @@
               "Record another",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "9bd8cab0c38664fcf6dddc188d91770885d994a7d6e006baf66c2c858c155781",
+            "textHash": "fd56d9c78737e8b74182a02197a6095d0ce726c89cec6def8a826d7e1d16b066",
             "methodHash": "3cc4a312cee1463791a98922fd90842c7f1388b8d62264fbf05e2d09d3abbc2e"
           },
           "stores": {
@@ -65305,16 +65305,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "100",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -65330,23 +65320,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "100",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -65357,6 +65347,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -65426,7 +65426,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "75e2190d2c74e00cdf8e12d988aad889111f2f6f503aeb9b343a8532a5acc6b3",
+            "textHash": "04a903a9a0dfa0017cca44f65767b4cda47fd224481f02f499df4894d48bb275",
             "methodHash": "8f44b99a0b2c6c7dc0a62389fc81ca37576531c5c4a6bdd97f4a6aaf53e22314"
           }
         },
@@ -65489,16 +65489,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "80",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -65514,23 +65504,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "80",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -65541,6 +65531,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -65610,7 +65610,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "0e919ef3cf4f076846b969d2045493ac3721011bf3230e1b0c052b60fd93dc88",
+            "textHash": "7edec7c07e0d366e2d54e86972838234afb34f365f95c604381c52069941e8dd",
             "methodHash": "d0439826237cee88cbec9b23289b90c7559e761d22f6f8c1596f887705161ddd"
           }
         },
@@ -65673,16 +65673,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "80",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -65698,23 +65688,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "80",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -65725,6 +65715,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -65794,7 +65794,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "0e919ef3cf4f076846b969d2045493ac3721011bf3230e1b0c052b60fd93dc88",
+            "textHash": "7edec7c07e0d366e2d54e86972838234afb34f365f95c604381c52069941e8dd",
             "methodHash": "d0439826237cee88cbec9b23289b90c7559e761d22f6f8c1596f887705161ddd"
           }
         },
@@ -65857,16 +65857,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "80",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -65882,23 +65872,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "80",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -65909,6 +65899,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -65978,7 +65978,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "b048ab1ce2d3a561f55be356d64657b4f6e1387a14ac96058b7c07442d217f74",
+            "textHash": "6f3ccf83095d4391ef90381b56bdd36c9f31f1b81b4c0df64271afefbc120fd6",
             "methodHash": "d0439826237cee88cbec9b23289b90c7559e761d22f6f8c1596f887705161ddd"
           }
         },
@@ -66041,16 +66041,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "80",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -66066,23 +66056,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "80",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -66093,6 +66083,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -66162,7 +66162,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "b048ab1ce2d3a561f55be356d64657b4f6e1387a14ac96058b7c07442d217f74",
+            "textHash": "6f3ccf83095d4391ef90381b56bdd36c9f31f1b81b4c0df64271afefbc120fd6",
             "methodHash": "d0439826237cee88cbec9b23289b90c7559e761d22f6f8c1596f887705161ddd"
           }
         },
@@ -66225,16 +66225,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "80",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -66250,23 +66240,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "80",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -66277,6 +66267,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -66346,7 +66346,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "b048ab1ce2d3a561f55be356d64657b4f6e1387a14ac96058b7c07442d217f74",
+            "textHash": "6f3ccf83095d4391ef90381b56bdd36c9f31f1b81b4c0df64271afefbc120fd6",
             "methodHash": "d0439826237cee88cbec9b23289b90c7559e761d22f6f8c1596f887705161ddd"
           }
         },
@@ -66409,16 +66409,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "80",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -66434,23 +66424,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "80",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -66461,6 +66451,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -66530,7 +66530,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "b048ab1ce2d3a561f55be356d64657b4f6e1387a14ac96058b7c07442d217f74",
+            "textHash": "6f3ccf83095d4391ef90381b56bdd36c9f31f1b81b4c0df64271afefbc120fd6",
             "methodHash": "d0439826237cee88cbec9b23289b90c7559e761d22f6f8c1596f887705161ddd"
           }
         },
@@ -66593,16 +66593,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "80",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -66618,23 +66608,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "80",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -66645,6 +66635,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -66714,7 +66714,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "dac2fc86a6442f76bfbd503001c53a345523ebfc946643bf0940da598b71a946",
+            "textHash": "762aae9276498215212cdc0b81ed315b15b45f85a8fcf35bb83aa2e162654696",
             "methodHash": "d0439826237cee88cbec9b23289b90c7559e761d22f6f8c1596f887705161ddd"
           }
         },
@@ -66777,16 +66777,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "80",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -66802,23 +66792,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "80",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -66829,6 +66819,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -66898,7 +66898,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "dac2fc86a6442f76bfbd503001c53a345523ebfc946643bf0940da598b71a946",
+            "textHash": "762aae9276498215212cdc0b81ed315b15b45f85a8fcf35bb83aa2e162654696",
             "methodHash": "d0439826237cee88cbec9b23289b90c7559e761d22f6f8c1596f887705161ddd"
           }
         },
@@ -66961,16 +66961,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "80",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -66986,23 +66976,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "80",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -67013,6 +67003,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -67082,7 +67082,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "dac2fc86a6442f76bfbd503001c53a345523ebfc946643bf0940da598b71a946",
+            "textHash": "762aae9276498215212cdc0b81ed315b15b45f85a8fcf35bb83aa2e162654696",
             "methodHash": "d0439826237cee88cbec9b23289b90c7559e761d22f6f8c1596f887705161ddd"
           }
         },
@@ -67145,16 +67145,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "80",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "12",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -67170,23 +67160,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "12",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "80",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -67197,6 +67187,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -67266,7 +67266,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "dac2fc86a6442f76bfbd503001c53a345523ebfc946643bf0940da598b71a946",
+            "textHash": "762aae9276498215212cdc0b81ed315b15b45f85a8fcf35bb83aa2e162654696",
             "methodHash": "d0439826237cee88cbec9b23289b90c7559e761d22f6f8c1596f887705161ddd"
           }
         },
@@ -67329,16 +67329,6 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 1",
-                "80",
-                null
-              ],
-              [
-                "Sucrose, grams, portion 1",
-                "70",
-                null
-              ],
-              [
                 "Locust bean gum, grams",
                 "1.04",
                 null
@@ -67354,23 +67344,23 @@
                 null
               ],
               [
-                "Whole milk, grams, portion 2",
-                "250.4",
+                "Sucrose, grams, portion 1",
+                "70",
                 null
               ],
               [
-                "Heavy cream, grams",
-                "252.8",
-                null
-              ],
-              [
-                "Skim milk powder, grams",
-                "22.4",
+                "Whole milk, grams, portion 1",
+                "80",
                 null
               ],
               [
                 "Sucrose, grams, portion 2",
                 "64",
+                null
+              ],
+              [
+                "Skim milk powder, grams",
+                "22.4",
                 null
               ],
               [
@@ -67381,6 +67371,16 @@
               [
                 "Fine sea salt, grams",
                 "3.2",
+                null
+              ],
+              [
+                "Whole milk, grams, portion 2",
+                "250.4",
+                null
+              ],
+              [
+                "Heavy cream, grams",
+                "252.8",
                 null
               ],
               [
@@ -67450,7 +67450,7 @@
               "Watch forHide",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "a75a05bcbce0067be799ccc4208d32c1afda1b0d434b7b895ac548f030564156",
+            "textHash": "518d7a7ad5f73c1e94329bf1587bc5826b990937ba4ff35839e2e6f3a58c7c7c",
             "methodHash": "3a91ecbf782657e0778f9891031e9d9f8ea4ca767a1973a52ef1a346e1ee4d8c"
           }
         },
@@ -67481,7 +67481,7 @@
               "Record another",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "9bd8cab0c38664fcf6dddc188d91770885d994a7d6e006baf66c2c858c155781",
+            "textHash": "fd56d9c78737e8b74182a02197a6095d0ce726c89cec6def8a826d7e1d16b066",
             "methodHash": "3cc4a312cee1463791a98922fd90842c7f1388b8d62264fbf05e2d09d3abbc2e"
           },
           "stores": {
@@ -82714,16 +82714,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -82739,22 +82729,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -82765,6 +82755,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -83138,7 +83138,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "dfc64e4c86970bef2d87e86d938c463d415e56091e31ad8c0b827530600a17aa",
+            "textHash": "a15fa1c228762e8669d633ddca3d0cf5431955b7650c7fbb018fbce4e4587b7a",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -83168,16 +83168,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -83193,22 +83183,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -83219,6 +83209,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -83592,7 +83592,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "77b54ad0965a08d91eaca33531bf6400bd3b6556cd2e380b6144aa189d377b49",
+            "textHash": "21d6f4a3b900a74c95cb73f154cdae059a83846cb12e9dd5ab217a4836cba9a8",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -83620,16 +83620,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -83645,22 +83635,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -83671,6 +83661,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -84044,7 +84044,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "dfc64e4c86970bef2d87e86d938c463d415e56091e31ad8c0b827530600a17aa",
+            "textHash": "a15fa1c228762e8669d633ddca3d0cf5431955b7650c7fbb018fbce4e4587b7a",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -84074,16 +84074,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -84099,22 +84089,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -84125,6 +84115,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -84498,7 +84498,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "77b54ad0965a08d91eaca33531bf6400bd3b6556cd2e380b6144aa189d377b49",
+            "textHash": "21d6f4a3b900a74c95cb73f154cdae059a83846cb12e9dd5ab217a4836cba9a8",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -84526,16 +84526,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -84551,22 +84541,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -84577,6 +84567,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -84950,7 +84950,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "dfc64e4c86970bef2d87e86d938c463d415e56091e31ad8c0b827530600a17aa",
+            "textHash": "a15fa1c228762e8669d633ddca3d0cf5431955b7650c7fbb018fbce4e4587b7a",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -84980,16 +84980,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -85005,22 +84995,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -85031,6 +85021,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -85404,7 +85404,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "77b54ad0965a08d91eaca33531bf6400bd3b6556cd2e380b6144aa189d377b49",
+            "textHash": "21d6f4a3b900a74c95cb73f154cdae059a83846cb12e9dd5ab217a4836cba9a8",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -85432,16 +85432,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -85457,22 +85447,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -85483,6 +85473,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -85857,7 +85857,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "d64c4bfa78070083edcdf44f78832d09c59ef35dcd3928a8b68bfd9ba32a04d4",
+            "textHash": "8b2d33fb5573d39026ff2674b0f05467959ab2c62d64c5bc04edde4441683ae5",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -85887,16 +85887,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -85912,22 +85902,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -85938,6 +85928,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -86312,7 +86312,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "a8773324dbc19c4ebefd5646732ad6f5a2759fb81f3e7eec6ad6bf0cda1b9ba7",
+            "textHash": "e9a06c69bc06a5e2a19921cdef0a950b146fe0c9dfa9f510b44ca95cf7c666e4",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -86340,16 +86340,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -86365,22 +86355,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -86391,6 +86381,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -86766,7 +86766,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "fc6819ed926601cefb489527706d38f40349ffcf5f99176e4d8971de8b37a498",
+            "textHash": "12a16cd8b986571106d7742ffc09342f437f658fb21cb53c02d9bca8b7435e99",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -86796,16 +86796,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -86821,22 +86811,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -86847,6 +86837,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -87222,7 +87222,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "1bd581dea04d6255bd3b4e20901d288e657f8f302c4d0807cbf7c839ddf3fc23",
+            "textHash": "aa5b16df3f33b5fa45431f831b0aaa7775d0ef65a3b3e63cdcebef6b9f66a767",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -87250,16 +87250,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -87275,22 +87265,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -87301,6 +87291,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -87675,7 +87675,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "843bbc50a9ac132292df2f82e794496429c0019226c7c42caee465027e3c4432",
+            "textHash": "43cd4533a683492e421cf4cc0e1f7e872d58114df6bfe6571031708bc512208b",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -87705,16 +87705,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -87730,22 +87720,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -87756,6 +87746,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -88130,7 +88130,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "c24ffecfa2e0c7f6b3734905cb72dbbe94cf23722e9b7148b814ba9d4c04042a",
+            "textHash": "1405b3904c16b6c77a75e83fd34c2f25f74da07d0e23245195672c5af6fcf7bf",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -88158,16 +88158,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -88183,22 +88173,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -88209,6 +88199,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -88582,7 +88582,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "9cce3fec02a8da51833e5f1175251bcea2b15e7d8b4f4e128e3391ef96103ac6",
+            "textHash": "282d8b61f9f2c908c630987f3401d6d14306cd556d9a73eb1bcaaed0f5f34f98",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -88612,16 +88612,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -88637,22 +88627,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -88663,6 +88653,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -89036,7 +89036,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "d657031608e9d7b1816a1a84336e7c9a3d1849c08580c281d4b6e07a5c0d91ca",
+            "textHash": "e805e32013be8db7a30aa30db1f379aec4408122c75aac79f69cb557d401545d",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -89064,16 +89064,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -89089,22 +89079,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -89115,6 +89105,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -89487,7 +89487,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "dd2e69a96fe545da8f5b53546acb9064f80dd8f4be82c45f4a0d20759b9dab5a",
+            "textHash": "35c728bab48fb230ec89e3fb0cf00cc08f738388f71359f4ec57c363ae95ff21",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -89517,16 +89517,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -89542,22 +89532,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -89568,6 +89558,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -89940,7 +89940,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "fcf45cea029f468f299e5dbb9493bd5ef96a1ec1896b841021290c79ee8da8c3",
+            "textHash": "60eff8063569b63dc2fcd6055fbcaf335c378de04e6f5d6001731ff9b53ea635",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -89968,16 +89968,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -89993,22 +89983,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -90019,6 +90009,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -90390,7 +90390,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "b974aaf62478fc511590fb12724472dbbbafdd3ecf6e2d7b00857507048b678a",
+            "textHash": "ad6b5cb7dcc3f21204b80a6ddb8790e474aca551cf8c040b841aadcfdc324bae",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -90420,16 +90420,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -90445,22 +90435,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -90471,6 +90461,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -90842,7 +90842,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "829c15ce537071132000e4d43ca73204f53ac1079c00442dacf5e8ce7f0ed08d",
+            "textHash": "d625eeaa023eba33e9d62d4298609369135e17909dba64b002edd74a9fc9eb18",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -90870,16 +90870,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -90895,22 +90885,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -90921,6 +90911,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -91263,7 +91263,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "2ea5231af7feaea22ff223fb377d433843c3c571b2b7e7550f8ffef7508d2d5f",
+            "textHash": "fc01f82a0dee5f75038cbabd372bbcda3426e9bef23c6c4148e8da6c93205591",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -91293,16 +91293,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -91318,22 +91308,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -91344,6 +91334,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -91686,7 +91686,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "2f095d81d9cee5f772f97b38995254386bc56bac2e3fc76e3542f66be68eb92f",
+            "textHash": "d65241f31fa1363c6ddc7ea3d4cface28b227fc96b1feb175f9442bb152f0d6c",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -91714,16 +91714,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -91739,22 +91729,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -91765,6 +91755,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -92136,7 +92136,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "b497534916efeb90fbc5ca73831898812c473550822b6c7fc60752e135114959",
+            "textHash": "c6022994fc7ddc7803cf18a3e67a2cbf558d54119310a8dbc296d91ff2bd1024",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -92166,16 +92166,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -92191,22 +92181,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -92217,6 +92207,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -92588,7 +92588,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "829c15ce537071132000e4d43ca73204f53ac1079c00442dacf5e8ce7f0ed08d",
+            "textHash": "d625eeaa023eba33e9d62d4298609369135e17909dba64b002edd74a9fc9eb18",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -92616,16 +92616,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -92641,22 +92631,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -92667,6 +92657,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -93038,7 +93038,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "05858372e4dcfe77317a530309e64d79b964bc3ec0845344c56fc3e0ac65a223",
+            "textHash": "f6fb1a7fe0686bd56c21d8ef02fd4791556ae980bd0059ad0afdc8fb600637ff",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -93068,16 +93068,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -93093,22 +93083,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -93119,6 +93109,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -93490,7 +93490,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "ea1533ad7a8586acf002e5377410a9efec941133d5d9b6b68b8c4657141c4846",
+            "textHash": "4c645b621b8fd54a24ce2263fcc717c535d34155376847bde013b127bedd38f8",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -93518,16 +93518,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -93543,22 +93533,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -93569,6 +93559,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -93940,7 +93940,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "05858372e4dcfe77317a530309e64d79b964bc3ec0845344c56fc3e0ac65a223",
+            "textHash": "f6fb1a7fe0686bd56c21d8ef02fd4791556ae980bd0059ad0afdc8fb600637ff",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -93970,16 +93970,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -93995,22 +93985,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -94021,6 +94011,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -94392,7 +94392,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "ea1533ad7a8586acf002e5377410a9efec941133d5d9b6b68b8c4657141c4846",
+            "textHash": "4c645b621b8fd54a24ce2263fcc717c535d34155376847bde013b127bedd38f8",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -94420,16 +94420,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -94445,22 +94435,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -94471,6 +94461,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -94842,7 +94842,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "05858372e4dcfe77317a530309e64d79b964bc3ec0845344c56fc3e0ac65a223",
+            "textHash": "f6fb1a7fe0686bd56c21d8ef02fd4791556ae980bd0059ad0afdc8fb600637ff",
             "methodHash": "a1fd717fdb65b146365303d9093032e85b65e9dc560eb922b1a62be17dd4edd4"
           }
         },
@@ -94872,16 +94872,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -94897,22 +94887,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -94923,6 +94913,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -95294,7 +95294,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "ea1533ad7a8586acf002e5377410a9efec941133d5d9b6b68b8c4657141c4846",
+            "textHash": "4c645b621b8fd54a24ce2263fcc717c535d34155376847bde013b127bedd38f8",
             "methodHash": "a1fd717fdb65b146365303d9093032e85b65e9dc560eb922b1a62be17dd4edd4"
           }
         },
@@ -95322,16 +95322,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "100",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -95347,22 +95337,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
+                "Whole milk, as made, grams, portion 1",
+                "100",
+                null
+              ],
+              [
+                "Sucrose, as made, grams, portion 2",
                 "",
                 null
               ],
               [
                 "Skim milk powder, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 2",
                 "",
                 null
               ],
@@ -95373,6 +95363,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -95744,7 +95744,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "a05b7b0929878ba8638e3d1b40ec86a06f79861219b56a345f5cab72fb37dc31",
+            "textHash": "9ef5abcde7c76725ec114454029d259005156a86a39cfb75b6b0699dcf238e05",
             "methodHash": "a1fd717fdb65b146365303d9093032e85b65e9dc560eb922b1a62be17dd4edd4"
           }
         },
@@ -95775,7 +95775,7 @@
               "Record another",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "9bd8cab0c38664fcf6dddc188d91770885d994a7d6e006baf66c2c858c155781",
+            "textHash": "fd56d9c78737e8b74182a02197a6095d0ce726c89cec6def8a826d7e1d16b066",
             "methodHash": "3cc4a312cee1463791a98922fd90842c7f1388b8d62264fbf05e2d09d3abbc2e"
           },
           "stores": {
@@ -111008,7 +111008,7 @@
             "buttons": [
               "Record a batch"
             ],
-            "textHash": "230e210a4220e21d3daaf9dde3f13f0b26ffd795d40c0474b342f5b3637511ff",
+            "textHash": "ded876597cd5af49785af35cbd1db048a9d868ee2507940ea9c683c93cfd157d",
             "methodHash": "c5bcc19c4f45a2604c5d20ff8144ceba1ab7cd23cbe7621def69e76c7180af90"
           },
           "stores": {
@@ -126944,7 +126944,7 @@
             "buttons": [
               "Record a batch"
             ],
-            "textHash": "350bb3d02577a4ce95d61f153c7f75f69126c456a9cf38911ab348ac7db14178",
+            "textHash": "b944600c40e8fa8be8ed34442a388808ec3a386b65e525e301062e79f01c3772",
             "methodHash": "c5bcc19c4f45a2604c5d20ff8144ceba1ab7cd23cbe7621def69e76c7180af90"
           },
           "stores": {
@@ -142885,16 +142885,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -142910,22 +142900,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -142936,6 +142926,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -143103,7 +143103,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "75e4b42a980ec9b28374c2220176465d512244ab367922c012715505d6102342",
+            "textHash": "7b4b38e8eb3c0b09b1917f5ddf9ec6c97aa10aa328ef7e9d0e5e7b4fdee47ba5",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -143131,16 +143131,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -143156,22 +143146,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -143182,6 +143172,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -143553,7 +143553,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "5c44c78a86a00ac72c82ae2ac2e15ed03b2be3f81c20e65b8956659a7f479edd",
+            "textHash": "7eff2a1c170ac5f90f850c7a024ef5cb0422b9e73786513e70e27f0c408731ba",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -143584,16 +143584,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -143609,22 +143599,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -143635,6 +143625,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -144006,7 +144006,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "0042fab3a9f811e140f3bf4f4c854ed75590efe22840492e1a7e0d9de7e32f01",
+            "textHash": "f1ec14305cf9749e92a08af3dfe3abfbb470f1529ca09098864e2706598638f8",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -144036,16 +144036,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -144061,22 +144051,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -144087,6 +144077,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -144458,7 +144458,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "c2d5feeb5b035d6a35523db11e9018a56fb4084055101349611d996b6f95a1a5",
+            "textHash": "85f107f1b0c029c605bea93fc348a7c446a9771d72507a413cc900c3af3370dd",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -144488,16 +144488,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -144513,22 +144503,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -144539,6 +144529,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -144910,7 +144910,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "829c15ce537071132000e4d43ca73204f53ac1079c00442dacf5e8ce7f0ed08d",
+            "textHash": "d625eeaa023eba33e9d62d4298609369135e17909dba64b002edd74a9fc9eb18",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -144938,16 +144938,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -144963,22 +144953,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -144989,6 +144979,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -145360,7 +145360,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "5c44c78a86a00ac72c82ae2ac2e15ed03b2be3f81c20e65b8956659a7f479edd",
+            "textHash": "7eff2a1c170ac5f90f850c7a024ef5cb0422b9e73786513e70e27f0c408731ba",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -145391,7 +145391,7 @@
               "Record another",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "9bd8cab0c38664fcf6dddc188d91770885d994a7d6e006baf66c2c858c155781",
+            "textHash": "fd56d9c78737e8b74182a02197a6095d0ce726c89cec6def8a826d7e1d16b066",
             "methodHash": "3cc4a312cee1463791a98922fd90842c7f1388b8d62264fbf05e2d09d3abbc2e"
           },
           "stores": {
@@ -160624,16 +160624,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -160649,22 +160639,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -160675,6 +160665,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -161047,7 +161047,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "0c5a057a30da38f6aafc2ff7680841b93f69cdcbe18dd67c465e60dd0f7abc71",
+            "textHash": "08d6dbce9733fd287cf72e2f489982154125b7f03c8f514bcccca08ae6928bff",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -161079,7 +161079,7 @@
               "Record another",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "00c5a317a83ceec18af93e2f3fcc696e8a042cb74bd938d7ff93fa113f731877",
+            "textHash": "41c75036842871d8fad44e384311bb05d7fa5ec6d4d76e4c0d8e249a442313c8",
             "methodHash": "c5bcc19c4f45a2604c5d20ff8144ceba1ab7cd23cbe7621def69e76c7180af90"
           },
           "stores": {
@@ -176829,16 +176829,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -176854,22 +176844,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -176880,6 +176870,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -177252,7 +177252,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "0c5a057a30da38f6aafc2ff7680841b93f69cdcbe18dd67c465e60dd0f7abc71",
+            "textHash": "08d6dbce9733fd287cf72e2f489982154125b7f03c8f514bcccca08ae6928bff",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           },
           "stores": {
@@ -192517,16 +192517,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -192542,22 +192532,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -192568,6 +192558,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -192940,7 +192940,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "0c5a057a30da38f6aafc2ff7680841b93f69cdcbe18dd67c465e60dd0f7abc71",
+            "textHash": "08d6dbce9733fd287cf72e2f489982154125b7f03c8f514bcccca08ae6928bff",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           },
           "stores": {
@@ -208208,7 +208208,7 @@
               "Record another",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "9bd8cab0c38664fcf6dddc188d91770885d994a7d6e006baf66c2c858c155781",
+            "textHash": "fd56d9c78737e8b74182a02197a6095d0ce726c89cec6def8a826d7e1d16b066",
             "methodHash": "3cc4a312cee1463791a98922fd90842c7f1388b8d62264fbf05e2d09d3abbc2e"
           },
           "stores": {
@@ -223441,16 +223441,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -223466,22 +223456,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
-                "263",
-                null
-              ],
-              [
-                "Heavy cream, as made, grams",
-                "241",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
+                "Whole milk, as made, grams, portion 1",
+                "120",
+                null
+              ],
+              [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -223493,6 +223483,16 @@
               [
                 "Fine sea salt, as made, grams",
                 "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "263",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
+                "241",
                 null
               ],
               [
@@ -223873,7 +223873,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "ad9d78eb511ec8f344549c8d8da352933fd19024d5a46e31daaa42c7bd594f69",
+            "textHash": "de11377aae795ff6a7d537ed6a42826631c705d00958376237d420582d834cfb",
             "methodHash": "d5f7da55df02b0e2ad75c9e8133737cf5319723895a4d08f4f7579499e9427f0"
           }
         },
@@ -223901,16 +223901,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -223926,22 +223916,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
-                "263",
-                null
-              ],
-              [
-                "Heavy cream, as made, grams",
-                "241",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
+                "Whole milk, as made, grams, portion 1",
+                "120",
+                null
+              ],
+              [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -223953,6 +223943,16 @@
               [
                 "Fine sea salt, as made, grams",
                 "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "263",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
+                "241",
                 null
               ],
               [
@@ -224333,7 +224333,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "ad9d78eb511ec8f344549c8d8da352933fd19024d5a46e31daaa42c7bd594f69",
+            "textHash": "de11377aae795ff6a7d537ed6a42826631c705d00958376237d420582d834cfb",
             "methodHash": "d5f7da55df02b0e2ad75c9e8133737cf5319723895a4d08f4f7579499e9427f0"
           }
         },
@@ -224364,7 +224364,7 @@
               "Record another",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "4e2759b3ad3a3956b3e538ba51657d6f38c9fafba8da0d8988038c298002c055",
+            "textHash": "7800e4708955016b1bb35bfe0e135348738935e6be5b411ca5cb1e1b85d1d287",
             "methodHash": "3cc4a312cee1463791a98922fd90842c7f1388b8d62264fbf05e2d09d3abbc2e"
           },
           "stores": {
@@ -239597,16 +239597,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -239622,22 +239612,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
-                "263",
-                null
-              ],
-              [
-                "Heavy cream, as made, grams",
-                "241",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
+                "Whole milk, as made, grams, portion 1",
+                "120",
+                null
+              ],
+              [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -239649,6 +239639,16 @@
               [
                 "Fine sea salt, as made, grams",
                 "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "263",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
+                "241",
                 null
               ],
               [
@@ -240029,7 +240029,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "ad9d78eb511ec8f344549c8d8da352933fd19024d5a46e31daaa42c7bd594f69",
+            "textHash": "de11377aae795ff6a7d537ed6a42826631c705d00958376237d420582d834cfb",
             "methodHash": "d5f7da55df02b0e2ad75c9e8133737cf5319723895a4d08f4f7579499e9427f0"
           },
           "stores": {
@@ -255379,16 +255379,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -255404,22 +255394,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
-                "263",
-                null
-              ],
-              [
-                "Heavy cream, as made, grams",
-                "241",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
+                "Whole milk, as made, grams, portion 1",
+                "120",
+                null
+              ],
+              [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -255431,6 +255421,16 @@
               [
                 "Fine sea salt, as made, grams",
                 "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "263",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
+                "241",
                 null
               ],
               [
@@ -255811,7 +255811,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "ad9d78eb511ec8f344549c8d8da352933fd19024d5a46e31daaa42c7bd594f69",
+            "textHash": "de11377aae795ff6a7d537ed6a42826631c705d00958376237d420582d834cfb",
             "methodHash": "d5f7da55df02b0e2ad75c9e8133737cf5319723895a4d08f4f7579499e9427f0"
           },
           "stores": {
@@ -271164,7 +271164,7 @@
               "Record another",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "9bd8cab0c38664fcf6dddc188d91770885d994a7d6e006baf66c2c858c155781",
+            "textHash": "fd56d9c78737e8b74182a02197a6095d0ce726c89cec6def8a826d7e1d16b066",
             "methodHash": "3cc4a312cee1463791a98922fd90842c7f1388b8d62264fbf05e2d09d3abbc2e"
           },
           "stores": {
@@ -286397,16 +286397,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -286422,22 +286412,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
-                "263",
-                null
-              ],
-              [
-                "Heavy cream, as made, grams",
-                "241",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
+                "Whole milk, as made, grams, portion 1",
+                "120",
+                null
+              ],
+              [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -286449,6 +286439,16 @@
               [
                 "Fine sea salt, as made, grams",
                 "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "263",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
+                "241",
                 null
               ],
               [
@@ -286829,7 +286829,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "ad9d78eb511ec8f344549c8d8da352933fd19024d5a46e31daaa42c7bd594f69",
+            "textHash": "de11377aae795ff6a7d537ed6a42826631c705d00958376237d420582d834cfb",
             "methodHash": "d5f7da55df02b0e2ad75c9e8133737cf5319723895a4d08f4f7579499e9427f0"
           }
         },
@@ -286857,16 +286857,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -286882,22 +286872,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
-                "263",
-                null
-              ],
-              [
-                "Heavy cream, as made, grams",
-                "241",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
+                "Whole milk, as made, grams, portion 1",
+                "120",
+                null
+              ],
+              [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -286909,6 +286899,16 @@
               [
                 "Fine sea salt, as made, grams",
                 "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "263",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
+                "241",
                 null
               ],
               [
@@ -287082,7 +287082,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "d7800c6c807fd93f0474521d3abf21e210aa8aeeddd108d72a5d964dea124f50",
+            "textHash": "2691a8059d9ae5298e8e3392356b583f81e361f9dcd7fd7e5571336510d75d78",
             "methodHash": "d5f7da55df02b0e2ad75c9e8133737cf5319723895a4d08f4f7579499e9427f0"
           }
         },
@@ -287110,16 +287110,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -287135,22 +287125,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
-                "263",
-                null
-              ],
-              [
-                "Heavy cream, as made, grams",
-                "241",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
+                "Whole milk, as made, grams, portion 1",
+                "120",
+                null
+              ],
+              [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -287162,6 +287152,16 @@
               [
                 "Fine sea salt, as made, grams",
                 "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "263",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
+                "241",
                 null
               ],
               [
@@ -287542,7 +287542,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "ebf609e72f488c9cdb4125cb5ea89da3fa7a157237bf04415c17d0b1e598b996",
+            "textHash": "f7a8fb1e0463f8cdd64c37481ba06b7a53c8149999de95381ece477b8a4cdcdb",
             "methodHash": "d5f7da55df02b0e2ad75c9e8133737cf5319723895a4d08f4f7579499e9427f0"
           }
         },
@@ -287570,16 +287570,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -287595,22 +287585,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
-                "263",
-                null
-              ],
-              [
-                "Heavy cream, as made, grams",
-                "241",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
+                "Whole milk, as made, grams, portion 1",
+                "120",
+                null
+              ],
+              [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -287622,6 +287612,16 @@
               [
                 "Fine sea salt, as made, grams",
                 "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "263",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
+                "241",
                 null
               ],
               [
@@ -287795,7 +287795,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "d7800c6c807fd93f0474521d3abf21e210aa8aeeddd108d72a5d964dea124f50",
+            "textHash": "2691a8059d9ae5298e8e3392356b583f81e361f9dcd7fd7e5571336510d75d78",
             "methodHash": "d5f7da55df02b0e2ad75c9e8133737cf5319723895a4d08f4f7579499e9427f0"
           }
         },
@@ -287823,16 +287823,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "120",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -287848,22 +287838,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
-                "263",
-                null
-              ],
-              [
-                "Heavy cream, as made, grams",
-                "241",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
+                "Whole milk, as made, grams, portion 1",
+                "120",
+                null
+              ],
+              [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -287875,6 +287865,16 @@
               [
                 "Fine sea salt, as made, grams",
                 "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "263",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
+                "241",
                 null
               ],
               [
@@ -288048,7 +288048,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "d7800c6c807fd93f0474521d3abf21e210aa8aeeddd108d72a5d964dea124f50",
+            "textHash": "2691a8059d9ae5298e8e3392356b583f81e361f9dcd7fd7e5571336510d75d78",
             "methodHash": "d5f7da55df02b0e2ad75c9e8133737cf5319723895a4d08f4f7579499e9427f0"
           }
         },
@@ -288079,7 +288079,7 @@
               "Record another",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "9bd8cab0c38664fcf6dddc188d91770885d994a7d6e006baf66c2c858c155781",
+            "textHash": "fd56d9c78737e8b74182a02197a6095d0ce726c89cec6def8a826d7e1d16b066",
             "methodHash": "3cc4a312cee1463791a98922fd90842c7f1388b8d62264fbf05e2d09d3abbc2e"
           },
           "stores": {
@@ -303315,7 +303315,7 @@
               "Correct",
               "Record another"
             ],
-            "textHash": "60a6cce7b49eff40cf69b16dd44505acdca8969d80f94afe366530d07b780141",
+            "textHash": "f980b2ee319c3184552c154ad843af9855a817b034e87cc8ace5d310257ffaa8",
             "methodHash": "c5bcc19c4f45a2604c5d20ff8144ceba1ab7cd23cbe7621def69e76c7180af90"
           },
           "stores": {
@@ -319047,16 +319047,6 @@
             },
             "fields": [
               [
-                "Whole milk, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
-                "Sucrose, as made, grams, portion 1",
-                "",
-                null
-              ],
-              [
                 "Locust bean gum, as made, grams",
                 "",
                 null
@@ -319072,22 +319062,22 @@
                 null
               ],
               [
-                "Whole milk, as made, grams, portion 2",
+                "Sucrose, as made, grams, portion 1",
                 "",
                 null
               ],
               [
-                "Heavy cream, as made, grams",
-                "",
-                null
-              ],
-              [
-                "Skim milk powder, as made, grams",
+                "Whole milk, as made, grams, portion 1",
                 "",
                 null
               ],
               [
                 "Sucrose, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Skim milk powder, as made, grams",
                 "",
                 null
               ],
@@ -319098,6 +319088,16 @@
               ],
               [
                 "Fine sea salt, as made, grams",
+                "",
+                null
+              ],
+              [
+                "Whole milk, as made, grams, portion 2",
+                "",
+                null
+              ],
+              [
+                "Heavy cream, as made, grams",
                 "",
                 null
               ],
@@ -319471,7 +319471,7 @@
               "Cancel",
               "Save batch"
             ],
-            "textHash": "6ec353469de9f03a0adeb4b1d5d0c2e47c35fb9b675ba946bfbe1362d4218f57",
+            "textHash": "baa7efa4e8024cefcd76002981ae7c4baca2a636bc3c8221c128adc9bad70014",
             "methodHash": "3b318ed9a09fe6730585cd04d82468c3719240cfa992bee7cb23e7c20a61caa4"
           }
         },
@@ -319503,7 +319503,7 @@
               "Record another",
               "TastingHidetasted date unknown"
             ],
-            "textHash": "0d4ba2f989c06a7f143e95acc0e91990205cadf5b1bb0587c58d8e29bc8783d1",
+            "textHash": "59c61cf1e8c9163b9f126179190e4ab8a19bae1ab16a60f049f43a097e4cd5fa",
             "methodHash": "c5bcc19c4f45a2604c5d20ff8144ceba1ab7cd23cbe7621def69e76c7180af90"
           },
           "stores": {

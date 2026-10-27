@@ -120,7 +120,7 @@ export function StepPenBody({
   // checklist updates as boxes change while it is open.
   const [usesOpen, setUsesOpen] = useState(false);
   const usesControlRef = useRef(null);
-  const usesNames = rows.filter((row) => (draftStep.uses ?? []).includes(row.id)).map((row) => row.ingredientName);
+  const usesNames = rows.filter((row) => (draftStep.uses ?? []).includes(row.id)).sort((a, b) => draftStep.uses.indexOf(a.id) - draftStep.uses.indexOf(b.id)).map((row) => row.ingredientName);
 
   function handleUsesKeyDown(event) {
     // Gated on usesOpen (G-03.3-2 fix, gap plan 05): a closed checklist's

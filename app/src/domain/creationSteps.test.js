@@ -23,7 +23,7 @@ import {
   checkAllocation,
   normalizeAllocation,
 } from './creationSteps.js';
-import { addRow, setRowGrams, removeRow, creationSheetVersion } from './creation.js';
+import { addRow, removeRow, creationSheetVersion } from './creation.js';
 import { blankCreateDraft, draftMatchesCreate, buildDraftRecord } from './draft.js';
 import { nextStepKey } from './stepKeys.js';
 import { library } from '../data/library.js';
@@ -35,8 +35,8 @@ function phaseTenDraft() {
   let draft = blankCreateDraft({ recipeId: 'r1', versionId: 'v1', name: 'Vanilla' });
   draft = addRow(draft, { rowId: 'rowA', libraryId: 'wholeMilk' });
   draft = addRow(draft, { rowId: 'rowB', libraryId: 'sucrose' });
-  draft = setRowGrams(draft, 'rowA', '600');
-  return setRowGrams(draft, 'rowB', '150');
+  draft = setLineGrams(draft, 'rowA', UNPLACED_STEP, '600');
+  return setLineGrams(draft, 'rowB', UNPLACED_STEP, '150');
 }
 
 describe('tracer: a step added to a Phase 10 draft and a row ticked into it', () => {
@@ -341,7 +341,7 @@ describe('moveRow (STRUCT-02, roadmap decision 9; each step orders its own rows)
 describe('placeRow (decision 014 1)', () => {
   it('ticks an unplaced row into a step as its last row with its grams, leaving draft.rows as it was', () => {
     let draft = ['A', 'B'].reduce((acc, id) => addRow(acc, { rowId: id, libraryId: 'sucrose' }), blank());
-    draft = setRowGrams(draft, 'B', '30');
+    draft = setLineGrams(draft, 'B', UNPLACED_STEP, '30');
     draft = toggleStepUses(addStep(addStep(draft), { afterN: 1 }), 2, 'A');
     const next = placeRow(draft, 'B', 2);
     expect(next.method[1].uses).toEqual(['A', 'B']);
@@ -672,7 +672,7 @@ function runRandomOps(seed, nextAmount) {
   const pick = (list) => pickFrom(rand, list);
   let nextRow = 5;
   let draft = blank();
-  for (let i = 1; i <= 4; i += 1) draft = setRowGrams(addRow(draft, { rowId: `r${i}`, libraryId: 'sucrose' }), `r${i}`, nextAmount(rand));
+  for (let i = 1; i <= 4; i += 1) draft = setLineGrams(addRow(draft, { rowId: `r${i}`, libraryId: 'sucrose' }), `r${i}`, UNPLACED_STEP, nextAmount(rand));
   const issued = new Set();
   const kinds = ['addStep', 'removeStep', 'moveStep', 'toggle', 'toggle', 'toggle', 'place', 'moveRow', 'setLine', 'setLine', 'removeRow', 'addRow'];
   let applied = 0;
@@ -737,7 +737,7 @@ function runRandomOps(seed, nextAmount) {
         break;
       case 'addRow':
         if (ids.length < 6) {
-          next = setRowGrams(addRow(draft, { rowId: `r${nextRow}`, libraryId: 'sucrose' }), `r${nextRow}`, nextAmount(rand));
+          next = setLineGrams(addRow(draft, { rowId: `r${nextRow}`, libraryId: 'sucrose' }), `r${nextRow}`, UNPLACED_STEP, nextAmount(rand));
           nextRow += 1;
         }
         break;

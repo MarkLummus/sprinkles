@@ -1520,3 +1520,114 @@ describe('the recipe\'s own scales (TASTE-01, decision 12, T-04)', () => {
     expect(lastSaved().payload.scales[0].key).toBe(saved.key);
   });
 });
+
+describe('the Uses checklist and the table under step heads (MAKE-07, plan 11-07)', () => {
+  const MILK = 'Whole milk, 3.5% fat';
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-head-act');
+  const gramsField = (name) => field(`${name}, grams`);
+  const heads = () => [...root().querySelectorAll('tr.ingredient-table__step-head')].map((node) => node.textContent);
+  const tbodyOf = (name) => gramsField(name).closest('tbody');
+  const headOf = (name) => tbodyOf(name).querySelector('tr.ingredient-table__step-head')?.textContent ?? null;
+
+  async function pick(name) {
+    await click(addButton());
+    const row = [...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === name);
+    await click(row);
+  }
+
+  const usesBox = (stepNumber, name) =>
+    [...root().querySelectorAll(`fieldset[aria-label="Step ${stepNumber}, uses"] label.method-step__uses-item`)]
+      .find((label) => label.textContent === name)
+      ?.querySelector('input');
+
+  it('with two rows and one step the table reads Not in a step yet over both; ticking Whole milk draws Step 1 over it', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await pick('Sucrose');
+    await type(gramsField('Sucrose'), '150');
+    await pick(MILK);
+    await type(gramsField(MILK), '600');
+    // No step: the table is flat.
+    expect(heads()).toEqual([]);
+    await click(buttonByText('Add step'));
+    expect(heads()).toEqual(['Not in a step yet']);
+    expect(headOf('Sucrose')).toBe('Not in a step yet');
+    expect(headOf(MILK)).toBe('Not in a step yet');
+
+    await click(field('Step 1, change the ingredients'));
+    expect([...root().querySelectorAll('fieldset[aria-label="Step 1, uses"] label')].map((label) => label.textContent)).toEqual([
+      'Sucrose',
+      MILK,
+    ]);
+    await click(usesBox(1, MILK));
+    expect(heads()).toEqual(['Step 1', 'Not in a step yet']);
+    expect(headOf(MILK)).toBe('Step 1');
+    expect(headOf('Sucrose')).toBe('Not in a step yet');
+    expect(root().querySelector('p.method-step__uses-line').textContent.startsWith(`uses ${MILK} `)).toBe(true);
+    expect(gramsField(MILK).value).toBe('600');
+
+    repository.saveDraft.mockClear();
+    await advance();
+    const saved = lastSaved().payload;
+    const milkRow = saved.rows.find((row) => row.libraryId === 'wholeMilk');
+    expect(saved.method[0].uses).toEqual([milkRow.id]);
+    expect(milkRow.portions).toEqual([{ step: saved.method[0].n, grams: '600' }]);
+    expect(saved.rows.find((row) => row.libraryId === 'sucrose').portions).toEqual([{ step: 1, grams: '150' }]);
+    expectNoRecordWrites();
+  });
+
+  it('a row ticked into two steps reads a line per step, the Balance follows their sum, and unticking one folds the grams back', async () => {
+    await startVanilla();
+    await pick(MILK);
+    await type(gramsField(MILK), '600');
+    await click(buttonByText('Add step'));
+    await click(buttonByText('Add step'));
+    await click(field('Step 1, change the ingredients'));
+    await click(usesBox(1, MILK));
+    await click(field('Step 2, change the ingredients'));
+    await click(usesBox(2, MILK));
+    // The second tick adds a blank line; the first keeps the 600.
+    expect(heads()).toEqual(['Step 1', 'Step 2']);
+    const first = field(`${MILK}, grams, portion 1`);
+    expect(first.value).toBe('600');
+    const second = field(`${MILK}, grams, portion 2`);
+    expect(second.value).toBe('');
+    await type(first, '400');
+    await type(second, '200');
+    const total = () => root().querySelector('.ingredient-table tfoot .ingredient-table__plan-grams').textContent;
+    expect(total()).toBe('600.0 g');
+    expect([...root().querySelectorAll('.ingredient-table__portion-note')].map((node) => node.textContent)).toEqual([
+      '400 g of 600.0 g · 100.0% in all',
+      '200 g of 600.0 g · 100.0% in all',
+    ]);
+    await type(second, '250');
+    expect(total()).toBe('650.0 g');
+
+    await click(usesBox(2, MILK));
+    expect(heads()).toEqual(['Step 1']);
+    expect(gramsField(MILK).value).toBe('650');
+    expect(root().querySelector('.ingredient-table__portion-note')).toBeNull();
+    expect(total()).toBe('650.0 g');
+  });
+
+  it('a restored kept draft whose uses and portions disagree opens with the amounts folded, and the kept draft is rewritten consistent', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    const record = createDraftRecord('Vanilla');
+    record.payload.rows = [
+      { id: 'row-milk', libraryId: 'wholeMilk', portions: [{ step: 1, grams: '400' }, { step: 2, grams: '200' }] },
+    ];
+    record.payload.method = [
+      { n: 1, leadIn: 'Warm', instruction: 'Heat it.', uses: ['row-milk'], targets: [] },
+      { n: 2, leadIn: 'Chill', instruction: 'Chill it.', uses: [], targets: [] },
+    ];
+    store.drafts.set(record.versionId, record);
+    await mountAt('/notebook/new');
+    await flush(() => field('Recipe name') !== null);
+    expect(root().querySelectorAll(`input[aria-label^="${MILK}, grams"]`)).toHaveLength(1);
+    expect(gramsField(MILK).value).toBe('600');
+    expect(heads()).toEqual(['Step 1Warm']);
+    repository.saveDraft.mockClear();
+    await advance();
+    expect(lastSaved().payload.rows[0].portions).toEqual([{ step: 1, grams: '600' }]);
+  });
+});

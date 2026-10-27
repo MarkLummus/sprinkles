@@ -110,6 +110,42 @@ export function createRepository() {
       }
       return putVersionChecked(await dbPromise, version);
     },
+    // A creation's Save (MAKE-10): the recipe, its root version and the removal
+    // of the version's create draft are ONE readwrite transaction over recipes,
+    // versions and drafts, so a failed save leaves neither a recipe without its
+    // version nor a version without its recipe, and the maker's draft is still
+    // there to try again. A version id that is already stored is a caller bug
+    // (a root is only ever created, never written over here), thrown as a
+    // TypeError; a Sheet code that clashes with a stored one throws a
+    // SheetCodeError, as createVersion does. A put the store cannot clone throws
+    // before it queues and leaves the transaction open, so the catch aborts it
+    // by hand, as importAll does, or the puts already queued would commit.
+    async createRecipeWithVersion({ recipe, version }) {
+      const db = await dbPromise;
+      const tx = db.transaction(['recipes', 'versions', 'drafts'], 'readwrite');
+      const done = tx.done;
+      const queued = [];
+      try {
+        const storedVersions = await tx.objectStore('versions').getAll();
+        if (storedVersions.some((stored) => stored.id === version.id)) {
+          throw new TypeError(`version ${version.id} already exists`);
+        }
+        const problems = sheetCodeProblems(storedVersions, [version]);
+        if (problems.length > 0) throw new SheetCodeError(problems);
+        queued.push(tx.objectStore('recipes').put(recipe));
+        queued.push(tx.objectStore('versions').put(version));
+        queued.push(tx.objectStore('drafts').delete(version.id));
+        await Promise.all([...queued, done]);
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
+    },
     async getAll() {
       const db = await dbPromise;
       return db.getAll('versions');

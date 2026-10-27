@@ -28,7 +28,7 @@ import {
 } from './creation.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate } from './draft.js';
 import { rowFromLibraryRecord } from './versionRow.js';
-import { UNPLACED_STEP, addStep, toggleStepUses } from './creationSteps.js';
+import { UNPLACED_STEP, addStep, toggleStepUses, checkAllocation } from './creationSteps.js';
 import { library } from '../data/library.js';
 import { STYLE_ROWS } from '../data/styles.js';
 
@@ -266,6 +266,17 @@ describe('row operations on a create draft (MAKE-06, D-05, D-07)', () => {
     const draft = ['a', 'b', 'c'].reduce((acc, id) => addRow(acc, { rowId: id, libraryId: 'sucrose' }), blank());
     expect(removeRow(draft, 'b').rows.map((row) => row.id)).toEqual(['a', 'c']);
     expect(() => removeRow(draft, 'nope')).toThrow(RangeError);
+  });
+
+  it('removeRow prunes the row id from every step uses, leaving the others in their order (STRUCT-01)', () => {
+    let draft = ['a', 'b', 'c'].reduce((acc, id) => addRow(acc, { rowId: id, libraryId: 'sucrose' }), blank());
+    draft = addStep(addStep(draft));
+    for (const id of ['a', 'b', 'c']) draft = toggleStepUses(draft, 1, id);
+    draft = toggleStepUses(draft, 2, 'b');
+    const next = removeRow(draft, 'b');
+    expect(next.method.find((step) => step.n === 1).uses).toEqual(['a', 'c']);
+    expect(next.method.find((step) => step.n === 2).uses).toEqual([]);
+    expect(checkAllocation(next)).toBeNull();
   });
 
   it('mutates neither the draft nor its rows', () => {

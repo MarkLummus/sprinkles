@@ -183,11 +183,18 @@ export function setRowGrams(draft, rowId, grams) {
 
 /**
  * removeRow(draft, rowId) -> a new draft without that row; the others keep
- * their order. An unknown row id throws a RangeError.
+ * their order, and the id is pruned from every step's uses so no dangling
+ * reference is left (STRUCT-01). An unknown row id throws a RangeError.
  */
 export function removeRow(draft, rowId) {
   assertRowId(draft, rowId);
-  return { ...draft, rows: draft.rows.filter((row) => row.id !== rowId) };
+  return {
+    ...draft,
+    rows: draft.rows.filter((row) => row.id !== rowId),
+    method: draft.method.map((step) =>
+      step.uses?.includes(rowId) ? { ...step, uses: step.uses.filter((id) => id !== rowId) } : step,
+    ),
+  };
 }
 
 // The six band keys, in the Balance's order. A typed band key is only ever a

@@ -759,6 +759,10 @@ describe('blockedSaveMessage', () => {
       expect(gramsDraftMessage('Sucrose', raw)).toBe("Sucrose's amount is not a number");
     });
 
+    it('names a 309-digit amount, which parses to Infinity, as not a number', () => {
+      expect(gramsDraftMessage('Whole milk', '9'.repeat(309))).toBe("Whole milk's amount is not a number");
+    });
+
     it.each([['150'], ['1.5'], ['0']])('is null for the readable %j', (raw) => {
       expect(gramsDraftMessage('Sucrose', raw)).toBeNull();
     });

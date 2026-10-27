@@ -217,13 +217,14 @@ export function parseGramsDraft(value) {
  * gramsDraftMessage(ingredientName, raw) -> the sentence a grams field's
  * draft earns, or `null` when it reads: the needs-an-amount sentence for a
  * blank or undefined value, the not-a-number sentence for one
- * parseGramsDraft rejects. The one source of both sentences: the version pen's
+ * parseGramsDraft rejects or reads as a number that is not finite (a
+ * 309-digit amount reads as Infinity). The one source of both sentences: the version pen's
  * save gate (findBlockedRow) and the creation table's per-row line read it, so
  * the two pens can never word the same fault differently (D-08).
  */
 export function gramsDraftMessage(ingredientName, raw) {
   if (raw === undefined || raw === '') return `${ingredientName} needs an amount, or remove it`;
-  if (parseGramsDraft(raw) === null) return `${ingredientName}'s amount is not a number`;
+  if (!Number.isFinite(parseGramsDraft(raw))) return `${ingredientName}'s amount is not a number`;
   return null;
 }
 

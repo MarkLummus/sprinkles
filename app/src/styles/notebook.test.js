@@ -1219,6 +1219,23 @@ describe("the record pen's Tasting head, a peer of the Batch head (quick 261025-
 // declares underline only on .text-control and a), and the purpose and aside
 // read upright, scoped so the table's estimate flag and the open pen step's
 // chips of fields keep their box.
+// bug-p11-target-required-under-wrong-field (Mark's List, fix, 2026-10-27): a
+// refused Save renders a one-sided chip's message as .field-error, so the three
+// chip-placement selectors must name it beside .field-requirement or the error
+// falls to the grid's first column under the filled label.
+describe('a target chip places its refused message under its own field', () => {
+  const chip = '.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip';
+  const both = ':is(.field-requirement, .field-error)';
+  const has = (selector) => rules.some((rule) => rule.selector === selector && rule.media === undefined);
+
+  test('the label column, the value column and the second row name both message classes', () => {
+    expect(has(`${chip} > .target-chip__label-field, ${chip} > .target-chip__label-field + ${both}`)).toBe(true);
+    expect(has(`${chip} > .target-chip__value-field, ${chip} > .target-chip__value-field + ${both}`)).toBe(true);
+    expect(has(`${chip} > ${both}`)).toBe(true);
+    expect(rules.some((rule) => /target-chip > \.field-requirement\s*$/.test(rule.selector))).toBe(false);
+  });
+});
+
 describe('a read-only step reads as the Sheet prints it (plan 11-04)', () => {
   const find = (selector) => rules.find((rule) => rule.selector === selector && rule.media === undefined);
 

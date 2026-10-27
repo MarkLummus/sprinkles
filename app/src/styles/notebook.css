@@ -241,16 +241,16 @@
 }
 
 .notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .target-chip__label-field,
-.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .target-chip__label-field + .field-requirement {
+.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .target-chip__label-field + :is(.field-requirement, .field-error) {
   grid-column: 1;
 }
 
 .notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .target-chip__value-field,
-.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .target-chip__value-field + .field-requirement {
+.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .target-chip__value-field + :is(.field-requirement, .field-error) {
   grid-column: 2;
 }
 
-.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .field-requirement {
+.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > :is(.field-requirement, .field-error) {
   grid-row: 2;
 }
 

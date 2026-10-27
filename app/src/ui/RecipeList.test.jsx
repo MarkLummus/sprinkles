@@ -652,6 +652,94 @@ describe('HomeBody — a create draft in the store changes nothing (D-18)', () =
   });
 });
 
+// Phase 11 plan 12 (D-24): a recipe holding a kept edit draft offers no Record a
+// batch or Next version on Home, in the lead or in its row; other recipes keep
+// theirs.
+describe('HomeBody — a kept edit hides that recipe’s shortcuts (D-24)', () => {
+  const versions = [
+    makeVersion({ id: 'v1', recipeId: 'r1', versionLabel: 'newest work', createdAt: '2026-02-01T00:00:00.000Z' }),
+    makeVersion({ id: 'v2', recipeId: 'r2', versionLabel: 'older work', createdAt: '2026-01-01T00:00:00.000Z' }),
+  ];
+  const recipes = [
+    { id: 'r1', name: 'Vanilla', description: '' },
+    { id: 'r2', name: 'Mint', description: '' },
+  ];
+
+  function editDraftOn(versionId, recipeId) {
+    return buildDraftRecord({
+      versionId,
+      kind: 'edit',
+      payload: { recipeId, versionId, name: 'Vanilla' },
+      now: '2026-03-05T00:00:00.000Z',
+    });
+  }
+
+  function renderBody(drafts, batches = []) {
+    return renderToStaticMarkup(
+      <MemoryRouter>
+        <HomeBody versions={versions} batches={batches} recipes={recipes} drafts={drafts} catalog={SEED_CATALOG} />
+      </MemoryRouter>,
+    );
+  }
+
+  const count = (markup, words) => markup.split(words).length - 1;
+
+  it('draws Record a batch in the lead and both rows with no edit kept', () => {
+    expect(count(renderBody([]), 'Record a batch')).toBe(3);
+  });
+
+  it('draws no Record a batch for the recipe holding the edit, in the lead or its row, and keeps the other recipe’s', () => {
+    const markup = renderBody([editDraftOn('v1', 'r1')]);
+    expect(count(markup, 'Record a batch')).toBe(1);
+    // Vanilla still leads and is still listed; only its shortcut is gone.
+    expect(count(markup, 'Vanilla')).toBe(2);
+    expect(count(markup, 'Mint')).toBe(1);
+  });
+
+  it('hides Next version for a tasted recipe holding an edit, and keeps the others', () => {
+    const tasted = makeBatch({ id: 'b-tasted', versionId: 'v1', tasting: { tastedDate: '2026-02-05', note: 'good', marks: {} } });
+    const without = renderBody([], [tasted]);
+    expect(count(without, 'Next version')).toBe(2);
+    const markup = renderBody([editDraftOn('v1', 'r1')], [tasted]);
+    expect(count(markup, 'Next version')).toBe(0);
+    expect(markup).not.toContain('Adapt');
+    expect(count(markup, 'Record a batch')).toBe(1);
+  });
+
+  it('ignores an edit draft whose version is not stored', () => {
+    expect(renderBody([editDraftOn('v-gone', 'r1')])).toBe(renderBody([]));
+  });
+
+  it('draws today’s actions when HomeLead and RecipeRows are called without editingIds', () => {
+    const entry = makeEntry();
+    expect(renderLead(entry)).toContain('Record a batch');
+    expect(renderRows([makeVersion({ id: 'v1', recipeId: 'r1' })])).toContain('Record a batch');
+  });
+
+  it('hides the actions of exactly the recipes named in editingIds', () => {
+    const entry = makeEntry();
+    const lead = renderToStaticMarkup(
+      <MemoryRouter>
+        <HomeLead entry={entry} editingIds={new Set(['r1'])} />
+      </MemoryRouter>,
+    );
+    expect(lead).not.toContain('Record a batch');
+    expect(lead).not.toContain('home__actions');
+    const rows = renderToStaticMarkup(
+      <MemoryRouter>
+        <RecipeRows versions={[makeVersion({ id: 'v1', recipeId: 'r1' })]} editingIds={new Set(['r1'])} />
+      </MemoryRouter>,
+    );
+    expect(rows).not.toContain('Record a batch');
+    const other = renderToStaticMarkup(
+      <MemoryRouter>
+        <RecipeRows versions={[makeVersion({ id: 'v1', recipeId: 'r1' })]} editingIds={new Set(['r9'])} />
+      </MemoryRouter>,
+    );
+    expect(other).toContain('Record a batch');
+  });
+});
+
 describe('HomeBody — the empty shelf (D-08, 03.4-04 Task 3)', () => {
   it('renders the sentence and the two leading links, and no row, for an empty store', () => {
     const markup = renderBody([]);

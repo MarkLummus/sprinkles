@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
 import { versionIdentity } from '../domain/lineage.js';
-import { newestDraft, draftMatchesVersion } from '../domain/draft.js';
+import { newestDraft, draftMatchesVersion, draftMatchesEdit } from '../domain/draft.js';
 import { activeWork, NOT_YET_CHURNED, AWAITING_TASTING, TASTED, STANDING_WORDS } from '../domain/lastEvent.js';
 import { notebookPath } from './notebookPaths.js';
 import { batchCountWords } from './countWords.js';
@@ -103,6 +103,15 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog
     }),
   );
   const draftVersion = draft ? versions.find((version) => version.id === draft.versionId) : null;
+  // D-24: a recipe holding a kept edit draft offers no Next version or Record a
+  // batch here either (either would close the edit window). The draft's version
+  // names the recipe; an edit draft whose version is gone names none.
+  const editingIds = new Set(
+    drafts
+      .filter(draftMatchesEdit)
+      .map((record) => versions.find((candidate) => candidate.id === record.versionId)?.recipeId)
+      .filter((recipeId) => recipeId !== undefined),
+  );
   const lead = (draftVersion && work.find((entry) => entry.id === draftVersion.recipeId)) || work[0] || null;
   // A Correct draft opens beside the batch it corrects, so that is where the
   // link goes (a fitting one always has that batch); the other two kinds open
@@ -114,12 +123,13 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog
         entry={lead}
         draftVersion={lead && draftVersion ? draftVersion : null}
         draftPath={draftVersion ? notebookPath(draftVersion.recipeId, draftVersion.id, draftBatchId) : null}
+        editingIds={editingIds}
       />
       <div className="home__section-row">
         <h2 className="home__section">Recipes</h2>
         <Link className="home__code-link" to="/search" tabIndex={0}>Enter Sheet code</Link>
       </div>
-      <RecipeRows versions={versions} batches={batches} recipes={recipes} />
+      <RecipeRows versions={versions} batches={batches} recipes={recipes} editingIds={editingIds} />
     </>
   );
 }
@@ -140,7 +150,7 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog
 // convention RecipeRows already establishes. Every recipe lives in the
 // Notebook this phase (03.4-CONTEXT.md), so the place name reads the
 // Notebook's own text companion.
-export function HomeLead({ entry, draftVersion = null, draftPath = null }) {
+export function HomeLead({ entry, draftVersion = null, draftPath = null, editingIds = new Set() }) {
   if (!entry) return null;
   const nextTime = entry.batches[0]?.churn?.nextTimeNote ?? null;
   return (
@@ -171,7 +181,7 @@ export function HomeLead({ entry, draftVersion = null, draftPath = null }) {
           <p className="home__lead-next-time app-hand">{nextTime}</p>
         </div>
       )}
-      <RowActions entry={entry} />
+      {!editingIds.has(entry.id) && <RowActions entry={entry} />}
     </section>
   );
 }
@@ -247,7 +257,7 @@ function RowActions({ entry }) {
 //
 // batches and recipes default to [] so the existing tests, which pass
 // versions alone, keep passing.
-export function RecipeRows({ versions, batches = [], recipes = [] }) {
+export function RecipeRows({ versions, batches = [], recipes = [], editingIds = new Set() }) {
   const work = activeWork(versions, batches, recipes);
   return (
     <ul className="home__list">
@@ -269,7 +279,7 @@ export function RecipeRows({ versions, batches = [], recipes = [] }) {
               </span>
               <span className="home__count">{batchCountWords(batchCount)}</span>
             </span>
-            <RowActions entry={entry} />
+            {!editingIds.has(entry.id) && <RowActions entry={entry} />}
           </li>
         );
       })}

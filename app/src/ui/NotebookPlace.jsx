@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
 import { activeWork } from '../domain/lastEvent.js';
-import { blankCreateDraft, buildDraftRecord, draftMatchesCreate, newestDraft } from '../domain/draft.js';
+import { blankCreateDraft, buildDraftRecord, draftMatchesCreate, draftMatchesEdit, newestDraft } from '../domain/draft.js';
 import { creationTitle } from '../domain/creation.js';
 import { RECIPE_NAME_TAKEN, recipeNameMessage, recipeNameTaken } from '../domain/recipe.js';
 import { freshId } from '../domain/id.js';
-import { notebookPath, NEW_RECIPE_PATH } from './notebookPaths.js';
+import { editPath, notebookPath, NEW_RECIPE_PATH } from './notebookPaths.js';
 import { batchCountWords, recipeCountWords, versionCountWords } from './countWords.js';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { Button } from './Button.jsx';
@@ -31,6 +31,9 @@ export function NotebookPlace() {
   // The kept create draft the place draws as a row (null for none). The read
   // at load sets it, and so does Start's re-read when a creation is kept.
   const [draft, setDraft] = useState(null);
+  // The recipes holding a kept edit draft: recipe id to the id of the version it
+  // is kept on (D-05). The Notebook only reads them; it deletes no draft (D-06).
+  const [editing, setEditing] = useState(() => new Map());
   // Start's lifetime. startingRef is set while a Start is out, so a second
   // press writes nothing. withdrawnRef is set by the entry's Cancel, and
   // mountedRef is cleared when the place is left: either one stops the move
@@ -55,6 +58,15 @@ export function NotebookPlace() {
         // One create draft is kept at a time (decision 10): the newest is the
         // row. A plan or record draft is not a creation and shows no row.
         setDraft(newestDraft(drafts.filter(draftMatchesCreate)) ?? null);
+        // Every kept edit draft whose version the Notebook holds, a stale one
+        // (its version has since gained a batch or a child) included: the edit
+        // route shows its refused state and Cancel discards it there (D-06).
+        const kept = new Map();
+        for (const record of drafts.filter(draftMatchesEdit)) {
+          const heldVersion = versions.find((candidate) => candidate.id === record.versionId);
+          if (heldVersion) kept.set(heldVersion.recipeId, heldVersion.id);
+        }
+        setEditing(kept);
         setData({ versions, batches, recipes });
       })
       .catch(() => {
@@ -143,11 +155,13 @@ export function NotebookPlace() {
         batches={data.batches}
         recipes={data.recipes}
         draft={draft}
+        editing={editing}
         onStart={handleStart}
         onCancel={() => {
           withdrawnRef.current = true;
         }}
         onResume={() => navigate(NEW_RECIPE_PATH)}
+        onResumeEdit={(recipeId, versionId) => navigate(editPath(recipeId, versionId))}
       />
     </>
   );
@@ -272,7 +286,7 @@ function NotebookDraftRow({ draft, onResume }) {
 // effect (the convention RecipeRows and HomeBody set). Every name and
 // description is a React text child: stored text never reaches the page as
 // markup (T-09-06).
-export function NotebookList({ versions, batches = [], recipes = [], draft = null, onStart, onCancel, onResume }) {
+export function NotebookList({ versions, batches = [], recipes = [], draft = null, editing = new Map(), onStart, onCancel, onResume, onResumeEdit }) {
   const work = activeWork(versions, batches, recipes);
   if (work.length === 0) {
     return (
@@ -292,8 +306,11 @@ export function NotebookList({ versions, batches = [], recipes = [], draft = nul
       <ul className="nb__list">
         {work.map((entry) => {
           const description = descriptions.get(entry.id);
+          // A kept edit on this recipe: the row gains Resume editing (D-05, no
+          // separate draft row for it).
+          const editVersionId = editing.get(entry.id);
           return (
-            <li key={entry.id} className="nb__row">
+            <li key={entry.id} className={editVersionId ? 'nb__row nb__row--resume' : 'nb__row'}>
               <span className="nb__rail" aria-hidden="true" />
               <h2 className="nb__name">
                 <Link to={notebookPath(entry.id, entry.latestVersion.id)} tabIndex={0}>
@@ -308,6 +325,13 @@ export function NotebookList({ versions, batches = [], recipes = [], draft = nul
                 <span className="nb__dot" aria-hidden="true">·</span>
                 <span>{batchCountWords(entry.batches.length)}</span>
               </p>
+              {editVersionId && (
+                <span className="nb__row-act">
+                  <Button className="notebook-action--outline" onClick={() => onResumeEdit?.(entry.id, editVersionId)}>
+                    Resume editing
+                  </Button>
+                </span>
+              )}
             </li>
           );
         })}

@@ -21,6 +21,7 @@ import { notebookPath } from './notebookPaths.js';
 import { activeWork } from '../domain/lastEvent.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { blankCreateDraft, buildDraftRecord } from '../domain/draft.js';
+import { editPath } from './notebookPaths.js';
 
 const recipes = seedRecipeGroups.map((group) => group.recipe);
 const versions = seedRecipeGroups.flatMap((group) => group.versions);
@@ -208,8 +209,50 @@ describe('NotebookList edges', () => {
   });
 });
 
+// Phase 11 plan 12 (D-05): a recipe holding a kept edit draft gains Resume
+// editing on its own row; there is no separate draft row for it.
+describe('NotebookList with a kept edit (D-05)', () => {
+  const editing = new Map([['r-vanilla', 'v-vanilla']]);
+  const vanilla = makeVersion('v-vanilla', 'r-vanilla', '2026-10-30T00:00:00.000Z');
+  const vanillaRecipe = { id: 'r-vanilla', name: 'Vanilla', description: '' };
+  const props = { versions: [...versions, vanilla], batches, recipes: [...recipes, vanillaRecipe], editing };
+
+  it('adds Resume editing to that recipe’s row, inside the row, and to no other row', () => {
+    const page = render(props);
+    const rows = [...page.querySelectorAll('li.nb__row')];
+    const resumeRows = rows.filter((row) => row.classList.contains('nb__row--resume'));
+    expect(resumeRows).toHaveLength(1);
+    expect(resumeRows[0].querySelector('.nb__name a').textContent).toBe('Vanilla');
+    const act = resumeRows[0].querySelector('span.nb__row-act');
+    expect([...act.querySelectorAll('button')].map((button) => button.textContent)).toEqual(['Resume editing']);
+    expect(act.querySelector('button').className).toBe('notebook-action--outline');
+    expect(page.querySelectorAll('span.nb__row-act')).toHaveLength(1);
+  });
+
+  it('draws no separate draft row, keeps New recipe and counts the recipe once', () => {
+    const page = render(props);
+    expect(page.querySelector('ul.nb__drafts')).toBeNull();
+    expect(page.querySelector('li.nb__draft')).toBeNull();
+    expect([...page.querySelectorAll('button')].map((button) => button.textContent)).toContain('New recipe');
+    expect(page.querySelector('p.nb__count').textContent).toBe('9 recipes');
+  });
+
+  it('draws today’s rows when no edit is kept, with or without the prop', () => {
+    const without = render({ versions, batches, recipes });
+    const empty = render({ versions, batches, recipes, editing: new Map() });
+    expect(empty.innerHTML).toBe(without.innerHTML);
+    expect(without.querySelector('.nb__row-act')).toBeNull();
+    expect(without.querySelector('.nb__row--resume')).toBeNull();
+  });
+});
+
 describe('NotebookPlace reading the store', () => {
   let mounted = null;
+  let where = null;
+  function Where() {
+    where = useLocation();
+    return null;
+  }
 
   afterEach(async () => {
     if (mounted) {
@@ -228,6 +271,7 @@ describe('NotebookPlace reading the store', () => {
     await act(async () => {
       root.render(
         <MemoryRouter initialEntries={['/notebook']}>
+          <Where />
           <Routes>
             <Route element={<Outlet context={0} />}>
               <Route path="/notebook" element={<NotebookPlace />} />
@@ -346,6 +390,73 @@ describe('NotebookPlace reading the store', () => {
     const container = await mount();
     expect(container.querySelector('li.nb__draft')).toBeNull();
     expect(buttonTexts(container)).toContain('New recipe');
+  });
+
+  // Phase 11 plan 12 (D-05, D-06): the Notebook offers Resume editing for every
+  // kept edit draft and deletes none.
+  const vanillaVersion = makeVersion('v-vanilla', 'r-vanilla', '2026-10-30T00:00:00.000Z');
+  const vanillaRecipe = { id: 'r-vanilla', name: 'Vanilla', description: '' };
+  const keptEditRecord = () =>
+    buildDraftRecord({
+      versionId: 'v-vanilla',
+      kind: 'edit',
+      payload: blankCreateDraft({ recipeId: 'r-vanilla', versionId: 'v-vanilla', name: 'Vanilla' }),
+      now: '2026-10-20T08:00:00.000Z',
+    });
+  function stubWithVanilla({ drafts, extraBatches = [] }) {
+    repository.getAll = vi.fn().mockResolvedValue([...versions, vanillaVersion]);
+    repository.getAllBatches = vi.fn().mockResolvedValue([...batches, ...extraBatches]);
+    repository.listRecipes = vi.fn().mockResolvedValue([...recipes, vanillaRecipe]);
+    repository.listDrafts = vi.fn().mockResolvedValue(drafts);
+    repository.deleteDraft = vi.fn().mockResolvedValue(true);
+  }
+
+  it('gives a recipe holding a kept edit Resume editing on its row, which opens the edit route, with no draft row and New recipe offered', async () => {
+    stubWithVanilla({ drafts: [keptEditRecord()] });
+    const container = await mount();
+    const row = [...container.querySelectorAll('li.nb__row')].find((candidate) => candidate.querySelector('.nb__name a').textContent === 'Vanilla');
+    expect(buttonTexts(row)).toEqual(['Resume editing']);
+    expect(container.querySelector('li.nb__draft')).toBeNull();
+    expect(buttonTexts(container)).toContain('New recipe');
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+
+    await act(async () => {
+      row.querySelector('button').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    });
+    expect(where.pathname).toBe(editPath('r-vanilla', 'v-vanilla'));
+  });
+
+  it('keeps a stale edit (its version has a batch now) and still offers Resume editing, deleting nothing', async () => {
+    const staleBatch = { ...batches[0], id: 'b-stale', versionId: 'v-vanilla' };
+    stubWithVanilla({ drafts: [keptEditRecord()], extraBatches: [staleBatch] });
+    const container = await mount();
+    const row = [...container.querySelectorAll('li.nb__row')].find((candidate) => candidate.querySelector('.nb__name a').textContent === 'Vanilla');
+    expect(buttonTexts(row)).toEqual(['Resume editing']);
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it('shows a creation draft row and an edit’s Resume editing together, each its own', async () => {
+    stubWithVanilla({ drafts: [keptRecord('Chocolate'), keptEditRecord()] });
+    const container = await mount();
+    expect(buttonTexts(container.querySelector('li.nb__draft'))).toEqual(['Resume']);
+    expect(container.querySelectorAll('li.nb__draft')).toHaveLength(1);
+    expect(container.querySelectorAll('.nb__row-act')).toHaveLength(1);
+  });
+
+  it('ignores an edit draft whose version the Notebook does not hold', async () => {
+    stubStore({ drafts: [keptEditRecord()] });
+    const container = await mount();
+    expect(container.querySelector('.nb__row-act')).toBeNull();
+    expect(container.querySelector('li.nb__draft')).toBeNull();
+  });
+
+  it('renders the recipe name in a row with Resume editing as text', async () => {
+    stubWithVanilla({ drafts: [keptEditRecord()] });
+    repository.listRecipes = vi.fn().mockResolvedValue([...recipes, { ...vanillaRecipe, name: '<b>Vanilla</b>' }]);
+    const container = await mount();
+    const row = container.querySelector('li.nb__row--resume');
+    expect(row.querySelector('.nb__name').textContent).toBe('<b>Vanilla</b>');
+    expect(row.querySelector('b')).toBeNull();
   });
 });
 

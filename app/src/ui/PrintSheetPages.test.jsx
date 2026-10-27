@@ -21,6 +21,7 @@ import { BasisNote } from './BasisNote.jsx';
 import { createRecipe } from '../domain/newRecipe.js';
 import { rowFromLibraryRecord } from '../domain/versionRow.js';
 import { library } from '../data/library.js';
+import { UNPLACED_STEP } from '../domain/creationSteps.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -616,5 +617,85 @@ describe('sheetBlocks — a recipe created from library records (Phase 7 D-02, D
     const created = sheetBlocks(createdVersion([0, 0, 0]), 'first try');
     expect(created.figures).toEqual([]);
     expect(created.totalText).toBe('0.0 g');
+  });
+});
+
+// Phase 11, plan 11-05: a created recipe prints as the bench sheet. Its rows
+// that no step uses sit at UNPLACED_STEP and read under "Not in a step yet"
+// beside a numbered group, and over a lone unplaced group whenever the version
+// has a live step (D-09, D-12); an empty method or a portion naming a step that
+// does not exist prints a flat table (quick task 261002-wdn).
+const CREATED_NOW = '2026-10-26T12:00:00.000Z';
+
+function createdSheetVersion({ steps = [], placements, extra = {} }) {
+  const rows = [
+    rowFromLibraryRecord({ id: 'wholeMilk', entry: library.wholeMilk }, { id: 'row-a', grams: 500, step: placements[0] }),
+    rowFromLibraryRecord({ id: 'heavyCream', entry: library.heavyCream }, { id: 'row-b', grams: 250, step: placements[1] }),
+    rowFromLibraryRecord({ id: 'sucrose', entry: library.sucrose }, { id: 'row-c', grams: 100, step: placements[2] }),
+  ];
+  return createRecipe(
+    { name: 'Plain base', versionLabel: 'first try', rows, method: steps, ...extra },
+    { recipeId: 'recipe-plain', versionId: 'version-plain-1', now: CREATED_NOW },
+  ).version;
+}
+
+const createdStep = (n, overrides = {}) => ({
+  n,
+  leadIn: `Lead ${n}`,
+  instruction: `Do thing ${n}.`,
+  uses: [],
+  targets: [],
+  purpose: '',
+  aside: '',
+  removed: false,
+  ...overrides,
+});
+
+describe('sheetBlocks — the unplaced head of a created recipe (11-05; D-09, D-12, 261002-wdn)', () => {
+  const headsOf = (version) => sheetBlocks(version, 'first try').groups.map((group) => group.head);
+
+  it('heads a numbered group and the unplaced group beside it: Step 1 with its lead-in, then Not in a step yet', () => {
+    const version = createdSheetVersion({ steps: [createdStep(1)], placements: [1, UNPLACED_STEP, UNPLACED_STEP] });
+    expect(headsOf(version)).toEqual([
+      { label: 'Step 1', leadIn: 'Lead 1' },
+      { label: 'Not in a step yet', leadIn: null },
+    ]);
+  });
+
+  it('prints a flat table, no head, when the version has no steps and every row is unplaced', () => {
+    const version = createdSheetVersion({ placements: [UNPLACED_STEP, UNPLACED_STEP, UNPLACED_STEP] });
+    const groups = sheetBlocks(version, 'first try').groups;
+    expect(groups).toHaveLength(1);
+    expect(groups[0].head).toBeNull();
+  });
+
+  it('heads the lone unplaced group when a live step uses no row (D-09)', () => {
+    const version = createdSheetVersion({ steps: [createdStep(1)], placements: [UNPLACED_STEP, UNPLACED_STEP, UNPLACED_STEP] });
+    const groups = sheetBlocks(version, 'first try').groups;
+    expect(groups).toHaveLength(1);
+    expect(groups[0].head).toEqual({ label: 'Not in a step yet', leadIn: null });
+    expect(groups[0].lines).toHaveLength(3);
+  });
+
+  it('stays flat for an empty method whose portions name a step that does not exist (the Coconut shape)', () => {
+    const version = createdSheetVersion({ placements: [1, 1, 1] });
+    expect(headsOf(version)).toEqual([null]);
+  });
+
+  it('stays flat when the one live step is 2 and every portion names step 1', () => {
+    const version = createdSheetVersion({ steps: [createdStep(2)], placements: [1, 1, 1] });
+    expect(headsOf(version)).toEqual([null]);
+  });
+
+  it('stays flat when the only step is removed and every row is unplaced', () => {
+    const version = createdSheetVersion({ steps: [createdStep(1, { removed: true })], placements: [UNPLACED_STEP, UNPLACED_STEP, UNPLACED_STEP] });
+    expect(headsOf(version)).toEqual([null]);
+  });
+
+  it('ends the foot with the stored Sheet code, never one recomputed from content', () => {
+    const version = { ...createdSheetVersion({ steps: [createdStep(1)], placements: [1, UNPLACED_STEP, 1] }), sheetCode: 'ABCD-2345' };
+    const created = sheetBlocks(version, 'first try');
+    expect(created.footText).toBe('Plain base · first try · ABCD-2345');
+    expect(created.footText).not.toContain(sheetCode(version));
   });
 });

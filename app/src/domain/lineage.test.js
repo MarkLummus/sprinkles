@@ -114,6 +114,32 @@ describe('versionIdentity', () => {
     expect(versionIdentity(ordered, a)).toBe('Version 1 · line');
   });
 
+  it('prints the ordinal once when the name is the ordinal\'s own words (decide-p11-default-version-name-repeats)', () => {
+    const a = makeVersion({ id: 'a', versionLabel: 'Version 1', createdAt: '2026-01-01T00:00:00.000Z' });
+    const b = makeVersion({ id: 'b', versionLabel: 'Version 2', createdAt: '2026-02-01T00:00:00.000Z' });
+    const ordered = sortedVersions([a, b]);
+    expect(versionIdentity(ordered, a)).toBe('Version 1');
+    expect(versionIdentity(ordered, b)).toBe('Version 2');
+  });
+
+  it('keeps the long form when the name carries another version number', () => {
+    const a = makeVersion({ id: 'a', versionLabel: 'Version 2' });
+    const ordered = sortedVersions([a]);
+    expect(versionIdentity(ordered, a)).toBe('Version 1 · Version 2');
+  });
+
+  it('ignores spaces around a name that is the ordinal\'s own words', () => {
+    const a = makeVersion({ id: 'a', versionLabel: '  Version 1  ' });
+    const ordered = sortedVersions([a]);
+    expect(versionIdentity(ordered, a)).toBe('Version 1');
+  });
+
+  it('ignores the case of a name that is the ordinal\'s own words', () => {
+    const a = makeVersion({ id: 'a', versionLabel: 'version 1' });
+    const ordered = sortedVersions([a]);
+    expect(versionIdentity(ordered, a)).toBe('Version 1');
+  });
+
   it('passes the authored name through exactly, no title-casing, truncation or fallback', () => {
     const a = makeVersion({ id: 'a', versionLabel: '50 g oil · 800 g, take TWO!' });
     const ordered = sortedVersions([a]);

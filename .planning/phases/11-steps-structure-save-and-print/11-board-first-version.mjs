@@ -139,15 +139,12 @@ export default {
       ],
     },
     {
-      // Edit beside Next version. Left out of this panel, each with its reason:
-      //   - `.notebook-version__identity` [text]: the board reads "Version 1 · Latest" and the build's
-      //     identity line is `Version ${n} · ${versionLabel}` plus " · Latest" (lineage.js
-      //     versionIdentity), so the seeded Version name "Version 1" reads "Version 1 · Version 1 ·
-      //     Latest"; no stored label can read the board's words (plans 11-01 and 11-09 found the same).
-      //     Only the "Latest" tail, which both draw, is compared;
+      // Edit beside Next version. Left out of this panel, for its reason:
       //   - the Print sheet link: the boards draw none and the build keeps it after Edit (MAKE-12
       //     starts from it). It is an `a.notebook-link`, so the `button.notebook-link` selector below
       //     leaves it out on purpose and the count of 1 is the board's Edit alone.
+      // The identity line is compared whole: a default Version name now reads once
+      // (decide-p11-default-version-name-repeats, Mark 2026-10-27).
       id: 'fA1',
       width: 1366,
       route: PAGE_ROUTE,
@@ -155,7 +152,7 @@ export default {
       library: 'original',
       seed: PAGE_SEED,
       elements: [
-        { selector: '.notebook-version__latest', checks: ['text'] },
+        { selector: '.notebook-version__identity', checks: ['text'] },
         { selector: '.notebook-version__acts .notebook-action', checks: ['box', 'font', 'text'] },
         { selector: '.notebook-version__acts button.notebook-link', checks: ['count', 'box', 'font', 'color', 'text', 'type'] },
       ],
@@ -171,7 +168,7 @@ export default {
       library: 'original',
       seed: BATCH_SEED,
       elements: [
-        { selector: '.notebook-version__latest', checks: ['text'] },
+        { selector: '.notebook-version__identity', checks: ['text'] },
         { selector: '.notebook-version__acts .notebook-action', checks: ['box', 'text'] },
       ],
       absent: ['.notebook-version__acts button.notebook-link'],

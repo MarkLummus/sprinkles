@@ -47,14 +47,12 @@ const SEED = {
 
 const ROUTE = '/notebook/vanilla/vanilla-v1';
 
-// `.notebook-version__identity` [text] is NOT compared here. The board reads "Version 1 · Latest";
-// the build reads versionIdentity(ordered, version) = `Version ${n} · ${version.versionLabel}` plus
-// " · Latest" (domain/lineage.js), so a stored version labelled "Version 1" reads "Version 1 ·
-// Version 1 · Latest" and no stored label can read the board's words. A genuine difference between
-// the approved board and the current build, found by this self-test: dropped here with both values,
-// and reported to the plans that compare the identity line (11-12).
+// vC1-seeded compares the identity line: its seeded Version name is "Version 1", which the build
+// prints once (decide-p11-default-version-name-repeats, Mark 2026-10-27), so it reads the board's
+// "Version 1 · Latest".
 const SEEDED_ELEMENTS = [
   { selector: '.notebook-recipe__name', checks: ['text', 'font'] },
+  { selector: '.notebook-version__identity', checks: ['text'] },
   { selector: '.version-row__reason', checks: ['text'] },
   // The font checks give the 1 px run something to move.
   { selector: '.notebook-version__acts .notebook-action', checks: ['text', 'font'] },

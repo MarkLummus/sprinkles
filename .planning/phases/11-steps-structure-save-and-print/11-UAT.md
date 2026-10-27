@@ -3,7 +3,7 @@ status: testing
 phase: 11-steps-structure-save-and-print
 source: [11-VERIFICATION.md]
 started: 2026-10-27T04:32:50Z
-updated: 2026-10-27T04:32:50Z
+updated: 2026-10-27T04:42:10Z
 ---
 
 ## Current Test
@@ -24,8 +24,8 @@ result: [pending]
 expected: Mark's List row check-p11-ipad-create-steps-save-print-edit passes, all fifteen steps as written: the split row, Move and remove by touch and by keyboard with focus staying on the moved item, Save with "Recipe saved.", the PDF's Sheet code, Search finding the recipe before and after Edit and Save-over (D-20). Walked in Playwright WebKit first (32 PASS), which is not the device.
 result: [pending]
 
-### 3. Mark decides the recorded board departures
-expected: Decide rows on Mark's List answered for the after-Save identity line ("Version 1 · Version 1 · Latest" vs the board's "Version 1 · Latest"), a lone version's History ("Only this version so far" vs a one-node fold), the split line ("600.0 g" vs "600 g") and fC1's "Not yet churned" board slip; each answer either keeps the build, redraws the board, or changes the build.
+### 3. Mark decides the board departures the build kept
+expected: decide-p11-default-version-name-repeats answered (the after-Save identity line "Version 1 · Version 1 · Latest"); the other three departures (a lone version's History "Only this version so far", the split line "600.0 g", fC1's "Not yet churned") are Sid's redraw of sketch 014 per 11-UI-REVIEW.md, no answer needed from Mark; decide-p11-struck-target-size and bug-p11-target-required-under-wrong-field answered.
 result: [pending]
 
 ## Summary

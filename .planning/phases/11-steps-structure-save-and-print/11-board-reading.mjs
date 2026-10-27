@@ -150,6 +150,7 @@ export default [
     panels: [
       panel({
         id: 'vC1',
+        label: 'vC1-reading',
         route: ROUTE,
         seed: ROOT_SEED,
         elements: READING_ELEMENTS,
@@ -162,6 +163,7 @@ export default [
     panels: [
       panel({
         id: 'fA1',
+        label: 'fA1-reading',
         route: ROUTE,
         seed: ROOT_SEED,
         elements: READING_ELEMENTS,

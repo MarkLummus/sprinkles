@@ -6,12 +6,16 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Children } from 'react';
-import { IngredientTable, IngredientsHead } from './IngredientTable.jsx';
+import { IngredientTable, IngredientsHead, groupPortionsByStep } from './IngredientTable.jsx';
 import { Button } from './Button.jsx';
 import { buildDiff } from '../domain/diff.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { formatShareOfBatch } from '../domain/composition.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { addRow, creationSheetVersion } from '../domain/creation.js';
+import { addStep, setLineGrams, toggleStepUses, UNPLACED_STEP } from '../domain/creationSteps.js';
+import { blankCreateDraft } from '../domain/draft.js';
+import { library } from '../data/library.js';
 
 // The row fixture factory (D-01, D-02): a row is built with portions, an
 // amount and a step for the common one-portion case, with an `overrides`
@@ -2620,5 +2624,86 @@ describe('IngredientTable — one tbody per step group (sketch 011 decision 45)'
 
     expect(markup).toContain('<tbody></tbody>');
     expect(markup.match(/<tbody/g)).toHaveLength(1);
+  });
+});
+
+// Mark, 2026-10-26 (decide-p11-row-order-across-steps): each step orders its own
+// rows. A numbered or removed step's group reads in the order of that step's
+// uses; a row the uses does not name reads after the named ones, in rows order;
+// the unplaced group reads in rows order.
+describe('groupPortionsByStep reads each step in its own uses order (decide-p11-row-order-across-steps)', () => {
+  const idsOf = (group) => group.entries.map((entry) => entry.row.id);
+  const olive = () =>
+    groupPortionsByStep(oliveOilVersion.rows, oliveOilVersion.method, displayNumbers(oliveOilVersion.method), false);
+  const groupFor = (groups, displayNumber) => groups.find((group) => group.displayNumber === displayNumber);
+
+  it("Olive Oil v1's steps 2 and 3 read as their seeded uses list them, and steps 6 and 8 as before", () => {
+    const groups = olive();
+    expect(idsOf(groupFor(groups, 2))).toEqual(['row-10', 'row-11', 'row-12', 'row-05', 'row-01']);
+    expect(idsOf(groupFor(groups, 3))).toEqual(['row-05', 'row-04', 'row-07', 'row-08', 'row-01', 'row-02']);
+    expect(idsOf(groupFor(groups, 6))).toEqual(['row-06']);
+    expect(idsOf(groupFor(groups, 8))).toEqual(['row-03', 'row-09']);
+  });
+
+  it("reads a row its step's uses does not name after the named ones, in rows order", () => {
+    const rows = [makeRow('a', 'Row A', 1, 1), makeRow('b', 'Row B', 2, 1), makeRow('c', 'Row C', 3, 1), makeRow('d', 'Row D', 4, 1)];
+    const method = [{ n: 1, leadIn: 'One', instruction: 'Do one.', uses: ['d', 'b'] }];
+    const [group] = groupPortionsByStep(rows, method, displayNumbers(method), false);
+    expect(idsOf(group)).toEqual(['d', 'b', 'a', 'c']);
+  });
+
+  it('reads a step with no uses list in rows order', () => {
+    const rows = [makeRow('a', 'Row A', 1, 1), makeRow('b', 'Row B', 2, 1)];
+    const method = [{ n: 1, leadIn: 'One', instruction: 'Do one.' }];
+    const [group] = groupPortionsByStep(rows, method, displayNumbers(method), false);
+    expect(idsOf(group)).toEqual(['a', 'b']);
+  });
+
+  it("reads a removed step's group in its uses order", () => {
+    const rows = [makeRow('a', 'Row A', 1, 2), makeRow('b', 'Row B', 2, 2), makeRow('c', 'Row C', 3, 2)];
+    const method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.', uses: [] },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.', uses: ['c', 'a', 'b'], removed: true },
+    ];
+    const groups = groupPortionsByStep(rows, method, displayNumbers(method), true);
+    const removed = groups.find((group) => group.kind === 'removed');
+    expect(idsOf(removed)).toEqual(['c', 'a', 'b']);
+  });
+
+  it('reads the unplaced group in rows order', () => {
+    const rows = [makeRow('a', 'Row A', 1, 9), makeRow('b', 'Row B', 2, 9), makeRow('c', 'Row C', 3, 9)];
+    const method = [{ n: 1, leadIn: 'One', instruction: 'Do one.', uses: ['c', 'b'] }];
+    const [group] = groupPortionsByStep(rows, method, displayNumbers(method), false);
+    expect(group.kind).toBe('unallocated');
+    expect(idsOf(group)).toEqual(['a', 'b', 'c']);
+  });
+
+  it("groups a creation projection in the step's uses order, not the draft rows' order", () => {
+    const records = new Map(Object.entries(library).map(([id, entry]) => [id, { id, entry }]));
+    let draft = blankCreateDraft({ recipeId: 'r1', versionId: 'v1', name: 'Vanilla' });
+    draft = addRow(addRow(draft, { rowId: 'row-a', libraryId: 'sucrose' }), { rowId: 'row-b', libraryId: 'wholeMilk' });
+    draft = setLineGrams(setLineGrams(draft, 'row-a', UNPLACED_STEP, '10'), 'row-b', UNPLACED_STEP, '20');
+    draft = addStep(draft);
+    draft = toggleStepUses(toggleStepUses(draft, draft.method[0].n, 'row-b'), draft.method[0].n, 'row-a');
+    const version = creationSheetVersion(draft, records);
+    expect(version.rows.map((row) => row.id)).toEqual(['row-a', 'row-b']);
+    const [group] = groupPortionsByStep(version.rows, version.method, displayNumbers(version.method), false);
+    expect(idsOf(group)).toEqual(['row-b', 'row-a']);
+  });
+
+  it("the reading table lists Olive Oil v1's Step 2 as Locust bean gum, Guar gum, Lambda carrageenan, Sucrose, Whole milk", () => {
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={oliveOilVersion.rows}
+        mode="reading"
+        steps={oliveOilVersion.method}
+        currentStepNumbers={displayNumbers(oliveOilVersion.method)}
+      />,
+    );
+    const start = markup.indexOf('Step 2<span');
+    const section = markup.slice(start, markup.indexOf('Step 3<span'));
+    const order = ['Locust bean gum', 'Guar gum', 'Lambda carrageenan', 'Sucrose', 'Whole milk'].map((name) => section.indexOf(name));
+    expect(order.every((at) => at > -1)).toBe(true);
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
   });
 });

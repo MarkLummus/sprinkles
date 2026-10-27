@@ -26,9 +26,11 @@ const BLOCKED_ROW_ERROR_ID = 'ingredient-field-error';
 // resolve (a null map, or a step this map has no entry for) is never
 // dropped: it joins one trailing "Not in a step yet" group instead (RESEARCH.md
 // Pitfall 4). Active groups sort by display number, with that group (when
-// non-empty) always last; entries within a group keep `rows`' own iteration
-// order, then portion order — never re-sorted, matching the sketch's own
-// ING.forEach iteration (index.html:390-406).
+// non-empty) always last. Within a step's group (numbered or removed) the
+// entries read in that step's uses order, a row its uses does not name after
+// the ones it names, in rows order (Mark, 2026-10-26,
+// decide-p11-row-order-across-steps: each step orders its own rows); the
+// unplaced group reads in rows order, then portion order.
 //
 // `rows` are the stored rows. A line that is out (its own flag, or its step
 // removed) is skipped before any group is created for it, so no empty step
@@ -60,6 +62,17 @@ export function groupPortionsByStep(rows, steps, stepNumberMap, keepOutLines) {
       }
       numbered.get(displayNumber).entries.push(entry);
     });
+  }
+  // A step's group reads in that step's uses order; an id its uses does not name
+  // sorts after every id it names, and those keep rows order among themselves
+  // (the sort is stable).
+  const usesPlace = (n, rowId) => {
+    const uses = steps.find((candidate) => candidate.n === n)?.uses ?? [];
+    const at = uses.indexOf(rowId);
+    return at === -1 ? uses.length : at;
+  };
+  for (const group of [...numbered.values(), ...removedSteps.values()]) {
+    group.entries.sort((a, b) => usesPlace(group.n, a.row.id) - usesPlace(group.n, b.row.id));
   }
   const methodIndex = (n) => steps.findIndex((candidate) => candidate.n === n);
   const removedGroups = [...removedSteps.values()].sort((a, b) => methodIndex(a.n) - methodIndex(b.n));

@@ -413,13 +413,16 @@ describe('a removed step takes its lines with it, struck in its own place (decis
       'Step 7Emulsify the oil, cold',
     ]);
     const removed = linesUnder('Removed');
+    // The removed step's lines read in its uses order (Mark, 2026-10-26,
+    // decide-p11-row-order-across-steps), not in the order of the table's rows.
     expect(removed.map((tr) => nameCell(tr).textContent.replace(/estimated|unreviewed|\d.*$/g, '').trim())).toEqual([
-      'Whole milk',
-      'Sucrose',
       'Locust bean gum',
       'Guar gum',
       'Lambda carrageenan',
+      'Sucrose',
+      'Whole milk',
     ]);
+    const removedLine = (name) => removed.find((tr) => tr.getAttribute('aria-label').startsWith(name));
     for (const tr of removed) {
       expect(nameCell(tr).querySelector('.struck-value')).not.toBeNull();
       expect(nameCell(tr).querySelector('button')).toBeNull();
@@ -428,8 +431,8 @@ describe('a removed step takes its lines with it, struck in its own place (decis
     expect(struck(totalCell())).toEqual(['799.7']);
 
     const noteIn = (tr) => nameCell(tr).querySelector('.ingredient-table__portion-note').textContent;
-    expect(noteIn(removed[0])).toBe('120 g of 370.4 g · 46.3% in all');
-    expect(noteIn(removed[1])).toBe('12 g of 76.0 g · 9.5% in all');
+    expect(noteIn(removedLine('Whole milk'))).toBe('120 g of 370.4 g · 46.3% in all');
+    expect(noteIn(removedLine('Sucrose'))).toBe('12 g of 76.0 g · 9.5% in all');
     const stepTwo = linesUnder('Step 2');
     const milk = stepTwo.find((tr) => tr.getAttribute('aria-label').startsWith('Whole milk'));
     const sucrose = stepTwo.find((tr) => tr.getAttribute('aria-label').startsWith('Sucrose'));
@@ -438,9 +441,9 @@ describe('a removed step takes its lines with it, struck in its own place (decis
     expect(shareCellOf(milk).textContent).toBe('31.3%37.6%');
     expect(noteIn(sucrose)).toBe('64 g of 64.0 g · 9.6% in all');
     expect(shareCellOf(sucrose).textContent).toBe('8.0%9.6%');
-    expect(shareCellOf(removed[0]).textContent).toBe('15.0%');
-    expect(struck(shareCellOf(removed[0]))).toEqual(['15.0%']);
-    expect(shareCellOf(removed[1]).textContent).toBe('1.5%');
+    expect(shareCellOf(removedLine('Whole milk')).textContent).toBe('15.0%');
+    expect(struck(shareCellOf(removedLine('Whole milk')))).toEqual(['15.0%']);
+    expect(shareCellOf(removedLine('Sucrose')).textContent).toBe('1.5%');
 
     // The gums' orphan flags are gone, because each gum row is out with its only
     // line; the removed step's cue names Whole milk and Sucrose as still used.
@@ -501,11 +504,11 @@ describe('Show changes strikes a removed step with its lines (decision 51, plan 
     const removed = linesUnder('Removed');
     const nameOf = (tr) => tr.getAttribute('aria-label');
     expect(removed.map((tr) => ['Whole milk', 'Sucrose', 'Locust bean gum', 'Guar gum', 'Lambda carrageenan'].find((name) => nameOf(tr).startsWith(name)))).toEqual([
-      'Whole milk',
-      'Sucrose',
       'Locust bean gum',
       'Guar gum',
       'Lambda carrageenan',
+      'Sucrose',
+      'Whole milk',
     ]);
     for (const tr of removed) expect(nameCell(tr).querySelector('.struck-value')).not.toBeNull();
 
@@ -881,5 +884,23 @@ describe('Save over this version is guarded by the store (T-11-63)', () => {
 
     expect(statusText()).toContain(VERSION_SAVE_ERROR);
     expect(statusText()).not.toContain(VERSION_CHANGED_STATUS);
+  });
+});
+
+// Mark, 2026-10-26 (decide-p11-row-order-across-steps): each step orders its own
+// rows, so the pen's uses line names a step's rows in the order its uses lists
+// them, the same order the table reads under that step's head.
+describe("the version pen's uses line follows the step's own order (decide-p11-row-order-across-steps)", () => {
+  it('opening step 2 on Olive Oil v1 reads the three gums, Sucrose, then Whole milk, as its table does', async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await click(buttonByLabel('Step 2, edit this step'));
+
+    const line = current.container.querySelector('p.method-step__uses-line');
+    expect(line.textContent.startsWith('uses Locust bean gum, Guar gum, Lambda carrageenan, Sucrose, Whole milk')).toBe(true);
+    expect(
+      linesUnder('Step 2').map((tr) => tr.getAttribute('aria-label').split(',')[0]),
+    ).toEqual(['Locust bean gum', 'Guar gum', 'Lambda carrageenan', 'Sucrose', 'Whole milk']);
   });
 });

@@ -1241,6 +1241,70 @@ SCENARIOS.push([
   },
 ]);
 
+// ---------------------------------------------------------------------------
+// 11-11: a refused Save shows every message at once (MAKE-10, D-08, D-10, D-11, D-19). A new recipe
+// with no name, no Version name, no ingredient and one blank step: Save writes nothing, each field
+// that is refused is marked invalid, the page says what to fix under the fields, focus is on the
+// first refused field (the Recipe name), and the stores hold the seed and the kept create draft.
+// Then the name is typed back: its message goes and the others stand.
+// ---------------------------------------------------------------------------
+SCENARIOS.push([
+  'create-save-refused',
+  async (walk) => {
+    const { page } = walk;
+    await walk.open('/notebook');
+    await walk.seed();
+    await clickUntil(page, () => page.locator('.nb__head .notebook-action'), '.nb__new input', 'open the New recipe entry');
+    await page.fill('.nb__new input', 'Vanilla');
+    await page.locator('.nb__new-actions button', { hasText: /^Start$/ }).click();
+    await page.waitForFunction(() => location.pathname === '/notebook/new', null, { timeout: 8000 });
+    await page.waitForSelector('.notebook.mk-page');
+
+    await page.fill('input[aria-label="Recipe name"]', '');
+    await page.fill('input[aria-label="Version name"]', '');
+    await clickUntil(page, () => page.locator('.method-region .mk-head-act'), 'input[aria-label="Step 1, lead-in"]', 'Add step');
+    await walk.afterDebounce();
+    await page.click(SAVE_BUTTON);
+    await page.waitForSelector('#creation-name-error');
+    await walk.afterDebounce();
+    const refused = await walk.step('refused', { stores: true });
+    const invalid = refused.snapshot.invalid;
+    for (const label of ['Recipe name', 'Version name', 'Step 1, lead-in', 'Step 1, instruction']) {
+      walk.expect(invalid.includes(label), `${label} is marked invalid (${JSON.stringify(invalid)})`);
+    }
+    const shown = await page.evaluate(() => document.querySelector('.notebook').innerText);
+    walk.expect(shown.includes('Enter a recipe name.'), 'the page says "Enter a recipe name."');
+    walk.expect(shown.includes('Add at least one ingredient.'), 'the page says "Add at least one ingredient."');
+    walk.expect(
+      refused.snapshot.focus?.ariaLabel === 'Recipe name',
+      `focus is on Recipe name (${JSON.stringify(refused.snapshot.focus)})`,
+    );
+    walk.expect(refused.snapshot.url === '/notebook/new', `the address is still /notebook/new (${refused.snapshot.url})`);
+    walk.expect(
+      refused.stores.recipes.length === walk.seedDump.recipes.length && refused.stores.versions.length === walk.seedDump.versions.length,
+      `no recipe or version was written (${refused.stores.recipes.length} recipes, ${refused.stores.versions.length} versions)`,
+    );
+    walk.expect(
+      refused.stores.drafts.length === 1 && refused.stores.drafts[0].kind === 'create',
+      `the create draft is the one kept record (${JSON.stringify(refused.stores.drafts.map((draft) => draft.kind))})`,
+    );
+    walk.expectSeedKept(refused, refused.stores.drafts[0]?.payload?.recipeId ?? null);
+
+    await page.fill('input[aria-label="Recipe name"]', 'Vanilla');
+    await walk.afterDebounce();
+    const fixed = await walk.step('one fixed', { stores: true });
+    const stillShown = await page.evaluate(() => document.querySelector('.notebook').innerText);
+    walk.expect(!stillShown.includes('Enter a recipe name.'), 'typing the name clears its message');
+    walk.expect(!fixed.snapshot.invalid.includes('Recipe name'), `Recipe name is no longer invalid (${JSON.stringify(fixed.snapshot.invalid)})`);
+    walk.expect(
+      ['Version name', 'Step 1, lead-in', 'Step 1, instruction'].every((label) => fixed.snapshot.invalid.includes(label)),
+      `the other fields are still marked (${JSON.stringify(fixed.snapshot.invalid)})`,
+    );
+    walk.expect(stillShown.includes('Add at least one ingredient.'), 'the no-ingredient message stands');
+    walk.expectSeedKept(fixed, fixed.stores.drafts[0]?.payload?.recipeId ?? null);
+  },
+]);
+
 async function record(outPath, withText = false) {
   keepText = withText;
   const { appUrl, close } = await startServers({ appRoot: DIST });

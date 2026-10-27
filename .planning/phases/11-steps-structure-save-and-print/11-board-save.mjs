@@ -1,7 +1,9 @@
-// 11-09: the WebKit side-by-side spec for Save (sketch 014 save.html, CONTRACT section 4). Two
-// full-page panels at 1366 with a coarse pointer:
+// 11-09: the WebKit side-by-side spec for Save (sketch 014 save.html, CONTRACT section 4). Full-page
+// panels at 1366 with a coarse pointer:
 //   vA1  ready to save: the ceremony "New recipe · draft" with Version name, then Cancel and the
 //        filled Save on one row;
+//   vB1  (11-11) Save refused: "Enter a recipe name." under the empty Recipe name, Required under the
+//        empty Version name, the rest of the editor as vA1;
 //   vC1  the page Save lands on: the notice card "Recipe saved.", the seeded-root reading of the
 //        new version (Version 1 · Latest, "no reason recorded", Next version, one History node).
 //
@@ -81,6 +83,23 @@ export default {
         { selector: 'form.notebook-ceremony', checks: ['box'] },
         { selector: '.notebook-ceremony .notebook-caption', checks: ['count', 'text'] },
         { selector: '.notebook-ceremony__actions button', checks: ['count', 'box', 'font', 'color', 'text'] },
+      ],
+    }),
+    panel({
+      // vB1 (plan 11-11): the board's draft with the name and the Version name emptied, and Save
+      // pressed. The board draws the Version name's Required as the always-on guidance and the
+      // build draws it as the refusal's error in the same place, so the ceremony's two kinds of
+      // line are compared together (count, box, text) rather than by class.
+      id: 'vB1',
+      draft: { ...READY_TO_SAVE_DRAFT, name: '', versionLabel: '' },
+      steps: async (page) => {
+        await page.click('.notebook-ceremony__actions .notebook-action:not(.notebook-action--outline)');
+        await page.waitForSelector('.notebook-recipe .field-error');
+      },
+      elements: [
+        { selector: '.notebook-recipe .field-error', checks: ['count', 'box', 'font', 'color', 'text'] },
+        { selector: '.notebook-ceremony .field-error, .notebook-ceremony .field-requirement', checks: ['count', 'box', 'text'] },
+        { selector: '.notebook-ceremony__actions button', checks: ['count', 'box', 'text'] },
       ],
     }),
     panel({

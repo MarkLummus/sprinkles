@@ -11,7 +11,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router';
 
-const store = vi.hoisted(() => ({ drafts: new Map() }));
+const store = vi.hoisted(() => ({ drafts: new Map(), recipes: [], versions: [] }));
 
 vi.mock('../store/repository.js', async () => {
   const { seedRecipeGroups } = await import('../data/seed-recipes.js');
@@ -19,9 +19,9 @@ vi.mock('../store/repository.js', async () => {
   const groups = seedRecipeGroups;
   return {
     repository: {
-      getAll: vi.fn(async () => structuredClone(groups.flatMap((group) => group.versions))),
+      getAll: vi.fn(async () => structuredClone([...groups.flatMap((group) => group.versions), ...store.versions])),
       getAllBatches: vi.fn(async () => structuredClone(groups.flatMap((group) => group.batches))),
-      listRecipes: vi.fn(async () => structuredClone(groups.map((group) => group.recipe))),
+      listRecipes: vi.fn(async () => structuredClone([...groups.map((group) => group.recipe), ...store.recipes])),
       listLibrary: vi.fn(async () => Object.entries(library).map(([id, entry]) => ({ id, entry: structuredClone(entry) }))),
       listDrafts: vi.fn(async () => [...store.drafts.values()].map((record) => structuredClone(record))),
       getDraft: vi.fn(async (versionId) => {
@@ -33,6 +33,24 @@ vi.mock('../store/repository.js', async () => {
       }),
       deleteDraft: vi.fn(async (versionId) => {
         store.drafts.delete(versionId);
+      }),
+      // The recipe page's reads, so the landing after Save mounts the real page.
+      getVersion: vi.fn(async (id) => {
+        const found = [...groups.flatMap((group) => group.versions), ...store.versions].find((version) => version.id === id);
+        return found ? structuredClone(found) : undefined;
+      }),
+      listBatchesForVersion: vi.fn(async () => []),
+      listVersions: vi.fn(async () => structuredClone([...groups.flatMap((group) => group.versions), ...store.versions])),
+      getRecipe: vi.fn(async (id) => {
+        const found = [...groups.map((group) => group.recipe), ...store.recipes].find((recipe) => recipe.id === id);
+        return found ? structuredClone(found) : undefined;
+      }),
+      getBatch: vi.fn(async () => undefined),
+      // Save's one transaction (MAKE-10): the recipe, the version and the draft's removal.
+      createRecipeWithVersion: vi.fn(async ({ recipe, version }) => {
+        store.recipes.push(structuredClone(recipe));
+        store.versions.push(structuredClone(version));
+        store.drafts.delete(version.id);
       }),
       saveVersion: vi.fn(),
       createVersion: vi.fn(),
@@ -51,6 +69,7 @@ import { repository } from '../store/repository.js';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { NotebookPlace } from './NotebookPlace.jsx';
 import { CreationRoute } from './CreationRoute.jsx';
+import { RecipePageForRoute } from '../router.jsx';
 import { CatalogFixture } from './catalog.fixtures.jsx';
 import { blankCreateDraft, buildDraftRecord } from '../domain/draft.js';
 
@@ -122,6 +141,7 @@ async function mountAt(path) {
               <Route element={<Outlet context={0} />}>
                 <Route path="/notebook" element={<NotebookPlace />} />
                 <Route path="/notebook/new" element={<CreationRoute />} />
+                <Route path="/notebook/:recipeId/:versionId" element={<RecipePageForRoute />} />
               </Route>
             </Routes>
           </MemoryRouter>
@@ -145,6 +165,8 @@ afterEach(async () => {
   originalMatchMedia = null;
   delete Element.prototype.scrollIntoView;
   store.drafts.clear();
+  store.recipes.length = 0;
+  store.versions.length = 0;
   stateTrail = [];
   vi.clearAllMocks();
 });
@@ -249,7 +271,7 @@ describe('New recipe, a name and Start open the creation editor (MAKE-04)', () =
     expect(field('Recipe name').value).toBe('Vanilla');
     expect(field('Version name').value).toBe('Version 1');
     expect(root().textContent).toContain('New recipe · draft');
-    expect(buttonByText('Save')).toBeNull();
+    expect(buttonByText('Save')).not.toBeNull();
     expect(root().textContent).not.toContain('Sheet code');
     expect(buttonByText('Cancel')).not.toBeNull();
     expectNoRecordWrites();
@@ -1630,5 +1652,446 @@ describe('the Uses checklist and the table under step heads (MAKE-07, plan 11-07
     repository.saveDraft.mockClear();
     await advance();
     expect(lastSaved().payload.rows[0].portions).toEqual([{ step: 1, grams: '600' }]);
+  });
+});
+
+describe('Save creates the recipe and its first version (MAKE-10, T-11-24, T-11-25, T-11-52)', () => {
+  const SUGAR = 'Sucrose';
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-head-act');
+  const gramsField = (name) => field(`${name}, grams`);
+  const saveButton = () => buttonByText('Save') ?? buttonByText('Saving…');
+  const line = () => root().querySelector('.notebook-ceremony p.field-error');
+
+  async function pick(name) {
+    await click(addButton());
+    const row = [...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === name);
+    await click(row);
+  }
+
+  // Start, a row with grams: the smallest creation Save accepts.
+  async function startWithSugar() {
+    await startVanilla();
+    await pick(SUGAR);
+    await type(gramsField(SUGAR), '150');
+  }
+
+  const saved = () => repository.createRecipeWithVersion.mock.calls[0][0];
+
+  it('writes the recipe and its version in one call, with the Sheet code, and lands on the new page', async () => {
+    await startWithSugar();
+    await click(saveButton());
+    await flush(() => location.pathname !== '/notebook/new');
+
+    expect(repository.createRecipeWithVersion).toHaveBeenCalledTimes(1);
+    const { recipe, version } = saved();
+    expect(recipe.name).toBe('Vanilla');
+    expect(version.recipeId).toBe(recipe.id);
+    expect(version.versionLabel).toBe('Version 1');
+    expect(version.rows).toHaveLength(1);
+    expect(version.rows[0].ingredientName).toBe(SUGAR);
+    expect(version.rows[0].portions).toEqual([{ step: 0, grams: 150 }]);
+    expect(version.method).toEqual([]);
+    expect(version.sheetCode).toMatch(/^[0-9A-Z]{4}-[0-9A-Z]{4}$/);
+    expect(version.parentVersionId).toBeNull();
+    for (const name of WRITE_SPIES) expect(repository[name]).not.toHaveBeenCalled();
+
+    expect(location.pathname).toBe(`/notebook/${recipe.id}/${version.id}`);
+  });
+
+  it('the landing carries the enum word only, then the page says Recipe saved. and clears it after 5 s', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startWithSugar();
+    await click(saveButton());
+    await flush(() => location.pathname !== '/notebook/new');
+    await flush(() => root().querySelector('.page-status')?.textContent === 'Recipe saved.');
+
+    expect(stateTrail).toContainEqual({ focusVersion: true, saved: 'created' });
+    expect(root().querySelector('.page-status').textContent).toBe('Recipe saved.');
+    // The word is spent once: the entry keeps focusVersion and no longer says 'created'.
+    expect(location.state).toEqual({ focusVersion: true });
+    await act(async () => {
+      vi.advanceTimersByTime(4900);
+    });
+    expect(root().querySelector('.page-status').textContent).toBe('Recipe saved.');
+    await act(async () => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(root().querySelector('.page-status').textContent).toBe('');
+  });
+
+  it('the new page reads as a seeded root, and the Notebook lists the recipe with no draft row and no Resume', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startWithSugar();
+    // Typed just before Save, inside the debounce window: a pending write the save must end.
+    await type(field('Recipe description'), 'Plain and cold.');
+    repository.saveDraft.mockClear();
+    await click(saveButton());
+    await flush(() => location.pathname !== '/notebook/new');
+    await flush(() => root().querySelector('.notebook-version__identity') !== null);
+
+    expect(root().querySelector('.notebook-version__identity').textContent).toContain('Version 1');
+    expect(root().textContent).toContain('no reason recorded');
+    expect(store.drafts.size).toBe(0);
+
+    await act(async () => {
+      vi.advanceTimersByTime(2000);
+    });
+    await flush();
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    expect(store.drafts.size).toBe(0);
+
+    await act(async () => {
+      navigateTo('/notebook');
+    });
+    await flush(() => buttonByText('New recipe') !== null);
+    expect(root().textContent).toContain('Vanilla');
+    expect(root().querySelector('.nb__draft')).toBeNull();
+    expect(buttonByText('Resume')).toBeNull();
+    expect(buttonByText('New recipe')).not.toBeNull();
+  });
+
+  it('two quick presses write once', async () => {
+    await startWithSugar();
+    const gate = deferred();
+    repository.createRecipeWithVersion.mockImplementationOnce(async () => {
+      await gate.promise;
+    });
+    await act(async () => {
+      saveButton().dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      saveButton().dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    });
+    await flush();
+    await act(async () => {
+      gate.resolve();
+    });
+    await flush();
+    expect(repository.createRecipeWithVersion).toHaveBeenCalledTimes(1);
+  });
+
+  it('a rejected save keeps the draft, gives the writer back, says so under Save and focuses Save', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startWithSugar();
+    await type(field('Recipe description'), 'Plain and cold.');
+    repository.saveDraft.mockClear();
+    repository.createRecipeWithVersion.mockRejectedValueOnce(new Error('store gone'));
+    await click(saveButton());
+    await flush();
+
+    expect(location.pathname).toBe('/notebook/new');
+    expect(line().textContent).toBe('Couldn’t save the recipe. Try again.');
+    expect(line().getAttribute('role')).toBe('status');
+    expect(store.drafts.size).toBe(1);
+    // The writer is back: the text that was waiting to be written at Save is written now.
+    expect(repository.saveDraft).toHaveBeenCalled();
+    expect(lastSaved().payload.description).toBe('Plain and cold.');
+    expect(store.recipes).toHaveLength(0);
+    expect(saveButton().disabled).toBe(false);
+    expect(saveButton().textContent).toBe('Save');
+    expect(buttonByText('Cancel').disabled).toBe(false);
+    expect(field('Recipe name').disabled).toBe(false);
+    expect(document.activeElement).toBe(saveButton());
+
+    // A later edit is debounced and written as before, and a second press saves.
+    repository.saveDraft.mockClear();
+    await type(field('Recipe description'), 'Plain, cold and creamy.');
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+    });
+    await flush();
+    expect(lastSaved().payload.description).toBe('Plain, cold and creamy.');
+    await click(saveButton());
+    await flush(() => location.pathname !== '/notebook/new');
+    expect(repository.createRecipeWithVersion).toHaveBeenCalledTimes(2);
+    expect(store.recipes).toHaveLength(1);
+  });
+
+  describe('while the transaction is out', () => {
+    async function startHeld() {
+      await startVanilla();
+      await pick(SUGAR);
+      await type(gramsField(SUGAR), '150');
+      await click(buttonByText('Add step'));
+      await type(field('Step 1, lead-in'), 'Warm');
+      await type(field('Step 1, instruction'), 'Warm the sugar.');
+      const gate = deferred();
+      repository.createRecipeWithVersion.mockImplementationOnce(async (records) => {
+        await gate.promise;
+        store.recipes.push(structuredClone(records.recipe));
+        store.versions.push(structuredClone(records.version));
+        store.drafts.delete(records.version.id);
+      });
+      return gate;
+    }
+
+    it('reads Saving…, disables Save, Cancel and the band and ceremony fields, and freezes every other field', async () => {
+      await startHeld();
+      await click(saveButton());
+
+      expect(saveButton().textContent).toBe('Saving…');
+      expect(saveButton().disabled).toBe(true);
+      expect(buttonByText('Cancel').disabled).toBe(true);
+      expect(field('Recipe name').disabled).toBe(true);
+      expect(field('Recipe description').disabled).toBe(true);
+      expect(field('Version name').disabled).toBe(true);
+
+      await type(field('Recipe name'), 'Chocolate');
+      await type(field('Step 1, lead-in'), 'Warmer');
+      await type(gramsField(SUGAR), '999');
+      expect(field('Recipe name').value).toBe('Vanilla');
+      expect(field('Step 1, lead-in').value).toBe('Warm');
+      expect(gramsField(SUGAR).value).toBe('150');
+      expect(root().textContent).not.toContain('Chocolate');
+    });
+
+    it('Cancel is disabled and pressing it navigates nowhere and deletes nothing', async () => {
+      await startHeld();
+      await click(saveButton());
+      repository.deleteDraft.mockClear();
+      await click(buttonByText('Cancel'));
+      await flush();
+      expect(location.pathname).toBe('/notebook/new');
+      expect(repository.deleteDraft).not.toHaveBeenCalled();
+    });
+
+    it('a link pressed during the save leaves the page, and the resolve afterwards navigates nowhere', async () => {
+      const gate = await startHeld();
+      await click(saveButton());
+      await act(async () => {
+        navigateTo('/notebook');
+      });
+      await flush(() => location.pathname === '/notebook');
+      expect(location.pathname).toBe('/notebook');
+      await act(async () => {
+        gate.resolve();
+      });
+      await flush();
+      await flush();
+      expect(location.pathname).toBe('/notebook');
+      expect(stateTrail.some((state) => state?.saved === 'created')).toBe(false);
+    });
+
+    it('a rejected save brings every control back with the draft as it was, and the line under Save', async () => {
+      await startHeld();
+      repository.createRecipeWithVersion.mockReset();
+      const gate = deferred();
+      repository.createRecipeWithVersion.mockImplementationOnce(async () => {
+        await gate.promise;
+      });
+      await click(saveButton());
+      await type(field('Recipe name'), 'Chocolate');
+      await act(async () => {
+        gate.reject(new Error('store gone'));
+      });
+      await flush();
+
+      expect(location.pathname).toBe('/notebook/new');
+      expect(line().textContent).toBe('Couldn’t save the recipe. Try again.');
+      expect(saveButton().disabled).toBe(false);
+      expect(buttonByText('Cancel').disabled).toBe(false);
+      expect(field('Recipe name').disabled).toBe(false);
+      expect(field('Recipe name').value).toBe('Vanilla');
+      expect(field('Step 1, lead-in').value).toBe('Warm');
+      expect(gramsField(SUGAR).value).toBe('150');
+      // And an edit is accepted again.
+      await type(field('Recipe name'), 'Chocolate');
+      expect(field('Recipe name').value).toBe('Chocolate');
+    });
+  });
+});
+
+describe('Save refuses everything the store file would refuse, all at once, writing nothing (MAKE-10, D-08 to D-11, T-11-27, T-11-53)', () => {
+  const MILK = 'Whole milk, 3.5% fat';
+  const SUGAR = 'Sucrose';
+  const addButton = () => root().querySelector('.ingredient-table-region .mk-head-act');
+  const gramsField = (name) => field(`${name}, grams`);
+  const saveButton = () => buttonByText('Save');
+  const scalesRegion = () => root().querySelector('section[aria-label="Scales"]');
+  const inCard = (card, label) => scalesRegion().querySelector(`.mk-card[aria-label="${card}"] [aria-label="${label}"]`);
+  const kindRadio = (card, word) =>
+    [...scalesRegion().querySelectorAll(`.mk-card[aria-label="${card}"] .segmented__option`)]
+      .find((option) => option.textContent === word)
+      .querySelector('input');
+
+  async function pick(name) {
+    await click(addButton());
+    const row = [...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === name);
+    await click(row);
+  }
+
+  // A creation that can be saved, then one thing broken per case.
+  async function startReady() {
+    await startVanilla();
+    await pick(SUGAR);
+    await type(gramsField(SUGAR), '150');
+  }
+
+  // Focus is somewhere else when Save is pressed, so a focus that lands is a move.
+  async function pressSave() {
+    field('Recipe description').focus();
+    await click(saveButton());
+    await flush();
+  }
+
+  const expectRefused = () => {
+    expect(repository.createRecipeWithVersion).not.toHaveBeenCalled();
+    expect(location.pathname).toBe('/notebook/new');
+    expect(store.drafts.size).toBe(1);
+  };
+
+  it('a blank draft writes nothing, shows Enter a recipe name. under the name and focuses it; fixing the name clears the message', async () => {
+    await startVanilla();
+    await type(field('Recipe name'), '');
+    await pressSave();
+
+    expectRefused();
+    const nameField = field('Recipe name');
+    const message = root().querySelector('#creation-name-error');
+    expect(message.textContent).toBe('Enter a recipe name.');
+    expect(nameField.getAttribute('aria-invalid')).toBe('true');
+    expect(nameField.getAttribute('aria-describedby')).toBe('creation-name-error');
+    expect(document.activeElement).toBe(nameField);
+    expect(root().querySelector('.notebook-ceremony p.field-error')).toBeNull();
+
+    await type(nameField, 'Vanilla');
+    expect(root().querySelector('#creation-name-error')).toBeNull();
+    expect(nameField.getAttribute('aria-invalid')).toBeNull();
+  });
+
+  it('a blank Version name shows Required as an error under it and takes focus', async () => {
+    await startReady();
+    await type(field('Version name'), '   ');
+    await pressSave();
+
+    expectRefused();
+    const versionField = field('Version name');
+    const message = root().querySelector('#creation-version-error');
+    expect(message.textContent).toBe('Required');
+    expect(message.classList.contains('field-error')).toBe(true);
+    expect(versionField.getAttribute('aria-invalid')).toBe('true');
+    expect(versionField.getAttribute('aria-describedby')).toBe('creation-version-error');
+    expect(document.activeElement).toBe(versionField);
+  });
+
+  it('no rows focuses Add ingredient, or the picker\'s Name field while the picker is open in its place', async () => {
+    await startVanilla();
+    await pressSave();
+    expectRefused();
+    expect(document.activeElement).toBe(addButton());
+
+    await click(addButton());
+    expect(addButton()).toBeNull();
+    await pressSave();
+    expectRefused();
+    expect(document.activeElement).toBe(root().querySelector('.ingredient-table-region .pick .ing__filters input'));
+  });
+
+  it('a draft whose only problem is a blank step lead-in focuses "Step 1, lead-in"', async () => {
+    await startReady();
+    await click(buttonByText('Add step'));
+    await type(field('Step 1, instruction'), 'Heat the sugar.');
+    await pressSave();
+
+    expectRefused();
+    expect(document.activeElement).toBe(field('Step 1, lead-in'));
+  });
+
+  it('a blank instruction, and a target with one side blank, focus their own fields', async () => {
+    await startReady();
+    await click(buttonByText('Add step'));
+    await type(field('Step 1, lead-in'), 'Warm');
+    await pressSave();
+    expect(document.activeElement).toBe(field('Step 1, instruction'));
+
+    await type(field('Step 1, instruction'), 'Heat the sugar.');
+    await click(field('Step 1, add a target'));
+    await type(field('Step 1, target label'), 'Heat to');
+    await pressSave();
+    expectRefused();
+    expect(document.activeElement).toBe(field('Step 1, target value'));
+  });
+
+  it('a draft whose only problem is a scale\'s blank High end focuses that card\'s High end field', async () => {
+    await startReady();
+    await click(scalesRegion().querySelector('.mk-add'));
+    await type(inCard('Scale 1', 'Name'), 'Chew');
+    await type(inCard('Scale 1', 'Low end'), 'soft');
+    await click(kindRadio('Scale 1', 'Right in the middle'));
+    await pressSave();
+
+    expectRefused();
+    expect(document.activeElement).toBe(inCard('Scale 1', 'High end'));
+  });
+
+  it('a draft whose only problem is an unpicked kind focuses the card\'s first Kind radio', async () => {
+    await startReady();
+    await click(scalesRegion().querySelector('.mk-add'));
+    await type(inCard('Scale 1', 'Name'), 'Chew');
+    await type(inCard('Scale 1', 'Low end'), 'soft');
+    await type(inCard('Scale 1', 'High end'), 'firm');
+    await pressSave();
+
+    expectRefused();
+    expect(document.activeElement).toBe(scalesRegion().querySelector('.mk-card[aria-label="Scale 1"] input[type="radio"]'));
+  });
+
+  it('a blank problem focuses its card\'s Name, and a repeated one refuses too', async () => {
+    await startReady();
+    const problemsRegion = () => root().querySelector('section[aria-label="Problems"]');
+    await click(problemsRegion().querySelector('.mk-add'));
+    await click(problemsRegion().querySelector('.mk-add'));
+    await type(problemsRegion().querySelector('.mk-card[aria-label="Problem 2"] input[aria-label="Name"]'), 'Icy');
+    await pressSave();
+    expectRefused();
+    expect(document.activeElement).toBe(problemsRegion().querySelector('.mk-card[aria-label="Problem 1"] input[aria-label="Name"]'));
+
+    await type(problemsRegion().querySelector('.mk-card[aria-label="Problem 1"] input[aria-label="Name"]'), ' Icy ');
+    await pressSave();
+    expectRefused();
+    expect(document.activeElement).toBe(problemsRegion().querySelector('.mk-card[aria-label="Problem 2"] input[aria-label="Name"]'));
+  });
+
+  it('a draft whose only problem is a 309-digit grams line writes nothing and focuses that line', async () => {
+    await startReady();
+    await type(gramsField(SUGAR), '9'.repeat(309));
+    await pressSave();
+
+    expectRefused();
+    expect(document.activeElement).toBe(gramsField(SUGAR));
+  });
+
+  it('Whole milk split across steps 1 and 2 with 308 nines in each line (each finite, their sum not) writes nothing and focuses the step 2 line', async () => {
+    await startVanilla();
+    await pick(MILK);
+    await click(buttonByText('Add step'));
+    await click(buttonByText('Add step'));
+    for (const n of [1, 2]) {
+      await type(field(`Step ${n}, lead-in`), `Step ${n}`);
+      await type(field(`Step ${n}, instruction`), 'Do it.');
+      await click(field(`Step ${n}, change the ingredients`));
+      await click(
+        [...root().querySelectorAll(`fieldset[aria-label="Step ${n}, uses"] label.method-step__uses-item`)]
+          .find((label) => label.textContent === MILK)
+          .querySelector('input'),
+      );
+    }
+    await type(field(`${MILK}, grams, portion 1`), '9'.repeat(308));
+    await type(field(`${MILK}, grams, portion 2`), '9'.repeat(308));
+    await pressSave();
+
+    expectRefused();
+    expect(document.activeElement).toBe(field(`${MILK}, grams, portion 2`));
+  });
+
+  it('with the draft fixed, the same press saves', async () => {
+    await startReady();
+    await click(buttonByText('Add step'));
+    await pressSave();
+    expectRefused();
+    await type(field('Step 1, lead-in'), 'Warm');
+    await type(field('Step 1, instruction'), 'Heat the sugar.');
+    await click(saveButton());
+    await flush(() => location.pathname !== '/notebook/new');
+    expect(repository.createRecipeWithVersion).toHaveBeenCalledTimes(1);
+    expect(repository.createRecipeWithVersion.mock.calls[0][0].version.method.map((step) => step.leadIn)).toEqual(['Warm']);
   });
 });

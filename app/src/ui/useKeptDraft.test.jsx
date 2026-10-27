@@ -356,7 +356,7 @@ function CreateHarness({ initial }) {
     onPageStatus,
     navigate,
   });
-  createControls = { setCreateDraft, discardDraft: writer.discardDraft };
+  createControls = { setCreateDraft, discardDraft: writer.discardDraft, endDraft: writer.endDraft, resumeDraft: writer.resumeDraft };
   createRenders.push({ createDraft, draftRestoreDone });
   return null;
 }
@@ -807,6 +807,100 @@ describe('a create draft is kept through the same hook with no version (D-18)', 
       await flush();
 
       expect(repo.saveDraft).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('endDraft and resumeDraft (Save, MAKE-10)', () => {
+    async function advance(ms = 250) {
+      await act(async () => {
+        vi.advanceTimersByTime(ms);
+      });
+      await flush();
+    }
+
+    async function typeThenEnd(name) {
+      repo.getDraft.mockResolvedValue(null);
+      await mountCreate(blankCreate());
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate(name));
+      });
+      await act(async () => {
+        createControls.endDraft();
+      });
+      await flush();
+    }
+
+    it('stops the writer without deleting: the waiting write never happens', async () => {
+      await typeThenEnd('Lemon');
+      await advance(1000);
+      expect(repo.saveDraft).not.toHaveBeenCalled();
+      expect(repo.deleteDraft).not.toHaveBeenCalled();
+    });
+
+    it('schedules no write for a change made after it, and an unmount writes nothing', async () => {
+      await typeThenEnd('Lemon');
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Lemons'));
+      });
+      await advance(1000);
+      await unmountCurrent();
+      await flush();
+      expect(repo.saveDraft).not.toHaveBeenCalled();
+      expect(repo.deleteDraft).not.toHaveBeenCalled();
+    });
+
+    it('resumeDraft writes the record held at endDraft at once', async () => {
+      await typeThenEnd('Lemon');
+      await act(async () => {
+        createControls.resumeDraft();
+      });
+      await flush();
+      expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+      expect(repo.saveDraft.mock.calls[0][0].payload.name).toBe('Lemon');
+      expect(repo.deleteDraft).not.toHaveBeenCalled();
+    });
+
+    it('resumeDraft writes the newest record when the draft changed while it was ended', async () => {
+      await typeThenEnd('Lemon');
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Lemons'));
+      });
+      await act(async () => {
+        createControls.resumeDraft();
+      });
+      await flush();
+      expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+      expect(repo.saveDraft.mock.calls[0][0].payload.name).toBe('Lemons');
+    });
+
+    it('after resumeDraft later edits are debounced as before', async () => {
+      await typeThenEnd('Lemon');
+      await act(async () => {
+        createControls.resumeDraft();
+      });
+      repo.saveDraft.mockClear();
+      await act(async () => {
+        createControls.setCreateDraft(blankCreate('Lemony'));
+      });
+      expect(repo.saveDraft).not.toHaveBeenCalled();
+      await advance();
+      expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+      expect(repo.saveDraft.mock.calls[0][0].payload.name).toBe('Lemony');
+    });
+
+    it('resumeDraft with nothing waiting writes nothing more', async () => {
+      repo.getDraft.mockResolvedValue(null);
+      await mountCreate(blankCreate());
+      await advance();
+      expect(repo.saveDraft).toHaveBeenCalledTimes(1);
+      await act(async () => {
+        createControls.endDraft();
+      });
+      await act(async () => {
+        createControls.resumeDraft();
+      });
+      await flush();
+      expect(repo.saveDraft).toHaveBeenCalledTimes(1);
     });
   });
 

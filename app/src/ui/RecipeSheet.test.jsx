@@ -209,8 +209,8 @@ describe('RecipeSheet in creating mode (T-01, D-08a)', () => {
   });
 
   const creationRowsOf = (grams) => ({
-    gramsByRow: new Map([['row-a', grams]]),
-    focusRowId: null,
+    gramsByLine: new Map([['row-a:0', grams]]),
+    focusLine: null,
     onChangeGrams() {},
     onBlurGrams() {},
     onRemoveRow() {},

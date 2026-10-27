@@ -12,7 +12,6 @@ import {
   updateNote,
   removeNote,
   addRow,
-  setRowGrams,
   removeRow,
   creationTargets,
   applyStyle,
@@ -254,14 +253,6 @@ describe('row operations on a create draft (MAKE-06, D-05, D-07)', () => {
     expect(() => addRow(draft, { rowId: 'row-2', libraryId: '' })).toThrow(TypeError);
   });
 
-  it('setRowGrams changes only that row, keeps the text as typed, and throws for an unknown row', () => {
-    const draft = addRow(addRow(blank(), { rowId: 'row-1', libraryId: 'sucrose' }), { rowId: 'row-2', libraryId: 'wholeMilk' });
-    const next = setRowGrams(draft, 'row-1', '150.');
-    expect(next.rows[0].portions).toEqual([{ step: 1, grams: '150.' }]);
-    expect(next.rows[1]).toEqual(draft.rows[1]);
-    expect(() => setRowGrams(draft, 'nope', '1')).toThrow(RangeError);
-  });
-
   it('removeRow drops that row, keeps the rest in order, and throws for an unknown row', () => {
     const draft = ['a', 'b', 'c'].reduce((acc, id) => addRow(acc, { rowId: id, libraryId: 'sucrose' }), blank());
     expect(removeRow(draft, 'b').rows.map((row) => row.id)).toEqual(['a', 'c']);
@@ -283,7 +274,6 @@ describe('row operations on a create draft (MAKE-06, D-05, D-07)', () => {
     const draft = addRow(blank(), { rowId: 'row-1', libraryId: 'sucrose' });
     const before = structuredClone(draft);
     addRow(draft, { rowId: 'row-2', libraryId: 'wholeMilk' });
-    setRowGrams(draft, 'row-1', '5');
     removeRow(draft, 'row-1');
     expect(draft).toEqual(before);
   });

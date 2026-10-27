@@ -1576,6 +1576,40 @@ describe('the Uses checklist and the table under step heads (MAKE-07, plan 11-07
     expectNoRecordWrites();
   });
 
+  it('a row ticked into two steps reads a line per step, the Balance follows their sum, and unticking one folds the grams back', async () => {
+    await startVanilla();
+    await pick(MILK);
+    await type(gramsField(MILK), '600');
+    await click(buttonByText('Add step'));
+    await click(buttonByText('Add step'));
+    await click(field('Step 1, change the ingredients'));
+    await click(usesBox(1, MILK));
+    await click(field('Step 2, change the ingredients'));
+    await click(usesBox(2, MILK));
+    // The second tick adds a blank line; the first keeps the 600.
+    expect(heads()).toEqual(['Step 1', 'Step 2']);
+    const first = field(`${MILK}, grams, portion 1`);
+    expect(first.value).toBe('600');
+    const second = field(`${MILK}, grams, portion 2`);
+    expect(second.value).toBe('');
+    await type(first, '400');
+    await type(second, '200');
+    const total = () => root().querySelector('.ingredient-table tfoot .ingredient-table__plan-grams').textContent;
+    expect(total()).toBe('600.0 g');
+    expect([...root().querySelectorAll('.ingredient-table__portion-note')].map((node) => node.textContent)).toEqual([
+      '400 g of 600.0 g · 100.0% in all',
+      '200 g of 600.0 g · 100.0% in all',
+    ]);
+    await type(second, '250');
+    expect(total()).toBe('650.0 g');
+
+    await click(usesBox(2, MILK));
+    expect(heads()).toEqual(['Step 1']);
+    expect(gramsField(MILK).value).toBe('650');
+    expect(root().querySelector('.ingredient-table__portion-note')).toBeNull();
+    expect(total()).toBe('650.0 g');
+  });
+
   it('a restored kept draft whose uses and portions disagree opens with the amounts folded, and the kept draft is rewritten consistent', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     const record = createDraftRecord('Vanilla');

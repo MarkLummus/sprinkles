@@ -14,7 +14,17 @@ import { repository } from '../store/repository.js';
 import { draftMatchesCreate } from '../domain/draft.js';
 import { NOTEBOOK_PLACE_PATH } from './notebookPaths.js';
 import { freshId } from '../domain/id.js';
-import { addStep, addTarget, normalizeAllocation, removeTarget, setStepField, setTarget, toggleStepUses } from '../domain/creationSteps.js';
+import {
+  addStep,
+  addTarget,
+  normalizeAllocation,
+  removeTarget,
+  rowLines,
+  setLineGrams,
+  setStepField,
+  setTarget,
+  toggleStepUses,
+} from '../domain/creationSteps.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import {
   addNote,
@@ -24,7 +34,6 @@ import {
   normalizeCreateDraft,
   removeNote,
   removeRow,
-  setRowGrams,
   updateNote,
 } from '../domain/creation.js';
 
@@ -219,8 +228,10 @@ export function CreationPage({ record, justStarted = false }) {
     focusRequestRef.current = 'ingredient-target';
   };
 
-  const handleChangeGrams = (rowId, value) => {
-    setCreateDraft((prev) => setRowGrams(prev, rowId, value));
+  // One grams field per line of a row (MAKE-07): a line is named by its row and
+  // the step it sits in, UNPLACED_STEP for a row no step uses.
+  const handleChangeGrams = (rowId, step, value) => {
+    setCreateDraft((prev) => setLineGrams(prev, rowId, step, value));
   };
 
   const handleBlurGrams = (rowId) => {
@@ -264,7 +275,9 @@ export function CreationPage({ record, justStarted = false }) {
     setCreateDraft((prev) => toggleStepUses(prev, n, rowId));
   };
 
-  const gramsByRow = new Map(createDraft.rows.map((row) => [row.id, row.portions[0]?.grams ?? '']));
+  const gramsByLine = new Map(
+    createDraft.rows.flatMap((row) => rowLines(createDraft, row.id).map((line) => [`${row.id}:${line.step}`, line.grams])),
+  );
   const addedIds = new Set(createDraft.rows.map((row) => row.libraryId));
 
   // Cancel ends the creation for good, and only once the delete has succeeded
@@ -357,8 +370,9 @@ export function CreationPage({ record, justStarted = false }) {
                 mode="creating"
                 penDraft={null}
                 creationRows={{
-                  gramsByRow,
-                  focusRowId,
+                  gramsByLine,
+                  // The row just added from the picker is unplaced, so its one line is at step 0.
+                  focusLine: focusRowId ? `${focusRowId}:0` : null,
                   onChangeGrams: handleChangeGrams,
                   onBlurGrams: handleBlurGrams,
                   onRemoveRow: handleRemoveRow,

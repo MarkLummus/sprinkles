@@ -2161,6 +2161,13 @@
   text-underline-offset: var(--sheet-print-tag-underline-offset);
 }
 
+/* Show changes: a changed target's struck old value reads at the new value's
+   size, not the label's (sketch 014 decision 5). Weight and strike are
+   app.css's .struck-value. */
+.notebook .method-step__targets--tags .struck-value {
+  font-size: var(--sheet-type-section);
+}
+
 .notebook .method-step__body > .method-step__purpose,
 .notebook .method-step__body > .method-step__aside {
   font-style: normal;

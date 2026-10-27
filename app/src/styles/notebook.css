@@ -189,6 +189,75 @@
   margin-top: 0;
 }
 
+.notebook .mk-step .prose-field--lead-in {
+  font-weight: 700;
+}
+
+/* The open step's targets line (sketch 014 pE1). Written through direct
+   children of the open step's own body, so the Preview's reading step, nested
+   inside the same .mk-step, keeps the tag row's baseline alignment and plain
+   gaps (CONTRACT section 7). */
+.notebook .mk-step > .method-step__body > .method-step__targets {
+  align-items: center;
+}
+
+.notebook .mk-step > .method-step__body > .method-step__targets > .text-control {
+  margin-left: var(--gap-xs);
+}
+
+/* A target's two fields and, after them, its remove control (D-22, drawn on no
+   board). The grid keeps the fields as the chip's direct children, as the board
+   draws them, and stands Required under the empty one (D-10). */
+.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  column-gap: var(--gap-hair);
+}
+
+.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > :is(.target-chip__label-field, .target-chip__value-field, .text-control) {
+  grid-row: 1;
+}
+
+.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .target-chip__label-field,
+.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .target-chip__label-field + .field-requirement {
+  grid-column: 1;
+}
+
+.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .target-chip__value-field,
+.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .target-chip__value-field + .field-requirement {
+  grid-column: 2;
+}
+
+.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .field-requirement {
+  grid-row: 2;
+}
+
+.notebook .mk-step > .method-step__body > .method-step__targets > .target-chip > .text-control {
+  grid-column: 3;
+  margin-left: var(--gap-xs);
+}
+
+/* Preview step (sketch 013 decision 34): the step as the Sheet shows it, under
+   the step's last field, set off by a rule at its left. */
+.notebook .mk-preview {
+  margin: var(--gap-s) 0 0;
+  padding: 0 0 0 var(--gap-s);
+  border-left: var(--rule-graduation) solid var(--sheet-ink);
+}
+
+.notebook .mk-preview__cue {
+  margin: 0 0 var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-label);
+  font-weight: var(--sheet-print-weight-cue);
+  text-transform: uppercase;
+  letter-spacing: var(--sheet-print-tracking-caps);
+}
+
+.notebook .mk-preview .method-step {
+  gap: var(--gap-s);
+}
+
 /* The focus the page puts on the landing row's grams field after a pick: script
    focus after a pointer press draws no :focus-visible outline in WebKit, so the
    class draws it (plan 10-06 names it, plan 10-12 styles it). */

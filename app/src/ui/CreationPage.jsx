@@ -14,7 +14,7 @@ import { repository } from '../store/repository.js';
 import { draftMatchesCreate } from '../domain/draft.js';
 import { NOTEBOOK_PLACE_PATH } from './notebookPaths.js';
 import { freshId } from '../domain/id.js';
-import { addStep, setStepField } from '../domain/creationSteps.js';
+import { addStep, addTarget, removeTarget, setStepField, setTarget } from '../domain/creationSteps.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import {
   addNote,
@@ -144,6 +144,13 @@ export function CreationPage({ record, justStarted = false }) {
     let target;
     if (typeof request === 'object' && request.kind === 'lead-in') {
       target = page.querySelector(`input[aria-label="Step ${request.position}, lead-in"]`);
+    } else if (typeof request === 'object') {
+      // A target added or removed: the step's targets line holds its chips, then
+      // its own Add target (the line's first direct control).
+      const line = page.querySelector(`li.mk-step[data-step="${request.n}"] > .method-step__body > .method-step__targets`);
+      const chips = line ? [...line.querySelectorAll(':scope > .target-chip')] : [];
+      const chip = request.kind === 'target-label' ? chips[request.index] : (chips[request.index] ?? chips[request.index - 1]);
+      target = chip ? chip.querySelector('.target-chip__label-field') : line?.querySelector(':scope > .text-control');
     } else if (request === 'new-note') {
       target = page.querySelector(`textarea[aria-label="beforeYouStart note ${createDraft.beforeYouStart.length}"]`);
     } else if (request === 'add-note') {
@@ -230,6 +237,24 @@ export function CreationPage({ record, justStarted = false }) {
 
   const handleChangeStepField = (n, field, value) => {
     setCreateDraft((prev) => setStepField(prev, n, field, value));
+  };
+
+  // Targets (D-22). Add target puts focus in the new target's label field; a
+  // remove puts it, after the render, in the next target's label field, else the
+  // previous one's, else the step's Add target.
+  const handleAddTarget = (n) => {
+    const index = (createDraft.method.find((step) => step.n === n)?.targets ?? []).length;
+    setCreateDraft((prev) => addTarget(prev, n));
+    focusRequestRef.current = { kind: 'target-label', n, index };
+  };
+
+  const handleChangeTarget = (n, index, side, value) => {
+    setCreateDraft((prev) => setTarget(prev, n, index, side, value));
+  };
+
+  const handleRemoveTarget = (n, index) => {
+    setCreateDraft((prev) => removeTarget(prev, n, index));
+    focusRequestRef.current = { kind: 'target-after-remove', n, index };
   };
 
   const gramsByRow = new Map(createDraft.rows.map((row) => [row.id, row.portions[0]?.grams ?? '']));
@@ -356,7 +381,15 @@ export function CreationPage({ record, justStarted = false }) {
                   ) : null
                 }
                 creationMethod={
-                  <CreationSteps draft={createDraft} onAddStep={handleAddStep} onChangeStepField={handleChangeStepField} />
+                  <CreationSteps
+                    draft={createDraft}
+                    version={version}
+                    onAddStep={handleAddStep}
+                    onChangeStepField={handleChangeStepField}
+                    onAddTarget={handleAddTarget}
+                    onChangeTarget={handleChangeTarget}
+                    onRemoveTarget={handleRemoveTarget}
+                  />
                 }
               />
             </div>

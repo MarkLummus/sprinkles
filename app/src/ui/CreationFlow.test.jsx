@@ -969,6 +969,69 @@ describe('Instructions while creating: the heading row and Add step (MAKE-07, sk
     expect(field('Step 1, lead-in').value).toBe('Warm the milk');
   });
 
+  it('Add target puts focus in the new target\'s label field; a remove puts it in the next target\'s label, else the previous one\'s, else Add target (D-22)', async () => {
+    await startVanilla();
+    await click(buttonByText('Add step'));
+    await click(field('Step 1, add a target'));
+    expect(document.activeElement).toBe(field('Step 1, target label'));
+    await type(field('Step 1, target label'), 'temp');
+    await type(field('Step 1, target value'), '85 °C');
+    await click(field('Step 1, add a target'));
+    expect(document.activeElement).toBe(field('Step 1, target 2 label'));
+    await type(field('Step 1, target 2 label'), 'hold');
+    await type(field('Step 1, target 2 value'), '5 min');
+    await click(field('Step 1, add a target'));
+    expect(document.activeElement).toBe(field('Step 1, target 3 label'));
+
+    // The middle target goes: focus lands on the one that took its place.
+    await click(field('Step 1, remove target 2'));
+    expect(field('Step 1, target 2 label').value).toBe('');
+    expect(document.activeElement).toBe(field('Step 1, target 2 label'));
+    // The last goes: focus goes back to the previous one.
+    await click(field('Step 1, remove target 2'));
+    // One target is left, so its fields take the board's names again.
+    expect(field('Step 1, target 1 label')).toBeNull();
+    expect(field('Step 1, target label').value).toBe('temp');
+    expect(document.activeElement).toBe(field('Step 1, target label'));
+  });
+
+  it('removing the only target puts focus on Add target, and the draft holds no target', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await click(buttonByText('Add step'));
+    await click(field('Step 1, add a target'));
+    await type(field('Step 1, target label'), 'temp');
+    await click(field('Step 1, remove target 1'));
+    expect(document.activeElement).toBe(field('Step 1, add a target'));
+    await advance();
+    expect(lastSaved().payload.method[0].targets).toEqual([]);
+  });
+
+  it('keeps a step\'s targets, purpose and aside in the draft, and Preview step draws them as the Sheet does', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await startVanilla();
+    await click(buttonByText('Add step'));
+    await type(field('Step 1, lead-in'), 'Warm the milk');
+    await type(field('Step 1, instruction'), 'Heat it.');
+    await click(field('Step 1, add a target'));
+    await type(field('Step 1, target label'), 'temp');
+    await type(field('Step 1, target value'), '85 °C');
+    await click(field('Step 1, add a purpose'));
+    await type(field('Step 1, purpose'), 'Dissolves.');
+    await click(field('Step 1, preview the step'));
+    const preview = root().querySelector('.mk-preview');
+    expect(preview.querySelector('.target-chip__value').textContent).toBe('85 °C');
+    expect(preview.querySelector('.method-step__purpose').textContent).toBe('why — Dissolves.');
+    await advance();
+    expect(lastSaved().payload.method[0]).toMatchObject({
+      leadIn: 'Warm the milk',
+      instruction: 'Heat it.',
+      targets: [{ label: 'temp', value: '85 °C' }],
+      purpose: 'Dissolves.',
+    });
+    expectNoRecordWrites();
+  });
+
   it('shows Add note and Add ingredient on their heading rows, and Add ingredient is absent while the picker is open', async () => {
     await startVanilla();
     expect(root().querySelector('.before-region .mk-head-row .mk-head-act').textContent).toBe('Add note');

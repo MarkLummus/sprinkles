@@ -1115,8 +1115,9 @@ function seedKeptProblems(seedDump, afterDump, recipeId) {
 
 // ---------------------------------------------------------------------------
 // selftest: doctored copies of the before-file, each of which the compare must
-// refuse with a DIFF that names the doctored path; and the real pair (the file
-// against a clone of itself), which it must pass. Exits 1 on any FAIL.
+// refuse with a DIFF that names the doctored path; the real pair (the file against a
+// clone of itself), which it must pass; and one allowed new scenario, which it must admit.
+// Exits 1 on any FAIL.
 // ---------------------------------------------------------------------------
 function firstDumpedStep(file) {
   for (const scenario of file.scenarios) {
@@ -1125,8 +1126,9 @@ function firstDumpedStep(file) {
   return undefined;
 }
 
-// Each doctoring changes `file` in place and returns { scenario, step, where }
-// for the path it changed, or undefined when it found nothing to change.
+// Each doctoring changes `file` in place and returns { scenario, step, where, label? } for the
+// path it changed, or undefined when it found nothing to change. `label` is what the PASS line
+// prints in place of `where` when the path is a whole scenario.
 const DOCTORINGS = [
   [
     'store leaf',
@@ -1172,15 +1174,58 @@ const DOCTORINGS = [
       return { scenario: scenario.name, step: '(duplicate)', where: `after: step ${step.step}` };
     },
   ],
+  [
+    'method hash',
+    "the first step's methodHash changed",
+    (file) => {
+      const scenario = file.scenarios[0];
+      const step = scenario?.steps[0];
+      if (!step) return undefined;
+      step.snapshot.methodHash = 'doctored';
+      return { scenario: scenario.name, step: step.step, where: 'snapshot.methodHash' };
+    },
+  ],
+  [
+    'text hash',
+    "the first step's textHash changed",
+    (file) => {
+      const scenario = file.scenarios[0];
+      const step = scenario?.steps[0];
+      if (!step) return undefined;
+      step.snapshot.textHash = 'doctored';
+      return { scenario: scenario.name, step: step.step, where: 'snapshot.textHash' };
+    },
+  ],
+  [
+    'scenario missing after',
+    'the last scenario removed from the after copy',
+    (file) => {
+      const scenario = file.scenarios.pop();
+      if (!scenario) return undefined;
+      return { scenario: scenario.name, step: '(scenario)', where: '', label: 'scenario missing after' };
+    },
+  ],
+  [
+    'unnamed new scenario',
+    "a copy of the first scenario appended under the name 'not-allowed'",
+    (file) => {
+      const scenario = file.scenarios[0];
+      if (!scenario) return undefined;
+      const copy = structuredClone(scenario);
+      copy.name = 'not-allowed';
+      file.scenarios.push(copy);
+      return { scenario: 'not-allowed', step: '(scenario)', where: '', label: 'new scenario not in the allow-list' };
+    },
+  ],
 ];
 
 async function selftest(pathBefore) {
   const before = await readWalk(pathBefore);
   let failed = 0;
   const real = compareResult(before, structuredClone(before));
-  if (real.diffs.length === 0 && real.count > 0) console.log('PASS selftest real: the file against a clone of itself passes');
+  if (real.diffs.length === 0 && real.added.length === 0 && real.count > 0) console.log('PASS selftest real: the file against a clone of itself passes');
   else {
-    console.log(`FAIL selftest real: the real pair is refused (${real.diffs.length} DIFF, ${real.count} compared)`);
+    console.log(`FAIL selftest real: the real pair is refused (${real.diffs.length} DIFF, ${real.count} compared, ${real.added.length} NEW)`);
     failed += 1;
   }
   for (const [name, what, doctor] of DOCTORINGS) {
@@ -1194,11 +1239,211 @@ async function selftest(pathBefore) {
     const { diffs } = compareResult(before, doctored);
     const named = `${changed.scenario} / ${changed.step} / ${changed.where}`;
     if (diffs.some((line) => line.startsWith(`DIFF ${named}:`))) {
-      console.log(`PASS selftest ${name}: refused at ${changed.step === '(duplicate)' ? `${changed.step} ${changed.where}` : changed.where} (${what})`);
+      const at = changed.label ?? (changed.step === '(duplicate)' ? `${changed.step} ${changed.where}` : changed.where);
+      console.log(`PASS selftest ${name}: refused at ${at} (${what})`);
     } else {
       console.log(`FAIL selftest ${name}: not refused at ${named} (${what})`);
       failed += 1;
     }
+  }
+  // The one allowance: a whole new scenario whose name is in ALLOWED_NEW_SCENARIOS.
+  const allowed = structuredClone(before);
+  const copy = structuredClone(allowed.scenarios[0]);
+  copy.name = 'create-recipe';
+  allowed.scenarios.push(copy);
+  const result = compareResult(before, allowed);
+  if (result.diffs.length === 0 && result.added.length === 1 && result.added[0].name === 'create-recipe') {
+    console.log('PASS selftest allowed: NEW create-recipe');
+  } else {
+    console.log(`FAIL selftest allowed: ${result.diffs.length} DIFF, added ${JSON.stringify(result.added)}`);
+    failed += 1;
+  }
+  if (failed > 0) process.exit(1);
+}
+
+// ---------------------------------------------------------------------------
+// seedtest: the seed rule a new scenario is held to (seedKeptProblems), against the first
+// stores dump in the before-file taken as the seed. No browser. Exits 1 on any FAIL.
+// ---------------------------------------------------------------------------
+async function seedtest(pathBefore) {
+  const before = await readWalk(pathBefore);
+  const found = firstDumpedStep(before);
+  if (!found) {
+    console.log('FAIL seedtest: the file holds no stores dump');
+    process.exit(1);
+  }
+  const seed = found.step.stores;
+  let failed = 0;
+  const check = (name, problems, expected) => {
+    const ok = expected === null ? problems.length === 0 : problems.length === 1 && problems[0].includes(expected);
+    if (ok) console.log(`PASS seedtest ${name}`);
+    else {
+      console.log(`FAIL seedtest ${name}: ${JSON.stringify(problems)}`);
+      failed += 1;
+    }
+  };
+
+  check('same', seedKeptProblems(seed, structuredClone(seed), 'none'), null);
+
+  const changed = structuredClone(seed);
+  changed.recipes[0].name = 'Doctored recipe name';
+  check('changed', seedKeptProblems(seed, changed, 'none'), ' changed');
+
+  const missing = structuredClone(seed);
+  missing.versions.splice(0, 1);
+  check('missing', seedKeptProblems(seed, missing, 'none'), ' missing');
+
+  const stranger = structuredClone(seed);
+  stranger.recipes.push({ id: 'stranger', name: 'Stranger' });
+  check('stranger', seedKeptProblems(seed, stranger, 'own'), 'stranger recipes stranger');
+
+  const own = structuredClone(seed);
+  own.recipes.push({ id: 'own', name: 'Own' });
+  own.versions.push({ id: 'own-v1', recipeId: 'own' });
+  own.batches.push({ id: 'own-b1', versionId: 'own-v1' });
+  own.drafts.push({ versionId: 'own-v1', payload: { recipeId: 'own' } });
+  check('own', seedKeptProblems(seed, own, 'own'), null);
+
+  if (failed > 0) process.exit(1);
+}
+
+// ---------------------------------------------------------------------------
+// normtest: the method hash against the built page, in WebKit (reads PROBE_DIST). It proves
+// the two normalisations absorb exactly the printed method treatment and nothing else.
+// Plan 11-04 runs it on its own build: the same literal chips prove its label-first markup
+// canonicalises as BASE's struck-first markup does.
+// ---------------------------------------------------------------------------
+async function normtest() {
+  const { appUrl, close } = await startServers({ appRoot: DIST });
+  const browser = await webkit.launch();
+  let failed = 0;
+  const verdict = (ok, name, detail) => {
+    if (ok) console.log(`PASS normtest ${name}`);
+    else {
+      console.log(`FAIL normtest ${name}: ${detail}`);
+      failed += 1;
+    }
+  };
+  try {
+    const context = await newScenarioContext(browser);
+    const open = async (route, waitFor) => {
+      const page = await context.newPage();
+      await page.goto(`${appUrl}${route}`, { waitUntil: 'networkidle' });
+      await page.waitForSelector('.shell');
+      await page.waitForSelector('.notebook, .nb');
+      if (waitFor) await page.waitForSelector(waitFor);
+      return page;
+    };
+    const hashes = (snap) => `text ${snap.textHash.slice(0, 12)} method ${snap.methodHash.slice(0, 12)}`;
+
+    // Olive Oil v1's reading page: A, then B with uppercase target labels and a why label.
+    const page = await open('/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1', '.method-region');
+    const A = await snapshot(page);
+    await page.evaluate(() => {
+      const style = document.createElement('style');
+      style.textContent = '.target-chip__label { text-transform: uppercase; }';
+      document.head.append(style);
+      for (const purpose of document.querySelectorAll('p.method-step__purpose')) {
+        const label = document.createElement('span');
+        label.className = 'method-step__purpose-label';
+        label.textContent = 'why';
+        purpose.prepend(label, document.createTextNode(' — '));
+      }
+    });
+    const B = await snapshot(page);
+    verdict(A.textHash === B.textHash && A.methodHash === B.methodHash, 'unchanged', `A ${hashes(A)} B ${hashes(B)}`);
+
+    // The first target chip rebuilt as the two markups that draw a changed target.
+    // base: Method.jsx:400-405 (the struck `${label} ${from}` first). new: plan 11-04 (the label,
+    // then the struck `from` alone, then the value).
+    const rebuild = (order, from) =>
+      page.evaluate(
+        ([order, from]) => {
+          const chip = document.querySelector('.method-region .target-chip');
+          const label = chip.querySelector('.target-chip__label').textContent;
+          const value = chip.querySelector('.target-chip__value').textContent;
+          const span = (className, text) => {
+            const el = document.createElement('span');
+            el.className = className;
+            el.textContent = text;
+            return el;
+          };
+          const struck = span('struck-value', order === 'base' ? `${label} ${from}` : from);
+          chip.replaceChildren(
+            ...(order === 'base'
+              ? [struck, span('target-chip__label', label), span('target-chip__value', value)]
+              : [span('target-chip__label', label), struck, span('target-chip__value', value)]),
+          );
+        },
+        [order, from],
+      );
+    await rebuild('base', '80 °C');
+    const C = await snapshot(page);
+    await rebuild('new', '80 °C');
+    const D = await snapshot(page);
+    verdict(C.methodHash === D.methodHash && D.methodHash !== B.methodHash, 'struck-form', `B ${hashes(B)} C ${hashes(C)} D ${hashes(D)}`);
+
+    await rebuild('new', '81 °C');
+    const E = await snapshot(page);
+    verdict(E.methodHash !== D.methodHash, 'struck-value', `D ${hashes(D)} E ${hashes(E)}`);
+
+    await rebuild('new', '80 °C');
+    await page.evaluate(() => {
+      const chip = document.querySelector('.method-region .target-chip');
+      const struck = chip.querySelector('.struck-value');
+      const value = chip.querySelector('.target-chip__value');
+      [struck.textContent, value.textContent] = [value.textContent, struck.textContent];
+    });
+    const S = await snapshot(page);
+    verdict(S.methodHash !== D.methodHash, 'struck-swap', `D ${hashes(D)} S ${hashes(S)}`);
+
+    // The real changed target: Mexican Chocolate v2 (hold 45 min in v1, 60 min in v2).
+    const mexican = await open('/notebook/mexican-chocolate/mexican-chocolate-v2', '.method-region');
+    await clickUntil(mexican, () => mexican.getByRole('button', { name: 'Show changes' }).first(), '.method-region .target-chip .struck-value', 'Show changes');
+    const R = await snapshot(mexican);
+    const chips = await mexican.evaluate((sources) => {
+      const canon = new Function(`return ${sources.canon}`)();
+      const textOf = (el) => (el ? el.textContent.trim() : null);
+      return [...document.querySelectorAll('.method-region .target-chip')].map((chip) =>
+        canon(
+          textOf(chip.querySelector('.target-chip__label')),
+          textOf(chip.querySelector('.struck-value')),
+          textOf(chip.querySelector('.target-chip__value')),
+        ),
+      );
+    }, IN_PAGE);
+    const wanted = [JSON.stringify(['temp', null, '75 °C']), JSON.stringify(['hold', '45 min', '60 min'])];
+    verdict(JSON.stringify(chips) === JSON.stringify(wanted), 'struck-real', JSON.stringify(chips));
+    const touched = await mexican.evaluate(() => {
+      const struck = document.querySelector('.method-region .target-chip .struck-value');
+      if (!struck || !struck.textContent.includes('45 min')) return false;
+      struck.textContent = struck.textContent.replace('45 min', '46 min');
+      return true;
+    });
+    const R2 = await snapshot(mexican);
+    verdict(touched && R2.methodHash !== R.methodHash, 'struck-real-value', `touched ${touched} R ${hashes(R)} R2 ${hashes(R2)}`);
+
+    // Back on Olive Oil v1 (as S left it): a changed lead-in moves methodHash alone; a changed
+    // headnote moves textHash.
+    await page.evaluate(() => {
+      document.querySelector('.method-region .method-step__lead b').textContent = 'Changed';
+    });
+    const F = await snapshot(page);
+    verdict(F.methodHash !== S.methodHash && F.textHash === S.textHash, 'sensitive', `S ${hashes(S)} F ${hashes(F)}`);
+    await page.evaluate(() => {
+      document.querySelector('.headnote h1').textContent = 'Changed';
+    });
+    const G = await snapshot(page);
+    verdict(G.textHash !== F.textHash, 'outside', `F ${hashes(F)} G ${hashes(G)}`);
+
+    // The Notebook place holds `.nb` and no `.notebook`: the snapshot reads it.
+    const place = await open('/notebook');
+    const H = await snapshot(place);
+    verdict(H.textHash !== createHash('sha256').update('').digest('hex'), 'notebook-place', `textHash ${H.textHash}`);
+    await context.close();
+  } finally {
+    await browser.close();
+    await close();
   }
   if (failed > 0) process.exit(1);
 }
@@ -1208,7 +1453,15 @@ if (mode === 'record' && first) {
   await record(first);
 } else if (mode === 'compare' && first && second) {
   await compare(first, second);
+} else if (mode === 'selftest' && first) {
+  await selftest(first);
+} else if (mode === 'seedtest' && first) {
+  await seedtest(first);
+} else if (mode === 'normtest') {
+  await normtest();
 } else {
-  console.error('Usage: node 11-walk.mjs record <out.json> | compare <a.json> <b.json>');
+  console.error(
+    'Usage: node 11-walk.mjs record <out.json> | compare <a.json> <b.json> | selftest <before.json> | seedtest <before.json> | normtest (PROBE_DIST=<dist>)',
+  );
   process.exit(1);
 }

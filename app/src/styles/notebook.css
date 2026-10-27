@@ -2001,3 +2001,58 @@
 .notebook-log .batch-row__conclusion + .batch-row__cells.mo-readgroup {
   margin-top: var(--gap-l);
 }
+
+/* A read-only step in the printed treatment (decision 014 2, sketch 010 D18;
+   sketch 014 CONTRACT section 7): the targets as a tag row with no box, the
+   purpose as the caps word "why" and the aside as a callout, all upright.
+   Scoped by the --tags modifier and by direct children of the body, so the
+   table's estimate flag (also a .target-chip) and the open pen step's chips of
+   fields keep their box. The underline lives here, not in app.css, which
+   declares underline only on .text-control and a (binder.test.js). */
+.notebook .method-step__targets--tags {
+  column-gap: var(--gap-l);
+  row-gap: var(--gap-xs);
+  align-items: baseline;
+}
+
+.notebook .method-step__targets--tags .target-chip {
+  border: 0;
+  padding: 0;
+  align-items: baseline;
+  gap: var(--gap-xs);
+}
+
+.notebook .method-step__targets--tags .target-chip__label {
+  font-size: var(--sheet-type-label);
+  font-weight: var(--sheet-print-weight-cue);
+  text-transform: uppercase;
+  letter-spacing: var(--sheet-print-tracking-caps);
+}
+
+.notebook .method-step__targets--tags .target-chip__value {
+  font-size: var(--sheet-type-section);
+  font-weight: var(--sheet-print-weight-title);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--sheet-print-tag-underline-offset);
+}
+
+.notebook .method-step__body > .method-step__purpose,
+.notebook .method-step__body > .method-step__aside {
+  font-style: normal;
+  line-height: var(--sheet-leading-helper);
+}
+
+.notebook .method-step__purpose-label {
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-label);
+  font-weight: var(--sheet-print-weight-cue);
+  text-transform: uppercase;
+  letter-spacing: var(--sheet-print-tracking-caps);
+}
+
+.notebook .method-step__body > .method-step__aside {
+  border-left: var(--rule-tick) solid var(--sheet-ink);
+  padding-left: var(--gap-s);
+  margin-top: var(--gap-s);
+}

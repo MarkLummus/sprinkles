@@ -699,3 +699,91 @@ describe('sheetBlocks — the unplaced head of a created recipe (11-05; D-09, D-
     expect(created.footText).not.toContain(sheetCode(version));
   });
 });
+
+// D-13, D-27: the sheet has no Equipment or Process section, so a created
+// recipe missing notes, steps or targets leaves nothing empty on paper: no
+// heading over nothing and no blank band. Rendered through useSheetPages with
+// the default read, which lays one page in jsdom; only the laid page is read,
+// never the hidden measuring copy.
+describe('useSheetPages — a created recipe with parts missing leaves no empty section (11-05; D-13, D-27)', () => {
+  let host = null;
+  let root = null;
+
+  afterEach(async () => {
+    await act(async () => root?.unmount());
+    host?.remove();
+    host = null;
+    root = null;
+  });
+
+  function LaidPages({ version }) {
+    const sheet = useSheetPages(version, undefined, 'first try');
+    return (
+      <div>
+        <div className="laid">{sheet.pages && sheet.pages.map((plan, i) => <SheetPage key={i} plan={plan} blocks={sheet.blocks} columns={sheet.columns} />)}</div>
+        {sheet.measureElement}
+      </div>
+    );
+  }
+
+  async function laid(version) {
+    host = document.createElement('div');
+    document.body.appendChild(host);
+    root = createRoot(host);
+    await act(async () => {
+      root.render(<LaidPages version={version} />);
+    });
+    return host.querySelector('.laid');
+  }
+
+  it('lays no Before you start section and no heading for a version with no notes', async () => {
+    const pages = await laid(createdSheetVersion({ steps: [createdStep(1)], placements: [1, UNPLACED_STEP, UNPLACED_STEP] }));
+    expect(pages.querySelectorAll('.ps-page')).toHaveLength(1);
+    expect(pages.querySelector('.ps-before')).toBeNull();
+    expect([...pages.querySelectorAll('h2.region-name')].map((heading) => heading.textContent)).not.toContain('Before you start');
+  });
+
+  it('lays Before you start when the version has notes', async () => {
+    const version = createdSheetVersion({ placements: [UNPLACED_STEP, UNPLACED_STEP, UNPLACED_STEP], extra: { authored: { beforeYouStart: [{ text: 'Chill the base the night before.' }] } } });
+    const pages = await laid(version);
+    expect(pages.querySelector('.ps-before h2.region-name').textContent).toBe('Before you start');
+  });
+
+  it('lays no Instructions heading and no step for a version with no steps, and the foot once', async () => {
+    const version = createdSheetVersion({ placements: [UNPLACED_STEP, UNPLACED_STEP, UNPLACED_STEP] });
+    const pages = await laid(version);
+    expect(pages.querySelector('.ps-instructions')).toBeNull();
+    expect(pages.querySelector('.mp-step')).toBeNull();
+    expect([...pages.querySelectorAll('h2.region-name')].map((heading) => heading.textContent)).not.toContain('Instructions');
+    const feet = pages.querySelectorAll('.mp-foot');
+    expect(feet).toHaveLength(1);
+    expect(feet[0].textContent).toBe(`Plain base · first try · ${version.sheetCode}`);
+  });
+
+  it('prints no target tags for steps without targets, and no why or aside line without a purpose or aside', async () => {
+    const pages = await laid(createdSheetVersion({ steps: [createdStep(1), createdStep(2)], placements: [1, 2, UNPLACED_STEP] }));
+    expect(pages.querySelectorAll('.mp-step')).toHaveLength(2);
+    expect(pages.querySelector('.mp-tags')).toBeNull();
+    expect(pages.querySelector('.mp-why')).toBeNull();
+    expect(pages.querySelector('.mp-aside')).toBeNull();
+  });
+
+  it('follows every region heading, inside its section, with content', async () => {
+    const version = createdSheetVersion({
+      steps: [createdStep(1, { targets: [{ label: 'temp', value: '4 °C' }], purpose: 'Because.', aside: 'Careful.' })],
+      placements: [1, UNPLACED_STEP, UNPLACED_STEP],
+      extra: { authored: { beforeYouStart: [{ text: 'Chill the base the night before.' }] } },
+    });
+    const pages = await laid(version);
+    const headings = [...pages.querySelectorAll('h2.region-name')];
+    expect(headings.map((heading) => heading.textContent)).toEqual(expect.arrayContaining(['Before you start', 'Ingredients', 'Instructions']));
+    for (const heading of headings) {
+      const next = heading.nextElementSibling;
+      expect(next, heading.textContent).not.toBeNull();
+      expect(next.textContent.trim(), heading.textContent).not.toBe('');
+    }
+    expect(pages.querySelectorAll('.mp-tags')).toHaveLength(1);
+    expect(pages.querySelector('.mp-why')).not.toBeNull();
+    expect(pages.querySelector('.mp-aside')).not.toBeNull();
+  });
+});

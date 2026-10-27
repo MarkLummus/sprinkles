@@ -34,7 +34,7 @@ import {
   UNPLACED_STEP,
 } from '../domain/creationSteps.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
-import { buildCreation, creationSaveBlock } from '../domain/creationSave.js';
+import { applyEditToVersion, buildCreation, creationSaveBlock } from '../domain/creationSave.js';
 import {
   addNote,
   addRow,
@@ -100,6 +100,34 @@ function findRefusedField(page, target, draft, saveButton) {
 // is the one recipe.js's RECIPE_SAVE_ERROR uses.
 export const RECIPE_CREATE_ERROR = 'Couldn’t save the recipe. Try again.';
 
+// The lines under Save in edit mode (Phase 11, D-06): Claude's wording within
+// the shape of the existing ones, for Mark in chat. A refusal from the store's
+// Save-over transaction, or the one a kept edit opens with, names its reason.
+export const EDIT_SAVE_ERROR = 'Couldn’t save the changes. Try again.';
+export const EDIT_HAS_BATCH = 'This version has a batch now and can no longer be edited.';
+export const EDIT_HAS_CHILD = 'This version has a later version now and can no longer be edited.';
+export const EDIT_DRAFT_HELD = 'This version has a Next version or a batch open in another tab. Close it there, then save.';
+export const EDIT_CHANGED = 'This version changed in another tab. Cancel, then open it again.';
+export const EDIT_CLOSED = 'This version can no longer be edited.';
+
+function editRefusalLine(reason) {
+  switch (reason) {
+    case null:
+    case undefined:
+      return null;
+    case 'has-batch':
+      return EDIT_HAS_BATCH;
+    case 'has-child':
+      return EDIT_HAS_CHILD;
+    case 'draft-held':
+      return EDIT_DRAFT_HELD;
+    case 'changed':
+      return EDIT_CHANGED;
+    default:
+      return EDIT_CLOSED;
+  }
+}
+
 // The creation editor (Phase 10, MAKE-05, sketch 013 creation-editor.html
 // panel eA1): the band holds Recipe name and Recipe description in Rename's
 // open form, and the ceremony form 'New recipe' holds the Version name and
@@ -107,11 +135,23 @@ export const RECIPE_CREATE_ERROR = 'Couldn’t save the recipe. Try again.';
 // Notebook's Start wrote; useKeptDraft keeps it as typed.
 // `record` is the stored create draft CreationRoute found; `justStarted` is
 // true when the maker has just pressed Start, so 'Draft kept' is not announced.
-export function CreationPage({ record, justStarted = false }) {
+//
+// mode 'edit' (Phase 11, STRUCT-04) opens the same editor over a saved first
+// version: `record` is the version's kept edit draft, or a seed built from the
+// version; `cleanPayload` is that seed (an edit equal to it is not kept);
+// `stored` is { version, recipe } as the edit route read them, the records
+// Save-over expects to still be stored; `closedReason` is the reason the
+// version can no longer be edited when a kept edit opens on one (the line is
+// shown from the first render; Save re-checks inside the transaction).
+export function CreationPage({ record, justStarted = false, mode = 'create', cleanPayload = null, stored = null, closedReason = null }) {
   // Hooks first, in this order, above any early return.
   const navigate = useNavigate();
   const [notice, announce] = usePageNotice();
-  const writer = useDraftWriter(record.versionId);
+  // Edit mode (STRUCT-04) keeps an 'edit' draft, a creation a 'create' one; the
+  // writer's deletes name that family.
+  const editing = mode === 'edit';
+  const creationKind = editing ? 'edit' : 'create';
+  const writer = useDraftWriter(record.versionId, creationKind);
   // The editor never holds a payload as it was stored: a stored create draft
   // may hold only recipeId, versionId and name, so the first state and every
   // restore lay the payload over the blank one, then repair a draft whose uses
@@ -128,6 +168,9 @@ export function CreationPage({ record, justStarted = false }) {
   const savingRef = useRef(false);
   const [saving, setSaving] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
+  // Edit mode: why the version can no longer be edited, from the first render
+  // when a kept edit opened on one, or as the Save-over transaction found it.
+  const [editRefusal, setEditRefusal] = useState(closedReason);
   // Once Save has been refused, the refusals are recomputed live from the draft,
   // so each message clears as its field is fixed (D-11). Each refused press
   // counts, so a press that changes nothing still renders and moves focus.
@@ -172,6 +215,8 @@ export function CreationPage({ record, justStarted = false }) {
     onRestorePlan: doNothing,
     onRestoreRecord: doNothing,
     creating: true,
+    creationKind,
+    cleanPayload,
     createDraft,
     onRestoreCreate: (payload) => setCreateDraft(normalizeAllocation(normalizeCreateDraft(payload))),
     // Right after Start the draft is kept but the maker knows it: say nothing.
@@ -494,6 +539,11 @@ export function CreationPage({ record, justStarted = false }) {
       announce(PAGE_LOAD_ERROR);
       return;
     }
+    // An edit ends on the version's own page, with no state (D-01).
+    if (editing) {
+      navigate(notebookPath(stored.recipe.id, stored.version.id), { replace: true });
+      return;
+    }
     let state = { discarded: true };
     try {
       const records = await Promise.resolve().then(() => repository.listDrafts());
@@ -508,7 +558,7 @@ export function CreationPage({ record, justStarted = false }) {
   const nameRefusal = refusals.find((block) => block.id === 'recipe-name')?.message ?? null;
   const versionRefusal = refusals.find((block) => block.id === 'version-name')?.message ?? null;
   const formRefusal = refusals.find((block) => block.target.kind === 'form')?.message ?? null;
-  const underSave = saveFailed ? RECIPE_CREATE_ERROR : formRefusal;
+  const underSave = saveFailed ? (editing ? EDIT_SAVE_ERROR : RECIPE_CREATE_ERROR) : (editRefusalLine(editRefusal) ?? formRefusal);
 
   // Save (MAKE-10): the creation becomes a recipe and its first version in one
   // transaction. The lock is taken before the first await. The draft writer is
@@ -530,8 +580,34 @@ export function CreationPage({ record, justStarted = false }) {
     }
     savingRef.current = true;
     setSaving(true);
+    setEditRefusal(null);
     let ended = false;
     try {
+      if (editing) {
+        // Save-over (STRUCT-04, D-03): the edit's content laid over the stored
+        // version, written in one transaction that re-checks, inside itself,
+        // that the version still may be edited and is still what this page read.
+        const { recipe, version } = applyEditToVersion({ ...stored, draft: createDraft, libraryById, styles: catalog.styles });
+        writer.endDraft();
+        ended = true;
+        const result = await repository.saveFirstVersionOver({ recipe, version, expected: stored });
+        if (!result.saved) {
+          // Nothing was written and the draft is kept (D-06): give the writer
+          // back and say why under Save. Cancel discards it.
+          writer.resumeDraft();
+          savingRef.current = false;
+          if (mountedRef.current) {
+            setSaving(false);
+            setEditRefusal(result.reason);
+            focusRequestRef.current = 'save';
+          }
+          return;
+        }
+        if (mountedRef.current) {
+          navigate(notebookPath(recipe.id, version.id), { replace: true, state: { focusVersion: true, saved: 'edited' } });
+        }
+        return;
+      }
       const { recipe, version } = buildCreation(createDraft, {
         libraryById,
         styles: catalog.styles,
@@ -592,8 +668,12 @@ export function CreationPage({ record, justStarted = false }) {
                 </label>
               </div>
             </section>
-            <form className="notebook-ceremony" aria-label="New recipe" onSubmit={(event) => event.preventDefault()}>
-              <span className="notebook-caption">New recipe · draft</span>
+            <form
+              className="notebook-ceremony"
+              aria-label={editing ? 'Edit version' : 'New recipe'}
+              onSubmit={(event) => event.preventDefault()}
+            >
+              <span className="notebook-caption">{editing ? 'Version 1 · editing' : 'New recipe · draft'}</span>
               <label className="notebook-field">
                 <span className="notebook-caption">Version name</span>
                 <input

@@ -11,6 +11,7 @@ import { IngredientsPlace } from './ui/IngredientsPlace.jsx';
 import { PrintSheetForRoute } from './ui/PrintSheet.jsx';
 import { NotebookLatestRedirect, LegacyRecipeRedirect } from './ui/NotebookRedirects.jsx';
 import { CreationRoute } from './ui/CreationRoute.jsx';
+import { EditRoute } from './ui/EditRoute.jsx';
 import { PageNoticeContext } from './ui/PageNotice.jsx';
 
 // A different version, or a different batch of the same version, must be a
@@ -78,7 +79,8 @@ export function RecipePageForRoute() {
   // Shell's fallback notice is never drawn on a recipe route.
   useEffect(() => registerPageNotice(announcePageStatus), [registerPageNotice, announcePageStatus]);
 
-  // The landing after Save carries the enum word 'created' in route state, never
+  // The landing after Save carries the enum word 'created' (or 'edited', after a
+  // Save-over) in route state, never
   // text: the page says its own constant sentence (D-07, T-10-05's rule), which
   // clears after the notice's five seconds. The word is then dropped from the
   // entry's state once (a ref guards it under StrictMode), keeping what else the
@@ -86,8 +88,8 @@ export function RecipePageForRoute() {
   // remount clears the timer, and the repeat sets it again.
   const saved = location.state?.saved;
   useEffect(() => {
-    if (saved !== 'created') return;
-    announcePageStatus(RECIPE_SAVED_STATUS);
+    if (saved !== 'created' && saved !== 'edited') return;
+    announcePageStatus(saved === 'edited' ? CHANGES_SAVED_STATUS : RECIPE_SAVED_STATUS);
     if (savedHandledRef.current) return;
     savedHandledRef.current = true;
     const { saved: _consumed, ...rest } = location.state;
@@ -111,6 +113,7 @@ export function RecipePageForRoute() {
 }
 
 export const RECIPE_SAVED_STATUS = 'Recipe saved.';
+export const CHANGES_SAVED_STATUS = 'Changes saved.';
 
 export function PageStatus({ message }) {
   return (
@@ -149,6 +152,9 @@ export const router = createBrowserRouter([
       // version only (PrintSheet.jsx), so it prints a version and never
       // creates a batch (PRINT-05).
       { path: '/notebook/:recipeId/:versionId/print', Component: PrintSheetForRoute },
+      // D-01: the edit route of a first version: the creation editor over the
+      // saved version, until it has a batch or a child.
+      { path: '/notebook/:recipeId/:versionId/edit', Component: EditRoute },
       // D-16: kept indefinitely, not deleted — the old id is a version id.
       { path: '/recipe/:id', Component: LegacyRecipeRedirect },
       { path: '/recipe/:id/batch/:batchId', Component: LegacyRecipeRedirect },

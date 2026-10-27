@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { repository } from '../store/repository.js';
-import { buildDraftRecord, draftMatchesCreate, draftMatchesVersion } from '../domain/draft.js';
+import { buildDraftRecord, draftFamily, draftMatchesCreate, draftMatchesEdit, draftMatchesVersion } from '../domain/draft.js';
+import { sameCreateDraft } from '../domain/creationSave.js';
 import { derivePenState, isPenDraftDirty } from '../domain/penDraft.js';
 import { isDraftDirty } from '../domain/recordDraft.js';
 import { notebookPath } from './notebookPaths.js';
@@ -16,7 +17,13 @@ export const DRAFT_KEPT_STATUS = 'Draft kept. Cancel discards it.';
 // hooks take discardDraft without needing each other to initialise: the shell
 // calls this first, then useVersionPen with discardDraft, then useKeptDraft
 // with the writer and the version pen's restorePlan.
-export function useDraftWriter(versionId) {
+//
+// The writer knows whose draft it keeps: a version's one draft key is shared by
+// the pens ('pen', the default), a creation ('create') and an edit ('edit'), and
+// every delete it makes names its family. So another tab's batch save, whose
+// record pen discards its own draft afterwards, can never delete a kept edit
+// draft, and an edit's Cancel can never delete a pen's (T-11-55).
+export function useDraftWriter(versionId, family = 'pen') {
   //  - draftStoredRef: whether a record may be sitting in the store for this
   //    version, so a pen that goes clean deletes it and a pen that was never
   //    dirty writes nothing at all.
@@ -67,7 +74,7 @@ export function useDraftWriter(versionId) {
     pendingDraftRef.current = null;
     draftStoredRef.current = false;
     if (final) endedRef.current = true;
-    const deleted = Promise.resolve().then(() => repository.deleteDraft(versionId));
+    const deleted = Promise.resolve().then(() => repository.deleteDraft(versionId, family));
     if (final) {
       deleted.then(
         () => {
@@ -154,12 +161,16 @@ export function useKeptDraft({
   onRestorePlan,
   onRestoreRecord,
   creating = false,
+  creationKind = 'create',
+  cleanPayload = null,
   createDraft,
   onRestoreCreate,
   onPageStatus,
   navigate,
 }) {
   const { draftStoredRef, pendingDraftRef, draftTimerRef, endedRef, flushPendingDraft } = writer;
+  // Whose draft this page keeps: the pens' ('pen'), or the creation's own kind.
+  const family = creating ? creationKind : 'pen';
 
   // Kept drafts (04-09, D-14 to D-17). A pen's draft lives in the drafts store,
   // through the repository seam, from its first keystroke until Save or
@@ -210,8 +221,34 @@ export function useKeptDraft({
           setDraftRestoreDone(true);
           return;
         }
-        if (!(creating ? draftMatchesCreate(record) : draftMatchesVersion(record, version, batches, catalog))) {
-          Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
+        // A record of another family on this key is someone else's (an edit's on
+        // the recipe page, a pen's on the edit page): leave it alone. Nothing is
+        // restored, draftStoredRef stays unset so the persist effect neither
+        // writes over it nor deletes it (RESEARCH G-1b). A kind that names no
+        // family is garbage, and falls through to the fit check below.
+        let kindKnown = true;
+        let foreign = false;
+        try {
+          foreign = draftFamily(record.kind) !== family;
+        } catch {
+          kindKnown = false;
+        }
+        if (foreign) {
+          setDraftRestoreDone(true);
+          return;
+        }
+        const fits = creating
+          ? creationKind === 'edit'
+            ? draftMatchesEdit(record)
+            : draftMatchesCreate(record)
+          : draftMatchesVersion(record, version, batches, catalog);
+        if (!fits) {
+          // A record of this page's own family that no longer fits is deleted
+          // quietly, by its kind; one that names no family is deleted whatever
+          // it is (null), as it always was.
+          Promise.resolve()
+            .then(() => repository.deleteDraft(versionId, kindKnown ? record.kind : null))
+            .catch(() => {});
           setDraftRestoreDone(true);
           return;
         }
@@ -266,13 +303,20 @@ export function useKeptDraft({
     let record = null;
     if (creating) {
       // A creation is kept until Cancel, even when every field is blank
-      // (D-04a): its draft is overwritten, never deleted, by an edit.
-      record = buildDraftRecord({
-        versionId,
-        kind: 'create',
-        payload: createDraft,
-        now: new Date().toISOString(),
-      });
+      // (D-04a): its draft is overwritten, never deleted, by an edit. An edit
+      // of a saved version is the exception (D-23, RESEARCH G-7): its
+      // cleanPayload is what the version already says, so an edit equal to it
+      // builds no record, and the no-record branch below deletes a stored one.
+      // An untouched Edit therefore leaves no trace, and a change made back to
+      // the saved content ends the edit.
+      if (cleanPayload === null || !sameCreateDraft(createDraft, cleanPayload)) {
+        record = buildDraftRecord({
+          versionId,
+          kind: creationKind,
+          payload: createDraft,
+          now: new Date().toISOString(),
+        });
+      }
     } else if (persistedPen === 'plan' && isPenDraftDirty(mode, penDraft, version)) {
       record = buildDraftRecord({
         versionId,
@@ -298,7 +342,7 @@ export function useKeptDraft({
       pendingDraftRef.current = null;
       if (draftStoredRef.current) {
         draftStoredRef.current = false;
-        Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
+        Promise.resolve().then(() => repository.deleteDraft(versionId, family)).catch(() => {});
       }
       return undefined;
     }

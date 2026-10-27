@@ -10,10 +10,14 @@
 // the draft kept (never as a stored version).
 
 import { creationTargets } from './creation.js';
-import { checkAllocation, groupRows, liveSteps, rowLines, UNPLACED_STEP } from './creationSteps.js';
+import { addGrams, checkAllocation, groupRows, liveSteps, rowLines, UNPLACED_STEP } from './creationSteps.js';
+import { CREATE_DRAFT_KEYS } from './draft.js';
+import { FIGURE_SPECS } from './figures.js';
+import { sameRecord } from './firstVersion.js';
 import { gramsDraftMessage, parseGramsDraft } from './lineage.js';
 import { createRecipe } from './newRecipe.js';
 import { recipeNameMessage } from './recipe.js';
+import { activeRows, activeSteps } from './rows.js';
 import { rowFromLibraryRecord } from './versionRow.js';
 
 // The sentences this gate adds to the existing ones (recipe.js, lineage.js, the
@@ -240,4 +244,149 @@ export function lineSaveMessages(blocks) {
     if (!messages.has(key)) messages.set(key, block.message);
   }
   return messages;
+}
+
+// ---------------------------------------------------------------------------
+// Edit (Phase 11, STRUCT-04, D-01 to D-03): a saved first version becomes a
+// create-shaped draft, and the draft is written back over the same version.
+
+const BAND_KEYS = FIGURE_SPECS.map((spec) => spec.targetKey);
+
+/**
+ * draftFromVersion(version, recipe, styles) -> the create-shaped payload of
+ * what the saved version MEANS, not of everything it stores (D-03): the rows
+ * are activeRows and the steps activeSteps, so a row, a line or a step the
+ * version pen struck and saved over a zero-batch root is not brought back, and
+ * Save-over then stores none of them.
+ *
+ * Placement is derived once from the active lines (RESEARCH G-2): a line whose
+ * step is a live stored step is placed there; two lines on one step fold into
+ * one (addGrams: the draft wants unique steps); a line whose step does not
+ * resolve (a step the version does not hold, or step 0) folds into the row's
+ * first placed line in method order, else the row stays unplaced with one
+ * placeholder line holding the sum. A step's uses keeps the stored step's own
+ * order: the ids its stored uses names that are placed in it, in that order,
+ * then any other row placed in it, in row order (decide-p11-row-order-across-
+ * steps). Every stored removed step becomes a blank tombstone in its place, so
+ * nextStepKey never reissues a key the pen struck (decide-p11-step-key-reuse:
+ * a key removed while creating, before the first Save, is gone and may be
+ * issued again; one the pen struck is kept). Reads, never changes, its
+ * arguments.
+ */
+export function draftFromVersion(version, recipe, styles) {
+  const liveKeys = activeSteps(version).map((step) => step.n);
+  const liveKeySet = new Set(liveKeys);
+
+  // Where each row is placed, derived once from its active lines. A placeholder
+  // portion (an unplaced row's { step: 1 }) is never read for placement.
+  const placedKeys = new Map();
+  const rows = activeRows(version).map((row) => {
+    const byStep = new Map();
+    let unresolved = '';
+    for (const portion of row.portions) {
+      const text = String(portion.grams);
+      if (liveKeySet.has(portion.step)) {
+        byStep.set(portion.step, byStep.has(portion.step) ? addGrams(byStep.get(portion.step), text) : text);
+      } else {
+        unresolved = addGrams(unresolved, text);
+      }
+    }
+    const placed = liveKeys.filter((n) => byStep.has(n));
+    placedKeys.set(row.id, placed);
+    if (placed.length === 0) {
+      return { id: row.id, libraryId: row.libraryId, portions: [{ step: 1, grams: unresolved }] };
+    }
+    const portions = placed.map((n) => ({ step: n, grams: byStep.get(n) }));
+    portions[0] = { ...portions[0], grams: addGrams(portions[0].grams, unresolved) };
+    return { id: row.id, libraryId: row.libraryId, portions };
+  });
+
+  const method = version.method.map((stored) => {
+    if (stored.removed === true) return { n: stored.n, leadIn: '', instruction: '', uses: [], targets: [], removed: true };
+    const placedHere = new Set(rows.filter((row) => placedKeys.get(row.id).includes(stored.n)).map((row) => row.id));
+    const named = (stored.uses ?? []).filter((id) => placedHere.has(id));
+    const uses = [...new Set([...named, ...rows.map((row) => row.id).filter((id) => placedHere.has(id))])];
+    const step = {
+      n: stored.n,
+      leadIn: stored.leadIn ?? '',
+      instruction: stored.instruction ?? '',
+      uses,
+      targets: structuredClone(stored.targets ?? []),
+    };
+    if (typeof stored.purpose === 'string') step.purpose = stored.purpose;
+    if (typeof stored.aside === 'string') step.aside = stored.aside;
+    return step;
+  });
+
+  const targets = {};
+  for (const key of BAND_KEYS) {
+    const band = version.targets?.[key];
+    if (Array.isArray(band) && band.length === 2) targets[key] = [String(band[0]), String(band[1])];
+  }
+
+  const style = (styles ?? []).find((candidate) => candidate.name === version.iceEd?.style);
+
+  return {
+    recipeId: version.recipeId,
+    versionId: version.id,
+    name: recipe.name,
+    description: typeof recipe.description === 'string' ? recipe.description : (version.sheetDescription ?? ''),
+    versionLabel: version.versionLabel,
+    beforeYouStart: (version.authored?.beforeYouStart ?? []).map((note) => ({ text: note.text })),
+    rows,
+    method,
+    scales: (version.declaredAxes ?? []).map((scale) => ({
+      key: scale.key,
+      name: scale.name,
+      low: scale.low,
+      high: scale.high,
+      kind: scale.kind,
+      group: 'declared',
+    })),
+    problems: [...(version.declaredFlaws ?? [])],
+    style: style ? style.id : null,
+    targets,
+    serveTempC: version.serveTempC === null || version.serveTempC === undefined ? '' : String(version.serveTempC),
+  };
+}
+
+/**
+ * sameCreateDraft(a, b) -> true when every CREATE_DRAFT_KEYS field of the two
+ * payloads is equal by every leaf, whatever the order of an object's keys.
+ */
+export function sameCreateDraft(a, b) {
+  return CREATE_DRAFT_KEYS.every((key) => sameRecord(a[key] ?? null, b[key] ?? null));
+}
+
+/**
+ * applyEditToVersion({ version, recipe, draft, libraryById, styles }) ->
+ * { recipe, version }: the records a Save-over writes. The draft is built as a
+ * creation is (buildCreation) and its content laid over the stored records:
+ * the version name, the Sheet title and description, rows (fresh copies of
+ * their library entries, D-03), method, notes, scales, problems, targets, the
+ * style's name and the serving temperature. Everything else stays as stored:
+ * the id, the Sheet code, createdAt (the Written date), the reason, the
+ * equipment and process, the coefficient set and the iceEd figures the editor
+ * does not author. The recipe keeps its stored fields under the new name and
+ * description. Nothing is added to the version beyond what a creation writes.
+ */
+export function applyEditToVersion({ version, recipe, draft, libraryById, styles }) {
+  const { version: built, recipe: builtRecipe } = buildCreation(draft, { libraryById, styles, now: version.createdAt });
+  return {
+    recipe: { ...recipe, name: builtRecipe.name, description: builtRecipe.description },
+    version: {
+      ...version,
+      sheetTitle: built.sheetTitle,
+      sheetDescription: built.sheetDescription,
+      versionLabel: built.versionLabel,
+      rows: built.rows,
+      method: built.method,
+      authored: built.authored,
+      declaredAxes: built.declaredAxes,
+      declaredFlaws: built.declaredFlaws,
+      targets: built.targets,
+      iceEd: { ...(version.iceEd ?? {}), style: built.iceEd.style, servingTemperatureC: built.iceEd.servingTemperatureC },
+      serveTempC: built.serveTempC,
+    },
+  };
 }

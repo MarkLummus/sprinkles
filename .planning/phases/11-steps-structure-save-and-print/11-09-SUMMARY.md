@@ -129,7 +129,7 @@ coverage:
 
 duration: 21min
 completed: 2026-10-27
-status: checkpoint
+status: complete
 ---
 
 # Phase 11 Plan 09: Save creates the recipe and its first version Summary
@@ -138,12 +138,12 @@ status: checkpoint
 
 ## Status
 
-Tasks 1 to 3 are done and committed. Task 4 (the export-first row on Mark's List) is the orchestrator's write and is returned as a checkpoint; this SUMMARY is the partial the continuation finishes (it adds the row's readback: id, status, version).
+All four tasks are done. Tasks 1 to 3 are committed. Task 4 (the export-first row on Mark's List) was the orchestrator's write (the executor has no ArtifactData); its readback is recorded under Task 4 below.
 
 ## Performance
 
 - **Duration:** about 21 minutes (2026-10-27T02:47Z to 03:08Z)
-- **Tasks:** 3 of 4 (Task 1 tracer, Task 2 auto, Task 3 auto; Task 4 the checkpoint)
+- **Tasks:** 4 of 4 (Task 1 tracer, Task 2 auto, Task 3 auto; Task 4 the orchestrator's Mark's List write, complete)
 - **Files:** 10 changed (3 created)
 - **Tests:** baseline in this worktree 126 files, 4047 passing; after 127 files, 4110 passing (+63, +1 file)
 
@@ -162,6 +162,17 @@ Tasks 1 to 3 are done and committed. Task 4 (the export-first row on Mark's List
 3. **Task 2, RED:** `aecb9d06` (test)
 4. **Task 2, GREEN:** `abe97c28` (feat)
 5. **Task 3:** `15d73be4` (test)
+6. **Task 4:** complete, no code commit (the orchestrator wrote the row; readback below)
+
+### Task 4 readback (Mark's List)
+
+The orchestrator wrote the export-first row and read it back with ArtifactData `get`. The executor made no ArtifactData call and no other row was added. Readback, as given:
+
+- id: `check-p11-export-store-before-saving`
+- status: `open`
+- version: `1`
+- owner: `mark`, needs: `hands`, kind: `check`
+- createdAt: `2026-10-27T03:09:36.000Z`
 
 Tracer gate: Task 1's `<verify>` is automated-only, so it was re-run end to end (the whole suite, 4079 passing) before Task 2. Tracer verified end-to-end, expanding.
 

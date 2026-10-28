@@ -215,6 +215,19 @@
   font-weight: 700;
 }
 
+/* The open creation step's number sits on its lead-in's text baseline
+   (bug-p11-step-number-leadin-misaligned, Mark's List, fix, 2026-10-28).
+   Under a coarse pointer the lead-in field is --touch-min tall and centres its
+   text, so the grid's default stretch left the number about 8.5 px above it.
+   The li is app.css's .method-step grid; baseline alignment matches the
+   number's first baseline to the body's, which is the lead-in's because its
+   label is the body's first child. A keyword: it reads no token and adds none,
+   and alignment is none of the token-governed values (colour, face, size,
+   spacing, rule weight). */
+.notebook .mk-step {
+  align-items: baseline;
+}
+
 /* The open step's targets line (sketch 014 pE1). Written through direct
    children of the open step's own body, so the Preview's reading step, nested
    inside the same .mk-step, keeps the tag row's baseline alignment and plain

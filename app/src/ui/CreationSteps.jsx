@@ -143,7 +143,7 @@ function CreationStep({
                   aria-label={`Step ${number}, remove target ${index + 1}`}
                   onClick={() => onRemoveTarget(step.n, index)}
                 >
-                  remove
+                  Remove
                 </Button>
               </span>
             );
@@ -202,24 +202,24 @@ function CreationStep({
           <Button
             className="text-control"
             ref={usesControlRef}
-            aria-label={`Step ${number}, ${usesOpen ? 'done' : 'change the ingredients'}`}
+            aria-label={`Step ${number}, ${usesOpen ? 'done' : 'change ingredients'}`}
             onClick={() => setUsesOpen((open) => !open)}
           >
-            {usesOpen ? 'done' : 'change the ingredients'}
+            {usesOpen ? 'Done' : 'Change ingredients'}
           </Button>
           {!purpose.isOpen && (
             <>
               <span aria-hidden="true">·</span>
-              <Button className="text-control" aria-label={`Step ${number}, add a purpose`} onClick={purpose.openField}>
-                add a purpose
+              <Button className="text-control" aria-label={`Step ${number}, add purpose`} onClick={purpose.openField}>
+                Add purpose
               </Button>
             </>
           )}
           {!aside.isOpen && (
             <>
               <span aria-hidden="true">·</span>
-              <Button className="text-control" aria-label={`Step ${number}, add an aside`} onClick={aside.openField}>
-                add an aside
+              <Button className="text-control" aria-label={`Step ${number}, add aside`} onClick={aside.openField}>
+                Add aside
               </Button>
             </>
           )}
@@ -244,7 +244,7 @@ function CreationStep({
             Add step here adds right after this step. */}
         <p className="method-step__acts">
           <Button className="text-control" data-act="remove" aria-label={`Step ${number}, remove`} onClick={() => onRemoveStep(step.n)}>
-            remove
+            Remove
           </Button>
           <span aria-hidden="true">·</span>
           <Button

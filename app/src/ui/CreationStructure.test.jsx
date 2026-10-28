@@ -230,12 +230,12 @@ describe('Move on a step (STRUCT-02, D-16)', () => {
     keep((draft) => ({ ...draft, method: [step(1, 'Warm'), step(2, 'Churn'), step(3, 'Finish')] }));
   });
 
-  it('draws remove, Move up, Move down and Add step in each step, the first Move up and the last Move down off', async () => {
+  it('draws Remove, Move up, Move down and Add step in each step, the first Move up and the last Move down off', async () => {
     await open();
     const acts = [...root().querySelectorAll('li.mk-step p.method-step__acts')];
     expect(acts).toHaveLength(3);
     expect([...acts[1].querySelectorAll('button')].map((button) => button.textContent)).toEqual([
-      'remove',
+      'Remove',
       'Move up',
       'Move down',
       'Add step',
@@ -323,7 +323,7 @@ describe('remove on a step (STRUCT-01, D-14)', () => {
     await click(field('Step 2, remove'));
     expect(leadIns()).toEqual(['Warm', 'Finish']);
     expect(numbers()).toEqual(['1', '2']);
-    expect(root().textContent).not.toContain('restore');
+    expect(root().textContent).not.toContain('Restore');
     expect(root().querySelector('.struck-value')).toBeNull();
     // The step that was third is now second; focus is in its lead-in.
     expect(document.activeElement).toBe(field('Step 2, lead-in'));
@@ -403,7 +403,7 @@ describe('remove on a row (STRUCT-01, D-15)', () => {
     await click(ctl('milk-row:1', 'remove'));
     expect(groups()).toEqual([{ head: 'Step 1Warm', lines: ['sucrose-row:1'] }]);
     expect(root().querySelector('.struck-value')).toBeNull();
-    expect(root().textContent).not.toContain('restore');
+    expect(root().textContent).not.toContain('Restore');
     expect(document.activeElement).toBe(ctl('sucrose-row:1', 'remove'));
     await nextFrames();
     expect(said()).toBe(`${MILK} removed`);

@@ -1038,7 +1038,7 @@ describe('Instructions while creating: the heading row and Add step (MAKE-07, sk
     await click(field('Step 1, add a target'));
     await type(field('Step 1, target label'), 'temp');
     await type(field('Step 1, target value'), '85 °C');
-    await click(field('Step 1, add a purpose'));
+    await click(field('Step 1, add purpose'));
     await type(field('Step 1, purpose'), 'Dissolves.');
     await click(field('Step 1, preview the step'));
     const preview = root().querySelector('.mk-preview');
@@ -1577,7 +1577,7 @@ describe('the Uses checklist and the table under step heads (MAKE-07, plan 11-07
     expect(headOf('Sucrose')).toBe('Not in a step yet');
     expect(headOf(MILK)).toBe('Not in a step yet');
 
-    await click(field('Step 1, change the ingredients'));
+    await click(field('Step 1, change ingredients'));
     expect([...root().querySelectorAll('fieldset[aria-label="Step 1, uses"] label')].map((label) => label.textContent)).toEqual([
       'Sucrose',
       MILK,
@@ -1605,9 +1605,9 @@ describe('the Uses checklist and the table under step heads (MAKE-07, plan 11-07
     await type(gramsField(MILK), '600');
     await click(buttonByText('Add step'));
     await click(buttonByText('Add step'));
-    await click(field('Step 1, change the ingredients'));
+    await click(field('Step 1, change ingredients'));
     await click(usesBox(1, MILK));
-    await click(field('Step 2, change the ingredients'));
+    await click(field('Step 2, change ingredients'));
     await click(usesBox(2, MILK));
     // The second tick adds a blank line; the first keeps the 600.
     expect(heads()).toEqual(['Step 1', 'Step 2']);
@@ -2067,7 +2067,7 @@ describe('Save refuses everything the store file would refuse, all at once, writ
     for (const n of [1, 2]) {
       await type(field(`Step ${n}, lead-in`), `Step ${n}`);
       await type(field(`Step ${n}, instruction`), 'Do it.');
-      await click(field(`Step ${n}, change the ingredients`));
+      await click(field(`Step ${n}, change ingredients`));
       await click(
         [...root().querySelectorAll(`fieldset[aria-label="Step ${n}, uses"] label.method-step__uses-item`)]
           .find((label) => label.textContent === MILK)
@@ -2091,7 +2091,7 @@ describe('Save refuses everything the store file would refuse, all at once, writ
     for (const n of [1, 2]) {
       await type(field(`Step ${n}, lead-in`), `Step ${n}`);
       await type(field(`Step ${n}, instruction`), 'Do it.');
-      await click(field(`Step ${n}, change the ingredients`));
+      await click(field(`Step ${n}, change ingredients`));
       await click(
         [...root().querySelectorAll(`fieldset[aria-label="Step ${n}, uses"] label.method-step__uses-item`)]
           .find((label) => label.textContent === MILK)

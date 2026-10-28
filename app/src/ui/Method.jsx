@@ -230,7 +230,7 @@ export function StepPenBody({
       {/* Purpose and aside on demand (D-23): the field itself once the
           maker asks for one or it already carries a baseline value — the
           "add a purpose"/"add an aside" openers now sit on the shared
-          controls line below, beside "change the ingredients", not here. */}
+          controls line below, beside "Change ingredients", not here. */}
       {purpose.isOpen && (
         <label className="method-step__field">
           <textarea
@@ -265,7 +265,7 @@ export function StepPenBody({
       {showAsideStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.aside}</p>}
 
       {/* The controls line (D-24, D-23; sketch 011 decisions_recorded 5):
-          the uses sentence and its "change the ingredients"/"done"
+          the uses sentence and its "Change ingredients"/"Done"
           toggle, then the on-demand triggers for purpose and aside — one
           line, middot-separated, each trigger absent once its own field
           is open. The wrapper below (G-03.3-2 fix, gap plan 05) covers
@@ -278,20 +278,20 @@ export function StepPenBody({
           <Button
             className="text-control"
             ref={usesControlRef}
-            aria-label={fieldLabel(step, draftStep.removed, usesOpen ? 'done' : 'change the ingredients')}
+            aria-label={fieldLabel(step, draftStep.removed, usesOpen ? 'done' : 'change ingredients')}
             onClick={() => setUsesOpen((open) => !open)}
           >
-            {usesOpen ? 'done' : 'change the ingredients'}
+            {usesOpen ? 'Done' : 'Change ingredients'}
           </Button>
           {!purpose.isOpen && (
             <>
               <span aria-hidden="true">·</span>
               <Button
                 className="text-control"
-                aria-label={fieldLabel(step, draftStep.removed, 'add a purpose')}
+                aria-label={fieldLabel(step, draftStep.removed, 'add purpose')}
                 onClick={purpose.openField}
               >
-                add a purpose
+                Add purpose
               </Button>
             </>
           )}
@@ -300,10 +300,10 @@ export function StepPenBody({
               <span aria-hidden="true">·</span>
               <Button
                 className="text-control"
-                aria-label={fieldLabel(step, draftStep.removed, 'add an aside')}
+                aria-label={fieldLabel(step, draftStep.removed, 'add aside')}
                 onClick={aside.openField}
               >
-                add an aside
+                Add aside
               </Button>
             </>
           )}
@@ -421,7 +421,7 @@ export function StepPenBody({
           aria-label={fieldLabel(step, draftStep.removed, 'edit this step')}
           onClick={onOpen}
         >
-          edit this step
+          Edit this step
         </Button>
         <span aria-hidden="true">·</span>
         <Button
@@ -429,7 +429,7 @@ export function StepPenBody({
           aria-label={fieldLabel(step, draftStep.removed, draftStep.removed ? 'restore' : 'remove')}
           onClick={() => onTogglePenStepRemoved(step.n)}
         >
-          {draftStep.removed ? 'restore' : 'remove'}
+          {draftStep.removed ? 'Restore' : 'Remove'}
         </Button>
       </p>
     </div>
@@ -523,7 +523,7 @@ export function showsMethodRegion({ mode, steps }) {
 // While developing (03-02), a second render path takes over per step,
 // opening read-only by default (03.3-03, 03.1 Gap 1 override): the
 // step's prose, targets, purpose/aside and — on a removed step — the
-// coverage cue render as plain text, with one "edit this step" text
+// coverage cue render as plain text, with one "Edit this step" text
 // control revealing the step's existing, unchanged editable form — text
 // fields for leadIn/instruction/purpose/aside and each target chip, a
 // "uses" checkbox list over the version's rows, a remove/restore control,

@@ -393,7 +393,7 @@ describe('Method — developing mode', () => {
 
     expect(markup).not.toContain('method-step__flag');
     expect(markup).not.toContain('remove this step');
-    expect(markup).toContain('edit this step');
+    expect(markup).toContain('>Edit this step<');
     // The cross-flag's own content and control (route-recipe-version.md
     // § 3), unchanged by this plan, now render only inside the revealed
     // form — a state transition renderToStaticMarkup cannot execute (no
@@ -438,7 +438,7 @@ describe('Method — developing mode', () => {
     // Remove moved TO the closed step too (sketch 011 decisions_recorded
     // 4) — a removed step's closed markup now reads "restore", not
     // "remove".
-    expect(markup).toMatch(/>restore<\/button>/);
+    expect(markup).toMatch(/>Restore<\/button>/);
   });
 
   it('renders no coverage cue for a removed step whose rows are covered by nothing — the table already carries that answer', () => {
@@ -466,7 +466,7 @@ describe('Method — developing mode', () => {
   // purpose/add aside stay inside the reveal, but remove/restore itself
   // moved TO the closed step (sketch 011 decisions_recorded 4, Task 3),
   // so the default closed markup now reads "edit this step · restore".
-  it('renders "edit this step" and "restore" by default on a removed step — add purpose/add aside stay inside the reveal', () => {
+  it('renders "Edit this step" and "Restore" by default on a removed step — Add purpose/Add aside stay inside the reveal', () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
     draftVersion.method[0].removed = true;
@@ -484,9 +484,9 @@ describe('Method — developing mode', () => {
 
     const buttonMatches = markup.match(/<button[^>]*>[^<]*<\/button>/g) ?? [];
     expect(buttonMatches.every((button) => !/>add purpose<|>add aside</.test(button))).toBe(true);
-    expect(markup.match(/>edit this step<\/button>/g)?.length).toBe(1);
-    expect(markup.match(/>restore<\/button>/g)?.length).toBe(1);
-    expect(markup).not.toMatch(/>remove<\/button>/);
+    expect(markup.match(/>Edit this step<\/button>/g)?.length).toBe(1);
+    expect(markup.match(/>Restore<\/button>/g)?.length).toBe(1);
+    expect(markup).not.toMatch(/>Remove<\/button>/);
     expect(markup).toContain('aria-label="Removed step, edit this step"');
   });
 
@@ -508,7 +508,7 @@ describe('Method — developing mode', () => {
 
     expect(markup).not.toContain('uses Row A, which is removed');
     expect(markup).not.toContain('remove this step');
-    expect(markup).toContain('edit this step');
+    expect(markup).toContain('>Edit this step<');
     // Unchanged behaviour (route-recipe-version.md § 3), now reachable
     // only inside the reveal — a UAT item, not asserted here.
   });
@@ -1232,11 +1232,11 @@ describe('Method — the closed pen step reads "edit this step · remove" (sketc
       />,
     );
 
-    const editIndex = markup.indexOf('>edit this step<');
-    const removeIndex = markup.indexOf('>remove<');
+    const editIndex = markup.indexOf('>Edit this step<');
+    const removeIndex = markup.indexOf('>Remove<');
     expect(editIndex).toBeGreaterThan(-1);
     expect(removeIndex).toBeGreaterThan(editIndex);
-    expect(markup).not.toMatch(/>restore<\/button>/);
+    expect(markup).not.toMatch(/>Restore<\/button>/);
     expect(markup).not.toMatch(/>Cancel<\/button>/);
     expect(markup).not.toMatch(/>Done<\/button>/);
   });
@@ -1301,17 +1301,17 @@ function renderOpenStepPenBody(stepN, mutateDraft) {
 }
 
 describe('Method — StepPenBody, opened (sketch 011 decisions_recorded 5, Task 3)', () => {
-  it('renders its fields, a controls line reading change the ingredients / add a purpose / add an aside, then Cancel and Done — no remove control at all', () => {
+  it('renders its fields, a controls line reading Change ingredients / Add purpose / Add aside, then Cancel and Done — no remove control at all', () => {
     const markup = renderOpenStepPenBody(3);
 
     expect(markup).toContain('<input');
     expect(markup).toContain('<textarea');
-    expect(markup).toMatch(/>change the ingredients<\/button>/);
-    expect(markup).toMatch(/>add a purpose<\/button>/);
-    expect(markup).toMatch(/>add an aside<\/button>/);
-    expect(markup).not.toMatch(/>remove<\/button>/);
-    expect(markup).not.toMatch(/>restore<\/button>/);
-    expect(markup).not.toContain('>edit this step<');
+    expect(markup).toMatch(/>Change ingredients<\/button>/);
+    expect(markup).toMatch(/>Add purpose<\/button>/);
+    expect(markup).toMatch(/>Add aside<\/button>/);
+    expect(markup).not.toMatch(/>Remove<\/button>/);
+    expect(markup).not.toMatch(/>Restore<\/button>/);
+    expect(markup).not.toContain('>Edit this step<');
 
     const cancelIndex = markup.indexOf('>Cancel<');
     const doneIndex = markup.indexOf('>Done<');
@@ -1320,12 +1320,12 @@ describe('Method — StepPenBody, opened (sketch 011 decisions_recorded 5, Task 
     expect(markup).toMatch(/<button type="button" class="text-control"[^>]*>Cancel<\/button>/);
   });
 
-  it("names the uses toggle by the step's own position: 'Step 3, change the ingredients'", () => {
+  it("names the uses toggle by the step's own position: 'Step 3, change ingredients'", () => {
     const markup = renderOpenStepPenBody(3);
-    expect(markup).toContain('aria-label="Step 3, change the ingredients"');
+    expect(markup).toContain('aria-label="Step 3, change ingredients"');
   });
 
-  it('renders no literal \'change\' wording anywhere — only \'change the ingredients\'', () => {
+  it('renders no literal \'change\' wording anywhere — only \'Change ingredients\'', () => {
     const markup = renderOpenStepPenBody(3);
     expect(markup).not.toMatch(/>change<\/button>/);
   });
@@ -1442,7 +1442,7 @@ describe('Method — every button and checkbox carries an explicit tabindex (qui
     }
   });
 
-  it('an open step renders the uses toggle, add a purpose, add an aside, Cancel and Done, each tabindex="0"', () => {
+  it('an open step renders the uses toggle, Add purpose, Add aside, Cancel and Done, each tabindex="0"', () => {
     const tags = buttonTags(renderOpenStepPenBody(3));
     expect(tags).toHaveLength(5);
     for (const tag of tags) {

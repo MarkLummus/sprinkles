@@ -7,12 +7,16 @@
 # change is that the canvas's support.js line is dropped. P10_Machine is not snapshotted: the board was retired on 2026-10-18 (the machine is out of the creation editor) and is no longer on the canvas.
 # p10.py regenerates P10_Editor and P10_Style byte for byte; P10_Notebook, P10_Picker and P10_Scales were published 2026-10-17 and differ from today's p10.py only in the unused rules of the
 # inlined shared block (no menu rules yet, one .mk-note rule since dropped); their markup is the same. The canvas wins.
+# 2026-10-28 (sketch 013 decision 35, remove reads Remove; bug-p11-link-case-mixed): P10_Editor, P10_Picker, P10_Scales and P10_Style republished as canvas version 494 (1793154101-189e) and
+# re-taken from the served files the same way; P10_Notebook stands as published. An optional third argument names the boards to take, comma-separated (the others' files are left alone).
 import sys, os
 SRC, DEST = sys.argv[1], sys.argv[2]
 SERVED = {'P10_Notebook': 'notebook-new-recipe.html', 'P10_Editor': 'creation-editor.html', 'P10_Picker': 'ingredient-picker.html',
           'P10_Scales': 'scales-and-problems.html', 'P10_Style': 'style-menu-and-bands.html'}
+ONLY = sys.argv[3].split(',') if len(sys.argv) > 3 else None
 os.makedirs(DEST, exist_ok=True)
 for k, out in SERVED.items():
+    if ONLY and k not in ONLY: continue
     s = open(os.path.join(SRC, 'project', k + '.dc.html')).read()
     s = s.replace('<script src="./support.js"></script>\n', '', 1).replace('<script src="./support.js"></script>', '', 1)
     assert 'support.js' not in s and '/_blob/' not in s and 'src="data:' not in s

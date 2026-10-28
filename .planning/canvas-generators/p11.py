@@ -61,6 +61,12 @@ import places as PL
 #   - the audit's board matters: the target chip's remove after its value (D-22; target_chip); Resume editing in Edit's place on the version page and as the Notebook row's outline
 #     control at 1366 (D-04, D-05; P11_FirstVersion fE1 and fF1); Print sheet after Edit on the saved page (D-05); a lone version's History as the one line "Only this version so far"
 #     (03.5-18, RecipeHistory.jsx); the split line's "600.0 g" (formatPortionLine's one-decimal total); fC1's Go to batch status "Awaiting tasting" (STANDING_WORDS) under a churned batch.
+# Sid, 2026-10-28 (bug-p11-link-case-mixed, Mark: "Fix it: Sid rules on one case, then the labels follow"): one case for every inline text control (.text-control), sentence case,
+#   as the Sheet's other controls read (Add step, Move up, Print sheet, Cancel; the house rule: plain words, short sentence-case labels). The lower-case words these boards drew inside a
+#   step and a row (remove, done, change the ingredients, add a purpose, add an aside) came from the version pen's own open step (sketch 011 decisions 2 and 5), where they read as
+#   words of the uses sentence; beside the sentence-case controls the creation editor added, Mark read the mix as a defect. Drawn: Remove, Done, Change the ingredients, Add a purpose,
+#   Add an aside, on every board that draws a step or a row (all four); the aria-labels are unchanged. The app follows by one /gsd-fast after look-p11-link-case (CreationSteps.jsx,
+#   IngredientTable.jsx, Method.jsx, Authored.jsx, CreationSetup.jsx); sketch 013's boards redraw their remove the same day (p10.py).
 #   python3 p11.py measure <out dir> ; node p11-measure.mjs <out dir>/measure.html ; python3 p11.py <canvas.json read from the artifact root> <out dir> [P11_Save,P11_Steps]
 MEAS = json.load(open(HERE + '/p11-measure.json')) if os.path.exists(HERE + '/p11-measure.json') else {}
 p10.MEAS = MEAS
@@ -128,7 +134,7 @@ def row(key, grams=None, note=None, moves=None, focus=False, place=None):
     h = re.sub(r' value="[^"]*"', ' value="%s"' % ('' if g == '' else ('%g' % g)), h, 1)
     if focus: h = h.replace('class="ink-field"', 'class="ink-field mk-focus"', 1)
     h = re.sub(r'<td class="ingredient-table__col-numeric">[^<]*</td>', '<td class="ingredient-table__col-numeric">%s</td>' % (pct(0 if g == '' else g)), h, 1)
-    acts = '<button type="button" class="text-control" tabindex="0" aria-label="remove %s">remove</button>' % esc(name)
+    acts = '<button type="button" class="text-control" tabindex="0" aria-label="remove %s">Remove</button>' % esc(name)      # sentence case since 2026-10-28 (bug-p11-link-case-mixed)
     if moves is not None:
         up, down = moves
         acts += ''.join(f'<span aria-hidden="true"> · </span><button type="button" class="text-control{"" if on else " mk-off"}" tabindex="0" aria-label="Move {esc(name)} {w}"{DIS if not on else ""}>Move {w}</button>' for w, on in (('up', up), ('down', down)))
@@ -156,7 +162,7 @@ def target_chip(n, label, value, i=1):
     """A target's two fields and, after the value, its remove (D-22, 2026-10-27; the build's chip grid in notebook.css stands Required under the empty field)."""
     return (f'<span class="target-chip"><input type="text" class="ink-field target-chip__label-field" value="{esc(label)}" aria-label="Step {n}, target label">'
             f'<input type="text" class="ink-field target-chip__value-field" value="{esc(value)}" aria-label="Step {n}, target value">'
-            f'<button type="button" class="text-control" tabindex="0" aria-label="Step {n}, remove target {i}">remove</button></span>')
+            f'<button type="button" class="text-control" tabindex="0" aria-label="Step {n}, remove target {i}">Remove</button></span>')
 NAMES = dict((k, n) for k, n, g, s in ROWS)
 def reading_body(n, lead, text, targets=(), purpose=None, aside=None):
     """A reading step's number and body as the Sheet shows it on screen since 2026-10-26 (sketch 014 decision 2): the printed method's grammar (PrintSheetPages.jsx .mp-tags, .mp-why,
@@ -188,14 +194,15 @@ def step_html(n, lead='', text='', targets=(), uses=(), purpose=None, aside=None
     if preview == 'open': body += preview_html(n, lead, text, targets, purpose, aside)      # under every content field, before the uses line
     names = [NAMES[k] for k in uses]
     line = ('uses ' + ', '.join(names)) if names else 'uses nothing yet'
-    line += f' <button type="button" class="text-control" tabindex="0" aria-label="Step {n}, {"done" if uses_open else "change the ingredients"}">{"done" if uses_open else "change the ingredients"}</button>'
-    if purpose is None: line += f'<span aria-hidden="true">·</span><button type="button" class="text-control" tabindex="0" aria-label="Step {n}, add a purpose">add a purpose</button>'
-    if aside is None: line += f'<span aria-hidden="true">·</span><button type="button" class="text-control" tabindex="0" aria-label="Step {n}, add an aside">add an aside</button>'
+    # the inline controls read sentence case since 2026-10-28 (bug-p11-link-case-mixed): Done, Change the ingredients, Add a purpose, Add an aside; the aria-labels are unchanged
+    line += f' <button type="button" class="text-control" tabindex="0" aria-label="Step {n}, {"done" if uses_open else "change the ingredients"}">{"Done" if uses_open else "Change the ingredients"}</button>'
+    if purpose is None: line += f'<span aria-hidden="true">·</span><button type="button" class="text-control" tabindex="0" aria-label="Step {n}, add a purpose">Add a purpose</button>'
+    if aside is None: line += f'<span aria-hidden="true">·</span><button type="button" class="text-control" tabindex="0" aria-label="Step {n}, add an aside">Add an aside</button>'
     body += f'<p class="method-step__uses-line">{line}</p>'
     if uses_open:
         items = ''.join(f'<label class="method-step__uses-item"><input type="checkbox"{" checked" if k in uses else ""} tabindex="0"><span>{esc(NAMES[k])}</span></label>' for k, _, _, _ in ROWS)
         body += f'<fieldset class="method-step__uses" aria-label="Step {n}, uses"><legend>Uses</legend>{items}</fieldset>'
-    acts = f'<button type="button" class="text-control" tabindex="0" aria-label="Step {n}, remove">remove</button>'
+    acts = f'<button type="button" class="text-control" tabindex="0" aria-label="Step {n}, remove">Remove</button>'
     if with_moves:
         up, down = moves
         acts += ''.join(f'<span aria-hidden="true">·</span><button type="button" class="text-control{"" if on else " mk-off"}" tabindex="0" aria-label="Step {n}, move {w}"{DIS if not on else ""}>Move {w}</button>' for w, on in (('up', up), ('down', down)))
@@ -355,7 +362,9 @@ STAMP14 = STAMP12[:-1] + R27 + 'the target chip\'s remove, "600.0 g" on the spli
 STAMP15 = STAMP13[:-1] + R27 + 'the target chip\'s remove)'
 STAMP16 = STAMP11[:-1] + R27 + 'the target chip\'s remove, Print sheet after Edit, History as "Only this version so far")'
 STAMP17 = STAMP11[:-1] + R27 + 'Print sheet after Edit, History as one line, the target chip\'s remove, "Awaiting tasting" once a batch exists, three panels added: Show changes with a struck target at the value\'s size (decide-p11-struck-target-size), Resume editing on the page and on the Notebook row)'
-STAMPS = {'P11_Steps': STAMP14, 'P11_Structure': STAMP15, 'P11_Save': STAMP16, 'P11_FirstVersion': STAMP17}
+R28 = '; redrawn 2026-10-28: every inline control in sentence case, Remove, Done, Change the ingredients, Add a purpose, Add an aside (bug-p11-link-case-mixed))'
+STAMP18, STAMP19, STAMP20, STAMP21 = (s[:-1] + R28 for s in (STAMP14, STAMP15, STAMP16, STAMP17))
+STAMPS = {'P11_Steps': STAMP18, 'P11_Structure': STAMP19, 'P11_Save': STAMP20, 'P11_FirstVersion': STAMP21}
 TITLES = {'P11_Steps': 'Instructions while creating · a step, its targets, the rows it uses and in what portions, at 1366',
           'P11_Structure': 'Add, remove and move · steps, and rows within their step, at 1366',
           'P11_Save': 'Save · what refuses it and where it lands, at 1366',
@@ -368,7 +377,7 @@ def build_boards(out):
     # ======== P11_Steps
     r1 = [dict(SC('pA1', sheet(table_html([(None, flat_rows(['milk', 'cream', 'smp', 'suc', 'van'])) ]), method_html([]))), cap='No step yet · 1366', sub='the Instructions heading stands under the table with Add step on its row, as Before you start stands with Add note on its and, since Mark\'s todo of 2026-10-25, Ingredients with Add ingredient on its; the rows have no step head yet (Phase 10\'s flat table), only their own moves. The three controls in the Show/Hide control\'s look (Mark, 2026-10-25; the app follows in Phase 11: CreationPage.jsx\'s beforeFoot and notebook.css .mk-add-row move onto the heading\'s row)'),
           dict(SC('pB1', sheet(table_html(grouped([dict(lead='', uses=())])), method_html(steps_html([dict(lead='', text='', uses=())], over={0: dict(required=True)})))),
-               cap='A step just added · 1366', sub='the pen\'s open step, kept open as every creation field is: lead-in, text, Add target · Preview step, "uses nothing yet · change the ingredients · add a purpose · add an aside", then remove · Move up · Move down · Add step; Required under the two empty fields; the table now heads its rows "Not in a step yet", each ending its acts line with Add to step (decide-p11-place-unplaced-row, A, 2026-10-26: the line offers the steps when pressed, this one reading "Step 1" alone until the lead-in is typed). Decided 2026-10-25: no box around the fields, since every step is open here and the version pen\'s box only marked the one open step among closed ones (decide-open-step-box, drop), so the number and the lead-in share one top; Add step on the step\'s own row adds the next step right after it and the heading\'s Add step adds at the beginning of the list (decide-add-step-per-step, both), focus in the new step\'s lead-in either way; Preview step shows the step as the Sheet prints it (look-p11-preview-step, approved)')]
+               cap='A step just added · 1366', sub='the pen\'s open step, kept open as every creation field is: lead-in, text, Add target · Preview step, "uses nothing yet · Change the ingredients · Add a purpose · Add an aside", then Remove · Move up · Move down · Add step (every inline control in sentence case since 2026-10-28, bug-p11-link-case-mixed); Required under the two empty fields; the table now heads its rows "Not in a step yet", each ending its acts line with Add to step (decide-p11-place-unplaced-row, A, 2026-10-26: the line offers the steps when pressed, this one reading "Step 1" alone until the lead-in is typed). Decided 2026-10-25: no box around the fields, since every step is open here and the version pen\'s box only marked the one open step among closed ones (decide-open-step-box, drop), so the number and the lead-in share one top; Add step on the step\'s own row adds the next step right after it and the heading\'s Add step adds at the beginning of the list (decide-add-step-per-step, both), focus in the new step\'s lead-in either way; Preview step shows the step as the Sheet prints it (look-p11-preview-step, approved)')]
     r2 = [dict(SC('pC1', sheet(table_html(grouped([S1, S2])), method_html(steps_html([S1, S2], over={1: dict(uses_open=True)})))), cap='Two steps worked on · 1366', sub='step 1 has a target and a purpose, the target\'s remove after its value field inside the chip (D-22, drawn 2026-10-27); step 2\'s checklist is open (the build\'s Uses fieldset); the table reads in step order under step heads, every row in one step, so no "Not in a step yet" head; Add ingredient and Add step on their heading\'s row (Mark, 2026-10-25); each step\'s row ends in Add step, which adds a step right after it; the heading\'s adds at the beginning (decision 33)'),
           dict(SC('pD1', sheet(table_html(grouped([S1, S2_MILK], split={'milk': [(0, 400), (1, 200)]})), method_html(steps_html([S1, S2_MILK])))),
                cap='A row in two steps · 1366', sub='Whole milk ticked in step 2 as well: the row splits into one line per step, each with its own grams field, the note "400 g of 600.0 g · 58.0% in all" under each (the build\'s portion line, the row\'s total at the Sheet\'s one decimal; drawn 2026-10-27); the grams are typed in the table, not on the step (decide-p11-portion-grams-place, A); Add step on the heading\'s row (adds at the beginning) and on each step\'s row (adds right after it) (decision 33). Redrawn 2026-10-26 (decide-p11-row-order-across-steps: each step orders its own rows, the table draws a step\'s rows in its uses order): Whole milk\'s second line stands under Step 2 as its last row, where step 2\'s uses line names it, with its own grams field, 200 g, and the portion line "200 g of 600 g · 58.0% in all"')]
@@ -379,10 +388,10 @@ def build_boards(out):
 
     # ======== P11_Structure
     three = [S1, S2, S3]
-    r1 = [dict(SC('qA1', sheet(table_html(grouped(three)), method_html(steps_html(three)))), cap='Three steps · remove, Move up, Move down · 1366', sub='under every step: remove · Move up · Move down (STRUCT-02\'s words); the first step\'s Move up and the last\'s Move down cannot act and read as the picker\'s Added does; the same three under every row, moving within its step; Add ingredient and Add step on their heading\'s row (Mark, 2026-10-25), and Add step as the fourth word of every step\'s row, adding right after that step, while the heading\'s adds at the beginning (decision 33); the open step has no box and its lead-in takes the number\'s top (decision 32); Preview step after Add target (decision 34)'),
+    r1 = [dict(SC('qA1', sheet(table_html(grouped(three)), method_html(steps_html(three)))), cap='Three steps · Remove, Move up, Move down · 1366', sub='under every step: Remove · Move up · Move down (STRUCT-02\'s words, in sentence case since 2026-10-28: bug-p11-link-case-mixed); the first step\'s Move up and the last\'s Move down cannot act and read as the picker\'s Added does; the same three under every row, moving within its step; Add ingredient and Add step on their heading\'s row (Mark, 2026-10-25), and Add step as the fourth word of every step\'s row, adding right after that step, while the heading\'s adds at the beginning (decision 33); the open step has no box and its lead-in takes the number\'s top (decision 32); Preview step after Add target (decision 34)'),
           dict(SC('qB1', sheet(table_html(grouped([S2, S1, S3])), method_html(steps_html([S2, S1, S3])))), cap='After Move down on step 1 · 1366', sub='the step is second now and reads 2; the numbers follow the order (STRUCT-03: the stored number never changes); the table\'s step groups follow the method')]
     r2 = [dict(SC('qC1', sheet(table_html(grouped([S1, S3])), method_html(steps_html([S1, S3])))),
-               cap='After remove on step 2 (Finish cold) · 1366', sub='deleted outright, no strike and no restore (decision 10): Heavy cream and Vanilla extract keep their grams and go back under "Not in a step yet", each with Add to step at the end of its acts line (decide-p11-place-unplaced-row, A); Whole milk\'s 200 g line in that step folds back into its line in step 1, so the row reads 600 g, 58.0%, with no portion line, and the Balance stands (decide-p11-step-removal-split-portion, grams-fold-back; roadmap decision 24)'),
+               cap='After Remove on step 2 (Finish cold) · 1366', sub='deleted outright, no strike and no restore (decision 10): Heavy cream and Vanilla extract keep their grams and go back under "Not in a step yet", each with Add to step at the end of its acts line (decide-p11-place-unplaced-row, A); Whole milk\'s 200 g line in that step folds back into its line in step 1, so the row reads 600 g, 58.0%, with no portion line, and the Balance stands (decide-p11-step-removal-split-portion, grams-fold-back; roadmap decision 24)'),
           dict(SC('qD1', sheet(table_html(grouped([S1_MOVED, S2, S3])), method_html(steps_html([S1_MOVED, S2, S3])))), cap='After Move down on Whole milk · 1366', sub='a row moves within its step only (decision 9): Skim milk powder now leads step 1\'s rows; nothing else moved. Redrawn 2026-10-26 (decide-p11-row-order-across-steps: each step orders its own rows, a move within one step leaves the other steps\' order alone): step 1\'s uses line reads the moved order, "uses Skim milk powder, Whole milk, Sucrose", as its rows stand; steps 2 and 3, their rows and their uses lines are as before')]
     # decided 2026-10-26 (decide-p11-place-unplaced-row, A, row-add-to-step; Mark's note on look-p11-structure-r2: the unplaced rows "can't be easily added to a step"): the same state
     # as "After remove on step 2", Heavy cream's Add to step pressed. The one panel that shows the pressed state.

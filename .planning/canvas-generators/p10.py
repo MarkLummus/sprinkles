@@ -28,6 +28,9 @@ LADDER = importlib.import_module('p-ladder')      # revision 2a's faces and spac
 # The editor is the recipe page's pen with no parent (Phase 8's split RecipePage, a `creating` mode with no baseline). Every panel is the built app's own shell and markup (p10-capture.json: WebKit, a scratch
 # profile holding a stand-in recipe, 1366 and 393, both with a coarse pointer) with the app's own tokens.css, app.css, notebook.css and shell.css, their @media resolved at the panel's width and pointer.
 # The Notebook panels reuse places.py's Phase 9 markup (the approved sketch 012 place). The new parts are the markup below and the rules in P10_CSS; every value in P10_CSS reads an existing token.
+# 2026-10-28 (bug-p11-link-case-mixed; Sid's ruling, recorded in sketch 014 README decision 8 and sketch 013 README decision 35): every inline text control reads sentence case, so the
+#   row remove (the capture's word), the note remove and the scale and problem cards' remove read Remove; the aria-labels are unchanged. P10_Editor, P10_Picker, P10_Scales and P10_Style
+#   republished with it (P10_Style's Balance crops hold the rows in their markup only); P10_Notebook draws no remove and is not republished.
 #   node p10-capture.mjs ; python3 p10.py measure <out dir> (writes <out dir>/measure.html) ; node p10-measure.mjs <out dir>/measure.html (writes p10-measure.json) ; python3 p10.py <canvas.json read from the artifact root> <out dir>
 CAP = json.load(open(HERE + '/p10-capture.json'))
 MEAS = json.load(open(HERE + '/p10-measure.json')) if os.path.exists(HERE + '/p10-measure.json') else {}
@@ -171,13 +174,13 @@ def ingredients_head(h, picker_open=False):
     return h.replace(ING_H2, head_row('Ingredients', None if picker_open else 'Add ingredient'), 1)
 
 def before_html(notes):
-    items = ''.join(f'<li><span class="authored__note-field">{textarea("beforeYouStart note %d" % (i + 1), t)}<button type="button" class="text-control" tabindex="0">remove</button></span></li>' for i, t in enumerate(notes))
+    items = ''.join(f'<li><span class="authored__note-field">{textarea("beforeYouStart note %d" % (i + 1), t)}<button type="button" class="text-control" tabindex="0">Remove</button></span></li>' for i, t in enumerate(notes))      # Remove since 2026-10-28 (bug-p11-link-case-mixed)
     lst = f'<ul class="authored__notes">{items}</ul>' if notes else ''
     # Add note on the heading's row, not under the list (Mark, 2026-10-25, look-p11-steps; drawn 2026-10-17 under the list, built so in Phase 10: CreationPage.jsx beforeFoot, notebook.css .mk-add-row)
     return f'<section class="before-region" aria-label="Before you start">{head_row("Before you start", "Add note")}{lst}</section>'
 
 def ingredients_html(state, W, picker='', focus_last=False, blank_last=False):
-    h = cap(state, W, 'ingredients')
+    h = cap(state, W, 'ingredients').replace('>remove</button>', '>Remove</button>')      # the capture's lower-case word; sentence case since 2026-10-28 (bug-p11-link-case-mixed)
     if focus_last or blank_last:
         # the row just added: its grams field is empty and holds focus
         idx = h.rindex('<input inputmode="decimal" class="ink-field"')
@@ -263,7 +266,7 @@ def stops(lo, hi, kind):
 def scale_card(n, name, lo, hi, kind, required_hints=False):
     nm = field('Name', name, required=required_hints and not name)
     ends = '<div class="mk-pair">' + field('Low end', lo, required=required_hints and not lo) + field('High end', hi, required=required_hints and not hi) + '</div>'
-    return (f'<div class="mk-card"><div class="mk-caprow">{nm}<button type="button" class="text-control" tabindex="0" aria-label="Remove scale {n}">remove</button></div>'
+    return (f'<div class="mk-card"><div class="mk-caprow">{nm}<button type="button" class="text-control" tabindex="0" aria-label="Remove scale {n}">Remove</button></div>'
             + ends + segmented('Kind', KINDS, kind, name='segment-kind-%d' % n) + stops(lo, hi, kind) + '</div>')
 def scales_region(cards, add=True):
     core = '<h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">Hardness, Scoopability, Smoothness, Sweetness</p>'
@@ -272,7 +275,7 @@ def scales_region(cards, add=True):
     return region('Scales', core + mine + a)
 CORE_PROBLEMS = 'Coarse, icy · Sandy, gritty · Gummy, elastic · Greasy film'
 def problem_row(n, name, hint=False):
-    return (f'<div class="mk-card"><div class="mk-caprow">{field("Name", name, required=hint and not name)}<button type="button" class="text-control" tabindex="0" aria-label="Remove problem {n}">remove</button></div></div>')
+    return (f'<div class="mk-card"><div class="mk-caprow">{field("Name", name, required=hint and not name)}<button type="button" class="text-control" tabindex="0" aria-label="Remove problem {n}">Remove</button></div></div>')
 def problems_region(rows, add=True):
     core = f'<h3 class="pen-caption mk-cue">Every recipe</h3><p class="mk-core">{CORE_PROBLEMS}</p>'
     mine = ('<h3 class="pen-caption mk-cue">This recipe only</h3>' + ''.join(rows)) if rows else ''
@@ -376,6 +379,8 @@ STAMP5 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card 
 STAMP6 = ' (redrawn 2026-10-25: Add note on the Before you start heading\'s row; look-p11-steps-r2)'
 STAMP7 = ' (redrawn 2026-10-25: ladder revision 2 with the cues as h3, the card head dropped, Targets 12 / 12 as built, Add note and Add ingredient on their heading\'s row; look-p11-steps-r3)'
 STAMP8 = ' (redrawn 2026-10-25: Add note and Add ingredient on their heading\'s row, the control away while the picker is open; look-p11-steps-r3)'
+R28 = '; redrawn 2026-10-28: remove reads Remove, every inline control in sentence case (bug-p11-link-case-mixed))'
+STAMP9, STAMP10, STAMP11, STAMP12 = (s[:-1] + R28 for s in (STAMP7, STAMP8, STAMP3, STAMP4))      # P10_Editor, P10_Picker, P10_Scales, P10_Style
 SAMPLE_NOTES = ['Chill the mix overnight before churning.', 'Keep the cream cold until it goes in.']
 SAMPLE_DESC = 'Plain and cold.'
 
@@ -414,10 +419,10 @@ def build_boards(out):
 
     # ======== P10_Editor, third row: remove a row
     sc = lambda W, pid, state, **kw: dict(pid=pid, W=W, html=sheet_only(W, pid, state, **kw), w=1000 if W == 1366 else 393)
-    r3 = [dict(sc(1366, 'eC1', 'phil'), cap='Remove · before · 1366', sub='five rows; the link beside Skim milk powder is "remove"'),
+    r3 = [dict(sc(1366, 'eC1', 'phil'), cap='Remove · before · 1366', sub='five rows; the link beside Skim milk powder is "Remove" (sentence case since 2026-10-28, bug-p11-link-case-mixed)'),
           dict(sc(1366, 'eC2', 'less'), cap='Remove · after · 1366', sub='the row is deleted outright; every figure follows, and the Balance says where Milk solids now stands against its band')]
     parts, bw, bh = flow([r1, r2, r3]); sizes['P10_Editor'] = (bw, bh)
-    board('P10_Editor', 'Creation editor · the recipe page with no parent and no Save, at 1366' + STAMP7, bw, bh, parts, out)
+    board('P10_Editor', 'Creation editor · the recipe page with no parent and no Save, at 1366' + STAMP9, bw, bh, parts, out)
 
     # ======== P10_Picker
     added2 = ('wholeMilk', 'heavyCream')
@@ -430,7 +435,7 @@ def build_boards(out):
           dict(sc(393, 'kC3', 'two', picker=picker_html(name='tonka', none=True)), cap='Not in the library yet · 393', sub=''),
           dict(sc(393, 'kC4', 'three', focus_last=True), cap='After choosing · 393', sub='')]
     parts, bw, bh = flow([r1, r2, r3]); sizes['P10_Picker'] = (bw, bh)
-    board('P10_Picker', 'Ingredient picker · open under the table, "Not in the library yet", and the row it adds, at 1366 and 393' + STAMP8, bw, bh, parts, out)
+    board('P10_Picker', 'Ingredient picker · open under the table, "Not in the library yet", and the row it adds, at 1366 and 393' + STAMP10, bw, bh, parts, out)
 
     # ======== P10_Scales
     LG = lambda W, pid, *regs: dict(trim=40 if W == 1366 else 0, pid=pid, W=W, html=log_only(W, pid, *regs), w=366 if W == 1366 else 393, x0=LOGX if W == 1366 else 0)
@@ -445,7 +450,7 @@ def build_boards(out):
           dict(LG(393, 'sC2', scales_region([g1, p1], add=False), problems_region([problem_row(1, 'Bitter'), problem_row(2, 'Salty')], add=False)), cap='Two and two · 393', sub=''),
           dict(LG(393, 'sD2', scales_region([blank]), problems_region([problem_row(1, '', hint=True)])), cap='Just added · 393', sub='')]
     parts, bw, bh = flow([r1, r2]); sizes['P10_Scales'] = (bw, bh)
-    board('P10_Scales', 'Authoring scales and problems · each scale\'s kind, 0 to 2 of each, at 1366 and 393' + STAMP3, bw, bh, parts, out)
+    board('P10_Scales', 'Authoring scales and problems · each scale\'s kind, 0 to 2 of each, at 1366 and 393' + STAMP11, bw, bh, parts, out)
 
     # ======== P10_Style
     ST = lambda W, pid, picked, bands, temp='default', open_list=False: dict(trim=40 if W == 1366 else 0, pid=pid, W=W, html=log_only(W, pid, style_region(picked, bands, (STYLE_TEMP.get(picked, '') if temp == 'default' else temp) if W == 1366 else None, open_list)), w=366 if W == 1366 else 393, x0=LOGX if W == 1366 else 0)
@@ -462,7 +467,7 @@ def build_boards(out):
            dict(ST(1366, 'tF3', 'Gelato', BANDS['Gelato']), cap='Picking another style fills it again · Gelato -12.5', sub='picking a style replaces the temperature, as it replaces the bands'),
            dict(ST(1366, 'tG1', None, BANDS['Philadelphia'], temp=''), cap='After Clear on Philadelphia · 1366', sub='the menu reads No style again; the bands stay as they stand, and the serving temperature is emptied (decide-p10-style-change, decide-p10-serve-temp-clear)')]
     parts, bw, bh = flow([r1, r2, r2b]); sizes['P10_Style'] = (bw, bh)
-    board('P10_Style', 'Choosing a style · on a menu, the four styles\' approved balance bands, edited or left blank, at 1366' + STAMP4, bw, bh, parts, out)
+    board('P10_Style', 'Choosing a style · on a menu, the four styles\' approved balance bands, edited or left blank, at 1366' + STAMP12, bw, bh, parts, out)
     return sizes
 
 def measure_html():
@@ -486,7 +491,7 @@ if __name__ == '__main__':
         titles = {'P10_Notebook': 'Notebook · New recipe, its same-name warning and Resume, at 1366 and 393', 'P10_Editor': 'Creation editor · the recipe page with no parent and no Save, at 1366',
                   'P10_Picker': 'Ingredient picker · open under the table, "Not in the library yet", and the row it adds, at 1366 and 393', 'P10_Scales': "Authoring scales and problems · each scale's kind, 0 to 2 of each, at 1366 and 393",
                   'P10_Style': "Choosing a style · on a menu, the four styles' approved balance bands, edited or left blank, at 1366"}
-        STAMPS = {'P10_Editor': STAMP7, 'P10_Picker': STAMP8, 'P10_Style': STAMP4, 'P10_Scales': STAMP3, 'P10_Notebook': STAMP}; x = 0
+        STAMPS = {'P10_Editor': STAMP9, 'P10_Picker': STAMP10, 'P10_Style': STAMP12, 'P10_Scales': STAMP11, 'P10_Notebook': STAMP}; x = 0
         ONLY = sys.argv[3].split(',') if len(sys.argv) > 3 else None      # Sid, 2026-10-25: write only these boards' frames and titles into the index (the others are not republished)
         for gone in ('P10_Machine.dc.html',):      # retired 2026-10-18: drop the board from a canvas.json that still has it
             B.pop(gone, None)

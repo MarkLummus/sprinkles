@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-10-27T14:05:26.693Z"
-last_activity: 2026-10-26
+last_updated: "2026-10-28T00:08:56.409Z"
+last_activity: 2026-10-27
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: 5ce3b0d205773610852f60ba42e48648e66ebc79
+state_head: 641cdecc979becd0ff5573c4150cf4314bdf1e51
 progress:
   total_phases: 5
   completed_phases: 3
@@ -608,6 +608,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261027-9zn | A default Version name reads once in the version identity: Version 1 · Latest on the page, Home and the print foot (decide-p11-default-version-name-repeats, build-once) | 2026-10-27 | 777fccfc | [261027-9zn-decide-p11-default-version-name-repeats-](./quick/261027-9zn-decide-p11-default-version-name-repeats-/) |
 | 206 | Struck target value in Show changes reads at the new value's size (decide-p11-struck-target-size) | 2026-10-27 | 12ffa065 | — |
 | 261027-dt6 | Seed Mango nectar into the ingredient library from Mark's dataset row mango-nectar (converter rerun) | 2026-10-27 | 5ce3b0d2 | [261027-dt6-seed-mango-nectar-into-the-ingredient-li](./quick/261027-dt6-seed-mango-nectar-into-the-ingredient-li/) |
+| 208 | Check rows on Mark's List carry one numbered step per line (check-steps rule) | 2026-10-27 | 641cdecc | — |
 
 ### Roadmap Evolution
 

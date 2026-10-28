@@ -260,7 +260,7 @@ describe('CreationSetup, the Scales and Problems regions (TASTE-01, TASTE-02, de
       const row = card.firstElementChild;
       expect(row.querySelectorAll('label.notebook-field')).toHaveLength(1);
       expect(row.querySelector('label.notebook-field .notebook-caption').textContent).toBe('Name');
-      expect([...row.querySelectorAll('button')].map((button) => button.textContent)).toEqual(['remove']);
+      expect([...row.querySelectorAll('button')].map((button) => button.textContent)).toEqual(['Remove']);
       expect(card.textContent).not.toMatch(/(Scale|Problem) \d/);
       expect([...region(name).querySelectorAll('.mk-cue')].map((node) => node.tagName)).toEqual(['H3', 'H3']);
     }

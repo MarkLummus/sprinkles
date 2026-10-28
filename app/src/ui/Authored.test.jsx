@@ -61,7 +61,7 @@ describe('NoteList — a note while developing (03.1-04, D-13 § 8)', () => {
 
   it('renders a remove control beside the field', () => {
     const markup = renderNoteList({ mode: 'developing' });
-    expect(markup).toMatch(/<button[^>]*>remove<\/button>/);
+    expect(markup).toMatch(/<button[^>]*>Remove<\/button>/);
   });
 
   it('the remove control takes the row remove\'s link look, class text-control (sketch 010 D31)', () => {

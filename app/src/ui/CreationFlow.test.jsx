@@ -880,7 +880,7 @@ describe('Before you start while creating (MAKE-08, decision 19, T-01)', () => {
     await click(buttonByText('Add note'));
     await type(noteField(2), 'Second.');
 
-    expect(removeButtons().map((button) => button.textContent)).toEqual(['remove', 'remove']);
+    expect(removeButtons().map((button) => button.textContent)).toEqual(['Remove', 'Remove']);
     await click(removeButtons()[0]);
     expect(noteTexts()).toEqual(['Second.']);
     expect(noteField(2)).toBeNull();
@@ -1264,7 +1264,7 @@ describe('remove deletes a creation row outright (MAKE-06, decision 5, T-01)', (
     const withCream = root().querySelector('.side-region').textContent;
     noStruckOrStepHeads();
 
-    expect(removeOf(CREAM).textContent).toBe('remove');
+    expect(removeOf(CREAM).textContent).toBe('Remove');
     await click(removeOf(CREAM));
     expect(tableNames()).toEqual([MILK]);
     expect(root().querySelector('.side-region').textContent).not.toBe(withCream);

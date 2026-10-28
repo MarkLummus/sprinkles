@@ -252,7 +252,7 @@ export function CreationSetup({ createDraft, onChange, saveMessages = null }) {
                     errorId={errorId('name')}
                   />
                   <Button className="text-control" onClick={() => handleRemoveScale(scale.key)}>
-                    remove
+                    Remove
                   </Button>
                 </div>
                 <div className="mk-pair">
@@ -316,7 +316,7 @@ export function CreationSetup({ createDraft, onChange, saveMessages = null }) {
                   errorId={`create-problem-${index}-error`}
                 />
                 <Button className="text-control" onClick={() => handleRemoveProblem(index)}>
-                  remove
+                  Remove
                 </Button>
               </div>
             </div>

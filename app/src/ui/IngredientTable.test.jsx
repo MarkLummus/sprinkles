@@ -1032,7 +1032,7 @@ describe('IngredientTable — the pen\'s remove/restore control carries .text-co
       <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
     );
 
-    expect(markup).toMatch(/<button type="button" class="text-control"[^>]*>remove<\/button>/);
+    expect(markup).toMatch(/<button type="button" class="text-control"[^>]*>Remove<\/button>/);
   });
 
   // Sketch 011 decision 26: one gap span immediately before every remove or
@@ -1051,10 +1051,10 @@ describe('IngredientTable — the pen\'s remove/restore control carries .text-co
       <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
     );
 
-    expect(markup).toMatch(/<span class="struck-value">Row B<\/span><span class="ingredient-table__remove-gap"> <\/span><button type="button" class="text-control"[^>]*>restore<\/button>/);
-    const pairs = markup.match(/<span class="ingredient-table__remove-gap"> <\/span><button type="button" class="text-control"[^>]*>(remove|restore)<\/button>/g) ?? [];
+    expect(markup).toMatch(/<span class="struck-value">Row B<\/span><span class="ingredient-table__remove-gap"> <\/span><button type="button" class="text-control"[^>]*>Restore<\/button>/);
+    const pairs = markup.match(/<span class="ingredient-table__remove-gap"> <\/span><button type="button" class="text-control"[^>]*>(Remove|Restore)<\/button>/g) ?? [];
     const spans = markup.match(/class="ingredient-table__remove-gap"/g) ?? [];
-    const links = markup.match(/class="text-control"[^>]*>(remove|restore)<\/button>/g) ?? [];
+    const links = markup.match(/class="text-control"[^>]*>(Remove|Restore)<\/button>/g) ?? [];
     expect(pairs).toHaveLength(2);
     expect(spans).toHaveLength(2);
     expect(links).toHaveLength(2);
@@ -1097,7 +1097,7 @@ describe('IngredientTable — the pen reads style 6 too (sketch 011 Task 2): gra
     expect(markup).toContain('aria-label="Graza Drizzle, grams"');
     expect(markup).toContain('value="48"');
     expect(markup).toContain(' g</span></td><td class="ingredient-table__col-name">Graza Drizzle');
-    expect(markup).toMatch(/Graza Drizzle<span class="ingredient-table__remove-gap"> <\/span><button type="button" class="text-control"[^>]*>remove<\/button>/);
+    expect(markup).toMatch(/Graza Drizzle<span class="ingredient-table__remove-gap"> <\/span><button type="button" class="text-control"[^>]*>Remove<\/button>/);
     expect(markup).not.toContain('ingredient-table__col-data');
     expect(markup).not.toContain('ingredient-table__col-remove');
   });
@@ -1248,7 +1248,7 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
   it('Test A: every portion line runs name, estimated tag, gap, remove link, then the portion line, the link naming its line (sketch 011 decision 44)', () => {
     const markup = renderPen(splitFixture());
     const cells = wholeMilkCells(markup);
-    const link = (step) => `<button type="button" class="text-control" aria-label="remove Whole milk, Step ${step}" tabindex="0">remove</button>`;
+    const link = (step) => `<button type="button" class="text-control" aria-label="remove Whole milk, Step ${step}" tabindex="0">Remove</button>`;
 
     expect(cells).toHaveLength(2);
     expect(cells[0]).toBe(
@@ -1266,10 +1266,10 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
         '<span class="ingredient-table__portion-note">250.4 g of 370.4 g · 46.3% in all</span></td>',
     );
     // Two for Whole milk, one for Heavy cream; the one-portion row keeps its bare button.
-    expect(markup.match(/>remove<\/button>/g) ?? []).toHaveLength(3);
+    expect(markup.match(/>Remove<\/button>/g) ?? []).toHaveLength(3);
     expect(markup.match(/class="ingredient-table__remove-gap"/g) ?? []).toHaveLength(3);
     const cream = markup.match(/<td class="ingredient-table__col-name">Heavy cream[\s\S]*?<\/td>/)[0];
-    expect(cream).toBe(`<td class="ingredient-table__col-name">Heavy cream${GAP}<button type="button" class="text-control" tabindex="0">remove</button></td>`);
+    expect(cream).toBe(`<td class="ingredient-table__col-name">Heavy cream${GAP}<button type="button" class="text-control" tabindex="0">Remove</button></td>`);
     expect(cream).not.toContain('aria-label');
   });
 
@@ -1288,7 +1288,7 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
           '^<td class="ingredient-table__col-name"><span class="struck-value">Whole milk</span>' +
             CHIP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
             GAP +
-            `<button type="button" class="text-control" aria-label="restore Whole milk, Step ${step}" tabindex="0">restore</button>` +
+            `<button type="button" class="text-control" aria-label="restore Whole milk, Step ${step}" tabindex="0">Restore</button>` +
             `<span class="ingredient-table__portion-note">${PORTION_LINES[i]}</span></td>$`,
         ),
       );
@@ -1311,7 +1311,7 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
       chip: cell.indexOf('target-chip'),
       flag: cell.indexOf('<p class="ingredient-table__flag">'),
       gap: cell.indexOf('class="ingredient-table__remove-gap"'),
-      link: cell.indexOf('class="text-control" aria-label="remove Whole milk, Step 1" tabindex="0">remove</button>'),
+      link: cell.indexOf('class="text-control" aria-label="remove Whole milk, Step 1" tabindex="0">Remove</button>'),
       note: cell.indexOf('<span class="ingredient-table__portion-note">'),
     };
     for (const [part, index] of Object.entries(at)) expect(index, part).toBeGreaterThan(-1);
@@ -1346,7 +1346,7 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
       '<td class="ingredient-table__col-name">Row C' +
         CHIP +
         GAP +
-        '<button type="button" class="text-control" tabindex="0">remove</button></td>',
+        '<button type="button" class="text-control" tabindex="0">Remove</button></td>',
     );
     expect(cell).not.toContain('portion-note');
   });
@@ -2511,7 +2511,7 @@ describe('IngredientTable — a pen opened on a version with a line already out 
       expect(stepTwo).not.toContain('ingredient-table__portion-note');
       expect(lastCell(stepTwo)).toBe('');
       expect(gramsCell(stepTwo)).toContain('<span class="struck-value">120 g</span>');
-      expect(stepTwo).toContain('restore');
+      expect(stepTwo).toContain('>Restore</button>');
       expect(note(stepThree)).toBe('250.4 g of 250.4 g · 36.8% in all');
     }
   });

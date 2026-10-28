@@ -290,7 +290,7 @@ describe('IngredientTable, creating: a row in two steps reads one line per step'
     for (const key of ['milk-row:1', 'milk-row:2']) {
       const remove = line(key).querySelector('[data-act="remove"]');
       expect(remove.getAttribute('aria-label')).toBe(`remove ${WHOLE_MILK}`);
-      expect(remove.textContent).toBe('remove');
+      expect(remove.textContent).toBe('Remove');
     }
     act(() => line('milk-row:2').querySelector('[data-act="remove"]').click());
     expect(current.onRemoveRow).toHaveBeenCalledWith('milk-row', 2);
@@ -369,9 +369,9 @@ describe('IngredientTable, creating: the acts line (STRUCT-01 to STRUCT-03, D-15
 
   it('reads remove, Move up, Move down on each row, and Add to step on a row no step uses once a step exists', () => {
     mount(threeRows);
-    expect(actsText('milk-row:1')).toBe('remove · Move up · Move down');
-    expect(actsText('sucrose-row:1')).toBe('remove · Move up · Move down');
-    expect(actsText('cream-row:0')).toBe('remove · Move up · Move down · Add to step');
+    expect(actsText('milk-row:1')).toBe('Remove · Move up · Move down');
+    expect(actsText('sucrose-row:1')).toBe('Remove · Move up · Move down');
+    expect(actsText('cream-row:0')).toBe('Remove · Move up · Move down · Add to step');
     expect(control('cream-row:0', 'add-to-step').getAttribute('aria-label')).toBe('Add Heavy cream, 36% fat to a step');
     expect(line('milk-row:1').querySelector('.ingredient-table__remove-gap')).not.toBeNull();
     for (const button of current.container.querySelectorAll('.mk-row-acts button')) expect(button.getAttribute('tabindex')).toBe('0');
@@ -383,7 +383,7 @@ describe('IngredientTable, creating: the acts line (STRUCT-01 to STRUCT-03, D-15
   it('offers no Add to step while no step exists', () => {
     mount();
     expect(current.container.querySelector('[data-act="add-to-step"]')).toBeNull();
-    expect(actsText('sucrose-row:0')).toBe('remove · Move up · Move down');
+    expect(actsText('sucrose-row:0')).toBe('Remove · Move up · Move down');
   });
 
   it("marks the group's first Move up and last Move down off, focusable, and doing nothing", () => {

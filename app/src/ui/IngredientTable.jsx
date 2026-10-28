@@ -228,14 +228,14 @@ function RemoveRowControl({ removed, onToggle, lineName }) {
     <>
       <span className="ingredient-table__remove-gap">{' '}</span>
       <Button className="text-control" aria-label={lineName ? `${word} ${lineName}` : undefined} onClick={onToggle}>
-        {removed ? 'restore' : 'remove'}
+        {removed ? 'Restore' : 'Remove'}
       </Button>
     </>
   );
 }
 
 // A creating row's acts (Phase 11, STRUCT-01 to STRUCT-03, D-15 to D-17; sketch
-// 014 add-remove-move.html): remove · Move up · Move down, and Add to step for a
+// 014 add-remove-move.html): Remove · Move up · Move down, and Add to step for a
 // row no step uses once a step exists. A Move that cannot act (the group's first
 // row's up, its last row's down) is .mk-off and aria-disabled, stays in the tab
 // order and does nothing. Every line of a split row carries remove, since each
@@ -287,7 +287,7 @@ function RowActs({
   return (
     <span className="mk-row-acts">
       <Button className="text-control" data-act="remove" aria-label={`remove ${name}`} onClick={onRemove}>
-        remove
+        Remove
       </Button>
       {ACT_DOT}
       <Button

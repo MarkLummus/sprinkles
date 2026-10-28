@@ -257,7 +257,7 @@ describe('the Next version pen: the section is always drawn, and its notes are e
     const before = article.querySelector('section.before-region');
     const fields = [...before.querySelectorAll('textarea.prose-field')];
     expect(fields.map((field) => field.getAttribute('aria-label'))).toEqual(['beforeYouStart note 1', 'beforeYouStart note 2']);
-    const removes = [...before.querySelectorAll('button')].filter((button) => button.textContent.trim() === 'remove');
+    const removes = [...before.querySelectorAll('button')].filter((button) => button.textContent.trim() === 'Remove');
     expect(removes).toHaveLength(2);
     for (const button of removes) expect(button.tabIndex).toBe(0);
     expect(article.querySelector('section.method-region').querySelector('textarea[aria-label^="beforeYouStart"]')).toBeNull();
@@ -283,7 +283,7 @@ describe('the Next version pen: the section is always drawn, and its notes are e
     const article = await mountVersion(oliveOilVersion);
     await click(buttonByText(current.container, 'Next version'));
     const before = article.querySelector('section.before-region');
-    const removes = [...before.querySelectorAll('button')].filter((button) => button.textContent.trim() === 'remove');
+    const removes = [...before.querySelectorAll('button')].filter((button) => button.textContent.trim() === 'Remove');
     await click(removes[1]);
     expect(before.querySelectorAll('textarea.prose-field')).toHaveLength(1);
   });

@@ -35,7 +35,7 @@ export function NoteList({ listKey, notes, mode, onChangeNoteText, onRemoveNote 
                 onChange={(event) => onChangeNoteText(listKey, index, event.target.value)}
               />
               <Button className="text-control" onClick={() => onRemoveNote(listKey, index)}>
-                remove
+                Remove
               </Button>
             </span>
           ) : (

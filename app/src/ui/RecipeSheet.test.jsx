@@ -231,8 +231,8 @@ describe('RecipeSheet in creating mode (T-01, D-08a)', () => {
     const markup = renderCreating(rowDraft('60'), null, { creationRows: creationRowsOf('60') });
     expect(markup.match(/<input[^>]*aria-label="Whole milk, 3.5% fat, grams"[^>]*>/g)).toHaveLength(1);
     expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, 3.5% fat, grams"[^>]*value="60"/);
-    expect(markup.match(/>remove<\/button>/g)).toHaveLength(1);
-    expect(markup).not.toContain('restore');
+    expect(markup.match(/>Remove<\/button>/g)).toHaveLength(1);
+    expect(markup).not.toMatch(/restore/i);
     expect(markup).not.toContain('struck-value');
     expect(markup).not.toContain('ingredient-table__step-head');
     expect(markup.match(/<tbody/g)).toHaveLength(1);

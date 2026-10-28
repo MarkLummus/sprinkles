@@ -1259,3 +1259,28 @@ describe('a read-only step reads as the Sheet prints it (plan 11-04)', () => {
     expect(rule.declarations).toMatch(/font-style:\s*normal/);
   });
 });
+
+// Under a coarse pointer the lead-in is 44 px tall; the number sat +8.53 px (WebKit) and +8.00 px (Chrome)
+// above its text before the fix and 0 after (quick 261027-ubi probe).
+describe("the open creation step sets its number on its lead-in's text baseline (bug-p11-step-number-leadin-misaligned, Mark 2026-10-28)", () => {
+  const declarationList = (rule) =>
+    rule.declarations
+      .split(';')
+      .map((d) => d.trim().replace(/\s+/g, ' '))
+      .filter(Boolean);
+
+  test('.notebook .mk-step declares align-items: baseline and nothing else', () => {
+    const rule = rules.find((r) => r.selector === '.notebook .mk-step' && r.media === undefined);
+    expect(rule, 'expected a top-level .notebook .mk-step rule').toBeTruthy();
+    expect(declarationList(rule)).toEqual(['align-items: baseline']);
+  });
+
+  test('no notebook.css rule on the bare .method-step declares align-items, so the reading step and the Preview keep app.css stretch', () => {
+    const offenders = rules.filter(
+      (r) =>
+        r.selector.split(',').some((part) => /\.method-step\s*$/.test(part.trim())) &&
+        /align-items/.test(r.declarations),
+    );
+    expect(offenders.map((r) => r.selector)).toEqual([]);
+  });
+});

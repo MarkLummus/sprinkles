@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-10-28T02:05:54.767Z"
-last_activity: 2026-10-27
+last_updated: "2026-10-28T12:40:50.467Z"
+last_activity: 2026-10-28
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: 6fa632dfe8fbecbd232f7ca43fc88afddb1ace19
+state_head: 30e1057443665cb3066138405431cdac0859e1ef
 progress:
   total_phases: 5
   completed_phases: 3
@@ -610,6 +610,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261027-dt6 | Seed Mango nectar into the ingredient library from Mark's dataset row mango-nectar (converter rerun) | 2026-10-27 | 5ce3b0d2 | [261027-dt6-seed-mango-nectar-into-the-ingredient-li](./quick/261027-dt6-seed-mango-nectar-into-the-ingredient-li/) |
 | 208 | Check rows on Mark's List carry one numbered step per line (check-steps rule) | 2026-10-27 | 641cdecc | — |
 | 261027-ubi | The open creation step's number sits on its lead-in baseline (bug-p11-step-number-leadin-misaligned) | 2026-10-27 | 6fa632df | [261027-ubi-fix-bug-p11-step-number-leadin-misaligne](./quick/261027-ubi-fix-bug-p11-step-number-leadin-misaligne/) |
+| 210 | Phase 12 notes name the parked Low to high scale bug (decide-magnitude-scale-stops-now-or-phase-12) | 2026-10-28 | 30e10574 | — |
 
 ### Roadmap Evolution
 

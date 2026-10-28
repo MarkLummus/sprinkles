@@ -160,8 +160,9 @@ so the next run skips it. Bugs Mark reports are rows here, and he triages them.
    in the background with Mark's
    answer and the rule that Sid adds a look row to Mark's List when the board is ready, queued
    behind a running Sid, never two at once on the README or canvas. A closed row's reply is a
-   note, not a plan. Every `check` row you add is `owner: "mark"` with `needs: "hands"`. Do the
-   same for every command Mark must run himself, the interactive ones (`/gsd-phase`,
+   note, not a plan. Every `check` row you add is `owner: "mark"` with `needs: "hands"`, and its
+   `detail` follows CLAUDE.md's check rule: one numbered step per line, "Expect:" for a result,
+   about ten steps at most, split beyond that. Do the same for every command Mark must run himself, the interactive ones (`/gsd-phase`,
    `/gsd-plan-phase`, `/gsd-debug`, `/impeccable ...`), and never for a `/gsd-fast`, `/gsd-quick`
    or `/gsd-quick-batch`, which you run: add a new open todo row titled "Run: " plus the
    command's purpose, with

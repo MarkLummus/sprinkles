@@ -123,7 +123,13 @@ Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `item
   - `look`: he views something that exists (a board, a PDF, wording) and approves it or asks for
     a change. Usually `needs: "answer"`.
   - `check`: he does something on a device or on paper and reports pass or fail. `needs: "hands"`.
-    The title says what he will see, with no "Check:" prefix.
+    The title says what he will see, with no "Check:" prefix. Its `detail` is one step per line,
+    each line numbered `1. `, `2. ` and so on, one short sentence Mark can read at arm's length on
+    the iPad, with an expected result starting "Expect:" where a step has one; set-up lines before
+    the first step and the pass rule after the last stay unnumbered. At most about ten steps per
+    row: a longer check is split into rows that name their order in `detail` and cite each other
+    in `source`. The page renders numbered lines as a list and offers Copy steps, so never write
+    steps inline as (1) (2).
   - `todo`: work to do. `owner: "mark"` with `needs: "hands"`, titled "Run:", for an interactive
     command he runs (never for `/gsd-fast`, `/gsd-quick` or `/gsd-quick-batch`, which Claude runs).
     On a todo of his own, Mark writes a note and leaves the row open; `/marks-list` routes the

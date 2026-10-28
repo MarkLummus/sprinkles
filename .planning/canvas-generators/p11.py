@@ -67,6 +67,11 @@ import places as PL
 #   words of the uses sentence; beside the sentence-case controls the creation editor added, Mark read the mix as a defect. Drawn: Remove, Done, Change the ingredients, Add a purpose,
 #   Add an aside, on every board that draws a step or a row (all four); the aria-labels are unchanged. The app follows by one /gsd-fast after look-p11-link-case (CreationSteps.jsx,
 #   IngredientTable.jsx, Method.jsx, Authored.jsx, CreationSetup.jsx); sketch 013's boards redraw their remove the same day (p10.py).
+# Sid, 2026-10-28 (bug-p11-step-number-leadin-misaligned, Mark: fix; built in 438dc880 as notebook.css .notebook .mk-step { align-items: baseline }): the open creation step's number sits
+#   on its lead-in's text baseline. The boards had drawn the number's top and the lead-in field's top equal (decision 32's "one top"), which with a coarse pointer, where the 44 px field
+#   centres its 13 px text, left the number 8.53 px (WebKit) / 8.00 px (Chrome) above the text baseline in the built app; aligned first baselines read 0.00 in both. Drawn back as one
+#   rule in P11_CSS (a keyword, no token) so the boards stay the authority rather than inheriting it from the inlined app CSS. The version pen's open step is drawn on no P11 board and
+#   keeps its top alignment: bug-p11-pen-step-number-leadin-misaligned is not yet answered.
 #   python3 p11.py measure <out dir> ; node p11-measure.mjs <out dir>/measure.html ; python3 p11.py <canvas.json read from the artifact root> <out dir> [P11_Save,P11_Steps]
 MEAS = json.load(open(HERE + '/p11-measure.json')) if os.path.exists(HERE + '/p11-measure.json') else {}
 p10.MEAS = MEAS
@@ -79,8 +84,12 @@ P11_CSS = '''
 .mk-step .prose-field--lead-in{font-weight:700}
 .mk-step .method-step__targets{align-items:center}
 .mk-step .method-step__targets .text-control{margin-left:var(--gap-xs)}
-/* no box (decide-open-step-box, drop; decision 32): the lead-in is the body's first line, so it takes the number's top as the printed lead-in does (.method-step__lead has no margin) */
+/* no box (decide-open-step-box, drop; decision 32): the lead-in is the body's first line (.method-step__lead has no margin) */
 .mk-step .method-step__body > .method-step__field:first-child{margin-top:0}
+/* the number on its lead-in's text baseline (bug-p11-step-number-leadin-misaligned, Mark 2026-10-28, fix; the app's rule is notebook.css .notebook .mk-step, 438dc880): the li is
+   app.css's .method-step grid; with a coarse pointer the 44 px lead-in field centres its text, so equal tops left the number 8.53 (WebKit) / 8.00 (Chrome) px above the baseline.
+   The version pen's open step (no P11 board draws it) keeps its tops: bug-p11-pen-step-number-leadin-misaligned is not yet answered */
+.mk-step{align-items:baseline}
 /* Preview step (look-p11-preview-step approved; decision 34): the step as the Sheet prints it, under its fields, set off by the Sheet's hairline at the left; its cue in the checklist's legend face */
 .mk-preview{margin:var(--gap-s) 0 0;padding:0 0 0 var(--gap-s);border-left:var(--rule-graduation) solid var(--sheet-ink)}
 .mk-preview__cue{margin:0 0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--sheet-type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em}
@@ -362,7 +371,7 @@ STAMP14 = STAMP12[:-1] + R27 + 'the target chip\'s remove, "600.0 g" on the spli
 STAMP15 = STAMP13[:-1] + R27 + 'the target chip\'s remove)'
 STAMP16 = STAMP11[:-1] + R27 + 'the target chip\'s remove, Print sheet after Edit, History as "Only this version so far")'
 STAMP17 = STAMP11[:-1] + R27 + 'Print sheet after Edit, History as one line, the target chip\'s remove, "Awaiting tasting" once a batch exists, three panels added: Show changes with a struck target at the value\'s size (decide-p11-struck-target-size), Resume editing on the page and on the Notebook row)'
-R28 = '; redrawn 2026-10-28: every inline control in sentence case, Remove, Done, Change the ingredients, Add a purpose, Add an aside (bug-p11-link-case-mixed))'
+R28 = '; redrawn 2026-10-28: every inline control in sentence case, Remove, Done, Change the ingredients, Add a purpose, Add an aside (bug-p11-link-case-mixed); the open step\'s number on its lead-in\'s baseline (bug-p11-step-number-leadin-misaligned))'
 STAMP18, STAMP19, STAMP20, STAMP21 = (s[:-1] + R28 for s in (STAMP14, STAMP15, STAMP16, STAMP17))
 STAMPS = {'P11_Steps': STAMP18, 'P11_Structure': STAMP19, 'P11_Save': STAMP20, 'P11_FirstVersion': STAMP21}
 TITLES = {'P11_Steps': 'Instructions while creating · a step, its targets, the rows it uses and in what portions, at 1366',

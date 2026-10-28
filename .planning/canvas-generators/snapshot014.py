@@ -21,6 +21,9 @@
 # 2026-10-27: the build's settled decisions and Mark's answers of 2026-10-27 drawn back (sketch 014 decisions 5 to 7; the chip's remove, Print sheet, the one-line History, "600.0 g",
 # three P11_FirstVersion panels), all four boards republished as canvas version 492 (1793099733-26a6) and all four files re-taken from the served files the same way:
 # instructions-steps.html 44249bb6, add-remove-move.html e3f5b6b3, save.html 0144edf9, first-version.html f547c81d (served = generated, cmp checked against boards/).
+# 2026-10-28: every inline control in sentence case (bug-p11-link-case-mixed; sketch 014 decision 8) and the open step's number on its lead-in's baseline (bug-p11-step-number-leadin-misaligned;
+# decision 9), all four boards republished as canvas version 494 (1793154101-189e) and all four files re-taken from the served files the same way (served = generated, cmp checked against boards/):
+# instructions-steps.html 43e33eda, add-remove-move.html e714dbc2, save.html 1a78bfb9, first-version.html 07adb0ec.
 import sys, os
 SRC, DEST = sys.argv[1], sys.argv[2]
 SERVED = {'P11_Steps': 'instructions-steps.html', 'P11_Structure': 'add-remove-move.html', 'P11_Save': 'save.html', 'P11_FirstVersion': 'first-version.html'}

@@ -24,6 +24,9 @@
 # 2026-10-28: every inline control in sentence case (bug-p11-link-case-mixed; sketch 014 decision 8) and the open step's number on its lead-in's baseline (bug-p11-step-number-leadin-misaligned;
 # decision 9), all four boards republished as canvas version 494 (1793154101-189e) and all four files re-taken from the served files the same way (served = generated, cmp checked against boards/):
 # instructions-steps.html 43e33eda, add-remove-move.html e714dbc2, save.html 1a78bfb9, first-version.html 07adb0ec.
+# 2026-10-28, later: the number on its lead-in's baseline on the reading steps too (Mark on look-p11-step-baseline-redraw: "we should be consistent"; sketch 014 decision 10; P11_CSS's rule
+# widened from .mk-step to .method-step), all four boards republished as canvas version 496 (1793191521-6988; P11_Structure changes in that inlined rule only) and all four files re-taken
+# from the served files the same way (served = generated, cmp checked against boards/): instructions-steps.html babf5258, add-remove-move.html bfeba9c9, save.html e58405b9, first-version.html e8c70708.
 import sys, os
 SRC, DEST = sys.argv[1], sys.argv[2]
 SERVED = {'P11_Steps': 'instructions-steps.html', 'P11_Structure': 'add-remove-move.html', 'P11_Save': 'save.html', 'P11_FirstVersion': 'first-version.html'}

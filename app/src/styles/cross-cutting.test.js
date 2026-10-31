@@ -1274,3 +1274,36 @@ describe('the Sheet title field in the pen (sketch 011 decision 35 A; quick 2610
     expect(tokensSource).toMatch(/--sheet-leading-title:\s*1\.15\s*;/);
   });
 });
+
+// Before the rule, the reading step's lead baseline sat 3.97 px (WebKit) / 4.00 px (Chrome) above the number's,
+// and the pen's open step's lead-in sat 8.53 / 8.00 px below it under a coarse pointer; after it, both are 0
+// (quick 261031-fdd; the 261027-ubi probe, re-based). The rule replaces notebook.css's open-step rule from 261027-ubi.
+describe("every step sets its number on its lead's text baseline (sketch 014 decision 10; look-p11-reading-step-baseline, Mark 2026-10-31)", () => {
+  const declarationList = (rule) =>
+    rule.declarations
+      .split(';')
+      .map((d) => d.trim().replace(/\s+/g, ' '))
+      .filter(Boolean);
+
+  test('the top-level .method-step rule is the grid with align-items: baseline and nothing else', () => {
+    const rule = ruleFor('.method-step');
+    expect(rule, 'expected a top-level .method-step rule').toBeTruthy();
+    expect(declarationList(rule)).toEqual([
+      'display: grid',
+      'grid-template-columns: auto 1fr',
+      'gap: var(--gap-s)',
+      'align-items: baseline',
+    ]);
+  });
+
+  test('no other app.css or notebook.css rule sets the step li alignment', () => {
+    const notebookRules = readAllRules(readFileSync(path.join(STYLES_DIR, 'notebook.css'), 'utf8'));
+    const offenders = [...rules, ...notebookRules].filter(
+      (r) =>
+        !(r.selector === '.method-step' && r.media === undefined) &&
+        /align-items/.test(r.declarations) &&
+        r.selector.split(',').some((part) => /\.(method-step|mk-step)\s*$/.test(part.trim())),
+    );
+    expect(offenders.map((r) => r.selector)).toEqual([]);
+  });
+});

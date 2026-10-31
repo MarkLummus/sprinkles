@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-10-28T12:57:43.932Z"
+last_updated: "2026-10-31T15:17:56.630Z"
 last_activity: 2026-10-28
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: dcafd03d7693d4b9a4b78012457e132583fefa7a
+state_head: cda2282b2bd47398c7e883842703ffb6785e3dda
 progress:
   total_phases: 5
   completed_phases: 3
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-21)
 Phase: 11 (Steps, structure, save and print) — EXECUTING
 Plan: 1 of 14
 Status: Executing Phase 11
-Last activity: 2026-10-28 - Completed quick task 261028-c0v: inline text controls in sentence case without articles
+Last activity: 2026-10-31 - Completed quick task 261031-fdd: every step number on its lead-in baseline
 
 Progress: [██████░░░░] 60%
 
@@ -612,6 +612,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261027-ubi | The open creation step's number sits on its lead-in baseline (bug-p11-step-number-leadin-misaligned) | 2026-10-27 | 6fa632df | [261027-ubi-fix-bug-p11-step-number-leadin-misaligne](./quick/261027-ubi-fix-bug-p11-step-number-leadin-misaligne/) |
 | 210 | Phase 12 notes name the parked Low to high scale bug (decide-magnitude-scale-stops-now-or-phase-12) | 2026-10-28 | 30e10574 | — |
 | 261028-c0v | Inline text controls read sentence case with no articles (look-p11-link-case, bug-p11-link-case-mixed) | 2026-10-28 | dcafd03d | [261028-c0v-inline-text-controls-read-sentence-case-](./quick/261028-c0v-inline-text-controls-read-sentence-case-/) |
+| 261031-fdd | Step numbers sit on their lead-in baseline on every step (look-p11-reading-step-baseline; closes bug-p11-pen-step-number-leadin-misaligned) | 2026-10-31 | cda2282b | [261031-fdd-step-numbers-sit-on-their-lead-in-baseli](./quick/261031-fdd-step-numbers-sit-on-their-lead-in-baseli/) |
 
 ### Roadmap Evolution
 

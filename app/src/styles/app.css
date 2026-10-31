@@ -1284,7 +1284,7 @@ textarea {
   gap: var(--sheet-step-acts-gap);
 }
 
-/* The on-demand text controls (D-23, D-25): "done differently" — sitting
+/* The on-demand text controls (D-23, D-25): "Done differently" — sitting
    in the record pen's own flow, one per step (StepRecordingControls).
    The plan pen's own "add a purpose"/"add an aside" triggers moved onto
    the controls line above (sketch 011 Task 3) and read plain

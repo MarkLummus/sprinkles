@@ -299,7 +299,7 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
   });
 });
 
-// The orphaned-row flag's "remove this row" acts on every line of the row
+// The orphaned-row flag's "Remove this row" acts on every line of the row
 // (plan 03.6-02 decision 4): one pure function, nothing else touched.
 describe('toggleDraftRowLines — the orphan flag takes every line of a row out, or puts every line back', () => {
   const lines = (...flags) => ({ portions: flags.map((removed, i) => ({ step: i + 1, grams: String(10 * (i + 1)), removed })) });

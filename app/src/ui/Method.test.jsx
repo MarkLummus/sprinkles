@@ -69,7 +69,7 @@ describe('Method — a step carrying a changed line, in the reading state', () =
 });
 
 // The batch pen's per-step line, on demand (D-25): the Skipped checkbox is
-// always present; the "done differently" line sits behind its own opener,
+// always present; the "Done differently" line sits behind its own opener,
 // following the same collapse-on-blur shape task 2 wrote for purpose and
 // aside. Amend's own baseline (a stepChanges entry that already holds a
 // line) is what opens the field with no click at all.
@@ -78,7 +78,7 @@ describe('Method — the batch pen\'s per-step line, on demand (D-25)', () => {
     const markup = renderToStaticMarkup(
       <Method steps={[unstruckStep]} stepChanges={{}} mode="recording" onChangeStepChange={() => {}} />,
     );
-    expect(markup).toMatch(/<button[^>]*>done differently<\/button>/);
+    expect(markup).toMatch(/<button[^>]*aria-label="Step [^"]*, done differently"[^>]*>Done differently<\/button>/);
     expect(markup).not.toMatch(/<input[^>]*aria-label="Step [^"]*, done differently"/);
   });
 
@@ -93,7 +93,7 @@ describe('Method — the batch pen\'s per-step line, on demand (D-25)', () => {
     );
     expect(markup).toMatch(/<input[^>]*aria-label="Step [^"]*, done differently"[^>]*value="Used vanilla instead"/);
     expect(markup).toContain('<span>Done differently</span>');
-    expect(markup).not.toMatch(/<button[^>]*>done differently<\/button>/);
+    expect(markup).not.toMatch(/<button[^>]*>Done differently<\/button>/);
   });
 
   it("names the Skipped checkbox's accessible name by the step's own number", () => {
@@ -1462,7 +1462,7 @@ describe('Method — every button and checkbox carries an explicit tabindex (qui
     }
   });
 
-  it('a recording step renders the Skipped checkbox and the done differently button, each tabindex="0"', () => {
+  it('a recording step renders the Skipped checkbox and the Done differently button, each tabindex="0"', () => {
     const markup = renderToStaticMarkup(
       <Method steps={[unstruckStep]} stepChanges={{}} mode="recording" onChangeStepChange={() => {}} />,
     );

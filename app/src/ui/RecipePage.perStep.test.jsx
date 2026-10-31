@@ -220,7 +220,7 @@ describe('a press survives Save as a boolean on the line alone (decision 51, pla
     await click(buttonByText(container, 'Next version'));
     await click(buttonByLabel('remove Whole milk, Step 2'));
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
-    await click(buttonByText(container, 'Save as a new version'));
+    await click(buttonByText(container, 'Save as new version'));
     await flush(() => store.createVersion.mock.calls.length > 0);
 
     expect(store.createVersion).toHaveBeenCalledTimes(1);
@@ -249,7 +249,7 @@ describe('a saved version with a line out reads without it (decision 51, plan 03
     await click(buttonByText(container, 'Next version'));
     await click(buttonByLabel('remove Whole milk, Step 2'));
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
-    await click(buttonByText(container, 'Save as a new version'));
+    await click(buttonByText(container, 'Save as new version'));
     await flush(() => store.createVersion.mock.calls.length > 0);
     const savedId = store.createVersion.mock.calls[0][0].id;
     // The MemoryRouter lands on the saved child's route; wait for the reading state.
@@ -315,7 +315,7 @@ function struck(cell) {
 
 async function saveChildAndShowChanges(container) {
   await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
-  await click(buttonByText(container, 'Save as a new version'));
+  await click(buttonByText(container, 'Save as new version'));
   await flush(() => store.createVersion.mock.calls.length > 0);
   await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
   await click(buttonByText(current.container, 'Show changes'));
@@ -495,7 +495,7 @@ describe('Show changes strikes a removed step with its lines (decision 51, plan 
       [...container.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Step 2, remove'),
     );
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'no slurry');
-    await click(buttonByText(container, 'Save as a new version'));
+    await click(buttonByText(container, 'Save as new version'));
     await flush(() => store.createVersion.mock.calls.length > 0);
     await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
     await click(buttonByText(current.container, 'Show changes'));
@@ -536,7 +536,7 @@ async function openPenOnChildWithStepTwoMilkOut() {
   await click(buttonByText(container, 'Next version'));
   await click(buttonByLabel('remove Whole milk, Step 2'));
   await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
-  await click(buttonByText(container, 'Save as a new version'));
+  await click(buttonByText(container, 'Save as new version'));
   await flush(() => store.createVersion.mock.calls.length > 0);
   await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
   await click(buttonByText(current.container, 'Next version'));
@@ -598,18 +598,18 @@ describe('a refused save keeps the pen and everything typed in it (CODE-01, D-04
       new SheetCodeError([{ kind: 'clash', code: 'ZZZZ-0000', versionId: 'x', otherVersionId: 'y' }]),
     );
 
-    await click(buttonByText(container, 'Save as a new version'));
+    await click(buttonByText(container, 'Save as new version'));
     await flush(() => statusText().includes(VERSION_SAVE_ERROR));
 
     expect(statusText()).toContain(VERSION_SAVE_ERROR);
     expect(store.createVersion).toHaveBeenCalledTimes(1);
     expect(field('Version name').value).toBe('less milk');
     expect(field('Whole milk, grams, portion 1').value).toBe('100');
-    expect(buttonByText(current.container, 'Save as a new version')).not.toBeNull();
+    expect(buttonByText(current.container, 'Save as new version')).not.toBeNull();
     expect(store.versions.map((version) => version.id)).toEqual([VERSION]);
     expect(store.saveVersion).not.toHaveBeenCalled();
 
-    await click(buttonByText(current.container, 'Save as a new version'));
+    await click(buttonByText(current.container, 'Save as new version'));
     await flush(() => store.createVersion.mock.calls.length > 1);
 
     expect(store.createVersion).toHaveBeenCalledTimes(2);
@@ -629,7 +629,7 @@ describe('A blocked save focuses and marks the blocked line (Mark\'s List per-st
     store.createVersion.mockClear();
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk again');
     await setValue(container.querySelector('input[aria-label="Whole milk, grams, portion 2"]'), '');
-    await click(buttonByText(container, 'Save as a new version'));
+    await click(buttonByText(container, 'Save as new version'));
 
     expect(document.activeElement.getAttribute('aria-label')).toBe('Whole milk, grams, portion 2');
     expect(rowOf('remove Whole milk, Step 3').classList.contains('is-marked')).toBe(true);
@@ -644,7 +644,7 @@ describe('A blocked save focuses and marks the blocked line (Mark\'s List per-st
     await click(buttonByText(container, 'Next version'));
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
     await setValue(container.querySelector('input[aria-label="Whole milk, grams, portion 1"]'), '');
-    await click(buttonByText(container, 'Save as a new version'));
+    await click(buttonByText(container, 'Save as new version'));
 
     expect(document.activeElement.getAttribute('aria-label')).toBe('Whole milk, grams, portion 1');
     expect(rowOf('remove Whole milk, Step 2').classList.contains('is-marked')).toBe(true);
@@ -667,7 +667,7 @@ describe('A blocked save prints its sentence in the blocked line (sketch 011 dec
     await click(buttonByText(container, 'Next version'));
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'v2');
     await setValue(field(label), value);
-    await click(buttonByText(container, 'Save as a new version'));
+    await click(buttonByText(container, 'Save as new version'));
     return container;
   }
 
@@ -731,7 +731,7 @@ describe('A blocked save prints its sentence in the blocked line (sketch 011 dec
     const container = await mountAt(VERSION_PATH);
     await click(buttonByText(container, 'Next version'));
     await setValue(field('Heavy cream, grams'), '');
-    await click(buttonByText(container, 'Save as a new version'));
+    await click(buttonByText(container, 'Save as new version'));
 
     expect(container.querySelector('#version-field-error').textContent).toBe('Enter a version.');
     expect(field('Version name').getAttribute('aria-invalid')).toBe('true');
@@ -762,7 +762,7 @@ describe('Recording reads like the Sheet when one line is left (sketch 011 decis
     await click(buttonByText(container, 'Next version'));
     await click(buttonByLabel('remove Whole milk, Step 2'));
     await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
-    await click(buttonByText(container, 'Save as a new version'));
+    await click(buttonByText(container, 'Save as new version'));
     await flush(() => store.createVersion.mock.calls.length > 0);
     const savedId = store.createVersion.mock.calls[0][0].id;
     await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByLabel('remove Whole milk, Step 2') === null);
@@ -858,7 +858,7 @@ describe('Save over this version is guarded by the store (T-11-63)', () => {
     expect(store.saveVersion).toHaveBeenCalledTimes(1);
     expect(field('Version name').value).toBe('less milk');
     expect(field('Whole milk, grams, portion 1').value).toBe('100');
-    expect(buttonByText(current.container, 'Save as a new version')).not.toBeNull();
+    expect(buttonByText(current.container, 'Save as new version')).not.toBeNull();
     expect(buttonByText(current.container, 'Save over this version')).not.toBeNull();
     expect(store.versions.map((version) => version.versionLabel)).toEqual([oliveOilVersion.versionLabel]);
   });
@@ -872,7 +872,7 @@ describe('Save over this version is guarded by the store (T-11-63)', () => {
 
     expect(statusText()).toContain(VERSION_HAS_BATCH_STATUS);
     expect(field('Version name').value).toBe('less milk');
-    expect(buttonByText(current.container, 'Save as a new version')).not.toBeNull();
+    expect(buttonByText(current.container, 'Save as new version')).not.toBeNull();
   });
 
   it('still shows VERSION_SAVE_ERROR for any other rejection', async () => {

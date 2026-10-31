@@ -109,7 +109,7 @@ export function isPenDraftDirty(mode, penDraft, version) {
   return false;
 }
 
-// The orphaned-row flag's "remove this row" acts on every line of the
+// The orphaned-row flag's "Remove this row" acts on every line of the
 // row (plan 03.6-02 decision 4): if every line is out it puts every line
 // back in, otherwise it takes every line out. Pure — returns a new draft
 // row and touches nothing but the lines' removed flags.
@@ -291,7 +291,7 @@ export function setPenGrams(draft, rowId, portionIndex, value) {
   };
 }
 
-// Serves the orphaned-row flag's "remove this row" control only: it acts
+// Serves the orphaned-row flag's "Remove this row" control only: it acts
 // on every line of the row through toggleDraftRowLines, does not clear
 // any grams and does not touch any step (route-recipe-version.md § 3).
 // Removal never cascades, so this is always the maker's own tap.

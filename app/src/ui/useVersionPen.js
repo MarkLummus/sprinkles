@@ -25,7 +25,7 @@ export const VERSION_BLOCKED_STATUS = 'Check the version. Your changes have been
 // The store's refusals of Save over this version (T-11-63): another tab saved over the
 // version, or recorded a batch on it, since this page read it.
 export const VERSION_CHANGED_STATUS = 'This version changed in another tab. Cancel, then reload the page.';
-export const VERSION_HAS_BATCH_STATUS = 'This version has a batch now. Save as a new version instead.';
+export const VERSION_HAS_BATCH_STATUS = 'This version has a batch now. Save as new version instead.';
 
 // The version-pen job (Phase 8 cut 5, EDIT-05, D-08): the plan's pen state
 // (usePenDraft), the save lock, the day the pen opened, start and cancel, the
@@ -90,7 +90,7 @@ export function useVersionPen({ version, versions, batches, setMode, setVersion,
     versionPen.edit(setPenGrams, rowId, portionIndex, value);
   }
 
-  // Serves the orphaned-row flag's "remove this row" control only: it acts
+  // Serves the orphaned-row flag's "Remove this row" control only: it acts
   // on every line of the row through toggleDraftRowLines, does not clear
   // any grams and does not touch any step (route-recipe-version.md § 3).
   // Removal never cascades, so this is always the maker's own tap.

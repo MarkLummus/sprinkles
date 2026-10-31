@@ -296,7 +296,7 @@ export function VersionRow({
               Cancel
             </Button>
             <Button className="notebook-action" disabled={saveAction !== null} onClick={onSaveAsNewVersion}>
-              {saveAction === 'new' ? 'Saving new version…' : 'Save as a new version'}
+              {saveAction === 'new' ? 'Saving new version…' : 'Save as new version'}
             </Button>
             {canSaveOver && (
               <Button className="notebook-action--outline" disabled={saveAction !== null} onClick={onSaveOverVersion}>

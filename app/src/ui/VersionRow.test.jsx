@@ -259,18 +259,18 @@ describe('VersionRow — the ceremony (Task 3, 1600-pen.html)', () => {
     expect(markup).toMatch(/<option value="" selected="">no batch cited<\/option>/);
   });
 
-  it('renders Cancel (outline) then Save as a new version (filled) in DOM order, with Save over this version last only when canSaveOver', () => {
+  it('renders Cancel (outline) then Save as new version (filled) in DOM order, with Save over this version last only when canSaveOver', () => {
     const withoutOver = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [augustSecondBatch], canSaveOver: false });
     const cancelIndex = withoutOver.indexOf('Cancel');
-    const saveIndex = withoutOver.indexOf('Save as a new version');
+    const saveIndex = withoutOver.indexOf('Save as new version');
     expect(cancelIndex).toBeGreaterThanOrEqual(0);
     expect(saveIndex).toBeGreaterThan(cancelIndex);
     expect(withoutOver).not.toContain('Save over this version');
     expect(withoutOver).toMatch(/<button type="button" class="notebook-action--outline"[^>]*>Cancel<\/button>/);
-    expect(withoutOver).toMatch(/<button type="button" class="notebook-action"[^>]*>Save as a new version<\/button>/);
+    expect(withoutOver).toMatch(/<button type="button" class="notebook-action"[^>]*>Save as new version<\/button>/);
 
     const withOver = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    const saveAsIndex = withOver.indexOf('Save as a new version');
+    const saveAsIndex = withOver.indexOf('Save as new version');
     const saveOverIndex = withOver.indexOf('Save over this version');
     expect(saveOverIndex).toBeGreaterThan(saveAsIndex);
     expect(withOver).toMatch(/<button type="button" class="notebook-action--outline"[^>]*>Save over this version<\/button>/);
@@ -658,7 +658,7 @@ describe('VersionRow — every button and checkbox carries an explicit tabindex 
     ...((markup.match(/<input\b[^>]*>/g) ?? []).filter((tag) => /type="checkbox"/.test(tag))),
   ];
 
-  it('developing with one citable batch renders the checkbox, Cancel and Save as a new version, each tabindex="0"', () => {
+  it('developing with one citable batch renders the checkbox, Cancel and Save as new version, each tabindex="0"', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [augustSecondBatch], canSaveOver: false });
     const tags = controlTags(markup);
     expect(tags).toHaveLength(3);

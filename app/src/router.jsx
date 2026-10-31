@@ -24,7 +24,7 @@ import { PageNoticeContext } from './ui/PageNotice.jsx';
 // then pressing Save batch — amendingBatchId still names A's batch while
 // `batches` has reloaded to B's, so `batches.find` returns undefined and
 // recordAmendment throws reading `amendedAt` off it; (b) developing
-// version A, landing on sibling B, then pressing Save as a new version —
+// version A, landing on sibling B, then pressing Save as new version —
 // siblings share row ids because createChildVersion clones the parent's
 // rows including their ids, so buildPenFields finds a draft row for every
 // row of B and silently writes a child OF B carrying A's grams, method,

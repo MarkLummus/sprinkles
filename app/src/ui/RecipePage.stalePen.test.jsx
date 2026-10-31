@@ -217,7 +217,7 @@ describe('a Next version pen left open in another tab (STRUCT-04, D-06)', () => 
     expect(unhandled).toEqual([]);
   });
 
-  it('cannot save over a version that gained a batch since its page read it: it says Save as a new version instead and writes nothing', async () => {
+  it('cannot save over a version that gained a batch since its page read it: it says Save as new version instead and writes nothing', async () => {
     const { version } = await storeVanilla();
     const tabB = await openStalePen(catalog);
 
@@ -229,7 +229,7 @@ describe('a Next version pen left open in another tab (STRUCT-04, D-06)', () => 
     await settle(() => formStatusOf(tabB) !== '');
 
     expect(formStatusOf(tabB)).toBe(VERSION_HAS_BATCH_STATUS);
-    expect(VERSION_HAS_BATCH_STATUS).toBe('This version has a batch now. Save as a new version instead.');
+    expect(VERSION_HAS_BATCH_STATUS).toBe('This version has a batch now. Save as new version instead.');
     const stored = await repository.getVersion(VERSION_ID);
     expect(sameRecord(stored, version)).toBe(true);
     expect(penOf(tabB)).not.toBeNull();

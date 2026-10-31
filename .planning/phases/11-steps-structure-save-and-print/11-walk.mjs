@@ -532,7 +532,7 @@ SCENARIOS.push([
   'version-pen-blocked',
   async (walk) => {
     const { page } = walk;
-    const save = () => button(page.locator(VERSION_PEN), 'Save as a new version').click();
+    const save = () => button(page.locator(VERSION_PEN), 'Save as new version').click();
     await walk.open(VERSION_ROUTE);
     await openNextVersionPen(page);
     await walk.step('pen-opened');
@@ -701,7 +701,7 @@ SCENARIOS.push([
     await openNextVersionPen(page);
     await page.fill(NAME_FIELD, 'walk child');
     await page.fill(MILK_FIELD, '95');
-    await button(page.locator(VERSION_PEN), 'Save as a new version').click();
+    await button(page.locator(VERSION_PEN), 'Save as new version').click();
     await page.waitForFunction(() => location.pathname.endsWith('00000000-0000-4000-8000-000000000001'), null, { timeout: 5000 });
     await page.waitForSelector('.notebook');
     const saved = await walk.step('saved-as-new', { stores: true });
@@ -1163,7 +1163,7 @@ SCENARIOS.push([
 ]);
 
 // A kept edit whose version gained a batch in another tab (D-06). The second page is loaded BEFORE
-// the edit draft exists, so it offers Record a batch; its batch is recorded through the real record
+// the edit draft exists, so it offers Record batch; its batch is recorded through the real record
 // pen, whose production discard after a batch save must leave the edit draft alone (T-11-55).
 SCENARIOS.push([
   'edit-stale',
@@ -1175,7 +1175,7 @@ SCENARIOS.push([
     const second = await page.context().newPage();
     await second.goto(`${origin}${pageRoute(made)}`, { waitUntil: 'networkidle' });
     await second.waitForSelector('.notebook-version__acts');
-    await second.getByRole('button', { name: 'Record a batch' }).first().waitFor();
+    await second.getByRole('button', { name: 'Record batch' }).first().waitFor();
 
     await walk.open(editRoute(made));
     await page.waitForSelector('form[aria-label="Edit version"]');
@@ -1189,7 +1189,7 @@ SCENARIOS.push([
     walk.expectSeedKept(kept, made.recipeId);
 
     // The second tab records the batch through the real record pen.
-    await clickUntil(second, () => second.getByRole('button', { name: 'Record a batch' }).first(), PEN, 'open the record pen in the second tab');
+    await clickUntil(second, () => second.getByRole('button', { name: 'Record batch' }).first(), PEN, 'open the record pen in the second tab');
     await second.locator(CHURN_DATE).first().fill('2026-10-09');
     await second.fill(OUT_OF_MACHINE, '-6');
     await second.fill(CHURN_DURATION, '30');
@@ -1309,7 +1309,7 @@ SCENARIOS.push([
 // 11-13: a kept edit survives a reload and shows everywhere (STRUCT-04, D-04, D-05, D-19). Vanilla is
 // made through makeVanilla, its edit address is opened and the Recipe name changed; after a reload
 // the edit route restores it, the version page reads Resume editing with no Next version and no
-// Record a batch, Import is refused naming the recipe with no file chooser, and the Notebook's
+// Record batch, Import is refused naming the recipe with no file chooser, and the Notebook's
 // Vanilla row holds Resume editing with no draft row and the New recipe entry still offered.
 // ---------------------------------------------------------------------------
 const IMPORT_BUTTON = '.shell__tools button';
@@ -1357,12 +1357,12 @@ SCENARIOS.push([
       return {
         resume: names.filter((name) => name === 'Resume editing').length,
         next: names.filter((name) => name === 'Next version').length,
-        record: names.filter((name) => name.startsWith('Record a batch') || name.startsWith('Record another')).length,
+        record: names.filter((name) => name.startsWith('Record batch') || name.startsWith('Record another')).length,
       };
     });
     walk.expect(acts.resume >= 1, `the version page offers Resume editing (${acts.resume})`);
     walk.expect(acts.next === 0, `the version page offers no Next version (${acts.next})`);
-    walk.expect(acts.record === 0, `the version page offers no Record a batch (${acts.record})`);
+    walk.expect(acts.record === 0, `the version page offers no Record batch (${acts.record})`);
     walk.expectSeedKept(onPage, made.recipeId);
 
     chooserOpened = false;

@@ -408,7 +408,7 @@ function rowHoldingLine(activeById, rowId, portionIndex) {
 
 // The orphaned-row flag (route-recipe-version.md § 3): beside the row's
 // name when orphanedRows names it, naming the removed step(s) by lead-in
-// alone, with one "remove this row" control (G-03-14, D-UAT-5) — every
+// alone, with one "Remove this row" control (G-03-14, D-UAT-5) — every
 // causing step here is removed by construction (removedStepsUsing filters
 // on step.removed), so the number it once had would read as though it
 // were live; this flag never presents one. Tapping it takes every line of
@@ -429,7 +429,7 @@ function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
     <p className="ingredient-table__flag">
       {`used by ${joined}, which ${verb} removed`}{' '}
       <Button onClick={() => onTogglePenRowRemoved(row.id)}>
-        remove this row
+        Remove this row
       </Button>
     </p>
   );

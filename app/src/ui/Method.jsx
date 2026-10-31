@@ -42,7 +42,7 @@ function coverageSentence(coveredRows, currentStepNumbers) {
 // The on-demand field mechanism (D-23, D-25): a boolean local to the field,
 // open when the value it starts with already carries text, closing itself
 // on an empty blur — write once here, reuse for purpose, aside, and the
-// batch pen's per-step "done differently" line, never a second
+// batch pen's per-step "Done differently" line, never a second
 // implementation of the same collapse-on-blur rule. The blur handler reads
 // the blur event's own value, never the draft, since the draft may not
 // have updated synchronously with the blur (RESEARCH.md Pitfall 4's own
@@ -437,7 +437,7 @@ export function StepPenBody({
 }
 
 // The batch pen's per-step controls (D-25, D-28): the Skipped checkbox is
-// always present; the "done differently" line reuses the same on-demand
+// always present; the "Done differently" line reuses the same on-demand
 // mechanism StepPenBody's purpose/aside fields use, so it opens when the
 // step's own stepChanges entry already holds a line (what makes Amend
 // open the lines that hold text) and collapses back to its opener on an
@@ -485,7 +485,7 @@ function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) 
           aria-label={fieldLabel(step, false, 'done differently')}
           onClick={line.openField}
         >
-          done differently
+          Done differently
         </Button>
       )}
     </div>

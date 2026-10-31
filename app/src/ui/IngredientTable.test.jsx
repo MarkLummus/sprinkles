@@ -1156,7 +1156,7 @@ describe('IngredientTable — the remove controls carry an explicit tabindex (qu
     expect(tags[0]).toContain('tabindex="0"');
   });
 
-  it('an orphaned row renders its remove control and the flag\'s remove this row, each tabindex="0"', () => {
+  it('an orphaned row renders its remove control and the flag\'s Remove this row, each tabindex="0"', () => {
     const version = makeVersion([makeRow('a', 'Row A', 10, 3)]);
     version.method = [
       { n: 1, leadIn: 'One', instruction: 'Do one.', uses: ['a'] },
@@ -1180,7 +1180,7 @@ describe('IngredientTable — the remove controls carry an explicit tabindex (qu
     );
 
     const tags = markup.match(/<button\b[^>]*>/g);
-    expect(markup).toContain('remove this row');
+    expect(markup).toContain('Remove this row');
     expect(tags).toHaveLength(2);
     for (const tag of tags) {
       expect(tag).toContain('tabindex="0"');

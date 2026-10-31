@@ -271,7 +271,7 @@ describe('the Next version pen: the section is always drawn, and its notes are e
 
     await setField(article().querySelector('textarea[aria-label="beforeYouStart note 1"]'), 'Taste the Graza first.');
     await setField(container.querySelector('input[aria-label="Version name"]'), 'taste first');
-    await click(buttonByText(container, 'Save as a new version'));
+    await click(buttonByText(container, 'Save as new version'));
     await flush(() => store.createVersion.mock.calls.length > 0);
 
     expect(store.createVersion).toHaveBeenCalledTimes(1);

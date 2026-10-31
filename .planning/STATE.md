@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-10-31T15:29:15.891Z"
+last_updated: "2026-10-31T16:55:13.181Z"
 last_activity: 2026-10-31
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: 26eabd80db9709788096196df0340d4f3ac6f708
+state_head: 2d50ac10b03d843dffabafe5ee0549e9768184a7
 progress:
   total_phases: 5
   completed_phases: 3
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-21)
 Phase: 11 (Steps, structure, save and print) — EXECUTING
 Plan: 1 of 14
 Status: Executing Phase 11
-Last activity: 2026-10-31 - Completed quick task 261031-fq1: five creation controls carry their visible label in their accessible name
+Last activity: 2026-10-31 - Completed quick task 261031-fyo: boxed buttons read sentence case without articles
 
 Progress: [██████░░░░] 60%
 
@@ -615,6 +615,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261031-fdd | Step numbers sit on their lead-in baseline on every step (look-p11-reading-step-baseline; closes bug-p11-pen-step-number-leadin-misaligned) | 2026-10-31 | cda2282b | [261031-fdd-step-numbers-sit-on-their-lead-in-baseli](./quick/261031-fdd-step-numbers-sit-on-their-lead-in-baseli/) |
 | 213 | fast: the version pen's removed-row flag button reads Remove this step (bug-p11-pen-remove-this-step-case, sketch 014 decision 11) | 2026-10-31 | 23bd04fb | — |
 | 261031-fq1 | Five creation controls carry their visible label in their accessible name (bug-p11-label-in-name-mismatches) | 2026-10-31 | 26eabd80 | [261031-fq1-five-creation-controls-carry-their-visib](./quick/261031-fq1-five-creation-controls-carry-their-visib/) |
+| 261031-fyo | Boxed buttons read sentence case without articles: Record batch, Record tasting, Save as new version, Remove this row, Done differently (look-button-words) | 2026-10-31 | 2d50ac10 | [261031-fyo-boxed-buttons-read-sentence-case-without](./quick/261031-fyo-boxed-buttons-read-sentence-case-without/) |
 
 ### Roadmap Evolution
 

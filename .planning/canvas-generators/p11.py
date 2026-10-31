@@ -86,6 +86,11 @@ import places as PL
 #   boxed button whose words change is the Batch margin's filled action on the saved page, Record a batch, which reads Record batch (the settled label of 2026-09-09, product-requirements
 #   05 "Kept as they are"); P11_Save (fA1) and P11_FirstVersion (vA1, vB1, fD1) carry it, P11_Steps and P11_Structure draw no boxed button and stand. The other words of the ruling
 #   (Record tasting, Save as new version, Remove this step, Remove this row, Done differently) are on no P11 board.
+# Sid, 2026-10-31, later (bug-p11-label-in-name-mismatches, Mark: fix; built in quick 261031-fq1, d3b52474 and 26eabd80): five creation controls' aria-labels start with or carry their visible
+#   words (WCAG 2.5.3): "Step n, Add target", "Step n, Preview step" / "Step n, Hide preview", "Step n, Add step after it", "Move up, <row>" / "Move down, <row>" (with " in step n" on a split
+#   row's line, as IngredientTable.jsx passes stepNumber for a split row only; the boards had left that suffix out), "Add to step, <row>" (sketch 014 decision 12). Aria text draws nothing:
+#   every panel height and Balance box unchanged. The chooser's step controls keep "Add <row> to step n" (bug-p11-chooser-step-label-in-name, open for Mark). Also inlined with every
+#   regeneration: app.css's .method-step { align-items: baseline } (quick 261031-fdd, a9ea5e21) in place of notebook.css's .notebook .mk-step rule (cda2282b), the board's own rule unchanged.
 #   python3 p11.py measure <out dir> ; node p11-measure.mjs <out dir>/measure.html ; python3 p11.py <canvas.json read from the artifact root> <out dir> [P11_Save,P11_Steps]
 MEAS = json.load(open(HERE + '/p11-measure.json')) if os.path.exists(HERE + '/p11-measure.json') else {}
 p10.MEAS = MEAS
@@ -148,7 +153,7 @@ TABLE_HEAD = TABLE_HEAD.replace('<table class="ingredient-table is-developing">'
 
 DIS = ' aria-disabled="true"'
 def pct(g): return '%.1f%%' % (g / TOTAL * 100)
-def row(key, grams=None, note=None, moves=None, focus=False, place=None):
+def row(key, grams=None, note=None, moves=None, focus=False, place=None, in_step=None):
     """One table row from the capture: its grams, a portion note, and the row acts (remove · Move up · Move down; moves=(up_on, down_on)).
     place (decide-p11-place-unplaced-row, A, 2026-10-26; only a row under "Not in a step yet"): 'closed' adds Add to step as the acts' last word; ('open', [(n, lead), ...]) draws the
     line as the chooser it becomes when pressed: Cancel first, then every step by number and lead-in (the number alone while a step has no lead-in yet); choosing one ticks the row in
@@ -161,9 +166,9 @@ def row(key, grams=None, note=None, moves=None, focus=False, place=None):
     acts = '<button type="button" class="text-control" tabindex="0" aria-label="remove %s">Remove</button>' % esc(name)      # sentence case since 2026-10-28 (bug-p11-link-case-mixed)
     if moves is not None:
         up, down = moves
-        acts += ''.join(f'<span aria-hidden="true"> · </span><button type="button" class="text-control{"" if on else " mk-off"}" tabindex="0" aria-label="Move {esc(name)} {w}"{DIS if not on else ""}>Move {w}</button>' for w, on in (('up', up), ('down', down)))
+        acts += ''.join(f'<span aria-hidden="true"> · </span><button type="button" class="text-control{"" if on else " mk-off"}" tabindex="0" aria-label="Move {w}, {esc(name)}{f" in step {in_step}" if in_step else ""}"{DIS if not on else ""}>Move {w}</button>' for w, on in (('up', up), ('down', down)))
         if place == 'closed':
-            acts += f'<span aria-hidden="true"> · </span><button type="button" class="text-control" tabindex="0" aria-label="Add {esc(name)} to a step">Add to step</button>'
+            acts += f'<span aria-hidden="true"> · </span><button type="button" class="text-control" tabindex="0" aria-label="Add to step, {esc(name)}">Add to step</button>'
         elif place and place[0] == 'open':
             acts = f'<button type="button" class="text-control" tabindex="0" aria-label="{esc(name)}, cancel">Cancel</button>' + ''.join(f'<span aria-hidden="true"> · </span><button type="button" class="text-control" tabindex="0" aria-label="Add {esc(name)} to step {n}">Step {n}{", " + esc(lead) if lead else ""}</button>' for n, lead in place[1])
         acts = '<span class="mk-row-acts">' + acts + '</span>'
@@ -210,8 +215,8 @@ def step_html(n, lead='', text='', targets=(), uses=(), purpose=None, aside=None
               f'<label class="method-step__field"><textarea class="prose-field" rows="2" aria-label="Step {n}, instruction">{esc(text)}</textarea>{_req() if required and not text else ""}</label>')
     chips = ''.join(target_chip(n, l, v, i + 1) for i, (l, v) in enumerate(targets))
     pv = ''
-    if preview: pv = f'<button type="button" class="text-control" tabindex="0" aria-label="Step {n}, {"hide the preview" if preview == "open" else "preview the step"}">{"Hide preview" if preview == "open" else "Preview step"}</button>'
-    fields += f'<p class="method-step__targets">{chips}<button type="button" class="text-control" tabindex="0" aria-label="Step {n}, add a target">Add target</button>{pv}</p>'
+    if preview: pv = f'<button type="button" class="text-control" tabindex="0" aria-label="Step {n}, {"Hide preview" if preview == "open" else "Preview step"}">{"Hide preview" if preview == "open" else "Preview step"}</button>'
+    fields += f'<p class="method-step__targets">{chips}<button type="button" class="text-control" tabindex="0" aria-label="Step {n}, Add target">Add target</button>{pv}</p>'
     body = f'<div class="method-step__open-fields">{fields}</div>' if box else fields
     if purpose is not None: body += f'<label class="method-step__field"><textarea class="prose-field" rows="2" aria-label="Step {n}, purpose">{esc(purpose)}</textarea></label>'
     if aside is not None: body += f'<label class="method-step__field"><textarea class="prose-field" rows="2" aria-label="Step {n}, aside">{esc(aside)}</textarea></label>'
@@ -231,7 +236,7 @@ def step_html(n, lead='', text='', targets=(), uses=(), purpose=None, aside=None
     if with_moves:
         up, down = moves
         acts += ''.join(f'<span aria-hidden="true">·</span><button type="button" class="text-control{"" if on else " mk-off"}" tabindex="0" aria-label="Step {n}, move {w}"{DIS if not on else ""}>Move {w}</button>' for w, on in (('up', up), ('down', down)))
-    if add_after: acts += f'<span aria-hidden="true">·</span><button type="button" class="text-control" tabindex="0" aria-label="Step {n}, add a step after it">Add step</button>'      # decision 33: adds right after this step
+    if add_after: acts += f'<span aria-hidden="true">·</span><button type="button" class="text-control" tabindex="0" aria-label="Step {n}, Add step after it">Add step</button>'      # decision 33: adds right after this step
     body += f'<p class="method-step__acts">{acts}</p>'
     return f'<li class="method-step mk-step"><span class="method-step__n" aria-hidden="true">{n}</span><div class="method-step__body">{body}</div></li>'
 def method_html(steps):
@@ -265,7 +270,7 @@ def grouped(steps_specs, extra_groups=(), split=None, with_moves=True, place=Non
                 g = dict(split[k]).get(i); full = dict((kk, gg) for kk, _, gg, _ in ROWS)[k]
                 # one line per step; a split row with one line left reads like a one-line row, with no portion line (sketch 011 decision 56)
                 note = f'{"%g" % g if g != "" else "0"} g of {full:.1f} g · {pct(full)} in all' if len(split[k]) > 1 else None      # the row's total through formatGrams, one decimal (2026-10-27)
-                rs.append(row(k, grams=g, note=note, moves=mv, focus=(g == '')))
+                rs.append(row(k, grams=g, note=note, moves=mv, focus=(g == ''), in_step=(i + 1 if len(split[k]) > 1 else None)))      # IngredientTable.jsx: " in step n" on a split row's moves only
             else: rs.append(row(k, moves=mv))
         if rs: groups.append((step_head(i + 1, s['lead']), rs))      # the build prints no head for a step that uses nothing (groupPortionsByStep)
     rest = [k for k, _, _, _ in ROWS if k not in used]
@@ -398,7 +403,9 @@ R28C = '; redrawn 2026-10-28, later: the inline controls without articles, Chang
 STAMP25, STAMP26, STAMP27, STAMP28 = (s[:-1] + R28C for s in (STAMP22, STAMP19, STAMP23, STAMP24))
 R31 = '; redrawn 2026-10-31: the saved page\'s Record a batch reads Record batch (look-p11-link-words, Mark: "review all the Buttons for same sentence case rules and article usage"; sketch 014 decision 11))'
 STAMP29, STAMP30 = (s[:-1] + R31 for s in (STAMP27, STAMP28))      # P11_Save, P11_FirstVersion; P11_Steps and P11_Structure draw no boxed button and are unchanged
-STAMPS = {'P11_Steps': STAMP25, 'P11_Structure': STAMP26, 'P11_Save': STAMP29, 'P11_FirstVersion': STAMP30}
+R31B = '; redrawn 2026-10-31, later: five controls\' accessible names start with their visible words, Add target, Preview step, Hide preview, Add step after it, Move up, Move down, Add to step (bug-p11-label-in-name-mismatches, Mark: fix; sketch 014 decision 12); nothing drawn moves)'
+STAMP31, STAMP32, STAMP33, STAMP34 = (s[:-1] + R31B for s in (STAMP25, STAMP26, STAMP29, STAMP30))
+STAMPS = {'P11_Steps': STAMP31, 'P11_Structure': STAMP32, 'P11_Save': STAMP33, 'P11_FirstVersion': STAMP34}
 TITLES = {'P11_Steps': 'Instructions while creating · a step, its targets, the rows it uses and in what portions, at 1366',
           'P11_Structure': 'Add, remove and move · steps, and rows within their step, at 1366',
           'P11_Save': 'Save · what refuses it and where it lands, at 1366',

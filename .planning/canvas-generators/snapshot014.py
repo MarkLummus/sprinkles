@@ -34,6 +34,10 @@
 # article usage. Example remaining: Record a batch"; bug-p11-pen-remove-this-step-case answered fix; sketch 014 decision 11): the saved page's Record a batch reads Record batch on P11_Save and
 # P11_FirstVersion, republished as canvas version 499 (1793459382-9704); save.html and first-version.html re-taken from the served files the same way (served = generated, cmp checked against
 # boards/: save.html 2657d3c6, first-version.html 0ffb9da0). P11_Steps and P11_Structure draw no boxed button and stay as served (497).
+# 2026-10-31, later: five creation controls' accessible names start with their visible words (bug-p11-label-in-name-mismatches, Mark: fix; built in quick 261031-fq1, d3b52474 and 26eabd80;
+# sketch 014 decision 12); aria text only, nothing drawn moves. Every regeneration also inlines app.css's .method-step baseline rule now that quick 261031-fdd (a9ea5e21, cda2282b) moved it
+# there from notebook.css. All four boards republished as canvas version 500 (1793460818-449d) and all four files re-taken from the served files the same way (served = generated, cmp checked
+# against boards/): instructions-steps.html 911e3d83, add-remove-move.html 29adf03d, save.html c82f6385, first-version.html 95625596.
 import sys, os
 SRC, DEST = sys.argv[1], sys.argv[2]
 SERVED = {'P11_Steps': 'instructions-steps.html', 'P11_Structure': 'add-remove-move.html', 'P11_Save': 'save.html', 'P11_FirstVersion': 'first-version.html'}

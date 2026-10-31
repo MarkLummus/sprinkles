@@ -229,7 +229,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     navigate,
   });
 
-  // The route intents (useRouteIntents): the band's Record a tasting and Home's
+  // The route intents (useRouteIntents): the band's Record tasting and Home's
   // Next version ask for a pen through route state, each consumed once after the
   // draft restore. The openers are the record pen's handleStartAmending and
   // the version pen's handleStartDeveloping.

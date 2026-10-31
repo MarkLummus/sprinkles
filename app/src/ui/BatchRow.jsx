@@ -516,7 +516,7 @@ export function BatchRow({
   const wasAmendingRef = useRef(false);
   useEffect(() => {
     if (openPen === 'amend') {
-      // Only Correct gets focus back: a pen the band's Record a tasting
+      // Only Correct gets focus back: a pen the band's Record tasting
       // opened returns to the band (VersionRow.jsx), sketch 011 decision 30.
       wasAmendingRef.current = amendOpener === 'correct';
       return;
@@ -812,7 +812,7 @@ export function BatchRow({
               <label className="field-row__label field-row__label--date">
                 <span className="pen-caption">Churned</span>
                 {/* 261003-by3, .planning/debug/ios-tasting-date-picker.md: the
-                    Record a tasting open already targets the Tasted date
+                    Record tasting open already targets the Tasted date
                     (addTastingAttempt is a number only for that opener), and a
                     second date focus in the same tap tears down iOS's calendar.
                     Correct and Record another keep this mount focus. */}

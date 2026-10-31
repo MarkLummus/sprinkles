@@ -142,7 +142,7 @@ export function useRecordDraft() {
     resetBlocks();
   }
 
-  // "Correct" and the band's Record a tasting reopen the record pen with
+  // "Correct" and the band's Record tasting reopen the record pen with
   // everything the record holds in the fields — the churn side and, when the
   // batch carries one, the tasting side too (D-03) — pre-filled from the batch,
   // never from the version (draftFromBatch). The baseline isDraftDirty compares

@@ -85,9 +85,9 @@ describe('VersionRow — the band\'s controls below 724 call the handler they ar
     expect(spies.onStartTasting).not.toHaveBeenCalled();
   });
 
-  it('Record a tasting, on a batch awaiting tasting, calls onStartTasting once with that batch (Test J, 261002-wn0)', () => {
+  it('Record tasting, on a batch awaiting tasting, calls onStartTasting once with that batch (Test J, 261002-wn0)', () => {
     const spies = mount([{ ...augustSecondBatch, tasting: null }]);
-    act(() => buttonNamed('Record a tasting').click());
+    act(() => buttonNamed('Record tasting').click());
     expect(spies.onStartTasting).toHaveBeenCalledTimes(1);
     expect(spies.onStartTasting).toHaveBeenCalledWith(expect.objectContaining({ id: augustSecondBatch.id }));
     expect(spies.onStartRecording).not.toHaveBeenCalled();

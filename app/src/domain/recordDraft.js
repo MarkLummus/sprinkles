@@ -522,7 +522,7 @@ export function openTastingSection(draft) {
 }
 
 // amendDraftFromBatch(batch, opener) -> the draft handleStartAmending fills
-// from the batch. The band's Record a tasting (below 724) opens the same pen
+// from the batch. The band's Record tasting (below 724) opens the same pen
 // through the 'record-a-tasting' opener (sketch 011 decision 30, Mark
 // 2026-10-02, answer 1; route-recipe-batch.md sections 1 and 6): the Tasting
 // section is already open, as if Add tasting had just been pressed. The

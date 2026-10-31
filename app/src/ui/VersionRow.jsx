@@ -16,7 +16,7 @@ import { useFold } from './useBelowDesktop.js';
 // waiting on (sketch 011 decision 30, answers 1 and 4).
 const RECORD_ACT_WORDS = {
   [NOT_YET_CHURNED]: 'Record batch',
-  [AWAITING_TASTING]: 'Record a tasting',
+  [AWAITING_TASTING]: 'Record tasting',
   [TASTED]: 'Record another',
 };
 
@@ -104,7 +104,7 @@ export function VersionRow({
     }
   }, [mode]);
 
-  // Focus-return for the band's Record a tasting (sketch 011 decision 30,
+  // Focus-return for the band's Record tasting (sketch 011 decision 30,
   // Mark 2026-10-02; route-recipe-batch.md section 6: Cancel returns focus
   // to the control that opened the pen). The button unmounts while a pen is
   // open, so the same ref and was-open pair as Develop above. Above the
@@ -419,7 +419,7 @@ export function VersionRow({
         {/* The acts group (sketch 003 variant B, index.html:215, 479;
             restyled as App front matter, Task 2): one row, below the dl,
             only while no pen is open. Below 724 it leads with ONE filled
-            control, the record act the version is waiting on (Record a
+            control, the record act the version is waiting on (Record
             tasting, Record another or Record batch, sketch 011 decision
             30, Mark 2026-10-02), then Next version as the underlined text
             control; from 724 up Next version is the filled control, as

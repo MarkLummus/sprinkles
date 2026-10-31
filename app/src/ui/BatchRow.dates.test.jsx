@@ -138,7 +138,7 @@ const correct = {
 };
 
 describe('BatchRow date inputs: one date focus per opener (261003-by3)', () => {
-  it('F1: Record a tasting focuses only the Tasted date', () => {
+  it('F1: Record tasting focuses only the Tasted date', () => {
     const { rerender } = renderRow();
     rerender(recordATasting);
     expect(dateFocuses).toEqual(['Tasted']);

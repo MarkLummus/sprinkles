@@ -20,7 +20,7 @@ export function useRouteIntents({
   onStartAmending,
   onStartDeveloping,
 }) {
-  // The band's Record a tasting, pressed on an older batch's address, moves
+  // The band's Record tasting, pressed on an older batch's address, moves
   // to the awaiting batch's own address and sets this (handleStartTasting);
   // the effect below opens the pen once that page instance has its batches.
   const startTastingOnMount = Boolean(location.state?.startTasting);
@@ -28,7 +28,7 @@ export function useRouteIntents({
   // once this page has decided its kept draft.
   const startNextVersionOnMount = Boolean(location.state?.startNextVersion);
 
-  // Opens the pen the band's Record a tasting asked for across a remount
+  // Opens the pen the band's Record tasting asked for across a remount
   // (route state, the focusBatch pattern: the router keys RecipePage by
   // address, so state is all that crosses). Consumed once: the entry's
   // state is replaced with null, so Back or a reload never reopens a pen.

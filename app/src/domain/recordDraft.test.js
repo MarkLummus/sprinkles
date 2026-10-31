@@ -526,7 +526,7 @@ describe('amendDraftFromBatch', () => {
     expect(batch).toEqual(before);
   });
 
-  it('differs from it only by tastingOpen true for the band\'s Record a tasting', () => {
+  it('differs from it only by tastingOpen true for the band\'s Record tasting', () => {
     const plain = draftFromBatch(structuredClone(augustSecondBatch));
     const opened = amendDraftFromBatch(structuredClone(augustSecondBatch), 'record-a-tasting');
     expect(opened).toEqual({ ...plain, tastingOpen: true });

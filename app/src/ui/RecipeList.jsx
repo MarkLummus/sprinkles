@@ -195,12 +195,12 @@ function placeNameFor() {
 }
 
 // The row's next action(s) (D-07, D-11): one filled action, and at most
-// one outline secondary, chosen by the recipe's own standing. Record a
+// one outline secondary, chosen by the recipe's own standing. Record
 // tasting is the one action that opens the newest batch at its own address,
 // under the version that batch was recorded against, which can be older than
 // the latest version (the batch awaiting a tasting, per the Home brief's
 // "return to a tasting"); every other action opens the recipe at its latest
-// version. Record a tasting asks the batch page to open its tasting pen, and
+// version. Record tasting asks the batch page to open its tasting pen, and
 // Next version asks the recipe page to open its Next version pen, each through
 // route state the page uses once.
 function RowActions({ entry }) {
@@ -220,7 +220,7 @@ function RowActions({ entry }) {
     return (
       <span className="home__actions">
         <Link to={tastingPath} state={{ startTasting: true }} className="home__action" tabIndex={0}>
-          Record a tasting
+          Record tasting
         </Link>
         <Link to={latestPath} className="home__action home__action--secondary" tabIndex={0}>
           Keep developing

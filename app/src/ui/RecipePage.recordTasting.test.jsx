@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 //
 // Quick task 261002-wn0 (sketch 011 decision 30, Mark's answer 1,
-// 2026-10-02): below 724, the recipe band's Record a tasting opens the log's
+// 2026-10-02): below 724, the recipe band's Record tasting opens the log's
 // amend pen with the Tasting section already open, as if Add tasting had
 // just been pressed, and never through Correct.
 //
@@ -187,11 +187,11 @@ afterEach(async () => {
   delete Element.prototype.scrollIntoView;
 });
 
-describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () => {
+describe('Record tasting opens the amend pen on Add tasting (261002-wn0)', () => {
   it('T1: opens the pen on the batch awaiting tasting, Tasting open, Tasted date focused, no Correct anywhere', async () => {
     installMatchMedia();
     await mountAt(VERSION_PATH, [awaiting]);
-    expect(band().textContent).toBe('Record a tasting');
+    expect(band().textContent).toBe('Record tasting');
 
     await click(band());
 
@@ -222,7 +222,7 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     expect(store.saveBatch).not.toHaveBeenCalled();
     expect(document.activeElement).toBe(band());
     expect(scrollIntoView.mock.contexts).toContain(band());
-    expect(band().textContent).toBe('Record a tasting');
+    expect(band().textContent).toBe('Record tasting');
   });
 
   it('T3: Escape closes an untouched pen onto the band, and does nothing once the maker has typed', async () => {
@@ -286,7 +286,7 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
   // older batch's own address, where the log shows that older batch. Opening
   // in place there would show one batch's head and save onto another
   // (T-wn0-01), so the band moves to the awaiting batch's own address.
-  it('T6: on an older batch\'s address, Record a tasting moves to the awaiting batch and opens the pen there', async () => {
+  it('T6: on an older batch\'s address, Record tasting moves to the awaiting batch and opens the pen there', async () => {
     installMatchMedia();
     const newer = {
       ...structuredClone(augustSecondBatch),
@@ -298,7 +298,7 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     const olderPath = `${VERSION_PATH}/batch/${augustSecondBatch.id}`;
     await mountAt(olderPath, [augustSecondBatch, newer]);
     expect(current.container.querySelector('.batch-row__head .fold-row__count').textContent).toBe('churned 2 Aug 2026');
-    expect(band().textContent).toBe('Record a tasting');
+    expect(band().textContent).toBe('Record tasting');
 
     await click(band());
     await flush(() => pen() !== null);
@@ -477,7 +477,7 @@ describe('From freezer through the real pen and the real save (sketch 010 D6 to 
   const fromFreezer = () => pen().querySelector('[data-mo="fromfreezer"]');
   const radioFor = (group, word) => [...group.querySelectorAll('input[type="radio"]')].find((input) => input.value === word);
 
-  it('Record a tasting still opens the amend pen with the Tasted date focused, and the group stands under Next time', async () => {
+  it('Record tasting still opens the amend pen with the Tasted date focused, and the group stands under Next time', async () => {
     installMatchMedia();
     await mountAt(VERSION_PATH, [awaiting]);
     await click(band());

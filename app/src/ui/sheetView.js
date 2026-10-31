@@ -24,7 +24,7 @@ function joinNames(names) {
 
 // The batch a page shows: the one the URL names, or, with no batch named, the
 // version's newest, or null when it has none. The rule sheetView and the record
-// pen's Record a tasting both read.
+// pen's Record tasting both read.
 export function openBatchFor(batches, batchId) {
   if (batchId) return batches.find((batch) => batch.id === batchId) ?? null;
   if (batches.length > 0) return sortedBatches(batches)[0];

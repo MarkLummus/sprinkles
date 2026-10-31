@@ -2,7 +2,7 @@
 //
 // Quick 261012-e8l: Home's Next version carries the route state RecipePage
 // uses once to open its Next version pen. Quick 261019-arq gives Home's
-// Record a tasting the route state the batch page uses once to open its
+// Record tasting the route state the batch page uses once to open its
 // tasting pen (decide-home-record-tasting-opens-pen). HomeBody is mounted in
 // a MemoryRouter, a link is clicked, and the landed location is read. The
 // other Home links must land with no state.
@@ -139,25 +139,25 @@ describe('Home’s Next version asks the recipe page to open its pen (quick 2610
   });
 });
 
-describe('Home’s Record a tasting asks the batch page to open its tasting pen (quick 261019-arq)', () => {
-  it('1: the row’s and the lead’s Record a tasting are literal-tabIndex links to the awaiting batch, and each lands with the flag', async () => {
+describe('Home’s Record tasting asks the batch page to open its tasting pen (quick 261019-arq)', () => {
+  it('1: the row’s and the lead’s Record tasting are literal-tabIndex links to the awaiting batch, and each lands with the flag', async () => {
     await mount(AWAITING);
-    expect(linksNamed('section.home__lead', 'Record a tasting')).toHaveLength(1);
-    expect(linksNamed('li.home__row', 'Record a tasting')).toHaveLength(1);
+    expect(linksNamed('section.home__lead', 'Record tasting')).toHaveLength(1);
+    expect(linksNamed('li.home__row', 'Record tasting')).toHaveLength(1);
     for (const scope of ['section.home__lead', 'li.home__row']) {
-      const [link] = linksNamed(scope, 'Record a tasting');
+      const [link] = linksNamed(scope, 'Record tasting');
       expect(link.getAttribute('tabindex')).toBe('0');
       expect(link.getAttribute('href')).toBe('/notebook/r1/v1/batch/b1');
     }
 
-    await click(linksNamed('li.home__row', 'Record a tasting')[0]);
+    await click(linksNamed('li.home__row', 'Record tasting')[0]);
     expect(landed.pathname).toBe('/notebook/r1/v1/batch/b1');
     expect(landed.state).toEqual({ startTasting: true });
 
     await act(async () => root.unmount());
     container.remove();
     await mount(AWAITING);
-    await click(linksNamed('section.home__lead', 'Record a tasting')[0]);
+    await click(linksNamed('section.home__lead', 'Record tasting')[0]);
     expect(landed.pathname).toBe('/notebook/r1/v1/batch/b1');
     expect(landed.state).toEqual({ startTasting: true });
   });

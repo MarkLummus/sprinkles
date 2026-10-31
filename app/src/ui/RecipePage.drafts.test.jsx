@@ -665,7 +665,7 @@ describe('the Correct pen keeps its draft and reopens beside its own batch (04-0
     expect(pageStatus.mock.calls.some(([message]) => message === DRAFT_KEPT_STATUS)).toBe(false);
   });
 
-  it('a restored draft consumes the band’s pending Record a tasting without opening a second pen', async () => {
+  it('a restored draft consumes the band’s pending Record tasting without opening a second pen', async () => {
     const awaiting = { ...structuredClone(augustSecondBatch), tasting: null };
     store.batches = [awaiting];
     const baseline = { ...draftFromBatch(awaiting), tastingOpen: true };

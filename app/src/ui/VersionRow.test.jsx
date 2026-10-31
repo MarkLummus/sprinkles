@@ -760,9 +760,9 @@ describe('VersionRow — below 724 the band\'s one filled action is the record a
     expect(above[1].attrs).toContain('class="notebook-link"');
   });
 
-  it('leads with a filled Record a tasting when the latest batch awaits its tasting (Test F)', () => {
+  it('leads with a filled Record tasting when the latest batch awaits its tasting (Test F)', () => {
     const buttons = actButtons(renderVersionRow({ below724: true, batches: [awaitingBatch] }));
-    expect(buttons.map((button) => button.label)).toEqual(['Record a tasting', 'Next version']);
+    expect(buttons.map((button) => button.label)).toEqual(['Record tasting', 'Next version']);
     expect(buttons[0].attrs).toContain('class="notebook-action"');
     expect(buttons[1].attrs).toContain('class="notebook-link"');
     const withParent = actButtons(
@@ -775,7 +775,7 @@ describe('VersionRow — below 724 the band\'s one filled action is the record a
       }),
     );
     // 261002-wn1: Show changes is on the Ingredients row below 724, not here.
-    expect(withParent.map((button) => button.label)).toEqual(['Record a tasting', 'Next version']);
+    expect(withParent.map((button) => button.label)).toEqual(['Record tasting', 'Next version']);
   });
 
   // Guard (passes before and after): from 724 up the band is as built.

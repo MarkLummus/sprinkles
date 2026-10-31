@@ -281,7 +281,7 @@ export function useBatchRecording({
   // tasting side too (D-03) — pre-filled from the batch, never from the
   // version (task 3, draftFromBatch above).
   //
-  // The band's Record a tasting (below 724) opens the same pen through the
+  // The band's Record tasting (below 724) opens the same pen through the
   // 'record-a-tasting' opener (sketch 011 decision 30, Mark 2026-10-02,
   // answer 1; route-recipe-batch.md sections 1 and 6): the Tasting section
   // is already open, as if Add tasting had just been pressed, and the Tasted
@@ -311,7 +311,7 @@ export function useBatchRecording({
     setMode('recording');
   }
 
-  // The recipe band's Record a tasting (sketch 011 decision 30, answer 1;
+  // The recipe band's Record tasting (sketch 011 decision 30, answer 1;
   // below 724, VersionRow.jsx) hands over the batch its label rule read
   // (the version's latest). The pen opens in place only when that batch is
   // the batch in view, so the head, the axes snapshot and the amend save

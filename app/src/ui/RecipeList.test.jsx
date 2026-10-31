@@ -127,11 +127,11 @@ describe('RecipeRows — the App marks grammar (D-07, D-11, D-19, 03.4-04 Task 2
     expect(markup).not.toContain('home__action--secondary');
   });
 
-  it('gives an awaiting-tasting recipe Record a tasting (to the newest batch) with Keep developing beside it', () => {
+  it('gives an awaiting-tasting recipe Record tasting (to the newest batch) with Keep developing beside it', () => {
     const version = makeVersion({ id: 'v1', recipeId: 'r1' });
     const batches = [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: null })];
     const markup = renderRows([version], batches);
-    expect(markup).toContain('Record a tasting');
+    expect(markup).toContain('Record tasting');
     expect(markup).toContain('href="/notebook/r1/v1/batch/b1"');
     expect(markup).toContain('Keep developing');
   });
@@ -193,7 +193,7 @@ describe('RecipeRows — the standing word (gap 6, D-07, D-11)', () => {
     const standingMatches = markup.match(/home__standing/g) ?? [];
     expect(standingMatches).toHaveLength(1);
     expect(markup).toContain('Awaiting tasting');
-    expect(markup).toContain('Record a tasting');
+    expect(markup).toContain('Record tasting');
   });
 });
 
@@ -295,7 +295,7 @@ describe('HomeLead — the board\'s block (gap 5)', () => {
       batches: [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: null })],
     });
     const markup = renderLead(entry);
-    expect(markup).toContain('Record a tasting');
+    expect(markup).toContain('Record tasting');
     expect(markup).toContain('Keep developing');
   });
 });
@@ -322,9 +322,9 @@ describe('HomeBody — the recipe record is the name\'s source (D-11)', () => {
 
 // A recipe's standing is recipe-wide: the newest batch across ALL its versions
 // decides it, so the batch awaiting a tasting can belong to an older version
-// than the latest. Record a tasting must open that batch under the version it
+// than the latest. Record tasting must open that batch under the version it
 // was recorded against, not under the latest version.
-describe("Home's Record a tasting opens the awaiting batch under its own version (bug-home-record-tasting-opens-wrong-batch)", () => {
+describe("Home's Record tasting opens the awaiting batch under its own version (bug-home-record-tasting-opens-wrong-batch)", () => {
   const v3 = makeVersion({ id: 'mexican-chocolate-v3', recipeId: 'mexican-chocolate', createdAt: '2026-01-01T00:00:00.000Z' });
   const v4 = makeVersion({ id: 'mexican-chocolate-v4', recipeId: 'mexican-chocolate', createdAt: '2026-02-01T00:00:00.000Z' });
 
@@ -338,7 +338,7 @@ describe("Home's Record a tasting opens the awaiting batch under its own version
       }),
     ];
     const markup = renderBody([v3, v4], batches);
-    expect(markup).toContain('Record a tasting');
+    expect(markup).toContain('Record tasting');
     const corrected = 'href="/notebook/mexican-chocolate/mexican-chocolate-v3/batch/mexican-chocolate-v3-batch-01"';
     expect(markup.split(corrected)).toHaveLength(3);
     expect(markup).not.toContain('href="/notebook/mexican-chocolate/mexican-chocolate-v4/batch/');

@@ -30,6 +30,10 @@
 # 2026-10-28, later still: the inline controls without articles, Change ingredients, Add purpose, Add aside (look-p11-link-case approved with Mark's note "drop articles according to the house rule
 # including the version pen"; sketch 014 decision 8 amended), all four boards republished as canvas version 497 (1793191896-e079) and all four files re-taken from the served files the same way
 # (served = generated, cmp checked against boards/): instructions-steps.html 32717f6a, add-remove-move.html 0542f74b, save.html d43268c1, first-version.html 04def55a.
+# 2026-10-31: the boxed buttons follow the inline controls' rule, sentence case without articles (look-p11-link-words approved with Mark's note "review all the Buttons for same sentence case rules and
+# article usage. Example remaining: Record a batch"; bug-p11-pen-remove-this-step-case answered fix; sketch 014 decision 11): the saved page's Record a batch reads Record batch on P11_Save and
+# P11_FirstVersion, republished as canvas version 499 (1793459382-9704); save.html and first-version.html re-taken from the served files the same way (served = generated, cmp checked against
+# boards/: save.html 2657d3c6, first-version.html 0ffb9da0). P11_Steps and P11_Structure draw no boxed button and stay as served (497).
 import sys, os
 SRC, DEST = sys.argv[1], sys.argv[2]
 SERVED = {'P11_Steps': 'instructions-steps.html', 'P11_Structure': 'add-remove-move.html', 'P11_Save': 'save.html', 'P11_FirstVersion': 'first-version.html'}

@@ -81,6 +81,11 @@ import places as PL
 # Sid, 2026-10-28, later (look-p11-link-case approved, Mark's note: "approve sentence case on links everywhere; drop articles according to the house rule including the version pen"):
 #   the inline controls lose their articles, Change ingredients, Add purpose, Add aside (sketch 014 decision 8 amended, sketch 013 decision 35 amended); the aria-labels are unchanged.
 #   Drawn on all four P11 boards; the app follows in quick 261028-c0v (Remove, Restore, Done, Change ingredients, Add purpose, Add aside, Edit this step). No P10 board draws these words.
+# Sid, 2026-10-31 (look-p11-link-words approved, Mark's note: "Approve the links. Now Sid needs to review all the Buttons for same sentence case rules and article usage. Example remaining:
+#   Record a batch"; bug-p11-pen-remove-this-step-case answered fix): the boxed buttons follow the same rule, sentence case and no articles (sketch 014 decision 11). On these boards the one
+#   boxed button whose words change is the Batch margin's filled action on the saved page, Record a batch, which reads Record batch (the settled label of 2026-09-09, product-requirements
+#   05 "Kept as they are"); P11_Save (fA1) and P11_FirstVersion (vA1, vB1, fD1) carry it, P11_Steps and P11_Structure draw no boxed button and stand. The other words of the ruling
+#   (Record tasting, Save as new version, Remove this step, Remove this row, Done differently) are on no P11 board.
 #   python3 p11.py measure <out dir> ; node p11-measure.mjs <out dir>/measure.html ; python3 p11.py <canvas.json read from the artifact root> <out dir> [P11_Save,P11_Steps]
 MEAS = json.load(open(HERE + '/p11-measure.json')) if os.path.exists(HERE + '/p11-measure.json') else {}
 p10.MEAS = MEAS
@@ -317,6 +322,9 @@ def after_save_page(edit_act=True, with_batch=False, notice=None, editing=False,
     elif later: acts = '<button type="button" class="notebook-action" tabindex="0">Next version</button><button type="button" class="notebook-link" tabindex="0">Hide changes</button>'
     else: acts = '<button type="button" class="notebook-action" tabindex="0">Next version</button>' + ('<button type="button" class="notebook-link" tabindex="0">Edit</button>' if edit_act else '')
     nb = re.sub(r'<div class="notebook-version__acts">.*?</div>', '<div class="notebook-version__acts">' + acts + PRINT_LINK + '</div>', nb, 1, flags=re.S)
+    # the Batch margin's filled action reads Record batch (sketch 014 decision 11, 2026-10-31: boxed buttons in sentence case without articles; the capture's build still reads Record a batch)
+    nb, k = re.subn(r'(<button type="button" class="notebook-action" tabindex="0">)Record a batch(</button>)', r'\1Record batch\2', nb)
+    assert k == 1, k      # the editing panel (fE1) keeps the capture's margin below its 620 window
     if later:
         # History: two versions, Version 2 in view
         nb = re.sub(r'<ol class="notebook-history__nodes">.*?</ol>',
@@ -388,7 +396,9 @@ R28B = '; redrawn 2026-10-28, later: the number on its lead-in\'s baseline on th
 STAMP22, STAMP23, STAMP24 = (s[:-1] + R28B for s in (STAMP18, STAMP20, STAMP21))      # P11_Steps, P11_Save, P11_FirstVersion; P11_Structure draws no reading step and is unchanged
 R28C = '; redrawn 2026-10-28, later: the inline controls without articles, Change ingredients, Add purpose, Add aside (look-p11-link-case, Mark: "drop articles according to the house rule including the version pen"))'
 STAMP25, STAMP26, STAMP27, STAMP28 = (s[:-1] + R28C for s in (STAMP22, STAMP19, STAMP23, STAMP24))
-STAMPS = {'P11_Steps': STAMP25, 'P11_Structure': STAMP26, 'P11_Save': STAMP27, 'P11_FirstVersion': STAMP28}
+R31 = '; redrawn 2026-10-31: the saved page\'s Record a batch reads Record batch (look-p11-link-words, Mark: "review all the Buttons for same sentence case rules and article usage"; sketch 014 decision 11))'
+STAMP29, STAMP30 = (s[:-1] + R31 for s in (STAMP27, STAMP28))      # P11_Save, P11_FirstVersion; P11_Steps and P11_Structure draw no boxed button and are unchanged
+STAMPS = {'P11_Steps': STAMP25, 'P11_Structure': STAMP26, 'P11_Save': STAMP29, 'P11_FirstVersion': STAMP30}
 TITLES = {'P11_Steps': 'Instructions while creating · a step, its targets, the rows it uses and in what portions, at 1366',
           'P11_Structure': 'Add, remove and move · steps, and rows within their step, at 1366',
           'P11_Save': 'Save · what refuses it and where it lands, at 1366',
@@ -450,7 +460,7 @@ def build_boards(out):
         return unique_ids(PL.clean(PL.CAP['chrome_notebook_1366']).replace('@@MAIN@@', main), vid)
     r2 = [dict(pid='fD1', W=1366, html=shell_main(1366, after_save_page(later=('temp', '80 °C', '85 °C')), 'fD1'), max=1400, cap='A later version · Show changes pressed · a changed target · 1366',
                sub='Version 2 of Vanilla, from Version 1, with Show changes pressed (Hide changes in the acts row; no Edit, since only the first version is editable). In the tag row a changed target reads its label once, the old value struck, then the new value bold and underlined (D-18): the struck value takes the new value\'s size, 14 px at weight 400 with the app\'s one strike, as the table\'s struck figure matches its live figure (decide-p11-struck-target-size, value-size, Mark 2026-10-27); it had read at the label\'s 12 px. The app follows with one rule'),
-          dict(pid='fE1', W=1366, html=shell_main(1366, after_save_page(editing=True), 'fE1'), max=620, cap='An edit kept · the version page · 1366', sub='while an edit of the first version is kept (a draft since the first change on the edit route), Edit\'s place reads Resume editing, the same underlined word, and Next version and Record a batch are gone until the edit is saved or cancelled (D-04); Print sheet stays'),
+          dict(pid='fE1', W=1366, html=shell_main(1366, after_save_page(editing=True), 'fE1'), max=620, cap='An edit kept · the version page · 1366', sub='while an edit of the first version is kept (a draft since the first change on the edit route), Edit\'s place reads Resume editing, the same underlined word, and Next version and Record batch are gone until the edit is saved or cancelled (D-04); Print sheet stays'),
           dict(pid='fF1', W=1366, html=nb_with_resume('fF1'), max=620, cap='An edit kept · the Notebook row · 1366', sub='the recipe\'s row gains Resume editing as the outline control at the row\'s right, in the New recipe row\'s own look; no second draft row (D-05); below 760 it stands under the counts (not drawn: 1366 only)')]
     parts, bw, bh = flow([r1, r2]); sizes['P11_FirstVersion'] = (bw, bh)
     board('P11_FirstVersion', TITLES['P11_FirstVersion'] + STAMPS['P11_FirstVersion'], bw, bh, parts, out)

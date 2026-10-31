@@ -148,12 +148,12 @@ function CreationStep({
               </span>
             );
           })}
-          <Button className="text-control" aria-label={`Step ${number}, add a target`} onClick={() => onAddTarget(step.n)}>
+          <Button className="text-control" aria-label={`Step ${number}, Add target`} onClick={() => onAddTarget(step.n)}>
             Add target
           </Button>
           <Button
             className="text-control"
-            aria-label={`Step ${number}, ${previewing ? 'hide the preview' : 'preview the step'}`}
+            aria-label={`Step ${number}, ${previewing ? 'Hide preview' : 'Preview step'}`}
             onClick={() => setPreviewing((open) => !open)}
           >
             {previewing ? 'Hide preview' : 'Preview step'}
@@ -270,7 +270,7 @@ function CreationStep({
           <Button
             className="text-control"
             data-act="add-after"
-            aria-label={`Step ${number}, add a step after it`}
+            aria-label={`Step ${number}, Add step after it`}
             onClick={() => onAddStep(step.n)}
           >
             Add step

@@ -244,7 +244,7 @@ describe('Move on a step (STRUCT-02, D-16)', () => {
       'Step 2, remove',
       'Step 2, move up',
       'Step 2, move down',
-      'Step 2, add a step after it',
+      'Step 2, Add step after it',
     ]);
     expect(field('Step 1, move up').classList.contains('mk-off')).toBe(true);
     expect(field('Step 1, move up').getAttribute('aria-disabled')).toBe('true');
@@ -371,7 +371,7 @@ describe('Add step on a step (sketch 013 decision 33)', () => {
   it('adds a step right after it with focus in its lead-in', async () => {
     keep((draft) => ({ ...draft, method: [step(1, 'Warm'), step(2, 'Churn')] }));
     await open();
-    await click(field('Step 1, add a step after it'));
+    await click(field('Step 1, Add step after it'));
     expect(leadIns()).toEqual(['Warm', '', 'Churn']);
     expect(document.activeElement).toBe(field('Step 2, lead-in'));
   });

@@ -143,7 +143,7 @@ describe('targets (D-10, D-22)', () => {
     mount(withStep(blank(), {}, [['temp', '85 °C']]));
     expect(field('Step 1, target label').value).toBe('temp');
     expect(field('Step 1, target value').value).toBe('85 °C');
-    press(field('Step 1, add a target'));
+    press(field('Step 1, Add target'));
     expect(field('Step 1, target 1 label').value).toBe('temp');
     expect(field('Step 1, target 2 label').value).toBe('');
     expect(field('Step 1, target 2 value')).not.toBeNull();
@@ -305,8 +305,8 @@ describe('Preview step (sketch 013 decision 34, decision 014 2)', () => {
   it('reads Hide preview while open and draws the step as the Sheet shows it, after the aside field and before the uses line', () => {
     mount(full());
     expect(q('.mk-preview')).toBeNull();
-    press(field('Step 1, preview the step'));
-    expect(field('Step 1, hide the preview').textContent).toBe('Hide preview');
+    press(field('Step 1, Preview step'));
+    expect(field('Step 1, Hide preview').textContent).toBe('Hide preview');
     expect([...targetsLine().querySelectorAll(':scope > .text-control')].map((node) => node.textContent)).toEqual([
       'Add target',
       'Hide preview',
@@ -322,14 +322,14 @@ describe('Preview step (sketch 013 decision 34, decision 014 2)', () => {
     expect(reading.querySelector('.method-step__aside').textContent).toBe('Whisk slowly.');
     expect(preview.previousElementSibling).toBe(field('Step 1, aside').closest('label'));
     expect(preview.nextElementSibling).toBe(q('p.method-step__uses-line'));
-    press(field('Step 1, hide the preview'));
+    press(field('Step 1, Hide preview'));
     expect(q('.mk-preview')).toBeNull();
-    expect(field('Step 1, preview the step').textContent).toBe('Preview step');
+    expect(field('Step 1, Preview step').textContent).toBe('Preview step');
   });
 
   it('leaves a one-sided target out of the preview, as the Sheet does', () => {
     mount(withStep(blank(), { leadIn: 'Warm', instruction: 'Heat.' }, [['temp', '']]));
-    press(field('Step 1, preview the step'));
+    press(field('Step 1, Preview step'));
     expect(q('.mk-preview .target-chip')).toBeNull();
   });
 
@@ -337,12 +337,42 @@ describe('Preview step (sketch 013 decision 34, decision 014 2)', () => {
     mount(full());
     type(field('Step 1, lead-in'), '<b>&amp;');
     type(field('Step 1, aside'), '<i>x</i>');
-    press(field('Step 1, preview the step'));
+    press(field('Step 1, Preview step'));
     const preview = q('.mk-preview');
     expect(preview.querySelector('.method-step__lead').textContent).toContain('<b>&amp;');
     expect(preview.querySelector('b b')).toBeNull();
     expect(preview.querySelector('.method-step__aside i')).toBeNull();
     expect(preview.querySelector('.method-step__aside').textContent).toBe('<i>x</i>');
+  });
+});
+
+describe('Label in Name (WCAG 2.5.3, bug-p11-label-in-name-mismatches)', () => {
+  const stepButtons = () => qa('li.mk-step button');
+  const byText = (text) => stepButtons().find((button) => button.textContent === text);
+  const everyNameHoldsItsWords = () => {
+    const named = stepButtons().filter((button) => button.getAttribute('aria-label'));
+    expect(named.length).toBeGreaterThan(0);
+    for (const button of named) {
+      expect(button.getAttribute('aria-label').toLowerCase()).toContain(button.textContent.toLowerCase());
+    }
+  };
+
+  it('names Add target, the preview toggle and Add step with their visible words, and every button on the step holds its words', () => {
+    mount(withStep(blank(), {}, [['temp', '85 °C']]));
+    const addTarget = byText('Add target');
+    expect(addTarget.getAttribute('aria-label')).toBe('Step 1, Add target');
+    const toggle = byText('Preview step');
+    expect(toggle.getAttribute('aria-label')).toBe('Step 1, Preview step');
+    const addStep = q('li.mk-step [data-act="add-after"]');
+    expect(addStep.textContent).toBe('Add step');
+    expect(addStep.getAttribute('aria-label')).toBe('Step 1, Add step after it');
+    for (const button of [addTarget, toggle, addStep]) expect(button.getAttribute('aria-label')).toContain(button.textContent);
+    everyNameHoldsItsWords();
+    press(toggle);
+    const open = byText('Hide preview');
+    expect(open.getAttribute('aria-label')).toBe('Step 1, Hide preview');
+    expect(open.getAttribute('aria-label')).toContain(open.textContent);
+    everyNameHoldsItsWords();
   });
 });
 

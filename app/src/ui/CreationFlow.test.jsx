@@ -994,15 +994,15 @@ describe('Instructions while creating: the heading row and Add step (MAKE-07, sk
   it('Add target puts focus in the new target\'s label field; a remove puts it in the next target\'s label, else the previous one\'s, else Add target (D-22)', async () => {
     await startVanilla();
     await click(buttonByText('Add step'));
-    await click(field('Step 1, add a target'));
+    await click(field('Step 1, Add target'));
     expect(document.activeElement).toBe(field('Step 1, target label'));
     await type(field('Step 1, target label'), 'temp');
     await type(field('Step 1, target value'), '85 °C');
-    await click(field('Step 1, add a target'));
+    await click(field('Step 1, Add target'));
     expect(document.activeElement).toBe(field('Step 1, target 2 label'));
     await type(field('Step 1, target 2 label'), 'hold');
     await type(field('Step 1, target 2 value'), '5 min');
-    await click(field('Step 1, add a target'));
+    await click(field('Step 1, Add target'));
     expect(document.activeElement).toBe(field('Step 1, target 3 label'));
 
     // The middle target goes: focus lands on the one that took its place.
@@ -1021,10 +1021,10 @@ describe('Instructions while creating: the heading row and Add step (MAKE-07, sk
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     await startVanilla();
     await click(buttonByText('Add step'));
-    await click(field('Step 1, add a target'));
+    await click(field('Step 1, Add target'));
     await type(field('Step 1, target label'), 'temp');
     await click(field('Step 1, remove target 1'));
-    expect(document.activeElement).toBe(field('Step 1, add a target'));
+    expect(document.activeElement).toBe(field('Step 1, Add target'));
     await advance();
     expect(lastSaved().payload.method[0].targets).toEqual([]);
   });
@@ -1035,12 +1035,12 @@ describe('Instructions while creating: the heading row and Add step (MAKE-07, sk
     await click(buttonByText('Add step'));
     await type(field('Step 1, lead-in'), 'Warm the milk');
     await type(field('Step 1, instruction'), 'Heat it.');
-    await click(field('Step 1, add a target'));
+    await click(field('Step 1, Add target'));
     await type(field('Step 1, target label'), 'temp');
     await type(field('Step 1, target value'), '85 °C');
     await click(field('Step 1, add purpose'));
     await type(field('Step 1, purpose'), 'Dissolves.');
-    await click(field('Step 1, preview the step'));
+    await click(field('Step 1, Preview step'));
     const preview = root().querySelector('.mk-preview');
     expect(preview.querySelector('.target-chip__value').textContent).toBe('85 °C');
     expect(preview.querySelector('.method-step__purpose').textContent).toBe('why — Dissolves.');
@@ -2003,7 +2003,7 @@ describe('Save refuses everything the store file would refuse, all at once, writ
     expect(document.activeElement).toBe(field('Step 1, instruction'));
 
     await type(field('Step 1, instruction'), 'Heat the sugar.');
-    await click(field('Step 1, add a target'));
+    await click(field('Step 1, Add target'));
     await type(field('Step 1, target label'), 'Heat to');
     await pressSave();
     expectRefused();

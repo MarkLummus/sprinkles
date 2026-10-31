@@ -293,7 +293,7 @@ function RowActs({
       <Button
         className={isFirst ? 'text-control mk-off' : 'text-control'}
         data-act="move-up"
-        aria-label={`Move ${name} up${inStep}`}
+        aria-label={`Move up, ${name}${inStep}`}
         aria-disabled={isFirst ? 'true' : undefined}
         onClick={isFirst ? undefined : () => onMove(group, 'up')}
       >
@@ -303,7 +303,7 @@ function RowActs({
       <Button
         className={isLast ? 'text-control mk-off' : 'text-control'}
         data-act="move-down"
-        aria-label={`Move ${name} down${inStep}`}
+        aria-label={`Move down, ${name}${inStep}`}
         aria-disabled={isLast ? 'true' : undefined}
         onClick={isLast ? undefined : () => onMove(group, 'down')}
       >
@@ -312,7 +312,7 @@ function RowActs({
       {canAddToStep && (
         <>
           {ACT_DOT}
-          <Button className="text-control" data-act="add-to-step" aria-label={`Add ${name} to a step`} onClick={onOpenChooser}>
+          <Button className="text-control" data-act="add-to-step" aria-label={`Add to step, ${name}`} onClick={onOpenChooser}>
             Add to step
           </Button>
         </>

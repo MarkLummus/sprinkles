@@ -553,8 +553,8 @@ describe('Move on a row stays within its own step (STRUCT-02, roadmap decision 9
       ['row-a:2', 'row-b:2'],
     ]);
     // A split row's Move names its step.
-    expect(ctl('row-b:1', 'move-up').getAttribute('aria-label')).toBe('Move Sucrose up in step 1');
-    expect(ctl('row-b:2', 'move-up').getAttribute('aria-label')).toBe('Move Sucrose up in step 2');
+    expect(ctl('row-b:1', 'move-up').getAttribute('aria-label')).toBe('Move up, Sucrose in step 1');
+    expect(ctl('row-b:2', 'move-up').getAttribute('aria-label')).toBe('Move up, Sucrose in step 2');
 
     await press(ctl('row-b:1', 'move-up'));
     expect(groups().map((group) => group.lines)).toEqual([

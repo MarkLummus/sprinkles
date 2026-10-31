@@ -272,10 +272,10 @@ describe('IngredientTable, creating: a row in two steps reads one line per step'
   it("names each line's Move controls and grams field by its step, so no two share a name", () => {
     mount(splitDraft);
     const move = (key, direction) => line(key).querySelector(`[data-act="move-${direction}"]`).getAttribute('aria-label');
-    expect(move('milk-row:1', 'up')).toBe(`Move ${WHOLE_MILK} up in step 1`);
-    expect(move('milk-row:2', 'down')).toBe(`Move ${WHOLE_MILK} down in step 2`);
-    // A row with one line keeps the board's plain name.
-    expect(move('sucrose-row:0', 'up')).toBe('Move Sucrose up');
+    expect(move('milk-row:1', 'up')).toBe(`Move up, ${WHOLE_MILK} in step 1`);
+    expect(move('milk-row:2', 'down')).toBe(`Move down, ${WHOLE_MILK} in step 2`);
+    // A row with one line names no step.
+    expect(move('sucrose-row:0', 'up')).toBe('Move up, Sucrose');
     // Every line-specific control on the table has a name of its own: each Move
     // button and each grams field. The removes are left out: each removes the row.
     const names = [...current.container.querySelectorAll('tbody [data-act^="move-"], tbody input')].map((control) =>
@@ -372,12 +372,30 @@ describe('IngredientTable, creating: the acts line (STRUCT-01 to STRUCT-03, D-15
     expect(actsText('milk-row:1')).toBe('Remove · Move up · Move down');
     expect(actsText('sucrose-row:1')).toBe('Remove · Move up · Move down');
     expect(actsText('cream-row:0')).toBe('Remove · Move up · Move down · Add to step');
-    expect(control('cream-row:0', 'add-to-step').getAttribute('aria-label')).toBe('Add Heavy cream, 36% fat to a step');
+    expect(control('cream-row:0', 'add-to-step').getAttribute('aria-label')).toBe('Add to step, Heavy cream, 36% fat');
     expect(line('milk-row:1').querySelector('.ingredient-table__remove-gap')).not.toBeNull();
     for (const button of current.container.querySelectorAll('.mk-row-acts button')) expect(button.getAttribute('tabindex')).toBe('0');
-    // The names the board gives.
+    // The row's own names.
     expect(control('milk-row:1', 'remove').getAttribute('aria-label')).toBe(`remove ${WHOLE_MILK}`);
-    expect(control('milk-row:1', 'move-down').getAttribute('aria-label')).toBe(`Move ${WHOLE_MILK} down`);
+    expect(control('milk-row:1', 'move-down').getAttribute('aria-label')).toBe(`Move down, ${WHOLE_MILK}`);
+  });
+
+  it('a row control carries its visible words in its name (Label in Name, WCAG 2.5.3, bug-p11-label-in-name-mismatches)', () => {
+    mount(threeRows);
+    const names = [
+      [control('milk-row:1', 'move-up'), `Move up, ${WHOLE_MILK}`],
+      [control('milk-row:1', 'move-down'), `Move down, ${WHOLE_MILK}`],
+      [control('cream-row:0', 'add-to-step'), 'Add to step, Heavy cream, 36% fat'],
+    ];
+    for (const [button, name] of names) {
+      expect(button.getAttribute('aria-label')).toBe(name);
+      expect(name.startsWith(button.textContent)).toBe(true);
+    }
+    const buttons = [...current.container.querySelectorAll('.mk-row-acts:not(.mk-row-acts--choosing) button')];
+    expect(buttons.length).toBeGreaterThan(0);
+    for (const button of buttons) {
+      expect(button.getAttribute('aria-label').toLowerCase()).toContain(button.textContent.toLowerCase());
+    }
   });
 
   it('offers no Add to step while no step exists', () => {

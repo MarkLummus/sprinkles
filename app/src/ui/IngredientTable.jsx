@@ -272,14 +272,17 @@ function RowActs({
         <Button className="text-control" data-act="cancel" aria-label={`${name}, cancel`} onClick={onCancelChooser}>
           Cancel
         </Button>
-        {steps.map((step) => (
-          <Fragment key={step.n}>
-            {ACT_DOT}
-            <Button className="text-control" data-act={`choose-${step.n}`} aria-label={`Add ${name} to step ${step.number}`} onClick={() => onChoose(step.n)}>
-              {step.leadIn.trim() === '' ? `Step ${step.number}` : `Step ${step.number}, ${step.leadIn}`}
-            </Button>
-          </Fragment>
-        ))}
+        {steps.map((step) => {
+          const words = step.leadIn.trim() === '' ? `Step ${step.number}` : `Step ${step.number}, ${step.leadIn}`;
+          return (
+            <Fragment key={step.n}>
+              {ACT_DOT}
+              <Button className="text-control" data-act={`choose-${step.n}`} aria-label={`${words}: add ${name}`} onClick={() => onChoose(step.n)}>
+                {words}
+              </Button>
+            </Fragment>
+          );
+        })}
       </span>
     );
   }

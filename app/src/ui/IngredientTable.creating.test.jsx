@@ -439,12 +439,22 @@ describe('IngredientTable, creating: the acts line (STRUCT-01 to STRUCT-03, D-15
     expect([...acts.querySelectorAll('button')].map((button) => button.textContent)).toEqual(['Cancel', 'Step 1, Warm', 'Step 2']);
     expect([...acts.querySelectorAll('button')].map((button) => button.getAttribute('aria-label'))).toEqual([
       'Heavy cream, 36% fat, cancel',
-      'Add Heavy cream, 36% fat to step 1',
-      'Add Heavy cream, 36% fat to step 2',
+      'Step 1, Warm: add Heavy cream, 36% fat',
+      'Step 2: add Heavy cream, 36% fat',
     ]);
     expect(acts.textContent).toBe('Cancel · Step 1, Warm · Step 2');
     // Opening puts focus on Cancel, after the render that drew it.
     expect(document.activeElement).toBe(control('cream-row:0', 'cancel'));
+  });
+
+  it('a chooser step carries its visible words, lead-in included, at the start of its name (Label in Name, WCAG 2.5.3, bug-p11-chooser-step-label-in-name)', () => {
+    mount(threeRows);
+    press(control('cream-row:0', 'add-to-step'));
+    const steps = [...line('cream-row:0').querySelectorAll('.mk-row-acts--choosing button[data-act^="choose-"]')];
+    expect(steps.map((button) => button.textContent)).toEqual(['Step 1, Warm', 'Step 2']);
+    for (const button of steps) {
+      expect(button.getAttribute('aria-label').startsWith(button.textContent)).toBe(true);
+    }
   });
 
   it('Cancel and Escape close it and return focus to Add to step; one chooser is open at a time', () => {

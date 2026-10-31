@@ -4,7 +4,7 @@
 // D-04, D-23, RESEARCH G-1c): a saved first version with no batch and no child
 // offers Edit beside Next version, at every width; with an edit draft kept, the
 // acts row reads Resume editing in its place and offers no Next version, no
-// Record a batch and no pen; and nothing is offered while a read that could
+// Record batch and no pen; and nothing is offered while a read that could
 // disqualify the version is still out (T-11-56). Mounted whole, under
 // StrictMode, over an in-memory stand-in for the repository whose reads can be
 // held on deferred promises.
@@ -285,7 +285,7 @@ describe('Edit on a saved first version (STRUCT-04)', () => {
 });
 
 describe('Resume editing while an edit draft is kept (D-04, D-23)', () => {
-  it('reads Resume editing in Edit’s place, with no Next version, no Record a batch and the draft kept', async () => {
+  it('reads Resume editing in Edit’s place, with no Next version, no Record batch and the draft kept', async () => {
     const { version } = seedVanilla();
     store.drafts.set(VERSION_ID, keptEdit(version));
     await mountAt(PAGE_PATH);
@@ -293,7 +293,7 @@ describe('Resume editing while an edit draft is kept (D-04, D-23)', () => {
     expect(actsWords()).toEqual(['Resume editing', 'Print sheet']);
     expect(buttonByText('Edit')).toBeNull();
     expect(buttonByText('Next version')).toBeNull();
-    expect(buttonByText('Record a batch')).toBeNull();
+    expect(buttonByText('Record batch')).toBeNull();
     expect(repository.deleteDraft).not.toHaveBeenCalled();
     expect(store.drafts.get(VERSION_ID).kind).toBe('edit');
 
@@ -301,12 +301,12 @@ describe('Resume editing while an edit draft is kept (D-04, D-23)', () => {
     expect(location.pathname).toBe(EDIT_PATH);
   });
 
-  it('draws no Record a batch below 724 either, and the record act is gone from the acts row', async () => {
+  it('draws no Record batch below 724 either, and the record act is gone from the acts row', async () => {
     const { version } = seedVanilla();
     store.drafts.set(VERSION_ID, keptEdit(version));
     await mountAt(PAGE_PATH, { width: 600 });
     expect(actsWords()).toEqual(['Resume editing', 'Print sheet']);
-    expect(buttonByText('Record a batch')).toBeNull();
+    expect(buttonByText('Record batch')).toBeNull();
   });
 
   it('opens no pen for a startNextVersion route intent', async () => {
@@ -329,7 +329,7 @@ describe('Resume editing while an edit draft is kept (D-04, D-23)', () => {
 
     expect(actsWords()).toEqual(['Resume editing', 'Print sheet']);
     expect(buttonByText('Next version')).toBeNull();
-    expect(buttonByText('Record a batch')).toBeNull();
+    expect(buttonByText('Record batch')).toBeNull();
     expect(buttonByText('Record another')).toBeNull();
     expect(store.drafts.get(VERSION_ID).kind).toBe('edit');
   });

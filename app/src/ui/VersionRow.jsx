@@ -15,7 +15,7 @@ import { useFold } from './useBelowDesktop.js';
 // row: the band's filled control, below 724, names what the version is
 // waiting on (sketch 011 decision 30, answers 1 and 4).
 const RECORD_ACT_WORDS = {
-  [NOT_YET_CHURNED]: 'Record a batch',
+  [NOT_YET_CHURNED]: 'Record batch',
   [AWAITING_TASTING]: 'Record a tasting',
   [TASTED]: 'Record another',
 };
@@ -67,7 +67,7 @@ export function VersionRow({
   // Below 724 (useBelow724, RecipePage's read) the acts row leads with the
   // filled record act and Next version becomes a text control. The two
   // handlers are RecipePage's own: onStartRecording is the one the log's
-  // Record another and Record a batch call; onStartTasting opens the amend
+  // Record another and Record batch call; onStartTasting opens the amend
   // pen on the batch the label rule read, with the tasting step already open
   // (261002-wn0). amendOpener is RecipePage's record of which control opened
   // the amend pen, so this row takes focus back only when it was the one.
@@ -420,7 +420,7 @@ export function VersionRow({
             restyled as App front matter, Task 2): one row, below the dl,
             only while no pen is open. Below 724 it leads with ONE filled
             control, the record act the version is waiting on (Record a
-            tasting, Record another or Record a batch, sketch 011 decision
+            tasting, Record another or Record batch, sketch 011 decision
             30, Mark 2026-10-02), then Next version as the underlined text
             control; from 724 up Next version is the filled control, as
             built, and the record acts live only in BatchRow.jsx's own

@@ -195,7 +195,7 @@ describe('Import is refused while a pen is open (261011-dz2, decide-import-refre
 
   it('record pen: Import is refused', async () => {
     await mountAt(VERSION_PATH);
-    await click(buttonByText('Record a batch'));
+    await click(buttonByText('Record batch'));
     await flush(() => buttonByText('Save batch') !== null);
     await click(headerImport());
     expectRefused();

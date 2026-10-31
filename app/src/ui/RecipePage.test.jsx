@@ -103,7 +103,7 @@ describe('derivePenState — the one derivation of "a pen is open" (D-01/D-03: t
 });
 
 // The pen matrix, across the region openPen still reaches on VersionRow —
-// every batch-side opener (Correct, Record another batch, Record a batch)
+// every batch-side opener (Correct, Record another batch, Record batch)
 // lives in BatchRow (see BatchRow.test.jsx); VersionRow itself renders no
 // Develop opener of any kind while any pen is open. Table-driven so the
 // correspondence between a pen and the opener it hides reads as data, not

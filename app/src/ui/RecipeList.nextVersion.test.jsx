@@ -131,9 +131,9 @@ describe('Home’s Next version asks the recipe page to open its pen (quick 2610
     expect(landed.state).toBeNull();
   });
 
-  it('4: Record a batch lands with no state', async () => {
+  it('4: Record batch lands with no state', async () => {
     await mount([]);
-    await click(linksNamed('li.home__row', 'Record a batch')[0]);
+    await click(linksNamed('li.home__row', 'Record batch')[0]);
     expect(landed.pathname).toBe('/notebook/r1/v1');
     expect(landed.state).toBeNull();
   });

@@ -67,7 +67,7 @@ const CHURN_DATE_ERROR_ID = 'field-error-churnDate';
 
 // The no-batch state's own prose (1600-no-batch.html, 03.5-07 decisions):
 // a version with no batch reads this sentence in place of the churn
-// cells, with Record a batch as the filled action beside it. The board's
+// cells, with Record batch as the filled action beside it. The board's
 // other control there is Phase 4's, not built here.
 export const NO_BATCH_PROSE = 'Not yet churned. Print the sheet, make it, then record what happened.';
 
@@ -505,7 +505,7 @@ export function BatchRow({
   batchOpen = true,
   onToggleBatch,
   // True while an edit draft is kept on the version (plan 11-12, D-04): a
-  // batch would close the edit window, so neither Record a batch nor Record
+  // batch would close the edit window, so neither Record batch nor Record
   // another is drawn.
   recordingLocked = false,
 }) {
@@ -530,7 +530,7 @@ export function BatchRow({
   // Focus-return for the Record opener, moved here from VersionRow.jsx
   // verbatim (03.5-07 Task 1, decisions_recorded 1) — this row now owns
   // the button beside Batches/Correct. Shared by both the head's "Record
-  // another" (a batch is in view) and the no-batch state's "Record a
+  // another" (a batch is in view) and the no-batch state's "Record
   // batch" below, since exactly one of the two ever mounts.
   const recordButtonRef = useRef(null);
   const wasRecordingRef = useRef(false);
@@ -773,7 +773,7 @@ export function BatchRow({
           {/* Record another: moved from VersionRow.jsx (03.5-07 Task 1,
               decisions_recorded 1), last in the acts group. Present only
               with no pen open and a batch in view — the no-batch state's
-              own "Record a batch" (below) is the same handler, offered
+              own "Record batch" (below) is the same handler, offered
               where the sketch draws it instead. */}
           {openPen === null && openBatch && !recordingLocked && (
             <Button
@@ -1302,7 +1302,7 @@ export function BatchRow({
         ) : (
           <>
             {/* The no-batch state (1600-no-batch.html): a version that
-                has never been churned. Record a batch is the filled
+                has never been churned. Record batch is the filled
                 action (.notebook-action); it shares the head's own
                 Record opener handler and focus-return ref, since exactly
                 one of the two ever mounts. The board's other control
@@ -1310,7 +1310,7 @@ export function BatchRow({
             <p>{NO_BATCH_PROSE}</p>
             {openPen === null && !recordingLocked && (
               <Button ref={recordButtonRef} className="notebook-action" onClick={onStartRecording}>
-                Record a batch
+                Record batch
               </Button>
             )}
           </>

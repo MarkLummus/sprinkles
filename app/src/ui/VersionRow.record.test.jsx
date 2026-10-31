@@ -77,9 +77,9 @@ describe('VersionRow — the band\'s controls below 724 call the handler they ar
     expect(spies.onStartTasting).not.toHaveBeenCalled();
   });
 
-  it('Record a batch, with no batch, calls onStartRecording once (Test H)', () => {
+  it('Record batch, with no batch, calls onStartRecording once (Test H)', () => {
     const spies = mount([]);
-    act(() => buttonNamed('Record a batch').click());
+    act(() => buttonNamed('Record batch').click());
     expect(spies.onStartRecording).toHaveBeenCalledTimes(1);
     expect(spies.onStartDeveloping).not.toHaveBeenCalled();
     expect(spies.onStartTasting).not.toHaveBeenCalled();

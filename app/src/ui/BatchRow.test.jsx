@@ -191,12 +191,12 @@ describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
 });
 
 describe('BatchRow — the openers, present only with no pen open (D-05)', () => {
-  it('renders no Correct when the version has no batch, but offers Record a batch in the no-batch state', () => {
+  it('renders no Correct when the version has no batch, but offers Record batch in the no-batch state', () => {
     const markup = renderBatchRow({ openPen: null, openBatch: null, batches: [] });
     expect(markup).not.toContain('Record another');
     expect(markup).not.toContain('>Correct<');
     expect(markup).not.toContain('Add tasting');
-    expect(markup).toContain('Record a batch');
+    expect(markup).toContain('Record batch');
   });
 
   it('renders Correct then Record another on the Batch head line, in that order, when a batch is in view — no Batches control any more (decision 19), no Add tasting yet', () => {
@@ -1747,18 +1747,18 @@ describe('BatchRow — zero-batch and unknown-address states', () => {
   });
 });
 
-describe('BatchRow — the no-batch state offers Record a batch (1600-no-batch.html)', () => {
-  it('reads NO_BATCH_PROSE and one filled Record a batch button, no Print sheet, with a version that has never been churned', () => {
+describe('BatchRow — the no-batch state offers Record batch (1600-no-batch.html)', () => {
+  it('reads NO_BATCH_PROSE and one filled Record batch button, no Print sheet, with a version that has never been churned', () => {
     const markup = renderBatchRow({ openBatch: null, batches: [] });
     expect(markup).toContain(NO_BATCH_PROSE);
-    expect(markup).toMatch(/<button[^>]*class="notebook-action[^"]*"[^>]*>Record a batch<\/button>/);
+    expect(markup).toMatch(/<button[^>]*class="notebook-action[^"]*"[^>]*>Record batch<\/button>/);
     expect(markup).not.toContain('Print sheet');
   });
 
-  it('withholds Record a batch while any pen is open', () => {
+  it('withholds Record batch while any pen is open', () => {
     const markup = renderBatchRow({ openPen: 'plan', openBatch: null, batches: [] });
     expect(markup).toContain(NO_BATCH_PROSE);
-    expect(markup).not.toContain('Record a batch');
+    expect(markup).not.toContain('Record batch');
   });
 });
 
@@ -1832,7 +1832,7 @@ describe('batchListMeta — the batch list\'s meta small print (decisions_record
 // markup: the attribute's whole effect is in the DOM WebKit reads. Each
 // expected count is the sum of the controls that state renders, from
 // BatchRow.jsx: reading is Correct, Record another and the Tasting fold row;
-// the no-batch state is Record a batch; the pen with the tasting closed is
+// the no-batch state is Record batch; the pen with the tasting closed is
 // two Segmented groups (6 radios), the At draw group (2 radios, disabled or
 // not) and the ceremony's Add tasting, Cancel, Save batch; the pen with the
 // tasting open is Remove tasting, the four defect chips, Bitter, Cancel and
@@ -1854,7 +1854,7 @@ describe('BatchRow — every button and radio carries an explicit tabindex (quic
     expect(radioTags(markup)).toHaveLength(0);
   });
 
-  it('no batch: Record a batch — 1 button', () => {
+  it('no batch: Record batch — 1 button', () => {
     expectAllTagged(buttonTags(renderBatchRow({})), 1);
   });
 
@@ -2744,9 +2744,9 @@ describe('BatchRow — a new record pen reads its scales and Every recipe chips 
 // Phase 11 plan 12 (D-04): while an edit draft is kept on the version, either
 // record act would close the edit window, so neither is drawn.
 describe('BatchRow — recordingLocked (D-04)', () => {
-  it('draws no Record a batch in the no-batch state while locked, and draws it unlocked', () => {
-    expect(renderBatchRow({ openPen: null, openBatch: null, batches: [], recordingLocked: true })).not.toContain('Record a batch');
-    expect(renderBatchRow({ openPen: null, openBatch: null, batches: [], recordingLocked: false })).toContain('Record a batch');
+  it('draws no Record batch in the no-batch state while locked, and draws it unlocked', () => {
+    expect(renderBatchRow({ openPen: null, openBatch: null, batches: [], recordingLocked: true })).not.toContain('Record batch');
+    expect(renderBatchRow({ openPen: null, openBatch: null, batches: [], recordingLocked: false })).toContain('Record batch');
   });
 
   it('draws no Record another while locked, keeps Correct, and draws it unlocked', () => {

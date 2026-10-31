@@ -188,7 +188,6 @@ describe('VersionRow — the Develop opener, present only with no pen open (D-05
     expect(markup).toContain('Next version');
     expect(markup).not.toContain('Record another');
     expect(markup).not.toContain('Record batch');
-    expect(markup).not.toContain('Record a batch');
   });
 
 });
@@ -738,9 +737,9 @@ describe('VersionRow — below 724 the band\'s one filled action is the record a
     expect(actsGroup(renderVersionRow({ below724: true, batches: [augustSecondBatch] })).match(/class="notebook-action"/g)).toHaveLength(1);
   });
 
-  it('leads with a filled Record a batch when the version has no batch (Test B)', () => {
+  it('leads with a filled Record batch when the version has no batch (Test B)', () => {
     const buttons = actButtons(renderVersionRow({ below724: true, batches: [] }));
-    expect(buttons.map((button) => button.label)).toEqual(['Record a batch', 'Next version']);
+    expect(buttons.map((button) => button.label)).toEqual(['Record batch', 'Next version']);
     expect(buttons[0].attrs).toContain('class="notebook-action"');
     expect(buttons[1].attrs).toContain('class="notebook-link"');
   });
@@ -920,7 +919,7 @@ describe('VersionRow — Edit and Resume editing (STRUCT-04)', () => {
   it('draws Edit below 724 as well, after the record act and Next version', () => {
     const acts = actsOf(renderVersionRow({ editState: 'editable', below724: true }));
     expect(acts.indexOf('>Edit<')).toBeGreaterThan(acts.indexOf('Next version'));
-    expect(acts.indexOf('Next version')).toBeGreaterThan(acts.indexOf('Record a batch'));
+    expect(acts.indexOf('Next version')).toBeGreaterThan(acts.indexOf('Record batch'));
   });
 
   it('draws Resume editing in Edit’s place, with no Next version, no Edit and no record act, when editing', () => {
@@ -929,7 +928,7 @@ describe('VersionRow — Edit and Resume editing (STRUCT-04)', () => {
       expect(acts).toMatch(/<button[^>]*class="notebook-link"[^>]*>Resume editing<\/button>/);
       expect(acts).not.toContain('Next version');
       expect(acts).not.toContain('>Edit<');
-      expect(acts).not.toContain('Record a batch');
+      expect(acts).not.toContain('Record batch');
       expect(acts.indexOf('Print sheet')).toBeGreaterThan(acts.indexOf('Resume editing'));
     }
   });

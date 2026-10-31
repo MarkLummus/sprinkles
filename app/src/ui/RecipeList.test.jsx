@@ -121,9 +121,9 @@ describe('RecipeRows — the App marks grammar (D-07, D-11, D-19, 03.4-04 Task 2
     expect(markup).not.toMatch(/home__tally-mark/);
   });
 
-  it('gives a not-yet-churned recipe only Record a batch, with no secondary action', () => {
+  it('gives a not-yet-churned recipe only Record batch, with no secondary action', () => {
     const markup = renderRows([makeVersion()]);
-    expect(markup).toContain('Record a batch');
+    expect(markup).toContain('Record batch');
     expect(markup).not.toContain('home__action--secondary');
   });
 
@@ -285,7 +285,7 @@ describe('HomeLead — the board\'s block (gap 5)', () => {
 
   it('gives a not-yet-churned lead the batch action alone', () => {
     const markup = renderLead(makeEntry());
-    expect(markup).toContain('Record a batch');
+    expect(markup).toContain('Record batch');
     expect(markup).not.toContain('home__action--secondary');
   });
 
@@ -652,7 +652,7 @@ describe('HomeBody — a create draft in the store changes nothing (D-18)', () =
   });
 });
 
-// Phase 11 plan 12 (D-24): a recipe holding a kept edit draft offers no Record a
+// Phase 11 plan 12 (D-24): a recipe holding a kept edit draft offers no Record
 // batch or Next version on Home, in the lead or in its row; other recipes keep
 // theirs.
 describe('HomeBody — a kept edit hides that recipe’s shortcuts (D-24)', () => {
@@ -684,13 +684,13 @@ describe('HomeBody — a kept edit hides that recipe’s shortcuts (D-24)', () =
 
   const count = (markup, words) => markup.split(words).length - 1;
 
-  it('draws Record a batch in the lead and both rows with no edit kept', () => {
-    expect(count(renderBody([]), 'Record a batch')).toBe(3);
+  it('draws Record batch in the lead and both rows with no edit kept', () => {
+    expect(count(renderBody([]), 'Record batch')).toBe(3);
   });
 
-  it('draws no Record a batch for the recipe holding the edit, in the lead or its row, and keeps the other recipe’s', () => {
+  it('draws no Record batch for the recipe holding the edit, in the lead or its row, and keeps the other recipe’s', () => {
     const markup = renderBody([editDraftOn('v1', 'r1')]);
-    expect(count(markup, 'Record a batch')).toBe(1);
+    expect(count(markup, 'Record batch')).toBe(1);
     // Vanilla still leads and is still listed; only its shortcut is gone.
     expect(count(markup, 'Vanilla')).toBe(2);
     expect(count(markup, 'Mint')).toBe(1);
@@ -703,7 +703,7 @@ describe('HomeBody — a kept edit hides that recipe’s shortcuts (D-24)', () =
     const markup = renderBody([editDraftOn('v1', 'r1')], [tasted]);
     expect(count(markup, 'Next version')).toBe(0);
     expect(markup).not.toContain('Adapt');
-    expect(count(markup, 'Record a batch')).toBe(1);
+    expect(count(markup, 'Record batch')).toBe(1);
   });
 
   it('ignores an edit draft whose version is not stored', () => {
@@ -712,8 +712,8 @@ describe('HomeBody — a kept edit hides that recipe’s shortcuts (D-24)', () =
 
   it('draws today’s actions when HomeLead and RecipeRows are called without editingIds', () => {
     const entry = makeEntry();
-    expect(renderLead(entry)).toContain('Record a batch');
-    expect(renderRows([makeVersion({ id: 'v1', recipeId: 'r1' })])).toContain('Record a batch');
+    expect(renderLead(entry)).toContain('Record batch');
+    expect(renderRows([makeVersion({ id: 'v1', recipeId: 'r1' })])).toContain('Record batch');
   });
 
   it('hides the actions of exactly the recipes named in editingIds', () => {
@@ -723,20 +723,20 @@ describe('HomeBody — a kept edit hides that recipe’s shortcuts (D-24)', () =
         <HomeLead entry={entry} editingIds={new Set(['r1'])} />
       </MemoryRouter>,
     );
-    expect(lead).not.toContain('Record a batch');
+    expect(lead).not.toContain('Record batch');
     expect(lead).not.toContain('home__actions');
     const rows = renderToStaticMarkup(
       <MemoryRouter>
         <RecipeRows versions={[makeVersion({ id: 'v1', recipeId: 'r1' })]} editingIds={new Set(['r1'])} />
       </MemoryRouter>,
     );
-    expect(rows).not.toContain('Record a batch');
+    expect(rows).not.toContain('Record batch');
     const other = renderToStaticMarkup(
       <MemoryRouter>
         <RecipeRows versions={[makeVersion({ id: 'v1', recipeId: 'r1' })]} editingIds={new Set(['r9'])} />
       </MemoryRouter>,
     );
-    expect(other).toContain('Record a batch');
+    expect(other).toContain('Record batch');
   });
 });
 

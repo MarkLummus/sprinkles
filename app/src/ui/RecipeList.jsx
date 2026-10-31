@@ -103,7 +103,7 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog
     }),
   );
   const draftVersion = draft ? versions.find((version) => version.id === draft.versionId) : null;
-  // D-24: a recipe holding a kept edit draft offers no Next version or Record a
+  // D-24: a recipe holding a kept edit draft offers no Next version or Record
   // batch here either (either would close the edit window). The draft's version
   // names the recipe; an edit draft whose version is gone names none.
   const editingIds = new Set(
@@ -209,7 +209,7 @@ function RowActions({ entry }) {
     return (
       <span className="home__actions">
         <Link to={latestPath} className="home__action" tabIndex={0}>
-          Record a batch
+          Record batch
         </Link>
       </span>
     );

@@ -160,7 +160,7 @@ describe('the shell’s own effects (characterization before the Phase 8 split)'
     await click(buttonByText('Cancel'));
     expect(lastCall(onPenOpenChange)).toBe(false);
 
-    await click(buttonByText('Record a batch'));
+    await click(buttonByText('Record batch'));
     expect(lastCall(onPenOpenChange)).toBe(true);
     await click(buttonByText('Cancel'));
     expect(lastCall(onPenOpenChange)).toBe(false);

@@ -558,7 +558,7 @@ describe('the record pen keeps its draft, its tasting section included (04-09, T
   it('typing in a fresh record pen writes a record draft after the debounce', async () => {
     await mountAt(VERSION_PATH);
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
-    await click(buttonByText('Record a batch'));
+    await click(buttonByText('Record batch'));
     await flush(() => pen() !== null);
     await elapse(400);
     expect(store.saveDraft).not.toHaveBeenCalled();

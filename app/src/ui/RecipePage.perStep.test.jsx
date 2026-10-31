@@ -771,7 +771,7 @@ describe('Recording reads like the Sheet when one line is left (sketch 011 decis
 
   it('records, saves and corrects Whole milk as one line with its one field at stored index 1', async () => {
     const childId = await reachV2();
-    expect(band().textContent).toBe('Record a batch');
+    expect(band().textContent).toBe('Record batch');
     await click(band());
     await flush(() => current.container.querySelector('input[type="date"]') !== null);
 

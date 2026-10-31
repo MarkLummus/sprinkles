@@ -339,7 +339,7 @@ export function StepPenBody({
             flaggedRows.length > 1 ? 'are' : 'is'
           } removed`}{' '}
           <Button onClick={() => onTogglePenStepRemoved(step.n)}>
-            remove this step
+            Remove this step
           </Button>
         </p>
       )}

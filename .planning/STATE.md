@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-10-31T15:17:56.630Z"
-last_activity: 2026-10-28
+last_updated: "2026-10-31T15:18:55.643Z"
+last_activity: 2026-10-31
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: cda2282b2bd47398c7e883842703ffb6785e3dda
+state_head: 23bd04fb4fc17ba89f35b1a1d907c089b4e8ef1c
 progress:
   total_phases: 5
   completed_phases: 3
@@ -613,6 +613,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 210 | Phase 12 notes name the parked Low to high scale bug (decide-magnitude-scale-stops-now-or-phase-12) | 2026-10-28 | 30e10574 | — |
 | 261028-c0v | Inline text controls read sentence case with no articles (look-p11-link-case, bug-p11-link-case-mixed) | 2026-10-28 | dcafd03d | [261028-c0v-inline-text-controls-read-sentence-case-](./quick/261028-c0v-inline-text-controls-read-sentence-case-/) |
 | 261031-fdd | Step numbers sit on their lead-in baseline on every step (look-p11-reading-step-baseline; closes bug-p11-pen-step-number-leadin-misaligned) | 2026-10-31 | cda2282b | [261031-fdd-step-numbers-sit-on-their-lead-in-baseli](./quick/261031-fdd-step-numbers-sit-on-their-lead-in-baseli/) |
+| 213 | fast: the version pen's removed-row flag button reads Remove this step (bug-p11-pen-remove-this-step-case, sketch 014 decision 11) | 2026-10-31 | 23bd04fb | — |
 
 ### Roadmap Evolution
 

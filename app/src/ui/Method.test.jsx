@@ -392,7 +392,7 @@ describe('Method — developing mode', () => {
     );
 
     expect(markup).not.toContain('method-step__flag');
-    expect(markup).not.toContain('remove this step');
+    expect(markup).not.toContain('Remove this step');
     expect(markup).toContain('>Edit this step<');
     // The cross-flag's own content and control (route-recipe-version.md
     // § 3), unchanged by this plan, now render only inside the revealed
@@ -433,7 +433,7 @@ describe('Method — developing mode', () => {
     // it is the only active step left — its displayed position is 1
     // (03-10), not its stored key.
     expect(markup).toContain('still used by step 1');
-    expect(markup).not.toContain('remove this step');
+    expect(markup).not.toContain('Remove this step');
     // The coverage cue stays on the closed step (03.3-03, option B).
     // Remove moved TO the closed step too (sketch 011 decisions_recorded
     // 4) — a removed step's closed markup now reads "restore", not
@@ -507,7 +507,7 @@ describe('Method — developing mode', () => {
     );
 
     expect(markup).not.toContain('uses Row A, which is removed');
-    expect(markup).not.toContain('remove this step');
+    expect(markup).not.toContain('Remove this step');
     expect(markup).toContain('>Edit this step<');
     // Unchanged behaviour (route-recipe-version.md § 3), now reachable
     // only inside the reveal — a UAT item, not asserted here.
@@ -1450,11 +1450,11 @@ describe('Method — every button and checkbox carries an explicit tabindex (qui
     }
   });
 
-  it('an open step that still uses a removed row also renders remove this step, each of the six tabindex="0"', () => {
+  it('an open step that still uses a removed row also renders Remove this step, each of the six tabindex="0"', () => {
     const markup = renderOpenStepPenBody(3, (draft) => {
       draft.rows[0].removed = true;
     });
-    expect(markup).toContain('remove this step');
+    expect(markup).toContain('Remove this step');
     const tags = buttonTags(markup);
     expect(tags).toHaveLength(6);
     for (const tag of tags) {

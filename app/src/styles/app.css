@@ -1117,10 +1117,15 @@ textarea {
   padding: 0;
 }
 
+/* The number sits on its lead's text baseline on every step, read or edited (sketch 014 decision 10;
+   look-p11-reading-step-baseline, Mark 2026-10-31; closes bug-p11-pen-step-number-leadin-misaligned).
+   The body's first baseline is its first child's: the lead on a read step, the lead-in field on an open
+   one. A keyword, so it reads no token and adds none. */
 .method-step {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: var(--gap-s);
+  align-items: baseline;
 }
 
 .method-step + .method-step {

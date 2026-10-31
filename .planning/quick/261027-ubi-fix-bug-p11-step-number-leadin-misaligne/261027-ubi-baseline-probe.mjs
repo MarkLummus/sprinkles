@@ -4,12 +4,16 @@
 // number (.method-step__n) and its lead-in input on the same text baseline.
 //   U1 open creation step: lead-in baseline minus number baseline is within 1.0 px (the base build shows
 //      about +8.5 WebKit and +8.0 Chrome under a coarse pointer);
-//   U2 reading step (Olive Oil v1 step 1): number top, lead top and baseline difference equal the base's;
-//   U3 Preview step inside the open step: (lead top minus number top) and baseline difference equal the base's;
+//   U2 reading step (Olive Oil v1 step 1), re-based by quick 261031-fdd on sketch 014 decision 10: the number
+//      top equals the base's, the lead top moves down by the base's old offset (minus the base's diff), and
+//      the baseline difference is 0;
+//   U3 Preview step inside the open step, re-based the same way: (lead top minus number top) equals the
+//      base's minus the base's diff, and the baseline difference is 0;
 //   U4 open step lead-in field top: coarse equals the base's; fine is 0 to 1.0 lower than the base's;
 //   U5 instruction top minus lead-in bottom equals the base's (field rhythm unchanged);
-//   U6 the coarse media query matches the config's hasTouch.
-// INFO lines print the version pen's open step (no gate; this fix leaves the pen alone).
+//   U6 the coarse media query matches the config's hasTouch;
+//   U7 the version pen's open step (quick 261031-fdd): number and lead-in field baselines coincide, and the
+//      lead-in field top, after minus base, is 0 under a coarse pointer and 0 to 1.0 lower under a fine one.
 //
 // Usage (from the repo root; build to scratch first, never to app/dist):
 //   S="${TMPDIR:-/tmp}/sprinkles-ubi"
@@ -249,14 +253,14 @@ for (const engine of ['webkit', 'chrome']) {
     );
     say(
       near(a.reading.number.top, b.reading.number.top) &&
-        near(a.reading.lead.top, b.reading.lead.top) &&
-        near(a.reading.diff, b.reading.diff),
+        near(a.reading.lead.top - b.reading.lead.top, -b.reading.diff) &&
+        near(a.reading.diff, 0),
       `U2 ${tag}: reading step number top ${a.reading.number.top}, lead top ${a.reading.lead.top}, diff ${a.reading.diff} (base ${b.reading.number.top}, ${b.reading.lead.top}, ${b.reading.diff})`,
     );
     const aOff = r2(a.preview.lead.top - a.preview.number.top);
     const bOff = r2(b.preview.lead.top - b.preview.number.top);
     say(
-      near(aOff, bOff) && near(a.preview.diff, b.preview.diff),
+      near(aOff, r2(bOff - b.preview.diff)) && near(a.preview.diff, 0),
       `U3 ${tag}: preview lead top minus number top ${aOff} (base ${bOff}), diff ${a.preview.diff} (base ${b.preview.diff})`,
     );
     const move = r2(o.lead.top - b.open.lead.top);
@@ -268,8 +272,10 @@ for (const engine of ['webkit', 'chrome']) {
     const bGap = r2(b.instructionTop - b.open.lead.bottom);
     say(near(gap, bGap), `U5 ${tag}: lead-in bottom to instruction top ${gap} (base ${bGap})`);
     say(a.coarse === cfg.touch, `U6 ${tag}: coarse ${a.coarse} equals hasTouch ${cfg.touch}`);
-    console.log(
-      `INFO pen ${tag}: number top ${a.pen.number.top} baseline ${a.pen.number.baseline}, lead-in top ${a.pen.lead.top} baseline ${a.pen.lead.baseline}, diff ${a.pen.diff} (base ${b.pen.diff})`,
+    const penMove = r2(a.pen.lead.top - b.pen.lead.top);
+    say(
+      near(a.pen.diff, 0) && (cfg.touch ? near(penMove, 0) : penMove >= -TOL && penMove <= 1.0 + 1e-9),
+      `U7 ${tag}: pen open step number top ${a.pen.number.top} baseline ${a.pen.number.baseline}, lead-in top ${a.pen.lead.top} baseline ${a.pen.lead.baseline}, diff ${a.pen.diff} (base ${b.pen.diff}), field moved ${penMove}`,
     );
   }
 }

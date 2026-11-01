@@ -367,6 +367,22 @@ button.shell__place {
   min-width: 0;
 }
 
+/* The three place fields (Sheet code, New recipe Name, the Ingredients Name) are
+   one-row textareas so the iPad's Tab moves on from them
+   (bug-ipad-tab-lost-from-single-line-fields, duty 1): one scrolled line, as
+   the input kept. */
+.place .notebook-field textarea.ink-field {
+  white-space: pre;
+  overflow: hidden;
+}
+
+/* Duty 4: the label is a flex item sized from its content, so a content-sized
+   textarea would grow with long text and push Find under it. Fixed sizing keeps
+   the input's width (the cols attribute is its 20 characters). */
+.place .search__form textarea.ink-field {
+  field-sizing: fixed;
+}
+
 /* The Notebook place (PLACE-02, sketch 012 notebook-place.html): the title, the
    count in words, and one row per recipe. A row is the rail, the name (the
    link), the description where the recipe has one, and the counts in words.
@@ -890,6 +906,15 @@ button.shell__place {
 
   .place .ing__status {
     min-height: var(--touch-min);
+  }
+
+  /* Duty 2 (bug-ipad-tab-lost-from-single-line-fields): app.css's coarse floor
+     centres an input's line in 44px but starts a textarea's at the top, and
+     this padding centres it. The formula is the one the creation editor's
+     labelled-above fields use (notebook.css): 16px on the field line, 8px
+     padding, 1px app rules. */
+  .place .search__form textarea.ink-field {
+    padding-block: max(var(--app-notebook-gap-tight), calc((var(--touch-min) - var(--sheet-leading-field) * 1em - 2 * var(--app-rule-row)) / 2));
   }
 }
 

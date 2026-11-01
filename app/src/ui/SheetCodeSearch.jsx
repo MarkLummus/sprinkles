@@ -4,6 +4,7 @@ import { repository } from '../store/repository.js';
 import { codeProblem, findVersionsByCode } from '../domain/sheetCode.js';
 import { notebookPath } from './notebookPaths.js';
 import { Button } from './Button.jsx';
+import { stripNewlines, submitOnReturn } from './oneLineField.js';
 
 // D-13, UX1-03: one line, words only, no second line.
 export const SHEET_CODE_NO_MATCH = 'No version has this code.';
@@ -94,12 +95,14 @@ export function SheetCodeSearch() {
       <form className="search__form" onSubmit={handleSubmit} noValidate>
         <label className="notebook-field">
           <span className="notebook-caption">Sheet code</span>
-          <input
+          <textarea
             ref={fieldRef}
             className="ink-field"
-            type="text"
+            rows="1"
+            cols="20"
             value={code}
-            onChange={(event) => setCode(event.target.value)}
+            onChange={(event) => setCode(stripNewlines(event.target.value))}
+            onKeyDown={submitOnReturn}
             autoComplete="off"
             autoCapitalize="characters"
             spellCheck={false}

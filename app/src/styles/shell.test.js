@@ -41,7 +41,8 @@ const PHONE_MEDIA = '(max-width: 723.98px)';
 // 012): Home's own two cuts, 1100 for the Ingredients row's category and 760
 // for both places' stacking, and the coarse-pointer touch floor. They are not
 // the shell's: only .place rules naming an nb__ or ing__ class may sit under
-// them (pinned below).
+// them (pinned below). Under the touch floor, the Search place's search__ form
+// joins them (bug-ipad-tab-lost-from-single-line-fields).
 const PLACES_COLUMN_MEDIA = '(max-width: 1099.98px)';
 const PLACES_PHONE_MEDIA = '(max-width: 759.98px)';
 const COARSE_MEDIA = '(pointer: coarse)';
@@ -97,7 +98,7 @@ describe('shell.css — no visual literal, every value a var() read', () => {
   // The places' conditions are Home's own cuts and the touch floor, written for
   // the Notebook and Ingredients places alone. A shell rule under one of them
   // would move the chrome at a width the shell's ladder does not name.
-  test('every rule under the places\' three conditions is a .place rule naming an nb__ or ing__ class', () => {
+  test('every rule under the places\' three conditions is a .place rule naming an nb__, ing__ or search__ class', () => {
     const placeRules = rules.filter((rule) =>
       [PLACES_COLUMN_MEDIA, PLACES_PHONE_MEDIA, COARSE_MEDIA].includes(rule.media),
     );
@@ -105,7 +106,7 @@ describe('shell.css — no visual literal, every value a var() read', () => {
     for (const rule of placeRules) {
       for (const selector of rule.selector.split(',').map((part) => part.trim())) {
         expect(selector.startsWith('.place '), `expected "${selector}" to start with .place`).toBe(true);
-        expect(selector, `expected "${selector}" to name an nb__ or ing__ class`).toMatch(/\.(nb|ing)__/);
+        expect(selector, `expected "${selector}" to name an nb__, ing__ or search__ class`).toMatch(/\.(nb|ing|search)__/);
       }
     }
   });

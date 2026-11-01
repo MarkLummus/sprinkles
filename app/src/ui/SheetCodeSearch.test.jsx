@@ -60,9 +60,9 @@ async function mount(versions) {
 // Enter or the keyboard's Go does. The line is set on the next frame (so a
 // repeat is read again), and typeAndSubmit waits for it.
 async function type(text) {
-  const field = host.querySelector('input');
+  const field = host.querySelector('textarea');
   await act(async () => {
-    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
     setter.call(field, text);
     field.dispatchEvent(new Event('input', { bubbles: true }));
   });
@@ -95,11 +95,16 @@ afterEach(async () => {
 });
 
 describe('SheetCodeSearch — the field', () => {
-  it('is labelled Sheet code and is a text entry that asks for capitals and no spell check', async () => {
+  it('is labelled Sheet code and is a one-row, 20-column textarea that asks for capitals and no spell check', async () => {
     await mount([oliveOilVersion]);
-    const field = host.querySelector('input');
+    const field = host.querySelector('textarea');
     expect(field.labels[0].textContent.trim()).toBe('Sheet code');
-    expect(field.type).toBe('text');
+    expect(field.tagName).toBe('TEXTAREA');
+    expect(field.getAttribute('rows')).toBe('1');
+    expect(field.getAttribute('cols')).toBe('20');
+    expect(field.hasAttribute('type')).toBe(false);
+    expect(field.className).toBe('ink-field');
+    expect(field.getAttribute('autocomplete')).toBe('off');
     expect(field.getAttribute('autocapitalize')).toBe('characters');
     expect(field.getAttribute('spellcheck')).toBe('false');
     expect(field.getAttribute('enterkeyhint')).toBe('go');
@@ -111,7 +116,7 @@ describe('SheetCodeSearch — the field', () => {
     const status = host.querySelector('[role="status"]');
     expect(status.getAttribute('aria-live')).toBe('polite');
     // The field is refocused on every Find; pointing it at the live region made VoiceOver read the line twice.
-    expect(host.querySelector('input').hasAttribute('aria-describedby')).toBe(false);
+    expect(host.querySelector('textarea').hasAttribute('aria-describedby')).toBe(false);
     expect(status.textContent).toBe('');
   });
 
@@ -123,7 +128,7 @@ describe('SheetCodeSearch — the field', () => {
     expect(buttons[0].type).toBe('submit');
     expect(buttons[0].getAttribute('tabindex')).toBe('0');
     expect(buttons[0].className).toBe('notebook-action');
-    expect(host.querySelector('input').closest('form')).toBe(buttons[0].closest('form'));
+    expect(host.querySelector('textarea').closest('form')).toBe(buttons[0].closest('form'));
   });
 });
 
@@ -174,7 +179,7 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
     expect(status.textContent).toBe('No version has this code.');
     expect(SHEET_CODE_NO_MATCH).toBe('No version has this code.');
     expect(host.querySelector('[data-testid="landed"]')).toBeNull();
-    expect(document.activeElement).toBe(host.querySelector('input'));
+    expect(document.activeElement).toBe(host.querySelector('textarea'));
   });
 
   it('reads the length line with 0 for an empty, a whitespace-only and a hyphens-only submit', async () => {
@@ -185,7 +190,7 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
       expect(host.querySelector('[role="status"]').textContent).toBe(
         'A Sheet code has eight letters and numbers. This one has 0.',
       );
-      expect(document.activeElement).toBe(host.querySelector('input'));
+      expect(document.activeElement).toBe(host.querySelector('textarea'));
     }
     expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
   });
@@ -205,10 +210,10 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
       expect(status.textContent).toBe(line);
       await submit();
       expect(status.textContent).toBe('');
-      expect(document.activeElement).toBe(host.querySelector('input'));
+      expect(document.activeElement).toBe(host.querySelector('textarea'));
       await nextFrame();
       expect(status.textContent).toBe(line);
-      expect(document.activeElement).toBe(host.querySelector('input'));
+      expect(document.activeElement).toBe(host.querySelector('textarea'));
       expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
     }
   });
@@ -258,7 +263,7 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
     for (const [text, line] of cases) {
       await typeAndSubmit(text);
       expect(host.querySelector('[role="status"]').textContent).toBe(line);
-      expect(document.activeElement).toBe(host.querySelector('input'));
+      expect(document.activeElement).toBe(host.querySelector('textarea'));
       expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
     }
   });
@@ -276,7 +281,7 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
       await typeAndSubmit(text);
       expect(host.querySelector('[role="status"]').textContent).toBe(line);
       expect(host.querySelector('[data-testid="landed"]')).toBeNull();
-      expect(document.activeElement).toBe(host.querySelector('input'));
+      expect(document.activeElement).toBe(host.querySelector('textarea'));
       expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
     }
   });
@@ -315,5 +320,98 @@ describe('SheetCodeSearch — the versions load first (WR-07)', () => {
     expect(SHEET_CODE_STORE_ERROR).toBe('Couldn’t look up that code. Try again.');
     expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
     expect(host.querySelector('button').disabled).toBe(true);
+  });
+});
+
+describe('SheetCodeSearch — Return keeps running Find (bug-ipad-tab-lost-from-single-line-fields)', () => {
+  // iPadOS 27 Safari drops a hardware Tab from every input element; a textarea takes it, and a textarea does not
+  // submit on Return, so the field clicks Find itself.
+  async function keydown(init) {
+    const field = host.querySelector('textarea');
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter', ...init });
+    if (init.keyCode !== undefined && event.keyCode !== init.keyCode) {
+      Object.defineProperty(event, 'keyCode', { value: init.keyCode });
+    }
+    let notPrevented;
+    await act(async () => {
+      notPrevented = field.dispatchEvent(event);
+    });
+    return notPrevented;
+  }
+
+  function countSubmits() {
+    const counter = { count: 0 };
+    host.querySelector('form').addEventListener('submit', () => {
+      counter.count += 1;
+    });
+    return counter;
+  }
+
+  it('Return on a code nothing has submits once, says so and keeps focus in the field', async () => {
+    await mount([oliveOilVersion]);
+    const submits = countSubmits();
+    await type('0000-0000');
+    expect(await keydown({})).toBe(false);
+    await nextFrame();
+    expect(submits.count).toBe(1);
+    expect(host.querySelector('[role="status"]').textContent).toBe(SHEET_CODE_NO_MATCH);
+    expect(document.activeElement).toBe(host.querySelector('textarea'));
+  });
+
+  it('Return on a stored Sheet code lands on its version', async () => {
+    await mount([oliveOilVersion]);
+    await type(oliveOilVersion.sheetCode);
+    await keydown({});
+    await nextFrame();
+    expect(host.querySelector('[data-testid="landed"]').textContent).toBe('olive-oil-ice-cream/olive-oil-ice-cream-v1');
+  });
+
+  it('Shift+Return submits once, and Control, Alt or Meta with Return are held and submit nothing', async () => {
+    await mount([oliveOilVersion]);
+    const submits = countSubmits();
+    await type('0000-0000');
+    expect(await keydown({ shiftKey: true })).toBe(false);
+    expect(submits.count).toBe(1);
+    for (const modifier of ['ctrlKey', 'altKey', 'metaKey']) {
+      expect(await keydown({ [modifier]: true })).toBe(false);
+    }
+    expect(submits.count).toBe(1);
+  });
+
+  it('leaves Return alone while an IME composes, and submits nothing', async () => {
+    await mount([oliveOilVersion]);
+    const submits = countSubmits();
+    await type('0000-0000');
+    expect(await keydown({ isComposing: true })).toBe(true);
+    expect(await keydown({ keyCode: 229 })).toBe(true);
+    expect(submits.count).toBe(0);
+  });
+
+  it('holds Return, submits nothing and writes no line while Find is off, then lands once the versions load', async () => {
+    let release;
+    const pending = new Promise((resolve) => {
+      release = resolve;
+    });
+    store.load = () => pending;
+    await mount([]);
+    const submits = countSubmits();
+    await type(oliveOilVersion.sheetCode);
+    expect(await keydown({})).toBe(false);
+    await nextFrame();
+    expect(submits.count).toBe(0);
+    expect(host.querySelector('[role="status"]').textContent).toBe('');
+    await act(async () => {
+      release([oliveOilVersion]);
+      await pending;
+    });
+    await keydown({});
+    await nextFrame();
+    expect(host.querySelector('[data-testid="landed"]').textContent).toBe('olive-oil-ice-cream/olive-oil-ice-cream-v1');
+  });
+
+  it('strips line breaks from a typed or pasted code', async () => {
+    await mount([oliveOilVersion]);
+    await type('K7QM\n2X9D\r\n');
+    expect(host.querySelector('textarea').value).toBe('K7QM2X9D');
   });
 });

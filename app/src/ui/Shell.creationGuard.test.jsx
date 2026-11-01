@@ -400,7 +400,8 @@ describe('an import already past the chooser checks again before it commits (T-1
 });
 
 async function type(element, value) {
-  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+  const prototype = element instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+  const setter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
   await act(async () => {
     setter.call(element, value);
     element.dispatchEvent(new Event('input', { bubbles: true }));

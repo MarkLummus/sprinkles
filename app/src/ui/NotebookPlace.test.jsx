@@ -512,7 +512,7 @@ describe('NotebookPlace starting a recipe', () => {
 
   const button = (container, text) => [...container.querySelectorAll('button')].find((el) => el.textContent === text);
   const buttonTexts = (container) => [...container.querySelectorAll('button')].map((el) => el.textContent);
-  const nameField = (container) => container.querySelector('form.nb__new input');
+  const nameField = (container) => container.querySelector('form.nb__new textarea');
   const line = (container) => container.querySelector('.nb__new .field-error');
 
   async function press(container, text) {
@@ -524,7 +524,7 @@ describe('NotebookPlace starting a recipe', () => {
   async function type(container, text) {
     const input = nameField(container);
     await act(async () => {
-      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, text);
+      Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(input, text);
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
   }
@@ -710,4 +710,104 @@ describe('NotebookPlace starting a recipe', () => {
     expect(path).toBe('/');
     expect(container.querySelector('.page-status')).toBeNull();
   });
+
+  // bug-ipad-tab-lost-from-single-line-fields: iPadOS 27 Safari drops a hardware Tab from every input element; a
+  // textarea takes it, and a textarea does not submit on Return, so the field clicks Start itself.
+  describe('New recipe Name as a one-row textarea', () => {
+    async function keydown(container, init) {
+      const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter', ...init });
+      if (init.keyCode !== undefined && event.keyCode !== init.keyCode) {
+        Object.defineProperty(event, 'keyCode', { value: init.keyCode });
+      }
+      let notPrevented;
+      await act(async () => {
+        notPrevented = nameField(container).dispatchEvent(event);
+      });
+      return notPrevented;
+    }
+
+    it('is a one-row textarea with no type, the same class and label, and it has focus when the entry opens', async () => {
+      repository.saveDraft = vi.fn().mockResolvedValue(undefined);
+      const container = await mount();
+      await open(container);
+      const field = nameField(container);
+      expect(field.tagName).toBe('TEXTAREA');
+      expect(field.getAttribute('rows')).toBe('1');
+      expect(field.hasAttribute('type')).toBe(false);
+      expect(field.className).toBe('ink-field');
+      expect(field.getAttribute('autocomplete')).toBe('off');
+      expect(field.getAttribute('aria-label')).toBe('Name');
+      expect(document.activeElement).toBe(field);
+    });
+
+    it('starts the recipe on Return, with one draft carrying the typed name', async () => {
+      repository.saveDraft = vi.fn().mockResolvedValue(undefined);
+      const container = await mount();
+      await open(container);
+      await type(container, 'Vanilla');
+      expect(await keydown(container, {})).toBe(false);
+      expect(repository.saveDraft).toHaveBeenCalledTimes(1);
+      expect(repository.saveDraft.mock.calls[0][0].payload.name).toBe('Vanilla');
+      expect(path).toBe('/notebook/new');
+    });
+
+    it('starts it the same way on Shift+Return, and writes nothing on Control, Alt or Meta with Return', async () => {
+      repository.saveDraft = vi.fn().mockResolvedValue(undefined);
+      const container = await mount();
+      await open(container);
+      await type(container, 'Vanilla');
+      for (const modifier of ['ctrlKey', 'altKey', 'metaKey']) {
+        expect(await keydown(container, { [modifier]: true })).toBe(false);
+      }
+      expect(repository.saveDraft).not.toHaveBeenCalled();
+      expect(path).toBe('/notebook');
+      expect(await keydown(container, { shiftKey: true })).toBe(false);
+      expect(repository.saveDraft).toHaveBeenCalledTimes(1);
+      expect(path).toBe('/notebook/new');
+    });
+
+    it('refuses Return over a blank name as Start does', async () => {
+      repository.saveDraft = vi.fn().mockResolvedValue(undefined);
+      const container = await mount();
+      await open(container);
+      await keydown(container, {});
+      expect(line(container).textContent).toBe('Enter a recipe name.');
+      expect(nameField(container).getAttribute('aria-invalid')).toBe('true');
+      expect(repository.saveDraft).not.toHaveBeenCalled();
+      expect(path).toBe('/notebook');
+    });
+
+    it('leaves Return alone while an IME composes, and writes nothing', async () => {
+      repository.saveDraft = vi.fn().mockResolvedValue(undefined);
+      const container = await mount();
+      await open(container);
+      await type(container, 'Vanilla');
+      expect(await keydown(container, { isComposing: true })).toBe(true);
+      expect(await keydown(container, { keyCode: 229 })).toBe(true);
+      expect(repository.saveDraft).not.toHaveBeenCalled();
+    });
+
+    it('writes one draft when Return is pressed twice before the write resolves', async () => {
+      const save = deferredSave();
+      const container = await mount();
+      await open(container);
+      await type(container, 'Vanilla');
+      await keydown(container, {});
+      await keydown(container, {});
+      expect(repository.saveDraft).toHaveBeenCalledTimes(1);
+      await save.resolve();
+      expect(path).toBe('/notebook/new');
+    });
+
+    it('strips line breaks from a typed or pasted name', async () => {
+      repository.saveDraft = vi.fn().mockResolvedValue(undefined);
+      const container = await mount();
+      await open(container);
+      await type(container, 'Va\nnil\r\nla');
+      expect(nameField(container).value).toBe('Vanilla');
+      await press(container, 'Start');
+      expect(repository.saveDraft.mock.calls[0][0].payload.name).toBe('Vanilla');
+    });
+  });
+
 });

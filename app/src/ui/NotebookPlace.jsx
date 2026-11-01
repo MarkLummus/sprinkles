@@ -12,6 +12,7 @@ import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { Button } from './Button.jsx';
 import { PageNotice, usePageNotice } from './PageNotice.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
+import { stripNewlines, submitOnReturn } from './oneLineField.js';
 
 export const DRAFT_DISCARDED_STATUS = 'Draft discarded.';
 
@@ -229,9 +230,9 @@ function NotebookHead({ draft, recipes, onStart, onCancel }) {
         <form className="nb__new" aria-label="New recipe" onSubmit={handleSubmit}>
           <label className="notebook-field">
             <span className="notebook-caption">Name</span>
-            <input
+            <textarea
               ref={nameRef}
-              type="text"
+              rows="1"
               className="ink-field"
               autoComplete="off"
               value={name}
@@ -239,9 +240,10 @@ function NotebookHead({ draft, recipes, onStart, onCancel }) {
               aria-invalid={required ? 'true' : undefined}
               aria-describedby={line ? 'nb-new-name-error' : undefined}
               onChange={(event) => {
-                setName(event.target.value);
+                setName(stripNewlines(event.target.value));
                 setRequired(false);
               }}
+              onKeyDown={submitOnReturn}
             />
             <FieldFeedback error={line} errorId="nb-new-name-error" />
           </label>

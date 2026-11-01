@@ -1,8 +1,8 @@
 ---
-status: diagnosed
+status: investigating
 trigger: "With the Magic Keyboard on the iPad, Tab from a creation step's lead-in does not reach the instruction field, and Tab from a row's grams field does nothing; the on-screen keyboard's Tab moves lead-in to instruction but never to the step's links. Chromium on the Mac is fine. Bug row bug-p11-ipad-hardware-tab-skips-fields on Mark's List; D-19 (literal tabIndex) and the ios-keyboard-bar memory are the known history."
 created: 2026-11-01T18:50:00Z
-updated: 2026-11-01T20:13:05Z
+updated: 2026-11-01T20:17:29Z
 ---
 
 ## Current Focus
@@ -10,14 +10,9 @@ updated: 2026-11-01T20:13:05Z
 goal: find_and_fix
 bug_class: "Bohrbug on the device as reported (every attempt fails), but its mechanism sits in iPadOS UIKit/Safari's routing of a hardware Tab from an editable field, which no local engine models. SBFL skipped: the suite runs under jsdom/node; desktop Playwright WebKit has no iPadOS hardware-keyboard path."
 known_pattern_candidate: "none in a knowledge base (none exists). Sibling sessions (link/form-control gates, FKA off) explain buttons and links but not a text field failing to reach the next text field: WebKit never gates text inputs or textareas."
-hypothesis: "CONFIRMED (round 2, P): on Mark's iPad (Safari 27.0.1, iPadOS 27) a Magic Keyboard Tab pressed in a text field moves keyboard focus out of the web page entirely. The page receives no keydown Tab; the window loses focus (window blur) at the moment of each Tab; no field on the page takes focus. It happens on a bare page with no Sprinkles code, so it is platform behaviour, not an app defect. Most likely Safari sends focus to its own chrome (toolbar/address bar); where exactly focus lands is not observable from the page."
+hypothesis: "NARROWED (round 2b, Mark 2026-11-01): on iPadOS 27 Safari 27.0.1 a Magic Keyboard Tab is lost only from a single-line <input type=text>. From a <textarea> (box Two) and from a <button> (Three) the page receives keydown Tab and focus moves both ways (Tab and Shift-Tab). From <input type=text> (One, Four, Six, whatever their writing-assist attributes) there is no keydown and the window blurs: focus leaves the page. Sprinkles' lead-in and grams fields are <input type=text>; the instruction is a <textarea>, which matches every symptom."
 next_action: |
-  Paused by Mark (2026-11-01, 'stop'), then asked to record this. Root cause found; no app fix applied and none is possible on the Tab key itself, because the page never sees it.
-  Open for Mark (not run): candidate workarounds, each unverified on the device:
-    1. Option-Tab on the Magic Keyboard (Safari's Mac convention; reported to move focus in web content on iOS hardware keyboards).
-    2. A Safari or keyboard setting on iPadOS 27 that restores Tab between fields (not found by search; to look for on the device).
-    3. App-side: if Return in a lead-in or grams field reaches the page as a keydown (not yet logged), the app could move focus on Return. That is a design decision (Sid), then a quick.
-    4. Report to Apple through Feedback Assistant with the bare page (scratchpad/probe/site/tab.html) as the reproduction.
+  Round 3 (proposed to Mark, not started): on the bare page, test which single-line field kinds keep Tab: <input type=search>, type=number, type=text inputmode=decimal, type=tel, an <input> inside a <form>, an <input> with enterkeyhint, a contenteditable single-line div, and <textarea rows=1>. The kinds that pass decide the app fix (lead-in and grams), which then goes to a /gsd-quick after Mark chooses (the lead-in as a one-row textarea needs Return handled; the grams field needs a numeric keyboard).
   Runtime state still up: log server :8099 (pid 95694), scratch site :8098 (pid 95901). Stop both when the session closes. Vite preview :4173 untouched.
 
 ## Symptoms
@@ -122,9 +117,16 @@ started: "First seen on the iPad check of 2026-10-27 (check-p11-ipad-create-step
     Round 1 on Sprinkles: the grams Tab is followed by window blur / visibility events (seq 173-181); the lead-in Tab shows no event before Mark's next tap, consistent with the same blur being dropped or Mark's 'stayed put' meaning the cursor looked unchanged.
   implication: "P holds: iPadOS 27 Safari routes a hardware Tab from a text field out of the web content (window blur), before WebKit dispatches it. Every page on this iPad behaves the same; Sprinkles cannot see or prevent it. The 2026-10-01 pass (hardware Tab from Churn duration walked the fields) predates the iPadOS 27 update, which is the likely change (unconfirmed)."
 
+- timestamp: 2026-11-01T20:17:29Z
+  checked: "Mark on the bare page: 'when I put the cursor in box Two and tab or shift tab, it works fine'. Log saved at scratchpad/probe/device-log-3.saved.txt (802 lines)."
+  found: |
+    Every keydown "Tab" on the device has target TEXTAREA "Two" or BUTTON "Three" (seq 230, 238, 265, 275, 286, 301, 310, 321, 337), each followed by focusout/focusin to the next or previous control in order, Shift-Tab included (Three -> Two -> One).
+    Every Tab from INPUT[text] One or Four logs only `window blur` (seq 193-222, 246, 251-259, 294, 331), including from One reached by Shift-Tab (seq 324 focusin One, 331 blur).
+  implication: "The loss is specific to single-line <input type=text>. The round-2 'platform, every field' reading was too broad: <textarea> and <button> take hardware Tab normally on the same iPad, so an app-side fix through the field kind is likely."
+
 ## Resolution
 
-root_cause: "Platform behaviour on iPadOS 27 Safari (27.0.1): a Magic Keyboard Tab pressed in a text field moves keyboard focus out of the web page (window blur) and never reaches the page as a keydown. Reproduced on a bare page with no Sprinkles code. Not an app defect."
-fix: "None applied. No page code can intercept a key the page never receives. Workarounds are listed under next_action for Mark to choose."
-verification: "Device logs rounds 1 and 2 (Mark's iPad, 2026-11-01), with a desktop WebKit baseline on the same build showing the app moves focus correctly."
+root_cause: "iPadOS 27 Safari (27.0.1) drops a Magic Keyboard Tab from a single-line <input type=text> and moves focus out of the page; <textarea> and <button> are unaffected. Sprinkles' lead-in and grams fields are single-line text inputs. Platform behaviour, reproduced on a bare page."
+fix: "Not yet chosen. Round 3 tests other single-line field kinds; see next_action."
+verification: ""
 files_changed: []

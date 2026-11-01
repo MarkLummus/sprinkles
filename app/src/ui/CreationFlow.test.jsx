@@ -2252,3 +2252,45 @@ describe('Save refuses everything the store file would refuse, all at once, writ
     expect(repository.createRecipeWithVersion.mock.calls[0][0].version.method.map((step) => step.leadIn)).toEqual(['Warm']);
   });
 });
+
+describe('the band fields are one-row textareas that stay one line (bug-ipad-tab-lost-from-single-line-fields)', () => {
+  // iPadOS 27 Safari drops a hardware Tab from every input element; a textarea takes it.
+  async function keydown(element, init) {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter', ...init });
+    let notPrevented;
+    await act(async () => {
+      notPrevented = element.dispatchEvent(event);
+    });
+    return notPrevented;
+  }
+
+  it('draws Recipe name and Version name as one-row ink-field textareas, Version name still required', async () => {
+    await startVanilla();
+    for (const label of ['Recipe name', 'Version name']) {
+      const element = field(label);
+      expect(element.tagName).toBe('TEXTAREA');
+      expect(element.getAttribute('rows')).toBe('1');
+      expect(element.hasAttribute('type')).toBe(false);
+      expect(element.className).toBe('ink-field');
+    }
+    expect(field('Version name').required).toBe(true);
+  });
+
+  it('prevents Return on each, with or without Shift, and leaves the value alone', async () => {
+    await startVanilla();
+    for (const label of ['Recipe name', 'Version name']) {
+      const before = field(label).value;
+      expect(await keydown(field(label), {})).toBe(false);
+      expect(await keydown(field(label), { shiftKey: true })).toBe(false);
+      expect(field(label).value).toBe(before);
+    }
+  });
+
+  it('removes every line break that arrives by paste or any other edit', async () => {
+    await startVanilla();
+    for (const label of ['Recipe name', 'Version name']) {
+      await type(field(label), 'Fresh\nmint\r\n');
+      expect(field(label).value).toBe('Freshmint');
+    }
+  });
+});

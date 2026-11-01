@@ -11,6 +11,7 @@ import { useCatalog } from './CatalogContext.jsx';
 import { IngredientPicker } from './IngredientPicker.jsx';
 import { CreationSetup } from './CreationSetup.jsx';
 import { CreationSteps } from './CreationSteps.jsx';
+import { holdReturn, stripNewlines } from './oneLineField.js';
 import { repository } from '../store/repository.js';
 import { draftMatchesCreate } from '../domain/draft.js';
 import { NOTEBOOK_PLACE_PATH, notebookPath } from './notebookPaths.js';
@@ -59,9 +60,9 @@ const NO_ROWS_ERROR_ID = 'create-no-rows-error';
 function findRefusedField(page, target, draft, saveButton) {
   switch (target.kind) {
     case 'recipeName':
-      return page.querySelector('input[aria-label="Recipe name"]');
+      return page.querySelector('textarea[aria-label="Recipe name"]');
     case 'versionName':
-      return page.querySelector('input[aria-label="Version name"]');
+      return page.querySelector('textarea[aria-label="Version name"]');
     case 'ingredients':
       // Add ingredient, or, while the picker is open in its place, the picker's Name field.
       return (
@@ -654,15 +655,16 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
               <div className="notebook-recipe__form">
                 <label className="notebook-field">
                   <span className="notebook-caption">Recipe name</span>
-                  <input
-                    type="text"
+                  <textarea
+                    rows="1"
                     className="ink-field"
                     disabled={saving}
                     value={createDraft.name}
                     aria-label="Recipe name"
                     aria-invalid={nameRefusal ? 'true' : undefined}
                     aria-describedby={nameRefusal ? 'creation-name-error' : undefined}
-                    onChange={(event) => setField('name', event.target.value)}
+                    onChange={(event) => setField('name', stripNewlines(event.target.value))}
+                    onKeyDown={holdReturn}
                   />
                   <FieldFeedback error={nameRefusal} errorId="creation-name-error" />
                 </label>
@@ -687,8 +689,8 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
               <span className="notebook-caption">{editing ? 'Version 1 · editing' : 'New recipe · draft'}</span>
               <label className="notebook-field">
                 <span className="notebook-caption">Version name</span>
-                <input
-                  type="text"
+                <textarea
+                  rows="1"
                   className="ink-field"
                   required
                   disabled={saving}
@@ -696,7 +698,8 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                   aria-label="Version name"
                   aria-invalid={versionRefusal ? 'true' : undefined}
                   aria-describedby={versionRefusal ? 'creation-version-error' : undefined}
-                  onChange={(event) => setField('versionLabel', event.target.value)}
+                  onChange={(event) => setField('versionLabel', stripNewlines(event.target.value))}
+                  onKeyDown={holdReturn}
                 />
                 <FieldFeedback error={versionRefusal} errorId="creation-version-error" required />
               </label>

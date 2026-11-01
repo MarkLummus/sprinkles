@@ -247,6 +247,14 @@
   overflow: hidden;
 }
 
+/* The creation editor's one-line fields are one-row textareas too
+   (bug-ipad-tab-lost-from-single-line-fields, duty 1): one line at the input's
+   height, scrolled to the caret, with no scrollbar. */
+.notebook.mk-page textarea.ink-field {
+  white-space: pre;
+  overflow: hidden;
+}
+
 /* The open step's targets line (sketch 014 pE1). Written through direct
    children of the open step's own body, so the Preview's reading step, nested
    inside the same .mk-step, keeps the tag row's baseline alignment and plain
@@ -2047,6 +2055,14 @@
      (bug-p11-ipad-hardware-tab-skips-fields); its two rules count in the height. */
   .notebook .ingredient-table textarea.ink-field {
     padding-block: max(var(--gap-hair), calc((var(--touch-min) - var(--sheet-leading-field) * 1em - 2 * var(--rule-ink-field)) / 2));
+  }
+
+  /* The labelled-above fields (bug-ipad-tab-lost-from-single-line-fields,
+     duty 2): 16px on the field line, padded 8px, with 1px app rules, in the
+     44px floor. The input centred its line; a textarea starts it at the top,
+     so the padding centres it. */
+  .notebook.mk-page .notebook-field textarea.ink-field {
+    padding-block: max(var(--app-notebook-gap-tight), calc((var(--touch-min) - var(--sheet-leading-field) * 1em - 2 * var(--app-rule-row)) / 2));
   }
 
   .notebook .pick__head .text-control,

@@ -276,7 +276,7 @@ describe('the pages read no width and no pointer (CONTRACT § 1)', () => {
     for (const name of ['lf', 'lf-foot', 'region-name', 'pen-caption', 'axis-mark__name', 'pen-helper']) expect(PAGE_CLASSES.has(name), name).toBe(true);
     for (const name of ['print-page--sheet', 'ps-fit', 'ps-page', 'ps-table', 'ps-group', 'ps-gauge', 'headnote', 'headnote__prose', 'authored__notes', 'formulation-note__rule', 'graduated-rule__head', 'basis-note', 'target-chip', 'ps-instructions', 'mp-steps', 'mp-step', 'mp-n', 'mp-body', 'mp-lead', 'mp-tags', 'mp-tag', 'mp-tag__label', 'mp-tag__value', 'mp-why', 'mp-why__label', 'mp-aside', 'mp-foot']) expect(PAGE_CLASSES.has(name), name).toBe(true);
     // The editing-only classes of the modules a page draws are not rendered by a page.
-    for (const name of ['prose-field', 'authored__note-field', 'headnote__sheet-title-field']) expect(PAGE_CLASSES.has(name), name).toBe(false);
+    for (const name of ['prose-field', 'authored__note-field', 'authored__note-bullet', 'authored__notes--editing', 'headnote__sheet-title-field']) expect(PAGE_CLASSES.has(name), name).toBe(false);
     for (const name of ['notebook', 'print-route', 'shell', 'shell__main']) expect(ROUTE_CLASSES.has(name), name).toBe(true);
     expect(ROUTE_CLASSES.has('notebook-log')).toBe(false);
     expect(ROUTE_CLASSES.has('batch-row__head')).toBe(false);

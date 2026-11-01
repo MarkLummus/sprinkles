@@ -2895,6 +2895,15 @@ textarea {
     font-family: var(--face-text);
     font-style: italic;
   }
+
+  /* The editing note's drawn dot (bug-p11-bys-note-dot-on-right): forced
+     colours repaint a background as Canvas, so the drawn dot would vanish
+     where the native marker it replaces stays in CanvasText. CanvasText is
+     a system colour keyword, not a literal. */
+  .authored__note-bullet::before {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
 }
 
 /* The print layer (260917-ewf; the table's break rule, decision 45, 03.7-02), the

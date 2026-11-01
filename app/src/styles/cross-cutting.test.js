@@ -1307,3 +1307,47 @@ describe("every step sets its number on its lead's text baseline (sketch 014 dec
     expect(offenders.map((r) => r.selector)).toEqual([]);
   });
 });
+
+describe('the editing note draws its own dot (bug-p11-bys-note-dot-on-right, quick 261101-mbe)', () => {
+  test('.authored__notes--editing > li is a positioned block, so no engine generates a list marker for it', () => {
+    const rule = ruleFor('.authored__notes--editing > li');
+    expect(rule.declarations).toMatch(/display:\s*block/);
+    expect(rule.declarations).toMatch(/position:\s*relative/);
+  });
+
+  test('.authored__note-bullet stands in the ul padding, its top on .prose-field top padding', () => {
+    const rule = ruleFor('.authored__note-bullet');
+    expect(rule.declarations).toMatch(/position:\s*absolute/);
+    expect(rule.declarations).toMatch(/right:\s*100%/);
+    expect(rule.declarations).toMatch(/top:\s*var\(--gap-hair\)/);
+    expect(rule.declarations).toMatch(/margin-right:\s*var\(--gap-s\)/);
+    expect(rule.declarations).not.toMatch(/\d+px/);
+  });
+
+  test('.authored__note-bullet::before draws the disc from the two bullet tokens and the sheet ink', () => {
+    const rule = ruleFor('.authored__note-bullet::before');
+    expect(rule.declarations).toMatch(/content:\s*''/);
+    expect(rule.declarations).toMatch(/display:\s*inline-block/);
+    expect(rule.declarations).toMatch(/width:\s*var\(--sheet-note-bullet-size\)/);
+    expect(rule.declarations).toMatch(/height:\s*var\(--sheet-note-bullet-size\)/);
+    expect(rule.declarations).toMatch(/vertical-align:\s*var\(--sheet-note-bullet-rise\)/);
+    expect(rule.declarations).toMatch(/border-radius:\s*50%/);
+    expect(rule.declarations).toMatch(/background-color:\s*var\(--sheet-ink\)/);
+    expect(rule.declarations).not.toMatch(/\d+px/);
+  });
+
+  test('the two bullet tokens hold the values the probe calibrated to desktop WebKit native disc', () => {
+    expect(resolveTokenPx(tokens, '--sheet-note-bullet-size')).toBe(5.5);
+    expect(resolveTokenPx(tokens, '--sheet-note-bullet-rise')).toBe(2);
+    expect(resolveTokenPx(tokens, '--gap-s')).toBe(12);
+    expect(resolveTokenPx(tokens, '--gap-hair')).toBe(2);
+  });
+
+  test('forced colours keep the dot: the drawn background would repaint as Canvas, so it reads CanvasText', () => {
+    const rule = mediaRuleFor('.authored__note-bullet::before');
+    expect(rule, 'expected .authored__note-bullet::before among the forced-colors selectors').toBeTruthy();
+    expect(rule.media).toBe('(forced-colors: active)');
+    expect(rule.declarations).toMatch(/forced-color-adjust:\s*none/);
+    expect(rule.declarations).toMatch(/background-color:\s*CanvasText/);
+  });
+});

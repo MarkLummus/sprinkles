@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { Button } from './Button.jsx';
-import { readSignedInput, shownSignedValue } from './BatchRow.jsx';
+import { shownSignedValue } from './BatchRow.jsx';
 import { useCatalog } from './CatalogContext.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { Segmented } from './Segmented.jsx';
+import { holdReturn, stripNewlines } from './oneLineField.js';
 import { FIGURE_SPECS, figureLabelText } from '../domain/figures.js';
 import { mintScaleKey, MAX_RECIPE_PROBLEMS, MAX_RECIPE_SCALES } from '../domain/catalog.js';
 import { freshId } from '../domain/id.js';
@@ -126,15 +127,17 @@ export function CreationSetup({ createDraft, onChange, saveMessages = null }) {
     else onChange((prev) => clearStyle(prev));
   };
 
-  // A number input hands over no text for an entry it cannot read, and React's
-  // onChange misses a lone minus, so one handler serves change and input.
+  // Serving temperature is a one-row textarea so the iPad's Tab moves on from it
+  // (bug-ipad-tab-lost-from-single-line-fields). It hands over every keystroke,
+  // a lone minus included; Save reads the text and saves null for anything that
+  // is not a finite number.
   const handleTemperature = (event) => {
-    const raw = readSignedInput(event.target);
+    const raw = stripNewlines(event.target.value);
     onChange((prev) => ({ ...prev, serveTempC: raw }));
   };
 
   const handleBandEnd = (targetKey, endIndex) => (event) => {
-    const raw = event.target.value;
+    const raw = stripNewlines(event.target.value);
     onChange((prev) => setBandEnd(prev, targetKey, endIndex, raw));
   };
 
@@ -173,15 +176,14 @@ export function CreationSetup({ createDraft, onChange, saveMessages = null }) {
           <label className="notebook-field">
             <span className="notebook-caption">Serving temperature</span>
             <span className="mk-field-row">
-              <input
-                className="ink-field"
-                type="number"
-                step="any"
+              <textarea
+                rows="1"
+                className="ink-field mk-signed-field"
+                inputMode="decimal"
                 aria-label="Serving temperature, degrees Celsius"
                 value={shownSignedValue(createDraft.serveTempC)}
                 onChange={handleTemperature}
-                onInput={handleTemperature}
-                onWheel={(event) => event.currentTarget.blur()}
+                onKeyDown={holdReturn}
               />
               <span className="mk-unit">°C</span>
             </span>
@@ -199,24 +201,26 @@ export function CreationSetup({ createDraft, onChange, saveMessages = null }) {
                     {spec.label.term && <small>· {spec.label.term}</small>}
                   </span>
                   <span className="mk-band__ends">
-                    <input
+                    <textarea
+                      rows="1"
                       className="ink-field"
-                      type="text"
                       inputMode="decimal"
                       aria-label={`${label}, target low`}
                       value={ends[0]}
                       onChange={handleBandEnd(spec.targetKey, 0)}
+                      onKeyDown={holdReturn}
                     />
                     <span className="mk-band__unit" aria-hidden="true">
                       –
                     </span>
-                    <input
+                    <textarea
+                      rows="1"
                       className="ink-field"
-                      type="text"
                       inputMode="decimal"
                       aria-label={`${label}, target high`}
                       value={ends[1]}
                       onChange={handleBandEnd(spec.targetKey, 1)}
+                      onKeyDown={holdReturn}
                     />
                     <span className="mk-band__unit">{spec.unit}</span>
                   </span>

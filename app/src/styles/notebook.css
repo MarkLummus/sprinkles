@@ -299,6 +299,15 @@
   margin-left: var(--gap-xs);
 }
 
+/* The target fields are one-row textareas too
+   (bug-ipad-tab-lost-from-single-line-fields, duty 4). app.css gives them width
+   auto, so the input took the browser's 20-character width. A fixed-size
+   textarea of 20 columns keeps it, narrower by under 1px in WebKit and 3 to
+   3.5px in Chrome, which the one-line-fields ruling accepts. */
+.notebook .mk-step textarea:is(.target-chip__label-field, .target-chip__value-field) {
+  field-sizing: fixed;
+}
+
 /* Preview step (sketch 013 decision 34): the step as the Sheet shows it, under
    the step's last field, set off by a rule at its left. */
 .notebook .mk-preview {
@@ -518,7 +527,7 @@
 
 /* The signed one-decimal field: -12.5 does not fit the figure width (WebKit:
    63 px of text in 54), so it is half again as wide. */
-.notebook .mk-field-row .ink-field[type='number'] {
+.notebook .mk-field-row .ink-field.mk-signed-field {
   width: calc(var(--sheet-field-w-figure) * 1.5);
 }
 
@@ -2051,9 +2060,13 @@
     padding-block: max(var(--gap-hair), calc((var(--touch-min) - var(--sheet-leading-note) * 1em) / 2));
   }
 
-  /* The same centring for the grams field's line in the floor
-     (bug-p11-ipad-hardware-tab-skips-fields); its two rules count in the height. */
-  .notebook .ingredient-table textarea.ink-field {
+  /* The same centring for the line of the 2px-padded ink fields in the floor:
+     the grams field (bug-p11-ipad-hardware-tab-skips-fields), the step's
+     targets and the style ends (bug-ipad-tab-lost-from-single-line-fields);
+     their two rules count in the height. */
+  .notebook .ingredient-table textarea.ink-field,
+  .notebook .mk-step textarea.ink-field,
+  .notebook .mk-band__ends textarea.ink-field {
     padding-block: max(var(--gap-hair), calc((var(--touch-min) - var(--sheet-leading-field) * 1em - 2 * var(--rule-ink-field)) / 2));
   }
 

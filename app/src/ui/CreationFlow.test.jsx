@@ -1444,7 +1444,7 @@ describe('the Style region fills the bands and the temperature (MAKE-09, decisio
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     await startVanilla();
     await chooseStyle('philadelphia');
-    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
     await act(async () => {
       const fatHigh = field('Fat, target high');
       setter.call(fatHigh, '16');
@@ -1465,7 +1465,7 @@ describe('the Style region fills the bands and the temperature (MAKE-09, decisio
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     await startVanilla();
     await chooseStyle('philadelphia');
-    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
     await act(async () => {
       clearButton().dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
       setter.call(temperature(), '-16');

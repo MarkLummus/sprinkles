@@ -15,6 +15,7 @@ import { MALFORMED_NUMBER_ENTRY } from './BatchRow.jsx';
 import { CatalogFixture } from './catalog.fixtures.jsx';
 import { blankCreateDraft } from '../domain/draft.js';
 import { addProblem, addScale, updateProblem } from '../domain/creation.js';
+import { FIGURE_SPECS } from '../domain/figures.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -105,24 +106,31 @@ describe('CreationSetup (MAKE-09)', () => {
     expect(current.container.querySelector('.mk-list')).toBeNull();
   });
 
-  it('a lone minus in the temperature stores the constant and shows blank; the next readable entry replaces it', () => {
+  it('draws Serving temperature as a one-row textarea with a decimal pad, a lone minus kept as typed, and a kept unreadable-number constant shown blank', () => {
     mount();
     const input = field('Serving temperature, degrees Celsius');
-    expect(input.getAttribute('type')).toBe('number');
-    expect(input.getAttribute('step')).toBe('any');
-    Object.defineProperty(input, 'validity', { configurable: true, value: { badInput: true } });
-    act(() => {
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    });
-    expect(held.serveTempC).toBe(MALFORMED_NUMBER_ENTRY);
-    expect(input.value).toBe('');
-    Object.defineProperty(input, 'validity', { configurable: true, value: { badInput: false } });
+    expect(input.tagName).toBe('TEXTAREA');
+    expect(input.getAttribute('rows')).toBe('1');
+    expect(input.getAttribute('inputmode')).toBe('decimal');
+    expect(input.hasAttribute('type')).toBe(false);
+    expect(input.hasAttribute('step')).toBe(false);
+    expect(input.className).toBe('ink-field mk-signed-field');
+    type(input, '-');
+    expect(held.serveTempC).toBe('-');
+    expect(input.value).toBe('-');
     type(input, '-16');
     expect(held.serveTempC).toBe('-16');
     expect(input.value).toBe('-16');
+    type(input, '-1\n6');
+    expect(held.serveTempC).toBe('-16');
+    // a kept draft that holds the old unreadable-number constant still draws the field blank
+    act(() => current.root.unmount());
+    current.container.remove();
+    mount(undefined, null, () => ({ ...start(), serveTempC: MALFORMED_NUMBER_ENTRY }));
+    expect(field('Serving temperature, degrees Celsius').value).toBe('');
   });
 
-  it('a wheel over the focused temperature field blurs it', () => {
+  it('a wheel over the focused temperature field leaves it focused', () => {
     mount();
     const input = field('Serving temperature, degrees Celsius');
     input.focus();
@@ -130,7 +138,7 @@ describe('CreationSetup (MAKE-09)', () => {
     act(() => {
       input.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 100 }));
     });
-    expect(document.activeElement).not.toBe(input);
+    expect(document.activeElement).toBe(input);
   });
 
   it('labels the six bands in the Balance order, with their units, and shows no error on any field', () => {
@@ -478,5 +486,35 @@ describe("a refused Save's messages (MAKE-10, D-11, D-25, T-11-32, T-11-51)", ()
     mount(undefined, null, withScale);
     expect(current.container.querySelectorAll('.field-error')).toHaveLength(0);
     expect(current.container.querySelectorAll('[aria-invalid]')).toHaveLength(0);
+  });
+});
+
+describe('the twelve target ends are one-row textareas that stay one line (bug-ipad-tab-lost-from-single-line-fields)', () => {
+  const ends = () => [...current.container.querySelectorAll('.mk-band__ends textarea')];
+
+  it('draws all twelve as one-row decimal-pad textareas with no type', () => {
+    mount();
+    expect(current.container.querySelectorAll('.mk-band__ends input')).toHaveLength(0);
+    expect(ends()).toHaveLength(12);
+    for (const end of ends()) {
+      expect(end.getAttribute('rows')).toBe('1');
+      expect(end.getAttribute('inputmode')).toBe('decimal');
+      expect(end.hasAttribute('type')).toBe(false);
+      expect(end.className).toBe('ink-field');
+    }
+  });
+
+  it('prevents Return on an end and removes a line break from an edit', () => {
+    mount();
+    const end = ends()[0];
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter' });
+    let notPrevented;
+    act(() => {
+      notPrevented = end.dispatchEvent(event);
+    });
+    expect(notPrevented).toBe(false);
+    type(end, '1\n2');
+    const targetKey = FIGURE_SPECS[0].targetKey;
+    expect(held.targets[targetKey][0]).toBe('12');
   });
 });

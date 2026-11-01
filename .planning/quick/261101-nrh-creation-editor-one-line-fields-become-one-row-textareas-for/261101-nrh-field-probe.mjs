@@ -25,8 +25,9 @@
 //   P1  an insertText with a line feed leaves the two parts joined with nothing between them (after); base printed
 //   L1  text typed past the field's width stays one line at the same height and scrolls to the caret
 //       (WebKit keeps an input's scroll internal, so its base scrollLeft is 0: printed, not compared)
-// The one ruled exception (spec section 3, duty 4): the two target fields are narrower than the input by 0 to 1 px
-// in WebKit and 0 to 4 px in Chrome. The difference is printed as INFO, and the chip's later boxes are compared
+// The one ruled exception (spec section 3, duty 4, as re-ruled by Mark on 2026-11-01 in
+// .impeccable/proposals/2026-11-01-one-line-fields.md, "Mark's ruling on the target widths"): the two target fields
+// are narrower than the input by at most 1.5 px in WebKit and 7.5 px in Chrome. The difference is printed as INFO, and the chip's later boxes are compared
 // after that shift.
 //
 // Usage (from the repo root; build to scratch first, never to app/dist):
@@ -578,7 +579,7 @@ for (const engine of ['webkit', 'chrome']) {
         const ownShift = [];
         if (group === 'targets') {
           const lo = -0.01;
-          const hi = engine === 'webkit' ? 1.01 : 4.01;
+          const hi = engine === 'webkit' ? 1.51 : 7.51; // Mark's ruling 2026-11-01: WebKit <= 1.5 px, Chrome <= 7.5 px
           for (const pass of ['pass1', 'pass2']) {
             const label = { f: afterGroup['targets:label'][pass].box, g: baseGroup['targets:label'][pass].box };
             const value = { f: afterGroup['targets:value'][pass].box, g: baseGroup['targets:value'][pass].box };
@@ -588,7 +589,7 @@ for (const engine of ['webkit', 'chrome']) {
           }
           const own = ownShift.find(([pass]) => pass === 'pass2')[1];
           const mine = own[af.target === 'label' ? 0 : 1];
-          gate(tk, mine.d >= lo && mine.d <= hi, `W1 ${name}: target width differs by ${mine.d} px (ruled 0 to ${engine === 'webkit' ? 1 : 4})`);
+          gate(tk, mine.d >= lo && mine.d <= hi, `W1 ${name}: target width differs by ${mine.d} px (ruled 0 to ${engine === 'webkit' ? 1.5 : 7.5})`);
           if (first) console.log(`INFO W1 ${tag} ${af.name} target field: ${mine.d} px narrower than the input (base w ${baseGroup[key].pass2.box.width}, after w ${af.pass2.box.width})`);
         }
         for (const pass of ['pass1', 'pass2']) {

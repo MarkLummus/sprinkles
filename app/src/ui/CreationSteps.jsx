@@ -120,24 +120,28 @@ function CreationStep({
             // dropped at Save.
             return (
               <span className="target-chip" key={index}>
-                <input
-                  type="text"
+                <textarea
+                  rows="1"
+                  cols="20"
                   className="ink-field target-chip__label-field"
                   value={target.label}
                   aria-label={targetFieldName(number, targets.length, index, 'label')}
                   aria-invalid={labelError ? 'true' : undefined}
                   aria-describedby={labelError ? labelErrorId : undefined}
-                  onChange={(event) => onChangeTarget(step.n, index, 'label', event.target.value)}
+                  onChange={(event) => onChangeTarget(step.n, index, 'label', stripNewlines(event.target.value))}
+                  onKeyDown={holdReturn}
                 />
                 <FieldFeedback error={labelError} errorId={labelErrorId} required={isBlank(target.label) && !isBlank(target.value)} />
-                <input
-                  type="text"
+                <textarea
+                  rows="1"
+                  cols="20"
                   className="ink-field target-chip__value-field"
                   value={target.value}
                   aria-label={targetFieldName(number, targets.length, index, 'value')}
                   aria-invalid={valueError ? 'true' : undefined}
                   aria-describedby={valueError ? valueErrorId : undefined}
-                  onChange={(event) => onChangeTarget(step.n, index, 'value', event.target.value)}
+                  onChange={(event) => onChangeTarget(step.n, index, 'value', stripNewlines(event.target.value))}
+                  onKeyDown={holdReturn}
                 />
                 <FieldFeedback error={valueError} errorId={valueErrorId} required={isBlank(target.value) && !isBlank(target.label)} />
                 <Button

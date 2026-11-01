@@ -479,3 +479,47 @@ describe('a one-row textarea that stays one line (bug-p11-ipad-hardware-tab-skip
     expect(held.method[0].leadIn).toBe('ab');
   });
 });
+
+describe('the target fields are one-row textareas that stay one line (bug-ipad-tab-lost-from-single-line-fields)', () => {
+  function keydown(element, init) {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter', ...init });
+    let notPrevented;
+    act(() => {
+      notPrevented = element.dispatchEvent(event);
+    });
+    return notPrevented;
+  }
+
+  it('draws a target label and value as one-row, 20-column textareas with no type', () => {
+    mount(withStep(blank(), {}, [['', '']]));
+    for (const [name, className] of [
+      ['Step 1, target label', 'ink-field target-chip__label-field'],
+      ['Step 1, target value', 'ink-field target-chip__value-field'],
+    ]) {
+      const element = field(name);
+      expect(element.tagName).toBe('TEXTAREA');
+      expect(element.getAttribute('rows')).toBe('1');
+      expect(element.getAttribute('cols')).toBe('20');
+      expect(element.hasAttribute('type')).toBe(false);
+      expect(element.className).toBe(className);
+    }
+  });
+
+  it('prevents Return on a target field, with or without Shift, and leaves the value alone', () => {
+    mount(withStep(blank(), {}, [['temp', '85 °C']]));
+    for (const name of ['Step 1, target label', 'Step 1, target value']) {
+      const before = field(name).value;
+      expect(keydown(field(name), {})).toBe(false);
+      expect(keydown(field(name), { shiftKey: true })).toBe(false);
+      expect(field(name).value).toBe(before);
+    }
+  });
+
+  it('removes every line break that arrives by paste or any other edit', () => {
+    mount(withStep(blank(), {}, [['', '']]));
+    type(field('Step 1, target label'), 'te\nmp');
+    expect(held.method[0].targets[0].label).toBe('temp');
+    type(field('Step 1, target value'), '85\r\n °C');
+    expect(held.method[0].targets[0].value).toBe('85 °C');
+  });
+});

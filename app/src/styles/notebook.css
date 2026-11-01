@@ -219,14 +219,19 @@
    iPadOS 27 Safari drops a hardware Tab from every input element). A textarea's
    own inline baseline is its bottom edge, so its label becomes a flex column,
    which hands app.css's .method-step grid the first line's text baseline, as
-   the input's did (quick 261031-fdd). */
-.notebook .mk-step .method-step__field:has(> textarea.prose-field--lead-in) {
+   the input's did (quick 261031-fdd). The version pen's open step takes the
+   same flex column (bug-ipad-tab-lost-from-single-line-fields, duty 3). */
+.notebook .mk-step .method-step__field:has(> textarea.prose-field--lead-in),
+.notebook .method-step__open-fields > .method-step__field:has(> textarea.prose-field--lead-in) {
   display: flex;
   flex-direction: column;
 }
 
-/* One line at the input's height, scrolled to the caret, with no scrollbar. */
-.notebook .mk-step textarea.prose-field--lead-in {
+/* One line at the input's height, scrolled to the caret, with no scrollbar; the
+   version pen's open step too (bug-ipad-tab-lost-from-single-line-fields,
+   duty 1). */
+.notebook .mk-step textarea.prose-field--lead-in,
+.notebook .method-step__open-fields textarea.prose-field--lead-in {
   white-space: pre;
   overflow: hidden;
 }
@@ -247,12 +252,14 @@
   overflow: hidden;
 }
 
-/* The creation editor's and the recipe page's band one-line fields are one-row
-   textareas too (bug-ipad-tab-lost-from-single-line-fields, duty 1): one line at
-   the input's height, scrolled to the caret, with no scrollbar. */
+/* The creation editor's, the recipe page's band and the version pen's open
+   step one-line fields are one-row textareas too
+   (bug-ipad-tab-lost-from-single-line-fields, duty 1): one line at the input's
+   height, scrolled to the caret, with no scrollbar. */
 .notebook.mk-page textarea.ink-field,
 .notebook .notebook-recipe__form .notebook-field > textarea.ink-field,
-.notebook .notebook-ceremony .notebook-field > textarea.ink-field {
+.notebook .notebook-ceremony .notebook-field > textarea.ink-field,
+.notebook .method-step__open-fields textarea.ink-field {
   white-space: pre;
   overflow: hidden;
 }
@@ -325,8 +332,11 @@
    (bug-ipad-tab-lost-from-single-line-fields, duty 4). app.css gives them width
    auto, so the input took the browser's 20-character width. A fixed-size
    textarea of 20 columns keeps it, narrower by under 1px in WebKit and 3 to
-   3.5px in Chrome, which the one-line-fields ruling accepts. */
-.notebook .mk-step textarea:is(.target-chip__label-field, .target-chip__value-field) {
+   3.5px in Chrome, which the one-line-fields ruling accepts (Mark's ruling:
+   WebKit up to 1.5px, Chrome up to 7.5px). The version pen's open step takes
+   the same rule. */
+.notebook .mk-step textarea:is(.target-chip__label-field, .target-chip__value-field),
+.notebook .method-step__open-fields textarea:is(.target-chip__label-field, .target-chip__value-field) {
   field-sizing: fixed;
 }
 
@@ -2077,18 +2087,21 @@
 
   /* app.css's touch floor centres an input's one line but starts a textarea's
      text at the top (bug-p11-ipad-hardware-tab-skips-fields): centre the
-     lead-in's line in the floor by padding. */
-  .notebook .mk-step textarea.prose-field--lead-in {
+     lead-in's line in the floor by padding; the version pen's open step too. */
+  .notebook .mk-step textarea.prose-field--lead-in,
+  .notebook .method-step__open-fields textarea.prose-field--lead-in {
     padding-block: max(var(--gap-hair), calc((var(--touch-min) - var(--sheet-leading-note) * 1em) / 2));
   }
 
   /* The same centring for the line of the 2px-padded ink fields in the floor:
      the grams field (bug-p11-ipad-hardware-tab-skips-fields), the step's
-     targets and the style ends (bug-ipad-tab-lost-from-single-line-fields);
-     their two rules count in the height. */
+     targets, the version pen's open step targets and the style ends
+     (bug-ipad-tab-lost-from-single-line-fields); their two rules count in the
+     height. */
   .notebook .ingredient-table textarea.ink-field,
   .notebook .mk-step textarea.ink-field,
-  .notebook .mk-band__ends textarea.ink-field {
+  .notebook .mk-band__ends textarea.ink-field,
+  .notebook .method-step__open-fields textarea.ink-field {
     padding-block: max(var(--gap-hair), calc((var(--touch-min) - var(--sheet-leading-field) * 1em - 2 * var(--rule-ink-field)) / 2));
   }
 

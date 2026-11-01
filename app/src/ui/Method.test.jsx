@@ -1304,7 +1304,7 @@ describe('Method — StepPenBody, opened (sketch 011 decisions_recorded 5, Task 
   it('renders its fields, a controls line reading Change ingredients / Add purpose / Add aside, then Cancel and Done — no remove control at all', () => {
     const markup = renderOpenStepPenBody(3);
 
-    expect(markup).toContain('<input');
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--lead-in"/);
     expect(markup).toContain('<textarea');
     expect(markup).toMatch(/>Change ingredients<\/button>/);
     expect(markup).toMatch(/>Add purpose<\/button>/);

@@ -3,6 +3,7 @@ import { isStruck, changedLineFor, stepChangeFor } from '../domain/batch.js';
 import { removedRowsUsedBy, coveredRowsFor } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
 import { Button } from './Button.jsx';
+import { holdReturn, stripNewlines } from './oneLineField.js';
 import { Checkbox } from './Checkbox.jsx';
 import { StepAside, StepPurpose, StepTargets } from './StepReading.jsx';
 
@@ -153,12 +154,13 @@ export function StepPenBody({
           goes on plan 08's record for Mark. */}
       <div className="method-step__open-fields">
         <label className="method-step__field">
-          <input
-            type="text"
+          <textarea
+            rows="1"
             className="prose-field prose-field--lead-in"
             value={draftStep.leadIn}
             aria-label={fieldLabel(step, draftStep.removed, 'lead-in')}
-            onChange={(event) => onChangePenStepField(step.n, 'leadIn', event.target.value)}
+            onChange={(event) => onChangePenStepField(step.n, 'leadIn', stripNewlines(event.target.value))}
+            onKeyDown={holdReturn}
           />
         </label>
         <label className="method-step__field">
@@ -192,19 +194,23 @@ export function StepPenBody({
                   {targetDiff?.changed && targetDiff.from != null && (
                     <span className="struck-value">{`${targetDiff.label} ${targetDiff.from}`}</span>
                   )}
-                  <input
-                    type="text"
+                  <textarea
+                    rows="1"
+                    cols="20"
                     className="ink-field target-chip__label-field"
                     value={target.label}
                     aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, label`)}
-                    onChange={(event) => onChangePenStepTarget(step.n, index, 'label', event.target.value)}
+                    onChange={(event) => onChangePenStepTarget(step.n, index, 'label', stripNewlines(event.target.value))}
+                    onKeyDown={holdReturn}
                   />
-                  <input
-                    type="text"
+                  <textarea
+                    rows="1"
+                    cols="20"
                     className="ink-field target-chip__value-field"
                     value={target.value}
                     aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, value`)}
-                    onChange={(event) => onChangePenStepTarget(step.n, index, 'value', event.target.value)}
+                    onChange={(event) => onChangePenStepTarget(step.n, index, 'value', stripNewlines(event.target.value))}
+                    onKeyDown={holdReturn}
                   />
                 </span>
               );

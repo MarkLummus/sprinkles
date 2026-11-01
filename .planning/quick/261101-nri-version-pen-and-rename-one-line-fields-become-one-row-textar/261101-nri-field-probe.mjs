@@ -549,9 +549,13 @@ const gate = (tallyKey, ok, text) => {
 
 // A box in after matches its base box, or its base box moved by the ruled target-width difference: boxes right of a
 // narrowed target field move left by its difference, and boxes holding it are as much narrower.
+// A step can hold several target chips on lines of their own, so a shift applies only to boxes on its field's line.
 function boxMatches(a, b, shifts) {
-  const leftShift = shifts.filter((f) => b.left >= f.right - 0.01).reduce((s, f) => s + f.d, 0);
-  const shrink = shifts.filter((f) => b.left <= f.left + 0.01 && b.left + b.width >= f.right - 0.01).reduce((s, f) => s + f.d, 0);
+  const sameLine = (f) => b.top < f.bottom - 0.01 && b.top + b.height > f.top + 0.01;
+  const leftShift = shifts.filter((f) => sameLine(f) && b.left >= f.right - 0.01).reduce((s, f) => s + f.d, 0);
+  const shrink = shifts
+    .filter((f) => sameLine(f) && b.left <= f.left + 0.01 && b.left + b.width >= f.right - 0.01)
+    .reduce((s, f) => s + f.d, 0);
   const lefts = [b.left, b.left - leftShift];
   const widths = [b.width, b.width - shrink];
   return lefts.some((x) => near(a.left, x)) && near(a.top, b.top) && widths.some((x) => near(a.width, x)) && near(a.height, b.height);
@@ -605,7 +609,7 @@ function targetShifts(afterGroup, baseGroup, step, pass) {
     const af = afterGroup[key];
     if (af.step !== step || !af.target) continue;
     const b = baseGroup[key][pass].box;
-    out.push({ left: b.left, right: b.left + b.width, d: Math.round((b.width - af[pass].box.width) * 100) / 100 });
+    out.push({ left: b.left, right: b.left + b.width, top: b.top, bottom: b.top + b.height, d: Math.round((b.width - af[pass].box.width) * 100) / 100 });
   }
   return out;
 }

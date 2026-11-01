@@ -1006,4 +1006,54 @@ describe('the recipe page one-line fields are one-row textareas (bug-ipad-tab-lo
     expect(container.querySelector('[aria-label="Version name"]').value).toBe('lessmilk');
     expect(container.querySelector('[aria-label="Whole milk, grams, portion 1"]').value).toBe('100');
   });
+
+  async function stepOpen() {
+    const container = await penOpen();
+    await click(buttonByLabel('Step 1, edit this step'));
+    return container;
+  }
+
+  it("draws a step's lead-in as a one-row textarea that keeps its classes", async () => {
+    const container = await stepOpen();
+    const field = container.querySelector('[aria-label="Step 1, lead-in"]');
+    expect(field.tagName).toBe('TEXTAREA');
+    expect(field.getAttribute('rows')).toBe('1');
+    expect(field.hasAttribute('type')).toBe(false);
+    expect(field.className).toBe('prose-field prose-field--lead-in');
+  });
+
+  it("draws a step's target label and value as one-row textareas of 20 columns that keep their classes", async () => {
+    const container = await stepOpen();
+    const label = container.querySelector('[aria-label="Step 1, target 1, label"]');
+    const value = container.querySelector('[aria-label="Step 1, target 1, value"]');
+    for (const [field, className] of [
+      [label, 'ink-field target-chip__label-field'],
+      [value, 'ink-field target-chip__value-field'],
+    ]) {
+      expect(field.tagName).toBe('TEXTAREA');
+      expect(field.getAttribute('rows')).toBe('1');
+      expect(field.getAttribute('cols')).toBe('20');
+      expect(field.hasAttribute('type')).toBe(false);
+      expect(field.className).toBe(className);
+    }
+  });
+
+  it('prevents Return in the lead-in and both target fields, with or without Shift, and leaves the values alone', async () => {
+    const container = await stepOpen();
+    for (const label of ['Step 1, lead-in', 'Step 1, target 1, label', 'Step 1, target 1, value']) {
+      const field = container.querySelector(`[aria-label="${label}"]`);
+      const before = field.value;
+      expect(keydown(field, {})).toBe(false);
+      expect(keydown(field, { shiftKey: true })).toBe(false);
+      expect(field.value).toBe(before);
+    }
+  });
+
+  it('removes every line break from the lead-in and from a target label', async () => {
+    const container = await stepOpen();
+    await setValue(container.querySelector('[aria-label="Step 1, lead-in"]'), 'Lecithin\ninto the oil');
+    await setValue(container.querySelector('[aria-label="Step 1, target 1, label"]'), 'te\nmp');
+    expect(container.querySelector('[aria-label="Step 1, lead-in"]').value).toBe('Lecithininto the oil');
+    expect(container.querySelector('[aria-label="Step 1, target 1, label"]').value).toBe('temp');
+  });
 });

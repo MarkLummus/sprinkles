@@ -69,3 +69,7 @@ One `/gsd-quick-batch`, grouped by surface (creation editor; version pen and Ren
 ## Not verified
 
 Everything above is Playwright WebKit and Chrome on the dev machine. The iPad (WebKit, 1366, coarse) is unchecked for every field except the two 261101-lec fields Mark passed. Tab from a date input on iPadOS 27 is untested. The iPad on-screen keyboard for a textarea with `inputmode=decimal` (whether it shows a minus) is untested.
+
+## Mark's ruling on the target widths (2026-11-01)
+
+Quick 261101-nrh measured the step target fields (rows 1, `cols="20"`, `field-sizing: fixed`) narrower than the inputs by more than section 3 predicted: WebKit 1.28 px at 15 px and 1.31 px at 16 px; Chrome 6 px fine and 7 px coarse. No column count or token expression matches the input in both engines. Mark accepted the narrowing as measured (asked in chat, answer "Accept the narrowing"), so the width tolerance for the target fields is WebKit ≤ 1.5 px and Chrome ≤ 7.5 px, in the creation editor and in the version pen.

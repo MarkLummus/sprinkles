@@ -247,10 +247,11 @@
   overflow: hidden;
 }
 
-/* The creation editor's one-line fields are one-row textareas too
-   (bug-ipad-tab-lost-from-single-line-fields, duty 1): one line at the input's
-   height, scrolled to the caret, with no scrollbar. */
-.notebook.mk-page textarea.ink-field {
+/* The creation editor's and the recipe page's band one-line fields are one-row
+   textareas too (bug-ipad-tab-lost-from-single-line-fields, duty 1): one line at
+   the input's height, scrolled to the caret, with no scrollbar. */
+.notebook.mk-page textarea.ink-field,
+.notebook .notebook-recipe__form .notebook-field > textarea.ink-field {
   white-space: pre;
   overflow: hidden;
 }
@@ -2080,11 +2081,12 @@
     padding-block: max(var(--gap-hair), calc((var(--touch-min) - var(--sheet-leading-field) * 1em - 2 * var(--rule-ink-field)) / 2));
   }
 
-  /* The labelled-above fields (bug-ipad-tab-lost-from-single-line-fields,
-     duty 2): 16px on the field line, padded 8px, with 1px app rules, in the
-     44px floor. The input centred its line; a textarea starts it at the top,
-     so the padding centres it. */
-  .notebook.mk-page .notebook-field textarea.ink-field {
+  /* The labelled-above fields of the creation editor and the recipe page's
+     band (bug-ipad-tab-lost-from-single-line-fields, duty 2): 16px on the field
+     line, padded 8px, with 1px app rules, in the 44px floor. The input centred
+     its line; a textarea starts it at the top, so the padding centres it. */
+  .notebook.mk-page .notebook-field textarea.ink-field,
+  .notebook .notebook-recipe__form .notebook-field > textarea.ink-field {
     padding-block: max(var(--app-notebook-gap-tight), calc((var(--touch-min) - var(--sheet-leading-field) * 1em - 2 * var(--app-rule-row)) / 2));
   }
 

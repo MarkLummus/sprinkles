@@ -38,7 +38,7 @@ describe('RecipeBand — open (Rename, D-12)', () => {
     const markup = renderToStaticMarkup(
       <RecipeBand recipe={makeRecipe()} onSave={() => Promise.resolve()} initiallyRenaming />,
     );
-    expect(markup).toMatch(/aria-label="Recipe name"[^>]*value="Olive Oil Ice Cream, circulator"/);
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Recipe name"[^>]*>Olive Oil Ice Cream, circulator<\/textarea>/);
     expect(markup).toMatch(/aria-label="Recipe description"[^>]*>Scaled 0\.8× from the 1 kg formula\.</);
     const cancelIndex = markup.indexOf('>Cancel<');
     const saveIndex = markup.indexOf('>Save<');

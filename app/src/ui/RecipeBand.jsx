@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { recipeNameMessage, renamedRecipe, RECIPE_SAVE_ERROR } from '../domain/recipe.js';
 import { Button } from './Button.jsx';
+import { holdReturn, stripNewlines } from './oneLineField.js';
 
 // RecipeBand (03.5-04 Task 1, D-12): the band's recipe column — the recipe
 // record's own name and description, and Rename edited inline, Cancel
@@ -73,9 +74,9 @@ export function RecipeBand({ recipe, onSave, initiallyRenaming = false, initialE
         <div className="notebook-recipe__form">
           <label className="notebook-field">
             <span className="notebook-caption">Recipe name</span>
-            <input
+            <textarea
               ref={nameFieldRef}
-              type="text"
+              rows="1"
               className="ink-field"
               autoFocus
               disabled={saving}
@@ -83,7 +84,8 @@ export function RecipeBand({ recipe, onSave, initiallyRenaming = false, initialE
               aria-label="Recipe name"
               aria-invalid={error ? 'true' : undefined}
               aria-describedby={error ? 'recipe-name-field-error' : undefined}
-              onChange={(event) => setFields((prev) => ({ ...prev, name: event.target.value }))}
+              onChange={(event) => setFields((prev) => ({ ...prev, name: stripNewlines(event.target.value) }))}
+              onKeyDown={holdReturn}
             />
             <FieldFeedback error={error} errorId="recipe-name-field-error" />
           </label>

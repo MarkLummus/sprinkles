@@ -163,7 +163,8 @@ async function click(element) {
 }
 
 async function setValue(element, value) {
-  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+  const proto = element.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+  const setter = Object.getOwnPropertyDescriptor(proto, 'value').set;
   await act(async () => {
     setter.call(element, value);
     element.dispatchEvent(new Event('input', { bubbles: true }));
@@ -902,5 +903,59 @@ describe("the version pen's uses line follows the step's own order (decide-p11-r
     expect(
       linesUnder('Step 2').map((tr) => tr.getAttribute('aria-label').split(',')[0]),
     ).toEqual(['Locust bean gum', 'Guar gum', 'Lambda carrageenan', 'Sucrose', 'Whole milk']);
+  });
+});
+
+// iPadOS 27 Safari drops a hardware Tab from every input element and a one-row textarea takes it
+// (bug-ipad-tab-lost-from-single-line-fields): the recipe page's Rename and version-pen one-line fields are
+// one-row textareas that hold Return and strip pasted line breaks.
+describe('the recipe page one-line fields are one-row textareas (bug-ipad-tab-lost-from-single-line-fields)', () => {
+  function keydown(element, init) {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter', ...init });
+    let notPrevented;
+    act(() => {
+      notPrevented = element.dispatchEvent(event);
+    });
+    return notPrevented;
+  }
+
+  async function renameOpen() {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    const section = container.querySelector('section[aria-label="Recipe"]');
+    await click(buttonByText(section, 'Rename'));
+    return { container, section, field: section.querySelector('[aria-label="Recipe name"]') };
+  }
+
+  it("draws Rename's Recipe name as a focused one-row textarea that keeps its class", async () => {
+    const { field } = await renameOpen();
+    expect(field.tagName).toBe('TEXTAREA');
+    expect(field.getAttribute('rows')).toBe('1');
+    expect(field.hasAttribute('type')).toBe(false);
+    expect(field.className).toBe('ink-field');
+    expect(document.activeElement).toBe(field);
+  });
+
+  it("prevents Return in Recipe name, with or without Shift, and leaves the value alone", async () => {
+    const { field } = await renameOpen();
+    const before = field.value;
+    expect(keydown(field, {})).toBe(false);
+    expect(keydown(field, { shiftKey: true })).toBe(false);
+    expect(field.value).toBe(before);
+  });
+
+  it("removes every line break from Recipe name", async () => {
+    const { field } = await renameOpen();
+    await setValue(field, 'Olive\nOil\r\n');
+    expect(field.value).toBe('OliveOil');
+  });
+
+  it('a blank Recipe name refused on Save focuses the textarea and marks it invalid', async () => {
+    const { section, field } = await renameOpen();
+    await setValue(field, '');
+    await click(buttonByText(section, 'Save'));
+    await flush(() => field.getAttribute('aria-invalid') === 'true');
+    expect(document.activeElement).toBe(field);
+    expect(field.getAttribute('aria-invalid')).toBe('true');
   });
 });

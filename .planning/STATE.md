@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-21)
 Phase: 11 (Steps, structure, save and print) — EXECUTING
 Plan: 1 of 14
 Status: Executing Phase 11
-Last activity: 2026-11-01 - Completed quick task 261101-mbe: the editing note bullet stands in the left margin (iPad)
+Last activity: 2026-11-01 - Completed quick batch 261101-nrg: every single-line text field is a one-row textarea so iPad hardware Tab moves on
 
 Progress: [██████░░░░] 60%
 
@@ -619,6 +619,10 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 216 | Add to step chooser: each step's name starts with its visible words, lead-in included (bug-p11-chooser-step-label-in-name) | 2026-10-31 | 502461fb | — |
 | 261101-lec | Creation lead-in and grams fields become one-row textareas so iPad hardware Tab moves on (bug-p11-ipad-hardware-tab-skips-fields) | 2026-11-01 | ed93b024 | [261101-lec-creation-lead-in-and-grams-fields-become](./quick/261101-lec-creation-lead-in-and-grams-fields-become/) |
 | 261101-mbe | Before you start note bullet drawn in the left margin while editing, so the iPad cannot misplace it (bug-p11-bys-note-dot-on-right) | 2026-11-01 | 9455f85f | [261101-mbe-before-you-start-note-bullet-stands-in-t](./quick/261101-mbe-before-you-start-note-bullet-stands-in-t/) |
+| 261101-nrh | Creation editor one-line fields become one-row textareas for iPad Tab (bug-ipad-tab-lost-from-single-line-fields) | 2026-11-01 | 1754924a | .planning/quick/261101-nrh-creation-editor-one-line-fields-become-one-row-textareas-for |
+| 261101-nri | Version pen and Rename one-line fields become one-row textareas for iPad Tab (bug-ipad-tab-lost-from-single-line-fields) | 2026-11-01 | dbacf747 | .planning/quick/261101-nri-version-pen-and-rename-one-line-fields-become-one-row-textar |
+| 261101-nrj | Record pen one-line fields become one-row textareas for iPad Tab (bug-ipad-tab-lost-from-single-line-fields) | 2026-11-01 | 44c71a11 | .planning/quick/261101-nrj-record-pen-one-line-fields-become-one-row-textareas-for-ipad |
+| 261101-nrk | Notebook, Ingredients and Search one-line fields become one-row textareas for iPad Tab (bug-ipad-tab-lost-from-single-line-fields) | 2026-11-01 | 3e180f90 | .planning/quick/261101-nrk-notebook-ingredients-and-search-one-line-fields-become-one-r |
 
 ### Roadmap Evolution
 

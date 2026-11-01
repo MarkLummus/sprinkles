@@ -2,7 +2,7 @@
 status: investigating
 trigger: "With the Magic Keyboard on the iPad, Tab from a creation step's lead-in does not reach the instruction field, and Tab from a row's grams field does nothing; the on-screen keyboard's Tab moves lead-in to instruction but never to the step's links. Chromium on the Mac is fine. Bug row bug-p11-ipad-hardware-tab-skips-fields on Mark's List; D-19 (literal tabIndex) and the ios-keyboard-bar memory are the known history."
 created: 2026-11-01T18:50:00Z
-updated: 2026-11-01T20:17:29Z
+updated: 2026-11-01T20:23:32Z
 ---
 
 ## Current Focus
@@ -10,9 +10,9 @@ updated: 2026-11-01T20:17:29Z
 goal: find_and_fix
 bug_class: "Bohrbug on the device as reported (every attempt fails), but its mechanism sits in iPadOS UIKit/Safari's routing of a hardware Tab from an editable field, which no local engine models. SBFL skipped: the suite runs under jsdom/node; desktop Playwright WebKit has no iPadOS hardware-keyboard path."
 known_pattern_candidate: "none in a knowledge base (none exists). Sibling sessions (link/form-control gates, FKA off) explain buttons and links but not a text field failing to reach the next text field: WebKit never gates text inputs or textareas."
-hypothesis: "NARROWED (round 2b, Mark 2026-11-01): on iPadOS 27 Safari 27.0.1 a Magic Keyboard Tab is lost only from a single-line <input type=text>. From a <textarea> (box Two) and from a <button> (Three) the page receives keydown Tab and focus moves both ways (Tab and Shift-Tab). From <input type=text> (One, Four, Six, whatever their writing-assist attributes) there is no keydown and the window blurs: focus leaves the page. Sprinkles' lead-in and grams fields are <input type=text>; the instruction is a <textarea>, which matches every symptom."
+hypothesis: "CONFIRMED (round 3, Mark 2026-11-01): on iPadOS 27 Safari 27.0.1 a Magic Keyboard Tab is lost from every <input> element tried (type text, search, number, tel; text with inputmode=decimal; text inside a <form>; text with enterkeyhint=next): no keydown, window blur, focus leaves the page. A <textarea rows=1> and a contenteditable div receive keydown Tab and focus moves to the next control. Sprinkles' lead-in and grams are <input type=text>, hence the bug; every other single-line <input> in the app is affected the same way."
 next_action: |
-  Round 3 (proposed to Mark, not started): on the bare page, test which single-line field kinds keep Tab: <input type=search>, type=number, type=text inputmode=decimal, type=tel, an <input> inside a <form>, an <input> with enterkeyhint, a contenteditable single-line div, and <textarea rows=1>. The kinds that pass decide the app fix (lead-in and grams), which then goes to a /gsd-quick after Mark chooses (the lead-in as a one-row textarea needs Return handled; the grams field needs a numeric keyboard).
+  Fix choice is Mark's (scope and field kind). Candidate: render the lead-in and grams fields as a one-row <textarea> (grams keeps inputMode="decimal", a global attribute), with Return prevented from inserting a newline; then a /gsd-quick, and a device check on the iPad. Open scope question: only lead-in and grams (the bug row), or every single-line <input> in the app.
   Runtime state still up: log server :8099 (pid 95694), scratch site :8098 (pid 95901). Stop both when the session closes. Vite preview :4173 untouched.
 
 ## Symptoms
@@ -124,9 +124,17 @@ started: "First seen on the iPad check of 2026-10-27 (check-p11-ipad-create-step
     Every Tab from INPUT[text] One or Four logs only `window blur` (seq 193-222, 246, 251-259, 294, 331), including from One reached by Shift-Tab (seq 324 focusin One, 331 blur).
   implication: "The loss is specific to single-line <input type=text>. The round-2 'platform, every field' reading was too broad: <textarea> and <button> take hardware Tab normally on the same iPad, so an app-side fix through the field kind is likely."
 
+- timestamp: 2026-11-01T20:23:32Z
+  checked: "Round 3 bare page scratchpad/probe/site/tab3.html (eight field kinds A-H, each followed by an 'after' button); Mark: 'G & H are only ones that move to their after button'. Device log saved at scratchpad/probe/device-log-4.saved.txt. Desktop WebKit baseline (walk3.mjs): all eight move to their 'after' button."
+  found: |
+    A input[type=search], B input[type=number], C input[type=text][inputmode=decimal], D input[type=tel], E input[type=text] inside <form>, F input[type=text][enterkeyhint=next]: no keydown Tab; window blur after each Tab (seq 13, 66, 87, 172, 191/222, 235/239).
+    G div[contenteditable][role=textbox]: keydown Tab (seq 254) then focusin "after G" (257).
+    H textarea rows=1: keydown Tab (seq 272) then focusin "after H" (275).
+  implication: "The loss is tied to the <input> element itself, not its type, keypad, form or Return label. A one-row <textarea> is a working field kind for the lead-in and the grams field."
+
 ## Resolution
 
-root_cause: "iPadOS 27 Safari (27.0.1) drops a Magic Keyboard Tab from a single-line <input type=text> and moves focus out of the page; <textarea> and <button> are unaffected. Sprinkles' lead-in and grams fields are single-line text inputs. Platform behaviour, reproduced on a bare page."
-fix: "Not yet chosen. Round 3 tests other single-line field kinds; see next_action."
+root_cause: "iPadOS 27 Safari (27.0.1) drops a Magic Keyboard Tab from any <input> element (all types tried) and moves focus out of the page; <textarea> and <button> are unaffected. Sprinkles' lead-in and grams fields are single-line text inputs. Platform behaviour, reproduced on a bare page."
+fix: "Not yet chosen. Candidate: one-row <textarea> for the lead-in and grams (Return held from inserting a newline); scope is Mark's call."
 verification: ""
 files_changed: []

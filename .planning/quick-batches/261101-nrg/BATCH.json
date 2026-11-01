@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "batch_id": "261101-nrg",
+  "created_at": "2026-11-01T22:06:33.221Z",
+  "options": {},
+  "base_revision": "83a786b3adc06552bcdc6a472ffaa466eae3b7b4",
+  "items": [
+    {
+      "quick_id": "261101-nrh",
+      "client_id": null,
+      "description": "Creation editor one-line fields become one-row textareas for iPad Tab: Recipe name and Version name (CreationPage.jsx 657, 690), a step's target label and value (CreationSteps.jsx 123, 133), a scale's and a problem's Name, Low end, High end (CreationSetup.jsx 47), each style target's low and high end (CreationSetup.jsx 202, 213), the picker's Name filter (IngredientPicker.jsx 60), and Serving temperature (CreationSetup.jsx 176) as a one-row textarea with inputMode decimal whose 84 px width rule .notebook .mk-field-row .ink-field[type='number'] moves to a class; findRefusedField in CreationPage.jsx and CreationSetup.jsx line 78 move to the textarea. Spec: .impeccable/proposals/2026-11-01-one-line-fields.md sections 2 to 5 and DESIGN.md Fields \"One-line field\" (Mark chose serving-only on decide-one-line-fields, 2026-11-01); pattern quick 261101-lec (app/src/ui/oneLineField.js holdReturn and stripNewlines, tokens-only CSS); apply the five CSS duties that touch these fields; keep every attribute (inputMode, autoCapitalize, autoComplete, spellCheck, enterKeyHint, required, placeholder, autoFocus, refs, onBlur); move every selector and test that finds these fields by tag; prove the fields against a scratch build of the base in Playwright WebKit and Chrome at 1366 fine and coarse (box, ink, neighbours, focus ring, Return, paste, long text), Sid probe .impeccable/proposals/2026-11-01-one-line-fields-probe.mjs as a start; run the full suite; never build into app/dist, no vite servers.",
+      "status": "pending",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": null,
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261101-nri",
+      "client_id": null,
+      "description": "Version pen and Rename one-line fields become one-row textareas for iPad Tab: Version name (VersionRow.jsx 215, with the placeholder line-height duty), a row's grams (IngredientTable.jsx 186), a step's lead-in (Method.jsx 156, label becomes a flex column), a step's target label and value (Method.jsx 195, 202, cols 20 and field-sizing fixed), and Rename's Recipe name (RecipeBand.jsx 76). Spec: .impeccable/proposals/2026-11-01-one-line-fields.md sections 2 to 5 and DESIGN.md Fields \"One-line field\" (Mark chose serving-only on decide-one-line-fields, 2026-11-01); pattern quick 261101-lec (app/src/ui/oneLineField.js holdReturn and stripNewlines, tokens-only CSS); apply the five CSS duties that touch these fields; keep every attribute (inputMode, autoCapitalize, autoComplete, spellCheck, enterKeyHint, required, placeholder, autoFocus, refs, onBlur); move every selector and test that finds these fields by tag; prove the fields against a scratch build of the base in Playwright WebKit and Chrome at 1366 fine and coarse (box, ink, neighbours, focus ring, Return, paste, long text), Sid probe .impeccable/proposals/2026-11-01-one-line-fields-probe.mjs as a start; run the full suite; never build into app/dist, no vite servers.",
+      "status": "pending",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": null,
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261101-nrj",
+      "client_id": null,
+      "description": "Record pen one-line fields become one-row textareas for iPad Tab: BatchRow.jsx 132 unsigned text branch only (Duration, Tempering, Melt test; the signed number branch for Out of machine and Temperature stays an input), a row's as-made grams (IngredientTable.jsx 459, display block), and Done differently (Method.jsx 472, keeps its onBlur close when empty); Churned and Tasted stay date inputs. Spec: .impeccable/proposals/2026-11-01-one-line-fields.md sections 2 to 5 and DESIGN.md Fields \"One-line field\" (Mark chose serving-only on decide-one-line-fields, 2026-11-01); pattern quick 261101-lec (app/src/ui/oneLineField.js holdReturn and stripNewlines, tokens-only CSS); apply the five CSS duties that touch these fields; keep every attribute (inputMode, autoCapitalize, autoComplete, spellCheck, enterKeyHint, required, placeholder, autoFocus, refs, onBlur); move every selector and test that finds these fields by tag; prove the fields against a scratch build of the base in Playwright WebKit and Chrome at 1366 fine and coarse (box, ink, neighbours, focus ring, Return, paste, long text), Sid probe .impeccable/proposals/2026-11-01-one-line-fields-probe.mjs as a start; run the full suite; never build into app/dist, no vite servers.",
+      "status": "pending",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": null,
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261101-nrk",
+      "client_id": null,
+      "description": "Notebook, Ingredients and Search one-line fields become one-row textareas for iPad Tab: Notebook New recipe Name (NotebookPlace.jsx 232, Return still starts the recipe by submitting its form), Ingredients Name filter (IngredientsPlace.jsx 192), and Sheet code (SheetCodeSearch.jsx 97, Return still runs Find by submitting its form). Spec: .impeccable/proposals/2026-11-01-one-line-fields.md sections 2 to 5 and DESIGN.md Fields \"One-line field\" (Mark chose serving-only on decide-one-line-fields, 2026-11-01); pattern quick 261101-lec (app/src/ui/oneLineField.js holdReturn and stripNewlines, tokens-only CSS); apply the five CSS duties that touch these fields; keep every attribute (inputMode, autoCapitalize, autoComplete, spellCheck, enterKeyHint, required, placeholder, autoFocus, refs, onBlur); move every selector and test that finds these fields by tag; prove the fields against a scratch build of the base in Playwright WebKit and Chrome at 1366 fine and coarse (box, ink, neighbours, focus ring, Return, paste, long text), Sid probe .impeccable/proposals/2026-11-01-one-line-fields-probe.mjs as a start; run the full suite; never build into app/dist, no vite servers.",
+      "status": "pending",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": null,
+      "failure_reason": null
+    }
+  ]
+}

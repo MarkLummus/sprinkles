@@ -38,21 +38,22 @@ const KIND_BY_WORD = { 'Right in the middle': 'goldilocks', 'Low to high': 'magn
 
 const isBlank = (text) => text.trim() === '';
 
-// One labelled text field of a card: the caption, the input named by it and,
+// One labelled text field of a card: the caption, the field named by it and,
 // while it is blank, the Required line under it, or the refused Save's message
 // in its place. Words are React text only.
 function CardField({ label, value, onChange, error = null, errorId }) {
   return (
     <label className="notebook-field">
       <span className="notebook-caption">{label}</span>
-      <input
+      <textarea
         className="ink-field"
-        type="text"
+        rows="1"
         aria-label={label}
         value={value}
         aria-invalid={error ? 'true' : undefined}
         aria-describedby={error ? errorId : undefined}
         onChange={onChange}
+        onKeyDown={holdReturn}
       />
       <FieldFeedback error={error} errorId={errorId} required={isBlank(value)} />
     </label>
@@ -76,7 +77,7 @@ export function CreationSetup({ createDraft, onChange, saveMessages = null }) {
     const region = (request.endsWith('scale') ? scalesRef : problemsRef).current;
     if (!region) return;
     const target = request.startsWith('new-')
-      ? [...region.querySelectorAll('.mk-card')].pop()?.querySelector('input[aria-label="Name"]')
+      ? [...region.querySelectorAll('.mk-card')].pop()?.querySelector('textarea[aria-label="Name"]')
       : region.querySelector('.mk-add');
     target?.focus();
   });
@@ -97,7 +98,7 @@ export function CreationSetup({ createDraft, onChange, saveMessages = null }) {
   };
 
   const handleScaleField = (key, field) => (event) => {
-    const raw = event.target.value;
+    const raw = stripNewlines(event.target.value);
     onChange((prev) => updateScale(prev, key, field, raw));
   };
 
@@ -116,7 +117,7 @@ export function CreationSetup({ createDraft, onChange, saveMessages = null }) {
   };
 
   const handleProblemName = (index) => (event) => {
-    const raw = event.target.value;
+    const raw = stripNewlines(event.target.value);
     onChange((prev) => updateProblem(prev, index, raw));
   };
 

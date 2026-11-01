@@ -255,6 +255,16 @@
   overflow: hidden;
 }
 
+/* A card's fields (bug-ipad-tab-lost-from-single-line-fields, duty 4): the card
+   sits in a log column that shrinks to its content, and a field-sizing: content
+   textarea at width 100% hands that column its whole typed line, so a long name
+   widened the card and the field never scrolled. Fixed sizing gives the field the
+   20-column width an input contributed, so the card keeps its width and the line
+   scrolls inside the field. */
+.notebook .mk-card textarea.ink-field {
+  field-sizing: fixed;
+}
+
 /* The open step's targets line (sketch 014 pE1). Written through direct
    children of the open step's own body, so the Preview's reading step, nested
    inside the same .mk-step, keeps the tag row's baseline alignment and plain

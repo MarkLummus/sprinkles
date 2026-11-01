@@ -1982,7 +1982,7 @@ describe('Save refuses everything the store file would refuse, all at once, writ
     expect(addButton()).toBeNull();
     await pressSave();
     expectRefused();
-    expect(document.activeElement).toBe(root().querySelector('.ingredient-table-region .pick .ing__filters input'));
+    expect(document.activeElement).toBe(root().querySelector('.ingredient-table-region .pick .ing__filters textarea'));
   });
 
   it('a draft whose only problem is a blank step lead-in focuses "Step 1, lead-in"', async () => {
@@ -2039,15 +2039,15 @@ describe('Save refuses everything the store file would refuse, all at once, writ
     const problemsRegion = () => root().querySelector('section[aria-label="Problems"]');
     await click(problemsRegion().querySelector('.mk-add'));
     await click(problemsRegion().querySelector('.mk-add'));
-    await type(problemsRegion().querySelector('.mk-card[aria-label="Problem 2"] input[aria-label="Name"]'), 'Icy');
+    await type(problemsRegion().querySelector('.mk-card[aria-label="Problem 2"] textarea[aria-label="Name"]'), 'Icy');
     await pressSave();
     expectRefused();
-    expect(document.activeElement).toBe(problemsRegion().querySelector('.mk-card[aria-label="Problem 1"] input[aria-label="Name"]'));
+    expect(document.activeElement).toBe(problemsRegion().querySelector('.mk-card[aria-label="Problem 1"] textarea[aria-label="Name"]'));
 
-    await type(problemsRegion().querySelector('.mk-card[aria-label="Problem 1"] input[aria-label="Name"]'), ' Icy ');
+    await type(problemsRegion().querySelector('.mk-card[aria-label="Problem 1"] textarea[aria-label="Name"]'), ' Icy ');
     await pressSave();
     expectRefused();
-    expect(document.activeElement).toBe(problemsRegion().querySelector('.mk-card[aria-label="Problem 2"] input[aria-label="Name"]'));
+    expect(document.activeElement).toBe(problemsRegion().querySelector('.mk-card[aria-label="Problem 2"] textarea[aria-label="Name"]'));
   });
 
   it('a draft whose only problem is a 309-digit grams line writes nothing and focuses that line', async () => {
@@ -2188,7 +2188,7 @@ describe('Save refuses everything the store file would refuse, all at once, writ
     await pressSave();
 
     expectRefused();
-    const pickerName = root().querySelector('.ingredient-table-region .pick .ing__filters input');
+    const pickerName = root().querySelector('.ingredient-table-region .pick .ing__filters textarea');
     expect(root().querySelector('#create-no-rows-error').textContent).toBe('Add at least one ingredient.');
     expect(pickerName.getAttribute('aria-describedby')).toBe('create-no-rows-error');
     expect(document.activeElement).toBe(pickerName);
@@ -2197,7 +2197,7 @@ describe('Save refuses everything the store file would refuse, all at once, writ
   it('a draft with two problems Bitter shows the sentence under the second only and writes nothing (D-25, T-11-33)', async () => {
     await startReady();
     const problemsRegion = () => root().querySelector('section[aria-label="Problems"]');
-    const problemName = (n) => problemsRegion().querySelector(`.mk-card[aria-label="Problem ${n}"] input[aria-label="Name"]`);
+    const problemName = (n) => problemsRegion().querySelector(`.mk-card[aria-label="Problem ${n}"] textarea[aria-label="Name"]`);
     await click(problemsRegion().querySelector('.mk-add'));
     await click(problemsRegion().querySelector('.mk-add'));
     await type(problemName(1), 'Bitter');

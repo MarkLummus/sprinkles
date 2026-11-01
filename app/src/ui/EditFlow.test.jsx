@@ -689,7 +689,7 @@ describe('a refused Save on the edit route names the rest of the gate in its pla
 
   const addButton = () => root().querySelector('.ingredient-table-region .mk-head-act');
   const problemsRegion = () => root().querySelector('section[aria-label="Problems"]');
-  const problemName = (n) => problemsRegion().querySelector(`.mk-card[aria-label="Problem ${n}"] input[aria-label="Name"]`);
+  const problemName = (n) => problemsRegion().querySelector(`.mk-card[aria-label="Problem ${n}"] textarea[aria-label="Name"]`);
 
   it('a blank Version name and a repeated problem show together, focus goes to the Version name, and nothing is written', async () => {
     await openEdit();
@@ -734,7 +734,7 @@ describe('a refused Save on the edit route names the rest of the gate in its pla
     // With the picker open in Add ingredient's place, the picker's Name field takes the description and the focus.
     await click(addButton());
     await pressSave();
-    const pickerName = root().querySelector('.ingredient-table-region .pick .ing__filters input');
+    const pickerName = root().querySelector('.ingredient-table-region .pick .ing__filters textarea');
     expect(pickerName.getAttribute('aria-describedby')).toBe('create-no-rows-error');
     expect(document.activeElement).toBe(pickerName);
   });

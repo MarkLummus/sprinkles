@@ -3,6 +3,7 @@ import { Button } from './Button.jsx';
 import { filterLibrary, libraryCategories } from '../domain/ingredientSearch.js';
 import { ingredientCountWords } from './countWords.js';
 import { capitalised, summaryText } from './IngredientsPlace.jsx';
+import { holdReturn, stripNewlines } from './oneLineField.js';
 
 // The ingredient picker under the creation table (Phase 10, MAKE-06, sketch 013
 // ingredient-picker.html): it opens in the place of Add ingredient and finds as
@@ -52,18 +53,20 @@ export function IngredientPicker({ records, addedIds, onPick, onCancel, describe
           Cancel
         </Button>
       </div>
-      {/* The only text field is Name, so Enter would submit the form and reload
-          the page. Nothing submits: the filters apply as they are typed. */}
+      {/* Name is a one-row textarea whose Return is held, so Enter inserts nothing.
+          The form's submit stays prevented so nothing can reload the page: the
+          filters apply as they are typed. */}
       <form className="ing__filters" role="search" aria-label="Ingredients" onSubmit={(event) => event.preventDefault()}>
         <label className="notebook-field ing__field">
           <span className="notebook-caption">Name</span>
-          <input
+          <textarea
             ref={nameRef}
             className="ink-field"
-            type="text"
+            rows="1"
             aria-describedby={describedBy}
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => setQuery(stripNewlines(event.target.value))}
+            onKeyDown={holdReturn}
             autoComplete="off"
             spellCheck={false}
             enterKeyHint="search"

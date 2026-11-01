@@ -41,9 +41,9 @@ afterEach(async () => {
 });
 
 async function typeName(container, value) {
-  const input = container.querySelector('input.ink-field');
+  const input = container.querySelector('textarea.ink-field');
   await act(async () => {
-    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, value);
+    Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(input, value);
     input.dispatchEvent(new Event('input', { bubbles: true }));
   });
 }
@@ -119,7 +119,7 @@ describe('IngredientPicker filters as the Ingredients place does (decision 4, D-
     expect(container.querySelector('.pick__row')).toBeNull();
     // Nothing the maker typed can become a row: Enter in the field adds nothing.
     await act(async () => {
-      container.querySelector('input.ink-field').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      container.querySelector('textarea.ink-field').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     });
     expect(props.onPick).not.toHaveBeenCalled();
   });
@@ -131,10 +131,10 @@ describe('IngredientPicker filters as the Ingredients place does (decision 4, D-
     await click(clearButton(container));
     expect(count(container)).toBe('26 ingredients');
     expect(rowNames(container)).toHaveLength(26);
-    expect(container.querySelector('input.ink-field').value).toBe('');
+    expect(container.querySelector('textarea.ink-field').value).toBe('');
     expect(container.querySelector('select').value).toBe('All');
     expect(clearButton(container)).toBeUndefined();
-    expect(document.activeElement).toBe(container.querySelector('input.ink-field'));
+    expect(document.activeElement).toBe(container.querySelector('textarea.ink-field'));
   });
 
   it('a submit on the form is default-prevented', async () => {
@@ -148,7 +148,7 @@ describe('IngredientPicker filters as the Ingredients place does (decision 4, D-
 
   it('opening the picker focuses Name', async () => {
     const { container } = await mount();
-    expect(document.activeElement).toBe(container.querySelector('input.ink-field'));
+    expect(document.activeElement).toBe(container.querySelector('textarea.ink-field'));
   });
 });
 
@@ -222,12 +222,50 @@ describe('IngredientPicker rows (decisions 4 and 7, T-10-19, T-10-28)', () => {
 
   it("describes the Name field by the given message id, and by nothing when none is given (a refused Save with no ingredient)", async () => {
     const withIt = await mount({ describedBy: 'create-no-rows-error' });
-    expect(withIt.container.querySelector('.ing__filters input').getAttribute('aria-describedby')).toBe('create-no-rows-error');
+    expect(withIt.container.querySelector('.ing__filters textarea').getAttribute('aria-describedby')).toBe('create-no-rows-error');
     await act(async () => mounted.root.unmount());
     mounted.container.remove();
     mounted = null;
 
     const without = await mount();
-    expect(without.container.querySelector('.ing__filters input').hasAttribute('aria-describedby')).toBe(false);
+    expect(without.container.querySelector('.ing__filters textarea').hasAttribute('aria-describedby')).toBe(false);
+  });
+});
+
+describe("the picker's Name is a one-row textarea that stays one line (bug-ipad-tab-lost-from-single-line-fields)", () => {
+  const nameField = (container) => container.querySelector('.ing__filters textarea');
+  const returnHeld = async (element, init = {}) => {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter', ...init });
+    let notPrevented;
+    await act(async () => {
+      notPrevented = element.dispatchEvent(event);
+    });
+    return !notPrevented;
+  };
+
+  it('is a TEXTAREA with rows 1, no type, and the attributes the input carried', async () => {
+    const { container } = await mount();
+    const name = nameField(container);
+    expect(name.tagName).toBe('TEXTAREA');
+    expect(name.getAttribute('rows')).toBe('1');
+    expect(name.hasAttribute('type')).toBe(false);
+    expect(name.getAttribute('autocomplete')).toBe('off');
+    expect(name.getAttribute('spellcheck')).toBe('false');
+    expect(name.getAttribute('enterkeyhint')).toBe('search');
+  });
+
+  it('holds Return, plain or with Shift, and picks nothing', async () => {
+    const { container, props } = await mount();
+    const name = nameField(container);
+    expect(await returnHeld(name)).toBe(true);
+    expect(await returnHeld(name, { shiftKey: true })).toBe(true);
+    expect(props.onPick).not.toHaveBeenCalled();
+  });
+
+  it('removes a line break from what is typed, so the filter still reads milk', async () => {
+    const { container } = await mount();
+    await typeName(container, 'mi\nlk');
+    expect(nameField(container).value).toBe('milk');
+    expect(count(container)).toBe('5 of 26 ingredients');
   });
 });

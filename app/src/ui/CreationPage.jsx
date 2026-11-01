@@ -67,7 +67,7 @@ function findRefusedField(page, target, draft, saveButton) {
       // Add ingredient, or, while the picker is open in its place, the picker's Name field.
       return (
         page.querySelector('.ingredient-table-region .mk-head-act') ??
-        page.querySelector('.ingredient-table-region .pick .ing__filters input')
+        page.querySelector('.ingredient-table-region .pick .ing__filters textarea')
       );
     case 'line':
       return page.querySelector(`tr[data-line="${CSS.escape(`${target.rowId}:${target.step}`)}"] textarea`);
@@ -85,16 +85,16 @@ function findRefusedField(page, target, draft, saveButton) {
         `section[aria-label="Scales"] .mk-card[aria-label="Scale ${draft.scales.findIndex((scale) => scale.key === target.key) + 1}"]`,
       );
       const selector = {
-        name: 'input[aria-label="Name"]',
-        low: 'input[aria-label="Low end"]',
-        high: 'input[aria-label="High end"]',
+        name: 'textarea[aria-label="Name"]',
+        low: 'textarea[aria-label="Low end"]',
+        high: 'textarea[aria-label="High end"]',
         kind: 'input[type="radio"]',
       }[target.field];
       return card?.querySelector(selector) ?? null;
     }
     case 'problem':
       return page.querySelector(
-        `section[aria-label="Problems"] .mk-card[aria-label="Problem ${target.index + 1}"] input[aria-label="Name"]`,
+        `section[aria-label="Problems"] .mk-card[aria-label="Problem ${target.index + 1}"] textarea[aria-label="Name"]`,
       );
     default:
       return saveButton;

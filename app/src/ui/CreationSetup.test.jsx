@@ -439,14 +439,14 @@ describe("a refused Save's messages (MAKE-10, D-11, D-25, T-11-32, T-11-51)", ()
 
   it("puts each scale field's message under it, invalid and described by it, and leaves the others quiet", () => {
     mount(undefined, new Map([['scale:scale-a:name', 'Required'], ['scale:scale-a:high', 'Required']]), withScale);
-    const name = q('.mk-card[aria-label="Scale 1"] input[aria-label="Name"]');
+    const name = q('.mk-card[aria-label="Scale 1"] textarea[aria-label="Name"]');
     expect(name.getAttribute('aria-invalid')).toBe('true');
     expect(name.getAttribute('aria-describedby')).toBe('create-scale-scale-a-name-error');
     expect(q('#create-scale-scale-a-name-error').className).toBe('field-error');
     expect(q('#create-scale-scale-a-name-error').textContent).toBe('Required');
-    const high = q('.mk-card[aria-label="Scale 1"] input[aria-label="High end"]');
+    const high = q('.mk-card[aria-label="Scale 1"] textarea[aria-label="High end"]');
     expect(high.getAttribute('aria-describedby')).toBe('create-scale-scale-a-high-error');
-    const low = q('.mk-card[aria-label="Scale 1"] input[aria-label="Low end"]');
+    const low = q('.mk-card[aria-label="Scale 1"] textarea[aria-label="Low end"]');
     expect(low.getAttribute('aria-invalid')).toBeNull();
     expect(q('#create-scale-scale-a-low-error')).toBeNull();
     // An error replaces the quiet Required in the same place: never two lines.
@@ -467,8 +467,8 @@ describe("a refused Save's messages (MAKE-10, D-11, D-25, T-11-32, T-11-51)", ()
   it("a repeated problem's sentence stands under the second only; a blank one reads Required", () => {
     const twice = () => updateProblem(updateProblem(addProblem(addProblem(start())), 0, 'Icy'), 1, 'Icy');
     mount(undefined, new Map([['problem-repeat:1', 'This problem is already listed.']]), twice);
-    const first = q('.mk-card[aria-label="Problem 1"] input[aria-label="Name"]');
-    const second = q('.mk-card[aria-label="Problem 2"] input[aria-label="Name"]');
+    const first = q('.mk-card[aria-label="Problem 1"] textarea[aria-label="Name"]');
+    const second = q('.mk-card[aria-label="Problem 2"] textarea[aria-label="Name"]');
     expect(q('#create-problem-1-error').textContent).toBe('This problem is already listed.');
     expect(second.getAttribute('aria-invalid')).toBe('true');
     expect(second.getAttribute('aria-describedby')).toBe('create-problem-1-error');
@@ -516,5 +516,71 @@ describe('the twelve target ends are one-row textareas that stay one line (bug-i
     type(end, '1\n2');
     const targetKey = FIGURE_SPECS[0].targetKey;
     expect(held.targets[targetKey][0]).toBe('12');
+  });
+});
+
+describe('the Scales and Problems card fields are one-row textareas that stay one line (bug-ipad-tab-lost-from-single-line-fields)', () => {
+  const region = (name) => q(`section[aria-label="${name}"]`);
+  const press = (element) =>
+    act(() => {
+      element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    });
+  const returnHeld = (element, init = {}) => {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter', ...init });
+    let notPrevented;
+    act(() => {
+      notPrevented = element.dispatchEvent(event);
+    });
+    return !notPrevented;
+  };
+  const withCards = () => {
+    mount();
+    press(region('Scales').querySelector('.mk-add'));
+    press(region('Problems').querySelector('.mk-add'));
+  };
+
+  it('draws a scale card Name, Low end and High end and a problem Name as one-row textareas with no type', () => {
+    withCards();
+    const fields = [
+      ...region('Scales').querySelectorAll('.mk-card textarea'),
+      ...region('Problems').querySelectorAll('.mk-card textarea'),
+    ];
+    expect(fields.map((field) => field.getAttribute('aria-label'))).toEqual(['Name', 'Low end', 'High end', 'Name']);
+    for (const field of fields) {
+      expect(field.tagName).toBe('TEXTAREA');
+      expect(field.getAttribute('rows')).toBe('1');
+      expect(field.hasAttribute('type')).toBe(false);
+      expect(field.className).toBe('ink-field');
+    }
+    expect(region('Scales').querySelectorAll('.mk-card input[type="text"]')).toHaveLength(0);
+    expect(region('Problems').querySelectorAll('.mk-card input[type="text"]')).toHaveLength(0);
+  });
+
+  it('prevents Return, plain or with Shift, on each of them', () => {
+    withCards();
+    const fields = [
+      ...region('Scales').querySelectorAll('.mk-card textarea'),
+      ...region('Problems').querySelectorAll('.mk-card textarea'),
+    ];
+    for (const field of fields) {
+      expect(returnHeld(field)).toBe(true);
+      expect(returnHeld(field, { shiftKey: true })).toBe(true);
+    }
+  });
+
+  it('removes a line break from a scale Name and from a problem Name', () => {
+    withCards();
+    type(region('Scales').querySelector('.mk-card textarea[aria-label="Name"]'), 'Crea\nminess');
+    expect(held.scales[0].name).toBe('Creaminess');
+    type(region('Problems').querySelector('.mk-card textarea[aria-label="Name"]'), 'Bit\r\nter');
+    expect(held.problems).toEqual(['Bitter']);
+  });
+
+  it('puts focus in the new card Name textarea after Add scale and Add problem', () => {
+    mount();
+    press(region('Scales').querySelector('.mk-add'));
+    expect(document.activeElement).toBe(region('Scales').querySelector('.mk-card textarea[aria-label="Name"]'));
+    press(region('Problems').querySelector('.mk-add'));
+    expect(document.activeElement).toBe(region('Problems').querySelector('.mk-card textarea[aria-label="Name"]'));
   });
 });

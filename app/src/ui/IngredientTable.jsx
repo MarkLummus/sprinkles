@@ -9,6 +9,7 @@ import { gramsDraftMessage, parseGramsDraft } from '../domain/lineage.js';
 import { penDraftRow } from '../domain/penDraft.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { Button } from './Button.jsx';
+import { holdReturn, stripNewlines } from './oneLineField.js';
 
 // The id of the blocked line's sentence: one blocked line at a time, as the version
 // line has one 'version-field-error'.
@@ -830,16 +831,17 @@ export function IngredientTable({
       >
         <td className="ingredient-table__col-grams">
           <span className="ingredient-table__plan-grams">
-            <input
+            <textarea
               ref={(element) => registerGramsInput(row.id, portion.step, element)}
-              type="text"
+              rows="1"
               inputMode="decimal"
               className={lineKey === creationRows.focusLine ? 'ink-field mk-focus' : 'ink-field'}
               value={raw}
               aria-label={isSplit ? `${row.ingredientName}, grams, portion ${portionIndex + 1}` : `${row.ingredientName}, grams`}
               aria-invalid={messageId ? 'true' : undefined}
               aria-describedby={messageId ?? undefined}
-              onChange={(event) => handleCreatingGramsChange(row, portion, event.target.value)}
+              onChange={(event) => handleCreatingGramsChange(row, portion, stripNewlines(event.target.value))}
+              onKeyDown={holdReturn}
               onBlur={() => handleCreatingGramsBlur(row, portion, raw)}
             />
             {' g'}

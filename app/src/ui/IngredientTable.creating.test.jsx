@@ -98,7 +98,7 @@ afterEach(() => {
 });
 
 function field(name) {
-  return current.container.querySelector(`input[aria-label="${name}, grams"]`);
+  return current.container.querySelector(`textarea[aria-label="${name}, grams"]`);
 }
 
 function rowOf(name) {
@@ -109,7 +109,7 @@ function type(name, value) {
   const input = field(name);
   act(() => {
     input.focus();
-    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
     setter.call(input, value);
     input.dispatchEvent(new Event('input', { bubbles: true }));
   });
@@ -214,8 +214,8 @@ describe('IngredientTable, creating: step heads', () => {
       'Step 1',
       'Not in a step yet',
     ]);
-    expect(bodies[0].querySelector(`input[aria-label="${WHOLE_MILK}, grams"]`)).not.toBeNull();
-    expect(bodies[1].querySelector('input[aria-label="Sucrose, grams"]')).not.toBeNull();
+    expect(bodies[0].querySelector(`textarea[aria-label="${WHOLE_MILK}, grams"]`)).not.toBeNull();
+    expect(bodies[1].querySelector('textarea[aria-label="Sucrose, grams"]')).not.toBeNull();
   });
 
   it('with no step the table stays flat: one group and no head', () => {
@@ -242,7 +242,7 @@ describe('IngredientTable, creating: a row in two steps reads one line per step'
   }
 
   const line = (key) => current.container.querySelector(`tr[data-line="${key}"]`);
-  const lineField = (key) => line(key).querySelector('input');
+  const lineField = (key) => line(key).querySelector('textarea');
 
   it('draws each line under its own step head, with its own grams field, key and label', () => {
     mount(splitDraft);
@@ -278,7 +278,7 @@ describe('IngredientTable, creating: a row in two steps reads one line per step'
     expect(move('sucrose-row:0', 'up')).toBe('Move up, Sucrose');
     // Every line-specific control on the table has a name of its own: each Move
     // button and each grams field. The removes are left out: each removes the row.
-    const names = [...current.container.querySelectorAll('tbody [data-act^="move-"], tbody input')].map((control) =>
+    const names = [...current.container.querySelectorAll('tbody [data-act^="move-"], tbody textarea')].map((control) =>
       control.getAttribute('aria-label'),
     );
     expect(names).toHaveLength(3 * 2 + 3);
@@ -303,7 +303,7 @@ describe('IngredientTable, creating: a row in two steps reads one line per step'
     mount(splitDraft);
     const second = lineField('milk-row:2');
     act(() => {
-      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+      const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
       second.focus();
       setter.call(second, '');
       second.dispatchEvent(new Event('input', { bubbles: true }));
@@ -504,5 +504,56 @@ describe('IngredientTable, creating: the acts line (STRUCT-01 to STRUCT-03, D-15
     expect(current.onPlaceRow).toHaveBeenCalledWith('cream-row', 1);
     expect(current.container.querySelector('.mk-row-acts--choosing')).toBeNull();
     expect(firstGroup()).toEqual(['milk-row:1', 'sucrose-row:1', 'cream-row:1']);
+  });
+});
+
+describe('IngredientTable, creating: the grams field is a one-row textarea that stays one line (bug-p11-ipad-hardware-tab-skips-fields)', () => {
+  // iPadOS 27 Safari drops a hardware Tab from every input element; a textarea takes it.
+  function keydown(element, init) {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter', ...init });
+    if (init.keyCode !== undefined && event.keyCode !== init.keyCode) {
+      Object.defineProperty(event, 'keyCode', { value: init.keyCode });
+    }
+    let notPrevented;
+    act(() => {
+      notPrevented = element.dispatchEvent(event);
+    });
+    return notPrevented;
+  }
+
+  it('is a textarea with one row, decimal input mode, the ink-field class and no type', () => {
+    mount();
+    const grams = field(WHOLE_MILK);
+    expect(grams.tagName).toBe('TEXTAREA');
+    expect(grams.getAttribute('rows')).toBe('1');
+    expect(grams.getAttribute('inputmode')).toBe('decimal');
+    expect(grams.hasAttribute('type')).toBe(false);
+    expect(grams.classList.contains('ink-field')).toBe(true);
+  });
+
+  it('prevents Return with or without a modifier key', () => {
+    mount();
+    const grams = field(WHOLE_MILK);
+    expect(keydown(grams, {})).toBe(false);
+    expect(keydown(grams, { shiftKey: true })).toBe(false);
+    expect(keydown(grams, { altKey: true })).toBe(false);
+    expect(keydown(grams, { ctrlKey: true })).toBe(false);
+    expect(keydown(grams, { metaKey: true })).toBe(false);
+  });
+
+  it('leaves Return alone while an IME is composing, and every other key', () => {
+    mount();
+    const grams = field(WHOLE_MILK);
+    expect(keydown(grams, { isComposing: true })).toBe(true);
+    expect(keydown(grams, { keyCode: 229 })).toBe(true);
+    expect(keydown(grams, { key: 'Tab' })).toBe(true);
+  });
+
+  it('removes a line break from typed text, so the field reads 150 and leaving it raises no message', () => {
+    mount();
+    type(WHOLE_MILK, '15\n0');
+    expect(field(WHOLE_MILK).value).toBe('150');
+    leave(WHOLE_MILK);
+    expect(rowOf(WHOLE_MILK).querySelector('.field-error')).toBeNull();
   });
 });

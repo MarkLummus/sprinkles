@@ -231,6 +231,22 @@
   overflow: hidden;
 }
 
+/* The creating row's grams field is a one-row textarea too
+   (bug-p11-ipad-hardware-tab-skips-fields). Its wrapper becomes an inline-flex
+   row, so " g" sits on the textarea's first-line text baseline rather than on
+   its bottom edge; pre keeps the space in " g". */
+.notebook .ingredient-table__plan-grams:has(> textarea.ink-field) {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: pre;
+}
+
+/* One line at the input's height, scrolled to the caret, with no scrollbar. */
+.notebook .ingredient-table textarea.ink-field {
+  white-space: pre;
+  overflow: hidden;
+}
+
 /* The open step's targets line (sketch 014 pE1). Written through direct
    children of the open step's own body, so the Preview's reading step, nested
    inside the same .mk-step, keeps the tag row's baseline alignment and plain
@@ -2025,6 +2041,12 @@
      lead-in's line in the floor by padding. */
   .notebook .mk-step textarea.prose-field--lead-in {
     padding-block: max(var(--gap-hair), calc((var(--touch-min) - var(--sheet-leading-note) * 1em) / 2));
+  }
+
+  /* The same centring for the grams field's line in the floor
+     (bug-p11-ipad-hardware-tab-skips-fields); its two rules count in the height. */
+  .notebook .ingredient-table textarea.ink-field {
+    padding-block: max(var(--gap-hair), calc((var(--touch-min) - var(--sheet-leading-field) * 1em - 2 * var(--rule-ink-field)) / 2));
   }
 
   .notebook .pick__head .text-control,

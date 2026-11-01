@@ -464,7 +464,7 @@ describe('remove on a row (STRUCT-01, D-15)', () => {
     // Pressed on step 2's line: the whole row goes, and focus follows that group.
     await click(ctl('milk-row:2', 'remove'));
     expect(groups()).toEqual([{ head: 'Step 2Churn', lines: ['sucrose-row:2'] }]);
-    expect(root().querySelector(`input[aria-label^="${MILK}"]`)).toBeNull();
+    expect(root().querySelector(`textarea[aria-label^="${MILK}"]`)).toBeNull();
     expect(document.activeElement).toBe(ctl('sucrose-row:2', 'remove'));
     repository.saveDraft.mockClear();
     await advance();

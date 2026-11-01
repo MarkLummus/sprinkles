@@ -277,7 +277,7 @@ describe('the edit route opens the editor on a saved first version (D-01)', () =
     expect(form.querySelector('.notebook-caption').textContent).toBe('Version 1 · editing');
     expect([...form.querySelectorAll('button')].map((button) => button.textContent)).toEqual(['Cancel', 'Save']);
     expect(stepHeads()).toEqual(['1', '2']);
-    const milk = [...root().querySelectorAll('input[aria-label^="Whole milk, 3.5% fat, grams"]')];
+    const milk = [...root().querySelectorAll('textarea[aria-label^="Whole milk, 3.5% fat, grams"]')];
     expect(milk.map((input) => input.value)).toEqual(['400', '200']);
     expect(field('Sucrose, grams').value).toBe('100');
   });

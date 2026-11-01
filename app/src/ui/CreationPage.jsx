@@ -69,7 +69,7 @@ function findRefusedField(page, target, draft, saveButton) {
         page.querySelector('.ingredient-table-region .pick .ing__filters input')
       );
     case 'line':
-      return page.querySelector(`tr[data-line="${CSS.escape(`${target.rowId}:${target.step}`)}"] input`);
+      return page.querySelector(`tr[data-line="${CSS.escape(`${target.rowId}:${target.step}`)}"] textarea`);
     case 'stepLeadIn':
       return page.querySelector(`li.mk-step[data-step="${target.n}"] [data-field="lead-in"]`);
     case 'stepInstruction':

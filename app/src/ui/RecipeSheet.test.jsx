@@ -229,8 +229,8 @@ describe('RecipeSheet in creating mode (T-01, D-08a)', () => {
 
   it('draws a creating row from creationRows: the raw grams in one field, one remove, no struck value', () => {
     const markup = renderCreating(rowDraft('60'), null, { creationRows: creationRowsOf('60') });
-    expect(markup.match(/<input[^>]*aria-label="Whole milk, 3.5% fat, grams"[^>]*>/g)).toHaveLength(1);
-    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, 3.5% fat, grams"[^>]*value="60"/);
+    expect(markup.match(/<textarea[^>]*aria-label="Whole milk, 3.5% fat, grams"[^>]*>/g)).toHaveLength(1);
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Whole milk, 3.5% fat, grams"[^>]*>60<\/textarea>/);
     expect(markup.match(/>Remove<\/button>/g)).toHaveLength(1);
     expect(markup).not.toMatch(/restore/i);
     expect(markup).not.toContain('struck-value');
@@ -240,7 +240,7 @@ describe('RecipeSheet in creating mode (T-01, D-08a)', () => {
 
   it('draws a creating row with an empty field when the maker has typed nothing', () => {
     const markup = renderCreating(rowDraft(''), null, { creationRows: creationRowsOf('') });
-    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, 3.5% fat, grams"[^>]*value=""/);
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Whole milk, 3.5% fat, grams"[^>]*><\/textarea>/);
     expect(markup).toContain('aria-label="Whole milk, 3.5% fat, 0 g, estimated"');
   });
 

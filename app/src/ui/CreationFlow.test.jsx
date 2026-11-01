@@ -1646,7 +1646,7 @@ describe('the Uses checklist and the table under step heads (MAKE-07, plan 11-07
     store.drafts.set(record.versionId, record);
     await mountAt('/notebook/new');
     await flush(() => field('Recipe name') !== null);
-    expect(root().querySelectorAll(`input[aria-label^="${MILK}, grams"]`)).toHaveLength(1);
+    expect(root().querySelectorAll(`textarea[aria-label^="${MILK}, grams"]`)).toHaveLength(1);
     expect(gramsField(MILK).value).toBe('600');
     expect(heads()).toEqual(['Step 1Warm']);
     repository.saveDraft.mockClear();

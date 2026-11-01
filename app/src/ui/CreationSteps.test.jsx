@@ -425,3 +425,57 @@ describe("a refused Save's messages (MAKE-10, D-10, D-11, T-11-32)", () => {
     expect(q('#create-step-1-target-0-label-error').className).toBe('field-error');
   });
 });
+
+describe('a one-row textarea that stays one line (bug-p11-ipad-hardware-tab-skips-fields)', () => {
+  // iPadOS 27 Safari drops a hardware Tab from every input element; a textarea takes it.
+  function keydown(element, init) {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter', ...init });
+    if (init.keyCode !== undefined && event.keyCode !== init.keyCode) {
+      Object.defineProperty(event, 'keyCode', { value: init.keyCode });
+    }
+    let notPrevented;
+    act(() => {
+      notPrevented = element.dispatchEvent(event);
+    });
+    return notPrevented;
+  }
+
+  it('draws the lead-in as a one-row textarea, found by its name', () => {
+    mount(withStep(blank()));
+    const lead = field('Step 1, lead-in');
+    expect(lead.tagName).toBe('TEXTAREA');
+    expect(lead.getAttribute('rows')).toBe('1');
+    expect(lead.hasAttribute('type')).toBe(false);
+    expect(lead.classList.contains('prose-field--lead-in')).toBe(true);
+    expect(lead.getAttribute('data-field')).toBe('lead-in');
+  });
+
+  it('prevents Return with or without a modifier key, and leaves the value alone', () => {
+    mount(withStep(blank(), { leadIn: 'Warm' }));
+    const lead = field('Step 1, lead-in');
+    expect(keydown(lead, {})).toBe(false);
+    expect(keydown(lead, { shiftKey: true })).toBe(false);
+    expect(keydown(lead, { altKey: true })).toBe(false);
+    expect(keydown(lead, { ctrlKey: true })).toBe(false);
+    expect(keydown(lead, { metaKey: true })).toBe(false);
+    expect(lead.value).toBe('Warm');
+  });
+
+  it('leaves Return alone while an IME is composing, and every other key', () => {
+    mount(withStep(blank()));
+    const lead = field('Step 1, lead-in');
+    expect(keydown(lead, { isComposing: true })).toBe(true);
+    expect(keydown(lead, { keyCode: 229 })).toBe(true);
+    expect(keydown(lead, { key: 'Tab' })).toBe(true);
+    expect(keydown(lead, { key: 'a' })).toBe(true);
+  });
+
+  it('removes every line break that arrives by paste or any other edit', () => {
+    mount(withStep(blank()));
+    type(field('Step 1, lead-in'), 'Warm\nthe milk\r\n');
+    expect(field('Step 1, lead-in').value).toBe('Warmthe milk');
+    expect(held.method[0].leadIn).toBe('Warmthe milk');
+    type(field('Step 1, lead-in'), 'a\rb');
+    expect(held.method[0].leadIn).toBe('ab');
+  });
+});

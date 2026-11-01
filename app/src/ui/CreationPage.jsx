@@ -298,7 +298,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
     } else if (typeof request === 'object' && request.kind === 'refusal') {
       target = findRefusedField(page, request.target, createDraft, saveButtonRef.current);
     } else if (typeof request === 'object' && request.kind === 'lead-in') {
-      target = page.querySelector(`input[aria-label="Step ${request.position}, lead-in"]`);
+      target = page.querySelector(`textarea[aria-label="Step ${request.position}, lead-in"]`);
     } else if (typeof request === 'object' && request.kind === 'step-act') {
       // After a move: the same Move button of the moved step, or its other Move
       // button when that one is now off (D-16). Found after the render that

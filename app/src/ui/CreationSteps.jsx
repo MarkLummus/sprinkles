@@ -4,6 +4,7 @@ import { Checkbox } from './Checkbox.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { useOnDemandField } from './Method.jsx';
 import { StepReading } from './StepReading.jsx';
+import { holdReturn, stripNewlines } from './oneLineField.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { liveSteps } from '../domain/creationSteps.js';
 
@@ -81,15 +82,16 @@ function CreationStep({
       </span>
       <div className="method-step__body">
         <label className="method-step__field">
-          <input
-            type="text"
+          <textarea
             className="prose-field prose-field--lead-in"
+            rows="1"
             data-field="lead-in"
             value={step.leadIn}
             aria-label={`Step ${number}, lead-in`}
             aria-invalid={leadError ? 'true' : undefined}
             aria-describedby={leadError ? leadErrorId : undefined}
-            onChange={(event) => onChangeStepField(step.n, 'leadIn', event.target.value)}
+            onChange={(event) => onChangeStepField(step.n, 'leadIn', stripNewlines(event.target.value))}
+            onKeyDown={holdReturn}
           />
           <FieldFeedback error={leadError} errorId={leadErrorId} required={isBlank(step.leadIn)} />
         </label>

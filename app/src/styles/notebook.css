@@ -215,6 +215,22 @@
   font-weight: 700;
 }
 
+/* The lead-in is a one-row textarea (bug-p11-ipad-hardware-tab-skips-fields:
+   iPadOS 27 Safari drops a hardware Tab from every input element). A textarea's
+   own inline baseline is its bottom edge, so its label becomes a flex column,
+   which hands app.css's .method-step grid the first line's text baseline, as
+   the input's did (quick 261031-fdd). */
+.notebook .mk-step .method-step__field:has(> textarea.prose-field--lead-in) {
+  display: flex;
+  flex-direction: column;
+}
+
+/* One line at the input's height, scrolled to the caret, with no scrollbar. */
+.notebook .mk-step textarea.prose-field--lead-in {
+  white-space: pre;
+  overflow: hidden;
+}
+
 /* The open step's targets line (sketch 014 pE1). Written through direct
    children of the open step's own body, so the Preview's reading step, nested
    inside the same .mk-step, keeps the tag row's baseline alignment and plain
@@ -2002,6 +2018,13 @@
 @media (pointer: coarse) {
   .notebook .mk-add {
     min-height: var(--touch-min);
+  }
+
+  /* app.css's touch floor centres an input's one line but starts a textarea's
+     text at the top (bug-p11-ipad-hardware-tab-skips-fields): centre the
+     lead-in's line in the floor by padding. */
+  .notebook .mk-step textarea.prose-field--lead-in {
+    padding-block: max(var(--gap-hair), calc((var(--touch-min) - var(--sheet-leading-note) * 1em) / 2));
   }
 
   .notebook .pick__head .text-control,

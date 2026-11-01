@@ -222,7 +222,7 @@ async function open() {
   await flush(() => field('Recipe name') !== null);
 }
 
-const leadIns = () => [...root().querySelectorAll('li.mk-step input[data-field="lead-in"]')].map((input) => input.value);
+const leadIns = () => [...root().querySelectorAll('li.mk-step textarea[data-field="lead-in"]')].map((input) => input.value);
 const numbers = () => [...root().querySelectorAll('li.mk-step .method-step__n')].map((node) => node.textContent);
 
 describe('Move on a step (STRUCT-02, D-16)', () => {
@@ -263,7 +263,7 @@ describe('Move on a step (STRUCT-02, D-16)', () => {
     expect(numbers()).toEqual(['1', '2', '3']);
     // The moved step is now second, and focus is on its own Move down.
     expect(document.activeElement).toBe(field('Step 2, move down'));
-    expect(document.activeElement.closest('li').querySelector('input[data-field="lead-in"]').value).toBe('Warm');
+    expect(document.activeElement.closest('li').querySelector('textarea[data-field="lead-in"]').value).toBe('Warm');
     await nextFrames();
     expect(said()).toBe('Step 2 of 3');
 

@@ -207,7 +207,7 @@ describe('Record tasting opens the amend pen on Add tasting (261002-wn0)', () =>
     );
     expect(ownTexts).not.toContain('Correct');
     expect(current.container.querySelector('.batch-row__date').textContent).toBe('churned 2 Aug 2026');
-    expect(pen().querySelector('input[aria-label^="Time to draw temp"]')).toBeNull();
+    expect(pen().querySelector('[aria-label^="Time to draw temp"]')).toBeNull();
     expect(pen().textContent).not.toContain('Time to draw temp.');
   });
 
@@ -245,7 +245,7 @@ describe('Record tasting opens the amend pen on Add tasting (261002-wn0)', () =>
     await mountAt(VERSION_PATH, [awaiting]);
     await click(band());
     await setValue(pen().querySelector('textarea[aria-label="How did it turn out?"]'), 'Soft, not greasy.');
-    await setValue(pen().querySelector('input[aria-label^="Tempering"]'), '10');
+    await setValue(pen().querySelector('textarea[aria-label^="Tempering"]'), '10');
 
     await click(buttonByText(pen(), 'Save batch'));
     await flush(() => pen() === null);
@@ -326,7 +326,7 @@ describe('Record tasting opens the amend pen on Add tasting (261002-wn0)', () =>
 });
 
 describe('no Time to draw temp. in any churn object the real save writes (sketch 010 D17; 04-03)', () => {
-  const FIELD_INPUT = 'input[aria-label^="Time to draw temp"]';
+  const FIELD_INPUT = '[aria-label^="Time to draw temp"]';
 
   it('Correct of the seeded 2 Aug batch saves a Next time note and a churn object with no draw-temperature key; the pen never drew the field', async () => {
     installMatchMedia();

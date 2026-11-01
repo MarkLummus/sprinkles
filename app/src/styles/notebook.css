@@ -246,8 +246,11 @@
   white-space: pre;
 }
 
-/* One line at the input's height, scrolled to the caret, with no scrollbar. */
-.notebook .ingredient-table textarea.ink-field {
+/* One line at the input's height, scrolled to the caret, with no scrollbar; the
+   record pen's measured fields too (bug-ipad-tab-lost-from-single-line-fields,
+   duty 1). */
+.notebook .ingredient-table textarea.ink-field,
+.notebook-log .field-unit textarea.ink-field {
   white-space: pre;
   overflow: hidden;
 }
@@ -2096,12 +2099,13 @@
   /* The same centring for the line of the 2px-padded ink fields in the floor:
      the grams field (bug-p11-ipad-hardware-tab-skips-fields), the step's
      targets, the version pen's open step targets and the style ends
-     (bug-ipad-tab-lost-from-single-line-fields); their two rules count in the
-     height. */
+     (bug-ipad-tab-lost-from-single-line-fields) and the record pen's measured
+     fields; their two rules count in the height. */
   .notebook .ingredient-table textarea.ink-field,
   .notebook .mk-step textarea.ink-field,
   .notebook .mk-band__ends textarea.ink-field,
-  .notebook .method-step__open-fields textarea.ink-field {
+  .notebook .method-step__open-fields textarea.ink-field,
+  .notebook-log .field-unit textarea.ink-field {
     padding-block: max(var(--gap-hair), calc((var(--touch-min) - var(--sheet-leading-field) * 1em - 2 * var(--rule-ink-field)) / 2));
   }
 

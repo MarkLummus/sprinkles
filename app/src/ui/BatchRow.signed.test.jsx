@@ -58,7 +58,7 @@ const emptyRecordDraft = {
 
 let current = null;
 
-function mount(draft) {
+function mount(draft, extra = {}) {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
@@ -89,12 +89,13 @@ function mount(draft) {
           onCancelRecording={noop}
           onSaveBatch={noop}
           onStartRecording={noop}
+          {...extra}
         />
       </MemoryRouter>,
     );
   });
   const input = container.querySelector('input[aria-label="Out of machine, degrees Celsius"]');
-  return { spy, input };
+  return { spy, input, container };
 }
 
 afterEach(() => {
@@ -158,5 +159,69 @@ describe('MeasuredField — the signed-field handlers (03.5 review WR-01, truth 
     expect(document.activeElement).not.toBe(input);
     expect(input.value).toBe('-6');
     expect(spy).not.toHaveBeenCalled();
+  });
+});
+
+// bug-ipad-tab-lost-from-single-line-fields: the unsigned measured fields are
+// one-row textareas (iPadOS 27 Safari drops a hardware Tab from every input
+// element); the signed ones stay number inputs (Mark's serving-only answer on
+// decide-one-line-fields, 2026-11-01).
+describe('MeasuredField — the unsigned fields are one-row textareas (bug-ipad-tab-lost-from-single-line-fields)', () => {
+  const tasting = { ...emptyRecordDraft, tastingOpen: true };
+  const fieldOf = (container, label) => container.querySelector(`[aria-label="${label}"]`);
+  const setText = (el, text) => {
+    Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(el, text);
+    act(() => {
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  };
+
+  it('Duration, Tempering and Melt test are textareas with rows 1, inputmode decimal, class ink-field and no type or step; the two signed fields are still number inputs', () => {
+    const { container } = mount(tasting);
+    for (const label of ['Duration, minutes', 'Tempering, minutes', 'Melt test, g lost at 20 min']) {
+      const el = fieldOf(container, label);
+      expect(el.tagName).toBe('TEXTAREA');
+      expect(el.getAttribute('rows')).toBe('1');
+      expect(el.getAttribute('inputmode')).toBe('decimal');
+      expect(el.getAttribute('class')).toBe('ink-field');
+      expect(el.hasAttribute('type')).toBe(false);
+      expect(el.hasAttribute('step')).toBe(false);
+    }
+    for (const label of ['Out of machine, degrees Celsius', 'Temperature, degrees Celsius']) {
+      const el = fieldOf(container, label);
+      expect(el.tagName).toBe('INPUT');
+      expect(el.getAttribute('type')).toBe('number');
+    }
+  });
+
+  it('holds Return: a cancelable Enter keydown on Duration is default-prevented, with or without Shift', () => {
+    const { container } = mount(emptyRecordDraft);
+    const el = fieldOf(container, 'Duration, minutes');
+    for (const shiftKey of [false, true]) {
+      const event = new KeyboardEvent('keydown', { key: 'Enter', shiftKey, bubbles: true, cancelable: true });
+      act(() => {
+        el.dispatchEvent(event);
+      });
+      expect(event.defaultPrevented).toBe(true);
+    }
+  });
+
+  it('strips a pasted line break before the draft sees the value', () => {
+    const { spy, container } = mount(tasting);
+    setText(fieldOf(container, 'Duration, minutes'), '3\n0');
+    expect(spy.mock.calls).toEqual([['churnDurationMinutes', '30']]);
+    spy.mockClear();
+    setText(fieldOf(container, 'Melt test, g lost at 20 min'), '2\r\n5');
+    expect(spy.mock.calls).toEqual([['meltTestG', '25']]);
+  });
+
+  it('an invalidFieldTarget puts focus on the Duration or the Melt test textarea', () => {
+    const duration = mount(emptyRecordDraft, { invalidFieldTarget: { key: 'churnDurationMinutes' } });
+    expect(document.activeElement).toBe(fieldOf(duration.container, 'Duration, minutes'));
+    act(() => current.root.unmount());
+    current.container.remove();
+    current = null;
+    const melt = mount(tasting, { invalidFieldTarget: { key: 'meltTestG' } });
+    expect(document.activeElement).toBe(fieldOf(melt.container, 'Melt test, g lost at 20 min'));
   });
 });

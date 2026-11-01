@@ -402,7 +402,7 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
       draft: emptyRecordDraft,
     });
     expect(markup).toMatch(
-      /<span class="pen-caption">Duration<\/span><span class="field-unit"><input[^>]*aria-label="Duration, minutes"[^>]*\/><span class="field-unit__unit">min<\/span><\/span>/,
+      /<span class="pen-caption">Duration<\/span><span class="field-unit"><textarea[^>]*aria-label="Duration, minutes"[^>]*><\/textarea><span class="field-unit__unit">min<\/span><\/span>/,
     );
     expect(markup).not.toContain('Duration, min<');
   });
@@ -985,16 +985,17 @@ describe('BatchRow — no interface-policy hint while the pen is open', () => {
 });
 
 describe('BatchRow — the numeric battery fields (contract "Controls spec")', () => {
-  it('renders the two churn measured fields; the unsigned one is text-mode with inputMode="decimal", and no input is named for Time to draw temp. (03.7.1, D-01)', () => {
+  it('renders the two churn measured fields; the unsigned one is a one-row textarea with inputMode="decimal", and no field is named for Time to draw temp. (03.7.1, D-01; bug-ipad-tab-lost-from-single-line-fields)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
     for (const label of ['Out of machine', 'Duration']) {
       expect(markup).toContain(label);
     }
-    const churnDurationInput = markup.match(/<input[^>]*aria-label="Duration, minutes"[^>]*\/>/)[0];
-    expect(churnDurationInput).toContain('type="text"');
-    expect(churnDurationInput).toContain('inputMode="decimal"');
-    expect(churnDurationInput).toContain('class="ink-field"');
-    expect(markup).not.toMatch(/<input[^>]*aria-label="Time to draw temp/);
+    const churnDurationField = markup.match(/<textarea[^>]*aria-label="Duration, minutes"[^>]*>/)[0];
+    expect(churnDurationField).toContain('rows="1"');
+    expect(churnDurationField).not.toContain('type=');
+    expect(churnDurationField).toContain('inputMode="decimal"');
+    expect(churnDurationField).toContain('class="ink-field"');
+    expect(markup).not.toMatch(/<(?:input|textarea)[^>]*aria-label="Time to draw temp/);
   });
 
   it('renders only the two °C fields as number inputs; no other input in the markup is type="number" (G-03.5-R2-2, reversing the 03.3.1 rule for these two)', () => {
@@ -1014,18 +1015,19 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
     }
   });
 
-  it('keeps the decimal pad on every unsigned battery field, with no autocorrect attribute (G-03.5-5b)', () => {
+  it('keeps the decimal pad on every unsigned battery field, as a one-row textarea with no autocorrect attribute (G-03.5-5b; bug-ipad-tab-lost-from-single-line-fields)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     for (const name of [
       'Duration, minutes',
       'Tempering, minutes',
       'Melt test, g lost at 20 min',
     ]) {
-      const input = markup.match(new RegExp(`<input[^>]*aria-label="${name}"[^>]*/>`))[0];
-      expect(input).toContain('type="text"');
-      expect(input).toContain('inputMode="decimal"');
-      expect(input).not.toContain('step=');
-      expect(input).not.toContain('autoCorrect');
+      const field = markup.match(new RegExp(`<textarea[^>]*aria-label="${name}"[^>]*>`))[0];
+      expect(field).toContain('rows="1"');
+      expect(field).not.toContain('type=');
+      expect(field).toContain('inputMode="decimal"');
+      expect(field).not.toContain('step=');
+      expect(field).not.toContain('autoCorrect');
     }
   });
 
@@ -1060,8 +1062,8 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
       draft: { ...emptyRecordDraft, outOfMachineTempC: '4o' },
       fieldErrors: { outOfMachineTempC: 'Enter a temperature, such as −6, or leave blank.' },
     });
-    const churnDurationInput = markup.match(/<input[^>]*aria-label="Duration, minutes"[^>]*\/>/)[0];
-    expect(churnDurationInput).not.toContain('aria-invalid');
+    const churnDurationField = markup.match(/<textarea[^>]*aria-label="Duration, minutes"[^>]*>/)[0];
+    expect(churnDurationField).not.toContain('aria-invalid');
   });
 });
 
@@ -1320,9 +1322,10 @@ describe('BatchRow — the textareas (contract "Textareas")', () => {
     expect(markup).toContain('placeholder="e.g. oil bottle opened 24 Jul"');
   });
 
-  it('carries dir="auto" on every textarea', () => {
+  it('carries dir="auto" on every prose textarea (the measured figure fields are not contract Textareas)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
-    const textareas = markup.match(/<textarea[^>]*>/g);
+    const textareas = markup.match(/<textarea[^>]*class="prose-field[^"]*"[^>]*>/g);
+    expect(textareas.length).toBeGreaterThan(0);
     for (const textarea of textareas) {
       expect(textarea).toContain('dir="auto"');
     }

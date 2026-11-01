@@ -13,6 +13,7 @@ import { FoldRow } from './FoldRow.jsx';
 import { UprightRail } from './UprightRail.jsx';
 import { useBelow724, useLogBesideSheet, useFold } from './useBelowDesktop.js';
 import { Button } from './Button.jsx';
+import { holdReturn, stripNewlines } from './oneLineField.js';
 
 // A display-only override of readMeasured's own "unknown" wording (D-18),
 // scoped to this row's own measured cells (03.3-07, G-03.3-4): reads "not
@@ -96,24 +97,30 @@ export function shownSignedValue(value) {
 }
 
 // One battery measured field (contract "Controls spec"; sketch 007 @
-// 2a212be lines 37-44; D-13): text-mode, inputMode="decimal", so a
-// malformed value stays in place rather than being rejected before
-// validation runs. The exception is a signed field (the two °C ones): the
-// iPhone decimal pad has no minus key and the text keyboard opens on
-// letters, while WebKit opens a number input on the numbers layer with a
-// minus and a period, so these two are type="number" with step="any" and
-// no inputMode (an inputmode would win over the type), and no autocorrect
+// 2a212be lines 37-44; D-13): the unsigned ones (Duration, Tempering, Melt
+// test) are one-row textareas, so a hardware Tab leaves them on the iPad
+// (bug-ipad-tab-lost-from-single-line-fields: iPadOS 27 Safari drops a Tab
+// from every input element). They keep inputMode="decimal", so the iPhone
+// still opens its decimal pad and a malformed value stays in place rather
+// than being rejected before validation runs; Return is held and a pasted
+// line break removed (oneLineField.js). The exception is a signed field (the
+// two °C ones): the iPhone decimal pad has no minus key and the text keyboard
+// opens on letters, while WebKit opens a number input on the numbers layer
+// with a minus and a period, so these two stay type="number" with step="any"
+// and no inputMode (an inputmode would win over the type), and no autocorrect
 // or autocapitalize, which mean nothing there (G-03.5-R2-2; Mark,
 // 2026-09-30, after trying it on his iPhone; it reverses the 03.3.1 rule
-// never to use a number input, for these two fields only). A number input
-// hands over no text for an entry it cannot read, so MALFORMED_NUMBER_ENTRY
-// carries that fact into the draft, and the displayed value stays blank for
-// it. React's onChange does not fire for a lone minus typed into an empty
-// field (the value string stays ""), while the browser's own input event
-// does, so one handler serves both on a signed field. A mouse wheel over a
-// focused number input steps its value in Chromium, so a signed field blurs
-// on wheel (no preventDefault: the page still scrolls). The unit word is a sibling after the
-// input, never concatenated into the caption (007 lines 42-44: the root
+// never to use a number input, for these two fields only). A textarea cannot
+// open that numbers layer, so they stay inputs per Mark's serving-only answer
+// on decide-one-line-fields (2026-11-01). A number input hands over no text
+// for an entry it cannot read, so MALFORMED_NUMBER_ENTRY carries that fact
+// into the draft, and the displayed value stays blank for it. React's
+// onChange does not fire for a lone minus typed into an empty field (the
+// value string stays ""), while the browser's own input event does, so one
+// handler serves both on a signed field. A mouse wheel over a focused number
+// input steps its value in Chromium, so a signed field blurs on wheel (no
+// preventDefault: the page still scrolls). The unit word is a sibling after
+// the field, never concatenated into the caption (007 lines 42-44: the root
 // cause of UAT item 2) — the aria-label keeps the spelled-out unit for
 // the field's accessible name. The .field-error line renders inside the
 // label and is wired by aria-describedby exactly as the contract
@@ -123,26 +130,40 @@ export function shownSignedValue(value) {
 // side of the churn/tasting line.
 function MeasuredField({ field, value, error, onChange, inputRef }) {
   const errorId = `field-error-${field.key}`;
-  const handleEdit = (event) =>
-    onChange(field.key, field.signed ? readSignedInput(event.target) : event.target.value);
+  const label = `${field.label}, ${unitWords(field.unit)}`;
+  const handleEdit = (event) => onChange(field.key, readSignedInput(event.target));
   return (
     <label className="field-row__label">
       <span className="pen-caption">{field.label}</span>
       <span className="field-unit">
-        <input
-          type={field.signed ? 'number' : 'text'}
-          step={field.signed ? 'any' : undefined}
-          inputMode={field.signed ? undefined : 'decimal'}
-          className="ink-field"
-          aria-label={`${field.label}, ${unitWords(field.unit)}`}
-          aria-invalid={error ? 'true' : undefined}
-          aria-describedby={error ? errorId : undefined}
-          value={field.signed ? shownSignedValue(value) : value}
-          ref={inputRef}
-          onChange={handleEdit}
-          onInput={field.signed ? handleEdit : undefined}
-          onWheel={field.signed ? (event) => event.currentTarget.blur() : undefined}
-        />
+        {field.signed ? (
+          <input
+            type="number"
+            step="any"
+            className="ink-field"
+            aria-label={label}
+            aria-invalid={error ? 'true' : undefined}
+            aria-describedby={error ? errorId : undefined}
+            value={shownSignedValue(value)}
+            ref={inputRef}
+            onChange={handleEdit}
+            onInput={handleEdit}
+            onWheel={(event) => event.currentTarget.blur()}
+          />
+        ) : (
+          <textarea
+            rows="1"
+            inputMode="decimal"
+            className="ink-field"
+            aria-label={label}
+            aria-invalid={error ? 'true' : undefined}
+            aria-describedby={error ? errorId : undefined}
+            value={value}
+            ref={inputRef}
+            onKeyDown={holdReturn}
+            onChange={(event) => onChange(field.key, stripNewlines(event.target.value))}
+          />
+        )}
         <span className="field-unit__unit">{field.unit}</span>
       </span>
       <FieldFeedback error={error} errorId={errorId} />

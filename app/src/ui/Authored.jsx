@@ -21,23 +21,31 @@ import { Button } from './Button.jsx';
 // (route-recipe-version.md, "Inherited notes").
 export function NoteList({ listKey, notes, mode, onChangeNoteText, onRemoveNote }) {
   const editable = mode === 'developing' || mode === 'creating';
+  // bug-p11-bys-note-dot-on-right: an editing li draws its own dot (the empty bullet
+  // span, painted by the CSS in the list's left margin) because Safari 27 put the
+  // engine's marker inside the note's flex row. The li then generates no marker, and
+  // WebKit exposes a ul whose items draw none as a group, so the editing ul names
+  // its list role. The reading list keeps the native marker.
   return (
-    <ul className="authored__notes">
+    <ul className={editable ? 'authored__notes authored__notes--editing' : 'authored__notes'} role={editable ? 'list' : undefined}>
       {notes.map((note, index) => (
         <li key={index}>
           {editable ? (
-            <span className="authored__note-field">
-              <textarea
-                className="prose-field"
-                rows="2"
-                value={note.text}
-                aria-label={`${listKey} note ${index + 1}`}
-                onChange={(event) => onChangeNoteText(listKey, index, event.target.value)}
-              />
-              <Button className="text-control" onClick={() => onRemoveNote(listKey, index)}>
-                Remove
-              </Button>
-            </span>
+            <>
+              <span className="authored__note-bullet" aria-hidden="true" />
+              <span className="authored__note-field">
+                <textarea
+                  className="prose-field"
+                  rows="2"
+                  value={note.text}
+                  aria-label={`${listKey} note ${index + 1}`}
+                  onChange={(event) => onChangeNoteText(listKey, index, event.target.value)}
+                />
+                <Button className="text-control" onClick={() => onRemoveNote(listKey, index)}>
+                  Remove
+                </Button>
+              </span>
+            </>
           ) : (
             note.text
           )}

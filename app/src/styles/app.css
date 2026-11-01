@@ -1398,6 +1398,33 @@ textarea {
   flex: 1 1 auto;
 }
 
+/* The editing note draws its own dot (bug-p11-bys-note-dot-on-right): the li is a
+   block, so no engine generates a list marker for it. The bullet span stands in the
+   ul's left padding; its top is .prose-field's own top padding, so its line box
+   starts where the textarea's first text line starts and the dot shares that
+   line's baseline. */
+.authored__notes--editing > li {
+  display: block;
+  position: relative;
+}
+
+.authored__note-bullet {
+  position: absolute;
+  right: 100%;
+  top: var(--gap-hair);
+  margin-right: var(--gap-s);
+}
+
+.authored__note-bullet::before {
+  content: '';
+  display: inline-block;
+  width: var(--sheet-note-bullet-size);
+  height: var(--sheet-note-bullet-size);
+  border-radius: 50%;
+  background-color: var(--sheet-ink);
+  vertical-align: var(--sheet-note-bullet-rise);
+}
+
 /* The inherited-from marker (03-02): a trailing qualifier on the note's
    own line, in small print — an inherited note is still authored prose,
    just carrying provenance, so this is not a second legend. */

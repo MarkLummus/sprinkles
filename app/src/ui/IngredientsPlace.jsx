@@ -7,6 +7,7 @@ import { ingredientCountWords } from './countWords.js';
 import { basisWord } from './IngredientTable.jsx';
 import { Button } from './Button.jsx';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
+import { holdReturn, stripNewlines } from './oneLineField.js';
 
 // The Ingredients place (PLACE-01, sketch 012 ingredients-place.html): the
 // library, read-only. It finds by name and category and opens an entry in
@@ -182,19 +183,21 @@ export function IngredientsList({ records }) {
   return (
     <div className="list-page place ing">
       <h1 className="place__title">Ingredients</h1>
-      {/* The only text field is Name, so Enter would submit the form and
-          reload the page. Nothing submits: the filters apply as they are
-          typed, and the default is prevented (SheetCodeSearch does the
-          same). */}
+      {/* Name is a one-row textarea for the iPad's Tab
+          (bug-ipad-tab-lost-from-single-line-fields), and its Return is held,
+          so it inserts nothing and submits nothing. The filters apply as they
+          are typed, and the form's submit stays default-prevented so nothing
+          can reload the page. */}
       <form className="ing__filters" role="search" aria-label="Ingredients" onSubmit={(event) => event.preventDefault()}>
         <label className="notebook-field ing__field">
           <span className="notebook-caption">Name</span>
-          <input
+          <textarea
             ref={nameRef}
             className="ink-field"
-            type="text"
+            rows="1"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => setQuery(stripNewlines(event.target.value))}
+            onKeyDown={holdReturn}
             autoComplete="off"
             spellCheck={false}
             enterKeyHint="search"

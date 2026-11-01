@@ -84,9 +84,9 @@ afterEach(async () => {
 });
 
 async function typeName(container, value) {
-  const input = container.querySelector('input.ink-field');
+  const input = container.querySelector('textarea.ink-field');
   await act(async () => {
-    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, value);
+    Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(input, value);
     input.dispatchEvent(new Event('input', { bubbles: true }));
   });
 }
@@ -212,11 +212,11 @@ describe('the filters', () => {
     await typeName(container, 'milk');
     await chooseCategory(container, 'dairy');
     await click(clearButton(container));
-    expect(container.querySelector('input.ink-field').value).toBe('');
+    expect(container.querySelector('textarea.ink-field').value).toBe('');
     expect(container.querySelector('select').value).toBe('All');
     expect(count(container)).toBe('26 ingredients');
     expect(clearButton(container)).toBeUndefined();
-    expect(document.activeElement).toBe(container.querySelector('input.ink-field'));
+    expect(document.activeElement).toBe(container.querySelector('textarea.ink-field'));
   });
 
   it('Enter in Name submits nothing: the submit is default-prevented and the filters stay', async () => {
@@ -229,7 +229,64 @@ describe('the filters', () => {
     });
     expect(submit.defaultPrevented).toBe(true);
     expect(count(container)).toBe('5 of 26 ingredients');
-    expect(container.querySelector('input.ink-field').value).toBe('milk');
+    expect(container.querySelector('textarea.ink-field').value).toBe('milk');
+  });
+});
+
+// bug-ipad-tab-lost-from-single-line-fields: iPadOS 27 Safari drops a hardware Tab from every input element; a
+// textarea takes it. Return in Name did nothing before (the form's submit was prevented), and still does nothing.
+describe('the Name filter as a one-row textarea', () => {
+  async function keydown(container, init) {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter', ...init });
+    if (init.keyCode !== undefined && event.keyCode !== init.keyCode) {
+      Object.defineProperty(event, 'keyCode', { value: init.keyCode });
+    }
+    let notPrevented;
+    await act(async () => {
+      notPrevented = container.querySelector('textarea.ink-field').dispatchEvent(event);
+    });
+    return notPrevented;
+  }
+
+  it('is a one-row textarea with no type, the same class and attributes', async () => {
+    const container = await mountList(records);
+    const field = container.querySelector('.ing__field:not(.ing__field--category) .ink-field');
+    expect(field.tagName).toBe('TEXTAREA');
+    expect(field.getAttribute('rows')).toBe('1');
+    expect(field.hasAttribute('type')).toBe(false);
+    expect(field.className).toBe('ink-field');
+    expect(field.getAttribute('autocomplete')).toBe('off');
+    expect(field.getAttribute('spellcheck')).toBe('false');
+    expect(field.getAttribute('enterkeyhint')).toBe('search');
+  });
+
+  it('holds Return, plain or with any modifier: nothing is inserted, no submit reaches the form, the filter stays', async () => {
+    const container = await mountList(records);
+    await typeName(container, 'milk');
+    let submits = 0;
+    container.querySelector('form.ing__filters').addEventListener('submit', () => {
+      submits += 1;
+    });
+    for (const init of [{}, { shiftKey: true }, { altKey: true }, { ctrlKey: true }, { metaKey: true }]) {
+      expect(await keydown(container, init)).toBe(false);
+    }
+    expect(submits).toBe(0);
+    expect(container.querySelector('textarea.ink-field').value).toBe('milk');
+    expect(count(container)).toBe('5 of 26 ingredients');
+  });
+
+  it('leaves Return alone while an IME composes', async () => {
+    const container = await mountList(records);
+    await typeName(container, 'milk');
+    expect(await keydown(container, { isComposing: true })).toBe(true);
+    expect(await keydown(container, { keyCode: 229 })).toBe(true);
+  });
+
+  it('strips line breaks from a typed or pasted name and filters on what is left', async () => {
+    const container = await mountList(records);
+    await typeName(container, 'mi\nlk');
+    expect(container.querySelector('textarea.ink-field').value).toBe('milk');
+    expect(count(container)).toBe('5 of 26 ingredients');
   });
 });
 

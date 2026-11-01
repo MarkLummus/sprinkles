@@ -914,7 +914,8 @@ button.shell__place {
      labelled-above fields use (notebook.css): 16px on the field line, 8px
      padding, 1px app rules. */
   .place .search__form textarea.ink-field,
-  .place .nb__new textarea.ink-field {
+  .place .nb__new textarea.ink-field,
+  .place .ing__filters textarea.ink-field {
     padding-block: max(var(--app-notebook-gap-tight), calc((var(--touch-min) - var(--sheet-leading-field) * 1em - 2 * var(--app-rule-row)) / 2));
   }
 }

@@ -1,8 +1,8 @@
 ---
-status: investigating
+status: resolved
 trigger: "With the Magic Keyboard on the iPad, Tab from a creation step's lead-in does not reach the instruction field, and Tab from a row's grams field does nothing; the on-screen keyboard's Tab moves lead-in to instruction but never to the step's links. Chromium on the Mac is fine. Bug row bug-p11-ipad-hardware-tab-skips-fields on Mark's List; D-19 (literal tabIndex) and the ios-keyboard-bar memory are the known history."
 created: 2026-11-01T18:50:00Z
-updated: 2026-11-01T20:23:32Z
+updated: 2026-11-01T20:59:47Z
 ---
 
 ## Current Focus
@@ -11,9 +11,7 @@ goal: find_and_fix
 bug_class: "Bohrbug on the device as reported (every attempt fails), but its mechanism sits in iPadOS UIKit/Safari's routing of a hardware Tab from an editable field, which no local engine models. SBFL skipped: the suite runs under jsdom/node; desktop Playwright WebKit has no iPadOS hardware-keyboard path."
 known_pattern_candidate: "none in a knowledge base (none exists). Sibling sessions (link/form-control gates, FKA off) explain buttons and links but not a text field failing to reach the next text field: WebKit never gates text inputs or textareas."
 hypothesis: "CONFIRMED (round 3, Mark 2026-11-01): on iPadOS 27 Safari 27.0.1 a Magic Keyboard Tab is lost from every <input> element tried (type text, search, number, tel; text with inputmode=decimal; text inside a <form>; text with enterkeyhint=next): no keydown, window blur, focus leaves the page. A <textarea rows=1> and a contenteditable div receive keydown Tab and focus moves to the next control. Sprinkles' lead-in and grams are <input type=text>, hence the bug; every other single-line <input> in the app is affected the same way."
-next_action: |
-  Fix choice is Mark's (scope and field kind). Candidate: render the lead-in and grams fields as a one-row <textarea> (grams keeps inputMode="decimal", a global attribute), with Return prevented from inserting a newline; then a /gsd-quick, and a device check on the iPad. Open scope question: only lead-in and grams (the bug row), or every single-line <input> in the app.
-  Runtime state still up: log server :8099 (pid 95694), scratch site :8098 (pid 95901). Stop both when the session closes. Vite preview :4173 untouched.
+next_action: "Done. Fixed in quick 261101-lec (22ec33f5, ed93b024); Mark passed the iPad check on 2026-11-01. The other single-line inputs in the app have the same platform behaviour: Mark's List row bug-ipad-tab-lost-from-single-line-fields. Test servers on 8098 and 8099 stopped."
 
 ## Symptoms
 
@@ -134,7 +132,7 @@ started: "First seen on the iPad check of 2026-10-27 (check-p11-ipad-create-step
 
 ## Resolution
 
-root_cause: "iPadOS 27 Safari (27.0.1) drops a Magic Keyboard Tab from any <input> element (all types tried) and moves focus out of the page; <textarea> and <button> are unaffected. Sprinkles' lead-in and grams fields are single-line text inputs. Platform behaviour, reproduced on a bare page."
-fix: "Not yet chosen. Candidate: one-row <textarea> for the lead-in and grams (Return held from inserting a newline); scope is Mark's call."
-verification: ""
-files_changed: []
+root_cause: "iPadOS 27 Safari (27.0.1) drops a Magic Keyboard Tab from any <input> element (all types tried) and moves focus out of the page; <textarea> and contenteditable are unaffected. Sprinkles' creation lead-in and grams fields were single-line inputs. Platform behaviour, reproduced on bare pages."
+fix: "Quick 261101-lec: the creation step's lead-in (22ec33f5) and the creating row's grams field (ed93b024) render as one-row <textarea> elements (app/src/ui/oneLineField.js holds Return and strips newlines; tokens-only CSS in notebook.css keeps the look). Visual parity proven by the quick's probe (132 PASS, WebKit and Chrome at 1366 fine, coarse and coarse DPR 2)."
+verification: "Mark on the iPad, 2026-11-01 (Safari 27.0.1, Magic Keyboard, FKA off): Tab from the lead-in reaches the instruction; Tab from grams reaches the row's next control; Return inserts nothing in either; both fields look as before. Suite 4246 passing."
+files_changed: ["app/src/ui/oneLineField.js", "app/src/ui/CreationSteps.jsx", "app/src/ui/IngredientTable.jsx", "app/src/ui/CreationPage.jsx", "app/src/styles/notebook.css"]

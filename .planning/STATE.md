@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-10-31T17:16:44.416Z"
+last_updated: "2026-11-01T20:54:30.587Z"
 last_activity: 2026-10-31
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: 502461fb4f528b22e6321b5619913d7c56da16cc
+state_head: ed93b024f70ca6f3a12e09223ac02b6366100adf
 progress:
   total_phases: 5
   completed_phases: 3
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-21)
 Phase: 11 (Steps, structure, save and print) — EXECUTING
 Plan: 1 of 14
 Status: Executing Phase 11
-Last activity: 2026-10-31 - Fast fix: the Add to step chooser names each step by its visible words first (bug-p11-chooser-step-label-in-name)
+Last activity: 2026-11-01 - Completed quick task 261101-lec: creation lead-in and grams fields become one-row textareas (iPad hardware Tab)
 
 Progress: [██████░░░░] 60%
 
@@ -617,6 +617,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261031-fq1 | Five creation controls carry their visible label in their accessible name (bug-p11-label-in-name-mismatches) | 2026-10-31 | 26eabd80 | [261031-fq1-five-creation-controls-carry-their-visib](./quick/261031-fq1-five-creation-controls-carry-their-visib/) |
 | 261031-fyo | Boxed buttons read sentence case without articles: Record batch, Record tasting, Save as new version, Remove this row, Done differently (look-button-words) | 2026-10-31 | 2d50ac10 | [261031-fyo-boxed-buttons-read-sentence-case-without](./quick/261031-fyo-boxed-buttons-read-sentence-case-without/) |
 | 216 | Add to step chooser: each step's name starts with its visible words, lead-in included (bug-p11-chooser-step-label-in-name) | 2026-10-31 | 502461fb | — |
+| 261101-lec | Creation lead-in and grams fields become one-row textareas so iPad hardware Tab moves on (bug-p11-ipad-hardware-tab-skips-fields) | 2026-11-01 | ed93b024 | [261101-lec-creation-lead-in-and-grams-fields-become](./quick/261101-lec-creation-lead-in-and-grams-fields-become/) |
 
 ### Roadmap Evolution
 

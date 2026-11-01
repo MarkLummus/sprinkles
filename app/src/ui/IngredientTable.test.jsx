@@ -1095,7 +1095,7 @@ describe('IngredientTable — the pen reads style 6 too (sketch 011 Task 2): gra
 
     expect(markup).toContain('<span class="struck-value">40 g</span><span class="ingredient-table__plan-grams">');
     expect(markup).toContain('aria-label="Graza Drizzle, grams"');
-    expect(markup).toContain('value="48"');
+    expect(markup).toContain('>48</textarea>');
     expect(markup).toContain(' g</span></td><td class="ingredient-table__col-name">Graza Drizzle');
     expect(markup).toMatch(/Graza Drizzle<span class="ingredient-table__remove-gap"> <\/span><button type="button" class="text-control"[^>]*>Remove<\/button>/);
     expect(markup).not.toContain('ingredient-table__col-data');
@@ -1651,7 +1651,7 @@ describe('IngredientTable — a lone unplaced group renders no step head (261002
     expect(markup).not.toContain('Not in a step yet');
     expect(markup).toContain('aria-label="Row A, grams"');
     expect(markup).toContain('aria-label="Row B, grams"');
-    expect((sectionMarkup(markup, 'tbody').match(/<input /g) || []).length).toBe(2);
+    expect((sectionMarkup(markup, 'tbody').match(/<textarea /g) || []).length).toBe(2);
   });
 
   it('C2: a lone Removed group keeps its head, because it says what the struck lines are (plan 03.6-05)', () => {
@@ -1680,7 +1680,7 @@ describe('IngredientTable — a lone unplaced group renders no step head (261002
     expect(tbody).toContain('<span class="struck-value">Row A</span>');
     expect(tbody).toContain('<span class="struck-value">Row B</span>');
     expect(tbody).not.toContain('<button');
-    expect((tbody.match(/<input /g) || []).length).toBe(2);
+    expect((tbody.match(/<textarea /g) || []).length).toBe(2);
   });
 
   it('D (guard): a table mixing a numbered group and the unplaced group keeps both heads, in reading and in the pen', () => {
@@ -1778,7 +1778,7 @@ describe('IngredientTable — a lone unplaced group renders no step head (261002
 
       expect(countStepHeads(markup)).toBe(1);
       expect(markup).toContain('>Not in a step yet<');
-      expect((sectionMarkup(markup, 'tbody').match(/<input /g) || []).length).toBe(2);
+      expect((sectionMarkup(markup, 'tbody').match(/<textarea /g) || []).length).toBe(2);
     });
 
     it('an empty method stays flat even when every line sits at UNPLACED_STEP', () => {

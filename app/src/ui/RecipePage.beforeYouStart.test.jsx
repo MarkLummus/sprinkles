@@ -270,7 +270,7 @@ describe('the Next version pen: the section is always drawn, and its notes are e
     await click(buttonByText(current.container, 'Next version'));
 
     await setField(article().querySelector('textarea[aria-label="beforeYouStart note 1"]'), 'Taste the Graza first.');
-    await setField(container.querySelector('input[aria-label="Version name"]'), 'taste first');
+    await setField(container.querySelector('textarea[aria-label="Version name"]'), 'taste first');
     await click(buttonByText(container, 'Save as new version'));
     await flush(() => store.createVersion.mock.calls.length > 0);
 
@@ -295,7 +295,7 @@ describe('the Next version pen: the section is always drawn, and its notes are e
     const title = article.querySelector('[aria-label="Sheet title"]');
     const description = article.querySelector('[aria-label="Sheet description"]');
     const notes = [...article.querySelectorAll('section.before-region textarea')];
-    const firstIngredientInput = article.querySelector('.ingredient-table input');
+    const firstIngredientInput = article.querySelector('.ingredient-table textarea');
     expect(notes).toHaveLength(2);
     expect(firstIngredientInput).not.toBeNull();
     for (const note of notes) {

@@ -101,7 +101,7 @@ function nextVersionPen() {
 }
 
 function versionNameField() {
-  return current.container.querySelector('input[aria-label="Version name"]');
+  return current.container.querySelector('textarea[aria-label="Version name"]');
 }
 
 function buttonByText(text) {

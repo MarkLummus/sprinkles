@@ -220,7 +220,7 @@ describe('a press survives Save as a boolean on the line alone (decision 51, pla
     const container = await mountAt(VERSION_PATH);
     await click(buttonByText(container, 'Next version'));
     await click(buttonByLabel('remove Whole milk, Step 2'));
-    await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
+    await setValue(container.querySelector('textarea[aria-label="Version name"]'), 'less milk');
     await click(buttonByText(container, 'Save as new version'));
     await flush(() => store.createVersion.mock.calls.length > 0);
 
@@ -249,7 +249,7 @@ describe('a saved version with a line out reads without it (decision 51, plan 03
     const container = await mountAt(VERSION_PATH);
     await click(buttonByText(container, 'Next version'));
     await click(buttonByLabel('remove Whole milk, Step 2'));
-    await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
+    await setValue(container.querySelector('textarea[aria-label="Version name"]'), 'less milk');
     await click(buttonByText(container, 'Save as new version'));
     await flush(() => store.createVersion.mock.calls.length > 0);
     const savedId = store.createVersion.mock.calls[0][0].id;
@@ -315,7 +315,7 @@ function struck(cell) {
 }
 
 async function saveChildAndShowChanges(container) {
-  await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
+  await setValue(container.querySelector('textarea[aria-label="Version name"]'), 'less milk');
   await click(buttonByText(container, 'Save as new version'));
   await flush(() => store.createVersion.mock.calls.length > 0);
   await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
@@ -327,7 +327,7 @@ describe('Show changes compares a split ingredient line by line (decision 51, pl
     installMatchMedia();
     const container = await mountAt(VERSION_PATH);
     await click(buttonByText(container, 'Next version'));
-    await setValue(container.querySelector('input[aria-label="Whole milk, grams, portion 1"]'), '100');
+    await setValue(container.querySelector('textarea[aria-label="Whole milk, grams, portion 1"]'), '100');
     await saveChildAndShowChanges(container);
 
     const [stepTwo, stepThree] = linesOf('Whole milk');
@@ -495,7 +495,7 @@ describe('Show changes strikes a removed step with its lines (decision 51, plan 
     await click(
       [...container.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Step 2, remove'),
     );
-    await setValue(container.querySelector('input[aria-label="Version name"]'), 'no slurry');
+    await setValue(container.querySelector('textarea[aria-label="Version name"]'), 'no slurry');
     await click(buttonByText(container, 'Save as new version'));
     await flush(() => store.createVersion.mock.calls.length > 0);
     await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
@@ -536,7 +536,7 @@ async function openPenOnChildWithStepTwoMilkOut() {
   const container = await mountAt(VERSION_PATH);
   await click(buttonByText(container, 'Next version'));
   await click(buttonByLabel('remove Whole milk, Step 2'));
-  await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
+  await setValue(container.querySelector('textarea[aria-label="Version name"]'), 'less milk');
   await click(buttonByText(container, 'Save as new version'));
   await flush(() => store.createVersion.mock.calls.length > 0);
   await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
@@ -587,7 +587,7 @@ describe('Next version on a saved version with a line out (Mark\'s List per-step
 // page does not move, and a second press stores what was typed.
 describe('a refused save keeps the pen and everything typed in it (CODE-01, D-04)', () => {
   const statusText = () => [...current.container.querySelectorAll('.form-status')].map((el) => el.textContent).join('');
-  const field = (label) => current.container.querySelector(`input[aria-label="${label}"]`);
+  const field = (label) => current.container.querySelector(`textarea[aria-label="${label}"]`);
 
   it('announces the save error, keeps the typed Version name and amount, stores nothing, and stores them on the next press', async () => {
     installMatchMedia();
@@ -628,8 +628,8 @@ describe('A blocked save focuses and marks the blocked line (Mark\'s List per-st
     const container = await openPenOnChildWithStepTwoMilkOut();
     store.saveVersion.mockClear();
     store.createVersion.mockClear();
-    await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk again');
-    await setValue(container.querySelector('input[aria-label="Whole milk, grams, portion 2"]'), '');
+    await setValue(container.querySelector('textarea[aria-label="Version name"]'), 'less milk again');
+    await setValue(container.querySelector('textarea[aria-label="Whole milk, grams, portion 2"]'), '');
     await click(buttonByText(container, 'Save as new version'));
 
     expect(document.activeElement.getAttribute('aria-label')).toBe('Whole milk, grams, portion 2');
@@ -643,8 +643,8 @@ describe('A blocked save focuses and marks the blocked line (Mark\'s List per-st
     installMatchMedia();
     const container = await mountAt(VERSION_PATH);
     await click(buttonByText(container, 'Next version'));
-    await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
-    await setValue(container.querySelector('input[aria-label="Whole milk, grams, portion 1"]'), '');
+    await setValue(container.querySelector('textarea[aria-label="Version name"]'), 'less milk');
+    await setValue(container.querySelector('textarea[aria-label="Whole milk, grams, portion 1"]'), '');
     await click(buttonByText(container, 'Save as new version'));
 
     expect(document.activeElement.getAttribute('aria-label')).toBe('Whole milk, grams, portion 1');
@@ -657,7 +657,7 @@ describe('A blocked save focuses and marks the blocked line (Mark\'s List per-st
 // blocked on an ingredient line, the sentence prints last in that line's own name cell, the
 // field is invalid and described by it, and typing clears it with the outline.
 describe('A blocked save prints its sentence in the blocked line (sketch 011 decision 57: A recommended)', () => {
-  const field = (label) => current.container.querySelector(`input[aria-label="${label}"]`);
+  const field = (label) => current.container.querySelector(`textarea[aria-label="${label}"]`);
   const sentences = () => [...current.container.querySelectorAll('.field-error')];
   const statusText = () =>
     [...current.container.querySelectorAll('.form-status, .save-ceremony__status')].map((el) => el.textContent).join('');
@@ -666,7 +666,7 @@ describe('A blocked save prints its sentence in the blocked line (sketch 011 dec
     installMatchMedia();
     const container = await mountAt(VERSION_PATH);
     await click(buttonByText(container, 'Next version'));
-    await setValue(container.querySelector('input[aria-label="Version name"]'), 'v2');
+    await setValue(container.querySelector('textarea[aria-label="Version name"]'), 'v2');
     await setValue(field(label), value);
     await click(buttonByText(container, 'Save as new version'));
     return container;
@@ -740,7 +740,7 @@ describe('A blocked save prints its sentence in the blocked line (sketch 011 dec
     expect(statusText()).toContain(VERSION_BLOCKED_STATUS);
     expect(sentences()).toHaveLength(1);
     expect(container.querySelector('.ingredient-table .field-error')).toBeNull();
-    expect(container.querySelector('.ingredient-table input[aria-invalid]')).toBeNull();
+    expect(container.querySelector('.ingredient-table textarea[aria-invalid]')).toBeNull();
   });
 });
 
@@ -762,7 +762,7 @@ describe('Recording reads like the Sheet when one line is left (sketch 011 decis
     const container = await mountAt(VERSION_PATH);
     await click(buttonByText(container, 'Next version'));
     await click(buttonByLabel('remove Whole milk, Step 2'));
-    await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
+    await setValue(container.querySelector('textarea[aria-label="Version name"]'), 'less milk');
     await click(buttonByText(container, 'Save as new version'));
     await flush(() => store.createVersion.mock.calls.length > 0);
     const savedId = store.createVersion.mock.calls[0][0].id;
@@ -823,7 +823,7 @@ import { VERSION_CHANGED_STATUS, VERSION_HAS_BATCH_STATUS } from './useVersionPe
 // stays open with everything typed. The editor-first flow over the real store is plan 11-12's.
 describe('Save over this version is guarded by the store (T-11-63)', () => {
   const statusText = () => [...current.container.querySelectorAll('.form-status')].map((el) => el.textContent).join('');
-  const field = (label) => current.container.querySelector(`input[aria-label="${label}"]`);
+  const field = (label) => current.container.querySelector(`textarea[aria-label="${label}"]`);
 
   async function typeIntoThePen() {
     installMatchMedia();
@@ -957,5 +957,53 @@ describe('the recipe page one-line fields are one-row textareas (bug-ipad-tab-lo
     await flush(() => field.getAttribute('aria-invalid') === 'true');
     expect(document.activeElement).toBe(field);
     expect(field.getAttribute('aria-invalid')).toBe('true');
+  });
+
+  async function penOpen() {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    return container;
+  }
+
+  it('draws Version name as a focused one-row textarea that keeps required and its placeholder', async () => {
+    const container = await penOpen();
+    const field = container.querySelector('[aria-label="Version name"]');
+    expect(field.tagName).toBe('TEXTAREA');
+    expect(field.getAttribute('rows')).toBe('1');
+    expect(field.hasAttribute('type')).toBe(false);
+    expect(field.className).toBe('ink-field');
+    expect(field.required).toBe(true);
+    expect(field.getAttribute('placeholder')).toBe('e.g. less oil');
+    expect(document.activeElement).toBe(field);
+  });
+
+  it('draws a developing grams field as a one-row decimal textarea', async () => {
+    const container = await penOpen();
+    const field = container.querySelector('[aria-label="Whole milk, grams, portion 1"]');
+    expect(field.tagName).toBe('TEXTAREA');
+    expect(field.getAttribute('rows')).toBe('1');
+    expect(field.getAttribute('inputmode')).toBe('decimal');
+    expect(field.hasAttribute('type')).toBe(false);
+    expect(field.className).toBe('ink-field');
+  });
+
+  it('prevents Return in Version name and in a grams field, with or without Shift, and leaves the values alone', async () => {
+    const container = await penOpen();
+    for (const label of ['Version name', 'Whole milk, grams, portion 1']) {
+      const field = container.querySelector(`[aria-label="${label}"]`);
+      const before = field.value;
+      expect(keydown(field, {})).toBe(false);
+      expect(keydown(field, { shiftKey: true })).toBe(false);
+      expect(field.value).toBe(before);
+    }
+  });
+
+  it('removes every line break from Version name and from a grams field', async () => {
+    const container = await penOpen();
+    await setValue(container.querySelector('[aria-label="Version name"]'), 'less\nmilk\r\n');
+    await setValue(container.querySelector('[aria-label="Whole milk, grams, portion 1"]'), '1\n00');
+    expect(container.querySelector('[aria-label="Version name"]').value).toBe('lessmilk');
+    expect(container.querySelector('[aria-label="Whole milk, grams, portion 1"]').value).toBe('100');
   });
 });

@@ -183,9 +183,9 @@ function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputR
     <>
       {changed && <span className="struck-value">{`${portion.grams} g`}</span>}
       <span className="ingredient-table__plan-grams">
-        <input
+        <textarea
           ref={inputRef}
-          type="text"
+          rows="1"
           inputMode="decimal"
           className="ink-field"
           value={draftPortion.grams}
@@ -194,7 +194,8 @@ function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputR
           }
           aria-invalid={errorId ? 'true' : undefined}
           aria-describedby={errorId ?? undefined}
-          onChange={(event) => onChangePenGrams(row.id, portionIndex, event.target.value)}
+          onChange={(event) => onChangePenGrams(row.id, portionIndex, stripNewlines(event.target.value))}
+          onKeyDown={holdReturn}
         />
         {' g'}
       </span>

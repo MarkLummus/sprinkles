@@ -207,7 +207,7 @@ describe('VersionRow — the ceremony (Task 3, 1600-pen.html)', () => {
 
   it('renders a Version name field with the new placeholder and a "was ..." helper, never the old Sheet-context aria-label', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).toMatch(/<input[^>]*placeholder="e\.g\. less oil"[^>]*aria-label="Version name"/);
+    expect(markup).toMatch(/<textarea[^>]*placeholder="e\.g\. less oil"[^>]*aria-label="Version name"/);
     expect(markup).toContain('was 50 g oil · 800 g');
   });
 
@@ -299,7 +299,7 @@ describe('VersionRow — the ceremony (Task 3, 1600-pen.html)', () => {
       canSaveOver: true,
       versionLineError: 'Enter a version.',
     });
-    expect(markup).toMatch(/<input[^>]*aria-invalid="true"[^>]*aria-describedby="version-field-error"/);
+    expect(markup).toMatch(/<textarea[^>]*aria-invalid="true"[^>]*aria-describedby="version-field-error"/);
     expect(markup).toContain('<span id="version-field-error" class="field-error">Enter a version.</span>');
   });
 });

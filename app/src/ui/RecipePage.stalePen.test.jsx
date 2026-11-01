@@ -150,7 +150,7 @@ async function openStalePen(catalog) {
 
 async function typeIntoPen(tab) {
   await type(field(tab, 'Version name'), 'less milk');
-  await type(tab.container.querySelector('input[aria-label^="Whole milk"][aria-label*="grams"]'), '111');
+  await type(tab.container.querySelector('textarea[aria-label^="Whole milk"][aria-label*="grams"]'), '111');
 }
 
 let catalog = null;

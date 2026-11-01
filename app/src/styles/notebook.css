@@ -251,9 +251,20 @@
    textareas too (bug-ipad-tab-lost-from-single-line-fields, duty 1): one line at
    the input's height, scrolled to the caret, with no scrollbar. */
 .notebook.mk-page textarea.ink-field,
-.notebook .notebook-recipe__form .notebook-field > textarea.ink-field {
+.notebook .notebook-recipe__form .notebook-field > textarea.ink-field,
+.notebook .notebook-ceremony .notebook-field > textarea.ink-field {
   white-space: pre;
   overflow: hidden;
+}
+
+/* The version pen's Version name keeps its placeholder on the field's line
+   (bug-ipad-tab-lost-from-single-line-fields, duty 5). The global ::placeholder
+   sets small print, which a textarea starts at the top of its line; the field's
+   own line height puts "e.g. less oil" back on the field's line, as the input
+   drew it. --sheet-leading-field is unitless and 1em inside ::placeholder is
+   the small print, so the line height is spelled out from the field's size. */
+.notebook .notebook-ceremony .notebook-field > textarea.ink-field::placeholder {
+  line-height: calc(var(--sheet-leading-field) * var(--app-notebook-size-body));
 }
 
 /* A card's fields (bug-ipad-tab-lost-from-single-line-fields, duty 4): the card
@@ -2086,8 +2097,14 @@
      line, padded 8px, with 1px app rules, in the 44px floor. The input centred
      its line; a textarea starts it at the top, so the padding centres it. */
   .notebook.mk-page .notebook-field textarea.ink-field,
-  .notebook .notebook-recipe__form .notebook-field > textarea.ink-field {
+  .notebook .notebook-recipe__form .notebook-field > textarea.ink-field,
+  .notebook .notebook-ceremony .notebook-field > textarea.ink-field {
     padding-block: max(var(--app-notebook-gap-tight), calc((var(--touch-min) - var(--sheet-leading-field) * 1em - 2 * var(--app-rule-row)) / 2));
+  }
+
+  /* Duty 5 at a coarse pointer, where the field's own text is the note size. */
+  .notebook .notebook-ceremony .notebook-field > textarea.ink-field::placeholder {
+    line-height: calc(var(--sheet-leading-field) * var(--sheet-type-note));
   }
 
   .notebook .pick__head .text-control,

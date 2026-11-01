@@ -6,6 +6,7 @@ import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } fr
 import { notebookPath, printPath } from './notebookPaths.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { Button } from './Button.jsx';
+import { holdReturn, stripNewlines } from './oneLineField.js';
 import { Checkbox } from './Checkbox.jsx';
 import { FoldRow } from './FoldRow.jsx';
 import { useFold } from './useBelowDesktop.js';
@@ -212,9 +213,9 @@ export function VersionRow({
               and aria-label change (1600-pen.html). */}
           <label className="notebook-field">
             <span className="notebook-caption">Version name</span>
-            <input
+            <textarea
               ref={versionLineFieldRef}
-              type="text"
+              rows="1"
               className="ink-field"
               required
               autoFocus
@@ -224,7 +225,8 @@ export function VersionRow({
               aria-label="Version name"
               aria-invalid={versionLineError ? 'true' : undefined}
               aria-describedby={versionLineError ? 'version-field-error' : undefined}
-              onChange={(event) => onChangePenField('versionLabel', event.target.value)}
+              onChange={(event) => onChangePenField('versionLabel', stripNewlines(event.target.value))}
+              onKeyDown={holdReturn}
             />
             <p className="notebook-helper">{`was ${version.versionLabel}`}</p>
             <FieldFeedback error={versionLineError} errorId="version-field-error" required />

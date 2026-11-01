@@ -186,6 +186,7 @@ function measureField({ selector, anchorSelector, attrs }) {
     grandBox: rel(grand.getBoundingClientRect()),
     siblings,
     anchorHeight: r2(ar.height),
+    parentDisplay: getComputedStyle(parent).display,
     overflows: el.scrollWidth > el.clientWidth + 0.5,
     css: {
       fontFamily: cs.fontFamily,
@@ -559,7 +560,14 @@ function boxMatches(a, b, shifts) {
 function regionMatches(a, b, shifts) {
   const problems = [];
   if (!boxMatches(a.box, b.box, shifts)) problems.push(`field ${showBox(a.box)} (base ${showBox(b.box)})`);
-  if (!boxMatches(a.parentBox, b.parentBox, shifts)) problems.push(`parent ${showBox(a.parentBox)} (base ${showBox(b.parentBox)})`);
+  // A parent that is inline in one build and inline-flex in the other (the grams span, by 261101-lec's rule) reports
+  // a different kind of rect: an inline box's rect is its font box, an inline-flex box's is its layout box. The field,
+  // the grandparent, each sibling and the anchor carry the gate there, and the parent's left and width are still compared.
+  if (a.parentDisplay !== b.parentDisplay) {
+    if (!near(a.parentBox.left, b.parentBox.left) || !near(a.parentBox.width, b.parentBox.width)) {
+      problems.push(`parent (${b.parentDisplay} to ${a.parentDisplay}) left ${a.parentBox.left} w ${a.parentBox.width} (base left ${b.parentBox.left} w ${b.parentBox.width})`);
+    }
+  } else if (!boxMatches(a.parentBox, b.parentBox, shifts)) problems.push(`parent ${showBox(a.parentBox)} (base ${showBox(b.parentBox)})`);
   if (!boxMatches(a.grandBox, b.grandBox, shifts)) problems.push(`grandparent ${showBox(a.grandBox)} (base ${showBox(b.grandBox)})`);
   if (a.siblings.length !== b.siblings.length) problems.push(`${a.siblings.length} siblings (base ${b.siblings.length})`);
   else {
@@ -664,6 +672,9 @@ for (const engine of ['webkit', 'chrome']) {
             gate(tk, d >= -0.01 && d <= hi, `W1 ${name} ${pass}: target width differs by ${d} px (ruled 0 to ${engine === 'webkit' ? 1.5 : 7.5})`);
             if (first && pass === 'pass3' && af.step === 1) console.log(`INFO W1 ${tag} ${af.name}: ${d} px narrower than the input (base w ${bf[pass].box.width}, after w ${af[pass].box.width})`);
           }
+        }
+        if (first && engine === 'webkit' && af.pass1.parentDisplay !== bf.pass1.parentDisplay && af.name.endsWith('portion 1') && af.name.startsWith('Whole')) {
+          console.log(`INFO A1 ${af.group} ${af.name}: parent display ${bf.pass1.parentDisplay} in base, ${af.pass1.parentDisplay} after; its rect is a font box then a layout box, so only its left and width are compared`);
         }
         for (const pass of ['pass1', 'pass2', 'pass3']) {
           const problems = regionMatches(af[pass], bf[pass], ownShifts[pass]);

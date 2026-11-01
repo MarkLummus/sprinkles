@@ -204,11 +204,11 @@ function nextVersionPen() {
 }
 
 function versionNameField() {
-  return current.container.querySelector('input[aria-label="Version name"]');
+  return current.container.querySelector('textarea[aria-label="Version name"]');
 }
 
 function gramsField(label) {
-  return current.container.querySelector(`input[aria-label="${label}"]`);
+  return current.container.querySelector(`textarea[aria-label="${label}"]`);
 }
 
 function buttonByText(text) {

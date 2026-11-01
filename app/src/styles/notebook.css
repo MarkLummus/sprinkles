@@ -228,10 +228,11 @@
 }
 
 /* One line at the input's height, scrolled to the caret, with no scrollbar; the
-   version pen's open step too (bug-ipad-tab-lost-from-single-line-fields,
-   duty 1). */
+   version pen's open step too, and the record pen's Done differently line
+   (bug-ipad-tab-lost-from-single-line-fields, duty 1). */
 .notebook .mk-step textarea.prose-field--lead-in,
-.notebook .method-step__open-fields textarea.prose-field--lead-in {
+.notebook .method-step__open-fields textarea.prose-field--lead-in,
+.notebook .method-step__line-control textarea.prose-field {
   white-space: pre;
   overflow: hidden;
 }
@@ -2102,9 +2103,11 @@
 
   /* app.css's touch floor centres an input's one line but starts a textarea's
      text at the top (bug-p11-ipad-hardware-tab-skips-fields): centre the
-     lead-in's line in the floor by padding; the version pen's open step too. */
+     lead-in's line in the floor by padding; the version pen's open step too, and
+     the record pen's Done differently line. */
   .notebook .mk-step textarea.prose-field--lead-in,
-  .notebook .method-step__open-fields textarea.prose-field--lead-in {
+  .notebook .method-step__open-fields textarea.prose-field--lead-in,
+  .notebook .method-step__line-control textarea.prose-field {
     padding-block: max(var(--gap-hair), calc((var(--touch-min) - var(--sheet-leading-note) * 1em) / 2));
   }
 

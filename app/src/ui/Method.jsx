@@ -447,7 +447,9 @@ export function StepPenBody({
 // mechanism StepPenBody's purpose/aside fields use, so it opens when the
 // step's own stepChanges entry already holds a line (what makes Amend
 // open the lines that hold text) and collapses back to its opener on an
-// empty blur.
+// empty blur. The line is a one-row textarea, so a hardware Tab leaves it on
+// the iPad (bug-ipad-tab-lost-from-single-line-fields: iPadOS 27 Safari drops a
+// Tab from every input element); Return is held and a pasted line break removed.
 function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) {
   const line = useOnDemandField(Boolean(entry && entry.line), () =>
     onChangeStepChange(step.n, { struck: entry ? entry.struck : false, line: null }),
@@ -458,7 +460,7 @@ function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) 
   }
 
   function handleChangeLine(event) {
-    const value = event.target.value;
+    const value = stripNewlines(event.target.value);
     onChangeStepChange(step.n, { struck: entry ? entry.struck : false, line: value === '' ? null : value });
   }
 
@@ -475,12 +477,13 @@ function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) 
       {line.isOpen ? (
         <label className="method-step__line-control">
           <span>Done differently</span>
-          <input
+          <textarea
             ref={line.fieldRef}
-            type="text"
+            rows="1"
             className="prose-field"
             value={entry && entry.line ? entry.line : ''}
             aria-label={fieldLabel(step, false, 'done differently')}
+            onKeyDown={holdReturn}
             onChange={handleChangeLine}
             onBlur={line.handleBlur}
           />

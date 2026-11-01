@@ -79,7 +79,7 @@ describe('Method — the batch pen\'s per-step line, on demand (D-25)', () => {
       <Method steps={[unstruckStep]} stepChanges={{}} mode="recording" onChangeStepChange={() => {}} />,
     );
     expect(markup).toMatch(/<button[^>]*aria-label="Step [^"]*, done differently"[^>]*>Done differently<\/button>/);
-    expect(markup).not.toMatch(/<input[^>]*aria-label="Step [^"]*, done differently"/);
+    expect(markup).not.toMatch(/<(?:input|textarea)[^>]*aria-label="Step [^"]*, done differently"/);
   });
 
   it('renders the line field, not the opener, when the step\'s entry already holds a line (what Amend opens)', () => {
@@ -91,7 +91,7 @@ describe('Method — the batch pen\'s per-step line, on demand (D-25)', () => {
         onChangeStepChange={() => {}}
       />,
     );
-    expect(markup).toMatch(/<input[^>]*aria-label="Step [^"]*, done differently"[^>]*value="Used vanilla instead"/);
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Step [^"]*, done differently"[^>]*>Used vanilla instead<\/textarea>/);
     expect(markup).toContain('<span>Done differently</span>');
     expect(markup).not.toMatch(/<button[^>]*>Done differently<\/button>/);
   });

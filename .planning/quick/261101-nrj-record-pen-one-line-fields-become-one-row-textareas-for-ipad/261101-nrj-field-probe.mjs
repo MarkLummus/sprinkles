@@ -19,7 +19,8 @@
 //   F2  the group's field keys are the same in both builds
 //   A1 (pass1) / B1 (pass2): the field's, its parent's, its grandparent's, each sibling's and each row neighbour's
 //       box, and the anchor's height, within 0.5 px (every box is relative to the group's anchor element). A parent
-//       whose display differs between builds is compared by left and width only (INFO).
+//       whose display differs between builds is compared by left and width only (INFO). A row neighbour with
+//       display: contents has no box (its rect is 0x0 at the viewport origin), so only that fact is compared.
 //   C1  computed type, colour, padding, borders, background, radius equal (vertical padding only at a fine pointer:
 //       the coarse centring rule is written on the textarea's padding-block, so there it is printed, not compared);
 //       on after: resize none, white-space pre, no scrollbar on either axis; the as-made field is display block on
@@ -175,7 +176,15 @@ function measureField({ selector, anchorSelector, rowSelector, attrs }) {
     }
   }
   const row = el.closest(rowSelector);
-  const rowBoxes = row ? [...row.children].map((c) => ({ tag: c.tagName, box: rel(c.getBoundingClientRect()) })) : [];
+  // A row neighbour with display: contents (the as-made row's amount cell below 724) has no box: its rect is 0x0 at
+  // the viewport origin, so relative to the anchor it only tracks the scroll. Its children carry the layout.
+  const rowBoxes = row
+    ? [...row.children].map((c) => ({
+        tag: c.tagName,
+        contents: getComputedStyle(c).display === 'contents',
+        box: rel(c.getBoundingClientRect()),
+      }))
+    : [];
   const cs = getComputedStyle(el);
   const bw = (side) => parseFloat(cs[`border${side}Width`]);
   const attributes = {};
@@ -568,7 +577,8 @@ function regionMatches(a, b) {
   if (a.rowBoxes.length !== b.rowBoxes.length) problems.push(`${a.rowBoxes.length} row neighbours (base ${b.rowBoxes.length})`);
   else {
     a.rowBoxes.forEach((s, i) => {
-      if (!boxMatches(s.box, b.rowBoxes[i].box)) problems.push(`row neighbour ${i} ${s.tag} ${showBox(s.box)} (base ${showBox(b.rowBoxes[i].box)})`);
+      if (s.contents !== b.rowBoxes[i].contents) problems.push(`row neighbour ${i} ${s.tag} display contents ${s.contents} (base ${b.rowBoxes[i].contents})`);
+      else if (!s.contents && !boxMatches(s.box, b.rowBoxes[i].box)) problems.push(`row neighbour ${i} ${s.tag} ${showBox(s.box)} (base ${showBox(b.rowBoxes[i].box)})`);
     });
   }
   if (!near(a.anchorHeight, b.anchorHeight)) problems.push(`anchor height ${a.anchorHeight} (base ${b.anchorHeight})`);

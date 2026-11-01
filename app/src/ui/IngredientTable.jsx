@@ -441,7 +441,9 @@ function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
 }
 
 // The as-made cell (route-recipe-batch.md § 3, D-10): blank by default, one
-// text field while recording, and the stored per-portion reading —
+// one-row textarea while recording (bug-ipad-tab-lost-from-single-line-fields:
+// iPadOS 27 Safari drops a hardware Tab from every input element), and the
+// stored per-portion reading —
 // through asMadeForPortion, never the row's own plan grams — once a saved
 // batch's layer is showing. Blank stays blank; the plan never leaks into
 // this column under any circumstance. Scoped to exactly ONE named portion
@@ -457,8 +459,8 @@ function AsMadeCell({ row, drawnRow = row, portionIndex, mode, draft, openBatch,
     const multiPortion = drawnRow.portions.length > 1;
     const drawnNumber = drawnRow.portions.findIndex((line, i) => (line.index ?? i) === portionIndex) + 1;
     return (
-      <input
-        type="text"
+      <textarea
+        rows="1"
         inputMode="decimal"
         className="ink-field ingredient-table__as-made-field"
         value={draftValues ? draftValues[portionIndex] : ''}
@@ -467,7 +469,8 @@ function AsMadeCell({ row, drawnRow = row, portionIndex, mode, draft, openBatch,
             ? `${row.ingredientName}, as made, grams, portion ${drawnNumber}`
             : `${row.ingredientName}, as made, grams`
         }
-        onChange={(event) => onChangeAsMade(row.id, portionIndex, event.target.value)}
+        onKeyDown={holdReturn}
+        onChange={(event) => onChangeAsMade(row.id, portionIndex, stripNewlines(event.target.value))}
       />
     );
   }

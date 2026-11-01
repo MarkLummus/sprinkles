@@ -255,6 +255,18 @@
   overflow: hidden;
 }
 
+/* A row's as-made field sits alone in its cell, and is a block there
+   (bug-ipad-tab-lost-from-single-line-fields, duty 3): an inline textarea's
+   baseline is its bottom edge, which grew the row (3.33px in WebKit, 4px in
+   Chrome); as a block it sets the cell's height as the input did. The auto
+   start margin keeps it on the cell's right edge where the list form below 724
+   gives the cell the 64px amount track and the input stood there by text-align;
+   from 724 the cell is the field's own 56px, so the margin is 0. */
+.notebook .ingredient-table textarea.ingredient-table__as-made-field {
+  display: block;
+  margin-inline-start: auto;
+}
+
 /* The creation editor's, the recipe page's band and the version pen's open
    step one-line fields are one-row textareas too
    (bug-ipad-tab-lost-from-single-line-fields, duty 1): one line at the input's

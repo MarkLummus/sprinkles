@@ -219,7 +219,7 @@ describe('IngredientTable — the As made column obeys hasAsMadeLayer (G-03-1 fi
   // (--sheet-field-w-figure) and the live total stays out of the column's
   // content sizing, so typing never moves the As made or name column. Both
   // hooks exist in the recording state only.
-  it('recording: the as-made input carries its sizing hook beside ink-field, and the tfoot total cell its live-total hook (G-03.5-8a)', () => {
+  it('recording: the as-made field carries its sizing hook beside ink-field, and the tfoot total cell its live-total hook (G-03.5-8a)', () => {
     const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
     const markup = renderToStaticMarkup(
       <IngredientTable rows={version.rows} mode="recording" draft={{ asMade: {} }} openBatch={null} />,
@@ -2183,7 +2183,7 @@ describe('IngredientTable — as made stays on its own line when a line is out (
     const markup = table('recording', version, { draft: { asMade: { 'row-01': ['', '250'] } }, openBatch: null });
 
     // Decision 56 (A recommended, 2026-10-05): one line left, so the field has no portion in its name.
-    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, as made, grams" value="250"\/>/);
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Whole milk, as made, grams"[^>]*>250<\/textarea>/);
     expect(markup).toContain('aria-label="Total, plan 679.7 grams, as made 679.3 grams"');
     expect(markup).toContain('<span class="sheet-hand">679.3 g</span>');
     // Sucrose is untouched: both of its fields are still named by their own portion.
@@ -2576,10 +2576,10 @@ describe('IngredientTable — recording numbers a split row\'s fields by the lin
       <IngredientTable rows={version.rows} mode="recording" draft={{ asMade: { a: ['101', '', '249'] } }} openBatch={null} />,
     );
 
-    const fields = markup.match(/<input[^>]*aria-label="Whole milk, as made, grams[^"]*"[^>]*>/g);
+    const fields = markup.match(/<textarea[^>]*aria-label="Whole milk, as made, grams[^"]*"[^>]*>[^<]*<\/textarea>/g);
     expect(fields).toHaveLength(2);
-    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, as made, grams, portion 1" value="101"\/>/);
-    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, as made, grams, portion 2" value="249"\/>/);
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Whole milk, as made, grams, portion 1"[^>]*>101<\/textarea>/);
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Whole milk, as made, grams, portion 2"[^>]*>249<\/textarea>/);
     expect(markup).not.toContain('portion 3');
     expect(markup.match(/ingredient-table__portion-note/g)).toHaveLength(2);
   });

@@ -138,9 +138,9 @@ describe('IngredientTable — recording with a line out keeps the as-made field 
       );
     });
 
-    const field = container.querySelector('input[aria-label="Whole milk, as made, grams"]');
+    const field = container.querySelector('textarea[aria-label="Whole milk, as made, grams"]');
     expect(field.value).toBe('250');
-    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
     act(() => {
       setter.call(field, '260');
       field.dispatchEvent(new Event('input', { bubbles: true }));
@@ -178,19 +178,79 @@ describe('IngredientTable — recording with a line out keeps the as-made field 
         />,
       );
     });
-    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
     const type = (field, value) =>
       act(() => {
         setter.call(field, value);
         field.dispatchEvent(new Event('input', { bubbles: true }));
       });
 
-    const second = container.querySelector('input[aria-label="Whole milk, as made, grams, portion 2"]');
-    const first = container.querySelector('input[aria-label="Whole milk, as made, grams, portion 1"]');
+    const second = container.querySelector('textarea[aria-label="Whole milk, as made, grams, portion 2"]');
+    const first = container.querySelector('textarea[aria-label="Whole milk, as made, grams, portion 1"]');
     expect(second.value).toBe('249');
     type(second, '250');
     expect(onChangeAsMade).toHaveBeenLastCalledWith('a', 2, '250');
     type(first, '100');
     expect(onChangeAsMade).toHaveBeenLastCalledWith('a', 0, '100');
+  });
+});
+
+// bug-ipad-tab-lost-from-single-line-fields: a row's as-made grams is a one-row textarea while
+// recording (iPadOS 27 Safari drops a hardware Tab from every input element), with Return held and
+// a pasted line break removed before the record draft sees the value.
+describe('IngredientTable — the as-made field is a one-row textarea (bug-ipad-tab-lost-from-single-line-fields)', () => {
+  function mountRecording(onChangeAsMade) {
+    const version = structuredClone(oliveOilVersion);
+    version.rows.find((row) => row.id === 'row-01').portions[0].removed = true;
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    current = { container, root };
+    act(() => {
+      root.render(
+        <IngredientTable
+          rows={version.rows}
+          steps={version.method}
+          currentStepNumbers={displayNumbers(version.method)}
+          mode="recording"
+          draft={{ asMade: { 'row-01': ['', '250'] } }}
+          openBatch={null}
+          onChangeAsMade={onChangeAsMade}
+        />,
+      );
+    });
+    return container.querySelector('[aria-label="Whole milk, as made, grams"]');
+  }
+
+  it('is a TEXTAREA with rows 1, inputmode decimal, its sizing classes and no type attribute', () => {
+    const field = mountRecording(vi.fn());
+    expect(field.tagName).toBe('TEXTAREA');
+    expect(field.getAttribute('rows')).toBe('1');
+    expect(field.getAttribute('inputmode')).toBe('decimal');
+    expect(field.getAttribute('class')).toBe('ink-field ingredient-table__as-made-field');
+    expect(field.hasAttribute('type')).toBe(false);
+  });
+
+  it('holds Return: a cancelable Enter keydown is default-prevented, with or without Shift', () => {
+    const field = mountRecording(vi.fn());
+    for (const shiftKey of [false, true]) {
+      const event = new KeyboardEvent('keydown', { key: 'Enter', shiftKey, bubbles: true, cancelable: true });
+      act(() => {
+        field.dispatchEvent(event);
+      });
+      expect(event.defaultPrevented).toBe(true);
+    }
+  });
+
+  it("strips a pasted line break before onChangeAsMade sees it: '24', LF, '5' is '245' at ('row-01', 1)", () => {
+    const onChangeAsMade = vi.fn();
+    const field = mountRecording(onChangeAsMade);
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+    act(() => {
+      setter.call(field, '24\n5');
+      field.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    expect(onChangeAsMade).toHaveBeenCalledTimes(1);
+    expect(onChangeAsMade).toHaveBeenCalledWith('row-01', 1, '245');
   });
 });

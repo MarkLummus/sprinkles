@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-11-01T21:31:06.525Z"
+last_updated: "2026-11-10T13:00:39.444Z"
 last_activity: 2026-11-01
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: 9455f85f787c684d14bed2ff2ab4c0141dabaa3c
+state_head: 84af260d33e924a2fef1ae3a1440768c1dc67e10
 progress:
   total_phases: 5
   completed_phases: 3
@@ -628,6 +628,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261110-ac0 | bug-next-version-cancel-focus-after-save — app/src/ui/VersionRow.jsx:139-144: after arriving from a save (history state focusVersion), Next version then Cancel puts focus on the version heading, not the Next version opener; the landing effect re-fires each time mode returns to reading. Fix: the arrival landing happens once, and Cancel returns focus to Next version. Add a test that fails without the fix. Name the row id bug-next-version-cancel-focus-after-save in the commit. | 2026-11-10 | c5373fb2 | .planning/quick/261110-ac0-bug-next-version-cancel-focus-after-save-app-src-ui-versionr |
 | 261110-ac1 | bug-pen-step-aside-hidden-after-cancel — app/src/ui/Method.jsx:53-54, :117 (on-demand purpose/aside field): the open/closed seed is read once, so after clearing the aside, Tab, Cancel on the step, and Edit this step again, the field is hidden behind "Add aside" although the draft holds the text. Same for purpose. Fix: a purpose or aside that holds text is always shown when the step opens. Add a test that fails without the fix. Touches Method.jsx like the show-changes item, so it must not run in parallel with it. Name the row id bug-pen-step-aside-hidden-after-cancel in the commit. | 2026-11-10 | c275b1ad | .planning/quick/261110-ac1-bug-pen-step-aside-hidden-after-cancel-app-src-ui-method-jsx |
 | 261110-ac2 | bug-edit-missing-after-cancelled-restored-draft — app/src/ui/RecipePage.jsx:181: edit eligibility reads the drafts list loaded at page open, which still names the plan draft Cancel just deleted, so on a first version with no batch Edit is missing until reload after cancelling a restored Next version draft. Fix: Edit comes back as soon as the draft is discarded. Add a test that fails without the fix. Name the row id bug-edit-missing-after-cancelled-restored-draft in the commit. | 2026-11-10 | 6565fbed | .planning/quick/261110-ac2-bug-edit-missing-after-cancelled-restored-draft-app-src-ui-r |
+| 228 | Keep the implicit state machine inventory in .planning/notes | 2026-11-10 | 84af260d | — |
 
 ### Roadmap Evolution
 

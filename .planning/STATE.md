@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-11-10T13:04:28.040Z"
+last_updated: "2026-11-10T13:05:02.421Z"
 last_activity: 2026-11-01
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: 9fbfa8ee4240eb535ce870b35c8b8896c4ad5673
+state_head: 56693731ad2223b2bf05218091e4e11f7562f011
 progress:
   total_phases: 5
   completed_phases: 3
@@ -630,6 +630,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261110-ac2 | bug-edit-missing-after-cancelled-restored-draft — app/src/ui/RecipePage.jsx:181: edit eligibility reads the drafts list loaded at page open, which still names the plan draft Cancel just deleted, so on a first version with no batch Edit is missing until reload after cancelling a restored Next version draft. Fix: Edit comes back as soon as the draft is discarded. Add a test that fails without the fix. Name the row id bug-edit-missing-after-cancelled-restored-draft in the commit. | 2026-11-10 | 6565fbed | .planning/quick/261110-ac2-bug-edit-missing-after-cancelled-restored-draft-app-src-ui-r |
 | 228 | Keep the implicit state machine inventory in .planning/notes | 2026-11-10 | 84af260d | — |
 | 229 | Split the state machine note into a living inventory and a dated audit note under .planning/state-machines | 2026-11-10 | 9fbfa8ee | — |
+| 230 | Add the state-machine-audit skill and the implicit-state line in Bishop's watch list | 2026-11-10 | 56693731 | — |
 
 ### Roadmap Evolution
 

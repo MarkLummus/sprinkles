@@ -134,13 +134,20 @@ export function VersionRow({
   // visible even when the save began with a pointer; blur returns the
   // line to ordinary ink. Must sit above the conditional render below,
   // same as every other ref/effect pair here.
+  // The landing is spent on the row's first effect run: router.jsx keys
+  // RecipePage by route, so every arrival mounts a fresh row. A pen open on
+  // that first run (a restored draft) spends it too. Later mode changes
+  // leave focus to the Develop focus-return above, so Cancel returns to
+  // Next version (bug-next-version-cancel-focus-after-save).
   const versionIdentityRef = useRef(null);
   const [landingFocusVisible, setLandingFocusVisible] = useState(false);
+  const landingPendingRef = useRef(focusVersionOnMount);
   useEffect(() => {
-    if (focusVersionOnMount && mode === 'reading') {
-      versionIdentityRef.current?.focus();
-      setLandingFocusVisible(true);
-    }
+    if (!landingPendingRef.current) return;
+    landingPendingRef.current = false;
+    if (mode !== 'reading') return;
+    versionIdentityRef.current?.focus();
+    setLandingFocusVisible(true);
   }, [focusVersionOnMount, mode]);
 
   // Focus-return for the Version name field's own blocked save (03.5-04

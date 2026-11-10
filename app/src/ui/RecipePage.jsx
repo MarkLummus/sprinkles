@@ -348,7 +348,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
 
   // The sheet's derived values, from the pure sheetView; the editing page's
   // pen compares against the stored version.
-  const view = sheetView({ version, baseline: version, mode, penDraft, parentVersion, showingChanges, batches, batchId });
+  //
+  // Show changes is the reading's own state: while any pen is open the Sheet draws that
+  // pen's own steps and table, whether or not the address holds the changes key. The
+  // address keeps the key, so the changes come back when the pen closes. VersionRow names
+  // its toggle from the address itself, a toggle not drawn while a pen is open.
+  // (bug-record-pen-no-skipped-with-show-changes)
+  const sheetShowsChanges = showingChanges && openPen === null;
+  const view = sheetView({ version, baseline: version, mode, penDraft, parentVersion, showingChanges: sheetShowsChanges, batches, batchId });
   const { openBatch } = view;
 
   // The band's Go to batch row (sketch 011 decision 30). It opens the Batch
@@ -455,7 +462,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
             penDraft={penDraft}
             draft={draft}
             parentVersion={parentVersion}
-            showingChanges={showingChanges}
+            showingChanges={sheetShowsChanges}
             openPen={openPen}
             below724={below724}
             blockedTarget={blockedTarget}

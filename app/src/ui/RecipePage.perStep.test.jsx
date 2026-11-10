@@ -1057,3 +1057,51 @@ describe('the recipe page one-line fields are one-row textareas (bug-ipad-tab-lo
     expect(container.querySelector('[aria-label="Step 1, target 1, label"]').value).toBe('temp');
   });
 });
+
+// bug-record-pen-no-skipped-with-show-changes: Show changes is the reading's own state, so the
+// record pen draws its own steps and table while the address still holds the changes key.
+describe('the record pen draws its own steps whether or not Show changes was on (bug-record-pen-no-skipped-with-show-changes)', () => {
+  const band = () => current.container.querySelector('.notebook-version__acts .notebook-action');
+  const sheet = () => current.container.querySelector('article.recipe-page');
+  const asMadeLabels = () =>
+    [...current.container.querySelectorAll('.ingredient-table .ingredient-table__as-made-field')].map((field) => field.getAttribute('aria-label'));
+  const removedHead = 'RemovedGum slurry — the only high-heat step';
+
+  it('draws Skipped and Done differently on every step and no change marks, and Cancel brings the changes back', async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await click(buttonByLabel('Step 2, remove'));
+    await setValue(container.querySelector('textarea[aria-label="Version name"]'), 'no slurry');
+    await click(buttonByText(container, 'Save as new version'));
+    await flush(() => store.createVersion.mock.calls.length > 0);
+    await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
+    await click(buttonByText(current.container, 'Show changes'));
+    await flush(() => buttonByText(current.container, 'Hide changes') !== null);
+    expect(headTexts()[0]).toBe(removedHead);
+
+    expect(band().textContent).toBe('Record batch');
+    await click(band());
+    await flush(() => current.container.querySelector('input[type="date"]') !== null);
+
+    expect(sheet().querySelector('input[type="checkbox"][aria-label="Step 1, skipped"]')).not.toBeNull();
+    const steps = [...sheet().querySelectorAll('.method-steps > .method-step')];
+    expect(steps).toHaveLength(9);
+    steps.forEach((step, i) => {
+      expect(step.querySelector(`input[type="checkbox"][aria-label="Step ${i + 1}, skipped"]`)).not.toBeNull();
+      expect(step.querySelector(`[aria-label="Step ${i + 1}, done differently"]`)).not.toBeNull();
+    });
+    expect(current.container.querySelector('.method-region').textContent).not.toContain('Gum slurry — the only high-heat step');
+    expect(sheet().querySelector('.struck-value, .prose-struck-beneath, .method-step__n--struck')).toBeNull();
+    expect(headTexts().some((text) => text.startsWith('Removed'))).toBe(false);
+    const labels = asMadeLabels();
+    expect(labels.length).toBeGreaterThan(0);
+    expect(labels.some((label) => label.startsWith('Locust bean gum'))).toBe(false);
+    expect(current.container.querySelector('[aria-label*="Step null"]')).toBeNull();
+
+    await click([...current.container.querySelectorAll('button')].find((button) => button.textContent.trim() === 'Cancel'));
+    await flush(() => buttonByText(current.container, 'Hide changes') !== null);
+    expect(current.container.querySelector('input[type="date"]')).toBeNull();
+    expect(headTexts()[0]).toBe(removedHead);
+  });
+});

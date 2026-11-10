@@ -164,20 +164,33 @@ describe('RecipeHistory — two or more versions fold (03.5-18 Task 1, decision 
 
   // 04-09 (sketch 011 decision 19's band line): a Next version draft kept on
   // another version of this recipe stands on the rail as its draft node,
-  // whether or not a pen is open here.
-  it('draws a waiting draft as the rail’s draft node with no pen open: no link, and the count includes it', () => {
-    const markup = renderHistory({
-      versions: [root, successor],
-      currentVersionId: 'v2',
-      allBatches: [],
-      openPen: null,
-      waitingDraft: { label: '40 g oil', createdAt: '2026-10-09T10:00:00.000Z' },
-    });
-    expect(markup).toContain('3 versions');
-    expect(markup).toContain('Version 3 · 40 g oil');
-    expect(markup).toContain('9 Oct');
-    expect(markup).toContain('>draft<');
-    expect(markup).not.toContain('Version 3 · 40 g oil</a>');
+  // whether or not a pen is open here. The draft node is plain text on both
+  // rails: no version is stored behind it (bug-history-rail-draft-link).
+  it('draws a waiting draft as plain text, not a link, in either arrangement, and the count includes it', () => {
+    for (const belowDesktop of [false, true]) {
+      const markup = renderHistory({
+        versions: [root, successor],
+        currentVersionId: 'v2',
+        allBatches: [],
+        openPen: null,
+        waitingDraft: { label: '40 g oil', createdAt: '2026-10-09T10:00:00.000Z' },
+        belowDesktop,
+      });
+      expect(markup).toContain('3 versions');
+      expect(markup).toContain('Version 3 · 40 g oil');
+      expect(markup).toContain('9 Oct');
+      const anchors = markup.match(/<a\b[^>]*>/g) ?? [];
+      expect(anchors).toHaveLength(1);
+      expect(anchors[0]).toContain('href="/notebook/recipe-1/v1"');
+      expect(markup).not.toContain('href="/notebook/recipe-1/draft"');
+      if (!belowDesktop) {
+        expect(markup).toContain('>draft<');
+        const at = markup.indexOf('Version 3 · 40 g oil');
+        const node = markup.slice(markup.lastIndexOf('<li', at), markup.indexOf('</li>', at));
+        expect(node).toContain('<span class="notebook-history__node-inner">');
+        expect(node).not.toContain('<a ');
+      }
+    }
   });
 
   it('draws it beside an open record pen too, and in the upright list', () => {

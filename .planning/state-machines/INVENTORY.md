@@ -1,13 +1,14 @@
-# Implicit state machines in app/src (audit 2026-11-10)
+# Implicit state machines in app/src: the inventory
 
-An inventory of state that behaves as a state machine without being written as one. Mark asked for it as an exploratory review to find defects. This file lives in .planning/notes; it began as a session scratchpad. Paths are relative to app/src. Line numbers are as of commit 4e678dfa and drift.
+A living list of state that behaves as a state machine without being written as one: flags, refs, attempt counters, tri-state loads and `location.state` intents that together encode a lifecycle. The `state-machine-audit` skill updates this file in place on each run; it does not start a new one. Dated audit notes beside it hold each run’s verdicts.
 
-What is verified:
-- Part A was read firsthand by the main session.
-- "POSSIBLE DEFECT verification" and "Bishop pass" near the end were checked against the code, the second with WebKit probes on the Mac. Nothing here is device-verified.
-- Parts B to E are subagent reports. Their defect-shaped claims were checked in the Bishop pass; their descriptions of how state is held are NOT verified.
+Paths are relative to app/src. Line numbers were right at the commit named in "Last updated" and drift; find the real place before acting on one.
 
-Outcome: seven bug rows went to Mark’s List; five were fixed in quick batch 261110-abx (see the Bishop pass section for the row ids).
+Last updated: 2026-11-10, at commit 4e678dfa, full sweep. Five bugs from that sweep were fixed afterwards in quick batch 261110-abx (see 2026-11-10-audit.md), so the entries they touch are due a refresh on the next run: the History rail draft node, Show changes under an open pen, the version row landing, the on-demand purpose and aside field, and the drafts list after a discard.
+
+How far to trust an entry:
+- Part A was read firsthand.
+- Parts B to E are subagent reports. Their defect-shaped claims were checked (see the audit note); their descriptions of how state is held are NOT verified.
 
 ## A. Main session, read firsthand (20)
 1. Pen mode: reading / plan / record / amend. `mode` + `amendingBatchId`. ui/RecipePage.jsx:104, domain/penDraft.js:135 (derivePenState). Illegal: recording with draft null; amend target set in reading (T-02-24 bug). setMode called from three hooks.
@@ -98,27 +99,3 @@ Caveat: usePenDraft.js header cites D-04 "plain useState, no useReducer"; making
 - Step membership has two encodings (step.uses and portion.step) in both the pen and the creation editor.
 - Save flows: five copies of lock / in flight / blocked / failed (batch, version, creation, rename, first-version save-over).
 - Attempt counters and focus-request refs stand in for events throughout; none has a consumed flag.
-
-## POSSIBLE DEFECT verification (main session, read firsthand 2026-11-10, nothing changed)
-- History rail draft link: CONFIRMED. RecipeHistory.jsx:138 tests `entry.inView || openPen` only; upright (104) also tests isDraft. RecipePage.jsx:440 passes waitingDraft with openPen null, so the node is a Link to notebookPath(recipeId, 'draft'). The test at RecipeHistory.test.jsx:168-181 is vacuous: it looks for `40 g oil</a>` but the name closes with `</span>`.
-- Stale catalog terminal: TRUE BUT INTENDED. setCatalogStale(true) at Shell.jsx:548 is the only setter; comment 539-546 and IMPORT_RELOAD_LINE ("Reload the page to see it") say withheld until reload. A later good import does not clear it. Not a defect unless Mark wants it to.
-- Creation save, navigate inside try: THEORETICAL. Only a synchronous throw from navigate() (CreationPage.jsx:619, 632) reaches the catch after commit; no real path found.
-- Cancel without a lock: CONFIRMED, narrow. handleCancel (539) reads savingRef but takes no lock, so Save pressed while the draft delete is out runs; the recipe can be saved while Cancel then navigates to the Notebook with discarded: true. Window is one IndexedDB delete.
-- Gate skips checkAllocation: NOT A DEFECT. Every draft entering the editor passes normalizeAllocation (CreationPage.jsx:164, 226; EditRoute.jsx:67) and the ops keep the invariant; the throw is the documented caller-bug path (creationSave.js:6-10).
-
-## Bishop pass over 12 defect-shaped claims from B to E (2026-11-10; WebKit probes on the Mac, no device, suite not re-run)
-Rows filed on Mark's List: bug-history-rail-draft-link, bug-creation-cancel-save-race, bug-record-pen-no-skipped-with-show-changes (major), bug-next-version-cancel-focus-after-save, bug-pen-step-aside-hidden-after-cancel, bug-edit-missing-after-cancelled-restored-draft, bug-phone-record-cancel-focus-wrong-opener.
-1. Opener focus dropped while unmounted: UNREACHABLE (RecipePage.jsx:188-193 refuses pens while editing). Focus return fails for other reasons: see E1, E4.
-2. saveAction 'over' without canSaveOver: UNREACHABLE (useVersionPen.js:233 same expression); PenFoot part WRONG.
-3. libraryFailed leaves Save on, no-rows silent: real only when the library read fails; page already says "Couldn't open your recipes". No row.
-4. No Restore under removed step / open removed pen step: INTENDED (sketch 011 decision 51; Method.jsx:333-341).
-5. "Step null": only via hand-typed ?changes on a parentless version holding a removed step, then Record batch. No row.
-6. Add purpose/aside after Cancel: CONFIRMED, cosmetic. Row filed.
-7. Import gates outside transaction: UNREACHABLE (nothing deletes a version or recipe). Batch versionId unresolved: CONFIRMED, already WR-01 in 04-REVIEW-DISPOSITION.md / todo-harden-file-import-and-draft-saves. No new row.
-8. Draft key ownership: INTENDED (repository.js:453-460, 485-490) / UNREACHABLE (177).
-9. Print laid not cleared: UNREACHABLE (PrintSheet.jsx:26-30 keys the page).
-10. Mid-save pick/announce: latent; body controls not disabled, save window ~13 ms. No row.
-11. Repeated row: UNREACHABLE (one addRow caller, picker blocks it).
-12. rAF never cancelled: no effect.
-Extras found by Bishop: E1 focus on heading after save-arrival + Cancel (minor); E2 record pen with Show changes on has no Skipped/Done differently, Method.jsx:590 (major; main session read the line and agrees); E3 Edit missing after cancelling a restored draft (cosmetic); E4 393 band opener focus (cosmetic). All four filed.
-The probe scripts were throwaway session files and are not kept.

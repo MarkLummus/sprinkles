@@ -1105,3 +1105,72 @@ describe('the record pen draws its own steps whether or not Show changes was on 
     expect(headTexts()[0]).toBe(removedHead);
   });
 });
+
+// bug-pen-step-aside-hidden-after-cancel: a version-pen step stays mounted for the whole pen session, so
+// its on-demand purpose and aside state outlives a Cancel that puts the stored words back into the draft.
+// A step has to read whether the draft holds text again each time it opens.
+describe("a step's purpose or aside that holds text shows when the step opens again (bug-pen-step-aside-hidden-after-cancel)", () => {
+  const textareaByLabel = (label) => current.container.querySelector(`textarea[aria-label="${label}"]`);
+  // jsdom does not move focus on a Tab key, so leaving the field is a focus then a blur.
+  const leaveField = async (element) => {
+    await act(async () => element.focus());
+    await act(async () => element.blur());
+  };
+  const storedStep = (n) => oliveOilVersion.method.find((step) => step.n === n);
+
+  async function openPen() {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    return container;
+  }
+
+  // Clear the field and leave it so it closes, press the step's Cancel, then open the step again.
+  async function clearLeaveCancelReopen(n, fieldName) {
+    await click(buttonByLabel(`Step ${n}, edit this step`));
+    const field = textareaByLabel(`Step ${n}, ${fieldName}`);
+    expect(field).not.toBeNull();
+    const li = field.closest('li');
+    await setValue(field, '');
+    await leaveField(field);
+    expect(textareaByLabel(`Step ${n}, ${fieldName}`)).toBeNull();
+    expect(buttonByLabel(`Step ${n}, add ${fieldName}`)).not.toBeNull();
+    await click(buttonByText(li, 'Cancel'));
+    await click(buttonByLabel(`Step ${n}, edit this step`));
+  }
+
+  it('reopens Step 2 with its stored aside word for word', async () => {
+    await openPen();
+    await clearLeaveCancelReopen(2, 'aside');
+    const field = textareaByLabel('Step 2, aside');
+    expect(field).not.toBeNull();
+    expect(field.value).toBe(storedStep(2).aside);
+    expect(buttonByLabel('Step 2, add aside')).toBeNull();
+    expect(document.activeElement).not.toBe(field);
+  });
+
+  it('reopens Step 1 with its stored purpose word for word', async () => {
+    await openPen();
+    await clearLeaveCancelReopen(1, 'purpose');
+    const field = textareaByLabel('Step 1, purpose');
+    expect(field).not.toBeNull();
+    expect(field.value).toBe(storedStep(1).purpose);
+    expect(buttonByLabel('Step 1, add purpose')).toBeNull();
+    expect(document.activeElement).not.toBe(field);
+  });
+
+  it('reopens Step 3, which has no aside, behind Add aside after text typed there is cancelled', async () => {
+    await openPen();
+    await click(buttonByLabel('Step 3, edit this step'));
+    await click(buttonByLabel('Step 3, add aside'));
+    const field = textareaByLabel('Step 3, aside');
+    const li = field.closest('li');
+    await setValue(field, 'Keep whisking');
+    await leaveField(field);
+    expect(textareaByLabel('Step 3, aside')).not.toBeNull();
+    await click(buttonByText(li, 'Cancel'));
+    await click(buttonByLabel('Step 3, edit this step'));
+    expect(textareaByLabel('Step 3, aside')).toBeNull();
+    expect(buttonByLabel('Step 3, add aside')).not.toBeNull();
+  });
+});

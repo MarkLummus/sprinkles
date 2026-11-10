@@ -50,6 +50,11 @@ function coverageSentence(coveredRows, currentStepNumbers) {
 // caution, carried into this mechanism). The focus effect only fires for a
 // field the maker's own press opened, so the version line's autoFocus wins
 // on mount instead of losing to whichever already-texted field renders last.
+// A caller whose value can be put back behind a closed field reads the seed
+// again with seedOpen when the field's form opens. The version pen's step
+// Cancel is such a case: it restores the step while StepPenBody stays mounted
+// (bug-pen-step-aside-hidden-after-cancel). seedOpen moves no focus. The
+// creation editor and the record pen's Done differently line never call it.
 export function useOnDemandField(initialOpen, onCollapse) {
   const [isOpen, setIsOpen] = useState(initialOpen);
   const fieldRef = useRef(null);
@@ -72,7 +77,12 @@ export function useOnDemandField(initialOpen, onCollapse) {
     }
   }
 
-  return { isOpen, openField, fieldRef, handleBlur };
+  function seedOpen(open) {
+    openedByUser.current = false;
+    setIsOpen(open);
+  }
+
+  return { isOpen, openField, fieldRef, handleBlur, seedOpen };
 }
 
 // A step's body while the plan's pen is open (D-23, D-24, D-28; sketch 011
@@ -115,6 +125,14 @@ export function StepPenBody({
     onChangePenStepField(step.n, 'purpose', ''),
   );
   const aside = useOnDemandField(Boolean(draftStep.aside), () => onChangePenStepField(step.n, 'aside', ''));
+
+  // A step opens with its purpose and aside open exactly when the draft holds their text, read on
+  // the click, since Cancel may have put text back behind a closed field.
+  function handleOpen() {
+    purpose.seedOpen(Boolean(draftStep.purpose));
+    aside.seedOpen(Boolean(draftStep.aside));
+    onOpen();
+  }
 
   // The uses line (D-24): closed by default, reading the names live off
   // the draft on every render — never a snapshot — so the line above the
@@ -425,7 +443,7 @@ export function StepPenBody({
         <Button
           className="text-control"
           aria-label={fieldLabel(step, draftStep.removed, 'edit this step')}
-          onClick={onOpen}
+          onClick={handleOpen}
         >
           Edit this step
         </Button>

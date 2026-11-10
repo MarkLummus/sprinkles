@@ -135,7 +135,7 @@ export function RecipeHistory({
                 );
                 return (
                   <li key={entry.id} className="notebook-history__node" data-in-view={entry.inView ? 'true' : undefined}>
-                    {entry.inView || openPen ? (
+                    {entry.inView || entry.isDraft || openPen ? (
                       <span className="notebook-history__node-inner" aria-current={entry.inView ? 'page' : undefined}>
                         {inner}
                       </span>

@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "batch_id": "261110-abx",
+  "created_at": "2026-11-10T12:26:18.039Z",
+  "options": {},
+  "base_revision": "4e678dfaf834b88eebd21555a498c805125dc5b8",
+  "items": [
+    {
+      "quick_id": "261110-aby",
+      "client_id": null,
+      "description": "bug-history-rail-draft-link — app/src/ui/RecipeHistory.jsx:138: the wide (1366+) History rail draws a waiting Next version draft node as a Link to notebookPath(recipeId, 'draft'). The horizontal branch tests only `entry.inView || openPen`; the upright branch (:104) also tests `entry.isDraft`. Fix: the draft node is plain text on the wide rail too. The test at app/src/ui/RecipeHistory.test.jsx:168-181 is vacuous (it looks for `40 g oil</a>`, but the name closes with `</span>`): rewrite it so it fails without the fix. Name the row id bug-history-rail-draft-link in the commit.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/RecipeHistory.jsx",
+        "app/src/ui/RecipeHistory.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "a3bf381b",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261110-abz",
+      "client_id": null,
+      "description": "bug-record-pen-no-skipped-with-show-changes (major) — app/src/ui/Method.jsx:590: `isShowingChanges = !isDeveloping && showingChanges && changeDiff != null` ignores the record pen, so with ?changes in the address, Record batch opens a pen whose steps draw as changes with no Skipped and no Done differently controls; nothing strips ?changes when a pen opens (app/src/ui/RecipePage.jsx:93, :371) and the toggle is hidden while a pen is open. Fix: the record pen draws its own steps with Skipped and Done differently whether or not Show changes was on. Check the sibling guards so the table and Method agree in recording (app/src/ui/IngredientTable.jsx ~689-697, ~934; app/src/ui/RecipeSheet.jsx:92, :161, :205). Add a test that fails without the fix. Name the row id bug-record-pen-no-skipped-with-show-changes in the commit.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/RecipePage.jsx",
+        "app/src/ui/RecipePage.perStep.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "f0d24168",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261110-ac0",
+      "client_id": null,
+      "description": "bug-next-version-cancel-focus-after-save — app/src/ui/VersionRow.jsx:139-144: after arriving from a save (history state focusVersion), Next version then Cancel puts focus on the version heading, not the Next version opener; the landing effect re-fires each time mode returns to reading. Fix: the arrival landing happens once, and Cancel returns focus to Next version. Add a test that fails without the fix. Name the row id bug-next-version-cancel-focus-after-save in the commit.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/VersionRow.jsx",
+        "app/src/ui/VersionRow.landing.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "c5373fb2",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261110-ac1",
+      "client_id": null,
+      "description": "bug-pen-step-aside-hidden-after-cancel — app/src/ui/Method.jsx:53-54, :117 (on-demand purpose/aside field): the open/closed seed is read once, so after clearing the aside, Tab, Cancel on the step, and Edit this step again, the field is hidden behind \"Add aside\" although the draft holds the text. Same for purpose. Fix: a purpose or aside that holds text is always shown when the step opens. Add a test that fails without the fix. Touches Method.jsx like the show-changes item, so it must not run in parallel with it. Name the row id bug-pen-step-aside-hidden-after-cancel in the commit.",
+      "status": "complete",
+      "depends_on": [
+        "261110-abz"
+      ],
+      "planned_files": [
+        "app/src/ui/Method.jsx",
+        "app/src/ui/RecipePage.perStep.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 1,
+      "commit": "c275b1ad",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261110-ac2",
+      "client_id": null,
+      "description": "bug-edit-missing-after-cancelled-restored-draft — app/src/ui/RecipePage.jsx:181: edit eligibility reads the drafts list loaded at page open, which still names the plan draft Cancel just deleted, so on a first version with no batch Edit is missing until reload after cancelling a restored Next version draft. Fix: Edit comes back as soon as the draft is discarded. Add a test that fails without the fix. Name the row id bug-edit-missing-after-cancelled-restored-draft in the commit.",
+      "status": "complete",
+      "depends_on": [
+        "261110-abz"
+      ],
+      "planned_files": [
+        "app/src/ui/RecipePage.edit.test.jsx",
+        "app/src/ui/useRecipeData.js",
+        "app/src/ui/RecipePage.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 1,
+      "commit": "6565fbed",
+      "failure_reason": null
+    }
+  ]
+}

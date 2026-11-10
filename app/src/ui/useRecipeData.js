@@ -8,8 +8,9 @@ import { repository } from '../store/repository.js';
 // is settled before the kept-draft restore, which waits on loadFailed. The hook
 // never reads version outside an effect, so it is safe above the page's early
 // returns. It owns no title, draft or pen: the setters it hands back
-// (setVersion, setVersions, setBatches, setRecipe) are for the page's own
-// save handlers, which keep calling them from where they are.
+// (setVersion, setVersions, setBatches, setRecipe, setDrafts) are for the
+// page's own save and discard handlers, which keep calling them from where
+// they are.
 export function useRecipeData(versionId) {
   const [version, setVersion] = useState(undefined);
   const [versions, setVersions] = useState([]);
@@ -18,7 +19,8 @@ export function useRecipeData(versionId) {
   // them, since an amend draft is checked against its batch (04-09).
   const [batchesLoaded, setBatchesLoaded] = useState(false);
   // Every kept draft, read once: the band names a Next version draft waiting on
-  // another version of this recipe (04-09).
+  // another version of this recipe (04-09). The page then drops its own
+  // version's pen draft from the list when it discards it.
   const [drafts, setDrafts] = useState([]);
   // Whether the drafts were read: the Home Next version request waits for it.
   const [draftsLoaded, setDraftsLoaded] = useState(false);
@@ -210,6 +212,7 @@ export function useRecipeData(versionId) {
     setBatches,
     batchesLoaded,
     drafts,
+    setDrafts,
     draftsLoaded,
     versionsLoaded,
     loadFailed,

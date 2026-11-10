@@ -74,6 +74,7 @@ import { rowFromLibraryRecord } from '../domain/versionRow.js';
 import { createBatch } from '../domain/batch.js';
 import { buildDraftRecord } from '../domain/draft.js';
 import { penDraftFromVersion } from '../domain/penDraft.js';
+import { blankRecordDraft } from '../domain/recordDraft.js';
 import { draftFromVersion } from '../domain/creationSave.js';
 import { STYLE_ROWS } from '../data/styles.js';
 import { library } from '../data/library.js';
@@ -281,6 +282,59 @@ describe('Edit on a saved first version (STRUCT-04)', () => {
     await mountAt(`/notebook/${oliveOilVersion.recipeId}/${oliveOilVersion.id}`);
     expect(buttonByText('Next version')).not.toBeNull();
     expect(buttonByText('Resume editing')).toBeNull();
+  });
+});
+
+describe('Edit comes back once a restored pen draft is discarded (bug-edit-missing-after-cancelled-restored-draft)', () => {
+  async function mountWithKeptDraft(kind, payload) {
+    store.drafts.set(VERSION_ID, keptDraft(kind, payload));
+    await mountAt(PAGE_PATH);
+    await flush(() => buttonByText('Cancel') !== null);
+    expect(buttonByText('Cancel')).not.toBeNull();
+  }
+
+  it('draws Edit at once after Cancel on a restored Next version draft', async () => {
+    const { version } = seedVanilla();
+    await mountWithKeptDraft('plan', { ...penDraftFromVersion(version), versionLabel: 'less milk' });
+    expect(buttonByText('Edit')).toBeNull();
+
+    await click(buttonByText('Cancel'));
+    await flush(() => buttonByText('Edit') !== null);
+
+    expect(buttonByText('Edit')).not.toBeNull();
+    expect(actsWords()).toEqual(['Next version', 'Edit', 'Print sheet']);
+    expect(repository.deleteDraft).toHaveBeenCalledWith(VERSION_ID, 'pen');
+    expect(store.drafts.has(VERSION_ID)).toBe(false);
+  });
+
+  it('draws Edit at once after Cancel on a restored Record batch draft', async () => {
+    seedVanilla();
+    await mountWithKeptDraft('record', { ...blankRecordDraft(), churnDate: '2026-10-09', outOfMachineTempC: '-6' });
+    expect(buttonByText('Edit')).toBeNull();
+
+    await click(buttonByText('Cancel'));
+    await flush(() => buttonByText('Edit') !== null);
+
+    expect(buttonByText('Edit')).not.toBeNull();
+    expect(actsWords()).toEqual(['Next version', 'Edit', 'Print sheet']);
+    expect(repository.deleteDraft).toHaveBeenCalledWith(VERSION_ID, 'pen');
+    expect(store.drafts.has(VERSION_ID)).toBe(false);
+  });
+
+  it('keeps Edit away when the draft cannot be deleted, because the record is still stored', async () => {
+    const { version } = seedVanilla();
+    await mountWithKeptDraft('plan', { ...penDraftFromVersion(version), versionLabel: 'less milk' });
+    repository.deleteDraft.mockImplementationOnce(async () => {
+      throw new Error('delete failed');
+    });
+
+    await click(buttonByText('Cancel'));
+    await flush();
+
+    expect(buttonByText('Next version')).not.toBeNull();
+    expect(buttonByText('Edit')).toBeNull();
+    expect(buttonByText('Resume editing')).toBeNull();
+    expect(store.drafts.has(VERSION_ID)).toBe(true);
   });
 });
 

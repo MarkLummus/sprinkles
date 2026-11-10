@@ -96,7 +96,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   const { formStatus, setFormStatus, tastingStatus, setTastingStatus, recordStatus, setRecordStatus, announce } = useAnnouncer();
   // The eight record reads and the state they fill, settled before the kept-draft
   // restore that waits on loadFailed (useRecipeData owns them).
-  const { version, setVersion, versions, setVersions, batches, setBatches, batchesLoaded, drafts, draftsLoaded, versionsLoaded, loadFailed, recipe, setRecipe, citedBatch, parentVersion, allBatches } = useRecipeData(versionId);
+  const { version, setVersion, versions, setVersions, batches, setBatches, batchesLoaded, drafts, setDrafts, draftsLoaded, versionsLoaded, loadFailed, recipe, setRecipe, citedBatch, parentVersion, allBatches } = useRecipeData(versionId);
   // The pen layer's state (route-recipe-batch.md § 3): a mode, one of
   // 'reading' | 'recording' | 'developing', and the draft form state it is
   // recorded into. mode is never derived from the URL — only the margin's
@@ -105,8 +105,24 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // The kept draft's writer (refs, flush and discard; no effect), then the
   // record pen and the version pen, which take discardDraft from it (D-08).
   // useKeptDraft, below, takes the writer and both pens' restores.
+  // The pens take the page's discardDraft: the writer's discard plus, once its
+  // delete resolves, this version's pen draft dropped from the drafts list, so
+  // Edit comes back without a reload (bug-edit-missing-after-cancelled-restored-draft).
+  // The trim waits for the delete: while the record may still be stored, Edit
+  // must not be offered (T-11-56), and a failed delete trims nothing. An edit,
+  // a create or an unknown kind stays in the list, as the store leaves it.
   const draftWriter = useDraftWriter(versionId);
-  const { discardDraft } = draftWriter;
+  const discardDraft = () => {
+    const deleted = draftWriter.discardDraft();
+    deleted.then(
+      () =>
+        setDrafts((kept) =>
+          kept.filter((record) => !(record.versionId === versionId && ['plan', 'record', 'amend'].includes(record.kind))),
+        ),
+      () => {},
+    );
+    return deleted;
+  };
   // The record pen's draft, its amend target, baseline and opener, its
   // blocked-save state, the pending undo, the attempt counters the Batch aside's
   // focus landings read, the batch save and the nineteen batch handlers

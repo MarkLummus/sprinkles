@@ -50,7 +50,8 @@
     "security_block_on": "high",
     "_auto_chain_active": false,
     "use_worktrees": true,
-    "ui_review": true
+    "ui_review": true,
+    "state_machine_audit": true
   },
   "ship": {
     "pr_body_sections": [

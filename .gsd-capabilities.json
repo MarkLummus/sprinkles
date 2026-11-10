@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "updatedAt": "2026-11-10T13:25:00.165Z",
+  "entries": {
+    "state-machine-audit": {
+      "id": "state-machine-audit",
+      "version": "0.1.0",
+      "source": "./.planning/capabilities/state-machine-audit",
+      "integrity": "",
+      "files": [
+        ".gsd/capabilities/state-machine-audit"
+      ],
+      "sharedEdits": []
+    }
+  }
+}

@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-11-10T13:25:49.992Z"
+last_updated: "2026-11-14T17:26:55.768Z"
 last_activity: 2026-11-01
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: 65d032721c0c7bb23183765bd11e49b3b1b9726a
+state_head: 82a2ff193fe46a3442f8f77c724360399e328c5f
 progress:
   total_phases: 5
   completed_phases: 3
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-21)
 Phase: 11 (Steps, structure, save and print) — EXECUTING
 Plan: 1 of 14
 Status: Executing Phase 11
-Last activity: 2026-11-01 - Completed quick batch 261101-nrg: every single-line text field is a one-row textarea so iPad hardware Tab moves on
+Last activity: 2026-11-14 - Completed quick task 261114-gxe: Edit this step lands focus on the step's lead-in, not Cancel (bug-edit-this-step-focus-on-cancel)
 
 Progress: [██████░░░░] 60%
 
@@ -632,6 +632,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 229 | Split the state machine note into a living inventory and a dated audit note under .planning/state-machines | 2026-11-10 | 9fbfa8ee | — |
 | 230 | Add the state-machine-audit skill and the implicit-state line in Bishop's watch list | 2026-11-10 | 56693731 | — |
 | 231 | Wire the per-phase state machine audit in as a project GSD capability at execute:post | 2026-11-10 | 65d03272 | — |
+| 261114-gxe | Edit this step lands focus on the step's lead-in, not Cancel (bug-edit-this-step-focus-on-cancel) | 2026-11-14 | 82a2ff19 | [261114-gxe-edit-this-step-lands-focus-on-the-step-s](./quick/261114-gxe-edit-this-step-lands-focus-on-the-step-s/) |
 
 ### Roadmap Evolution
 

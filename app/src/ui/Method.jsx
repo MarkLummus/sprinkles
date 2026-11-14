@@ -139,6 +139,13 @@ export function StepPenBody({
   // checklist updates as boxes change while it is open.
   const [usesOpen, setUsesOpen] = useState(false);
   const usesControlRef = useRef(null);
+  const leadInRef = useRef(null);
+  // bug-edit-this-step-focus-on-cancel: the closed step's Edit this step button node is reused as the
+  // open step's Cancel, so focus stayed on it. Opening the step puts focus in its lead-in. The branches
+  // stay unkeyed so focus after Cancel still lands on Edit this step.
+  useEffect(() => {
+    if (isOpen) leadInRef.current?.focus();
+  }, [isOpen]);
   const usesNames = rows.filter((row) => (draftStep.uses ?? []).includes(row.id)).sort((a, b) => draftStep.uses.indexOf(a.id) - draftStep.uses.indexOf(b.id)).map((row) => row.ingredientName);
 
   function handleUsesKeyDown(event) {
@@ -175,6 +182,7 @@ export function StepPenBody({
           <textarea
             rows="1"
             className="prose-field prose-field--lead-in"
+            ref={leadInRef}
             value={draftStep.leadIn}
             aria-label={fieldLabel(step, draftStep.removed, 'lead-in')}
             onChange={(event) => onChangePenStepField(step.n, 'leadIn', stripNewlines(event.target.value))}

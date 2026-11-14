@@ -1174,3 +1174,44 @@ describe("a step's purpose or aside that holds text shows when the step opens ag
     expect(buttonByLabel('Step 3, add aside')).not.toBeNull();
   });
 });
+
+// bug-edit-this-step-focus-on-cancel: React reuses the closed step's Edit this step button node as the open
+// step's Cancel (both sit at the same place, unkeyed), so focus stayed on a button that now read Cancel.
+describe("Edit this step puts focus in the step's lead-in (bug-edit-this-step-focus-on-cancel)", () => {
+  async function penOpen() {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    return container;
+  }
+  const leadIn = (n) => current.container.querySelector(`textarea[aria-label="Step ${n}, lead-in"]`);
+
+  it("lands focus in the lead-in when Edit this step is pressed with the keyboard on the focused button", async () => {
+    await penOpen();
+    const edit = buttonByLabel('Step 1, edit this step');
+    await act(async () => edit.focus());
+    await click(edit);
+    expect(leadIn(1)).not.toBeNull();
+    expect(document.activeElement).toBe(leadIn(1));
+  });
+
+  it("lands focus in the lead-in when Edit this step is pressed with a pointer and nothing is focused on the button", async () => {
+    await penOpen();
+    await click(buttonByLabel('Step 2, edit this step'));
+    expect(leadIn(2)).not.toBeNull();
+    expect(document.activeElement).toBe(leadIn(2));
+  });
+
+  it("still lands focus on Edit this step after Cancel on that step", async () => {
+    await penOpen();
+    const edit = buttonByLabel('Step 1, edit this step');
+    await act(async () => edit.focus());
+    await click(edit);
+    const li = leadIn(1).closest('li');
+    const cancel = buttonByText(li, 'Cancel');
+    await act(async () => cancel.focus());
+    await click(cancel);
+    expect(leadIn(1)).toBeNull();
+    expect(document.activeElement).toBe(buttonByLabel('Step 1, edit this step'));
+  });
+});

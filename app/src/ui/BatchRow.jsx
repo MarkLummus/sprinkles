@@ -488,6 +488,7 @@ export function BatchRow({
   blockedDateAttempt = null,
   addTastingAttempt = null,
   amendOpener = 'correct',
+  recordOpener = 'log',
   formStatus = '',
   tastingStatus = '',
   recordStatus = '',
@@ -552,12 +553,14 @@ export function BatchRow({
   // verbatim (03.5-07 Task 1, decisions_recorded 1) — this row now owns
   // the button beside Batches/Correct. Shared by both the head's "Record
   // another" (a batch is in view) and the no-batch state's "Record
-  // batch" below, since exactly one of the two ever mounts.
+  // batch" below, since exactly one of the two ever mounts. Only the log's
+  // own opener gets focus back: a pen the band's Record another or Record
+  // batch opened returns to the band (VersionRow.jsx).
   const recordButtonRef = useRef(null);
   const wasRecordingRef = useRef(false);
   useEffect(() => {
     if (openPen === 'record') {
-      wasRecordingRef.current = true;
+      wasRecordingRef.current = recordOpener === 'log';
       return;
     }
     if (wasRecordingRef.current) {
@@ -800,7 +803,7 @@ export function BatchRow({
             <Button
               ref={recordButtonRef}
               className="text-control batch-row__record"
-              onClick={onStartRecording}
+              onClick={() => onStartRecording()}
             >
               Record another
             </Button>
@@ -1330,7 +1333,7 @@ export function BatchRow({
                 there is Phase 4's, out of scope here. */}
             <p>{NO_BATCH_PROSE}</p>
             {openPen === null && !recordingLocked && (
-              <Button ref={recordButtonRef} className="notebook-action" onClick={onStartRecording}>
+              <Button ref={recordButtonRef} className="notebook-action" onClick={() => onStartRecording()}>
                 Record batch
               </Button>
             )}

@@ -132,6 +132,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     amendingBatchId,
     amendBaseline,
     amendOpener,
+    recordOpener,
     fieldErrors,
     invalidFieldTarget,
     blockedDateMessage,
@@ -204,8 +205,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   const handleStartDeveloping = () => {
     if (editState !== 'editing') startDeveloping();
   };
-  const handleStartRecording = () => {
-    if (editState !== 'editing') startRecording();
+  const handleStartRecording = (options) => {
+    if (editState !== 'editing') startRecording(options);
   };
 
   // D-20: the tab title leads with the recipe name while the page is mounted
@@ -446,6 +447,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
             onStartRecording={handleStartRecording}
             onStartTasting={handleStartTasting}
             amendOpener={amendOpener}
+            recordOpener={recordOpener}
             draft={openPen === null ? waitingPlanDraft : null}
             editState={editState}
             onEdit={() => navigate(editPath(version.recipeId, version.id))}
@@ -532,6 +534,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
             blockedDateAttempt={blockedDateAttempt}
             addTastingAttempt={addTastingAttempt}
             amendOpener={amendOpener}
+            recordOpener={recordOpener}
             formStatus={formStatus}
             tastingStatus={tastingStatus}
             recordStatus={recordStatus}

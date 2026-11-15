@@ -54,6 +54,11 @@ export function useRecordDraft() {
   // it as captured when the pen opened, so the control that opened a pen is
   // the one that gets focus back when it closes.
   const [amendOpener, setAmendOpener] = useState('correct');
+  // Which control opened the new-record pen: 'log' (the log's Record another
+  // or Record batch) or 'band' (the band's, below 724). The same rule as
+  // amendOpener: every open overwrites it, and the focus-return effects
+  // (BatchRow's for the log, VersionRow's for the band) read it.
+  const [recordOpener, setRecordOpener] = useState('log');
   // pendingUndo holds the removed tasting's own values as a plain object, or
   // null while no removal is pending — "an undo exists" is exactly
   // pendingUndo !== null.
@@ -135,10 +140,11 @@ export function useRecordDraft() {
   // would take the amend path — overwriting the amended batch's record and
   // stamping a false changed date on it, while the new batch is never created
   // (T-02-24). amendOpener is left alone.
-  function openNew() {
+  function openNew(opener = 'log') {
     setAmendingBatchId(null);
     setAmendBaseline(null);
     setDraft(blankRecordDraft());
+    setRecordOpener(opener);
     resetBlocks();
   }
 
@@ -231,6 +237,7 @@ export function useRecordDraft() {
     amendingBatchId,
     amendBaseline,
     amendOpener,
+    recordOpener,
     fieldErrors,
     invalidFieldTarget,
     blockedDateMessage,

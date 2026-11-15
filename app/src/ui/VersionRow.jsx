@@ -70,12 +70,14 @@ export function VersionRow({
   // handlers are RecipePage's own: onStartRecording is the one the log's
   // Record another and Record batch call; onStartTasting opens the amend
   // pen on the batch the label rule read, with the tasting step already open
-  // (261002-wn0). amendOpener is RecipePage's record of which control opened
-  // the amend pen, so this row takes focus back only when it was the one.
+  // (261002-wn0). amendOpener and recordOpener are RecipePage's record of
+  // which control opened the amend pen and the new-record pen, so this row
+  // takes focus back only when it was the one.
   below724 = false,
   onStartRecording = () => {},
   onStartTasting = () => {},
   amendOpener = 'correct',
+  recordOpener = 'log',
   // The Next version draft kept on another version of this recipe (04-09,
   // sketch 011 decision 19's band line): the stored record, or null. Named
   // under the identity line only while no pen is open here.
@@ -105,26 +107,32 @@ export function VersionRow({
     }
   }, [mode]);
 
-  // Focus-return for the band's Record tasting (sketch 011 decision 30,
+  // Focus-return for the band's record act (sketch 011 decision 30,
   // Mark 2026-10-02; route-recipe-batch.md section 6: Cancel returns focus
-  // to the control that opened the pen). The button unmounts while a pen is
-  // open, so the same ref and was-open pair as Develop above. Above the
-  // conditional render, like every other ref/effect pair here.
-  const recordTastingButtonRef = useRef(null);
-  const wasTastingOpenerRef = useRef(false);
+  // to the control that opened the pen): Record tasting opens the amend pen,
+  // Record another and Record batch the new-record pen
+  // (bug-phone-record-cancel-focus-wrong-opener). The one button unmounts
+  // while a pen is open, so the same ref and was-open pair as Develop above.
+  // Above the conditional render, like every other ref/effect pair here.
+  const recordActButtonRef = useRef(null);
+  const wasBandOpenerRef = useRef(false);
   useEffect(() => {
     if (openPen === 'amend') {
-      wasTastingOpenerRef.current = amendOpener === 'record-a-tasting';
+      wasBandOpenerRef.current = amendOpener === 'record-a-tasting';
       return;
     }
-    if (wasTastingOpenerRef.current) {
-      wasTastingOpenerRef.current = false;
+    if (openPen === 'record') {
+      wasBandOpenerRef.current = recordOpener === 'band';
+      return;
+    }
+    if (wasBandOpenerRef.current) {
+      wasBandOpenerRef.current = false;
       // focus() alone does not bring the band back in Playwright's WebKit
       // (it left the control 2.7 screens above the viewport after Cancel
       // from the log); Chrome's does. The explicit scroll makes the return
       // the same in both, with the band centred as Chrome's own focus does.
-      recordTastingButtonRef.current?.focus();
-      recordTastingButtonRef.current?.scrollIntoView({ block: 'center' });
+      recordActButtonRef.current?.focus();
+      recordActButtonRef.current?.scrollIntoView({ block: 'center' });
     }
   }, [openPen]);
 
@@ -440,9 +448,9 @@ export function VersionRow({
           <div className="notebook-version__acts">
             {editState !== 'editing' && below724 && (
               <Button
-                ref={standing === AWAITING_TASTING ? recordTastingButtonRef : undefined}
+                ref={recordActButtonRef}
                 className="notebook-action"
-                onClick={() => (standing === AWAITING_TASTING ? onStartTasting(latestBatch) : onStartRecording())}
+                onClick={() => (standing === AWAITING_TASTING ? onStartTasting(latestBatch) : onStartRecording({ opener: 'band' }))}
               >
                 {RECORD_ACT_WORDS[standing]}
               </Button>

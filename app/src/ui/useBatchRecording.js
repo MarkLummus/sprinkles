@@ -79,6 +79,7 @@ export function useBatchRecording({
     amendingBatchId,
     amendBaseline,
     amendOpener,
+    recordOpener,
     fieldErrors,
     invalidFieldTarget,
     blockedDateMessage,
@@ -114,13 +115,15 @@ export function useBatchRecording({
   // amendingBatchId set from the earlier amendment, so handleSaveBatch
   // would take the amend path — overwriting the amended batch's record and
   // stamping a false changed date on it, while the new batch is never
-  // created (T-02-24).
-  function handleStartRecording() {
+  // created (T-02-24). opener names the control pressed: 'log' (the log's own
+  // Record another or Record batch) or 'band' (the band's, below 724), so
+  // Cancel returns focus to it.
+  function handleStartRecording({ opener = 'log' } = {}) {
     batchSaveLockRef.current = false;
     setBatchSaveAction(null);
     setFocusBatchAttempt(null);
     onPageStatus('');
-    recordPen.openNew();
+    recordPen.openNew(opener);
     setAddTastingAttempt(null);
     setTastingStatus('');
     setRecordStatus('');
@@ -533,6 +536,7 @@ export function useBatchRecording({
     amendingBatchId,
     amendBaseline,
     amendOpener,
+    recordOpener,
     fieldErrors,
     invalidFieldTarget,
     blockedDateMessage,

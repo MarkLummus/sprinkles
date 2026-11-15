@@ -241,6 +241,11 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     penOpenedAtRef,
     onRestorePlan: restorePlan,
     onRestoreRecord: restoreRecord,
+    // The store holds one draft per version key, so a delete that resolved true
+    // leaves nothing for this version, of any kind, garbage included. Dropping
+    // the entry lets Edit show without a reload. The trim waits for the delete,
+    // as the Cancel discard's does (T-11-56).
+    onMisfitDeleted: () => setDrafts((kept) => kept.filter((record) => record.versionId !== versionId)),
     onPageStatus,
     navigate,
   });

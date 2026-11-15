@@ -165,6 +165,7 @@ export function useKeptDraft({
   cleanPayload = null,
   createDraft,
   onRestoreCreate,
+  onMisfitDeleted = () => {},
   onPageStatus,
   navigate,
 }) {
@@ -248,6 +249,13 @@ export function useKeptDraft({
           // it is (null), as it always was.
           Promise.resolve()
             .then(() => repository.deleteDraft(versionId, kindKnown ? record.kind : null))
+            // Once the delete has removed the record the caller hears of it, so a
+            // page that holds its own drafts list can drop it too
+            // (bug-edit-missing-after-misfit-draft-dropped). A rejected delete, or
+            // one that deleted nothing, tells no one.
+            .then((deleted) => {
+              if (deleted) onMisfitDeleted();
+            })
             .catch(() => {});
           setDraftRestoreDone(true);
           return;

@@ -5,7 +5,7 @@ titles: json
 findings:
   - id: WR-01
     severity: warning
-    disposition: open
+    disposition: fixed
     title: "A create draft can be written back for a recipe another tab has already saved, leaving an unsaveable \"ghost\" draft that also hides Edit"
   - id: WR-02
     severity: warning
@@ -55,7 +55,7 @@ One row per finding in 11-REVIEW.md. Written by the execute-phase code-review ga
 
 | ID | Severity | Disposition | Title |
 |----|----------|-------------|-------|
-| WR-01 | warning | open | A create draft can be written back for a recipe another tab has already saved, leaving an unsaveable "ghost" draft that also hides Edit |
+| WR-01 | warning | fixed | A create draft can be written back for a recipe another tab has already saved, leaving an unsaveable "ghost" draft that also hides Edit |
 | WR-02 | warning | open | A kept edit draft reopened after another tab saved over the version silently overwrites that save (the "changed" guard is defeated because `expected` is re-read at open) |
 | WR-03 | warning | open | Save-over overwrites two stored iceEd fields the editor cannot represent (an unlisted style name and `servingTemperatureC` when `serveTempC` differs) |
 | WR-04 | warning | open | Cancel does not take the save lock, so Save pressed while Cancel's delete is in flight can create the recipe the maker just cancelled |

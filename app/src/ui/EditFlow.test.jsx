@@ -739,3 +739,56 @@ describe('a refused Save on the edit route names the rest of the gate in its pla
     expect(document.activeElement).toBe(pickerName);
   });
 });
+
+describe('Cancel holds the save lock while its delete is out (bug-creation-cancel-save-race)', () => {
+  it('a Save pressed during the delete never calls saveFirstVersionOver, and Cancel still lands on the version page', async () => {
+    seedVanilla();
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name') !== null);
+    await type(field('Recipe name'), 'Vanilla bean');
+
+    const gate = deferred();
+    repository.deleteDraft.mockImplementationOnce(async (versionId) => {
+      await gate.promise;
+      store.drafts.delete(versionId);
+      return true;
+    });
+    await click(buttonByText('Cancel'));
+    expect(location.pathname).toBe(EDIT_PATH);
+    expect(buttonByText('Save')).not.toBeNull();
+    expect(buttonByText('Save').disabled).toBe(false);
+
+    await click(buttonByText('Save'));
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    expect(buttonByText('Saving…')).toBeNull();
+
+    await act(async () => {
+      gate.resolve();
+    });
+    await flush(() => location.pathname === PAGE_PATH);
+    expect(location.pathname).toBe(PAGE_PATH);
+    expect(location.state).toBeNull();
+    expect(store.recipes[0].name).toBe('Vanilla');
+    expect(repository.saveFirstVersionOver).not.toHaveBeenCalled();
+    for (const name of WRITE_SPIES) expect(repository[name]).not.toHaveBeenCalled();
+  });
+
+  it('a Cancel whose delete fails gives the lock back, and Save then writes over the version once', async () => {
+    seedVanilla();
+    await mountAt(EDIT_PATH);
+    await flush(() => field('Recipe name') !== null);
+    await type(field('Recipe name'), 'Vanilla bean');
+
+    repository.deleteDraft.mockRejectedValueOnce(new Error('store gone'));
+    await click(buttonByText('Cancel'));
+    await flush();
+    expect(location.pathname).toBe(EDIT_PATH);
+
+    await click(buttonByText('Save'));
+    await flush(() => location.pathname === PAGE_PATH);
+    expect(location.pathname).toBe(PAGE_PATH);
+    expect(repository.saveFirstVersionOver).toHaveBeenCalledTimes(1);
+    expect(repository.saveFirstVersionOver.mock.calls[0][0].recipe.name).toBe('Vanilla bean');
+    expect(store.recipes[0].name).toBe('Vanilla bean');
+  });
+});

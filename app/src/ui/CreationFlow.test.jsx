@@ -1897,6 +1897,95 @@ describe('Save creates the recipe and its first version (MAKE-10, T-11-24, T-11-
       expect(field('Recipe name').value).toBe('Chocolate');
     });
   });
+
+  describe("while Cancel's delete is out (bug-creation-cancel-save-race)", () => {
+    it('a Save pressed during the delete, or during the read of the other drafts after it, writes nothing', async () => {
+      await startWithSugar();
+      const id = [...store.drafts.keys()][0];
+      const deleteGate = deferred();
+      const listGate = deferred();
+      repository.deleteDraft.mockClear();
+      repository.listDrafts.mockClear();
+      repository.deleteDraft.mockImplementationOnce(async (versionId) => {
+        await deleteGate.promise;
+        store.drafts.delete(versionId);
+      });
+      repository.listDrafts.mockImplementationOnce(async () => {
+        await listGate.promise;
+        return [...store.drafts.values()].map((record) => structuredClone(record));
+      });
+
+      await click(buttonByText('Cancel'));
+      expect(location.pathname).toBe('/notebook/new');
+      expect(repository.deleteDraft).toHaveBeenCalledWith(id, 'create');
+      // The screen is as it is today: no busy state, nothing disabled.
+      expect(saveButton().textContent).toBe('Save');
+      expect(saveButton().disabled).toBe(false);
+      expect(buttonByText('Cancel').disabled).toBe(false);
+      expect(field('Recipe name').disabled).toBe(false);
+
+      await click(saveButton());
+      expect(repository.createRecipeWithVersion).not.toHaveBeenCalled();
+      expect(store.recipes).toHaveLength(0);
+      expect(location.pathname).toBe('/notebook/new');
+      expect(saveButton().textContent).toBe('Save');
+
+      await act(async () => {
+        deleteGate.resolve();
+      });
+      await flush();
+      // The read of the other drafts is held, so the page has not left yet.
+      expect(location.pathname).toBe('/notebook/new');
+      expect(repository.listDrafts).toHaveBeenCalled();
+      await click(saveButton());
+      expect(repository.createRecipeWithVersion).not.toHaveBeenCalled();
+
+      await act(async () => {
+        listGate.resolve();
+      });
+      await flush(() => location.pathname === '/notebook');
+      expect(location.pathname).toBe('/notebook');
+      expect(stateTrail).toContainEqual({ discarded: true, createKept: false });
+      expect(store.recipes).toHaveLength(0);
+      expect(store.versions).toHaveLength(0);
+      expect(store.drafts.size).toBe(0);
+      expect(repository.createRecipeWithVersion).not.toHaveBeenCalled();
+      expectNoRecordWrites();
+    });
+
+    it('a Cancel whose delete fails gives the lock back, and Save then writes the recipe once', async () => {
+      await startWithSugar();
+      repository.deleteDraft.mockRejectedValueOnce(new Error('store gone'));
+      await click(buttonByText('Cancel'));
+      await flush();
+      expect(location.pathname).toBe('/notebook/new');
+      expect(saveButton().textContent).toBe('Save');
+      expect(saveButton().disabled).toBe(false);
+
+      await click(saveButton());
+      await flush(() => location.pathname !== '/notebook/new');
+      expect(repository.createRecipeWithVersion).toHaveBeenCalledTimes(1);
+      expect(store.recipes).toHaveLength(1);
+      const { recipe, version } = saved();
+      expect(location.pathname).toBe(`/notebook/${recipe.id}/${version.id}`);
+    });
+
+    it('a Cancel whose delete fails gives the lock back, and a second Cancel discards', async () => {
+      await startWithSugar();
+      repository.deleteDraft.mockRejectedValueOnce(new Error('store gone'));
+      await click(buttonByText('Cancel'));
+      await flush();
+      expect(location.pathname).toBe('/notebook/new');
+
+      await click(buttonByText('Cancel'));
+      await flush(() => location.pathname === '/notebook');
+      expect(location.pathname).toBe('/notebook');
+      expect(stateTrail).toContainEqual({ discarded: true, createKept: false });
+      expect(store.drafts.size).toBe(0);
+      expect(repository.deleteDraft).toHaveBeenCalledTimes(2);
+      expect(repository.createRecipeWithVersion).not.toHaveBeenCalled();
+    });
+  });
 });
 
 describe('Save refuses everything the store file would refuse, all at once, writing nothing (MAKE-10, D-08 to D-11, T-11-27, T-11-53)', () => {

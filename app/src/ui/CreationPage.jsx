@@ -171,7 +171,9 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // buildCreation took its payload is accepted and then lost. `saving` is the
   // same fact for the render (Save reads Saving…, the fields and Cancel are
   // disabled). mountedRef lets a save that resolves after the maker left the
-  // page navigate nowhere.
+  // page navigate nowhere. Cancel takes the same lock while its delete is out
+  // and keeps it until the page leaves, but it does not set `saving`, so the
+  // screen shows no busy state; a failed delete gives it back.
   const savingRef = useRef(false);
   const [saving, setSaving] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
@@ -538,12 +540,16 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // says so, so a failed Cancel loses nothing. There is no dialog and no Undo
   // (D-03). After a successful delete the drafts are read once more so the
   // Notebook's route state says whether another creation remains (createKept,
-  // a boolean computed here, left out when that read fails).
+  // a boolean computed here, left out when that read fails). It holds the save
+  // lock while the delete is out, so a Save pressed then does nothing, and a
+  // failed delete releases it so Save and Cancel work again.
   async function handleCancel() {
     if (savingRef.current) return;
+    savingRef.current = true;
     try {
       await writer.discardDraft({ final: true });
     } catch {
+      savingRef.current = false;
       announce(PAGE_LOAD_ERROR);
       return;
     }

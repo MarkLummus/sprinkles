@@ -66,10 +66,34 @@ Shared foundations are **Ingredients** (composition and provenance, not Pantry i
 
 - **Desktop formulates.** Recipe development, comparison, and printing happen at a laptop or desktop.
 - **Paper works the kitchen.** The printed bench sheet is the artifact at the machine; ink on it (as-made grams, struck steps, draw temperature, tasting marks) is the batch's first record. Days pass between printing and returning to the app.
-- **Phone transcribes.** Results are typed in later, sometimes from a phone with the sheet or its photo in hand. The phone is not a formulation target in milestone 1.
+- **The phone copies a tasting.** One named job, set out in "On the phone" below. The phone is not a formulation target.
 - **The working case.** Olive oil ice cream, 50 g oil, 800 g, churned 2 Aug 2026 in two 16 oz jars in a circulator bath, Whynter machine, 1 g kitchen scale plus 0.01 g precision scale. Its printout, batch-log photos, and transcription exist (see Evidence).
 - **Rituals from the binder.** Print, weigh with a mise-en-place tick per row, write over printed grams when reality differs, note process values sparsely, record a verdict about half the time, and carry a "to fix" list forward by hand.
 - **Evaluation.** Troubleshooting other makers' recipes is a discovery and evaluation exercise with human review (D02, D15), not a product entry point.
+
+### On the phone (Mark, 2026-11-15)
+
+This section is the product brief for phone jobs. Surface briefs point here and do not restate it.
+
+**The one named job: record a tasting.** A day or more after churning, the maker tastes with the printed tasting log in hand, marks it in ink, then types those marks into the app on the phone. The phone copies; the ink is still the first record, as "Paper works the kitchen" says. Nothing here asks the phone to be where a tasting is first written.
+
+**The batch log is typed at the desk or on the iPad.** The batch record pen keeps working at phone width as built (2026-10-02), but recording a batch is not a phone job. This replaces the 2026-10-02 wording that the phone transcribes both.
+
+**Not for the phone.** Creating a recipe, editing a version, starting a next version, and import and export. At phone width their entry points are left out: New recipe, Edit and Resume editing, Next version, Import and Export. Print sheet is the stated exception and stays. Mark has not said he prints from the phone, only that the control stays.
+
+**Everything else is the same page, narrower.** Reading a recipe and finding one are not named phone jobs (Mark, 2026-11-15). Their pages keep working at phone width, with no sideways scroll, and get no phone boards or iPhone checks of their own.
+
+**Standing limits.**
+- No recipe creation on the iPhone (Mark, 2026-10-18).
+- The iOS keyboard bar skips the scale stops; left as it is (Mark, 2026-10-03).
+- A button focused from code shows no focus ring after a finger tap.
+- Nothing live at the machine, no timers, no reading from a photo.
+
+**What gets drawn and checked at phone width.** The tasting pen and the tasting as it reads get a phone-width board whenever they change, and they are what an iPhone check covers. Nothing else gets a phone board or an iPhone check of its own, the batch pen included.
+
+**Phone width, and what hiding means (Mark, 2026-11-15).** Phone width is below 724, the app's one phone cut; a narrow iPad split view below 724 loses the same controls. A kept new-recipe draft still shows its row in the Notebook at phone width; only its Resume button is left out. A hidden job's address reached another way at phone width (a saved link, a kept draft) shows a one-line page saying the job is done at the desk or on the iPad; its wording is not written yet and needs a board.
+
+**Not yet said.** Whether the Ingredients place is held to the same no-sideways-scroll rule at phone width; Mark has not spoken on it.
 
 ## Capabilities and Constraints
 

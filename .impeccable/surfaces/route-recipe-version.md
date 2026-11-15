@@ -33,7 +33,7 @@ Mark, at the desktop, weeks after the 2 Aug churn, with the batch record open in
 
 Two more arrivals: reading a saved next version beside the one it came from, to see exactly what changed and what it did to the balance; and exploring two fixes for the same batch at once (Mark, 2026-09-07), so forking is never gated on churning.
 
-Desktop only (PRODUCT.md: desktop formulates). The page stacks below 1280 as it does today; the phone receives no design here.
+Desk and iPad only (PRODUCT.md: desktop formulates). The page stacks below 1280 as it does today; the phone receives no design here, and at phone width Next version, Edit and Resume editing are left out (`PRODUCT.md` § "On the phone", Mark, 2026-11-15; not built yet).
 
 ## 2. Outcome and proof
 

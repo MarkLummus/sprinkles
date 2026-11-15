@@ -19,7 +19,7 @@ D17 and `product-requirements/05-domain-and-language.md` govern terminology over
 
 Shaped with Mark 2026-09-23 (`/impeccable shape`) for GSD Phase 03.5; confirmed by Mark 2026-09-23. This section governs over § 3's front-matter, tip, record-in-the-margin and batch-row bullets, § 6's hierarchy and topology bullets, and the Direction contract's region list wherever they place recipe-level or batch-record content on the Sheet. The Sheet's own grammar (step-order table, portions, the pen, tracked changes, graduated rules, binder controls) is unchanged.
 
-**1. Job.** Mark, at the desk or on the iPad, develops a recipe version by version and rereads what a batch did (Operate). The on-screen Sheet becomes the printed page as nearly as the screen allows; the app layer around it carries everything else.
+**1. Job.** Mark, at the desk or on the iPad, develops a recipe version by version and rereads what a batch did (Operate). The on-screen Sheet becomes the printed page as nearly as the screen allows; the app layer around it carries everything else. The phone's part is `PRODUCT.md` § "On the phone" (Mark, 2026-11-15): developing is not a phone job, and its entry points are left out at phone width.
 
 **2. The model.**
 - **Resource and process** (Mark, 2026-09-23). The Sheet is a resource: the asset a maker keeps, reads, edits and prints, and it is paper. A batch and its tastings are a process: the record of one making attempt, App context on screen, printed blank on paper only so the pen can fill it. This distinction decides which side of the Context Boundary Rule any new element falls on.
@@ -73,7 +73,7 @@ The serious enthusiast, Mark first, arriving five ways:
 - **Departing** for the kitchen with a printed sheet. Phase 4.
 - **At the machine**, reading the sheet with a pen in hand. The only arrival not on a screen, and the one the product is judged by.
 
-Desktop formulates. Paper works the kitchen. The phone reads and transcribes; it does not formulate in milestone 1.
+Desktop formulates. Paper works the kitchen. The phone copies a tasting and does not formulate (`PRODUCT.md` § "On the phone", Mark, 2026-11-15, which governs over every phone line in this brief).
 
 ## 2. Outcome and proof
 

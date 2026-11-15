@@ -635,6 +635,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 231 | Wire the per-phase state machine audit in as a project GSD capability at execute:post | 2026-11-10 | 65d03272 | — |
 | 261114-gxe | Edit this step lands focus on the step's lead-in, not Cancel (bug-edit-this-step-focus-on-cancel) | 2026-11-14 | 82a2ff19 | [261114-gxe-edit-this-step-lands-focus-on-the-step-s](./quick/261114-gxe-edit-this-step-lands-focus-on-the-step-s/) |
 | 261114-ui5 | Edit shows at once when a kept draft that no longer fits its version is dropped (bug-edit-missing-after-misfit-draft-dropped) | 2026-11-14 | d670b474 | [261114-ui5-edit-shows-at-once-when-a-kept-draft-tha](./quick/261114-ui5-edit-shows-at-once-when-a-kept-draft-tha/) |
+| 261115-hto | WR-01: a create draft is no longer written back for a recipe another tab already saved; a stale tab's Save goes to the saved recipe (11-REVIEW WR-01) | 2026-11-15 | fefd938c | .planning/quick/261115-hto-wr-01-11-review-md-phase-11-a-create-draft-can-be-written-ba |
+| 261115-htp | WR-02: a kept edit draft resumed after another tab saved over the version opens refused and cannot overwrite that save (11-REVIEW WR-02) | 2026-11-15 | b5771919 | .planning/quick/261115-htp-wr-02-11-review-md-phase-11-a-kept-edit-draft-reopened-after |
 
 ### Roadmap Evolution
 
@@ -678,5 +680,5 @@ Resume file: None
 ## Operator Next Steps
 
 - Phase 11 is complete (UAT 3/3 and verification passed, 2026-11-15); next is /gsd-discuss-phase 12, then /gsd-plan-phase 12
-- Phase 11 leftovers: 11-REVIEW-DISPOSITION.md rows WR-01 and WR-02 (two-tab sequences, worth a quick task); the Low to high scale centre mark bug is parked on Mark's List with his Fix it answer
+- Phase 11 leftovers: WR-01 and WR-02 are fixed (quick batch 261115-htn, 2026-11-15); WR-03 to WR-05 in 11-REVIEW-DISPOSITION.md stay open; the Low to high scale centre mark bug is parked on Mark's List with his Fix it answer
 - Phase 10 leftovers: 10-REVIEW-DISPOSITION.md rows WR-01 to WR-03 (worth a /gsd-quick-batch), Sid's P1 cue-face fix via p10.py and the P10_Scales republish, DESIGN.md notice line

@@ -9,7 +9,7 @@
       "quick_id": "261115-hto",
       "client_id": null,
       "description": "WR-01 (11-REVIEW.md, Phase 11): a create draft can be written back for a recipe another tab already saved, leaving an unsaveable ghost draft that hides Edit. Test-first: reproduce at HEAD with a failing test; if it does not reproduce, change nothing under app/ and report the evidence. repository.saveDraft (app/src/store/repository.js) guards only against another draft family and never checks whether a version exists under record.versionId; tab A saves (createRecipeWithVersion stores recipe and version, deletes the draft), then tab B's next keystroke re-writes the create draft, or B presses Save, gets TypeError \"version ... already exists\", shows \"Couldn't save the recipe. Try again\", and CreationPage.handleSave's catch calls writer.resumeDraft(), which writes the draft back. Result: Notebook offers the kept creation, Save fails forever, Import stays refused, editStateFor hides Edit until Cancel. Review's suggested fix: for a create record saveDraft opens drafts and versions in one transaction and resolves false when a version with that id exists; handleSave treats the \"already exists\" TypeError as saved elsewhere (discard the draft, navigate to the recipe) instead of resuming; optionally CreationRoute and the Notebook's draftMatchesCreate ignore a create draft whose id is a stored version. Constraints: no DB_VERSION change, no stored-shape reset, single-tab behaviour unchanged (full suite of 4340 tests stays green), existing wording only (a new on-screen sentence means stop and report for Mark); verify with the full suite and a two-context Playwright WebKit walk of a scratch build where the state can be seeded.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "planned_files": [
         "app/src/store/repository.js",
@@ -25,14 +25,14 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 0,
-      "commit": null,
+      "commit": "fefd938c",
       "failure_reason": null
     },
     {
       "quick_id": "261115-htp",
       "client_id": null,
       "description": "WR-02 (11-REVIEW.md, Phase 11): a kept edit draft reopened after another tab saved over the version silently overwrites that save. Test-first: reproduce at HEAD with a failing test; if it does not reproduce, change nothing under app/ and report the evidence. saveFirstVersionOver protects only relative to expected, and EditRoute (app/src/ui/EditRoute.jsx) builds expected from the records read when the route opens, not from what the edit draft was started against; tab A starts editing (edit draft kept), tab B saves over the same version and deletes the draft, tab A types again and re-writes the edit draft, resuming restores A's old payload against the fresh version, and Save replaces B's content with no warning. Review's suggested fix: keep a base fingerprint (a hash of the canonical() string of the seed draftFromVersion produced) on the edit record as an extra key fitsCreationRecord allows for the edit kind (CREATE_DRAFT_KEYS is closed, so not in the payload); on open, when the kept record's base differs from the fresh seed's, show EDIT_CHANGED and refuse Save instead of re-basing; saveDraft also refuses an edit write when no version has that id. This item also edits repository.saveDraft, the same function WR-01 changes, so it depends on the WR-01 item and must run after it. Constraints: no DB_VERSION change, no stored-shape reset, an edit draft stored without a base fingerprint must still open safely, single-tab behaviour unchanged (full suite stays green), existing wording only (EDIT_CHANGED; a new on-screen sentence means stop and report for Mark); verify with the full suite and a two-context Playwright WebKit walk of a scratch build where the state can be seeded.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "261115-hto"
       ],
@@ -53,7 +53,7 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 1,
-      "commit": null,
+      "commit": "b5771919",
       "failure_reason": null
     }
   ]

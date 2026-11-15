@@ -48,13 +48,13 @@ Shipped v1.1 Groundwork for creation (2026-10-15): the code is ready for recipe 
 - ✓ `RecipePage` split along its jobs with no visible change — EDIT-05, EDIT-06 — Phase 8
 - ✓ The creation editor without Save: a recipe started from the Notebook with only a name (same names allowed, with a warning), authored against live figures (rows from the library picker, Version name, one description, Before you start, its own scales and problems, a style menu filling the bands and the serving temperature), kept as a `create` draft that survives a closed tab and offers Resume, refused Import while kept, and Cancel leaving no record — MAKE-04, MAKE-05, MAKE-06, MAKE-08, MAKE-09, MAKE-11 — Phase 10
 - ✓ The reviewed ingredient library (111 entries, with provenance and six nullable per-ingredient coefficients) reaches every profile through the one-way reset at database version 10; a recipe's own scale definitions carry their kind into the batches made from it; the read-only Ingredients place (search by name and category, open entry with Basis and Source) and the Notebook place listing the recipes — LIB-04 to LIB-09, CODE-01, TASTE-03, PLACE-01, PLACE-02 — Phase 9
+- ✓ A created recipe saves and prints: Instructions steps authored with the rows each uses and their portions; steps and rows added, removed and reordered with Move up and Move down (stored step numbers and row ids never change); Save writes the recipe and its first version in one transaction; the first version stays editable through Edit until it has a batch or a child version; the bench sheet prints with a stored Sheet code that survives edits — MAKE-07, MAKE-10, MAKE-12, STRUCT-01 to STRUCT-04 — Phase 11
 
 ### Active
 
 v2.0 Recipe creation (see Current Milestone). Requirement IDs are assigned in `REQUIREMENTS.md`:
 
-- [ ] Create a recipe and author its Instructions steps, then save it as its first version (MAKE-07, MAKE-10, MAKE-12)
-- [ ] Add, remove and reorder steps and rows at creation
+- [ ] Phase 12: the record pen, the reading and the printed log show a created recipe's own scales and problems, and a created recipe survives print, batch, export and import on the iPad (see `ROADMAP.md`)
 
 ### Out of Scope
 
@@ -190,4 +190,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-21 after Phase 10*
+*Last updated: 2026-11-15 after Phase 11*

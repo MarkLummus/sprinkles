@@ -48,7 +48,7 @@ Full phase detail, plans and progress: `.planning/milestones/v1.1-ROADMAP.md`.
 - [x] **Phase 8: Split the recipe page along its jobs** - `RecipePage` is cut into the modules creating and editing will share; the maker sees no change (completed 2026-10-17)
 - [x] **Phase 9: The library and the stored shapes, plus the two places** - The reviewed library reaches every profile with provenance, every shape creation will store is settled while a reset is still free, every seed dataset is rows in a store table, and the Ingredients and Notebook places list the library and the recipes (completed 2026-10-19)
 - [x] **Phase 10: The creation editor, without Save** - A maker starts a recipe from the Notebook with only a name, authors all of it but its steps against live figures (rows, Version name, Before you start, its own scales and problems, its style and balance targets), and can Resume it; nothing is saved yet (completed 2026-10-21)
-- [ ] **Phase 11: Steps, structure, save and print** - A maker authors and shapes the new recipe's Instructions steps, saves it as its first version, which stays editable until it has a batch or a child version, and prints it as a bench sheet
+- [x] **Phase 11: Steps, structure, save and print** - A maker authors and shapes the new recipe's Instructions steps, saves it as its first version, which stays editable until it has a batch or a child version, and prints it as a bench sheet (completed 2026-11-15)
 - [ ] **Phase 12: Showing a recipe's own scales and problems, and the whole loop** - The record pen, the reading and the printed log show a created recipe's own scales and problems, and a created recipe survives print, batch, export and import on the iPad
 
 ## Before planning
@@ -252,7 +252,7 @@ Plans:
   5. The created recipe prints as a bench sheet with its Sheet code, like the seeded ones, and typing that code finds it, also after a reorder or any other edit made after printing; a recipe with empty targets, equipment or process prints with no gap
   6. On screen, the Sheet's Instructions steps read in the printed method treatment (sketch 010 D18: the targets as a tag row with no box, Why as the caps word and the sentence, the aside as a callout, all upright) on the reading page, in the version pen's closed steps and in the creation editor's Preview step; Add note, Add ingredient and Add step sit on their heading's row, and an unplaced row offers Add to step (sketch 014; Mark, 2026-10-25 and 2026-10-26)
 
-**Plans:** 14/14 plans executed in 9 waves (11-09 stops for the orchestrator to put the export-first row on Mark's List, 11-13 for the iPad check row; 11-14 was split out of 11-07 in the plan-check revision)
+**Plans:** 14/14 plans complete in 9 waves (11-09 stops for the orchestrator to put the export-first row on Mark's List, 11-13 for the iPad check row; 11-14 was split out of 11-07 in the plan-check revision)
 
 Plans:
 **Wave 1**
@@ -316,7 +316,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | 8. Split the recipe page along its jobs | v2.0 | 6/6 | Complete    | 2026-10-17 |
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
 | 10. The creation editor, without Save | v2.0 | 12/12 | Complete    | 2026-10-21 |
-| 11. Steps, structure, save and print | v2.0 | 14/14 | In Progress | - |
+| 11. Steps, structure, save and print | v2.0 | 14/14 | Complete    | 2026-11-15 |
 | 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/TBD | Not started | - |
 
 ## Later

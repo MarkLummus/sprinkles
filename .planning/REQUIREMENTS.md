@@ -33,19 +33,19 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 - [x] **MAKE-04**: A maker can start a blank recipe from the Notebook, needing only a name. Two recipes may share a name; the Notebook warns when they do.
 - [x] **MAKE-05**: A maker can author the recipe's name, its description and its Version name. One description box fills both the recipe description and the Sheet description. The Version name starts as "Version 1", which the maker can change.
 - [x] **MAKE-06**: A maker can add ingredient rows from the library, enter grams, and see the balance figures update. A maker can also remove a row, which deletes it outright. An ingredient not in the library adds nothing: the picker says "Not in the library yet".
-- [ ] **MAKE-07**: A maker can author Instructions steps (lead-in, text, targets) and say which rows each step uses and in what portions.
+- [x] **MAKE-07**: A maker can author Instructions steps (lead-in, text, targets) and say which rows each step uses and in what portions.
 - [x] **MAKE-08**: A maker can author Before you start notes.
 - [x] **MAKE-09**: A maker can choose an ice cream style, and the balance bands fill in from it; the maker can edit the bands or leave them blank. The styles are Philadelphia, French, gelato and sorbet; the bands are Mark's approved values, with PAC and sugar starting blank. The maker can also set a target serving temperature, which the style fills in and Clear empties, or leave it empty (Mark, 2026-10-18). The creation editor offers no machine and no pasteurise temperature or hold time: equipment belongs to churning a batch (Mark, 2026-10-18). (The machine table still starts with Whynter at 700 g minimum and no maximum, seeded in LIB-09; Mark adds other machines and fills the maximum later.)
-- [ ] **MAKE-10**: Saving creates the recipe and its first version in one step, lands on the new page, and a failed save leaves neither behind.
+- [x] **MAKE-10**: Saving creates the recipe and its first version in one step, lands on the new page, and a failed save leaves neither behind.
 - [x] **MAKE-11**: An unsaved creation survives a closed tab and offers Resume, and abandoning it leaves no records.
-- [ ] **MAKE-12**: A created recipe prints as a bench sheet with its Sheet code (CODE-01), like the seeded ones, and typing that code finds it after any later edit.
+- [x] **MAKE-12**: A created recipe prints as a bench sheet with its Sheet code (CODE-01), like the seeded ones, and typing that code finds it after any later edit.
 
 ### Structure on a first version
 
-- [ ] **STRUCT-01**: A maker can add and remove steps and rows on a first version, while creating it and after Save until it has a batch or a child version. A removal deletes outright and cleans up anything that pointed at it, so no dangling reference is left.
-- [ ] **STRUCT-02**: A maker can reorder steps, and rows within a step, with Move up and Move down buttons that work by touch and keyboard.
-- [ ] **STRUCT-03**: A step's stored number and a row's id never change on reorder.
-- [ ] **STRUCT-04**: Add, Remove and Move controls appear on a first version that has no batch and no child version, and on no other saved version. The version pen's remove and restore on later versions is unchanged.
+- [x] **STRUCT-01**: A maker can add and remove steps and rows on a first version, while creating it and after Save until it has a batch or a child version. A removal deletes outright and cleans up anything that pointed at it, so no dangling reference is left.
+- [x] **STRUCT-02**: A maker can reorder steps, and rows within a step, with Move up and Move down buttons that work by touch and keyboard.
+- [x] **STRUCT-03**: A step's stored number and a row's id never change on reorder.
+- [x] **STRUCT-04**: Add, Remove and Move controls appear on a first version that has no batch and no child version, and on no other saved version. The version pen's remove and restore on later versions is unchanged.
 
 ### Sheet code
 
@@ -112,16 +112,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MAKE-04 | Phase 10 | Complete |
 | MAKE-05 | Phase 10 | Complete |
 | MAKE-06 | Phase 10 | Complete |
-| MAKE-07 | Phase 11 | Pending |
+| MAKE-07 | Phase 11 | Complete |
 | MAKE-08 | Phase 10 | Complete |
 | MAKE-09 | Phase 10 | Complete |
-| MAKE-10 | Phase 11 | Pending |
+| MAKE-10 | Phase 11 | Complete |
 | MAKE-11 | Phase 10 | Complete |
-| MAKE-12 | Phase 11 | Pending |
-| STRUCT-01 | Phase 11 | Pending |
-| STRUCT-02 | Phase 11 | Pending |
-| STRUCT-03 | Phase 11 | Pending |
-| STRUCT-04 | Phase 11 | Pending |
+| MAKE-12 | Phase 11 | Complete |
+| STRUCT-01 | Phase 11 | Complete |
+| STRUCT-02 | Phase 11 | Complete |
+| STRUCT-03 | Phase 11 | Complete |
+| STRUCT-04 | Phase 11 | Complete |
 | TASTE-01 | Phase 10 | Complete |
 | TASTE-02 | Phase 10 | Complete |
 | TASTE-03 | Phase 9 | Complete |

@@ -2,45 +2,45 @@
 gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Recipe creation
-current_phase: 11
-current_phase_name: Steps, structure, save and print
-status: executing
-stopped_at: Phase 11 context gathered
-last_updated: "2026-11-15T03:08:57.629Z"
-last_activity: 2026-11-14
-last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: d670b474fe0455110f29acb031f8ec91db5c0410
+current_phase: 12
+current_phase_name: Showing a recipe's own scales and problems, and the whole loop
+status: planning
+stopped_at: Phase 11 complete, ready to plan Phase 12
+last_updated: "2026-11-15T17:45:01.015Z"
+last_activity: 2026-11-15
+last_activity_desc: Phase 11 complete, transitioned to Phase 12
+state_head: 39204a6b27f7629f13b00b12967e9a5b2dc63ca7
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 49
-  completed_plans: 35
-  percent: 60
+  completed_plans: 49
+  percent: 80
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-21)
+See: .planning/PROJECT.md (updated 2026-11-15)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 11 — Steps, structure, save and print
+**Current focus:** Phase 12 — Showing a recipe's own scales and problems, and the whole loop
 
 ## Current Position
 
-Phase: 11 (Steps, structure, save and print) — EXECUTING
-Plan: 1 of 14
-Status: Executing Phase 11
-Last activity: 2026-11-14 - Completed quick task 261114-ui5: Edit shows at once when a kept draft that no longer fits its version is dropped (bug-edit-missing-after-misfit-draft-dropped)
+Phase: 12 — Showing a recipe's own scales and problems, and the whole loop
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-11-15 — Phase 11 complete, transitioned to Phase 12
 
-Progress: [██████░░░░] 60%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 167
+- Total plans completed: 181
 - Average duration: —
 - Total execution time: —
 
@@ -68,6 +68,7 @@ Progress: [██████░░░░] 60%
 | 08 | 6 | - | - |
 | 09 | 17 | - | - |
 | 10 | 12 | - | - |
+| 11 | 14 | - | - |
 
 **Recent Trend:**
 
@@ -670,12 +671,12 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-26T03:12:29.453Z
-Stopped at: Phase 11 context gathered
-Resume file: .planning/phases/11-steps-structure-save-and-print/11-CONTEXT.md
+Last session: 2026-11-15T17:45:28.000Z
+Stopped at: Phase 11 complete, ready to plan Phase 12
+Resume file: None
 
 ## Operator Next Steps
 
-- Phase 11's design gate is MET (sketch 014, approved 2026-10-25, redraws 2026-10-26; ROADMAP updated c44c6153); next is /gsd-discuss-phase 11, then /gsd-plan-phase 11
-- Before the first device build that can save a recipe (Phase 11), put the export-first row on Mark's List (ROADMAP, the reset window)
+- Phase 11 is complete (UAT 3/3 and verification passed, 2026-11-15); next is /gsd-discuss-phase 12, then /gsd-plan-phase 12
+- Phase 11 leftovers: 11-REVIEW-DISPOSITION.md rows WR-01 and WR-02 (two-tab sequences, worth a quick task); the Low to high scale centre mark bug is parked on Mark's List with his Fix it answer
 - Phase 10 leftovers: 10-REVIEW-DISPOSITION.md rows WR-01 to WR-03 (worth a /gsd-quick-batch), Sid's P1 cue-face fix via p10.py and the P10_Scales republish, DESIGN.md notice line

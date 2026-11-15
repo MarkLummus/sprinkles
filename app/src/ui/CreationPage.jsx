@@ -578,7 +578,10 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // back after the transaction deletes it (RESEARCH G-10). Success leaves for
   // the new recipe's page only while this page is still mounted; any failure
   // writes nothing, gives the writer back and says so under Save, with the
-  // draft as it was.
+  // draft as it was. A creation that fails because its version is already
+  // stored was saved in another tab. It ends here: its draft is discarded and
+  // the page goes to the recipe, with no landing word because this press wrote
+  // nothing. The stored version decides this, not the error's text (WR-01).
   async function handleSave() {
     if (savingRef.current) return;
     setSaveFailed(false);
@@ -632,6 +635,18 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
         navigate(notebookPath(recipe.id, version.id), { replace: true, state: { focusVersion: true, saved: 'created' } });
       }
     } catch {
+      const savedElsewhere = editing
+        ? undefined
+        : await Promise.resolve()
+            .then(() => repository.getVersion(record.versionId))
+            .catch(() => undefined);
+      if (savedElsewhere) {
+        await writer.discardDraft({ final: true }).catch(() => {});
+        if (mountedRef.current) {
+          navigate(notebookPath(savedElsewhere.recipeId, savedElsewhere.id), { replace: true, state: { focusVersion: true } });
+        }
+        return;
+      }
       if (ended) writer.resumeDraft();
       savingRef.current = false;
       if (mountedRef.current) {

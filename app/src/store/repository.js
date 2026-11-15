@@ -455,21 +455,28 @@ export function createRepository() {
     // readwrite transaction: when the key holds a record of another family
     // (draftFamily) it writes nothing and resolves false, else it writes and
     // resolves true. A stored record whose kind is not a draft kind belongs to
-    // no family and is written over, as it always was.
+    // no family and is written over, as it always was. A create draft is
+    // refused the same way, writing nothing, once a version is stored under its
+    // id: another tab saved the creation. The read sits in the same
+    // transaction, so it is ordered against createRecipeWithVersion, and no
+    // keystroke, flush or resume in a second tab can write a ghost back (WR-01).
     async saveDraft(record) {
       const db = await dbPromise;
-      const tx = db.transaction('drafts', 'readwrite');
+      const creating = record.kind === 'create';
+      const tx = creating ? db.transaction(['drafts', 'versions'], 'readwrite') : db.transaction('drafts', 'readwrite');
       const done = tx.done;
       const queued = [];
       try {
-        const stored = await tx.store.get(record.versionId);
+        const drafts = tx.objectStore('drafts');
+        const stored = await drafts.get(record.versionId);
         const storedFamily = stored ? familyOrNull(stored.kind) : null;
-        if (storedFamily !== null && storedFamily !== familyOrNull(record.kind)) {
+        const savedElsewhere = creating && (await tx.objectStore('versions').get(record.versionId)) !== undefined;
+        if (savedElsewhere || (storedFamily !== null && storedFamily !== familyOrNull(record.kind))) {
           done.catch(() => {});
           tx.abort();
           return false;
         }
-        queued.push(tx.store.put(record));
+        queued.push(drafts.put(record));
         await Promise.all([...queued, done]);
         return true;
       } catch (error) {

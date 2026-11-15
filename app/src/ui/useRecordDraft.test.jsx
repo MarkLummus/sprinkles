@@ -302,6 +302,27 @@ describe('useRecordDraft', () => {
     }
   });
 
+  it('openNew(opener) records which control opened the new record; openNew() is the log\'s', () => {
+    const { state, unmount } = mount();
+    try {
+      expect(state.hook.recordOpener).toBe('log');
+      act(() => {
+        state.hook.openNew('band');
+      });
+      expect(state.hook.recordOpener).toBe('band');
+      act(() => {
+        state.hook.cancel();
+      });
+      expect(state.hook.recordOpener).toBe('band');
+      act(() => {
+        state.hook.openNew();
+      });
+      expect(state.hook.recordOpener).toBe('log');
+    } finally {
+      unmount();
+    }
+  });
+
   it('cancel() after a block resets the draft, the errors, the date block, its attempt and the undo', () => {
     const { state, unmount } = mount();
     try {
@@ -380,7 +401,7 @@ describe('useRecordDraft', () => {
     }
   });
 
-  it('returns the nine values and the thirteen methods, and no raw setter', () => {
+  it('returns the ten values and the thirteen methods, and no raw setter', () => {
     const { state, unmount } = mount();
     try {
       expect(Object.keys(state.hook).sort()).toEqual(
@@ -389,6 +410,7 @@ describe('useRecordDraft', () => {
           'amendingBatchId',
           'amendBaseline',
           'amendOpener',
+          'recordOpener',
           'fieldErrors',
           'invalidFieldTarget',
           'blockedDateMessage',

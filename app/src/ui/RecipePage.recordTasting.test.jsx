@@ -81,11 +81,12 @@ function Where() {
   return null;
 }
 
-// A fixed 393 coarse window: below 724, a coarse pointer. jsdom has no
+// A fixed coarse window, 393 wide unless a test names another width: below
+// 724, a coarse pointer. jsdom has no
 // Element.scrollIntoView, which the band's focus return calls (Playwright
 // WebKit's focus() alone left the band 2.7 screens off; see VersionRow.jsx),
 // so this file stubs it and reads the calls.
-function installMatchMedia() {
+function installMatchMedia(width = 393) {
   scrollIntoView = vi.fn();
   Element.prototype.scrollIntoView = scrollIntoView;
   originalMatchMedia = window.matchMedia;
@@ -93,8 +94,8 @@ function installMatchMedia() {
     const max = query.match(/max-width:\s*([\d.]+)px/);
     const min = query.match(/min-width:\s*([\d.]+)px/);
     let matches = false;
-    if (max) matches = 393 <= Number(max[1]);
-    else if (min) matches = 393 >= Number(min[1]);
+    if (max) matches = width <= Number(max[1]);
+    else if (min) matches = width >= Number(min[1]);
     else if (query.includes('pointer: coarse')) matches = true;
     return { matches, media: query, addEventListener() {}, removeEventListener() {} };
   };
@@ -322,6 +323,94 @@ describe('Record tasting opens the amend pen on Add tasting (261002-wn0)', () =>
     current = null;
     await mountAt(entry, [augustSecondBatch, newer]);
     expect(pen()).toBeNull();
+  });
+});
+
+// bug-phone-record-cancel-focus-wrong-opener (Mark's answer: Cancel returns
+// focus to the button that opened the pen). Below 724 the band's Record
+// another and Record batch open the same new-record pen as the log's own
+// button; closing it returns focus to whichever of the two was pressed. On an
+// address naming no batch of the version the log draws no record button, so
+// the band's is the only opener there.
+describe('Cancel on a new record returns focus to the button that opened it', () => {
+  function logRecordButton() {
+    return buttonByText(current.container.querySelector('.notebook-log'), 'Record another')
+      ?? buttonByText(current.container.querySelector('.notebook-log'), 'Record batch');
+  }
+
+  it('O1: the band\'s Record another, then Cancel or Escape, returns to the band', async () => {
+    installMatchMedia();
+    await mountAt(VERSION_PATH, [augustSecondBatch]);
+    expect(band().textContent).toBe('Record another');
+    expect(logRecordButton()).not.toBeNull();
+
+    await click(band());
+    expect(pen()).not.toBeNull();
+    await click(buttonByText(pen(), 'Cancel'));
+
+    expect(pen()).toBeNull();
+    expect(document.activeElement).toBe(band());
+    expect(scrollIntoView.mock.contexts).toContain(band());
+
+    await click(band());
+    await pressEscape();
+    expect(pen()).toBeNull();
+    expect(document.activeElement).toBe(band());
+  });
+
+  it('O2: the band\'s Record batch, on a version with no batch, returns to the band', async () => {
+    installMatchMedia();
+    await mountAt(VERSION_PATH, []);
+    expect(band().textContent).toBe('Record batch');
+    expect(logRecordButton()).not.toBeNull();
+
+    await click(band());
+    await click(buttonByText(pen(), 'Cancel'));
+
+    expect(document.activeElement).toBe(band());
+  });
+
+  it('O3: on an address naming no batch of the version, the band\'s Record another returns to the band', async () => {
+    installMatchMedia();
+    await mountAt(`${VERSION_PATH}/batch/no-such-batch`, [augustSecondBatch]);
+    expect(current.container.querySelector('.notebook-log').textContent).toContain('No batch of this version has that address.');
+    expect(logRecordButton()).toBeNull();
+    expect(band().textContent).toBe('Record another');
+
+    await click(band());
+    await click(buttonByText(pen(), 'Cancel'));
+
+    expect(document.activeElement).toBe(band());
+  });
+
+  // Guards: the log's own openers already return to themselves.
+  it('O4: below 724, the log\'s Record another and Record batch return to the log\'s button', async () => {
+    installMatchMedia();
+    await mountAt(VERSION_PATH, [augustSecondBatch]);
+    await click(logRecordButton());
+    await click(buttonByText(pen(), 'Cancel'));
+    expect(document.activeElement).toBe(logRecordButton());
+    expect(document.activeElement.textContent).toBe('Record another');
+
+    await act(async () => current.root.unmount());
+    current.container.remove();
+    current = null;
+    await mountAt(VERSION_PATH, []);
+    await click(logRecordButton());
+    await click(buttonByText(pen(), 'Cancel'));
+    expect(document.activeElement).toBe(logRecordButton());
+    expect(document.activeElement.textContent).toBe('Record batch');
+  });
+
+  it('O5: at 1366 the band draws no record act, and the log\'s Record another returns to itself', async () => {
+    installMatchMedia(1366);
+    await mountAt(VERSION_PATH, [augustSecondBatch]);
+    const bandWords = [...current.container.querySelectorAll('.notebook-version__acts button')].map((button) => button.textContent.trim());
+    expect(bandWords).not.toContain('Record another');
+
+    await click(logRecordButton());
+    await click(buttonByText(pen(), 'Cancel'));
+    expect(document.activeElement).toBe(logRecordButton());
   });
 });
 

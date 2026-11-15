@@ -6,10 +6,10 @@ current_phase: 11
 current_phase_name: Steps, structure, save and print
 status: executing
 stopped_at: Phase 11 context gathered
-last_updated: "2026-11-14T17:26:55.768Z"
-last_activity: 2026-11-01
+last_updated: "2026-11-15T03:08:57.629Z"
+last_activity: 2026-11-14
 last_activity_desc: "Phase 11 executed: 14/14 plans, verification human_needed (iPad check, export-first and three audit rows on Mark's List)"
-state_head: 82a2ff193fe46a3442f8f77c724360399e328c5f
+state_head: d670b474fe0455110f29acb031f8ec91db5c0410
 progress:
   total_phases: 5
   completed_phases: 3
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-21)
 Phase: 11 (Steps, structure, save and print) — EXECUTING
 Plan: 1 of 14
 Status: Executing Phase 11
-Last activity: 2026-11-14 - Completed quick task 261114-gxe: Edit this step lands focus on the step's lead-in, not Cancel (bug-edit-this-step-focus-on-cancel)
+Last activity: 2026-11-14 - Completed quick task 261114-ui5: Edit shows at once when a kept draft that no longer fits its version is dropped (bug-edit-missing-after-misfit-draft-dropped)
 
 Progress: [██████░░░░] 60%
 
@@ -633,6 +633,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 230 | Add the state-machine-audit skill and the implicit-state line in Bishop's watch list | 2026-11-10 | 56693731 | — |
 | 231 | Wire the per-phase state machine audit in as a project GSD capability at execute:post | 2026-11-10 | 65d03272 | — |
 | 261114-gxe | Edit this step lands focus on the step's lead-in, not Cancel (bug-edit-this-step-focus-on-cancel) | 2026-11-14 | 82a2ff19 | [261114-gxe-edit-this-step-lands-focus-on-the-step-s](./quick/261114-gxe-edit-this-step-lands-focus-on-the-step-s/) |
+| 261114-ui5 | Edit shows at once when a kept draft that no longer fits its version is dropped (bug-edit-missing-after-misfit-draft-dropped) | 2026-11-14 | d670b474 | [261114-ui5-edit-shows-at-once-when-a-kept-draft-tha](./quick/261114-ui5-edit-shows-at-once-when-a-kept-draft-tha/) |
 
 ### Roadmap Evolution
 

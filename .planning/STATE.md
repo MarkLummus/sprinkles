@@ -5,11 +5,11 @@ milestone_name: Recipe creation
 current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
 status: planning
-stopped_at: Phase 11 complete, ready to plan Phase 12
-last_updated: "2026-11-15T19:34:31.754Z"
+stopped_at: Phase 12 context gathered
+last_updated: "2026-11-15T21:30:05.864Z"
 last_activity: 2026-11-15
 last_activity_desc: Phase 11 complete, transitioned to Phase 12
-state_head: af101f6e1d7ff16f6fd8a80d0cbc26bf8523c55a
+state_head: 55575a60c26c9f2c19ab2055bb9af7f3e094aeed
 progress:
   total_phases: 5
   completed_phases: 4
@@ -676,9 +676,9 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-15T17:45:28.000Z
-Stopped at: Phase 11 complete, ready to plan Phase 12
-Resume file: None
+Last session: 2026-11-15T21:30:05.480Z
+Stopped at: Phase 12 context gathered
+Resume file: .planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-CONTEXT.md
 
 ## Operator Next Steps
 

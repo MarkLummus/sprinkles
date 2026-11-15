@@ -338,6 +338,68 @@ describe('Edit comes back once a restored pen draft is discarded (bug-edit-missi
   });
 });
 
+// The restore deletes a misfit draft from the store, but the page's drafts list
+// kept it, so editStateFor saw a kept draft and Edit stayed away until a reload.
+describe('Edit shows at once when a kept draft that no longer fits is dropped (bug-edit-missing-after-misfit-draft-dropped)', () => {
+  // A plan record whose row ids are not the version's: row-b is now row-gone,
+  // as when an import replaced the version.
+  function misfitPlan(version) {
+    const payload = penDraftFromVersion(version);
+    const { 'row-b': moved, ...rest } = payload.rows;
+    return keptDraft('plan', { ...payload, rows: { ...rest, 'row-gone': moved } });
+  }
+
+  it('draws Edit once a misfit Next version draft is deleted', async () => {
+    const { version } = seedVanilla();
+    store.drafts.set(VERSION_ID, misfitPlan(version));
+    await mountAt(PAGE_PATH);
+    await flush(() => buttonByText('Edit') !== null);
+
+    expect(repository.deleteDraft).toHaveBeenCalledWith(VERSION_ID, 'plan');
+    expect(store.drafts.has(VERSION_ID)).toBe(false);
+    expect(buttonByText('Cancel')).toBeNull();
+    expect(actsWords()).toEqual(['Next version', 'Edit', 'Print sheet']);
+  });
+
+  it('draws Edit once a draft of a kind that names no family is deleted', async () => {
+    const { version } = seedVanilla();
+    store.drafts.set(VERSION_ID, { ...keptDraft('plan', penDraftFromVersion(version)), kind: 'scribble' });
+    await mountAt(PAGE_PATH);
+    await flush(() => buttonByText('Edit') !== null);
+
+    expect(repository.deleteDraft).toHaveBeenCalledWith(VERSION_ID, null);
+    expect(store.drafts.has(VERSION_ID)).toBe(false);
+    expect(buttonByText('Cancel')).toBeNull();
+    expect(actsWords()).toEqual(['Next version', 'Edit', 'Print sheet']);
+  });
+
+  it('keeps Edit away when the misfit delete fails, because the record is still stored', async () => {
+    const { version } = seedVanilla();
+    store.drafts.set(VERSION_ID, misfitPlan(version));
+    repository.deleteDraft.mockImplementationOnce(async () => {
+      throw new Error('delete failed');
+    });
+    await mountAt(PAGE_PATH);
+    await flush();
+
+    expect(buttonByText('Next version')).not.toBeNull();
+    expect(buttonByText('Edit')).toBeNull();
+    expect(buttonByText('Resume editing')).toBeNull();
+    expect(store.drafts.has(VERSION_ID)).toBe(true);
+  });
+
+  it('keeps Edit away when the misfit delete deleted nothing', async () => {
+    const { version } = seedVanilla();
+    store.drafts.set(VERSION_ID, misfitPlan(version));
+    repository.deleteDraft.mockImplementationOnce(async () => false);
+    await mountAt(PAGE_PATH);
+    await flush();
+
+    expect(buttonByText('Next version')).not.toBeNull();
+    expect(buttonByText('Edit')).toBeNull();
+  });
+});
+
 describe('Resume editing while an edit draft is kept (D-04, D-23)', () => {
   it('reads Resume editing in Edit’s place, with no Next version, no Record batch and the draft kept', async () => {
     const { version } = seedVanilla();

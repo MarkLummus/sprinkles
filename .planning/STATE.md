@@ -6,10 +6,10 @@ current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
 status: planning
 stopped_at: Phase 11 complete, ready to plan Phase 12
-last_updated: "2026-11-15T19:21:51.814Z"
+last_updated: "2026-11-15T19:34:31.754Z"
 last_activity: 2026-11-15
 last_activity_desc: Phase 11 complete, transitioned to Phase 12
-state_head: 0e1a60e9e1c6da0fc6db460259dd427c877f3fbe
+state_head: af101f6e1d7ff16f6fd8a80d0cbc26bf8523c55a
 progress:
   total_phases: 5
   completed_phases: 4
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-11-15)
 Phase: 12 — Showing a recipe's own scales and problems, and the whole loop
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-11-15 — Phase 11 complete, transitioned to Phase 12
+Last activity: 2026-11-15 - Completed quick task 261115-k0d: Cancel on the creation and edit pages takes the save lock while its delete is out (bug-creation-cancel-save-race)
 
 Progress: [████████░░] 80%
 
@@ -639,6 +639,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261115-htp | WR-02: a kept edit draft resumed after another tab saved over the version opens refused and cannot overwrite that save (11-REVIEW WR-02) | 2026-11-15 | b5771919 | .planning/quick/261115-htp-wr-02-11-review-md-phase-11-a-kept-edit-draft-reopened-after |
 | 236 | Fold the clipboard margin and the two row-control todos into Phase 12 (ROADMAP) | 2026-11-15 | ac5c4d9a | — |
 | 237 | Fold the phone entry-point hiding into Phase 12 (ROADMAP) | 2026-11-15 | 0e1a60e9 | — |
+| 261115-k0d | Cancel on the creation and edit pages takes the save lock while its delete is out (bug-creation-cancel-save-race) | 2026-11-15 | af101f6e | [261115-k0d-cancel-on-the-creation-and-edit-pages-ta](./quick/261115-k0d-cancel-on-the-creation-and-edit-pages-ta/) |
 
 ### Roadmap Evolution
 

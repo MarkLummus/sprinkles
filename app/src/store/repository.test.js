@@ -884,9 +884,15 @@ describe('a version’s one draft key is guarded by family (T-11-46, D-06)', () 
   const edit = (id = 'v-guard') => makeDraft(id, { kind: 'edit' });
   const plan = (id = 'v-guard') => makeDraft(id, { kind: 'plan' });
   const record = (id = 'v-guard') => makeDraft(id, { kind: 'record' });
+  // An edit draft is written only over a stored version (261115-htp).
+  async function storeGuardVersions(repository) {
+    await repository.createVersion(makeVersion('v-guard'));
+    await repository.createVersion(makeVersion('v-other'));
+  }
 
   it('saveDraft of a record draft over a stored edit draft writes nothing and resolves false', async () => {
     const repository = createRepository();
+    await storeGuardVersions(repository);
     await repository.saveDraft(edit());
     expect(await repository.saveDraft(record())).toBe(false);
     expect(await repository.getDraft('v-guard')).toEqual(edit());
@@ -894,6 +900,7 @@ describe('a version’s one draft key is guarded by family (T-11-46, D-06)', () 
 
   it('saveDraft of an edit draft over a stored plan draft writes nothing and resolves false', async () => {
     const repository = createRepository();
+    await storeGuardVersions(repository);
     await repository.saveDraft(plan());
     expect(await repository.saveDraft(edit())).toBe(false);
     expect(await repository.getDraft('v-guard')).toEqual(plan());
@@ -901,6 +908,7 @@ describe('a version’s one draft key is guarded by family (T-11-46, D-06)', () 
 
   it('saveDraft within one family writes and resolves true, as does saveDraft on an empty key', async () => {
     const repository = createRepository();
+    await storeGuardVersions(repository);
     expect(await repository.saveDraft(plan())).toBe(true);
     expect(await repository.saveDraft(record())).toBe(true);
     expect(await repository.getDraft('v-guard')).toEqual(record());
@@ -911,6 +919,7 @@ describe('a version’s one draft key is guarded by family (T-11-46, D-06)', () 
 
   it('deleteDraft names a kind and deletes only a stored draft of that kind’s family', async () => {
     const repository = createRepository();
+    await storeGuardVersions(repository);
     await repository.saveDraft(edit());
     // Another tab’s batch save discards its pen’s draft: the kept edit stays.
     expect(await repository.deleteDraft('v-guard', 'record')).toBe(false);
@@ -925,12 +934,19 @@ describe('a version’s one draft key is guarded by family (T-11-46, D-06)', () 
     expect(await repository.getDraft('v-guard')).toBeUndefined();
   });
 
+  it('saveDraft of an edit draft for a version id no version has writes nothing and resolves false (261115-htp)', async () => {
+    const repository = createRepository();
+    expect(await repository.saveDraft(edit('v-no-version'))).toBe(false);
+    expect(await repository.getDraft('v-no-version')).toBeUndefined();
+  });
+
   it('deleteDraft on an empty key resolves false', async () => {
     expect(await createRepository().deleteDraft('v-nothing', 'plan')).toBe(false);
   });
 
   it('deleteDraft with no kind deletes whatever is stored, as it did before', async () => {
     const repository = createRepository();
+    await storeGuardVersions(repository);
     await repository.saveDraft(edit());
     await repository.deleteDraft('v-guard');
     expect(await repository.getDraft('v-guard')).toBeUndefined();

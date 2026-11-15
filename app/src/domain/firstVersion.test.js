@@ -4,7 +4,7 @@
 // store, no component and no framework.
 import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
-import { editStateFor, firstVersionRefusal, isEditableFirstVersion, sameRecord, VersionChangedError } from './firstVersion.js';
+import { editStateFor, fingerprint, firstVersionRefusal, isEditableFirstVersion, sameRecord, VersionChangedError } from './firstVersion.js';
 import { blankCreateDraft, buildDraftRecord } from './draft.js';
 
 function row(id, overrides = {}) {
@@ -92,6 +92,28 @@ describe('sameRecord', () => {
     expect(sameRecord(undefined, { id: 'v1' })).toBe(false);
     expect(sameRecord({ a: undefined }, {})).toBe(false);
     expect(sameRecord(undefined, undefined)).toBe(true);
+  });
+});
+
+describe('fingerprint (WR-02, 261115-htp)', () => {
+  it('is the same string for two records equal by every leaf, whatever their key order', () => {
+    const a = { id: 'v1', rows: [{ id: 'r', portions: [{ step: 1, grams: 5 }] }], authored: { beforeYouStart: [] } };
+    const b = { authored: { beforeYouStart: [] }, rows: [{ portions: [{ grams: 5, step: 1 }], id: 'r' }], id: 'v1' };
+    expect(fingerprint(a)).toBe(fingerprint(b));
+  });
+
+  it('differs for a leaf change, a string against a number, a reordered array and an undefined key against an absent one', () => {
+    const a = { id: 'v1', rows: [{ id: 'r', grams: 5 }], tags: ['x', 'y'] };
+    expect(fingerprint(a)).not.toBe(fingerprint({ ...a, rows: [{ id: 'r', grams: 6 }] }));
+    expect(fingerprint({ n: '5' })).not.toBe(fingerprint({ n: 5 }));
+    expect(fingerprint(a)).not.toBe(fingerprint({ ...a, tags: ['y', 'x'] }));
+    expect(fingerprint({ a: undefined })).not.toBe(fingerprint({}));
+  });
+
+  it('is sixteen lowercase hex digits and stable across calls, undefined included', () => {
+    expect(fingerprint({ id: 'v1' })).toMatch(/^[0-9a-f]{16}$/);
+    expect(fingerprint(undefined)).toMatch(/^[0-9a-f]{16}$/);
+    expect(fingerprint(undefined)).toBe(fingerprint(undefined));
   });
 });
 

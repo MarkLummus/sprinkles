@@ -710,10 +710,24 @@ describe('saveFirstVersionOver, through the repository seam (STRUCT-04, D-03, D-
     "refuses 'draft-held' when a %s draft holds the version's key, and leaves that draft untouched (T-11-47)",
     async (kind) => {
       const repository = createRepository();
-      const { expected } = await storedRoot(repository);
-      // Another tab opened a pen on the version after the edit opened.
-      const foreign = makeDraft(expected.version.id, { kind });
-      await repository.saveDraft(foreign);
+      let expected;
+      let foreign;
+      if (kind === 'create') {
+        // saveDraft refuses a create draft on a stored version (WR-01), so the
+        // ghost this row pins is seeded the way an older build left it: the
+        // draft first, then the root, with createRecipeWithVersion's delete skipped.
+        const pair = createdPair();
+        foreign = makeDraft(pair.version.id, { kind });
+        await repository.saveDraft(foreign);
+        await repository.saveRecipe(pair.recipe);
+        await repository.createVersion(pair.version);
+        expected = { version: await repository.getVersion(pair.version.id), recipe: await repository.getRecipe(pair.recipe.id) };
+      } else {
+        ({ expected } = await storedRoot(repository));
+        // Another tab opened a pen on the version after the edit opened.
+        foreign = makeDraft(expected.version.id, { kind });
+        await repository.saveDraft(foreign);
+      }
       const before = await stores(repository);
 
       const { result, seen } = await unhandledDuring(() => repository.saveFirstVersionOver({ ...editedFrom(expected), expected }));
@@ -920,5 +934,43 @@ describe('a version’s one draft key is guarded by family (T-11-46, D-06)', () 
     await repository.saveDraft(edit());
     await repository.deleteDraft('v-guard');
     expect(await repository.getDraft('v-guard')).toBeUndefined();
+  });
+});
+
+// A create draft written after another tab saved the creation would be a ghost no
+// Save can clear, which hides Edit and refuses Import, so saveDraft refuses it in
+// the same transaction that reads the versions.
+describe('a create draft is refused once its version is stored (WR-01)', () => {
+  it('saveDraft of a create draft after another tab saved the creation writes nothing and resolves false', async () => {
+    const tabA = createRepository();
+    const tabB = createRepository();
+    const pair = createdPair();
+    await tabB.saveDraft(makeDraft(pair.version.id, { kind: 'create' }));
+    await tabA.createRecipeWithVersion(pair);
+
+    const { result, seen } = await unhandledDuring(() =>
+      tabB.saveDraft(makeDraft(pair.version.id, { kind: 'create', fields: { note: 'typed in B after A saved' } })),
+    );
+
+    expect(result).toBe(false);
+    expect(seen).toEqual([]);
+    expect(await tabB.getDraft(pair.version.id)).toBeUndefined();
+    expect(await tabB.listDrafts()).toEqual([]);
+  });
+
+  it('saveDraft of a create draft on an id no version holds still writes', async () => {
+    const repository = createRepository();
+    const draft = makeDraft('v-free', { kind: 'create' });
+    expect(await repository.saveDraft(draft)).toBe(true);
+    expect(await repository.getDraft('v-free')).toEqual(draft);
+  });
+
+  it.each(['plan', 'edit'])('saveDraft of a %s draft on a stored version still writes', async (kind) => {
+    const repository = createRepository();
+    const pair = createdPair();
+    await repository.createRecipeWithVersion(pair);
+    const draft = makeDraft(pair.version.id, { kind });
+    expect(await repository.saveDraft(draft)).toBe(true);
+    expect(await repository.getDraft(pair.version.id)).toEqual(draft);
   });
 });

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { draftMatchesEdit } from '../domain/draft.js';
-import { firstVersionRefusal } from '../domain/firstVersion.js';
+import { firstVersionRefusal, fingerprint } from '../domain/firstVersion.js';
 import { draftFromVersion } from '../domain/creationSave.js';
 import { normalizeCreateDraft } from '../domain/creation.js';
 import { normalizeAllocation } from '../domain/creationSteps.js';
@@ -25,7 +25,11 @@ import { RecipeNotFound } from './RecipePage.jsx';
 //     version's page, touching nothing;
 //   - a kept edit draft opens the editor on it, with the version's refusal (if
 //     any) already standing under Save: a version that gained a batch or a
-//     later version stays reachable until Cancel;
+//     later version stays reachable until Cancel. A kept edit whose base is not
+//     the fingerprint of what the version means now opens with 'changed'
+//     standing under Save, and Save is refused, never re-based (WR-02): another
+//     tab saved over the version since the edit began, or the draft was kept
+//     before edits carried a base;
 //   - no kept edit and a version that can no longer be edited replaces the
 //     address with the page;
 //   - otherwise the editor opens on what the saved version means.
@@ -65,7 +69,18 @@ export function EditRoute() {
           return;
         }
         const seed = normalizeAllocation(normalizeCreateDraft(draftFromVersion(version, recipe, catalog.styles)));
-        setFound({ version, recipe, seed, keptEdit, refusal: keptEdit ? refusal : null });
+        const seedFingerprint = fingerprint(seed);
+        // Strict inequality: an absent or non-string base reads as changed.
+        const baseChanged = keptEdit !== null && keptEdit.baseFingerprint !== seedFingerprint;
+        setFound({
+          version,
+          recipe,
+          seed,
+          keptEdit,
+          refusal: keptEdit ? (refusal ?? (baseChanged ? 'changed' : null)) : null,
+          // A kept edit keeps its own base; only a fresh edit takes the seed's.
+          baseFingerprint: keptEdit ? keptEdit.baseFingerprint : seedFingerprint,
+        });
       })
       .catch(() => {
         if (!cancelled) navigate(notebookPath(recipeId, versionId), { replace: true });
@@ -77,7 +92,7 @@ export function EditRoute() {
 
   if (found === null) return null;
   if (found.notFound) return <RecipeNotFound />;
-  const { version, recipe, seed, keptEdit, refusal } = found;
+  const { version, recipe, seed, keptEdit, refusal, baseFingerprint } = found;
   return (
     <CreationPage
       key={versionId}
@@ -86,6 +101,7 @@ export function EditRoute() {
       cleanPayload={seed}
       stored={{ version, recipe }}
       closedReason={refusal}
+      baseFingerprint={baseFingerprint}
       justStarted={false}
     />
   );

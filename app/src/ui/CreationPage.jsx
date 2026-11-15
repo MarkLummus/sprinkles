@@ -147,8 +147,10 @@ function editRefusalLine(reason) {
 // `stored` is { version, recipe } as the edit route read them, the records
 // Save-over expects to still be stored; `closedReason` is the reason the
 // version can no longer be edited when a kept edit opens on one (the line is
-// shown from the first render; Save re-checks inside the transaction).
-export function CreationPage({ record, justStarted = false, mode = 'create', cleanPayload = null, stored = null, closedReason = null }) {
+// shown from the first render; Save re-checks inside the transaction);
+// `baseFingerprint` is the base this page's edit records carry, from the edit
+// route (WR-02).
+export function CreationPage({ record, justStarted = false, mode = 'create', cleanPayload = null, stored = null, closedReason = null, baseFingerprint = null }) {
   // Hooks first, in this order, above any early return.
   const navigate = useNavigate();
   const [notice, announce] = usePageNotice();
@@ -222,6 +224,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
     creating: true,
     creationKind,
     cleanPayload,
+    baseFingerprint,
     createDraft,
     onRestoreCreate: (payload) => setCreateDraft(normalizeAllocation(normalizeCreateDraft(payload))),
     // Right after Start the draft is kept but the maker knows it: say nothing.
@@ -590,6 +593,15 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
     const stands = creationSaveBlock(createDraft, { libraryById });
     if (stands.length > 0) {
       focusRequestRef.current = { kind: 'refusal', target: stands[0].target };
+      setSaveAttempts((count) => count + 1);
+      return;
+    }
+    // The base the edit began from is not what the version says now: nothing is
+    // ended or written and Save-over is never called (WR-02). The press is
+    // counted so that a press which changes nothing still renders and moves focus.
+    if (editing && closedReason === 'changed') {
+      setEditRefusal('changed');
+      focusRequestRef.current = 'save';
       setSaveAttempts((count) => count + 1);
       return;
     }

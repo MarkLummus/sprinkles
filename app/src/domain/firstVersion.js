@@ -80,6 +80,27 @@ export function sameRecord(a, b) {
   return canonical(a) === canonical(b);
 }
 
+const FNV_OFFSET_BASIS = 0xcbf29ce484222325n;
+const FNV_PRIME = 0x100000001b3n;
+const MASK_64 = 0xffffffffffffffffn;
+
+/**
+ * fingerprint(value) -> a 16-digit lowercase hex string, the 64-bit FNV-1a of
+ * the value's canonical text. Two values sameRecord calls equal give the same
+ * string; a change to any leaf gives a different one, except with negligible
+ * chance. It is not a security hash. The edit route keeps it as the base an
+ * edit began from, so a kept edit can tell that the version moved (WR-02).
+ */
+export function fingerprint(value) {
+  const text = canonical(value);
+  let hash = FNV_OFFSET_BASIS;
+  for (let i = 0; i < text.length; i += 1) {
+    hash ^= BigInt(text.charCodeAt(i));
+    hash = (hash * FNV_PRIME) & MASK_64;
+  }
+  return hash.toString(16).padStart(16, '0');
+}
+
 /**
  * VersionChangedError -> what the store throws when a version is no longer what
  * the writer read: `reason` is 'gone' (no version under the id), 'has-batch' (a

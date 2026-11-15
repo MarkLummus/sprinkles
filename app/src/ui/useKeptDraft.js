@@ -141,6 +141,8 @@ export function useDraftWriter(versionId, family = 'pen') {
 // across renders when nothing changed, never a payload rebuilt during render.
 // The late-read rule below compares object identity, so a rebuilt payload
 // would read as typed on every render and skip every restore.
+// `baseFingerprint` is an edit page's base, written on every edit record so a
+// later open can tell whether the version moved under it (WR-02); null writes none.
 export function useKeptDraft({
   writer,
   versionId,
@@ -163,6 +165,7 @@ export function useKeptDraft({
   creating = false,
   creationKind = 'create',
   cleanPayload = null,
+  baseFingerprint = null,
   createDraft,
   onRestoreCreate,
   onMisfitDeleted = () => {},
@@ -324,6 +327,8 @@ export function useKeptDraft({
           payload: createDraft,
           now: new Date().toISOString(),
         });
+        // An edit record carries the base its edit began from (WR-02).
+        if (creationKind === 'edit' && typeof baseFingerprint === 'string') record = { ...record, baseFingerprint };
       }
     } else if (persistedPen === 'plan' && isPenDraftDirty(mode, penDraft, version)) {
       record = buildDraftRecord({

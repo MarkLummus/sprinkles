@@ -460,10 +460,16 @@ export function createRepository() {
     // id: another tab saved the creation. The read sits in the same
     // transaction, so it is ordered against createRecipeWithVersion, and no
     // keystroke, flush or resume in a second tab can write a ghost back (WR-01).
+    // An edit draft is written only over a stored version, so the key never
+    // holds an edit for a version that is not there (WR-02). The edit route
+    // reaches no such write, because it mounts the editor only over a stored
+    // version and no code deletes one; the guard holds the store to what an
+    // edit means.
     async saveDraft(record) {
       const db = await dbPromise;
       const creating = record.kind === 'create';
-      const tx = creating ? db.transaction(['drafts', 'versions'], 'readwrite') : db.transaction('drafts', 'readwrite');
+      const editing = record.kind === 'edit';
+      const tx = creating || editing ? db.transaction(['drafts', 'versions'], 'readwrite') : db.transaction('drafts', 'readwrite');
       const done = tx.done;
       const queued = [];
       try {
@@ -471,7 +477,8 @@ export function createRepository() {
         const stored = await drafts.get(record.versionId);
         const storedFamily = stored ? familyOrNull(stored.kind) : null;
         const savedElsewhere = creating && (await tx.objectStore('versions').get(record.versionId)) !== undefined;
-        if (savedElsewhere || (storedFamily !== null && storedFamily !== familyOrNull(record.kind))) {
+        const noVersion = editing && (await tx.objectStore('versions').get(record.versionId)) === undefined;
+        if (savedElsewhere || noVersion || (storedFamily !== null && storedFamily !== familyOrNull(record.kind))) {
           done.catch(() => {});
           tx.abort();
           return false;

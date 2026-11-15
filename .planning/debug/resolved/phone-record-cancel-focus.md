@@ -1,20 +1,17 @@
 ---
-status: awaiting_human_verify
+status: resolved
 trigger: "the phone record Cancel focus bug"
 created: 2026-11-15T15:56:09Z
-updated: 2026-11-15T16:09:34Z
+updated: 2026-11-15T16:53:05Z
 goal: find_and_fix
 ---
 
 ## Current Focus
 
 bug_class: Bohrbug (deterministic; reproduced every time per the audit)
-known_pattern_candidate: none (no knowledge-base.md exists; MemPalace not queried)
-hypothesis: H1 — the record pen has no record of which control opened it. RecipePage passes the same handleStartRecording to the band (VersionRow, below 724) and to the log (BatchRow). Only BatchRow has a record focus-return effect, and it always focuses its own recordButtonRef (log's Record another / Record batch). So a band-opened pen returns to the log's button; on a missing-batch address the log draws no record button (only "No batch of this version has that address."), recordButtonRef is null, and focus falls to body.
-test: Playwright WebKit 393x852 against the pre-fix preview on :4173 — press band Record another, Cancel, read activeElement; then the same on /notebook/<recipe>/<version>/no-such-batch.
-expecting: case 1 activeElement is the log's .batch-row__record (not .notebook-version__acts button); case 2 activeElement is BODY.
-status_note: The reported bug (both symptoms) is fixed, verified and committed (aeb2ddbf test, 6ba766ad fix). Awaiting Mark's decision on the residual (Resolution.residual_decision): no further app edit until he answers.
-next_action: On Mark's answer — A: close the session (status resolved), no code change. B: in BatchRow's record and amend focus returns, when the opener was the band and the band's act is not drawn (below724 false) or no opener was pressed (restored draft), focus the log's own record button if mounted, else the Batch heading (h2#batch with tabIndex -1); RED test first in RecipePage.recordTasting.test.jsx. C: same as B but always the Batch heading.
+known_pattern_candidate: none (no knowledge-base.md existed; MemPalace not queried)
+status_note: CLOSED 2026-11-15T16:53:05Z. H1 confirmed and fixed (aeb2ddbf test, 6ba766ad fix, b6b94396 docs). Mark answered the residual checkpoint with option A, "Leave as is": no code change for the two cases where the opener is gone at Cancel; both keep focus on body. Full suite re-run by the orchestrator on main at b6b94396: 132 files, 4340 tests, all pass.
+next_action: none; session archived to .planning/debug/resolved/ with its knowledge-base entry.
 
 reasoning_checkpoint:
   hypothesis: "Cancel on a band-opened record pen lands on the wrong control because the record pen keeps no opener: the one record focus-return (BatchRow.jsx:558-567) always focuses the log's recordButtonRef, and VersionRow has no record focus-return at all; on a missing-batch address that ref is null, so focus falls to body."
@@ -125,4 +122,19 @@ verification:
   guardrail_verdict: accepted
 files_changed: [app/src/ui/useRecordDraft.js, app/src/ui/useBatchRecording.js, app/src/ui/RecipePage.jsx, app/src/ui/VersionRow.jsx, app/src/ui/BatchRow.jsx, app/src/ui/RecipePage.recordTasting.test.jsx, app/src/ui/useRecordDraft.test.jsx]
 commits: [aeb2ddbf (test, red until the fix), 6ba766ad (fix)]
-residual_decision: "Where should focus go when the control that opened the record pen is not on the page at Cancel? (a restored kept draft on a missing-batch address; a band-opened pen after the viewport crosses 724). Today both land on body."
+residual_decision: "A, Leave as is (Mark, through the orchestrator's AskUserQuestion): when the control that opened the record pen is not on the page at Cancel (a restored kept draft on a missing-batch address; a band-opened pen after the viewport crosses 724), focus stays on body. No code change."
+human_verification: "Mark confirmed closure by choosing A on the residual checkpoint; the reported flow was self-verified in WebKit on the built app (see Evidence) and the full suite passes on main at b6b94396 (132 files, 4340 tests)."
+
+## Prevention
+
+five_whys:
+  code:
+    - "Why did a band-opened pen return focus to the log's button? The new-record pen kept no opener, and the only focus return for it (BatchRow) always focused the log's own button."
+    - "Why no opener? The band's record act (below 724) was wired to the same handleStartRecording the log already used; the focus return stayed where it was written, when the log was the only opener."
+    - "Why was that possible? The amend pen got amendOpener when its second opener (the band's Record tasting) arrived, but there is no shared rule that every pen with more than one opener records which one opened it, so the record pen's second opener did not get the same treatment."
+  data:
+    - "Why did focus fall to nothing on a missing-batch address? openBatch is null there, so the log draws no record button and recordButtonRef is null; the band still draws its act. The missing opener turned 'wrong button' into 'no button'."
+  test_gate:
+    - "Why was it not caught? The focus-return tests covered the log's own openers only (O4/O5 passed before the fix); no test pressed the band's narrow-only record act and then Cancel. It was found by the state machine audit on 2026-11-10, not by a gate."
+why_not_caught: "No test gate existed for the band opener: focus-return tests exercised only the log's Record another / Record batch, never the band's below-724 record act, so a second caller of handleStartRecording went untested; found by the state machine audit, not by test, review or verify."
+recurrence_guard: "Regression tests app/src/ui/RecipePage.recordTasting.test.jsx describe 'Cancel on a new record returns focus to the button that opened it' (O1-O5, band and log openers at 393 and 1366, including the missing-batch address) and app/src/ui/useRecordDraft.test.jsx 'openNew(opener) records which control opened the new record; openNew() is the log's'; six hand-seeded mutants at the fix sites killed; passing in the full suite at b6b94396."

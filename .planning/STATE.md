@@ -6,10 +6,10 @@ current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
 status: planning
 stopped_at: Phase 11 complete, ready to plan Phase 12
-last_updated: "2026-11-15T18:56:23.605Z"
+last_updated: "2026-11-15T19:21:51.814Z"
 last_activity: 2026-11-15
 last_activity_desc: Phase 11 complete, transitioned to Phase 12
-state_head: ac5c4d9a2138f749dbf2b34a03686ce2140f3634
+state_head: 0e1a60e9e1c6da0fc6db460259dd427c877f3fbe
 progress:
   total_phases: 5
   completed_phases: 4
@@ -638,6 +638,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261115-hto | WR-01: a create draft is no longer written back for a recipe another tab already saved; a stale tab's Save goes to the saved recipe (11-REVIEW WR-01) | 2026-11-15 | fefd938c | .planning/quick/261115-hto-wr-01-11-review-md-phase-11-a-create-draft-can-be-written-ba |
 | 261115-htp | WR-02: a kept edit draft resumed after another tab saved over the version opens refused and cannot overwrite that save (11-REVIEW WR-02) | 2026-11-15 | b5771919 | .planning/quick/261115-htp-wr-02-11-review-md-phase-11-a-kept-edit-draft-reopened-after |
 | 236 | Fold the clipboard margin and the two row-control todos into Phase 12 (ROADMAP) | 2026-11-15 | ac5c4d9a | — |
+| 237 | Fold the phone entry-point hiding into Phase 12 (ROADMAP) | 2026-11-15 | 0e1a60e9 | — |
 
 ### Roadmap Evolution
 

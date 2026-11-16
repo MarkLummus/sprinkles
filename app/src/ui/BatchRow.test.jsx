@@ -2844,8 +2844,7 @@ describe('BatchRow — a Low to high scale on the record pen names only its ends
     expect(penFor(none)).not.toContain('This recipe only');
   });
 
-  it('a recipe with a Low to high scale and a problem of its own draws both cues, scales first', () => {
-    const markup = penFor({ ...oliveOilVersion, declaredAxes: [COFFEE_SCALE], declaredFlaws: ['Bitter'] });
+  it('a recipe with a Low to high scale and a problem of its own draws both cues, scales first', () => {    const markup = penFor({ ...oliveOilVersion, declaredAxes: [COFFEE_SCALE], declaredFlaws: ['Bitter'] });
     expect(markup.split('>This recipe only<').length - 1).toBe(2);
     expect(scaleCues(markup)).toHaveLength(1);
     expect(declaredChips(markup)).toEqual(['Bitter']);
@@ -2866,5 +2865,79 @@ describe('BatchRow — a Low to high scale on the record pen names only its ends
       draft: { ...emptyRecordDraft, tastingOpen: true },
     });
     expect(stopNames(scalesIn(markup)['Coffee flavour'])).toEqual(['1: faint', '2', '3', '4', '5: strong']);
+  });
+});
+
+describe('BatchRow — a marked Low to high scale reads back in its kind, from the batch snapshot (TASTE-04, D-02)', () => {
+  const ownVersion = { ...oliveOilVersion, declaredAxes: [BODY_SCALE, COFFEE_SCALE], declaredFlaws: ['Bitter', 'Burnt taste'] };
+
+  function batchMarked(marks, tastingExtra = {}) {
+    return createBatch(ownVersion, { churnDate: '2026-10-01' }, { marks, ...tastingExtra }, {
+      id: 'reading-kind-1',
+      catalog: SEED_CATALOG,
+      now: '2026-10-01T09:00:00.000Z',
+    });
+  }
+
+  const readingOf = (batch, version = oliveOilVersion) => renderBatchRow({ version, openBatch: batch, batches: [batch], mode: 'reading' });
+  const cellsOf = (markup) =>
+    [...markup.matchAll(/<span class="batch-row__cell-label">([^<]*)<\/span><span class="batch-row__cell-value">([^<]*)<\/span>/g)].map(
+      (match) => [match[1], match[2]],
+    );
+
+  it('says Body 4 as "heavy (4)" and Coffee flavour 2 as "2 of 5" under This recipe only', () => {
+    const cells = cellsOf(readingOf(batchMarked({ body: 4, coffee: 2 })));
+    expect(cells).toContainEqual(['Body', 'heavy (4)']);
+    expect(cells).toContainEqual(['Coffee flavour', '2 of 5']);
+  });
+
+  it.each([
+    [1, 'faint (1)'],
+    [3, '3 of 5'],
+    [4, '4 of 5'],
+    [5, 'strong (5)'],
+  ])('says Coffee flavour %i as "%s"', (stop, text) => {
+    expect(cellsOf(readingOf(batchMarked({ coffee: stop })))).toEqual([['Coffee flavour', text]]);
+  });
+
+  it('says a Right in the middle scale as built: Body 3 "right (3)", Sweetness 4 "more (4)"', () => {
+    const cells = cellsOf(readingOf(batchMarked({ body: 3, sweetness: 4 })));
+    expect(cells).toContainEqual(['Body', 'right (3)']);
+    expect(cells).toContainEqual(['Sweetness', 'more (4)']);
+  });
+
+  it('reads the snapshot, not the live version: a version that now calls the scale Right in the middle changes nothing', () => {
+    const live = { ...ownVersion, declaredAxes: [BODY_SCALE, { ...COFFEE_SCALE, kind: 'goldilocks' }] };
+    expect(cellsOf(readingOf(batchMarked({ coffee: 2 }), live))).toEqual([['Coffee flavour', '2 of 5']]);
+  });
+
+  it('lists the four core scales first and then the own scales in their stored order', () => {
+    const cells = cellsOf(readingOf(batchMarked({ coffee: 2, body: 4, hardness: 1, sweetness: 5 })));
+    expect(cells.map(([label]) => label)).toEqual(['Hardness', 'Sweetness', 'Body', 'Coffee flavour']);
+  });
+
+  it('shows only Every recipe when only core scales are marked', () => {
+    const markup = readingOf(batchMarked({ hardness: 2 }));
+    expect(markup).toContain('>Every recipe<');
+    expect(markup).not.toContain('>This recipe only<');
+  });
+
+  it('shows This recipe only over the scales and over the problems only when each has something', () => {
+    const scalesOnly = readingOf(batchMarked({ coffee: 2 }));
+    expect(scalesOnly.split('>This recipe only<').length - 1).toBe(1);
+    const both = readingOf(batchMarked({ coffee: 2 }, { declaredDefects: ['Bitter'] }));
+    expect(both.split('>This recipe only<').length - 1).toBe(2);
+  });
+
+  it('reads a scale named with markup back as text', () => {
+    const tricky = { ...COFFEE_SCALE, name: '<b>Coffee</b>', low: '<i>faint', high: 'strong</i>' };
+    const batch = createBatch({ ...oliveOilVersion, declaredAxes: [tricky] }, { churnDate: '2026-10-01' }, { marks: { coffee: 1 } }, {
+      id: 'reading-kind-2',
+      catalog: SEED_CATALOG,
+      now: '2026-10-01T09:00:00.000Z',
+    });
+    const markup = readingOf(batch);
+    expect(markup).not.toMatch(/<b>Coffee|<i>faint/);
+    expect(markup).toContain('&lt;i&gt;faint (1)');
   });
 });

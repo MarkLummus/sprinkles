@@ -15,6 +15,7 @@ import {
   markKeyFor,
   setMark,
   readMarkWord,
+  readMarkText,
 } from './axes.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
@@ -214,6 +215,41 @@ describe('kind-aware presentation (Phase 12, D-01, D-03)', () => {
   it('reads a stop with no word as its bare number, whatever the kind', () => {
     expect(stopLabelFor(COFFEE, 2)).toBe('2');
     expect(stopLabelFor(COFFEE, 4)).toBe('4');
+  });
+});
+
+// The reading's whole cell text per kind (D-02, candidate A): Right in the middle
+// "{word} (n)", Low to high "{low} (1)", "2 of 5" to "4 of 5", "{high} (5)". The
+// same kind-keyed shape as PRESENTATION, so a third kind fails the key test.
+const READ_BACK = {
+  goldilocks: { axis: BODY, texts: ['thin (1)', 'thin (2)', 'right (3)', 'heavy (4)', 'heavy (5)'] },
+  magnitude: { axis: COFFEE, texts: ['faint (1)', '2 of 5', '3 of 5', '4 of 5', 'strong (5)'] },
+};
+
+describe('readMarkText', () => {
+  it('the table covers exactly the kinds the catalog knows', () => {
+    expect(Object.keys(READ_BACK).sort()).toEqual([...SCALE_KINDS].sort());
+  });
+
+  it.each(Object.entries(READ_BACK))('%s: stops 1 to 5 read back as the table says', (_kind, row) => {
+    expect(STOPS.map((stop) => readMarkText(row.axis, stop))).toEqual(row.texts);
+  });
+
+  it('reads the seeded Right in the middle scales exactly as before: Sweetness 4 "more (4)", Body 3 "right (3)", Hardness 2 "soft (2)"', () => {
+    const sweetness = SEEDED_AXES.find((axis) => axis.key === 'sweetness');
+    expect(readMarkText(sweetness, 4)).toBe('more (4)');
+    expect(readMarkText(BODY, 3)).toBe('right (3)');
+    expect(readMarkText(SEEDED_AXES[0], 2)).toBe('soft (2)');
+  });
+
+  it.each([
+    ['a missing kind', undefined],
+    ['an empty kind', ''],
+    ['an unknown kind', 'other'],
+  ])('%s reads the Right in the middle form', (_name, kind) => {
+    expect(readMarkText({ ...COFFEE, kind }, 1)).toBe('faint (1)');
+    expect(readMarkText({ ...COFFEE, kind }, 3)).toBe('right (3)');
+    expect(readMarkText({ ...COFFEE, kind }, 5)).toBe('strong (5)');
   });
 });
 

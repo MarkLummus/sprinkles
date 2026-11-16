@@ -17,6 +17,8 @@
 // test no kind. The kind comes from the definition a reader is given (a batch's
 // own snapshot, or the version's declared scales for a new batch). Stored marks
 // stay stops 1 to 5 and no stored shape changes.
+// A Low to high scale shows no stop numbers on the pen or on the printed log
+// (Mark, 2026-11-16; D-01 as amended): showsStopNumbers below says so.
 import { coreScaleDefinitions } from './catalog.js';
 
 /** STOPS: the five whole stops a mark may take (D-07, sketch 007's goldilocks scale). */
@@ -54,6 +56,17 @@ export function stopLabelFor(axis, stop) {
  */
 export function middleWordFor(axis) {
   return isMagnitude(axis) ? null : 'right';
+}
+
+/**
+ * showsStopNumbers(axis) -> whether a scale's stops show their numbers. A Low to
+ * high scale shows none on the pen or on the printed log; its stops keep their
+ * numbers in their names for a screen reader (stopLabelFor). Every other kind, a
+ * missing or unknown one included, shows 1 to 5. This is Mark's decision of
+ * 2026-11-16, D-01 as amended.
+ */
+export function showsStopNumbers(axis) {
+  return !isMagnitude(axis);
 }
 
 /**

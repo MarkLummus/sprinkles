@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { STOPS, stopLabelFor, middleWordFor } from '../domain/axes.js';
+import { STOPS, stopLabelFor, middleWordFor, showsStopNumbers } from '../domain/axes.js';
 import { Button } from './Button.jsx';
 import { Radio } from './Radio.jsx';
 
@@ -38,6 +38,7 @@ export function AxisMark({ axis, value, onChange, onClear, cueId }) {
   const nameId = `axis-name-${axis.key}`;
   const groupName = `axis-${axis.key}`;
   const middle = middleWordFor(axis);
+  const numbered = showsStopNumbers(axis);
   const isMarked = value !== undefined;
   const firstStopRef = useRef(null);
   const stopRefs = useRef([]);
@@ -106,7 +107,9 @@ export function AxisMark({ axis, value, onChange, onClear, cueId }) {
               onChange={() => {}}
               onClick={() => handleStopClick(stop)}
             />
-            <span aria-hidden="true">{stop}</span>
+            {/* A Low to high scale's stops carry no number (Mark, 2026-11-16);
+                their names for a screen reader still do. */}
+            {numbered && <span aria-hidden="true">{stop}</span>}
           </label>
         ))}
       </div>

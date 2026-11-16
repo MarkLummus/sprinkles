@@ -4,7 +4,7 @@ A living list of state that behaves as a state machine without being written as 
 
 Paths are relative to app/src. Line numbers were right at the commit named in "Last updated" and drift; find the real place before acting on one.
 
-Last updated: 2026-11-10, at commit 4e678dfa, full sweep. Five bugs from that sweep were fixed afterwards in quick batch 261110-abx (see 2026-11-10-audit.md), so the entries they touch are due a refresh on the next run: the History rail draft node, Show changes under an open pen, the version row landing, the on-demand purpose and aside field, and the drafts list after a discard.
+Last updated: 2026-11-16, at commit 769cf01d, scoped to the Phase 12 diff (no entry changed: the diff adds pure kind-aware readers and no state; see 2026-11-16-audit.md). Before that: 2026-11-10, at commit 4e678dfa, full sweep. Five bugs from that sweep were fixed afterwards in quick batch 261110-abx (see 2026-11-10-audit.md), so the entries they touch are due a refresh on the next run: the History rail draft node, Show changes under an open pen, the version row landing, the on-demand purpose and aside field, and the drafts list after a discard.
 
 How far to trust an entry:
 - Part A was read firsthand.

@@ -3,7 +3,7 @@
 **Defined:** 2026-10-16
 **Core Value:** Make something you like, understand how it turned out, and know what to keep or change next time. If everything else fails, a maker must still be able to develop a recipe, make it from a printed sheet, and get back a record of what happened that the next version can cite.
 
-Requirement authority is `product-requirements/04-requirements.md` (packet IDs such as REC-01, ING-01). This file selects what milestone v2.0 needs and states it as testable criteria. Category IDs continue those of v1.1 (`EDIT`, `LIB`, `MAKE`); `PLACE`, `STRUCT`, `CODE`, `TASTE` and `PROOF` are new. Archived: `milestones/v1-REQUIREMENTS.md`, `milestones/v1.1-REQUIREMENTS.md`.
+Requirement authority is `product-requirements/04-requirements.md` (packet IDs such as REC-01, ING-01). This file selects what milestone v2.0 needs and states it as testable criteria. Category IDs continue those of v1.1 (`EDIT`, `LIB`, `MAKE`); `PLACE`, `STRUCT`, `CODE`, `TASTE`, `PROOF` and `LOG` are new. Archived: `milestones/v1-REQUIREMENTS.md`, `milestones/v1.1-REQUIREMENTS.md`.
 
 **ID note (decided 2026-10-16, Mark):** this milestone's tasting-scale requirements were SCALE-01 to SCALE-04 and are now TASTE-01 to TASTE-04, because the product requirement SCALE-01 means quantity scaling (crosswalk: SCALE-01 → TASTE-01, SCALE-02 → TASTE-02, SCALE-03 → TASTE-03, SCALE-04 → TASTE-04). REC-03 and REC-05 are not defined in `product-requirements/04-requirements.md`, so this file says "structure edits on later versions" in words instead.
 
@@ -57,6 +57,10 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 - [x] **TASTE-02**: A maker can define 0 to 2 problems for a recipe.
 - [x] **TASTE-03**: A batch snapshots the recipe's definitions, a scale's kind included, so a later change never moves a stored mark.
 - [ ] **TASTE-04**: The record pen, the reading and the printed log show a recipe's own scales, each in its kind, and its problems, and "This recipe only" shows only when it has any.
+
+### Printed log
+
+- [ ] **LOG-01**: The printed Batch log and Tasting log start about 1.5 in from the top of the paper, so the clip of a clipboard covers none of their lines, and each still prints on one page: the room comes out of their ruled notes lines (Batch log 13, Tasting log 4), and the bench sheet pages keep their 0.5 in margin.
 
 ### Proof
 
@@ -128,12 +132,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TASTE-04 | Phase 12 | Pending |
 | PROOF-01 | Phase 12 | Pending |
 | PROOF-02 | Phase 12 | Pending |
+| LOG-01 | Phase 12 | Pending |
 
 **Coverage:**
-- v2.0 requirements: 30 total
-- Mapped to phases: 30 (Phase 8: 2, Phase 9: 10, Phase 10: 8, Phase 11: 7, Phase 12: 3)
+- v2.0 requirements: 31 total
+- Mapped to phases: 31 (Phase 8: 2, Phase 9: 10, Phase 10: 8, Phase 11: 7, Phase 12: 4)
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-10-16*
-*Last updated: 2026-10-21 after Phase 10 closed: MAKE-04, MAKE-05, MAKE-06, MAKE-08, MAKE-09 and MAKE-11 complete (the creation editor without Save, verified on the iPad)*
+*Last updated: 2026-11-16: LOG-01 added for Phase 12 (12-CONTEXT D-04, D-05); PHONE-01 and STRUCT-05 follow with the second planning round*

@@ -3,9 +3,15 @@
 // "right" between a Low to high scale's ends).
 //
 //   PROBE_DIST=<dist> node 12-stops-probe.mjs report <facet...>
-//   facets so far: pen
+//   PROBE_DIST=<dist> node 12-stops-probe.mjs check <facet...>
+//   facets: pen (the record pen's anchors and stop names), reading (the tasting reading's cells),
+//           editor (the creation editor's stops line and stray "right" words)
 //
-// `report` prints "REPORT <facet> <fact>" lines. The probe reads the build from PROBE_DIST and
+// `report` prints "REPORT <facet> <fact>" lines and exits 0. `check` prints "PASS <facet> <check>"
+// or "FAIL <facet> <check>: <values>" and exits 1 on any FAIL; the checks hold the forms D-01 and
+// D-02 decide (sketch 015 CONTRACT sections 1, 2 and 4). On a build of the base commit every
+// facet fails, which is how the probe is shown to be able to fail.
+// The probe reads the build from PROBE_DIST and
 // NEVER builds or writes it; it serves that folder (never app/dist, which Mark's own
 // `vite preview --host` serves) on an ephemeral 127.0.0.1 port through 08-walk-server.mjs, and
 // every request to another host is aborted. Build to a scratch folder first:
@@ -46,6 +52,10 @@ if (!existsSync(path.join(DIST, 'index.html'))) {
 }
 
 const FIXED_TIME = new Date('2026-08-04T12:00:00');
+
+// The creation editor's stops line for Coffee flavour, faint to strong, Low to high (12-01's A1
+// form). One constant: a veto of A1 is a one-line edit here (12-01, "If Mark vetoes A1", item 4).
+const EDITOR_STOPS = 'faint · 2 · 3 · 4 · strong';
 
 // A context per facet: WebKit at 1366 by 1024 with touch, a fixed clock (timers keep running),
 // every request not to 127.0.0.1 aborted.
@@ -98,27 +108,151 @@ async function collectPen(browser, appUrl) {
       })),
     );
     const facts = [];
-    for (const wanted of ['Coffee flavour', 'Body']) {
+    const checks = [];
+    // Coffee flavour is Low to high (two ends, no middle word); Body is Right in the middle.
+    const EXPECT = {
+      'Coffee flavour': { anchors: ['faint', 'strong'], names: ['1: faint', '2', '3', '4', '5: strong'] },
+      Body: { anchors: ['thin', 'right', 'heavy'], names: ['1: thin', '2: leaning thin', '3: right', '4: leaning heavy', '5: heavy'] },
+    };
+    for (const [wanted, expect] of Object.entries(EXPECT)) {
       const s = scales.find((x) => x.name === wanted);
       if (!s) {
         facts.push(`${wanted}: no such scale in the pen (scales: ${scales.map((x) => x.name).join(', ')})`);
+        checks.push({ name: `${wanted} is in the pen`, ok: false, values: `scales: ${scales.map((x) => x.name).join(', ')}` });
         continue;
       }
       facts.push(`${wanted} anchors: ${JSON.stringify(s.anchors)}`);
       facts.push(`${wanted} stop names: ${JSON.stringify(s.names)}`);
+      checks.push(sameList(`${wanted} anchors`, s.anchors, expect.anchors));
+      checks.push(sameList(`${wanted} stop names`, s.names, expect.names));
     }
-    return { facts, scales };
+    return { facts, checks };
   } finally {
     await context.close();
   }
 }
 
-const FACETS = { pen: collectPen };
+// A check of one list against the list it must equal.
+function sameList(name, got, want) {
+  const ok = got.length === want.length && got.every((x, i) => x === want[i]);
+  return { name, ok, values: `got ${JSON.stringify(got)}, want ${JSON.stringify(want)}` };
+}
+
+// ---------------------------------------------------------------------------
+// Facet reading: the tasting reading of the seeded batch, the Tasting fold open.
+// Case two, then case one, each in a context of its own (a fresh IndexedDB).
+// ---------------------------------------------------------------------------
+async function readCells(browser, appUrl, caseKey) {
+  const context = await newContext(browser);
+  try {
+    const page = await context.newPage();
+    page.setDefaultTimeout(12000);
+    await arrive(page, appUrl, caseKey);
+    const fold = page.locator('.notebook-log [aria-expanded="false"]').filter({ hasText: /^Tasting/ }).first();
+    const firstCell = page.locator('.tasting-reading .batch-row__cell').first();
+    for (let i = 0; i < 4; i += 1) {
+      if ((await firstCell.count()) > 0 && (await firstCell.isVisible())) break;
+      if ((await fold.count()) > 0) await fold.click();
+      await page.waitForTimeout(500);
+    }
+    await firstCell.waitFor({ state: 'visible' });
+    return await page.evaluate(() =>
+      [...document.querySelectorAll('.tasting-reading .batch-row__cell')].map((c) => ({
+        label: c.querySelector('.batch-row__cell-label')?.textContent ?? '',
+        value: c.querySelector('.batch-row__cell-value')?.textContent ?? '',
+      })),
+    );
+  } finally {
+    await context.close();
+  }
+}
+
+async function collectReading(browser, appUrl) {
+  const facts = [];
+  const checks = [];
+  const WANT = { two: { 'Coffee flavour': '2 of 5', Body: 'heavy (4)' }, one: { Mint: 'strong (5)' } };
+  for (const [caseKey, want] of Object.entries(WANT)) {
+    const cells = await readCells(browser, appUrl, caseKey);
+    for (const c of cells) facts.push(`case ${caseKey} cell ${c.label}: ${c.value}`);
+    for (const [label, value] of Object.entries(want)) {
+      const cell = cells.find((c) => c.label === label);
+      checks.push({
+        name: `case ${caseKey} ${label} reads ${value}`,
+        ok: cell?.value === value,
+        values: cell ? `got ${JSON.stringify(cell.value)}` : `no cell labelled ${label} (cells: ${cells.map((c) => c.label).join(', ')})`,
+      });
+    }
+  }
+  return { facts, checks };
+}
+
+// ---------------------------------------------------------------------------
+// Facet editor: the creation editor's Scales region with one Low to high scale.
+// ---------------------------------------------------------------------------
+async function collectEditor(browser, appUrl) {
+  const context = await newContext(browser);
+  try {
+    const page = await context.newPage();
+    page.setDefaultTimeout(12000);
+    await page.goto(`${appUrl}/notebook`, { waitUntil: 'load' });
+    await page.waitForSelector('.nb__head .notebook-action');
+    await clickUntil(page, () => page.locator('.nb__head .notebook-action'), '.nb__new textarea', 'open the New recipe entry');
+    await page.fill('.nb__new textarea', 'Coffee');
+    await page.locator('.nb__new-actions button', { hasText: /^Start$/ }).click();
+    await page.waitForFunction(() => location.pathname === '/notebook/new');
+    await page.waitForSelector('.notebook.mk-page');
+    const scales = page.locator('section[aria-label="Scales"]');
+    await clickUntil(page, () => scales.getByRole('button', { name: 'Add scale' }), '[aria-label="Scale 1"]', 'press Add scale');
+    const card = scales.locator('[aria-label="Scale 1"]');
+    await card.getByLabel('Name', { exact: true }).fill('Coffee flavour');
+    await card.getByLabel('Low end', { exact: true }).fill('faint');
+    await card.getByLabel('High end', { exact: true }).fill('strong');
+    const kind = card.getByRole('radio', { name: 'Low to high' });
+    for (let i = 0; i < 4 && !(await kind.isChecked()); i += 1) {
+      await card.locator('.segmented__option', { hasText: /^Low to high$/ }).click();
+      await page.waitForTimeout(400);
+    }
+    await card.locator('.mk-stops').waitFor({ state: 'visible' });
+    await page.waitForTimeout(300);
+    const stops = (await card.locator('.mk-stops').textContent()).trim();
+    // Every text node of the Scales section that holds the word right (whole word, any case), with
+    // the class of the nearest classed element at or above its parent, and whether it sits inside a
+    // Kind option's label: that option's words sit in an unclassed span (Segmented.jsx:79).
+    const rights = await page.evaluate(() => {
+      const root = document.querySelector('section[aria-label="Scales"]');
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const found = [];
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        if (/\bright\b/i.test(node.textContent)) {
+          found.push({
+            text: node.textContent.trim(),
+            cls: node.parentElement?.closest('[class]')?.className ?? '',
+            inKindOption: !!node.parentElement?.closest('.segmented__option'),
+          });
+        }
+      }
+      return found;
+    });
+    const facts = [`.mk-stops: ${JSON.stringify(stops)}`];
+    for (const r of rights) facts.push(`word right in ${JSON.stringify(r.text)} (class ${JSON.stringify(r.cls)}, inside a Kind option: ${r.inKindOption})`);
+    if (rights.length === 0) facts.push('word right: no text node in the Scales section holds it');
+    const stray = rights.filter((r) => !r.inKindOption);
+    const checks = [
+      { name: `.mk-stops reads ${JSON.stringify(EDITOR_STOPS)}`, ok: stops === EDITOR_STOPS, values: `got ${JSON.stringify(stops)}` },
+      { name: 'no word right outside a Kind option label', ok: stray.length === 0, values: stray.map((r) => `${JSON.stringify(r.text)} (class ${JSON.stringify(r.cls)})`).join('; ') },
+    ];
+    return { facts, checks };
+  } finally {
+    await context.close();
+  }
+}
+
+const FACETS = { pen: collectPen, reading: collectReading, editor: collectEditor };
 
 async function main() {
   const [mode, ...wanted] = process.argv.slice(2);
-  if (mode !== 'report' || wanted.length === 0 || wanted.some((f) => !FACETS[f])) {
-    console.log(`FAIL usage: PROBE_DIST=<dist> node 12-stops-probe.mjs report <${Object.keys(FACETS).join('|')}...>`);
+  if (!['report', 'check'].includes(mode) || wanted.length === 0 || wanted.some((f) => !FACETS[f])) {
+    console.log(`FAIL usage: PROBE_DIST=<dist> node 12-stops-probe.mjs <report|check> <${Object.keys(FACETS).join('|')}...>`);
     process.exit(1);
   }
   const { appUrl, close } = await startServers({ appRoot: DIST });
@@ -126,12 +260,26 @@ async function main() {
   let failed = false;
   try {
     for (const facet of wanted) {
-      const { facts } = await FACETS[facet](browser, appUrl);
-      for (const fact of facts) console.log(`REPORT ${facet} ${fact}`);
+      let result;
+      try {
+        result = await FACETS[facet](browser, appUrl);
+      } catch (error) {
+        failed = true;
+        console.log(`FAIL ${facet} could not read the build: ${String(error.message).split('\n')[0]}`);
+        continue;
+      }
+      if (mode === 'report') {
+        for (const fact of result.facts) console.log(`REPORT ${facet} ${fact}`);
+      } else {
+        for (const check of result.checks) {
+          if (check.ok) console.log(`PASS ${facet} ${check.name}`);
+          else {
+            failed = true;
+            console.log(`FAIL ${facet} ${check.name}: ${check.values}`);
+          }
+        }
+      }
     }
-  } catch (error) {
-    failed = true;
-    console.log(`FAIL ${String(error.message).split('\n')[0]}`);
   } finally {
     await browser.close();
     await close();

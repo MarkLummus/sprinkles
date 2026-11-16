@@ -441,18 +441,18 @@ describe("the recipe's own scales (TASTE-01, decision 12, T-04)", () => {
     expect(base).toEqual(before);
   });
 
-  it('scaleStopsLine joins five stops for a middle scale and the ends with the numbers between for a low-to-high one', () => {
+  it('scaleStopsLine joins five stops for a middle scale and two ends for a low-to-high one', () => {
     expect(scaleStopsLine({ low: 'thin', high: 'rich', kind: 'goldilocks' })).toBe(
       'thin · leaning thin · right · leaning rich · rich',
     );
-    expect(scaleStopsLine({ low: 'faint', high: 'strong', kind: 'magnitude' })).toBe('faint · 2 · 3 · 4 · strong');
+    expect(scaleStopsLine({ low: 'faint', high: 'strong', kind: 'magnitude' })).toBe('faint to strong');
   });
 
   it('scaleStopsLine is null until both ends (trimmed) and the kind are set, and uses the words as typed', () => {
     expect(scaleStopsLine({ low: 'thin', high: '  ', kind: 'goldilocks' })).toBeNull();
     expect(scaleStopsLine({ low: '', high: 'rich', kind: 'goldilocks' })).toBeNull();
     expect(scaleStopsLine({ low: 'thin', high: 'rich', kind: '' })).toBeNull();
-    expect(scaleStopsLine({ low: '<b>x', high: 'y', kind: 'magnitude' })).toBe('<b>x · 2 · 3 · 4 · y');
+    expect(scaleStopsLine({ low: '<b>x', high: 'y', kind: 'magnitude' })).toBe('<b>x to y');
   });
 });
 

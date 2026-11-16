@@ -12,8 +12,10 @@
 //
 // `report` prints "REPORT <facet> <fact>" lines and exits 0. `check` prints "PASS <facet> <check>"
 // or "FAIL <facet> <check>: <values>" and exits 1 on any FAIL; the checks hold the forms D-01 and
-// D-02 decide (sketch 015 CONTRACT sections 1, 2 and 4). On a build of the base commit every
-// facet fails, which is how the probe is shown to be able to fail.
+// D-02 decide (sketch 015 CONTRACT sections 1, 2 and 4). On a build of 12-01's base commit the pen
+// and reading facets fail and the editor facet passes, since Mark returned the editor's line to that
+// form on 2026-11-16; the pen facet's stop-numbers check fails on any build before 261116-80v. That is
+// how the probe is shown to be able to fail.
 // The probe reads the build from PROBE_DIST and
 // NEVER builds or writes it; it serves that folder (never app/dist, which Mark's own
 // `vite preview --host` serves) on an ephemeral 127.0.0.1 port through 08-walk-server.mjs, and
@@ -56,9 +58,9 @@ if (!existsSync(path.join(DIST, 'index.html'))) {
 
 const FIXED_TIME = new Date('2026-08-04T12:00:00');
 
-// The creation editor's stops line for Coffee flavour, faint to strong, Low to high (12-01's A1
-// form). One constant: a veto of A1 is a one-line edit here (12-01, "If Mark vetoes A1", item 4).
-const EDITOR_STOPS = 'faint · 2 · 3 · 4 · strong';
+// The creation editor's stops line for Coffee flavour, the two ends joined by "to"; Mark returned it
+// to this form on 2026-11-16 (quick 261116-80v; 12-01 "If Mark vetoes A1", item 4).
+const EDITOR_STOPS = 'faint to strong';
 
 // A context per facet: WebKit at 1366 by 1024 with touch (768 by 1024 with touch and 393 by 852
 // with touch and isMobile when a facet asks for them), a fixed clock (timers keep running), every

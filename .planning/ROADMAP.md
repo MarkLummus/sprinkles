@@ -301,19 +301,20 @@ Plans:
   2. A recipe created in the app round-trips: it prints, a batch recorded against it marks a custom scale, and after export and import it reopens with the same figures, Sheet code and marks
   3. On the iPad, from the production build, a maker creates a recipe end to end, its scales, problems and targets included, and prints it: Tab reaches every creation control, each Move button included, and after a move focus stays with the moved step or row
 
-**Plans:** 6 plans in 3 waves for the first planning round (Gate 1); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
+**Plans:** 7 plans in 3 waves for the first planning round (Gate 1); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
 
 Plans:
 **Wave 1**
 - [ ] 12-01-PLAN.md — kind-aware readers in axes.js; the record pen, the reading and the creation editor's stops line show a Low to high scale in its kind
 - [ ] 12-06-PLAN.md — the shared Phase 12 cases and the stops probe; the bug row's steps reproduced on a build of the base commit, where the probe's check fails on every facet (split out of 12-01; runs beside it)
+- [ ] 12-07-PLAN.md — the Phase 12 board engine (11-board-check.mjs copied, the panel found by selector and index, the against side on its own Page) and its stand-in proofs on sketch 015's boards, with no build (split out of 12-04)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 12-02-PLAN.md — the printed Low to high row with nothing under its ticks, every scale row 36 px, the clipboard drop on the two log pages with 13 and 4 notes lines; LOG-01 and the two design gates written into REQUIREMENTS and the roadmap
 - [ ] 12-03-PLAN.md — the scripted WebKit round trip: create with a scale of each kind and a problem, save, print, batch, export, import into an empty profile, compare field by field (PROOF-01)
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 12-04-PLAN.md — board against build in WebKit at 1366 and 393 for the record pen, the reading and the printed logs
+- [ ] 12-04-PLAN.md — board against build in WebKit at 1366 and 393 for the record pen, the reading and the printed logs, on 12-07's engine
 - [ ] 12-05-PLAN.md — the logs printed to PDF through WebKit, mobile Safari in the iOS Simulator, and every round-one check in one command with the Phase 11 walk unchanged
 **Design gate**: Approved and snapshotted boards for the record pen, the reading and the printed log showing a recipe's own scales and problems, a scale of each kind among them, and showing none (sketches 007, 008 and 010 draw only the fixed declared scales). Per the phone brief (PRODUCT.md, "On the phone", Mark 2026-11-15) the record pen's tasting and the reading are also drawn at phone width (393 beside the 350 column) for a recipe's own scales, each kind and none; the printed log needs no 393 board, and no iPhone check is added to this phase's success criteria. Also folded in by Mark (2026-11-15): a board for the entry points left out below 724 (the recipe band in its three states, the Notebook at 393 with and without a kept draft, a Home row, More without Import and Export, and the one-line page a hidden job's address shows, with its wording), Mark's List row `todo-phone-hide-entry-points`. And a board for Preview step on an open step in the version pen (Next version), which Phase 11 drew for the creation editor only (Mark answered Fix it on `bug-p11-pen-step-no-preview`, 2026-11-15, phase 12). Folded in by Mark (2026-11-15): the printed-log board also carries a top margin that clears a clipboard holding the batch / tasting log (Mark's List row `adoajjb9sgzbezmyrt4s`); and the creation editor's row controls are redrawn before the iPad proof: the order of a step's and an ingredient row's controls so adding the next row is quick to reach (`todo-reorder-row-controls`), and Add ingredient on each ingredient row, adding a row after it in the same step group (`todo-add-ingredient-per-row`).
 **UI hint**: yes

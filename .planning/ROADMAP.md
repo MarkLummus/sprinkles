@@ -301,7 +301,7 @@ Plans:
   2. A recipe created in the app round-trips: it prints, a batch recorded against it marks a custom scale, and after export and import it reopens with the same figures, Sheet code and marks
   3. On the iPad, from the production build, a maker creates a recipe end to end, its scales, problems and targets included, and prints it: Tab reaches every creation control, each Move button included, and after a move focus stays with the moved step or row
 
-**Plans:** 3/7 plans executed in 3 waves for the first planning round (Gate 1); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
+**Plans:** 5/7 plans executed in 3 waves for the first planning round (Gate 1); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
 
 Plans:
 **Wave 1**
@@ -310,8 +310,8 @@ Plans:
 - [x] 12-07-PLAN.md — the Phase 12 board engine (11-board-check.mjs copied, the panel found by selector and index, the against side on its own Page) and its stand-in proofs on sketch 015's boards, with no build (split out of 12-04)
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 12-02-PLAN.md — the printed Low to high row with nothing under its ticks, every scale row 36 px, the clipboard drop on the two log pages with 13 and 4 notes lines; LOG-01 and the two design gates written into REQUIREMENTS and the roadmap
-- [ ] 12-03-PLAN.md — the scripted WebKit round trip: create with a scale of each kind and a problem, save, print, batch, export, import into an empty profile, compare field by field (PROOF-01)
+- [x] 12-02-PLAN.md — the printed Low to high row with nothing under its ticks, every scale row 36 px, the clipboard drop on the two log pages with 13 and 4 notes lines; LOG-01 and the two design gates written into REQUIREMENTS and the roadmap
+- [x] 12-03-PLAN.md — the scripted WebKit round trip: create with a scale of each kind and a problem, save, print, batch, export, import into an empty profile, compare field by field (PROOF-01)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 12-04-PLAN.md — board against build in WebKit at 1366 and 393 for the record pen, the reading and the printed logs, on 12-07's engine
@@ -333,7 +333,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
 | 10. The creation editor, without Save | v2.0 | 12/12 | Complete    | 2026-10-21 |
 | 11. Steps, structure, save and print | v2.0 | 14/14 | Complete    | 2026-11-15 |
-| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 3/7 | In Progress (round one) | - |
+| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 5/7 | In Progress (round one) | - |
 
 ## Later
 

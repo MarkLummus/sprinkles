@@ -301,7 +301,7 @@ Plans:
   2. A recipe created in the app round-trips: it prints, a batch recorded against it marks a custom scale, and after export and import it reopens with the same figures, Sheet code and marks
   3. On the iPad, from the production build, a maker creates a recipe end to end, its scales, problems and targets included, and prints it: Tab reaches every creation control, each Move button included, and after a move focus stays with the moved step or row
 
-**Plans:** 7/8 plans executed in 3 waves for the first planning round (Gate 1; 12-08 is gap closure); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
+**Plans:** 8/8 plans executed in 3 waves for the first planning round (Gate 1; 12-08 is gap closure); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
 
 Plans:
 **Wave 1**
@@ -318,7 +318,7 @@ Plans:
 - [x] 12-05-PLAN.md — the logs printed to PDF through WebKit, mobile Safari in the iOS Simulator, and every round-one check in one command with the Phase 11 walk unchanged
 
 **Gap closure** *(after verification)*
-- [ ] 12-08-PLAN.md — the Phase 11 walk's selectors repaired for the current build, e37db11a and main recorded equal, the baseline reproduced, every difference traced to its commit and re-recorded at e37db11a, and 12-check.sh to GATE1 PASS
+- [x] 12-08-PLAN.md — the Phase 11 walk's selectors repaired for the current build, e37db11a and main recorded equal, the baseline reproduced, every difference traced to its commit and re-recorded at e37db11a, and 12-check.sh to GATE1 PASS
 
 **Design gate 1**: MET (Mark, 2026-11-15). Approved and snapshotted boards for the record pen, the reading and the printed log showing a recipe's own scales and problems, a scale of each kind among them, and showing none (sketches 007, 008 and 010 drew only the fixed declared scales). Per the phone brief (PRODUCT.md, "On the phone", Mark 2026-11-15) the record pen's tasting and the reading are also drawn at phone width (393 beside the 350 column) for a recipe's own scales, each kind and none; the printed log needs no 393 board, and no iPhone check is added to this phase's success criteria. The printed-log board also carries the top margin that clears a clipboard holding the batch / tasting log (Mark's List row `adoajjb9sgzbezmyrt4s`, folded in by Mark 2026-11-15), which rides this gate by 12-CONTEXT D-07; its paper check waits for the iPad rows of the second round, so that row stays open. Mark's four answers: `look-p12-pen-and-reading` (approved as drawn), `decide-p12-low-to-high-read-back` (A), `decide-p12-tasting-log-lines` (the Tasting log 4 notes lines, the Batch log 13) and `look-p12-printed-logs` with `look-p12-printed-row-ends-only` (a printed Low to high scale has nothing under its ticks). Snapshot: `.planning/sketches/015-own-scales-and-problems/`. The first planning round plans and builds it.
 
@@ -337,7 +337,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
 | 10. The creation editor, without Save | v2.0 | 12/12 | Complete    | 2026-10-21 |
 | 11. Steps, structure, save and print | v2.0 | 14/14 | Complete    | 2026-11-15 |
-| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 7/7 | In Progress (round one) | - |
+| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 8/8 | In Progress (round one) | - |
 
 ## Later
 

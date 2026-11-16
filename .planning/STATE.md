@@ -4,17 +4,17 @@ milestone: v2.0
 milestone_name: Recipe creation
 current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
-status: executing
-stopped_at: Phase 12 context gathered
-last_updated: "2026-11-16T13:42:55.560Z"
+status: verifying
+stopped_at: Completed 12-08-PLAN.md
+last_updated: "2026-11-16T14:27:47.545Z"
 last_activity: 2026-11-16
 last_activity_desc: Phase 12 execution started
-state_head: 456df583542febd7a8fc92cedf0b56243616aa66
+state_head: 2209ad84f75e025ecffc12c1f943cebaa52ef35e
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 57
-  completed_plans: 56
+  completed_plans: 57
   percent: 80
 ---
 
@@ -29,9 +29,9 @@ See: .planning/PROJECT.md (updated 2026-11-15)
 
 ## Current Position
 
-Phase: 12 (Showing a recipe's own scales and problems, and the whole loop) — READY TO EXECUTE
-Plan: 1 of 7
-Status: Ready to execute
+Phase: 12 (Showing a recipe's own scales and problems, and the whole loop) — EXECUTING
+Plan: 8 of 8
+Status: Phase complete — ready for verification
 Last activity: 2026-11-16 — Phase 12 execution started
 
 Progress: [████████░░] 80%
@@ -171,6 +171,7 @@ Progress: [████████░░] 80%
 | Phase 08 P04 | 5 min | 2 tasks | 6 files |
 | Phase 08 P05 | 12 min | 3 tasks | 8 files |
 | Phase 08 P06 | 2 min | 3 tasks | 6 files |
+| Phase 12 P08 | 43min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -356,6 +357,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 08]: Phase 8 bonus cut landed: useBatchRecording holds the record pen and tasting handlers; openBatchFor in sheetView is the shared openBatch rule
 - [Phase 08]: [Phase 08, Plan 06] The WR-01 pin on RecipeSheet's IngredientsHead hop lives in RecipeSheet.test.jsx, not Test I: D-11 limits RecipePage.test.jsx to read-target edits, so it stays byte-identical to 1b0dcab; 08-test-audit.mjs check (E) gained an additions-only allowance for that one file.
 - [Phase 08]: [Phase 08, Plan 06] WR-02 guard covers RecipeSheet's own recording read only (draft?.stepChanges ?? {}); IngredientTable.jsx still reads the draft in recording mode, pre-existing and untouched.
+- [Phase 12]: D-08-1: the Phase 11 walk baseline moves to e37db11a and absorbs every pre-Phase-12 quick fix (class A one-row textareas, class B the rest), nothing after e37db11a (Mark, 2026-11-16)
+- [Phase 12]: 12-08: a hash DIFF line is attributed to the commit whose change is the last to move that step's hash; earlier movers are groups of their own, and 12-08-trace-check.mjs enforces the one-to-one mapping
+- [Phase 12]: 12-08: WALK_PATCH defaults to none in 11-walk-record-base.sh, because 11-07's order patch is part of e37db11a
 
 ### Pending Todos
 
@@ -679,9 +683,9 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-15T21:30:05.480Z
-Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-CONTEXT.md
+Last session: 2026-11-16T14:27:47.175Z
+Stopped at: Completed 12-08-PLAN.md
+Resume file: None
 
 ## Operator Next Steps
 

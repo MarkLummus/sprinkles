@@ -56,15 +56,15 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 - [x] **TASTE-01**: A maker can define 0 to 2 scales for a recipe, each with a name, a label for each end, and its kind: goldilocks, with the fixed middle word "right", or plain magnitude.
 - [x] **TASTE-02**: A maker can define 0 to 2 problems for a recipe.
 - [x] **TASTE-03**: A batch snapshots the recipe's definitions, a scale's kind included, so a later change never moves a stored mark.
-- [ ] **TASTE-04**: The record pen, the reading and the printed log show a recipe's own scales, each in its kind, and its problems, and "This recipe only" shows only when it has any.
+- [x] **TASTE-04**: The record pen, the reading and the printed log show a recipe's own scales, each in its kind, and its problems, and "This recipe only" shows only when it has any.
 
 ### Printed log
 
-- [ ] **LOG-01**: The printed Batch log and Tasting log start about 1.5 in from the top of the paper, so the clip of a clipboard covers none of their lines, and each still prints on one page: the room comes out of their ruled notes lines (Batch log 13, Tasting log 4), and the bench sheet pages keep their 0.5 in margin.
+- [x] **LOG-01**: The printed Batch log and Tasting log start about 1.5 in from the top of the paper, so the clip of a clipboard covers none of their lines, and each still prints on one page: the room comes out of their ruled notes lines (Batch log 13, Tasting log 4), and the bench sheet pages keep their 0.5 in margin.
 
 ### Proof
 
-- [ ] **PROOF-01**: A recipe created in the app round-trips: print, record a batch with a custom scale, export, import.
+- [x] **PROOF-01**: A recipe created in the app round-trips: print, record a batch with a custom scale, export, import.
 - [ ] **PROOF-02**: Creation is checked on the iPad from the production build, including Move focus and keyboard reach.
 
 ## Future Requirements
@@ -129,10 +129,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TASTE-01 | Phase 10 | Complete |
 | TASTE-02 | Phase 10 | Complete |
 | TASTE-03 | Phase 9 | Complete |
-| TASTE-04 | Phase 12 | Pending |
-| PROOF-01 | Phase 12 | Pending |
+| TASTE-04 | Phase 12 | Complete |
+| PROOF-01 | Phase 12 | Complete |
 | PROOF-02 | Phase 12 | Pending |
-| LOG-01 | Phase 12 | Pending |
+| LOG-01 | Phase 12 | Complete |
 
 **Coverage:**
 - v2.0 requirements: 31 total

@@ -9,7 +9,7 @@
 // caller bug and throws a TypeError, which the page shows as a save error with
 // the draft kept (never as a stored version).
 
-import { creationTargets } from './creation.js';
+import { creationTargets, PROBLEM_WORD_LIMIT, SCALE_WORD_LIMITS, wordLimitMessage } from './creation.js';
 import { addGrams, checkAllocation, groupRows, liveSteps, rowLines, UNPLACED_STEP } from './creationSteps.js';
 import { CREATE_DRAFT_KEYS } from './draft.js';
 import { FIGURE_SPECS } from './figures.js';
@@ -144,7 +144,11 @@ const NOT_A_NUMBER_PROBE = 'not a number';
  * total), the Instructions, the Setup column (scales, then problems), then the
  * form-level blocks. An empty list means the draft can be saved. The gate
  * mirrors transfer.js, so a saved recipe always exports and re-imports, and
- * reads every text trimmed, so a field of spaces is blank. Empty notes, empty
+ * reads every text trimmed, so a field of spaces is blank. It also holds the
+ * editor's own word limits on a recipe's scales and problems (SCALE_WORD_LIMITS,
+ * PROBLEM_WORD_LIMIT, Mark 2026-11-16), which the store file check does not: an
+ * imported recipe with longer words still imports. A field holds one refusal,
+ * blank (Required) or too long, under the same id. Empty notes, empty
  * purposes and asides and both-blank targets are dropped at Save, not refused.
  *
  * target says which field the block belongs to: { kind: 'recipeName' },
@@ -209,13 +213,24 @@ export function creationSaveBlock(draft, { libraryById }) {
   // The recipe's own scales and problems.
   for (const scale of draft.scales) {
     for (const field of ['name', 'low', 'high', 'kind']) {
-      if (!hasWords(scale[field])) add(`scale:${scale.key}:${field}`, REQUIRED, { kind: 'scaleField', key: scale.key, field });
+      const target = { kind: 'scaleField', key: scale.key, field };
+      if (!hasWords(scale[field])) {
+        add(`scale:${scale.key}:${field}`, REQUIRED, target);
+      } else if (Object.hasOwn(SCALE_WORD_LIMITS, field)) {
+        const tooLong = wordLimitMessage(scale[field], SCALE_WORD_LIMITS[field]);
+        if (tooLong !== null) add(`scale:${scale.key}:${field}`, tooLong, target);
+      }
     }
   }
   const seen = new Set();
   draft.problems.forEach((problem, index) => {
     if (!hasWords(problem)) {
       add(`problem:${index}`, REQUIRED, { kind: 'problem', index });
+      return;
+    }
+    const tooLong = wordLimitMessage(problem, PROBLEM_WORD_LIMIT);
+    if (tooLong !== null) {
+      add(`problem:${index}`, tooLong, { kind: 'problem', index });
       return;
     }
     const words = problem.trim();

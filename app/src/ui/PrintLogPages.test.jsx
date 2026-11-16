@@ -78,9 +78,9 @@ describe('the Batch log (side 1; CONTRACT § 3)', () => {
     expect(classCount(baseline, 'lf-box')).toBe(PRINTED_MARK_ONE_OPTIONS.length + SEGMENT_OPTIONS.exitConsistency.length + SEGMENT_OPTIONS.airiness.length);
   });
 
-  it.each(VERSIONS.map((version) => [version.id, version]))('%s: 14 writing lines and a page identical to every other but its foot', (_id, version) => {
+  it.each(VERSIONS.map((version) => [version.id, version]))('%s: 13 writing lines and a page identical to every other but its foot', (_id, version) => {
     const markup = page1(version);
-    expect(classCount(markup, 'lf-line')).toBe(14);
+    expect(classCount(markup, 'lf-line')).toBe(13);
     const sansFoot = (m) => m.replace(/<div class="lf-foot">[^<]*<\/div>/, '<div class="lf-foot"></div>');
     expect(sansFoot(markup)).toBe(sansFoot(baseline));
     expect(markup).toContain(`<div class="lf-foot">${footFor(version, 1).replace(/&/g, '&amp;')}</div>`);
@@ -98,7 +98,7 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
     expect(classCount(markup, 'lf-opt')).toBe(PRINTED_MARK_ONE_OPTIONS.length + SEGMENT_OPTIONS.meltStyle.length + CORE_PROBLEM_WORDS.length + declaredFlaws.length);
     expect(classCount(problemsRow(markup), 'lf-opt')).toBe(CORE_PROBLEM_WORDS.length + declaredFlaws.length);
     expect(classCount(markup, 'lf-mrow--plain')).toBe(1);
-    expect(classCount(markup, 'lf-line')).toBe(5);
+    expect(classCount(markup, 'lf-line')).toBe(4);
     expect(markup).not.toContain('Every recipe');
     expect(markup).not.toContain('This recipe only');
     // Core words, for every recipe.

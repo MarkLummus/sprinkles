@@ -94,6 +94,48 @@ describe('print.css — paper (D-07, sketch 010 D16, D20)', () => {
   });
 });
 
+// LOG-01 (Phase 12; 12-CONTEXT D-15, D-16): both log pages start 1.5 in from the top of the paper, the
+// 0.5 in page margin plus a 1 in drop. WebKit ignores named pages and margin boxes, so the drop is
+// in-flow padding on the page, chosen by the route's engine class as the content-box pair is: 90 px in
+// WebKit's print (one CSS px prints as 0.8 pt), 96 px in every other engine's and on the page picture.
+// The bench sheet pages keep their 0.5 in and their room.
+describe('print.css — the clipboard drop on the two log pages only (LOG-01; D-15, D-16)', () => {
+  const DROP = '--sheet-print-clipboard-drop';
+  const padTop = (rule) => declarationsOf(rule).find((d) => d.property === 'padding-top')?.value;
+  const printRule = (selector) => rules.find((rule) => rule.media === 'print' && rule.selector === selector);
+
+  test("in print, WebKit's route pads a log page from the webkit token", () => {
+    const rule = printRule('.print-pages--webkit .print-page--log');
+    expect(rule).toBeDefined();
+    expect(padTop(rule)).toBe(`var(${DROP}-webkit)`);
+  });
+
+  test("in print, every other engine's route pads a log page from the plain token", () => {
+    const rule = printRule('.print-pages--other .print-page--log');
+    expect(rule).toBeDefined();
+    expect(padTop(rule)).toBe(`var(${DROP})`);
+  });
+
+  test("on the page picture a log page's padding starts with the 48 px margin plus the 96 px drop", () => {
+    const rule = rules.find((entry) => entry.media === undefined && entry.selector === '.print-page--log');
+    expect(rule).toBeDefined();
+    const padding = declarationsOf(rule).find((d) => d.property === 'padding')?.value ?? '';
+    expect(padding.startsWith(`calc(var(--sheet-print-margin-y) + var(${DROP}))`)).toBe(true);
+  });
+
+  test('no rule naming the bench sheet pages reads either drop token (D-16)', () => {
+    const sheetRules = rules.filter((rule) => rule.selector.includes('.print-page--sheet'));
+    expect(sheetRules.length).toBeGreaterThanOrEqual(2);
+    for (const rule of sheetRules) expect(rule.declarations, rule.selector).not.toContain(DROP);
+  });
+
+  test('only the three log-page rules read the drop tokens, and there is still the one @page rule', () => {
+    const readers = rules.filter((rule) => rule.declarations.includes(DROP)).map((rule) => `${rule.media ?? ''} ${rule.selector}`.trim());
+    expect(readers.sort()).toEqual(['.print-page--log', 'print .print-pages--other .print-page--log', 'print .print-pages--webkit .print-page--log']);
+    expect(rules.filter((rule) => rule.page)).toHaveLength(1);
+  });
+});
+
 describe('print.css — every visual value reads a token (D-03; CLAUDE.md)', () => {
   const LENGTH = /(^|[^\w.-])-?\d*\.?\d+(px|pt|in|cm|mm|em|rem|vh|vw)\b/;
   const COLOUR = /#[0-9a-f]{3,8}\b|\brgba?\(|\bhsla?\(/i;

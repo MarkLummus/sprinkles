@@ -76,7 +76,7 @@ FAIL editor .mk-stops reads "faint · 2 · 3 · 4 · strong": got "faint to stro
 
 Passes on the base (so these are not the bug): Body's anchors and stop names (a middle scale, "right" is correct there), Body reads `heavy (4)`, Mint reads `strong (5)`, and no word "right" in the editor outside the Kind option "Right in the middle".
 
-What rendered "right": the record pen draws the word "right" between a Low to high scale's two ends (the anchors line is `faint | right | strong`, and stops 2 to 4 are named "leaning faint", "right", "leaning strong"), and the reading says "faint (2)" for a mark of 2; the creation editor's stops line already differs by kind ("faint to strong") and carries no stray "right" (12-01's flagged assumption A1: the editor facet's FAIL rests only on the A1 form `faint · 2 · 3 · 4 · strong`).
+What rendered "right": the record pen draws the word "right" between a Low to high scale's two ends (the anchors line is `faint | right | strong`, and stops 2 to 4 are named "leaning faint", "right", "leaning strong"), and the reading says "faint (2)" for a mark of 2; the creation editor's stops line already differs by kind ("faint to strong") and carries no stray "right" (12-01's flagged assumption A1: the editor facet's FAIL rests only on the A1 form `faint · 2 · 3 · 4 · strong`); amended 2026-11-16 (quick 261116-80v), Mark returned the editor's stops line to "faint to strong" (12-01's A1 veto), so the editor facet's FAIL on the base build was the A1 form and no longer applies; on that base build the editor facet now passes, and pen and reading fail.
 
 Full output files: `${TMPDIR}sprinkles-12/report-base-06.txt` and `check-base-06.txt` (scratch, not committed).
 

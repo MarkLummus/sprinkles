@@ -169,6 +169,25 @@ describe('AxisMark — a Low to high scale names only its ends (Phase 12, D-01)'
     expect(labels).toEqual(['1: faint', '2', '3', '4', '5: strong']);
   });
 
+  // Mark, 2026-11-16 (quick 261116-80v): a Low to high scale's stops draw no
+  // number; a Right in the middle scale keeps 1 to 5.
+  it('draws no number in any stop of a Low to high scale, and 1 to 5 in the stops of a Right in the middle one', () => {
+    const stopNumbers = (axis) => {
+      const markup = renderToStaticMarkup(<AxisMark axis={axis} value={undefined} onChange={noop} onClear={noop} />);
+      const stops = markup.match(/<label class="axis-mark__stop">.*?<\/label>/g);
+      expect(stops).toHaveLength(5);
+      return stops.map((stop) => stop.match(/<span[^>]*>(.*?)<\/span>/)?.[1]);
+    };
+    expect(stopNumbers(coffeeAxis)).toEqual([undefined, undefined, undefined, undefined, undefined]);
+    expect(stopNumbers(hardnessAxis)).toEqual(['1', '2', '3', '4', '5']);
+  });
+
+  it('still draws the head\'s (2) and its Clear control on a marked Low to high scale', () => {
+    const markup = renderToStaticMarkup(<AxisMark axis={coffeeAxis} value={2} onChange={noop} onClear={noop} />);
+    expect(markup).toContain('(2)');
+    expect(markup).toContain('Clear');
+  });
+
   it('keeps the middle word "right" on a Right in the middle scale', () => {
     const markup = renderToStaticMarkup(<AxisMark axis={hardnessAxis} value={undefined} onChange={noop} onClear={noop} />);
     expect(markup).toContain('<span>soft</span><span>right</span><span>hard</span>');

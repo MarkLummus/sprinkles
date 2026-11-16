@@ -8,7 +8,7 @@ tags: [tasting, scales, problems, pen, reading, print, batch-log, tasting-log, c
 
 # 015 own scales and problems: the record pen, the reading and the printed logs (Phase 12 Gate 1)
 
-Mark answered the four Gate 1 rows on 2026-11-15 (local). Three stand as drawn; the fourth asked for one change, which is drawn here and **approved by Mark 2026-11-15 (`look-p12-printed-row-ends-only`)**: on the printed Tasting log a Low to high scale has nothing under its ticks.
+Mark answered the four Gate 1 rows on 2026-11-15 (local). Three stand as drawn; the fourth asked for one change, which is drawn here and **approved by Mark 2026-11-15 (`look-p12-printed-row-ends-only`)**: on the printed Tasting log a Low to high scale has nothing under its ticks. On 2026-11-16 Mark decided in chat that a Low to high scale shows no numbers, and `record-pen.html`, `printed-logs.html` and `tasting-log-lines.html` are redrawn for it (see the section at the end of this file).
 
 Authority: these boards, CSS included, are the authority. Conformance is the board and the built app side by side in a browser, never prose or a test count. `CONTRACT.md` names what the boards hold so a planner, a checker and UAT cite one source.
 
@@ -16,11 +16,11 @@ Authority: these boards, CSS included, are the authority. Conformance is the boa
 
 | File | Canvas board (page "Phase 12 own scales and problems (Gate 1)") | What it draws | State |
 |------|------------------------------------------------------------------|---------------|-------|
-| `record-pen.html` | `P12_Pen` | The record pen's tasting, cut to the scales and Any problems?, at the 350 column (1366) and at 393, for three recipes: two own scales (one of each kind) and two own problems; one Low to high scale and one problem; none of its own (no "This recipe only" cue anywhere). | Approved (`look-p12-pen-and-reading`) |
+| `record-pen.html` | `P12_Pen` | The record pen's tasting, cut to the scales and Any problems?, at the 350 column (1366) and at 393, for three recipes: two own scales (one of each kind) and two own problems; one Low to high scale and one problem; none of its own (no "This recipe only" cue anywhere). | Approved (`look-p12-pen-and-reading`); redrawn 2026-11-16: no numbers on a Low to high scale |
 | `reading.html` | `P12_Reading` | The reading's Tasting fold for the same three recipes, at 350 and 393. A marked Low to high scale reads back as candidate A. | Approved (`look-p12-pen-and-reading`) |
 | `read-back-candidates.html` | `P12_ReadBack` | The three read-back candidates A, B and C side by side, the scale marked 1 to 5 and in the reading. | The record of the choice: A chosen, B and C not |
-| `printed-logs.html` | `P12_Logs` | Letter pages at full size: the build's Batch log and Tasting log for comparison, then the drawn Batch log and three drawn Tasting logs (two, one and none of its own), each starting 1.5 in from the top of the paper. | Done with Mark's note; the Low to high row redrawn, approved by Mark 2026-11-15 (`look-p12-printed-row-ends-only`) |
-| `tasting-log-lines.html` | `P12_LogLines` | The fullest Tasting log with 4 notes lines and with 5. | The record of the choice: 4 chosen. Its Low to high row carries the same redraw |
+| `printed-logs.html` | `P12_Logs` | Letter pages at full size: the build's Batch log and Tasting log for comparison, then the drawn Batch log and three drawn Tasting logs (two, one and none of its own), each starting 1.5 in from the top of the paper. | Done with Mark's note; the Low to high row redrawn, approved by Mark 2026-11-15 (`look-p12-printed-row-ends-only`); redrawn 2026-11-16: no numbers on a Low to high scale |
+| `tasting-log-lines.html` | `P12_LogLines` | The fullest Tasting log with 4 notes lines and with 5. | The record of the choice: 4 chosen. Its Low to high row carries the same redraw; redrawn 2026-11-16: no numbers on a Low to high scale |
 
 Three example recipes: Coffee declares Body (Right in the middle; thin, heavy) and Coffee flavour (Low to high; faint, strong) and the problems Bitter and Burnt taste; Mint chip declares Mint (Low to high; faint, strong) and Waxy chips; Mexican Chocolate v1 is as seeded and declares nothing. The example words are Sid's, not Mark's and not in the data.
 
@@ -37,7 +37,7 @@ Mark's answers on Mark's List, 2026-11-15, in his words. Row text is data; the i
 1. **The read-back is A** (`decide-p12-low-to-high-read-back`: "A"). A marked Low to high scale says back the end word at 1 and 5 and the number between: faint (1), 2 of 5, 3 of 5, 4 of 5, strong (5). Drawn on `P12_Reading`; `P12_ReadBack` keeps B (always "n of 5") and C (the nearer end word) as the record of what was not chosen. A Right in the middle scale reads as built, "heavy (4)", "right (3)".
 2. **The Tasting log keeps 4 notes lines** (`decide-p12-tasting-log-lines`: "4 lines"); the Batch log 13 (it had no choice: 14 do not fit). Drawn on `P12_Logs`; `P12_LogLines` keeps the 5-line page as the record.
 3. **The pen and the reading are approved as drawn** (`look-p12-pen-and-reading`: "Approve"). `P12_Pen` and `P12_Reading`.
-4. **The printed logs: done, with one change** (`look-p12-printed-logs`, his note: "The 2 3 4 under their ticks are not required"). Redrawn the same day: the printed Low to high row keeps its low word, 1, the rule with its five ticks, 5 and its high word, and nothing stands under the ticks, neither "right" nor 2 3 4. The pen keeps its numbered stops. Everything else on the board stands. **Approved by Mark 2026-11-15 (`look-p12-printed-row-ends-only`, his note: "Approve").**
+4. **The printed logs: done, with one change** (`look-p12-printed-logs`, his note: "The 2 3 4 under their ticks are not required"). Redrawn the same day: the printed Low to high row keeps its low word, 1, the rule with its five ticks, 5 and its high word, and nothing stands under the ticks, neither "right" nor 2 3 4. The pen keeps its numbered stops. (superseded 2026-11-16: see the last section) Everything else on the board stands. **Approved by Mark 2026-11-15 (`look-p12-printed-row-ends-only`, his note: "Approve").**
 
 What Sid chose inside decision 4, for Mark to see on that row:
 
@@ -75,7 +75,7 @@ Mark's decision of 2026-11-16 (`12-UI-REVIEW.md` finding 2, option b, Sid's reco
 |------|-------|---------------|-------|
 | `word-limits.html` | `P12_WordLimits` | The creation editor's Scales and Problems at 1366 after Save was refused: a scale name of 21 characters, a low end at its limit (12), a high end of 17 and a problem of 51. Three sentences stand, the low end stays quiet. | Drawn from the build by `canvas-generators/p12limits.py` on 2026-11-16 (capture `p12limits-capture.mjs`), not yet on the canvas, awaits Mark's look. |
 
-sha256: `word-limits.html` e8a81039. The five files above are unchanged. `12-board-limits.mjs` holds the build to it at 1 px in WebKit, coarse.
+sha256: `word-limits.html` e8a81039. The five files above were not changed by this limit. `12-board-limits.mjs` holds the build to it at 1 px in WebKit, coarse.
 
 What the longest allowed words measure (case `worst` in `12-cases.mjs`: names of 16 characters, end words of 12, problems of 40; WebKit, coarse, the scratch build of this commit, 2026-11-16). All device-unverified: Playwright WebKit and a WKWebView PDF, not a print or a pen on Mark's iPad.
 
@@ -83,3 +83,17 @@ What the longest allowed words measure (case `worst` in `12-cases.mjs`: names of
 - The record pen's anchor words, gaps between neighbouring words (the 6 px floor is finding 1's): at 1366 and at 393 the track is 216 px, Burnt sugar note 58.77, Chocolate flecks 19.28 and 19.28. At 768 the track is 186 px: Burnt sugar note (Low to high, two words) 28.77; Chocolate flecks (Right in the middle, three words) 4.28 and 4.28. Every word stays inside its track and no width scrolls sideways.
 - **For Mark:** the Right in the middle scale at 768 with two 12-character end words leaves 4.28 px between words, under the 6 px of finding 1. Words do not touch. Mark's 12-character limit cannot give 6 px at a 186 px track; the choices are to accept it, give that kind a lower end-word limit, or widen the track.
 
+## No numbers on a Low to high scale (2026-11-16)
+
+Mark's decision of 2026-11-16, in chat ("I don't want the numbers below the lines"), and when asked he picked all three places (quick `261116-80v`):
+
+- On the record pen a Low to high scale's five stops carry no number. Only its two end words stand under the track, and the stops' names for a screen reader stay "1: faint", "2", "3", "4", "5: strong".
+- On the printed Tasting log the row prints its low word, the rule with its five ticks and its high word: no 1 and 5, nothing under the ticks, still 36 px.
+- The creation editor's stops line reads "faint to strong" again (12-01's A1, reverted).
+- A Right in the middle scale keeps its numbers everywhere (pen stops 1 to 5, printed 1 and 5, "right" under the middle tick). The reading's "n of 5" and the pen head's "(n)" are unchanged.
+
+Provenance: `record-pen.html`, `printed-logs.html` and `tasting-log-lines.html` are regenerated in the repo by `canvas-generators/p12.py` with `SPRINKLES_STYLES` holding the five stylesheets of commit 8746417e (the CSS the boards were drawn and approved with), then `snapshot015.py`. They were not served by the canvas: the canvas boards `P12_Pen`, `P12_Logs` and `P12_LogLines` are not republished and still show the numbers. `reading.html` and `read-back-candidates.html` are byte-identical to before.
+
+sha256 (first 8 hex characters): `record-pen.html` 6b81daf7, `printed-logs.html` d72c09c3, `tasting-log-lines.html` 0757e5f3.
+
+Re-measure (`p12-measure.mjs`): the Low to high pen rows still read "boxes equal", names 1: faint / 2 / 3 / 4 / 5: strong; every printed scale row is still 36 px; each page's totals equal the Measured table above (the numbers sit in grid tracks the words do not move for). The re-measure moved no crop and no fit figure; the only change in `p12-measure.json` is that the drawn Low to high rows no longer list lf-n1 and lf-n5.

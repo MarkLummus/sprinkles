@@ -4,7 +4,7 @@
 //
 //   PROBE_DIST=<dist> node 12-stops-probe.mjs report <facet...>
 //   PROBE_DIST=<dist> node 12-stops-probe.mjs check <facet...>
-//   facets: pen (the record pen's anchors and stop names; and, on case worst, the longest words
+//   facets: pen (the record pen's anchors, stop names and stop numbers; and, on case worst, the longest words
 //           the creation editor saves (Mark's limits, 2026-11-16, quick 261116-80u): at 1366, 768
 //           and 393 every own scale's anchor words stay inside their track and stand apart),
 //           reading (the tasting reading's cells),
@@ -12,8 +12,10 @@
 //
 // `report` prints "REPORT <facet> <fact>" lines and exits 0. `check` prints "PASS <facet> <check>"
 // or "FAIL <facet> <check>: <values>" and exits 1 on any FAIL; the checks hold the forms D-01 and
-// D-02 decide (sketch 015 CONTRACT sections 1, 2 and 4). On a build of the base commit every
-// facet fails, which is how the probe is shown to be able to fail.
+// D-02 decide (sketch 015 CONTRACT sections 1, 2 and 4). On a build of 12-01's base commit the pen
+// and reading facets fail and the editor facet passes, since Mark returned the editor's line to that
+// form on 2026-11-16; the pen facet's stop-numbers check fails on any build before 261116-80v. That is
+// how the probe is shown to be able to fail.
 // The probe reads the build from PROBE_DIST and
 // NEVER builds or writes it; it serves that folder (never app/dist, which Mark's own
 // `vite preview --host` serves) on an ephemeral 127.0.0.1 port through 08-walk-server.mjs, and
@@ -56,9 +58,9 @@ if (!existsSync(path.join(DIST, 'index.html'))) {
 
 const FIXED_TIME = new Date('2026-08-04T12:00:00');
 
-// The creation editor's stops line for Coffee flavour, faint to strong, Low to high (12-01's A1
-// form). One constant: a veto of A1 is a one-line edit here (12-01, "If Mark vetoes A1", item 4).
-const EDITOR_STOPS = 'faint · 2 · 3 · 4 · strong';
+// The creation editor's stops line for Coffee flavour, the two ends joined by "to"; Mark returned it
+// to this form on 2026-11-16 (quick 261116-80v; 12-01 "If Mark vetoes A1", item 4).
+const EDITOR_STOPS = 'faint to strong';
 
 // A context per facet: WebKit at 1366 by 1024 with touch (768 by 1024 with touch and 393 by 852
 // with touch and isMobile when a facet asks for them), a fixed clock (timers keep running), every
@@ -114,14 +116,16 @@ async function collectPen(browser, appUrl) {
         name: a.querySelector('.axis-mark__name').textContent,
         anchors: [...a.querySelectorAll('.axis-mark__anchors span')].map((s) => s.textContent),
         names: [...a.querySelectorAll('input[type="radio"]')].map((i) => i.getAttribute('aria-label')),
+        numbers: [...a.querySelectorAll('.axis-mark__stop > span')].map((s) => s.textContent),
       })),
     );
     const facts = [];
     const checks = [];
-    // Coffee flavour is Low to high (two ends, no middle word); Body is Right in the middle.
+    // Coffee flavour is Low to high (two ends, no middle word, no stop numbers: Mark, 2026-11-16);
+    // Body is Right in the middle (its stops draw 1 to 5).
     const EXPECT = {
-      'Coffee flavour': { anchors: ['faint', 'strong'], names: ['1: faint', '2', '3', '4', '5: strong'] },
-      Body: { anchors: ['thin', 'right', 'heavy'], names: ['1: thin', '2: leaning thin', '3: right', '4: leaning heavy', '5: heavy'] },
+      'Coffee flavour': { anchors: ['faint', 'strong'], names: ['1: faint', '2', '3', '4', '5: strong'], numbers: [] },
+      Body: { anchors: ['thin', 'right', 'heavy'], names: ['1: thin', '2: leaning thin', '3: right', '4: leaning heavy', '5: heavy'], numbers: ['1', '2', '3', '4', '5'] },
     };
     for (const [wanted, expect] of Object.entries(EXPECT)) {
       const s = scales.find((x) => x.name === wanted);
@@ -132,8 +136,10 @@ async function collectPen(browser, appUrl) {
       }
       facts.push(`${wanted} anchors: ${JSON.stringify(s.anchors)}`);
       facts.push(`${wanted} stop names: ${JSON.stringify(s.names)}`);
+      facts.push(`${wanted} stop numbers: ${JSON.stringify(s.numbers)}`);
       checks.push(sameList(`${wanted} anchors`, s.anchors, expect.anchors));
       checks.push(sameList(`${wanted} stop names`, s.names, expect.names));
+      checks.push(sameList(`${wanted} stop numbers`, s.numbers, expect.numbers));
     }
     await context.close();
     const worst = await collectWorstPen(browser, appUrl);

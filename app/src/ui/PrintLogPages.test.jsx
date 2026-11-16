@@ -159,7 +159,8 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
 
 // A recipe's own scales on paper (TASTE-04's printed half; D-01 as amended by Mark,
 // look-p12-printed-logs and look-p12-printed-row-ends-only). A Low to high row is the
-// built row without its span.lf-anchor.lf-mid: nothing stands under its ticks.
+// built row without its span.lf-anchor.lf-mid: nothing stands under its ticks. Mark
+// (2026-11-16, quick 261116-80v) took its 1 and 5 away too: no span.lf-num at all.
 describe('the Tasting log draws a Low to high scale with nothing under its ticks (D-01)', () => {
   const body = { key: 'body', name: 'Body', low: 'thin', high: 'heavy', kind: 'goldilocks', group: 'declared' };
   const coffee = { key: 'coffee', name: 'Coffee flavour', low: 'faint', high: 'strong', kind: 'magnitude', group: 'declared' };
@@ -176,11 +177,12 @@ describe('the Tasting log draws a Low to high scale with nothing under its ticks
     expect(names).toEqual([...CORE_AXIS_NAMES, 'Body', 'Coffee flavour']);
   });
 
-  it('Coffee flavour: low word, 1, five ticks (two tall), 5, high word, and no lf-mid', () => {
+  it('Coffee flavour: low word, five ticks (two tall), high word, no numbers and no lf-mid', () => {
     const row = rowNamed(page2(own), 'Coffee flavour');
     expect(textOf(row, 'lf-lo')).toBe('faint');
-    expect(textOf(row, 'lf-n1')).toBe('1');
-    expect(textOf(row, 'lf-n5')).toBe('5');
+    expect(textOf(row, 'lf-n1')).toBeUndefined();
+    expect(textOf(row, 'lf-n5')).toBeUndefined();
+    expect(classCount(row, 'lf-num')).toBe(0);
     expect(textOf(row, 'lf-hi')).toBe('strong');
     expect(classCount(row, 'lf-tick')).toBe(5);
     expect(classCount(row, 'lf-tick--end')).toBe(2);
@@ -194,6 +196,8 @@ describe('the Tasting log draws a Low to high scale with nothing under its ticks
     for (const name of [...CORE_AXIS_NAMES, 'Body']) {
       const row = rowNamed(markup, name);
       expect(textOf(row, 'lf-mid'), name).toBe('right');
+      expect(textOf(row, 'lf-n1'), name).toBe('1');
+      expect(textOf(row, 'lf-n5'), name).toBe('5');
     }
   });
 

@@ -10,7 +10,7 @@ Figures are WebKit with a coarse pointer; every panel is the built app's markup,
 
 - A recipe's own scales stand under the cue "This recipe only", after the scales under "Every recipe"; its own problems stand under their own "This recipe only" cue inside Any problems?. A recipe that declares none shows no "This recipe only" cue, on the scales or on the problems. All as built.
 - A Right in the middle scale (Body) is as built: five stops, the words low, "right", high on the anchors line.
-- A Low to high scale (Coffee flavour, Mint), the change: the anchors line reads the low word and the high word only, no "right"; the five numbered stops are as built (44 x 44 each, the group 216 wide). The words stay under stops 1 and 5, not inside them: "faint" spans 0 to 26.9 and "strong" 177.1 to 216 of the 216. The scale's box stays 88 tall, as every scale's.
+- A Low to high scale (Coffee flavour, Mint), the change: the anchors line reads the low word and the high word only, no "right"; the five stops carry no number (Mark, 2026-11-16), and their boxes are as built (44 x 44 each, the group 216 wide). The words stay under stops 1 and 5, not inside them: "faint" spans 0 to 26.9 and "strong" 177.1 to 216 of the 216. The scale's box stays 88 tall, as every scale's.
 - The stops' names for a screen reader: "1: faint", "2", "3", "4", "5: strong" (the end word on 1 and 5 only).
 - The same at 393; no horizontal overflow there.
 
@@ -27,13 +27,13 @@ Figures are WebKit with a coarse pointer; every panel is the built app's markup,
 - The room comes out of the notes lines only: Batch log 13 lines (built 14), Tasting log 4 (built 5). Fields, scales and problems keep their size. Each log is one page; the fits are in `README.md`.
 - A recipe's own scales follow the four every recipe has, and its own problems follow the four every recipe has, in one row; no "Every recipe" / "This recipe only" cue prints (sketch 010 D23).
 - A Right in the middle scale row is as built: low word, 1, the rule with five ticks, 5, high word, "right" under the middle tick.
-- A Low to high scale row (redrawn 2026-11-15, awaits `look-p12-printed-row-ends-only`): low word, 1, the rule with its five ticks, 5, high word, and nothing under the ticks: no "right", no 2 3 4. In the markup the row is the built row without its `span.lf-anchor.lf-mid`.
+- A Low to high scale row (redrawn 2026-11-15, awaits `look-p12-printed-row-ends-only`): low word, the rule with its five ticks, high word, no 1 and 5 and nothing under the ticks (Mark, 2026-11-16). In the markup it is the built row without its `span.lf-anchor.lf-mid` and its two `span.lf-num`.
 - Every scale row is 36 px tall, the Low to high row included. The board holds that with one rule, `.lf-sc{grid-template-rows:auto calc(var(--sheet-size-small-print) * var(--sheet-print-leading-solid))}` (12 px for the second line whether or not a word stands in it); without it the bare row measures 25 px.
 - The foot reads the recipe, the version and the Sheet code, as built.
 
 ## 4. Not drawn
 
-The creation editor's Scales (its Low to high stops follow 12-CONTEXT D-01: end words at 1 and 5, numbers between; its refused Save for over-long words is drawn in section 5); Gate 2's boards; the bench sheet pages.
+The creation editor's Scales (its Low to high stops line reads the two ends joined by "to", "faint to strong", Mark 2026-11-16; its refused Save for over-long words is drawn in section 5); Gate 2's boards; the bench sheet pages.
 
 ## 5. Word limits (`word-limits.html`; drawn from the build 2026-11-16, awaits Mark's look)
 

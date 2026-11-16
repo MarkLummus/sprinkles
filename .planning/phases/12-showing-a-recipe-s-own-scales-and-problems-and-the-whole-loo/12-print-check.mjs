@@ -2,7 +2,8 @@
 // half, LOG-01; 12-CONTEXT D-01 as amended, D-15, D-16, D-17; sketch 015 CONTRACT section 3).
 //
 //   PROBE_DIST=<dist> node 12-print-check.mjs <facet...>
-//   facets: rows   scale rows under print media: a Low to high row has nothing under its ticks,
+//   facets: rows   scale rows under print media: a Low to high row has no numbers and nothing under
+//                  its ticks,
 //                  every row is 36 px, the problems row, no 'Every recipe' / 'This recipe only'
 //           drop   the log pages' top padding (144 px on screen; 90 px in print) and the sheet
 //                  pages' (48 px; 0 px)
@@ -154,9 +155,15 @@ async function collectRows(browser, appUrl) {
         check(f, 'Coffee flavour (Low to high): no .lf-mid', !coffee.hasMid, `got .lf-mid ${JSON.stringify(coffee.mid)}`),
         check(
           f,
-          'Coffee flavour: faint, 1, 5, strong and five ticks',
-          coffee.lo === 'faint' && coffee.n1 === '1' && coffee.n5 === '5' && coffee.hi === 'strong' && coffee.ticks === 5,
+          'Coffee flavour: faint, strong, five ticks and no 1 or 5',
+          coffee.lo === 'faint' && coffee.n1 === null && coffee.n5 === null && coffee.hi === 'strong' && coffee.ticks === 5,
           JSON.stringify(coffee),
+        ),
+        check(
+          f,
+          'Body and the four core rows each print 1 and 5',
+          [...r.rows.slice(0, 4), body].every((x) => x.n1 === '1' && x.n5 === '5'),
+          [...r.rows.slice(0, 4), body].map((x) => `${x.name} ${JSON.stringify([x.n1, x.n5])}`).join('; '),
         ),
         check(f, 'Body (Right in the middle): .lf-mid reads right', body.mid === 'right', `got ${JSON.stringify(body.mid)}`),
       );

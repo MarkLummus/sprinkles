@@ -6,7 +6,7 @@
 //     "This recipe only" inside Any problems?; a recipe that declares none draws neither cue;
 //   - a Right in the middle scale (Body) keeps its three anchors; a Low to high scale (Coffee
 //     flavour, Mint) draws two: the low word at 0 to 26.9 and the high word at 177.1 to 216 of the
-//     216 track, no "right"; the stops' names are '1: faint', '2', '3', '4', '5: strong';
+//     216 track, no "right"; its five stops draw no number (Mark, 2026-11-16; the stops' names for a screen reader stay '1: faint', '2', '3', '4', '5: strong'), a Right in the middle scale's stops draw 1 to 5;
 //   - the box of every scale stays 88 tall; the same at 393 with no sideways overflow.
 // The board's panels are the built app's markup, so each case is the app with 12-cases.mjs's
 // example recipe injected into its own throwaway IndexedDB; the steps then open the pen and make the
@@ -53,6 +53,7 @@ const penElements = (marked) => [
   ...(marked ? [{ selector: '.axis-mark__state', checks: ['count', 'text'] }] : []),
   { selector: '.axis-mark__anchors span', checks: ['count', 'text', 'box'] },
   { selector: '.axis-mark__stop', checks: ['count', 'box'] },
+  { selector: '.axis-mark__stop > span', checks: ['count', 'text'] },
   { selector: '.axis-mark__stop input', checks: [{ attr: 'aria-label' }] },
   { selector: '.axes-cue, .defect-group .pen-caption', checks: ['count', 'text'] },
   { selector: '.chip-toggle', checks: ['count', 'text', 'box'] },

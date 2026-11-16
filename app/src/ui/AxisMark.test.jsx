@@ -144,3 +144,41 @@ describe('AxisMark — every radio and the Clear carry an explicit tabindex (qui
     }
   });
 });
+
+// Phase 12 (D-01, D-03, sketch 015 CONTRACT section 1): a Low to high scale names
+// only its two ends. The kind branch is in domain/axes.js; the component tests none.
+describe('AxisMark — a Low to high scale names only its ends (Phase 12, D-01)', () => {
+  const coffeeAxis = {
+    key: 'coffee',
+    name: 'Coffee flavour',
+    low: 'faint',
+    high: 'strong',
+    kind: 'magnitude',
+    group: 'declared',
+  };
+
+  it('renders the anchors line as exactly two spans, the low word then the high word', () => {
+    const markup = renderToStaticMarkup(<AxisMark axis={coffeeAxis} value={undefined} onChange={noop} onClear={noop} />);
+    const anchors = markup.match(/<div class="axis-mark__anchors" aria-hidden="true">(.*?)<\/div>/)[1];
+    expect(anchors).toBe('<span>faint</span><span>strong</span>');
+  });
+
+  it('names the five stops 1: faint, 2, 3, 4, 5: strong for a screen reader', () => {
+    const markup = renderToStaticMarkup(<AxisMark axis={coffeeAxis} value={undefined} onChange={noop} onClear={noop} />);
+    const labels = [...markup.matchAll(/<input\b[^>]*aria-label="([^"]*)"/g)].map((match) => match[1]);
+    expect(labels).toEqual(['1: faint', '2', '3', '4', '5: strong']);
+  });
+
+  it('keeps the middle word "right" on a Right in the middle scale', () => {
+    const markup = renderToStaticMarkup(<AxisMark axis={hardnessAxis} value={undefined} onChange={noop} onClear={noop} />);
+    expect(markup).toContain('<span>soft</span><span>right</span><span>hard</span>');
+  });
+
+  it('draws a name and ends typed with markup as text, never as elements', () => {
+    const tricky = { ...coffeeAxis, name: '<b>Coffee</b>', low: '<i>faint', high: 'strong</i>' };
+    const markup = renderToStaticMarkup(<AxisMark axis={tricky} value={undefined} onChange={noop} onClear={noop} />);
+    expect(markup).not.toMatch(/<b>|<i>/);
+    expect(markup).toContain('&lt;b&gt;Coffee&lt;/b&gt;');
+    expect(markup).toContain('&lt;i&gt;faint');
+  });
+});

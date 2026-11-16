@@ -5,12 +5,22 @@
 // those rows are pinned in store/seedTables.test.js. Runs under Vitest's
 // default node environment — imports no store, no component, and no framework.
 import { describe, it, expect } from 'vitest';
-import { STOPS, stopWordsFor, axesForBatch, axesForVersion, markKeyFor, setMark, readMarkWord } from './axes.js';
+import {
+  STOPS,
+  stopWordsFor,
+  stopLabelFor,
+  middleWordFor,
+  axesForBatch,
+  axesForVersion,
+  markKeyFor,
+  setMark,
+  readMarkWord,
+} from './axes.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { createBatch } from './batch.js';
-import { CORE_SCALE_COUNT, scaleDefinition } from './catalog.js';
+import { CORE_SCALE_COUNT, SCALE_KINDS, scaleDefinition } from './catalog.js';
 
 // The six seeded scales as definitions, in the table's order.
 const SEEDED_AXES = SEED_CATALOG.scales.map(scaleDefinition);
@@ -156,6 +166,54 @@ describe('readMarkWord', () => {
     const oil = SEEDED_AXES.find((axis) => axis.key === 'oil');
     expect(readMarkWord(sweetness, 4)).toBe('more');
     expect(readMarkWord(oil, 4)).toBe('strong');
+  });
+});
+
+// How each scale kind presents (Phase 12, D-01, D-03). One expected-output table
+// keyed by kind: a third kind added to SCALE_KINDS fails the key test below until
+// its presentation is decided here and in axes.js.
+const COFFEE = { key: 'coffee', name: 'Coffee flavour', low: 'faint', high: 'strong', kind: 'magnitude', group: 'declared' };
+const BODY = { key: 'body', name: 'Body', low: 'thin', high: 'heavy', kind: 'goldilocks', group: 'declared' };
+const PRESENTATION = {
+  goldilocks: {
+    axis: SEEDED_AXES[0],
+    words: ['soft', 'leaning soft', 'right', 'leaning hard', 'hard'],
+    labels: ['1: soft', '2: leaning soft', '3: right', '4: leaning hard', '5: hard'],
+    middle: 'right',
+  },
+  magnitude: {
+    axis: COFFEE,
+    words: ['faint', null, null, null, 'strong'],
+    labels: ['1: faint', '2', '3', '4', '5: strong'],
+    middle: null,
+  },
+};
+
+describe('kind-aware presentation (Phase 12, D-01, D-03)', () => {
+  it('the table covers exactly the kinds the catalog knows, so a new kind must be decided here', () => {
+    expect(Object.keys(PRESENTATION).sort()).toEqual([...SCALE_KINDS].sort());
+  });
+
+  it.each(Object.entries(PRESENTATION))('%s: stopWordsFor, stopLabelFor and middleWordFor read as the table says', (_kind, row) => {
+    expect(stopWordsFor(row.axis)).toEqual(row.words);
+    expect(STOPS.map((stop) => stopLabelFor(row.axis, stop))).toEqual(row.labels);
+    expect(middleWordFor(row.axis)).toBe(row.middle);
+  });
+
+  it.each([
+    ['an empty kind', ''],
+    ['a missing kind', undefined],
+    ['an unknown kind', 'other'],
+  ])('%s reads as Right in the middle', (_name, kind) => {
+    const axis = { ...BODY, kind };
+    expect(stopWordsFor(axis)).toEqual(['thin', 'leaning thin', 'right', 'leaning heavy', 'heavy']);
+    expect(stopLabelFor(axis, 3)).toBe('3: right');
+    expect(middleWordFor(axis)).toBe('right');
+  });
+
+  it('reads a stop with no word as its bare number, whatever the kind', () => {
+    expect(stopLabelFor(COFFEE, 2)).toBe('2');
+    expect(stopLabelFor(COFFEE, 4)).toBe('4');
   });
 });
 

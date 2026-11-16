@@ -2760,3 +2760,111 @@ describe('BatchRow — recordingLocked (D-04)', () => {
     expect(renderBatchRow(props)).toContain('Record another');
   });
 });
+
+// Phase 12 (TASTE-04; D-01, D-02, D-03; sketch 015 CONTRACT sections 1 and 2): a
+// recipe's own Low to high scale names only its ends on the pen and reads back in
+// its kind. The kind branch lives in domain/axes.js; these pin what the pen and
+// the reading draw from it.
+const BODY_SCALE = { key: 'body', name: 'Body', low: 'thin', high: 'heavy', kind: 'goldilocks', group: 'declared' };
+const COFFEE_SCALE = { key: 'coffee', name: 'Coffee flavour', low: 'faint', high: 'strong', kind: 'magnitude', group: 'declared' };
+const ROAST_SCALE = { key: 'roast', name: 'Roast', low: 'light', high: 'dark', kind: 'magnitude', group: 'declared' };
+
+// One drawn scale per entry, keyed by its name: the markup from its box to the next.
+function scalesIn(markup) {
+  const chunks = markup.split('<div class="axis-mark axis-mark--').slice(1);
+  return Object.fromEntries(
+    chunks.map((chunk) => [chunk.match(/class="axis-mark__name">([^<]*)</)[1], chunk]),
+  );
+}
+
+const stopNames = (chunk) => [...chunk.matchAll(/<input\b[^>]*aria-label="([^"]*)"/g)].map((match) => match[1]);
+const anchorsOf = (chunk) =>
+  [...chunk.match(/<div class="axis-mark__anchors" aria-hidden="true">(.*?)<\/div>/)[1].matchAll(/<span>([^<]*)<\/span>/g)].map(
+    (match) => match[1],
+  );
+const scaleOrder = (markup) => [...markup.matchAll(/class="axis-mark__name">([^<]*)</g)].map((match) => match[1]);
+
+function gridFor(version, below) {
+  return renderToStaticMarkup(
+    <AxesGrid axes={axesForVersion(version, SEED_CATALOG)} marks={{}} below={below} onChangeMark={noop} onClearMark={noop} />,
+  );
+}
+
+describe('BatchRow — a Low to high scale on the record pen names only its ends (TASTE-04, D-01)', () => {
+  const mixed = { ...oliveOilVersion, declaredAxes: [BODY_SCALE, COFFEE_SCALE] };
+
+  it.each([false, true])('a Right in the middle scale beside a Low to high one keeps its own words (stacked: %s)', (below) => {
+    const scales = scalesIn(gridFor(mixed, below));
+    expect(anchorsOf(scales.Body)).toEqual(['thin', 'right', 'heavy']);
+    expect(stopNames(scales.Body)).toEqual(['1: thin', '2: leaning thin', '3: right', '4: leaning heavy', '5: heavy']);
+    expect(anchorsOf(scales['Coffee flavour'])).toEqual(['faint', 'strong']);
+    expect(stopNames(scales['Coffee flavour'])).toEqual(['1: faint', '2', '3', '4', '5: strong']);
+  });
+
+  it.each([false, true])('draws one This recipe only cue for the two own scales (stacked: %s)', (below) => {
+    expect(gridFor(mixed, below).split('>This recipe only<').length - 1).toBe(1);
+  });
+
+  it('stacked, the four core scales come first and the own scales follow in their stored order', () => {
+    expect(scaleOrder(gridFor(mixed, true))).toEqual([
+      'Hardness',
+      'Scoopability',
+      'Smoothness',
+      'Sweetness',
+      'Body',
+      'Coffee flavour',
+    ]);
+  });
+
+  it('on the desktop pen the row-major order stays: two core scales, own scale 1, two core scales, own scale 2', () => {
+    expect(scaleOrder(gridFor(mixed, false))).toEqual([
+      'Hardness',
+      'Scoopability',
+      'Body',
+      'Smoothness',
+      'Sweetness',
+      'Coffee flavour',
+    ]);
+  });
+
+  it.each([false, true])('two Low to high scales each name stops 2, 3 and 4 by number, found inside their own group (stacked: %s)', (below) => {
+    const markup = gridFor({ ...oliveOilVersion, declaredAxes: [COFFEE_SCALE, ROAST_SCALE] }, below);
+    // Page-wide the bare name stands twice; inside each scale's own group, once.
+    expect(markup.match(/aria-label="2"/g)).toHaveLength(2);
+    const scales = scalesIn(markup);
+    for (const name of ['Coffee flavour', 'Roast']) {
+      expect(stopNames(scales[name]).filter((label) => label === '2')).toHaveLength(1);
+      expect(stopNames(scales[name]).slice(1, 4)).toEqual(['2', '3', '4']);
+    }
+    expect(anchorsOf(scales.Roast)).toEqual(['light', 'dark']);
+  });
+
+  it('a recipe with no own scale draws no This recipe only cue on the pen', () => {
+    const none = { ...oliveOilVersion, declaredAxes: [], declaredFlaws: [] };
+    expect(penFor(none)).not.toContain('This recipe only');
+  });
+
+  it('a recipe with a Low to high scale and a problem of its own draws both cues, scales first', () => {
+    const markup = penFor({ ...oliveOilVersion, declaredAxes: [COFFEE_SCALE], declaredFlaws: ['Bitter'] });
+    expect(markup.split('>This recipe only<').length - 1).toBe(2);
+    expect(scaleCues(markup)).toHaveLength(1);
+    expect(declaredChips(markup)).toEqual(['Bitter']);
+  });
+
+  it('a recorded batch draws its Low to high scale from its snapshot when the live version has changed kind', () => {
+    const batch = createBatch({ ...oliveOilVersion, declaredAxes: [COFFEE_SCALE] }, { churnDate: '2026-10-01' }, null, {
+      id: 'pen-kind-1',
+      catalog: SEED_CATALOG,
+      now: '2026-10-01T09:00:00.000Z',
+    });
+    const markup = renderBatchRow({
+      version: { ...oliveOilVersion, declaredAxes: [{ ...COFFEE_SCALE, kind: 'goldilocks' }] },
+      openBatch: batch,
+      batches: [batch],
+      openPen: 'amend',
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+    });
+    expect(stopNames(scalesIn(markup)['Coffee flavour'])).toEqual(['1: faint', '2', '3', '4', '5: strong']);
+  });
+});

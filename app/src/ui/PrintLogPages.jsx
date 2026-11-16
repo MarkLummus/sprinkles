@@ -1,4 +1,4 @@
-import { axesForVersion, stopWordsFor } from '../domain/axes.js';
+import { axesForVersion, middleWordFor } from '../domain/axes.js';
 import { problemNames } from '../domain/catalog.js';
 import { BATTERY_FIELDS, PRINTED_MARK_ONE_OPTIONS, SEGMENT_OPTIONS } from '../domain/battery.js';
 
@@ -138,14 +138,16 @@ export function BatchLogPage({ footText }) {
 }
 
 // The five ticks stand on one rule, the ends tall (D21): the maker circles or
-// ticks a place on the line. Only 1 and 5 are numbered; the middle is "right".
+// ticks a place on the line. Only 1 and 5 are numbered.
 const TICKS = [1, 2, 3, 4, 5];
 
 // One scale row (D19, D21, D23): the name, the low word, 1, the rule with
-// five ticks, 5, the high word, and the fixed middle word "right" under the
-// middle tick. No boxes (decide-page-2-scales-boxes-or-rule).
+// five ticks, 5 and the high word. A Right in the middle row carries the fixed
+// word "right" under the middle tick; a Low to high row carries nothing there
+// (D-01 as amended: no "right", no 2 3 4). No boxes
+// (decide-page-2-scales-boxes-or-rule).
 function LogScaleRow({ axis }) {
-  const [, , middleWord] = stopWordsFor(axis);
+  const middleWord = middleWordFor(axis);
   return (
     <div className="lf-srow">
       <span className="axis-mark__name">{axis.name}</span>
@@ -159,7 +161,7 @@ function LogScaleRow({ axis }) {
         <span className="lf-num lf-n1">1</span>
         <span className="lf-num lf-n5">5</span>
         <span className="lf-anchor lf-hi">{axis.high}</span>
-        <span className="lf-anchor lf-mid">{middleWord}</span>
+        {middleWord !== null && <span className="lf-anchor lf-mid">{middleWord}</span>}
       </div>
     </div>
   );

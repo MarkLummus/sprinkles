@@ -323,11 +323,16 @@
   padding-top: var(--sheet-print-name-pad);
 }
 
+/* The second line keeps the height "right" has (small print set solid, 12 px)
+   whether or not a word stands in it, so every scale row is 36 px and a Low to
+   high row, which has no word there, is as tall as a Right in the middle one
+   (CONTRACT § 3; sketch 010 D19). */
 .lf-sc {
   display: grid;
   grid-template-columns:
     var(--sheet-print-scale-word-col) var(--sheet-print-scale-num-col) repeat(5, var(--sheet-stop-w))
     var(--sheet-print-scale-num-col) var(--sheet-print-scale-word-col);
+  grid-template-rows: auto calc(var(--sheet-size-small-print) * var(--sheet-print-leading-solid));
   justify-items: center;
   align-items: end;
 }

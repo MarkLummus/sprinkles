@@ -104,6 +104,21 @@ export function readMarkWord(axis, stop) {
 }
 
 /**
+ * readMarkText(axis, stop) -> the reading's whole cell text for a marked scale
+ * (D-02, read-back A). Right in the middle: readMarkWord then the stop in
+ * parentheses, "soft (2)". Low to high: the low word and its number at stop 1,
+ * the high word and its number at stop 5, "{stop} of 5" between.
+ */
+export function readMarkText(axis, stop) {
+  if (isMagnitude(axis)) {
+    if (stop === 1) return `${axis.low} (1)`;
+    if (stop === 5) return `${axis.high} (5)`;
+    return `${stop} of 5`;
+  }
+  return `${readMarkWord(axis, stop)} (${stop})`;
+}
+
+/**
  * setMark(marks, axisKey, stop) -> a new marks object, never mutating the
  * one it is given. A `stop` of `null` removes axisKey's own key; any other
  * value writes it. This is the one rule for both directions (G-02-6): a

@@ -10,6 +10,7 @@ import {
   stopWordsFor,
   stopLabelFor,
   middleWordFor,
+  showsStopNumbers,
   axesForBatch,
   axesForVersion,
   markKeyFor,
@@ -181,12 +182,14 @@ const PRESENTATION = {
     words: ['soft', 'leaning soft', 'right', 'leaning hard', 'hard'],
     labels: ['1: soft', '2: leaning soft', '3: right', '4: leaning hard', '5: hard'],
     middle: 'right',
+    numbers: true,
   },
   magnitude: {
     axis: COFFEE,
     words: ['faint', null, null, null, 'strong'],
     labels: ['1: faint', '2', '3', '4', '5: strong'],
     middle: null,
+    numbers: false,
   },
 };
 
@@ -195,10 +198,11 @@ describe('kind-aware presentation (Phase 12, D-01, D-03)', () => {
     expect(Object.keys(PRESENTATION).sort()).toEqual([...SCALE_KINDS].sort());
   });
 
-  it.each(Object.entries(PRESENTATION))('%s: stopWordsFor, stopLabelFor and middleWordFor read as the table says', (_kind, row) => {
+  it.each(Object.entries(PRESENTATION))('%s: stopWordsFor, stopLabelFor, middleWordFor and showsStopNumbers read as the table says', (_kind, row) => {
     expect(stopWordsFor(row.axis)).toEqual(row.words);
     expect(STOPS.map((stop) => stopLabelFor(row.axis, stop))).toEqual(row.labels);
     expect(middleWordFor(row.axis)).toBe(row.middle);
+    expect(showsStopNumbers(row.axis)).toBe(row.numbers);
   });
 
   it.each([
@@ -210,6 +214,7 @@ describe('kind-aware presentation (Phase 12, D-01, D-03)', () => {
     expect(stopWordsFor(axis)).toEqual(['thin', 'leaning thin', 'right', 'leaning heavy', 'heavy']);
     expect(stopLabelFor(axis, 3)).toBe('3: right');
     expect(middleWordFor(axis)).toBe('right');
+    expect(showsStopNumbers(axis)).toBe(true);
   });
 
   it('reads a stop with no word as its bare number, whatever the kind', () => {

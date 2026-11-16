@@ -4,7 +4,7 @@
 //
 //   PROBE_DIST=<dist> node 12-stops-probe.mjs report <facet...>
 //   PROBE_DIST=<dist> node 12-stops-probe.mjs check <facet...>
-//   facets: pen (the record pen's anchors and stop names; and, on case worst, the longest words
+//   facets: pen (the record pen's anchors, stop names and stop numbers; and, on case worst, the longest words
 //           the creation editor saves (Mark's limits, 2026-11-16, quick 261116-80u): at 1366, 768
 //           and 393 every own scale's anchor words stay inside their track and stand apart),
 //           reading (the tasting reading's cells),
@@ -114,14 +114,16 @@ async function collectPen(browser, appUrl) {
         name: a.querySelector('.axis-mark__name').textContent,
         anchors: [...a.querySelectorAll('.axis-mark__anchors span')].map((s) => s.textContent),
         names: [...a.querySelectorAll('input[type="radio"]')].map((i) => i.getAttribute('aria-label')),
+        numbers: [...a.querySelectorAll('.axis-mark__stop > span')].map((s) => s.textContent),
       })),
     );
     const facts = [];
     const checks = [];
-    // Coffee flavour is Low to high (two ends, no middle word); Body is Right in the middle.
+    // Coffee flavour is Low to high (two ends, no middle word, no stop numbers: Mark, 2026-11-16);
+    // Body is Right in the middle (its stops draw 1 to 5).
     const EXPECT = {
-      'Coffee flavour': { anchors: ['faint', 'strong'], names: ['1: faint', '2', '3', '4', '5: strong'] },
-      Body: { anchors: ['thin', 'right', 'heavy'], names: ['1: thin', '2: leaning thin', '3: right', '4: leaning heavy', '5: heavy'] },
+      'Coffee flavour': { anchors: ['faint', 'strong'], names: ['1: faint', '2', '3', '4', '5: strong'], numbers: [] },
+      Body: { anchors: ['thin', 'right', 'heavy'], names: ['1: thin', '2: leaning thin', '3: right', '4: leaning heavy', '5: heavy'], numbers: ['1', '2', '3', '4', '5'] },
     };
     for (const [wanted, expect] of Object.entries(EXPECT)) {
       const s = scales.find((x) => x.name === wanted);
@@ -132,8 +134,10 @@ async function collectPen(browser, appUrl) {
       }
       facts.push(`${wanted} anchors: ${JSON.stringify(s.anchors)}`);
       facts.push(`${wanted} stop names: ${JSON.stringify(s.names)}`);
+      facts.push(`${wanted} stop numbers: ${JSON.stringify(s.numbers)}`);
       checks.push(sameList(`${wanted} anchors`, s.anchors, expect.anchors));
       checks.push(sameList(`${wanted} stop names`, s.names, expect.names));
+      checks.push(sameList(`${wanted} stop numbers`, s.numbers, expect.numbers));
     }
     await context.close();
     const worst = await collectWorstPen(browser, appUrl);

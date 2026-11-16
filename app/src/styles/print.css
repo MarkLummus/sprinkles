@@ -101,11 +101,13 @@
   transform-origin: 0 0;
 }
 
-/* The log pages' padding (D20, D22): 48 above and below, 72 at the left and
-   72 plus the 2 px guard at the right. */
+/* The log pages' padding (D20, D22): 48 plus the 96 px clipboard drop above
+   (Phase 12, D-15), 48 below, 72 at the left and 72 plus the 2 px guard at the
+   right. */
 .print-page--log {
-  padding: var(--sheet-print-margin-y) calc(var(--sheet-print-margin-x) + var(--sheet-print-guard))
-    var(--sheet-print-margin-y) var(--sheet-print-margin-x);
+  padding: calc(var(--sheet-print-margin-y) + var(--sheet-print-clipboard-drop))
+    calc(var(--sheet-print-margin-x) + var(--sheet-print-guard)) var(--sheet-print-margin-y)
+    var(--sheet-print-margin-x);
 }
 
 /* The log pages' own rules (page-1-batch-log.html and page-2-tasting-log.html,
@@ -903,6 +905,19 @@
      stays (D22). */
   .print-page--log {
     padding: 0 var(--sheet-print-guard) 0 0;
+  }
+
+  /* The clipboard drop (Phase 12, D-15; LOG-01): the two log pages start 1.5 in
+     from the top of the paper, the paper's own 0.5 in margin plus one more
+     inch. WebKit ignores named pages and margin boxes, so the inch is in-flow
+     padding, chosen by the route's engine class as the content-box pair is:
+     90 px in WebKit's print and 96 px in every other engine's. */
+  .print-pages--webkit .print-page--log {
+    padding-top: var(--sheet-print-clipboard-drop-webkit);
+  }
+
+  .print-pages--other .print-page--log {
+    padding-top: var(--sheet-print-clipboard-drop);
   }
 
   /* The Sheet's pages: the paper's margins are the page's own, and the fit box

@@ -130,7 +130,7 @@ export function BatchLogPage({ footText }) {
           <LogMarkRow caption="Exit consistency" words={SEGMENT_OPTIONS.exitConsistency} />
           <LogMarkRow caption="Airiness" words={SEGMENT_OPTIONS.airiness} />
         </div>
-        <LogNotes cue="At the machine · Ingredient notes · Next time" lines={14} />
+        <LogNotes cue="At the machine · Ingredient notes · Next time" lines={13} />
       </div>
       <LogFoot footText={footText} />
     </div>
@@ -169,7 +169,8 @@ function LogScaleRow({ axis }) {
 
 // Page 2, the Tasting log (CONTRACT § 4): the four core scales then the
 // version's own declared ones (0 to 2), the four core problems then its own
-// declared ones in one row (0 to 2), five writing lines. Both lists come
+// declared ones in one row (0 to 2), four writing lines (decide-p12-tasting-log-lines:
+// the room for the clipboard drop comes out of the notes lines only). Both lists come
 // from the catalog (the core scales and the core problems, read from their
 // tables) and the version (its declared ones), never from a literal here; no
 // "Every recipe" or "This recipe only" cue is printed (D23).
@@ -202,7 +203,7 @@ export function TastingLogPage({ version, catalog, footText }) {
             </div>
           </div>
         </div>
-        <LogNotes cue="How did it turn out?" lines={5} />
+        <LogNotes cue="How did it turn out?" lines={4} />
       </div>
       <LogFoot footText={footText} />
     </div>

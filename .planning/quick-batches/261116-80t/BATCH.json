@@ -43,7 +43,7 @@
       "quick_id": "261116-80v",
       "client_id": null,
       "description": "No numbers on a Low to high (magnitude) scale, in three places (Mark's decision 2026-11-16): (a) the creation editor stops line goes back to \"faint to strong\" (revert of 2cbbdd3a plus the matching 12-06 probe edits named in plan 12-01); (b) record pen, app/src/ui/AxisMark.jsx: the visible 1 to 5 number under each stop is not drawn for a Low to high scale, only the two end words remain, screen-reader labels stay; (c) printed Tasting log, app/src/ui/PrintLogPages.jsx LogScaleRow: the 1 and 5 beside the rule are not printed for a Low to high scale. Right in the middle scales unchanged everywhere. The kind branch stays in app/src/domain/axes.js readers; components test no kind. Out of scope: the reading's \"3 of 5\" text and the pen head's \"(value)\". Update sketch 015's Low to high panels and the Phase 12 harness expectations (12-stops-probe.mjs, 12-print-check.mjs, 12-board-*.mjs, 12-cases.mjs) so the Phase 12 steps of 12-check.sh still pass.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "261116-80u"
       ],
@@ -78,7 +78,7 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 1,
-      "commit": null,
+      "commit": "f3b9b384",
       "failure_reason": null
     }
   ]

@@ -642,6 +642,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261115-k0d | Cancel on the creation and edit pages takes the save lock while its delete is out (bug-creation-cancel-save-race) | 2026-11-15 | af101f6e | [261115-k0d-cancel-on-the-creation-and-edit-pages-ta](./quick/261115-k0d-cancel-on-the-creation-and-edit-pages-ta/) |
 | 239 | Record Mark's Gate 1 answers in 12-CONTEXT (D-01, D-02, D-17) | 2026-11-15 | fa72504c | — |
 | 261116-80u | Limit word lengths in the creation editor: end words 12, scale name 16, problem 40, refused at Save | 2026-11-16 | 1acb082b | .planning/quick/261116-80u-limit-word-lengths-in-the-creation-editor-mark-s-decision-20 |
+| 261116-80v | No numbers on a Low to high scale: editor line, record pen stops, printed Tasting log | 2026-11-16 | f3b9b384 | .planning/quick/261116-80v-no-numbers-on-a-low-to-high-magnitude-scale-in-three-places |
 
 ### Roadmap Evolution
 

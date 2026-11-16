@@ -85,5 +85,12 @@ function penPanel({ caseKey, recipe, width, index }) {
 
 export default {
   board: BOARD,
-  panels: [penPanel({ caseKey: 'two', recipe: 'coffee', width: 1366, index: 0 })],
+  panels: [
+    penPanel({ caseKey: 'two', recipe: 'coffee', width: 1366, index: 0 }),
+    penPanel({ caseKey: 'one', recipe: 'mint-chip', width: 1366, index: 1 }),
+    penPanel({ caseKey: 'none', recipe: 'mexican-chocolate', width: 1366, index: 2 }),
+    penPanel({ caseKey: 'two', recipe: 'coffee', width: 393, index: 0 }),
+    penPanel({ caseKey: 'one', recipe: 'mint-chip', width: 393, index: 1 }),
+    penPanel({ caseKey: 'none', recipe: 'mexican-chocolate', width: 393, index: 2 }),
+  ],
 };

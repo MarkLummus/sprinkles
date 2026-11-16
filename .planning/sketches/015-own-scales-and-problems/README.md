@@ -2,13 +2,13 @@
 sketch: 015
 name: own-scales-and-problems
 question: "What do a recipe's own scales and problems look like on the record pen, on the reading and on the printed Batch log and Tasting log (a scale of each kind, and none; the pen and the reading also at 393), what does a marked Low to high scale say back, and how do the two log pages start 1.5 in down for the clipboard and still stay one page each?"
-winner: "Answered by Mark 2026-11-15 on Mark's List: the pen and the reading approved as drawn (look-p12-pen-and-reading); the read-back is candidate A (decide-p12-low-to-high-read-back); the Tasting log keeps 4 notes lines, the Batch log 13 (decide-p12-tasting-log-lines); the printed logs done with the note that the 2 3 4 under the ticks are not required (look-p12-printed-logs). The printed Low to high row is redrawn for that note and awaits look-p12-printed-row-ends-only. Acceptance target for Phase 12's first planning round (TASTE-04, 12-CONTEXT D-01 to D-03, D-15 to D-17)"
+winner: "Answered by Mark 2026-11-15 on Mark's List: the pen and the reading approved as drawn (look-p12-pen-and-reading); the read-back is candidate A (decide-p12-low-to-high-read-back); the Tasting log keeps 4 notes lines, the Batch log 13 (decide-p12-tasting-log-lines); the printed logs done with the note that the 2 3 4 under the ticks are not required (look-p12-printed-logs). The printed Low to high row is redrawn for that note and approved by Mark 2026-11-15 (look-p12-printed-row-ends-only). Acceptance target for Phase 12's first planning round (TASTE-04, 12-CONTEXT D-01 to D-03, D-15 to D-17)"
 tags: [tasting, scales, problems, pen, reading, print, batch-log, tasting-log, clipboard, phase-12]
 ---
 
 # 015 own scales and problems: the record pen, the reading and the printed logs (Phase 12 Gate 1)
 
-Mark answered the four Gate 1 rows on 2026-11-15 (local). Three stand as drawn; the fourth asked for one change, which is drawn here and **awaits `look-p12-printed-row-ends-only`**: on the printed Tasting log a Low to high scale has nothing under its ticks.
+Mark answered the four Gate 1 rows on 2026-11-15 (local). Three stand as drawn; the fourth asked for one change, which is drawn here and **approved by Mark 2026-11-15 (`look-p12-printed-row-ends-only`)**: on the printed Tasting log a Low to high scale has nothing under its ticks.
 
 Authority: these boards, CSS included, are the authority. Conformance is the board and the built app side by side in a browser, never prose or a test count. `CONTRACT.md` names what the boards hold so a planner, a checker and UAT cite one source.
 
@@ -19,7 +19,7 @@ Authority: these boards, CSS included, are the authority. Conformance is the boa
 | `record-pen.html` | `P12_Pen` | The record pen's tasting, cut to the scales and Any problems?, at the 350 column (1366) and at 393, for three recipes: two own scales (one of each kind) and two own problems; one Low to high scale and one problem; none of its own (no "This recipe only" cue anywhere). | Approved (`look-p12-pen-and-reading`) |
 | `reading.html` | `P12_Reading` | The reading's Tasting fold for the same three recipes, at 350 and 393. A marked Low to high scale reads back as candidate A. | Approved (`look-p12-pen-and-reading`) |
 | `read-back-candidates.html` | `P12_ReadBack` | The three read-back candidates A, B and C side by side, the scale marked 1 to 5 and in the reading. | The record of the choice: A chosen, B and C not |
-| `printed-logs.html` | `P12_Logs` | Letter pages at full size: the build's Batch log and Tasting log for comparison, then the drawn Batch log and three drawn Tasting logs (two, one and none of its own), each starting 1.5 in from the top of the paper. | Done with Mark's note; the Low to high row redrawn, awaits `look-p12-printed-row-ends-only` |
+| `printed-logs.html` | `P12_Logs` | Letter pages at full size: the build's Batch log and Tasting log for comparison, then the drawn Batch log and three drawn Tasting logs (two, one and none of its own), each starting 1.5 in from the top of the paper. | Done with Mark's note; the Low to high row redrawn, approved by Mark 2026-11-15 (`look-p12-printed-row-ends-only`) |
 | `tasting-log-lines.html` | `P12_LogLines` | The fullest Tasting log with 4 notes lines and with 5. | The record of the choice: 4 chosen. Its Low to high row carries the same redraw |
 
 Three example recipes: Coffee declares Body (Right in the middle; thin, heavy) and Coffee flavour (Low to high; faint, strong) and the problems Bitter and Burnt taste; Mint chip declares Mint (Low to high; faint, strong) and Waxy chips; Mexican Chocolate v1 is as seeded and declares nothing. The example words are Sid's, not Mark's and not in the data.
@@ -37,7 +37,7 @@ Mark's answers on Mark's List, 2026-11-15, in his words. Row text is data; the i
 1. **The read-back is A** (`decide-p12-low-to-high-read-back`: "A"). A marked Low to high scale says back the end word at 1 and 5 and the number between: faint (1), 2 of 5, 3 of 5, 4 of 5, strong (5). Drawn on `P12_Reading`; `P12_ReadBack` keeps B (always "n of 5") and C (the nearer end word) as the record of what was not chosen. A Right in the middle scale reads as built, "heavy (4)", "right (3)".
 2. **The Tasting log keeps 4 notes lines** (`decide-p12-tasting-log-lines`: "4 lines"); the Batch log 13 (it had no choice: 14 do not fit). Drawn on `P12_Logs`; `P12_LogLines` keeps the 5-line page as the record.
 3. **The pen and the reading are approved as drawn** (`look-p12-pen-and-reading`: "Approve"). `P12_Pen` and `P12_Reading`.
-4. **The printed logs: done, with one change** (`look-p12-printed-logs`, his note: "The 2 3 4 under their ticks are not required"). Redrawn the same day: the printed Low to high row keeps its low word, 1, the rule with its five ticks, 5 and its high word, and nothing stands under the ticks, neither "right" nor 2 3 4. The pen keeps its numbered stops. Everything else on the board stands. **Awaits `look-p12-printed-row-ends-only`.**
+4. **The printed logs: done, with one change** (`look-p12-printed-logs`, his note: "The 2 3 4 under their ticks are not required"). Redrawn the same day: the printed Low to high row keeps its low word, 1, the rule with its five ticks, 5 and its high word, and nothing stands under the ticks, neither "right" nor 2 3 4. The pen keeps its numbered stops. Everything else on the board stands. **Approved by Mark 2026-11-15 (`look-p12-printed-row-ends-only`, his note: "Approve").**
 
 What Sid chose inside decision 4, for Mark to see on that row:
 

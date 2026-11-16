@@ -6,7 +6,7 @@
 //     picture's top (48 plus the 96 px drop), so .lf-title's top is measured from the page's top;
 //   - the room comes out of the notes lines only: 13 on the Batch log, 4 on each Tasting log;
 //   - every scale row is 36 px tall, the Low to high row included; a Low to high row has no
-//     .lf-mid and no numbers but 1 and 5, so the count of .lf-mid on each page equals the board's;
+//     .lf-mid and no .lf-num (Mark, 2026-11-16), so the counts of .lf-mid and .lf-num on each page equal the board's;
 //   - the foot reads the recipe, the version and the Sheet code, as built.
 //
 // printed-logs.html holds six letter pages (.dl-page, 816 x 1056). Indexes 0 and 1 are "As built

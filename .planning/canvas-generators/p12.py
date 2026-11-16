@@ -1,4 +1,4 @@
-# Sid, 2026-11-15 (Phase 12 Gate 1; 12-CONTEXT.md D-01, D-02, D-06, D-07, D-15 to D-17; Mark answered the four Gate 1 rows the same day, snapshot 015 by snapshot015.py; the printed Low to high row's redraw awaits look-p12-printed-row-ends-only): a recipe's own scales and problems on the record pen, the reading and the printed logs.
+# Sid, 2026-11-15 (Phase 12 Gate 1; 12-CONTEXT.md D-01, D-02, D-06, D-07, D-15 to D-17; Mark answered the four Gate 1 rows the same day, snapshot 015 by snapshot015.py; the printed Low to high row's redraw awaits look-p12-printed-row-ends-only): a recipe's own scales and problems on the record pen, the reading and the printed logs; redrawn 2026-11-16 for Mark's decision (quick 261116-80v: no numbers on a Low to high scale), regenerated with SPRINKLES_STYLES holding the five stylesheets of 8746417e.
 #   P12_Pen        the record pen's tasting, the scales and Any problems?, at the 350 column and at 393
 #   P12_Reading    the reading's Tasting fold, at the 350 column and at 393
 #   P12_ReadBack   what a marked Low to high scale says back: three candidates side by side (decide-p12-low-to-high-read-back)
@@ -8,10 +8,10 @@
 # "none" is Mexican Chocolate v1 as seeded, which declares nothing and so shows no "This recipe only" cue anywhere. The example words are Sid's, not Mark's and not in the data.
 # Every panel is the built app's own markup (p12-capture.mjs: WebKit, coarse, app/dist of 2026-11-15, the example recipes written into that context's throwaway IndexedDB) under the app's
 # own stylesheets resolved at 1366 coarse and 393 coarse (a canvas artboard gets no narrow viewport), with only the Low to high scale drawn over it:
-#   pen      D-01: the anchors line reads the low word and the high word, no "right"; the five numbered stops are as built; the stops' names for a screen reader are "1: faint", "2", "3", "4", "5: strong".
+#   pen      D-01: the anchors line reads the low word and the high word, no "right"; the five stops carry no number (Mark, 2026-11-16: no numbers on a Low to high scale); the stops' names for a screen reader are "1: faint", "2", "3", "4", "5: strong".
 #            The end words stay UNDER stops 1 and 5 (not inside them): a built stop is 44 x 44 at 14 px and "strong" alone measures 43, so a word in the cell does not fit a longer label.
 #   reading  D-02, the drawn candidate A: the end word with its number at 1 and 5, "n of 5" between (READBACK below); P12_ReadBack draws A, B and C.
-#   print    D-01 as Mark amended it on look-p12-printed-logs ("The 2 3 4 under their ticks are not required"): the row keeps low word, 1, the rule with its five ticks, 5, high word, and nothing stands
+#   print    D-01 as Mark amended it on look-p12-printed-logs ("The 2 3 4 under their ticks are not required"): the row keeps low word, the rule with its five ticks, high word, with no 1 and 5 (Mark, 2026-11-16), and nothing stands
 #            under the ticks: no "right", no 2 3 4. The five bare ticks stay, as on every scale (they are where the mark goes). The row stays 36 px, in step with the other scales
 #            (D19): with nothing in the grid's second line a bare row measures 25 px (WebKit and Chrome), so print_css gives every scale's second line the height "right" has today (small print, set solid:
 #            12 px). One rule on .lf-sc, no new class; a Right in the middle row measures the same 36 with it.
@@ -55,7 +55,7 @@ def pen(case, W):
     h = printstart.drop_hidden(CAP[f'{case}_pen_{W}']['html'])
     for key in CASES[case]['mag']:
         a = h.index(f'<div class="axis-mark axis-mark--declared"><div class="axis-mark__head"><span id="axis-name-{key}"'); b = div_end(h, a); seg = h[a:b]
-        seg = re.sub(r'aria-label="([2-4]): [^"]*"', r'aria-label="\1"', seg); assert '<span>right</span>' in seg
+        seg = re.sub(r'aria-label="([2-4]): [^"]*"', r'aria-label="\1"', seg); assert '<span>right</span>' in seg; seg, nn = re.subn(r'<span aria-hidden="true">[1-5]</span></label>', '</label>', seg); assert nn == 5
         h = h[:a] + seg.replace('<span>right</span>', '') + h[b:]
     return h
 
@@ -108,7 +108,7 @@ def flow(head, sub, rows, gap=64, capw=None, PAD=48):
         bw = max(bw, x - gap + PAD); y += LABH + rowh + 72
     return body, int(bw), int(y)
 
-PEN_SUB = {'two': 'Coffee flavour is Low to high: its end words stand under 1 and 5 and nothing stands under 3. Body is Right in the middle and keeps "right". Two problem chips under their own cue.',
+PEN_SUB = {'two': 'Coffee flavour is Low to high: its five stops carry no number, its end words stand under the first and the last, and nothing stands under the middle. Body is Right in the middle and keeps its numbers and "right". Two problem chips under their own cue.',
            'one': 'One scale, Low to high, and one problem chip, each under "This recipe only".',
            'none': 'No scale and no problem of its own: no "This recipe only" cue, on the scales or on the problems.'}
 READ_SUB = {'two': 'Body reads its word and number as built. Coffee flavour, marked 2, reads "2 of 5" (candidate A; see P12_ReadBack).',
@@ -163,8 +163,8 @@ def log_page(case, side, drawn=True, lines=None):
     if CASES[case]['foot']: h = re.sub(r'(<div class="lf-foot">).*?( · Side)', lambda m: m.group(1) + CASES[case]['foot'] + m.group(2), h, count=1)
     if not drawn: return h
     for name, low, high in (CASES[case]['mag'].values() if side else ()):
-        a = h.index(f'<div class="lf-srow"><span class="axis-mark__name">{name}</span>'); b = div_end(h, a); seg = h[a:b]; mid = '<span class="lf-anchor lf-mid">right</span>'; assert mid in seg
-        h = h[:a] + seg.replace(mid, '') + h[b:]
+        a = h.index(f'<div class="lf-srow"><span class="axis-mark__name">{name}</span>'); b = div_end(h, a); seg = h[a:b]; mid = '<span class="lf-anchor lf-mid">right</span>'; dead = (mid, '<span class="lf-num lf-n1">1</span>', '<span class="lf-num lf-n5">5</span>'); assert all(seg.count(d) == 1 for d in dead)
+        h = h[:a] + re.sub('|'.join(map(re.escape, dead)), '', seg) + h[b:]
     n = lines or LINES['tasting' if side else 'batch']
     return re.sub(r'(<div class="lf-lines">)(?:<div class="lf-line"></div>)+', lambda m: m.group(1) + '<div class="lf-line"></div>' * n, h, count=1)
 
@@ -185,7 +185,7 @@ def build_logs():
     r0 = [page_cell('built-batch', 'two', 0, False, cap='As built today · Batch log', sub='Starts 0.5 in from the top of the paper. @@built-batch@@'),
           page_cell('built-tasting-two', 'two', 1, False, cap='As built today · Tasting log · Coffee', sub='Coffee flavour, a Low to high scale, prints "right" under its middle tick (the bug). @@built-tasting-two@@')]
     r1 = [page_cell('batch', 'two', 0, cap='Batch log · the same page for every recipe but its foot', sub='Starts 1.5 in down. One notes line fewer than today; nothing else moves or shrinks. @@batch@@'),
-          page_cell('tasting-two', 'two', 1, cap='Tasting log · Coffee · two scales and two problems of its own', sub='Coffee flavour: faint, 1, the rule with its five ticks, 5, strong. Nothing under the ticks: no "right", no 2 3 4. Six scales, six problems. @@tasting-two@@'),
+          page_cell('tasting-two', 'two', 1, cap='Tasting log · Coffee · two scales and two problems of its own', sub='Coffee flavour: faint, the rule with its five ticks, strong. No 1 and 5 beside the rule and nothing under the ticks. Six scales, six problems. @@tasting-two@@'),
           page_cell('tasting-one', 'one', 1, cap='Tasting log · Mint chip · one scale and one problem of its own', sub='Five scales, five problems. @@tasting-one@@'),
           page_cell('tasting-none', 'none', 1, cap='Tasting log · Mexican Chocolate · none of its own', sub='Four scales, four problems, as every recipe has. @@tasting-none@@')]
     return flow('Printed logs · own scales and problems, and the clipboard margin', 'Phase 12 Gate 1. Letter pages at full size. The purple bar beside a page marks the 1.5 in the clip covers; it is a note and does not print. The printed pages carry no "This recipe only" cue (as approved in sketch 010). Redrawn 2026-11-15 for Mark\'s note on look-p12-printed-logs: a Low to high scale has nothing under its ticks.',
@@ -196,11 +196,11 @@ def build_loglines():
          page_cell('lines-5', 'two', 1, lines=5, cap='5 lines (as today)', sub='Fits only just in Safari. Longer problem names that wrap the row would push the foot to a second sheet. @@lines-5@@')]
     return flow('Tasting log · how many notes lines once the page starts 1.5 in down', 'Phase 12 Gate 1, for decide-p12-tasting-log-lines. The fullest page: two scales and two problems of its own. The Batch log has no choice to make: 13 lines fit, 14 do not.', [('', '', r)], gap=110, capw=780, PAD=110)
 
-TITLES = {'P12_Pen': "Record pen · a recipe's own scales and problems, each kind and none · 350 and 393 (2026-11-15; proposed)",
+TITLES = {'P12_Pen': "Record pen · a recipe's own scales and problems, each kind and none · 350 and 393 (2026-11-15; proposed; redrawn 2026-11-16: no numbers on a Low to high scale)",
           'P12_Reading': "Reading · a recipe's own scales and problems, each kind and none · 350 and 393 (2026-11-15; proposed)",
           'P12_ReadBack': 'What a marked Low to high scale says back · three candidates (2026-11-15; for Mark to pick)',
-          'P12_Logs': 'Printed Batch log and Tasting log · own scales and problems · 1.5 in clipboard margin (2026-11-15; redrawn the same day: nothing under a Low to high scale\'s ticks)',
-          'P12_LogLines': 'Tasting log · 4 notes lines or 5 under the clipboard margin (2026-11-15; Mark picked 4; redrawn the same day: nothing under a Low to high scale\'s ticks)'}
+          'P12_Logs': 'Printed Batch log and Tasting log · own scales and problems · 1.5 in clipboard margin (2026-11-15; redrawn the same day: nothing under a Low to high scale\'s ticks; redrawn 2026-11-16: no numbers on a Low to high scale)',
+          'P12_LogLines': 'Tasting log · 4 notes lines or 5 under the clipboard margin (2026-11-15; Mark picked 4; redrawn the same day: nothing under a Low to high scale\'s ticks; redrawn 2026-11-16: no numbers on a Low to high scale)'}
 
 def build_boards(out):
     sizes = {}

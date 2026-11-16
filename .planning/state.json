@@ -26,13 +26,13 @@
     {
       "number": "12",
       "name": "Showing a recipe's own scales and problems, and the whole loop",
-      "status": "pending"
+      "status": "in_progress"
     }
   ],
   "next": {
     "command": "/gsd-progress --next",
-    "label": "Advance to the next step (plan phase 12)",
-    "reason": "Phase 5 of 5 — needs a plan"
+    "label": "Advance to the next step",
+    "reason": "Phase 5 of 5 · 80% · executing"
   },
-  "updated_at": "2026-11-15T17:45:01.034Z"
+  "updated_at": "2026-11-16T02:35:15.092Z"
 }

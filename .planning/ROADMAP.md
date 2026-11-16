@@ -301,11 +301,12 @@ Plans:
   2. A recipe created in the app round-trips: it prints, a batch recorded against it marks a custom scale, and after export and import it reopens with the same figures, Sheet code and marks
   3. On the iPad, from the production build, a maker creates a recipe end to end, its scales, problems and targets included, and prints it: Tab reaches every creation control, each Move button included, and after a move focus stays with the moved step or row
 
-**Plans:** 5 plans in 3 waves for the first planning round (Gate 1); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
+**Plans:** 6 plans in 3 waves for the first planning round (Gate 1); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
 
 Plans:
 **Wave 1**
-- [ ] 12-01-PLAN.md — kind-aware readers in axes.js; the record pen, the reading and the creation editor's stops line show a Low to high scale in its kind; the bug row's steps reproduced on the base build first
+- [ ] 12-01-PLAN.md — kind-aware readers in axes.js; the record pen, the reading and the creation editor's stops line show a Low to high scale in its kind
+- [ ] 12-06-PLAN.md — the shared Phase 12 cases and the stops probe; the bug row's steps reproduced on a build of the base commit, where the probe's check fails on every facet (split out of 12-01; runs beside it)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 12-02-PLAN.md — the printed Low to high row with nothing under its ticks, every scale row 36 px, the clipboard drop on the two log pages with 13 and 4 notes lines; LOG-01 and the two design gates written into REQUIREMENTS and the roadmap
@@ -329,7 +330,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
 | 10. The creation editor, without Save | v2.0 | 12/12 | Complete    | 2026-10-21 |
 | 11. Steps, structure, save and print | v2.0 | 14/14 | Complete    | 2026-11-15 |
-| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/5 | Planned (round one) | - |
+| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 0/6 | Planned (round one) | - |
 
 ## Later
 

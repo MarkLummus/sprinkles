@@ -301,7 +301,7 @@ Plans:
   2. A recipe created in the app round-trips: it prints, a batch recorded against it marks a custom scale, and after export and import it reopens with the same figures, Sheet code and marks
   3. On the iPad, from the production build, a maker creates a recipe end to end, its scales, problems and targets included, and prints it: Tab reaches every creation control, each Move button included, and after a move focus stays with the moved step or row
 
-**Plans:** 5/7 plans executed in 3 waves for the first planning round (Gate 1); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
+**Plans:** 7/7 plans executed in 3 waves for the first planning round (Gate 1); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
 
 Plans:
 **Wave 1**
@@ -314,8 +314,8 @@ Plans:
 - [x] 12-03-PLAN.md — the scripted WebKit round trip: create with a scale of each kind and a problem, save, print, batch, export, import into an empty profile, compare field by field (PROOF-01)
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 12-04-PLAN.md — board against build in WebKit at 1366 and 393 for the record pen, the reading and the printed logs, on 12-07's engine
-- [ ] 12-05-PLAN.md — the logs printed to PDF through WebKit, mobile Safari in the iOS Simulator, and every round-one check in one command with the Phase 11 walk unchanged
+- [x] 12-04-PLAN.md — board against build in WebKit at 1366 and 393 for the record pen, the reading and the printed logs, on 12-07's engine
+- [x] 12-05-PLAN.md — the logs printed to PDF through WebKit, mobile Safari in the iOS Simulator, and every round-one check in one command with the Phase 11 walk unchanged
 **Design gate 1**: MET (Mark, 2026-11-15). Approved and snapshotted boards for the record pen, the reading and the printed log showing a recipe's own scales and problems, a scale of each kind among them, and showing none (sketches 007, 008 and 010 drew only the fixed declared scales). Per the phone brief (PRODUCT.md, "On the phone", Mark 2026-11-15) the record pen's tasting and the reading are also drawn at phone width (393 beside the 350 column) for a recipe's own scales, each kind and none; the printed log needs no 393 board, and no iPhone check is added to this phase's success criteria. The printed-log board also carries the top margin that clears a clipboard holding the batch / tasting log (Mark's List row `adoajjb9sgzbezmyrt4s`, folded in by Mark 2026-11-15), which rides this gate by 12-CONTEXT D-07; its paper check waits for the iPad rows of the second round, so that row stays open. Mark's four answers: `look-p12-pen-and-reading` (approved as drawn), `decide-p12-low-to-high-read-back` (A), `decide-p12-tasting-log-lines` (the Tasting log 4 notes lines, the Batch log 13) and `look-p12-printed-logs` with `look-p12-printed-row-ends-only` (a printed Low to high scale has nothing under its ticks). Snapshot: `.planning/sketches/015-own-scales-and-problems/`. The first planning round plans and builds it.
 
 **Design gate 2**: Not met. Boards still to draw: the entry points left out below 724 (the recipe band in its three states, the Notebook at 393 with and without a kept draft, a Home row, More without Import and Export, and the one-line page a hidden job's address shows, with its wording), Mark's List row `todo-phone-hide-entry-points`, folded in by Mark (2026-11-15); Preview step on an open step in the version pen (Next version), which Phase 11 drew for the creation editor only (Mark answered Fix it on `bug-p11-pen-step-no-preview`, 2026-11-15, phase 12); and the creation editor's row controls, redrawn before the iPad proof: the order of a step's and an ingredient row's controls so adding the next row is quick to reach (`todo-reorder-row-controls`), and Add ingredient on each ingredient row, adding a row after it in the same step group (`todo-add-ingredient-per-row`). A second planning round plans them once they are approved, and PROOF-02's iPad check (success criterion 3) runs after they land, so the Tab walk runs once on the final control order (12-CONTEXT D-11).
@@ -333,7 +333,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
 | 10. The creation editor, without Save | v2.0 | 12/12 | Complete    | 2026-10-21 |
 | 11. Steps, structure, save and print | v2.0 | 14/14 | Complete    | 2026-11-15 |
-| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 5/7 | In Progress (round one) | - |
+| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 7/7 | In Progress (round one) | - |
 
 ## Later
 

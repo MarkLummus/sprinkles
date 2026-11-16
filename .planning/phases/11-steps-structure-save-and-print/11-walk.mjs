@@ -113,8 +113,8 @@ const BATCH_ROUTE = `${VERSION_ROUTE}/batch/${BATCH_ID}`;
 
 const KEPT = 'Draft kept. Cancel discards it.';
 const VERSION_PEN = 'form[aria-label="Next version"]';
-const NAME_FIELD = 'input[aria-label="Version name"]';
-const MILK_FIELD = 'input[aria-label="Whole milk, grams, portion 1"]';
+const NAME_FIELD = '[aria-label="Version name"]';
+const MILK_FIELD = '[aria-label="Whole milk, grams, portion 1"]';
 
 // ---------------------------------------------------------------------------
 // A context per scenario: fixed clock, counted ids, third-party requests off.
@@ -472,11 +472,11 @@ const CHURN_DATE_SENTENCE = 'Enter the date you churned.';
 
 const PEN = '.batch-margin--pen';
 const CHURN_DATE = `${PEN} .field-row__label--date input`;
-const OUT_OF_MACHINE = `${PEN} input[aria-label^="Out of machine"]`;
-const CHURN_DURATION = `${PEN} input[aria-label^="Duration"]`;
-const TEMPERING = `${PEN} input[aria-label^="Tempering"]`;
+const OUT_OF_MACHINE = `${PEN} [aria-label^="Out of machine"]`;
+const CHURN_DURATION = `${PEN} [aria-label^="Duration"]`;
+const TEMPERING = `${PEN} [aria-label^="Tempering"]`;
 const TASTING_NOTE = `${PEN} textarea[aria-label="How did it turn out?"]`;
-const SUCROSE_FIELD = 'input[aria-label="Sucrose, grams, portion 1"]';
+const SUCROSE_FIELD = '[aria-label="Sucrose, grams, portion 1"]';
 const SHEET_TITLE = 'textarea[aria-label="Sheet title"]';
 const WHY_FIELD = 'textarea[aria-label="Why"]';
 const BEFORE_NOTE = 'textarea[aria-label="beforeYouStart note 1"]';
@@ -673,7 +673,7 @@ SCENARIOS.push([
       ['defect', () => page.locator('.chip-toggle', { hasText: /^Coarse, icy$/ }).click()],
       ['declared-defect', () => page.locator('.chip-toggle', { hasText: /^Bitter$/ }).click()],
       ['step-change', () => page.locator('label.method-step__strike-control', { has: page.locator('input[aria-label="Step 1, skipped"]') }).click()],
-      ['as-made', () => page.fill('input[aria-label="Whole milk, as made, grams, portion 1"]', '100')],
+      ['as-made', () => page.fill('[aria-label="Whole milk, as made, grams, portion 1"]', '100')],
     ];
     for (const [id, edit] of edits) {
       await save();
@@ -982,14 +982,14 @@ async function makeVanilla(walk, mark) {
     });
   const addIngredient = async (name, grams) => {
     await clickUntil(page, () => page.locator('.ingredient-table-region .mk-head-act'), '.pick', `open the picker for ${name}`);
-    await clickUntil(page, () => pickRow(name), `input[aria-label="${name}, grams"]`, `pick ${name}`);
-    await page.fill(`input[aria-label="${name}, grams"]`, grams);
+    await clickUntil(page, () => pickRow(name), `[aria-label="${name}, grams"]`, `pick ${name}`);
+    await page.fill(`[aria-label="${name}, grams"]`, grams);
   };
 
   await walk.open('/notebook');
   await walk.seed();
-  await clickUntil(page, () => page.locator('.nb__head .notebook-action'), '.nb__new input', 'open the New recipe entry');
-  await page.fill('.nb__new input', 'Vanilla');
+  await clickUntil(page, () => page.locator('.nb__head .notebook-action'), '.nb__new textarea', 'open the New recipe entry');
+  await page.fill('.nb__new textarea', 'Vanilla');
   await page.locator('.nb__new-actions button', { hasText: /^Start$/ }).click();
   await until(() => location.pathname === '/notebook/new', 'Start opens /notebook/new');
   await page.waitForSelector('.notebook.mk-page');
@@ -999,30 +999,30 @@ async function makeVanilla(walk, mark) {
   await addIngredient(SUGAR_NAME, '150');
 
   // Two steps: the heading's Add step, then Add step after step 1.
-  await clickUntil(page, () => page.locator('.method-region .mk-head-act'), 'input[aria-label="Step 1, lead-in"]', 'Add step');
-  await page.fill('input[aria-label="Step 1, lead-in"]', 'Warm the milk');
+  await clickUntil(page, () => page.locator('.method-region .mk-head-act'), '[aria-label="Step 1, lead-in"]', 'Add step');
+  await page.fill('[aria-label="Step 1, lead-in"]', 'Warm the milk');
   await page.fill('textarea[aria-label="Step 1, instruction"]', 'Heat the milk with the sugar.');
-  await clickUntil(page, () => labelled('Step 1, add a step after it'), 'input[aria-label="Step 2, lead-in"]', 'Add step after step 1');
-  await page.fill('input[aria-label="Step 2, lead-in"]', 'Churn');
+  await clickUntil(page, () => labelled('Step 1, Add step after it'), '[aria-label="Step 2, lead-in"]', 'Add step after step 1');
+  await page.fill('[aria-label="Step 2, lead-in"]', 'Churn');
   await page.fill('textarea[aria-label="Step 2, instruction"]', 'Churn, then harden.');
 
   // Place Whole milk in step 1 and Sucrose in step 2 from Not in a step yet.
-  await clickUntil(page, () => labelled(`Add ${MILK_NAME} to a step`), `[aria-label="Add ${MILK_NAME} to step 1"]`, 'open the chooser for Whole milk');
-  await labelled(`Add ${MILK_NAME} to step 1`).click();
-  await page.waitForSelector(`[aria-label="Add ${MILK_NAME} to a step"]`, { state: 'detached' });
-  await clickUntil(page, () => labelled(`Add ${SUGAR_NAME} to a step`), `[aria-label="Add ${SUGAR_NAME} to step 2"]`, 'open the chooser for Sucrose');
-  await labelled(`Add ${SUGAR_NAME} to step 2`).click();
-  await page.waitForSelector(`[aria-label="Add ${SUGAR_NAME} to a step"]`, { state: 'detached' });
+  await clickUntil(page, () => labelled(`Add to step, ${MILK_NAME}`), `[aria-label="Step 1, Warm the milk: add ${MILK_NAME}"]`, 'open the chooser for Whole milk');
+  await labelled(`Step 1, Warm the milk: add ${MILK_NAME}`).click();
+  await page.waitForSelector(`[aria-label="Add to step, ${MILK_NAME}"]`, { state: 'detached' });
+  await clickUntil(page, () => labelled(`Add to step, ${SUGAR_NAME}`), `[aria-label="Step 2, Churn: add ${SUGAR_NAME}"]`, 'open the chooser for Sucrose');
+  await labelled(`Step 2, Churn: add ${SUGAR_NAME}`).click();
+  await page.waitForSelector(`[aria-label="Add to step, ${SUGAR_NAME}"]`, { state: 'detached' });
 
   // Whole milk is split: step 2 also uses it, with its own line.
-  await clickUntil(page, () => labelled('Step 2, change the ingredients'), 'fieldset[aria-label="Step 2, uses"]', 'open step 2 uses');
+  await clickUntil(page, () => labelled('Step 2, change ingredients'), 'fieldset[aria-label="Step 2, uses"]', 'open step 2 uses');
   await page
     .locator('fieldset[aria-label="Step 2, uses"] label.method-step__uses-item', { hasText: MILK_NAME })
     .locator('input')
     .check();
-  await page.waitForSelector(`input[aria-label="${MILK_NAME}, grams, portion 2"]`);
-  await page.fill(`input[aria-label="${MILK_NAME}, grams, portion 1"]`, '400');
-  await page.fill(`input[aria-label="${MILK_NAME}, grams, portion 2"]`, '200');
+  await page.waitForSelector(`[aria-label="${MILK_NAME}, grams, portion 2"]`);
+  await page.fill(`[aria-label="${MILK_NAME}, grams, portion 1"]`, '400');
+  await page.fill(`[aria-label="${MILK_NAME}, grams, portion 2"]`, '200');
 
   // Step 1 moves down from the keyboard. It is now the last step, so its Move down is off and
   // focus lands on its other Move button (D-16).
@@ -1124,7 +1124,7 @@ SCENARIOS.push([
     walk.expect(editing.stores.drafts.length === 0, `an untouched Edit keeps no draft (${editing.stores.drafts.length})`);
     walk.expectSeedKept(editing, made.recipeId);
 
-    await page.fill('input[aria-label="Recipe name"]', 'Vanilla bean');
+    await page.fill('[aria-label="Recipe name"]', 'Vanilla bean');
     // Step 2 (Warm the milk, stored key 1) moves up: it is now first, so its Move up is off and
     // focus lands on its other Move button (D-16).
     await page.focus('[aria-label="Step 2, move up"]');
@@ -1179,7 +1179,7 @@ SCENARIOS.push([
 
     await walk.open(editRoute(made));
     await page.waitForSelector('form[aria-label="Edit version"]');
-    await page.fill('input[aria-label="Recipe name"]', 'Vanilla bean');
+    await page.fill('[aria-label="Recipe name"]', 'Vanilla bean');
     await walk.afterDebounce();
     const kept = await walk.step('kept', { stores: true });
     walk.expect(
@@ -1254,15 +1254,15 @@ SCENARIOS.push([
     const { page } = walk;
     await walk.open('/notebook');
     await walk.seed();
-    await clickUntil(page, () => page.locator('.nb__head .notebook-action'), '.nb__new input', 'open the New recipe entry');
-    await page.fill('.nb__new input', 'Vanilla');
+    await clickUntil(page, () => page.locator('.nb__head .notebook-action'), '.nb__new textarea', 'open the New recipe entry');
+    await page.fill('.nb__new textarea', 'Vanilla');
     await page.locator('.nb__new-actions button', { hasText: /^Start$/ }).click();
     await page.waitForFunction(() => location.pathname === '/notebook/new', null, { timeout: 8000 });
     await page.waitForSelector('.notebook.mk-page');
 
-    await page.fill('input[aria-label="Recipe name"]', '');
-    await page.fill('input[aria-label="Version name"]', '');
-    await clickUntil(page, () => page.locator('.method-region .mk-head-act'), 'input[aria-label="Step 1, lead-in"]', 'Add step');
+    await page.fill('[aria-label="Recipe name"]', '');
+    await page.fill('[aria-label="Version name"]', '');
+    await clickUntil(page, () => page.locator('.method-region .mk-head-act'), '[aria-label="Step 1, lead-in"]', 'Add step');
     await walk.afterDebounce();
     await page.click(SAVE_BUTTON);
     await page.waitForSelector('#creation-name-error');
@@ -1290,7 +1290,7 @@ SCENARIOS.push([
     );
     walk.expectSeedKept(refused, refused.stores.drafts[0]?.payload?.recipeId ?? null);
 
-    await page.fill('input[aria-label="Recipe name"]', 'Vanilla');
+    await page.fill('[aria-label="Recipe name"]', 'Vanilla');
     await walk.afterDebounce();
     const fixed = await walk.step('one fixed', { stores: true });
     const stillShown = await page.evaluate(() => document.querySelector('.notebook').innerText);
@@ -1325,7 +1325,7 @@ SCENARIOS.push([
 
     await walk.open(editRoute(made));
     await page.waitForSelector('form[aria-label="Edit version"]');
-    await page.fill('input[aria-label="Recipe name"]', 'Vanilla bean');
+    await page.fill('[aria-label="Recipe name"]', 'Vanilla bean');
     await walk.afterDebounce();
     const kept = await walk.step('kept', { stores: true });
     walk.expect(
@@ -1343,7 +1343,7 @@ SCENARIOS.push([
       'the reloaded edit shows the kept notice',
     );
     const resumed = await walk.step('resumed', { stores: true });
-    const restoredName = await page.inputValue('input[aria-label="Recipe name"]');
+    const restoredName = await page.inputValue('[aria-label="Recipe name"]');
     walk.expect(restoredName === 'Vanilla bean', `the reloaded edit holds the changed name (${restoredName})`);
     walk.expect(resumed.snapshot.pageStatus === 'Draft kept. Cancel discards it.', `the notice reads "Draft kept. Cancel discards it." (${resumed.snapshot.pageStatus})`);
     walk.expect(resumed.stores.drafts.length === 1, `the edit draft is still kept after the reload (${resumed.stores.drafts.length})`);

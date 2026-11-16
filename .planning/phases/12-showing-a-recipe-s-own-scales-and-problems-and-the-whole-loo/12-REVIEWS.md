@@ -9,6 +9,10 @@ models:
 model_sources:
   codex: "banner"
   opencode: "pinned"
+plan_coverage:
+  codex:
+    total: 6
+    missing: ["12-05"]
 ---
 
 # Cross-AI Plan Review — Phase 12

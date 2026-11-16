@@ -15,6 +15,16 @@
 // It prints "PASS <step> <check>" or "FAIL <step> <check>: <values>" for each assertion and exits
 // 1 on any FAIL (a thrown error prints FAIL with its message and exits 1).
 //
+// Steps, in profile A: create (the editor, a scale of each kind, a problem, Save), print (the
+// made version's print route under print media), batch (the record pen marks the Low to high
+// scale "Coffee flavour" at 2 and the Right in the middle scale "Body" at 5, ticks Bitter),
+// reading (the tasting reads "2 of 5" and "heavy (5)"), export. Then in profile B, a profile
+// that has never held the recipe: import, compare (all eight exported stores both ways, record by
+// record), seed (B's seed before the import equals A's seed before creation), drafts (apart: they
+// never travel, repository.js:61), figures (buildFigures over both stored versions, strict
+// deep equality, and the Balance figures' text as strings), then reading, print and a Sheet code
+// search again in B.
+//
 // What it never does: call the store module's export or import functions, or write the made
 // recipe as a fixture. Only the built app's own controls count: the editor, Save, the Export
 // button (a download event) and the Import file input. It reads the build from PROBE_DIST and
@@ -31,9 +41,11 @@
 // is a counter, so two runs write identical made-record dumps. Device-unverified: this is
 // Playwright WebKit on a Mac, not the iPad. Everything typed is English.
 import { startServers } from '../08-split-the-recipe-page-along-its-jobs/08-walk-server.mjs';
+import { buildFigures } from '../../../app/src/domain/figures.js';
 import { existsSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { isDeepStrictEqual } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
 // playwright-core: the one place the walk names a Playwright path. Override it with
@@ -353,12 +365,149 @@ function compareList(name, keyPath, left, right) {
 
 const record = (dump, store, id) => dump[store].find((candidate) => candidate.id === id);
 
+
+// ---------------------------------------------------------------------------
+// Print, batch, reading, Balance figures and Sheet code search: each is run in A and, after the
+// import, again in B.
+// ---------------------------------------------------------------------------
+const versionPath = (made) => `/notebook/${made.recipeId}/${made.versionId}`;
+const normalise = (text) => (text ?? '').replace(/\s+/g, ' ').trim();
+
+// The made version's print route under print media: the two log pages, the Tasting log's scales
+// and problems row, and the Sheet code in every foot. It asserts what 12-01 builds; the printed
+// row's form and the notes lines are 12-02's (12-print-check.mjs).
+async function checkPrint(page, appUrl, made, who) {
+  await page.goto(`${appUrl}${versionPath(made)}/print`, { waitUntil: 'load' });
+  await page.waitForSelector('.print-route[data-print-ready="true"]', { timeout: 15000 });
+  await page.emulateMedia({ media: 'print' });
+  try {
+    const laid = await page.evaluate(() => {
+      const text = (el) => (el?.textContent ?? '').replace(/\s+/g, ' ').trim();
+      const root = document.querySelector('.print-route__pages');
+      const logs = [...root.querySelectorAll('.print-page--log')];
+      return {
+        logCount: logs.length,
+        scaleNames: logs[1] ? [...logs[1].querySelectorAll('.lf-srow .axis-mark__name')].map(text) : [],
+        problems: logs[1] ? text(logs[1].querySelector('.lf-mrow--plain')) : '',
+        logFeet: logs.map((log) => text(log.querySelector('.lf-foot'))),
+        sheetFeet: [...root.querySelectorAll('.print-page--sheet .mp-foot')].map(text),
+      };
+    });
+    const code = made.sheetCode;
+    expect('print', `${who}: two log pages`, laid.logCount === 2, `${laid.logCount} log page(s)`);
+    expect(
+      'print',
+      `${who}: the Tasting log's last two scales are Body then Coffee flavour, after the four core scales`,
+      laid.scaleNames.length === 6 && same(laid.scaleNames.slice(-2), ['Body', 'Coffee flavour']),
+      clip(laid.scaleNames),
+    );
+    expect('print', `${who}: the problems row ends with ${PROBLEM}`, laid.problems.endsWith(PROBLEM), clip(laid.problems));
+    expect('print', `${who}: each log foot carries the Sheet code ${code}`, laid.logFeet.length === 2 && laid.logFeet.every((foot) => foot.includes(code)), clip(laid.logFeet));
+    expect(
+      'print',
+      `${who}: the last sheet page's foot ends with the Sheet code`,
+      laid.sheetFeet.length > 0 && laid.sheetFeet[laid.sheetFeet.length - 1].endsWith(code),
+      clip(laid.sheetFeet),
+    );
+  } finally {
+    await page.emulateMedia({ media: 'screen' });
+  }
+}
+
+// Mark one stop of one scale: click that stop's label inside that scale's own .axis-mark (every
+// scale has a stop of each value, so a stop is never selected page-wide).
+async function markAxis(page, axisName, stop) {
+  const axis = page.locator('.batch-margin--pen .axis-mark', { has: page.locator('.axis-mark__name', { hasText: new RegExp(`^${axisName}$`) }) });
+  const label = axis.locator('label.axis-mark__stop', { has: page.locator(`input[value="${stop}"]`) });
+  for (let i = 0; i < 3; i += 1) {
+    await label.click();
+    await page.waitForTimeout(100);
+    if (await axis.locator(`input[value="${stop}"]`).isChecked()) return;
+  }
+  throw new Error(`could not mark ${axisName} ${stop}`);
+}
+
+// Record a batch on the made version through the record pen and mark its Low to high scale at 2
+// and its Right in the middle scale at 5, with the declared problem ticked.
+async function recordBatch(page, appUrl, made) {
+  await page.goto(`${appUrl}${versionPath(made)}`, { waitUntil: 'load' });
+  await page.waitForSelector('.notebook-version__identity');
+  const PEN = '.batch-margin--pen';
+  // The made version has no batch yet, so its opener is "Record batch" (BatchRow.jsx:1335-1338);
+  // a version with one reads "Record another". Found by role and name, not by a class.
+  await clickUntil(page, () => page.getByRole('button', { name: /^Record (batch|another)$/ }).first(), PEN, 'open the record pen');
+  await page.locator(`${PEN} .field-row__label--date :is(input, textarea)`).first().fill('2026-10-09');
+  await page.fill(`${PEN} [aria-label^="Out of machine"]`, '-6');
+  await page.fill(`${PEN} [aria-label^="Duration"]`, '30');
+  const ceremony = page.locator('.save-ceremony').first();
+  await ceremony.getByRole('button', { name: 'Add tasting', exact: true }).first().click();
+  await page.waitForSelector(`${PEN} .batch-row__head--tasting`);
+  await markAxis(page, 'Coffee flavour', 2);
+  await markAxis(page, 'Body', 5);
+  const chip = page.locator(`${PEN} .defect-group--declared button`, { hasText: new RegExp(`^${PROBLEM}$`) });
+  for (let i = 0; i < 3 && (await chip.getAttribute('aria-pressed')) !== 'true'; i += 1) {
+    await chip.click();
+    await page.waitForTimeout(150);
+  }
+  await page.fill(`${PEN} [aria-label="How did it turn out?"]`, 'Strong, a little bitter.');
+  await ceremony.getByRole('button', { name: 'Save batch', exact: true }).first().click();
+  await until(page, () => location.pathname.includes('/batch/'), 'Save batch lands on the batch');
+  await page.waitForSelector('.notebook');
+  await page.waitForSelector(PEN, { state: 'detached' });
+}
+
+// The batch's tasting reading: the Tasting fold opened if it is closed, then each cell.
+async function readTasting(page, appUrl, made, batchId) {
+  await page.goto(`${appUrl}${versionPath(made)}/batch/${batchId}`, { waitUntil: 'load' });
+  await page.waitForSelector('.notebook');
+  const fold = page.locator('[aria-expanded="false"]').filter({ hasText: /^Tasting/ }).first();
+  const firstCell = page.locator('.tasting-reading .batch-row__cell').first();
+  for (let i = 0; i < 4; i += 1) {
+    if ((await firstCell.count()) > 0 && (await firstCell.isVisible())) break;
+    if ((await fold.count()) > 0) await fold.click();
+    await page.waitForTimeout(500);
+  }
+  await firstCell.waitFor({ state: 'visible' });
+  return page.evaluate(() =>
+    [...document.querySelectorAll('.tasting-reading .batch-row__cell')].map((cell) => ({
+      label: cell.querySelector('.batch-row__cell-label')?.textContent ?? '',
+      value: cell.querySelector('.batch-row__cell-value')?.textContent ?? '',
+    })),
+  );
+}
+
+function checkReading(cells, who) {
+  const want = { 'Coffee flavour': '2 of 5', Body: 'heavy (5)' };
+  for (const [label, value] of Object.entries(want)) {
+    const cell = cells.find((candidate) => candidate.label === label);
+    expect('reading', `${who}: ${label} reads ${value}`, cell?.value === value, cell ? `got ${JSON.stringify(cell.value)}` : `no cell labelled ${label} (cells: ${cells.map((c) => c.label).join(', ')})`);
+  }
+}
+
+// The Balance figures' text on the made version's page.
+async function balanceText(page, appUrl, made) {
+  await page.goto(`${appUrl}${versionPath(made)}`, { waitUntil: 'load' });
+  await page.waitForSelector('.notebook-version__identity');
+  await page.waitForFunction(() => (document.querySelector('.formulation-note-region')?.textContent ?? '').trim().length > 20);
+  return page.evaluate(() => (document.querySelector('.formulation-note-region')?.textContent ?? '').replace(/\s+/g, ' ').trim());
+}
+
+// The Sheet code search finds the made version by A's code. Find stays disabled until the page's
+// versions have loaded (SheetCodeSearch.jsx:112), so a click before then does nothing.
+async function searchByCode(page, appUrl, made) {
+  await page.goto(`${appUrl}/search`, { waitUntil: 'load' });
+  await page.waitForSelector('.search__form button[type="submit"]:not([disabled])');
+  await page.fill('.search__form textarea', made.sheetCode);
+  await page.click('.search__form button[type="submit"]');
+  await until(page, (path) => location.pathname === path, 'the search opens the made version', versionPath(made));
+}
+
 async function main() {
   const servers = await startServers({ appRoot: DIST });
   const browser = await webkit.launch();
   const made = {};
   try {
-    // ---- Profile A -------------------------------------------------------
+    // ---- Profile A: create, print, batch, reading, export ------------------
     const a = await newProfile(browser);
     const exportedFile = {};
     try {
@@ -384,7 +533,31 @@ async function main() {
       expect('create', 'sheetCode is a non-empty string', typeof version?.sheetCode === 'string' && version.sheetCode !== '', clip(version?.sheetCode));
       made.recipeId = recipe?.id;
       made.versionId = version?.id;
+      made.sheetCode = version?.sheetCode;
       if (!recipe || !version) throw new Error('the made recipe or version is missing; the rest cannot run');
+
+      await checkPrint(a.page, servers.appUrl, made, 'A');
+
+      await recordBatch(a.page, servers.appUrl, made);
+      const afterBatch = await dumpStores(a.page);
+      const batches = afterBatch.batches.filter((candidate) => candidate.versionId === version.id);
+      expect('batch', 'one batch on the made version', batches.length === 1, `${batches.length} batch(es)`);
+      const batch = batches[0];
+      made.batchId = batch?.id;
+      const keyOf = (name) => axes.find((axis) => axis.name === name)?.key;
+      expect('batch', 'the marks hold 2 under Coffee flavour and 5 under Body', batch?.tasting?.marks?.[keyOf('Coffee flavour')] === 2 && batch?.tasting?.marks?.[keyOf('Body')] === 5, clip(batch?.tasting?.marks));
+      expect('batch', 'declaredDefects is Bitter', same(batch?.tasting?.declaredDefects, [PROBLEM]), clip(batch?.tasting?.declaredDefects));
+      expect(
+        'batch',
+        "the batch's snapshot carries kinds goldilocks then magnitude",
+        same((batch?.snapshot?.declaredAxes ?? []).map((axis) => axis.kind), ['goldilocks', 'magnitude']),
+        clip(batch?.snapshot?.declaredAxes),
+      );
+      if (!batch) throw new Error('the made batch is missing; the rest cannot run');
+
+      checkReading(await readTasting(a.page, servers.appUrl, made, batch.id), 'A');
+      made.balanceA = await balanceText(a.page, servers.appUrl, made);
+      report('balance', `A: ${clip(made.balanceA, 200)}`);
 
       // ---- Export --------------------------------------------------------
       const exported = await exportThroughButton(a.page, servers.appUrl);
@@ -399,12 +572,14 @@ async function main() {
       expect('export', 'the download is sprinkles-store.json', exported.name === 'sprinkles-store.json', exported.name);
       expect('export', 'the file is a sprinkles store', file.app === 'sprinkles', clip(file.app));
       expect('export', 'the file holds the made version', Array.isArray(file.versions) && file.versions.some((v) => v.id === version.id), `versions: ${clip((file.versions ?? []).map((v) => v.id))}`);
+      expect('export', 'the file holds the made batch', Array.isArray(file.batches) && file.batches.some((v) => v.id === batch.id), `batches: ${clip((file.batches ?? []).map((v) => v.id))}`);
+      report('drafts', `A held ${exported.before.drafts.length} draft(s) at export (drafts never travel)`);
       made.buffer = exported.buffer;
     } finally {
       await a.context.close();
     }
 
-    // ---- Profile B -------------------------------------------------------
+    // ---- Profile B: a profile that has never held the recipe ----------------
     const b = await newProfile(browser);
     try {
       const { seed, imported, errorPanels } = await importThroughInput(b.page, servers.appUrl, made.buffer, made.recipeId);
@@ -412,7 +587,7 @@ async function main() {
       expect('import', 'B holds the made recipe after the import', imported, 'the recipe never reached the second profile');
       const dumpB = await dumpStores(b.page);
 
-      // ---- Compare -------------------------------------------------------
+      // ---- Compare: records ----------------------------------------------
       for (const name of EXPORTED) {
         const fromFile = [...(exportedFile[name] ?? [])].sort((x, y) => (String(x.id) < String(y.id) ? -1 : 1));
         const file = compareList(name, 'id', fromFile, made.dumpA[name]);
@@ -429,6 +604,35 @@ async function main() {
       for (const field of ['rows', 'method', 'declaredAxes', 'declaredFlaws', 'sheetCode']) {
         expect('compare', `the made version's ${field} equal in B`, same(versionA?.[field], versionB?.[field]), `${clip(versionA?.[field])} against ${clip(versionB?.[field])}`);
       }
+      const batchA = record(made.dumpA, 'batches', made.batchId);
+      const batchB = record(dumpB, 'batches', made.batchId);
+      expect('compare', 'the made batch record equals in B', batchA !== undefined && same(batchA, batchB), `${clip(batchA)} against ${clip(batchB)}`);
+      for (const field of ['tasting', 'snapshot']) {
+        expect('compare', `the made batch's ${field} equal in B`, same(batchA?.[field], batchB?.[field]), `${clip(batchA?.[field])} against ${clip(batchB?.[field])}`);
+      }
+
+      // ---- Seed kept; drafts apart ---------------------------------------
+      // Both are fresh profiles seeded by the same build at the same frozen instant, so a
+      // difference is a finding, not noise.
+      for (const name of EXPORTED) {
+        const result = compareList(name, 'id', made.seedA[name], seed[name]);
+        expect('seed', `B's ${name} before the import equal A's ${name} before creation`, result.ok, result.values);
+      }
+      expect('seed', "B's drafts before the import equal A's before creation", same(seed.drafts, made.seedA.drafts), `${clip(seed.drafts)} against ${clip(made.seedA.drafts)}`);
+      expect('drafts', 'B holds no draft after the import (drafts never travel)', dumpB.drafts.length === 0, `${dumpB.drafts.length} draft(s)`);
+
+      // ---- Figures: exact, no rounding, no tolerance ----------------------
+      const figuresA = buildFigures(versionA);
+      const figuresB = buildFigures(versionB);
+      expect('figures', 'buildFigures over the stored version is strictly deep-equal in A and B', figuresA.length > 0 && isDeepStrictEqual(figuresA, figuresB), `${clip(figuresA)} against ${clip(figuresB)}`);
+      const balanceB = await balanceText(b.page, servers.appUrl, made);
+      expect('figures', "the Balance figures' text on the version page is the same string in A and B", made.balanceA === balanceB, `${clip(made.balanceA)} against ${clip(balanceB)}`);
+
+      // ---- Marks, print and the Sheet code in B ---------------------------
+      checkReading(await readTasting(b.page, servers.appUrl, made, made.batchId), 'B');
+      await checkPrint(b.page, servers.appUrl, made, 'B');
+      await searchByCode(b.page, servers.appUrl, made);
+      pass('search', `B: the Sheet code ${made.sheetCode} finds the made version`);
     } finally {
       await b.context.close();
     }
@@ -442,6 +646,7 @@ async function main() {
       stable({
         recipe: record(made.dumpA, 'recipes', made.recipeId),
         version: record(made.dumpA, 'versions', made.versionId),
+        batch: record(made.dumpA, 'batches', made.batchId),
         file: JSON.parse(made.buffer.toString('utf8')),
       }),
     );

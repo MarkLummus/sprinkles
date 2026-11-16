@@ -33,4 +33,14 @@ Figures are WebKit with a coarse pointer; every panel is the built app's markup,
 
 ## 4. Not drawn
 
-The creation editor's Scales (its Low to high stops follow 12-CONTEXT D-01: end words at 1 and 5, numbers between); Gate 2's boards; the bench sheet pages.
+The creation editor's Scales (its Low to high stops follow 12-CONTEXT D-01: end words at 1 and 5, numbers between; its refused Save for over-long words is drawn in section 5); Gate 2's boards; the bench sheet pages.
+
+## 5. Word limits (`word-limits.html`; drawn from the build 2026-11-16, awaits Mark's look)
+
+Mark's decision of 2026-11-16 (`12-UI-REVIEW.md` finding 2, option b): a recipe's own scale name holds at most 16 characters, each end word 12 and a problem 40, counted on the trimmed text. Save refuses a field over its limit. The board is the creation editor's Scales and Problems at 1366 after Save was pressed (`P12_WordLimits`).
+
+- Each over-long field's sentence, "Use 16 characters or fewer.", "Use 12 characters or fewer." or "Use 40 characters or fewer.", stands as `.field-error` under the field, in the place Required takes. The field is `aria-invalid` and described by the sentence.
+- A field at its limit is quiet: no sentence, no mark. The board's Low end, "barely a few", is exactly 12 characters.
+- A blank field still reads Required, never the limit sentence; a Kind has no limit.
+- The stops line stands as built (for a Right in the middle scale, the five stop words).
+- The pen and the printed logs keep the forms of sections 1 and 3 for words up to the limits. That is measured (see `README.md`, "Word limits"), not drawn.

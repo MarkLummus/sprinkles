@@ -66,3 +66,20 @@ Device-unverified: these are Playwright WebKit and Chromium measures of the draw
 - `--sheet-print-clipboard-drop` is a proposed token name for the 1 in the two log pages add to the 0.5 in page margin; it is 96 px on the page picture and needs 90 px in WebKit print for the same inch (1 CSS px is 0.8 pt there). Only the two log pages take it (12-CONTEXT D-16).
 - Printed pages carry no "Every recipe" / "This recipe only" cue (sketch 010 D23).
 - Gate 2 (entry points below 724, Preview step in the version pen, the row controls) is not drawn here.
+
+## Word limits (2026-11-16)
+
+Mark's decision of 2026-11-16 (`12-UI-REVIEW.md` finding 2, option b, Sid's recommendation): the creation editor limits the words a maker types for a recipe's own scales and problems. A scale's name holds at most 16 characters, each of its end words 12, and a problem 40, all counted on the trimmed text. Save refuses a field over its limit with "Use N characters or fewer." under the field, writes nothing, and puts focus on the first refused field. The sentence is Claude's wording within the gate's existing shape, for Mark in chat. Built in quick `261116-80u`; the limits bound what the editor saves, not what a store file may hold (import is unchanged).
+
+| File | Board | What it draws | State |
+|------|-------|---------------|-------|
+| `word-limits.html` | `P12_WordLimits` | The creation editor's Scales and Problems at 1366 after Save was refused: a scale name of 21 characters, a low end at its limit (12), a high end of 17 and a problem of 51. Three sentences stand, the low end stays quiet. | Drawn from the build by `canvas-generators/p12limits.py` on 2026-11-16 (capture `p12limits-capture.mjs`), not yet on the canvas, awaits Mark's look. |
+
+sha256: `word-limits.html` e8a81039. The five files above are unchanged. `12-board-limits.mjs` holds the build to it at 1 px in WebKit, coarse.
+
+What the longest allowed words measure (case `worst` in `12-cases.mjs`: names of 16 characters, end words of 12, problems of 40; WebKit, coarse, the scratch build of this commit, 2026-11-16). All device-unverified: Playwright WebKit and a WKWebView PDF, not a print or a pen on Mark's iPad.
+
+- The printed Tasting log needs 804.8 px: 5.2 px spare of Safari's 810 at 630 px, 59.2 spare of Chrome's 864 at 672 px. Every scale row is 36 px. Each own scale's low word starts at or right of its name column's edge (word 199 and 197.4, edge 182). The longest high word, "overwhelming", runs 8.4 px past its 76 px column into empty paper. The WKWebView PDF holds Batch log and Side 1 of 2 on page 1 and Tasting log and Side 2 of 2 on page 2 only; the Tasting log's ink ends at 756.0 pt, the bottom margin line.
+- The record pen's anchor words, gaps between neighbouring words (the 6 px floor is finding 1's): at 1366 and at 393 the track is 216 px, Burnt sugar note 58.77, Chocolate flecks 19.28 and 19.28. At 768 the track is 186 px: Burnt sugar note (Low to high, two words) 28.77; Chocolate flecks (Right in the middle, three words) 4.28 and 4.28. Every word stays inside its track and no width scrolls sideways.
+- **For Mark:** the Right in the middle scale at 768 with two 12-character end words leaves 4.28 px between words, under the 6 px of finding 1. Words do not touch. Mark's 12-character limit cannot give 6 px at a 186 px track; the choices are to accept it, give that kind a lower end-word limit, or widen the track.
+

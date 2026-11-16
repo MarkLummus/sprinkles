@@ -5,7 +5,7 @@ titles: json
 findings:
   - id: WR-01
     severity: warning
-    disposition: open
+    disposition: fixed
     title: "Log pages have almost no slack after the clipboard drop, and the Tasting log can spill onto the first bench page"
   - id: WR-02
     severity: warning
@@ -27,7 +27,7 @@ findings:
     severity: info
     disposition: open
     title: "Stale and garbled comments around the changed code"
-open: 6
+open: 5
 total: 6
 recorded: 2026-11-16T09:21:28.724Z
 ---
@@ -36,7 +36,7 @@ recorded: 2026-11-16T09:21:28.724Z
 
 | Finding | Severity | Disposition | Source |
 |---------|----------|-------------|--------|
-| WR-01 | warning | open | - |
+| WR-01 | warning | fixed | quick 261116-80u (Mark's word limits; fit pinned by 12-print-check worst and 12-safari-check pdf) |
 | WR-02 | warning | open | - |
 | IN-01 | info | open | - |
 | IN-02 | info | open | - |

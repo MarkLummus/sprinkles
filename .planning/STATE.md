@@ -6,10 +6,10 @@ current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
 status: planning
 stopped_at: Phase 12 context gathered
-last_updated: "2026-11-15T21:30:05.864Z"
+last_updated: "2026-11-16T01:04:59.367Z"
 last_activity: 2026-11-15
 last_activity_desc: Phase 11 complete, transitioned to Phase 12
-state_head: 55575a60c26c9f2c19ab2055bb9af7f3e094aeed
+state_head: fa72504c5acdda0175597183556276a18335172e
 progress:
   total_phases: 5
   completed_phases: 4
@@ -640,6 +640,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 236 | Fold the clipboard margin and the two row-control todos into Phase 12 (ROADMAP) | 2026-11-15 | ac5c4d9a | — |
 | 237 | Fold the phone entry-point hiding into Phase 12 (ROADMAP) | 2026-11-15 | 0e1a60e9 | — |
 | 261115-k0d | Cancel on the creation and edit pages takes the save lock while its delete is out (bug-creation-cancel-save-race) | 2026-11-15 | af101f6e | [261115-k0d-cancel-on-the-creation-and-edit-pages-ta](./quick/261115-k0d-cancel-on-the-creation-and-edit-pages-ta/) |
+| 239 | Record Mark's Gate 1 answers in 12-CONTEXT (D-01, D-02, D-17) | 2026-11-15 | fa72504c | — |
 
 ### Roadmap Evolution
 

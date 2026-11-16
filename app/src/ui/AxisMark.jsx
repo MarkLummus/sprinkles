@@ -1,9 +1,9 @@
 import { useRef } from 'react';
-import { STOPS, stopWordsFor } from '../domain/axes.js';
+import { STOPS, stopLabelFor, middleWordFor } from '../domain/axes.js';
 import { Button } from './Button.jsx';
 import { Radio } from './Radio.jsx';
 
-// The five-stop goldilocks track (D-16, contract "Axes spec"; rebuilt in
+// The five-stop track (D-16, contract "Axes spec"; rebuilt in
 // 03.3.1-03 Task 2 from the nine half-stop behavioural-anchor shape to the
 // battery's fixed six-axis table). Native grouped radios do almost all of
 // the mechanism: the browser already gives the group arrow-key movement
@@ -37,7 +37,7 @@ import { Radio } from './Radio.jsx';
 export function AxisMark({ axis, value, onChange, onClear, cueId }) {
   const nameId = `axis-name-${axis.key}`;
   const groupName = `axis-${axis.key}`;
-  const words = stopWordsFor(axis);
+  const middle = middleWordFor(axis);
   const isMarked = value !== undefined;
   const firstStopRef = useRef(null);
   const stopRefs = useRef([]);
@@ -102,7 +102,7 @@ export function AxisMark({ axis, value, onChange, onClear, cueId }) {
                 stopRefs.current[index] = el;
                 if (index === 0) firstStopRef.current = el;
               }}
-              aria-label={`${stop}: ${words[index]}`}
+              aria-label={stopLabelFor(axis, stop)}
               onChange={() => {}}
               onClick={() => handleStopClick(stop)}
             />
@@ -112,7 +112,7 @@ export function AxisMark({ axis, value, onChange, onClear, cueId }) {
       </div>
       <div className="axis-mark__anchors" aria-hidden="true">
         <span>{axis.low}</span>
-        <span>right</span>
+        {middle !== null && <span>{middle}</span>}
         <span>{axis.high}</span>
       </div>
     </div>

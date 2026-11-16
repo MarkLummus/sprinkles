@@ -9,7 +9,7 @@
       "quick_id": "261116-80u",
       "client_id": null,
       "description": "Limit word lengths in the creation editor (Mark's decision 2026-11-16, Sid's recommendation from 12-UI-REVIEW.md): a declared scale's end words at most 12 characters each, its name at most 16, a declared problem at most 40 (trimmed lengths), refused at Save with a maker-facing message in the existing Save-refusal pattern. Domain rule in app/src/domain/creation.js with tests; no stored shape change; import validation unchanged. Closes 12-REVIEW.md WR-01 and both 12-UI-REVIEW.md P2 findings. Update sketch 015 and the Phase 12 harness long-words case (12-cases.mjs, 12-print-check.mjs, 12-board-*.mjs in the Phase 12 folder) so the Phase 12 steps of 12-check.sh still pass.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "planned_files": [
         "app/src/domain/creation.js",
@@ -36,7 +36,7 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 0,
-      "commit": null,
+      "commit": "1acb082b",
       "failure_reason": null
     },
     {

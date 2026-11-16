@@ -4,16 +4,16 @@ milestone: v2.0
 milestone_name: Recipe creation
 current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
-status: planning
+status: executing
 stopped_at: Phase 12 context gathered
-last_updated: "2026-11-16T01:04:59.367Z"
+last_updated: "2026-11-16T02:35:15.074Z"
 last_activity: 2026-11-15
 last_activity_desc: Phase 11 complete, transitioned to Phase 12
-state_head: fa72504c5acdda0175597183556276a18335172e
+state_head: c17efc56447a5e836d1d42b4ddbc40b721142318
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 49
+  total_plans: 55
   completed_plans: 49
   percent: 80
 ---
@@ -29,9 +29,9 @@ See: .planning/PROJECT.md (updated 2026-11-15)
 
 ## Current Position
 
-Phase: 12 — Showing a recipe's own scales and problems, and the whole loop
+Phase: 12 (Showing a recipe's own scales and problems, and the whole loop) — READY TO EXECUTE
 Plan: Not started
-Status: Ready to plan
+Status: Ready to execute
 Last activity: 2026-11-15 - Completed quick task 261115-k0d: Cancel on the creation and edit pages takes the save lock while its delete is out (bug-creation-cancel-save-race)
 
 Progress: [████████░░] 80%

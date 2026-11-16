@@ -78,9 +78,9 @@ describe('the Batch log (side 1; CONTRACT § 3)', () => {
     expect(classCount(baseline, 'lf-box')).toBe(PRINTED_MARK_ONE_OPTIONS.length + SEGMENT_OPTIONS.exitConsistency.length + SEGMENT_OPTIONS.airiness.length);
   });
 
-  it.each(VERSIONS.map((version) => [version.id, version]))('%s: 14 writing lines and a page identical to every other but its foot', (_id, version) => {
+  it.each(VERSIONS.map((version) => [version.id, version]))('%s: 13 writing lines and a page identical to every other but its foot', (_id, version) => {
     const markup = page1(version);
-    expect(classCount(markup, 'lf-line')).toBe(14);
+    expect(classCount(markup, 'lf-line')).toBe(13);
     const sansFoot = (m) => m.replace(/<div class="lf-foot">[^<]*<\/div>/, '<div class="lf-foot"></div>');
     expect(sansFoot(markup)).toBe(sansFoot(baseline));
     expect(markup).toContain(`<div class="lf-foot">${footFor(version, 1).replace(/&/g, '&amp;')}</div>`);
@@ -98,7 +98,7 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
     expect(classCount(markup, 'lf-opt')).toBe(PRINTED_MARK_ONE_OPTIONS.length + SEGMENT_OPTIONS.meltStyle.length + CORE_PROBLEM_WORDS.length + declaredFlaws.length);
     expect(classCount(problemsRow(markup), 'lf-opt')).toBe(CORE_PROBLEM_WORDS.length + declaredFlaws.length);
     expect(classCount(markup, 'lf-mrow--plain')).toBe(1);
-    expect(classCount(markup, 'lf-line')).toBe(5);
+    expect(classCount(markup, 'lf-line')).toBe(4);
     expect(markup).not.toContain('Every recipe');
     expect(markup).not.toContain('This recipe only');
     // Core words, for every recipe.
@@ -154,6 +154,66 @@ describe('the Tasting log (side 2; CONTRACT §§ 2, 4), per recipe', () => {
     expect(classCount(row, 'lf-mark')).toBe(1);
     expect(row).toContain('Waxy');
     expect(classCount(markup, 'lf-srow')).toBe(CORE_COUNT + 2);
+  });
+});
+
+// A recipe's own scales on paper (TASTE-04's printed half; D-01 as amended by Mark,
+// look-p12-printed-logs and look-p12-printed-row-ends-only). A Low to high row is the
+// built row without its span.lf-anchor.lf-mid: nothing stands under its ticks.
+describe('the Tasting log draws a Low to high scale with nothing under its ticks (D-01)', () => {
+  const body = { key: 'body', name: 'Body', low: 'thin', high: 'heavy', kind: 'goldilocks', group: 'declared' };
+  const coffee = { key: 'coffee', name: 'Coffee flavour', low: 'faint', high: 'strong', kind: 'magnitude', group: 'declared' };
+  const own = { ...oliveOilVersion, declaredAxes: [body, coffee], declaredFlaws: ['Bitter', 'Burnt taste'] };
+
+  // The markup of each scale row, in the page's order: from its opening div to the next row's
+  // (or, for the last, to the problems head).
+  const scaleRows = (markup) => markup.split('<div class="lf-srow">').slice(1).map((chunk) => chunk.split('<p class="lf-dhead')[0]);
+  const rowNamed = (markup, name) => scaleRows(markup).find((row) => row.includes(`<span class="axis-mark__name">${name}</span>`));
+  const textOf = (row, cls) => (row.match(new RegExp(`class="[^"]*\\b${cls}\\b[^"]*">([^<]*)<`)) ?? [])[1];
+
+  it('prints the four core scales then Body then Coffee flavour, in the version\'s order', () => {
+    const names = [...page2(own).matchAll(/<span class="axis-mark__name">([^<]*)<\/span>/g)].map((m) => m[1]);
+    expect(names).toEqual([...CORE_AXIS_NAMES, 'Body', 'Coffee flavour']);
+  });
+
+  it('Coffee flavour: low word, 1, five ticks (two tall), 5, high word, and no lf-mid', () => {
+    const row = rowNamed(page2(own), 'Coffee flavour');
+    expect(textOf(row, 'lf-lo')).toBe('faint');
+    expect(textOf(row, 'lf-n1')).toBe('1');
+    expect(textOf(row, 'lf-n5')).toBe('5');
+    expect(textOf(row, 'lf-hi')).toBe('strong');
+    expect(classCount(row, 'lf-tick')).toBe(5);
+    expect(classCount(row, 'lf-tick--end')).toBe(2);
+    expect(classCount(row, 'lf-mid')).toBe(0);
+    expect(row).not.toContain('right');
+  });
+
+  it('Body and every core scale keep "right" under the middle tick', () => {
+    const markup = page2(own);
+    expect(scaleRows(markup)).toHaveLength(CORE_COUNT + 2);
+    for (const name of [...CORE_AXIS_NAMES, 'Body']) {
+      const row = rowNamed(markup, name);
+      expect(textOf(row, 'lf-mid'), name).toBe('right');
+    }
+  });
+
+  it('the problems row lists the four core problems then the version\'s own, in one row, with no cue', () => {
+    const markup = page2(own);
+    const words = [...problemsRow(markup).matchAll(/<\/span>([^<]+)<\/span>/g)].map((m) => m[1]);
+    expect(words).toEqual([...CORE_PROBLEM_WORDS, 'Bitter', 'Burnt taste']);
+    expect(classCount(markup, 'lf-mrow--plain')).toBe(1);
+    expect(markup).not.toContain('Every recipe');
+    expect(markup).not.toContain('This recipe only');
+  });
+
+  it('prints a Low to high scale named with markup, and its ends, as text (T-12-05)', () => {
+    const hostile = { ...coffee, name: '<b>Coffee</b>', low: '<i>faint', high: 'strong</i>' };
+    const markup = page2({ ...own, declaredAxes: [hostile] });
+    expect(markup).not.toContain('<b>');
+    expect(markup).not.toContain('<i>');
+    expect(markup).toContain('&lt;b&gt;Coffee&lt;/b&gt;');
+    expect(markup).toContain('&lt;i&gt;faint');
+    expect(markup).toContain('strong&lt;/i&gt;');
   });
 });
 

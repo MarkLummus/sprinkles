@@ -555,6 +555,8 @@
   --sheet-print-tick-h: 8px; /* a scale's three middle ticks, rising above the rule only */
   --sheet-print-tick-end-h: 16px; /* its two end ticks, and the track's own height */
   --sheet-print-name-pad: 3px; /* a scale name's drop, to sit on the rule's line (CONTRACT § 4) */
+  --sheet-print-clipboard-drop: 96px; /* the inch a clipboard's clip covers, added to the 0.5 in page margin on the two log pages only (Phase 12; 12-CONTEXT D-15, D-16): the page picture's top padding and every engine's print but WebKit's */
+  --sheet-print-clipboard-drop-webkit: 90px; /* the same inch in Safari's print, where one CSS px prints as 0.8 pt */
 
   /* The Sheet's formula pages (Phase 4, plan 04-07; sketch 010 D29, E1, E2, E6
      to E8, CONTRACT §§ 1, 5, 10). Each page is laid by measurement in the

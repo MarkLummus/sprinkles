@@ -1,4 +1,4 @@
-import { axesForVersion, stopWordsFor } from '../domain/axes.js';
+import { axesForVersion, middleWordFor } from '../domain/axes.js';
 import { problemNames } from '../domain/catalog.js';
 import { BATTERY_FIELDS, PRINTED_MARK_ONE_OPTIONS, SEGMENT_OPTIONS } from '../domain/battery.js';
 
@@ -130,7 +130,7 @@ export function BatchLogPage({ footText }) {
           <LogMarkRow caption="Exit consistency" words={SEGMENT_OPTIONS.exitConsistency} />
           <LogMarkRow caption="Airiness" words={SEGMENT_OPTIONS.airiness} />
         </div>
-        <LogNotes cue="At the machine · Ingredient notes · Next time" lines={14} />
+        <LogNotes cue="At the machine · Ingredient notes · Next time" lines={13} />
       </div>
       <LogFoot footText={footText} />
     </div>
@@ -138,14 +138,16 @@ export function BatchLogPage({ footText }) {
 }
 
 // The five ticks stand on one rule, the ends tall (D21): the maker circles or
-// ticks a place on the line. Only 1 and 5 are numbered; the middle is "right".
+// ticks a place on the line. Only 1 and 5 are numbered.
 const TICKS = [1, 2, 3, 4, 5];
 
 // One scale row (D19, D21, D23): the name, the low word, 1, the rule with
-// five ticks, 5, the high word, and the fixed middle word "right" under the
-// middle tick. No boxes (decide-page-2-scales-boxes-or-rule).
+// five ticks, 5 and the high word. A Right in the middle row carries the fixed
+// word "right" under the middle tick; a Low to high row carries nothing there
+// (D-01 as amended: no "right", no 2 3 4). No boxes
+// (decide-page-2-scales-boxes-or-rule).
 function LogScaleRow({ axis }) {
-  const [, , middleWord] = stopWordsFor(axis);
+  const middleWord = middleWordFor(axis);
   return (
     <div className="lf-srow">
       <span className="axis-mark__name">{axis.name}</span>
@@ -159,7 +161,7 @@ function LogScaleRow({ axis }) {
         <span className="lf-num lf-n1">1</span>
         <span className="lf-num lf-n5">5</span>
         <span className="lf-anchor lf-hi">{axis.high}</span>
-        <span className="lf-anchor lf-mid">{middleWord}</span>
+        {middleWord !== null && <span className="lf-anchor lf-mid">{middleWord}</span>}
       </div>
     </div>
   );
@@ -167,7 +169,8 @@ function LogScaleRow({ axis }) {
 
 // Page 2, the Tasting log (CONTRACT § 4): the four core scales then the
 // version's own declared ones (0 to 2), the four core problems then its own
-// declared ones in one row (0 to 2), five writing lines. Both lists come
+// declared ones in one row (0 to 2), four writing lines (decide-p12-tasting-log-lines:
+// the room for the clipboard drop comes out of the notes lines only). Both lists come
 // from the catalog (the core scales and the core problems, read from their
 // tables) and the version (its declared ones), never from a literal here; no
 // "Every recipe" or "This recipe only" cue is printed (D23).
@@ -200,7 +203,7 @@ export function TastingLogPage({ version, catalog, footText }) {
             </div>
           </div>
         </div>
-        <LogNotes cue="How did it turn out?" lines={5} />
+        <LogNotes cue="How did it turn out?" lines={4} />
       </div>
       <LogFoot footText={footText} />
     </div>

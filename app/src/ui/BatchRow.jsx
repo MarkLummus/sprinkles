@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { formatRecordDate, readMeasured, recordDateWords, sortedBatches, tastingProvenance } from '../domain/batch.js';
 import { BATTERY_FIELDS, SEGMENT_OPTIONS, coreProblemsForBatch, declaredProblemsForBatch } from '../domain/battery.js';
-import { axesForBatch, axesForVersion, readMarkWord } from '../domain/axes.js';
+import { axesForBatch, axesForVersion, readMarkText } from '../domain/axes.js';
 import { problemNames } from '../domain/catalog.js';
 import { SaveCeremony } from './PenFoot.jsx';
 import { Segmented } from './Segmented.jsx';
@@ -272,9 +272,9 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
 
 // TastingReading (brief § 3 "The record reads as the battery", contract
 // "Axes spec"/"Controls spec"): the read view's own rendering of the
-// single stored tasting — only the marked axes, each as its goldilocks
-// word with the stop number (readMarkWord, "Soft (2)" style, D-04's
-// battery); the tasting's own measured cells (temperature signed, melt
+// single stored tasting — only the marked axes, each as its kind's text
+// (readMarkText: Right in the middle "Soft (2)", Low to high "2 of 5", from
+// the batch's own snapshot, D-04's battery); the tasting's own measured cells (temperature signed, melt
 // test with its own unit, melt style as its picked words); the defects as
 // a line of the picked words, including the recipe-specific flaw by its
 // plain name; the reading heads the marks and the picked words with the
@@ -307,7 +307,7 @@ function TastingReading({ batch, foldsOpen = true }) {
           {groupAxes.map((axis) => (
             <div className="batch-row__cell" key={axis.key}>
               <span className="batch-row__cell-label">{axis.name}</span>
-              <span className="batch-row__cell-value">{`${readMarkWord(axis, marks[axis.key])} (${marks[axis.key]})`}</span>
+              <span className="batch-row__cell-value">{readMarkText(axis, marks[axis.key])}</span>
             </div>
           ))}
         </div>

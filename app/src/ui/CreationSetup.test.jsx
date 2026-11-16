@@ -306,7 +306,7 @@ describe('CreationSetup, the Scales and Problems regions (TASTE-01, TASTE-02, de
     type(card.querySelector('[aria-label="High end"]'), 'rich');
     expect(card.querySelector('.mk-stops').textContent).toBe('thin · leaning thin · right · leaning rich · rich');
     pickKind(card, 'Low to high');
-    expect(card.querySelector('.mk-stops').textContent).toBe('thin to rich');
+    expect(card.querySelector('.mk-stops').textContent).toBe('thin · 2 · 3 · 4 · rich');
   });
 
   it('a second scale takes Add scale away, its radios carry a different name from the first, and its pick leaves the first alone', () => {
@@ -413,7 +413,7 @@ describe('CreationSetup, the Scales and Problems regions (TASTE-01, TASTE-02, de
     pickKind(card, 'Low to high');
     type(inRegion('Problems', 'Name'), '<b>Bitter</b>');
     expect(card.querySelector('[aria-label="Name"]').value).toBe('<b>Body</b>');
-    expect(card.querySelector('.mk-stops').textContent).toBe('<i>thin to rich</i>');
+    expect(card.querySelector('.mk-stops').textContent).toBe('<i>thin · 2 · 3 · 4 · rich</i>');
     expect(current.container.querySelector('aside b, section b, i')).toBeNull();
     expect(held.problems).toEqual(['<b>Bitter</b>']);
   });

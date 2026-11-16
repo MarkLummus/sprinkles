@@ -298,15 +298,17 @@ export function removeScale(draft, key) {
 
 /**
  * scaleStopsLine(scale) -> the line under a scale's Kind: the five stop words
- * joined by ' · ' for a goldilocks scale, 'low to high' for a magnitude one,
- * the typed words verbatim. null until both ends (trimmed) and the kind are
- * set.
+ * joined by ' · ' for a goldilocks scale; for a magnitude one its two end
+ * words with the stop numbers between ('faint · 2 · 3 · 4 · strong', Phase 12
+ * D-01). The words are the typed ones, verbatim. null until both ends
+ * (trimmed) and the kind are set.
  */
 export function scaleStopsLine(scale) {
   if (scale.low.trim() === '' || scale.high.trim() === '') return null;
-  if (scale.kind === 'goldilocks') return stopWordsFor(scale).join(' · ');
-  if (scale.kind === 'magnitude') return `${scale.low} to ${scale.high}`;
-  return null;
+  if (scale.kind !== 'goldilocks' && scale.kind !== 'magnitude') return null;
+  return stopWordsFor(scale)
+    .map((word, index) => word ?? index + 1)
+    .join(' · ');
 }
 
 function assertProblemIndex(draft, index) {

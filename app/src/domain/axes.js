@@ -10,24 +10,50 @@
 // definitions { key, name, low, high, kind, group } (decision 3, TASTE-03); the
 // readers below take them as stored and resolve no names.
 //
-// Storing a kind is not kind-aware presentation. Every scale definition now
-// carries its kind, but stopWordsFor, readMarkWord and AxisMark still treat each
-// scale as goldilocks, with "right" as the middle stop; no Phase 9 scale is a
-// magnitude scale. How a magnitude scale reads (its stop words, its read-back
-// word, its middle) is Phase 12's work (decision 3: Phase 9 the definition's
-// shape, Phase 10 and Phase 12 the rest).
+// The readers are kind-aware from Phase 12 (TASTE-04; D-01, D-02, D-03). A Low
+// to high (magnitude) scale names only its ends; every other kind, a missing or
+// unknown one included, reads as Right in the middle (goldilocks). The kind
+// branch lives here and nowhere else: the components call these readers and
+// test no kind. The kind comes from the definition a reader is given (a batch's
+// own snapshot, or the version's declared scales for a new batch). Stored marks
+// stay stops 1 to 5 and no stored shape changes.
 import { coreScaleDefinitions } from './catalog.js';
 
 /** STOPS: the five whole stops a mark may take (D-07, sketch 007's goldilocks scale). */
 export const STOPS = [1, 2, 3, 4, 5];
 
+// True only for a Low to high definition. Anything else is Right in the middle.
+function isMagnitude(axis) {
+  return axis.kind === 'magnitude';
+}
+
 /**
- * stopWordsFor(axis) -> the five stop words in order, per the contract:
- * the low anchor, "leaning {low}", "right", "leaning {high}", the high
- * anchor. e.g. for Hardness: soft, leaning soft, right, leaning hard, hard.
+ * stopWordsFor(axis) -> the five stop words in order. Right in the middle
+ * (every kind but 'magnitude'): the low anchor, "leaning {low}", "right",
+ * "leaning {high}", the high anchor; e.g. for Hardness: soft, leaning soft,
+ * right, leaning hard, hard. Low to high: the low word at stop 1, the high
+ * word at stop 5 and null at stops 2 to 4, which are named by their number.
  */
 export function stopWordsFor(axis) {
+  if (isMagnitude(axis)) return [axis.low, null, null, null, axis.high];
   return [axis.low, `leaning ${axis.low}`, 'right', `leaning ${axis.high}`, axis.high];
+}
+
+/**
+ * stopLabelFor(axis, stop) -> a stop's name for a screen reader: "{stop}: {word}"
+ * where the scale has a word at that stop, the bare stop number otherwise.
+ */
+export function stopLabelFor(axis, stop) {
+  const word = stopWordsFor(axis)[stop - 1];
+  return word == null ? String(stop) : `${stop}: ${word}`;
+}
+
+/**
+ * middleWordFor(axis) -> the word under the middle of the anchors line: "right"
+ * for Right in the middle, null for Low to high, which names only its ends.
+ */
+export function middleWordFor(axis) {
+  return isMagnitude(axis) ? null : 'right';
 }
 
 /**
@@ -75,6 +101,21 @@ export function readMarkWord(axis, stop) {
   if (stop <= 2) return axis.low;
   if (stop >= 4) return axis.high;
   return 'right';
+}
+
+/**
+ * readMarkText(axis, stop) -> the reading's whole cell text for a marked scale
+ * (D-02, read-back A). Right in the middle: readMarkWord then the stop in
+ * parentheses, "soft (2)". Low to high: the low word and its number at stop 1,
+ * the high word and its number at stop 5, "{stop} of 5" between.
+ */
+export function readMarkText(axis, stop) {
+  if (isMagnitude(axis)) {
+    if (stop === 1) return `${axis.low} (1)`;
+    if (stop === 5) return `${axis.high} (5)`;
+    return `${stop} of 5`;
+  }
+  return `${readMarkWord(axis, stop)} (${stop})`;
 }
 
 /**

@@ -1,0 +1,2794 @@
+{
+ "pen-two-1366": {
+  "w": 350,
+  "cropTop": 1209,
+  "cropH": 1025,
+  "overflowX": 6,
+  "logW": 350,
+  "cues": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "This recipe only",
+   "Any problems?",
+   "Every recipe",
+   "This recipe only"
+  ],
+  "scales": [
+   {
+    "name": "Hardness",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "soft",
+     "right",
+     "hard"
+    ],
+    "anchorX": [
+     "0-23.5",
+     "91.9-120.2",
+     "188.6-216"
+    ],
+    "aria": [
+     "1: soft",
+     "2: leaning soft",
+     "3: right",
+     "4: leaning hard",
+     "5: hard"
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "crumbly",
+     "right",
+     "gummy"
+    ],
+    "anchorX": [
+     "0-48.9",
+     "96.1-124.4",
+     "171.5-216"
+    ],
+    "aria": [
+     "1: crumbly",
+     "2: leaning crumbly",
+     "3: right",
+     "4: leaning gummy",
+     "5: gummy"
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "grainy",
+     "right",
+     "smooth"
+    ],
+    "anchorX": [
+     "0-37.1",
+     "89.7-118",
+     "170.6-216"
+    ],
+    "aria": [
+     "1: grainy",
+     "2: leaning grainy",
+     "3: right",
+     "4: leaning smooth",
+     "5: smooth"
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "less",
+     "right",
+     "more"
+    ],
+    "anchorX": [
+     "0-23.7",
+     "90.2-118.5",
+     "185-216"
+    ],
+    "aria": [
+     "1: less",
+     "2: leaning less",
+     "3: right",
+     "4: leaning more",
+     "5: more"
+    ]
+   },
+   {
+    "name": "Body",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "thin",
+     "right",
+     "heavy"
+    ],
+    "anchorX": [
+     "0-23",
+     "87.5-115.8",
+     "180.3-216"
+    ],
+    "aria": [
+     "1: thin",
+     "2: leaning thin",
+     "3: right",
+     "4: leaning heavy",
+     "5: heavy"
+    ]
+   },
+   {
+    "name": "Coffee flavour",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "faint",
+     "strong"
+    ],
+    "anchorX": [
+     "0-26.9",
+     "177.1-216"
+    ],
+    "aria": [
+     "1: faint",
+     "2",
+     "3",
+     "4",
+     "5: strong"
+    ]
+   }
+  ],
+  "chips": [
+   {
+    "t": "Coarse, icy",
+    "w": 90.9,
+    "h": 44,
+    "top": 2020.8
+   },
+   {
+    "t": "Sandy, gritty",
+    "w": 100.2,
+    "h": 44,
+    "top": 2020.8
+   },
+   {
+    "t": "Gummy, elastic",
+    "w": 117.2,
+    "h": 44,
+    "top": 2020.8
+   },
+   {
+    "t": "Greasy film",
+    "w": 91.6,
+    "h": 44,
+    "top": 2070.8
+   },
+   {
+    "t": "Bitter",
+    "w": 54.2,
+    "h": 44,
+    "top": 2182
+   },
+   {
+    "t": "Burnt taste",
+    "w": 90.4,
+    "h": 44,
+    "top": 2182
+   }
+  ],
+  "read": null
+ },
+ "pen-one-1366": {
+  "w": 350,
+  "cropTop": 1209,
+  "cropH": 917,
+  "overflowX": 6,
+  "logW": 350,
+  "cues": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "This recipe only",
+   "Any problems?",
+   "Every recipe",
+   "This recipe only"
+  ],
+  "scales": [
+   {
+    "name": "Hardness",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "soft",
+     "right",
+     "hard"
+    ],
+    "anchorX": [
+     "0-23.5",
+     "91.9-120.2",
+     "188.6-216"
+    ],
+    "aria": [
+     "1: soft",
+     "2: leaning soft",
+     "3: right",
+     "4: leaning hard",
+     "5: hard"
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "crumbly",
+     "right",
+     "gummy"
+    ],
+    "anchorX": [
+     "0-48.9",
+     "96.1-124.4",
+     "171.5-216"
+    ],
+    "aria": [
+     "1: crumbly",
+     "2: leaning crumbly",
+     "3: right",
+     "4: leaning gummy",
+     "5: gummy"
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "grainy",
+     "right",
+     "smooth"
+    ],
+    "anchorX": [
+     "0-37.1",
+     "89.7-118",
+     "170.6-216"
+    ],
+    "aria": [
+     "1: grainy",
+     "2: leaning grainy",
+     "3: right",
+     "4: leaning smooth",
+     "5: smooth"
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "less",
+     "right",
+     "more"
+    ],
+    "anchorX": [
+     "0-23.7",
+     "90.2-118.5",
+     "185-216"
+    ],
+    "aria": [
+     "1: less",
+     "2: leaning less",
+     "3: right",
+     "4: leaning more",
+     "5: more"
+    ]
+   },
+   {
+    "name": "Mint",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "faint",
+     "strong"
+    ],
+    "anchorX": [
+     "0-26.9",
+     "177.1-216"
+    ],
+    "aria": [
+     "1: faint",
+     "2",
+     "3",
+     "4",
+     "5: strong"
+    ]
+   }
+  ],
+  "chips": [
+   {
+    "t": "Coarse, icy",
+    "w": 90.9,
+    "h": 44,
+    "top": 1912.8
+   },
+   {
+    "t": "Sandy, gritty",
+    "w": 100.2,
+    "h": 44,
+    "top": 1912.8
+   },
+   {
+    "t": "Gummy, elastic",
+    "w": 117.2,
+    "h": 44,
+    "top": 1912.8
+   },
+   {
+    "t": "Greasy film",
+    "w": 91.6,
+    "h": 44,
+    "top": 1962.8
+   },
+   {
+    "t": "Waxy chips",
+    "w": 92.4,
+    "h": 44,
+    "top": 2074
+   }
+  ],
+  "read": null
+ },
+ "pen-none-1366": {
+  "w": 350,
+  "cropTop": 1209,
+  "cropH": 641,
+  "overflowX": 0,
+  "logW": 350,
+  "cues": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "Any problems?",
+   "Every recipe"
+  ],
+  "scales": [
+   {
+    "name": "Hardness",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "soft",
+     "right",
+     "hard"
+    ],
+    "anchorX": [
+     "0-23.5",
+     "91.9-120.2",
+     "188.6-216"
+    ],
+    "aria": [
+     "1: soft",
+     "2: leaning soft",
+     "3: right",
+     "4: leaning hard",
+     "5: hard"
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "crumbly",
+     "right",
+     "gummy"
+    ],
+    "anchorX": [
+     "0-48.9",
+     "96.1-124.4",
+     "171.5-216"
+    ],
+    "aria": [
+     "1: crumbly",
+     "2: leaning crumbly",
+     "3: right",
+     "4: leaning gummy",
+     "5: gummy"
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "grainy",
+     "right",
+     "smooth"
+    ],
+    "anchorX": [
+     "0-37.1",
+     "89.7-118",
+     "170.6-216"
+    ],
+    "aria": [
+     "1: grainy",
+     "2: leaning grainy",
+     "3: right",
+     "4: leaning smooth",
+     "5: smooth"
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "box": {
+     "w": 350,
+     "h": 88
+    },
+    "head": {
+     "w": 350,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "less",
+     "right",
+     "more"
+    ],
+    "anchorX": [
+     "0-23.7",
+     "90.2-118.5",
+     "185-216"
+    ],
+    "aria": [
+     "1: less",
+     "2: leaning less",
+     "3: right",
+     "4: leaning more",
+     "5: more"
+    ]
+   }
+  ],
+  "chips": [
+   {
+    "t": "Coarse, icy",
+    "w": 90.9,
+    "h": 44,
+    "top": 1747.8
+   },
+   {
+    "t": "Sandy, gritty",
+    "w": 100.2,
+    "h": 44,
+    "top": 1747.8
+   },
+   {
+    "t": "Gummy, elastic",
+    "w": 117.2,
+    "h": 44,
+    "top": 1747.8
+   },
+   {
+    "t": "Greasy film",
+    "w": 91.6,
+    "h": 44,
+    "top": 1797.8
+   }
+  ],
+  "read": null
+ },
+ "pen-two-393": {
+  "w": 393,
+  "cropTop": 1201,
+  "cropH": 1025,
+  "overflowX": 0,
+  "logW": 393,
+  "cues": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "This recipe only",
+   "Any problems?",
+   "Every recipe",
+   "This recipe only"
+  ],
+  "scales": [
+   {
+    "name": "Hardness",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "soft",
+     "right",
+     "hard"
+    ],
+    "anchorX": [
+     "0-23.5",
+     "91.9-120.2",
+     "188.6-216"
+    ],
+    "aria": [
+     "1: soft",
+     "2: leaning soft",
+     "3: right",
+     "4: leaning hard",
+     "5: hard"
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "crumbly",
+     "right",
+     "gummy"
+    ],
+    "anchorX": [
+     "0-48.9",
+     "96.1-124.4",
+     "171.5-216"
+    ],
+    "aria": [
+     "1: crumbly",
+     "2: leaning crumbly",
+     "3: right",
+     "4: leaning gummy",
+     "5: gummy"
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "grainy",
+     "right",
+     "smooth"
+    ],
+    "anchorX": [
+     "0-37.1",
+     "89.7-118",
+     "170.6-216"
+    ],
+    "aria": [
+     "1: grainy",
+     "2: leaning grainy",
+     "3: right",
+     "4: leaning smooth",
+     "5: smooth"
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "less",
+     "right",
+     "more"
+    ],
+    "anchorX": [
+     "0-23.7",
+     "90.2-118.5",
+     "185-216"
+    ],
+    "aria": [
+     "1: less",
+     "2: leaning less",
+     "3: right",
+     "4: leaning more",
+     "5: more"
+    ]
+   },
+   {
+    "name": "Body",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "thin",
+     "right",
+     "heavy"
+    ],
+    "anchorX": [
+     "0-23",
+     "87.5-115.8",
+     "180.3-216"
+    ],
+    "aria": [
+     "1: thin",
+     "2: leaning thin",
+     "3: right",
+     "4: leaning heavy",
+     "5: heavy"
+    ]
+   },
+   {
+    "name": "Coffee flavour",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "faint",
+     "strong"
+    ],
+    "anchorX": [
+     "0-26.9",
+     "177.1-216"
+    ],
+    "aria": [
+     "1: faint",
+     "2",
+     "3",
+     "4",
+     "5: strong"
+    ]
+   }
+  ],
+  "chips": [
+   {
+    "t": "Coarse, icy",
+    "w": 90.9,
+    "h": 44,
+    "top": 2012.8
+   },
+   {
+    "t": "Sandy, gritty",
+    "w": 100.2,
+    "h": 44,
+    "top": 2012.8
+   },
+   {
+    "t": "Gummy, elastic",
+    "w": 117.2,
+    "h": 44,
+    "top": 2012.8
+   },
+   {
+    "t": "Greasy film",
+    "w": 91.6,
+    "h": 44,
+    "top": 2062.8
+   },
+   {
+    "t": "Bitter",
+    "w": 54.2,
+    "h": 44,
+    "top": 2174
+   },
+   {
+    "t": "Burnt taste",
+    "w": 90.4,
+    "h": 44,
+    "top": 2174
+   }
+  ],
+  "read": null
+ },
+ "pen-one-393": {
+  "w": 393,
+  "cropTop": 1201,
+  "cropH": 917,
+  "overflowX": 0,
+  "logW": 393,
+  "cues": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "This recipe only",
+   "Any problems?",
+   "Every recipe",
+   "This recipe only"
+  ],
+  "scales": [
+   {
+    "name": "Hardness",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "soft",
+     "right",
+     "hard"
+    ],
+    "anchorX": [
+     "0-23.5",
+     "91.9-120.2",
+     "188.6-216"
+    ],
+    "aria": [
+     "1: soft",
+     "2: leaning soft",
+     "3: right",
+     "4: leaning hard",
+     "5: hard"
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "crumbly",
+     "right",
+     "gummy"
+    ],
+    "anchorX": [
+     "0-48.9",
+     "96.1-124.4",
+     "171.5-216"
+    ],
+    "aria": [
+     "1: crumbly",
+     "2: leaning crumbly",
+     "3: right",
+     "4: leaning gummy",
+     "5: gummy"
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "grainy",
+     "right",
+     "smooth"
+    ],
+    "anchorX": [
+     "0-37.1",
+     "89.7-118",
+     "170.6-216"
+    ],
+    "aria": [
+     "1: grainy",
+     "2: leaning grainy",
+     "3: right",
+     "4: leaning smooth",
+     "5: smooth"
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "less",
+     "right",
+     "more"
+    ],
+    "anchorX": [
+     "0-23.7",
+     "90.2-118.5",
+     "185-216"
+    ],
+    "aria": [
+     "1: less",
+     "2: leaning less",
+     "3: right",
+     "4: leaning more",
+     "5: more"
+    ]
+   },
+   {
+    "name": "Mint",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "faint",
+     "strong"
+    ],
+    "anchorX": [
+     "0-26.9",
+     "177.1-216"
+    ],
+    "aria": [
+     "1: faint",
+     "2",
+     "3",
+     "4",
+     "5: strong"
+    ]
+   }
+  ],
+  "chips": [
+   {
+    "t": "Coarse, icy",
+    "w": 90.9,
+    "h": 44,
+    "top": 1904.8
+   },
+   {
+    "t": "Sandy, gritty",
+    "w": 100.2,
+    "h": 44,
+    "top": 1904.8
+   },
+   {
+    "t": "Gummy, elastic",
+    "w": 117.2,
+    "h": 44,
+    "top": 1904.8
+   },
+   {
+    "t": "Greasy film",
+    "w": 91.6,
+    "h": 44,
+    "top": 1954.8
+   },
+   {
+    "t": "Waxy chips",
+    "w": 92.4,
+    "h": 44,
+    "top": 2066
+   }
+  ],
+  "read": null
+ },
+ "pen-none-393": {
+  "w": 393,
+  "cropTop": 1201,
+  "cropH": 641,
+  "overflowX": 0,
+  "logW": 393,
+  "cues": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "Any problems?",
+   "Every recipe"
+  ],
+  "scales": [
+   {
+    "name": "Hardness",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "soft",
+     "right",
+     "hard"
+    ],
+    "anchorX": [
+     "0-23.5",
+     "91.9-120.2",
+     "188.6-216"
+    ],
+    "aria": [
+     "1: soft",
+     "2: leaning soft",
+     "3: right",
+     "4: leaning hard",
+     "5: hard"
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "crumbly",
+     "right",
+     "gummy"
+    ],
+    "anchorX": [
+     "0-48.9",
+     "96.1-124.4",
+     "171.5-216"
+    ],
+    "aria": [
+     "1: crumbly",
+     "2: leaning crumbly",
+     "3: right",
+     "4: leaning gummy",
+     "5: gummy"
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "grainy",
+     "right",
+     "smooth"
+    ],
+    "anchorX": [
+     "0-37.1",
+     "89.7-118",
+     "170.6-216"
+    ],
+    "aria": [
+     "1: grainy",
+     "2: leaning grainy",
+     "3: right",
+     "4: leaning smooth",
+     "5: smooth"
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "box": {
+     "w": 353,
+     "h": 88
+    },
+    "head": {
+     "w": 353,
+     "h": 20
+    },
+    "stops": {
+     "w": 216,
+     "h": 44
+    },
+    "stop": {
+     "w": 44,
+     "h": 44
+    },
+    "anchors": {
+     "w": 216,
+     "h": 16
+    },
+    "anchorWords": [
+     "less",
+     "right",
+     "more"
+    ],
+    "anchorX": [
+     "0-23.7",
+     "90.2-118.5",
+     "185-216"
+    ],
+    "aria": [
+     "1: less",
+     "2: leaning less",
+     "3: right",
+     "4: leaning more",
+     "5: more"
+    ]
+   }
+  ],
+  "chips": [
+   {
+    "t": "Coarse, icy",
+    "w": 90.9,
+    "h": 44,
+    "top": 1739.8
+   },
+   {
+    "t": "Sandy, gritty",
+    "w": 100.2,
+    "h": 44,
+    "top": 1739.8
+   },
+   {
+    "t": "Gummy, elastic",
+    "w": 117.2,
+    "h": 44,
+    "top": 1739.8
+   },
+   {
+    "t": "Greasy film",
+    "w": 91.6,
+    "h": 44,
+    "top": 1789.8
+   }
+  ],
+  "read": null
+ },
+ "read-two-1366": {
+  "w": 350,
+  "cropTop": 285,
+  "cropH": 482,
+  "overflowX": 0,
+  "logW": 350,
+  "cues": [],
+  "scales": [],
+  "chips": [],
+  "read": {
+   "w": 350,
+   "h": 466,
+   "groups": [
+    "H3 Every recipe",
+    "H3 This recipe only",
+    "H3 Any problems?",
+    "H4 This recipe only"
+   ],
+   "cells": [
+    {
+     "label": "Tempering",
+     "x": 0,
+     "y": 87,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Temperature",
+     "value": "−12 °C",
+     "x": 185,
+     "y": 87,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Melt test",
+     "value": "3 g lost at 20 min",
+     "x": 0,
+     "y": 140,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Melt style",
+     "x": 185,
+     "y": 140,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Sweetness",
+     "value": "more (4)",
+     "x": 0,
+     "y": 235,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Body",
+     "value": "heavy (4)",
+     "x": 0,
+     "y": 330,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Coffee flavour",
+     "value": "2 of 5",
+     "x": 185,
+     "y": 330,
+     "w": 165,
+     "h": 37
+    }
+   ]
+  }
+ },
+ "read-one-1366": {
+  "w": 350,
+  "cropTop": 285,
+  "cropH": 482,
+  "overflowX": 0,
+  "logW": 350,
+  "cues": [],
+  "scales": [],
+  "chips": [],
+  "read": {
+   "w": 350,
+   "h": 466,
+   "groups": [
+    "H3 Every recipe",
+    "H3 This recipe only",
+    "H3 Any problems?",
+    "H4 This recipe only"
+   ],
+   "cells": [
+    {
+     "label": "Tempering",
+     "x": 0,
+     "y": 87,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Temperature",
+     "value": "−12 °C",
+     "x": 185,
+     "y": 87,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Melt test",
+     "value": "3 g lost at 20 min",
+     "x": 0,
+     "y": 140,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Melt style",
+     "x": 185,
+     "y": 140,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Sweetness",
+     "value": "more (4)",
+     "x": 0,
+     "y": 235,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Mint",
+     "value": "strong (5)",
+     "x": 0,
+     "y": 330,
+     "w": 165,
+     "h": 37
+    }
+   ]
+  }
+ },
+ "read-none-1366": {
+  "w": 350,
+  "cropTop": 357,
+  "cropH": 401,
+  "overflowX": 0,
+  "logW": 350,
+  "cues": [],
+  "scales": [],
+  "chips": [],
+  "read": {
+   "w": 350,
+   "h": 385,
+   "groups": [
+    "H3 Every recipe"
+   ],
+   "cells": [
+    {
+     "label": "Tempering",
+     "x": 0,
+     "y": 87,
+     "w": 165,
+     "h": 34
+    },
+    {
+     "label": "Temperature",
+     "x": 185,
+     "y": 87,
+     "w": 165,
+     "h": 34
+    },
+    {
+     "label": "Melt test",
+     "x": 0,
+     "y": 203,
+     "w": 165,
+     "h": 34
+    },
+    {
+     "label": "Melt style",
+     "x": 185,
+     "y": 203,
+     "w": 165,
+     "h": 34
+    },
+    {
+     "label": "Hardness",
+     "value": "hard (5)",
+     "x": 0,
+     "y": 295,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Scoopability",
+     "value": "right (3)",
+     "x": 185,
+     "y": 295,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Sweetness",
+     "value": "right (3)",
+     "x": 0,
+     "y": 348,
+     "w": 165,
+     "h": 37
+    }
+   ]
+  }
+ },
+ "read-two-393": {
+  "w": 393,
+  "cropTop": 277,
+  "cropH": 482,
+  "overflowX": 0,
+  "logW": 393,
+  "cues": [],
+  "scales": [],
+  "chips": [],
+  "read": {
+   "w": 353,
+   "h": 466,
+   "groups": [
+    "H3 Every recipe",
+    "H3 This recipe only",
+    "H3 Any problems?",
+    "H4 This recipe only"
+   ],
+   "cells": [
+    {
+     "label": "Tempering",
+     "x": 0,
+     "y": 87,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Temperature",
+     "value": "−12 °C",
+     "x": 186.5,
+     "y": 87,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Melt test",
+     "value": "3 g lost at 20 min",
+     "x": 0,
+     "y": 140,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Melt style",
+     "x": 186.5,
+     "y": 140,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Sweetness",
+     "value": "more (4)",
+     "x": 0,
+     "y": 235,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Body",
+     "value": "heavy (4)",
+     "x": 0,
+     "y": 330,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Coffee flavour",
+     "value": "2 of 5",
+     "x": 186.5,
+     "y": 330,
+     "w": 166.5,
+     "h": 37
+    }
+   ]
+  }
+ },
+ "read-one-393": {
+  "w": 393,
+  "cropTop": 277,
+  "cropH": 482,
+  "overflowX": 0,
+  "logW": 393,
+  "cues": [],
+  "scales": [],
+  "chips": [],
+  "read": {
+   "w": 353,
+   "h": 466,
+   "groups": [
+    "H3 Every recipe",
+    "H3 This recipe only",
+    "H3 Any problems?",
+    "H4 This recipe only"
+   ],
+   "cells": [
+    {
+     "label": "Tempering",
+     "x": 0,
+     "y": 87,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Temperature",
+     "value": "−12 °C",
+     "x": 186.5,
+     "y": 87,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Melt test",
+     "value": "3 g lost at 20 min",
+     "x": 0,
+     "y": 140,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Melt style",
+     "x": 186.5,
+     "y": 140,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Sweetness",
+     "value": "more (4)",
+     "x": 0,
+     "y": 235,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Mint",
+     "value": "strong (5)",
+     "x": 0,
+     "y": 330,
+     "w": 166.5,
+     "h": 37
+    }
+   ]
+  }
+ },
+ "read-none-393": {
+  "w": 393,
+  "cropTop": 349,
+  "cropH": 401,
+  "overflowX": 0,
+  "logW": 393,
+  "cues": [],
+  "scales": [],
+  "chips": [],
+  "read": {
+   "w": 353,
+   "h": 385,
+   "groups": [
+    "H3 Every recipe"
+   ],
+   "cells": [
+    {
+     "label": "Tempering",
+     "x": 0,
+     "y": 87,
+     "w": 166.5,
+     "h": 34
+    },
+    {
+     "label": "Temperature",
+     "x": 186.5,
+     "y": 87,
+     "w": 166.5,
+     "h": 34
+    },
+    {
+     "label": "Melt test",
+     "x": 0,
+     "y": 203,
+     "w": 166.5,
+     "h": 34
+    },
+    {
+     "label": "Melt style",
+     "x": 186.5,
+     "y": 203,
+     "w": 166.5,
+     "h": 34
+    },
+    {
+     "label": "Hardness",
+     "value": "hard (5)",
+     "x": 0,
+     "y": 295,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Scoopability",
+     "value": "right (3)",
+     "x": 186.5,
+     "y": 295,
+     "w": 166.5,
+     "h": 37
+    },
+    {
+     "label": "Sweetness",
+     "value": "right (3)",
+     "x": 0,
+     "y": 348,
+     "w": 166.5,
+     "h": 37
+    }
+   ]
+  }
+ },
+ "rb-A": {
+  "w": 350,
+  "cropTop": 285,
+  "cropH": 482,
+  "overflowX": 0,
+  "logW": 350,
+  "cues": [],
+  "scales": [],
+  "chips": [],
+  "read": {
+   "w": 350,
+   "h": 466,
+   "groups": [
+    "H3 Every recipe",
+    "H3 This recipe only",
+    "H3 Any problems?",
+    "H4 This recipe only"
+   ],
+   "cells": [
+    {
+     "label": "Tempering",
+     "x": 0,
+     "y": 87,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Temperature",
+     "value": "−12 °C",
+     "x": 185,
+     "y": 87,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Melt test",
+     "value": "3 g lost at 20 min",
+     "x": 0,
+     "y": 140,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Melt style",
+     "x": 185,
+     "y": 140,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Sweetness",
+     "value": "more (4)",
+     "x": 0,
+     "y": 235,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Body",
+     "value": "heavy (4)",
+     "x": 0,
+     "y": 330,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Coffee flavour",
+     "value": "2 of 5",
+     "x": 185,
+     "y": 330,
+     "w": 165,
+     "h": 37
+    }
+   ]
+  }
+ },
+ "rb-B": {
+  "w": 350,
+  "cropTop": 285,
+  "cropH": 482,
+  "overflowX": 0,
+  "logW": 350,
+  "cues": [],
+  "scales": [],
+  "chips": [],
+  "read": {
+   "w": 350,
+   "h": 466,
+   "groups": [
+    "H3 Every recipe",
+    "H3 This recipe only",
+    "H3 Any problems?",
+    "H4 This recipe only"
+   ],
+   "cells": [
+    {
+     "label": "Tempering",
+     "x": 0,
+     "y": 87,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Temperature",
+     "value": "−12 °C",
+     "x": 185,
+     "y": 87,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Melt test",
+     "value": "3 g lost at 20 min",
+     "x": 0,
+     "y": 140,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Melt style",
+     "x": 185,
+     "y": 140,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Sweetness",
+     "value": "more (4)",
+     "x": 0,
+     "y": 235,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Body",
+     "value": "heavy (4)",
+     "x": 0,
+     "y": 330,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Coffee flavour",
+     "value": "2 of 5",
+     "x": 185,
+     "y": 330,
+     "w": 165,
+     "h": 37
+    }
+   ]
+  }
+ },
+ "rb-C": {
+  "w": 350,
+  "cropTop": 285,
+  "cropH": 482,
+  "overflowX": 0,
+  "logW": 350,
+  "cues": [],
+  "scales": [],
+  "chips": [],
+  "read": {
+   "w": 350,
+   "h": 466,
+   "groups": [
+    "H3 Every recipe",
+    "H3 This recipe only",
+    "H3 Any problems?",
+    "H4 This recipe only"
+   ],
+   "cells": [
+    {
+     "label": "Tempering",
+     "x": 0,
+     "y": 87,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Temperature",
+     "value": "−12 °C",
+     "x": 185,
+     "y": 87,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Melt test",
+     "value": "3 g lost at 20 min",
+     "x": 0,
+     "y": 140,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Melt style",
+     "x": 185,
+     "y": 140,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Sweetness",
+     "value": "more (4)",
+     "x": 0,
+     "y": 235,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Body",
+     "value": "heavy (4)",
+     "x": 0,
+     "y": 330,
+     "w": 165,
+     "h": 37
+    },
+    {
+     "label": "Coffee flavour",
+     "value": "faint (2)",
+     "x": 185,
+     "y": 330,
+     "w": 165,
+     "h": 37
+    }
+   ]
+  }
+ },
+ "built-batch": {
+  "drawn": false,
+  "title": "Batch log",
+  "lines": 14,
+  "boxes": 9,
+  "srows": [],
+  "safari": {
+   "body": 785,
+   "total": 823,
+   "problemsRowH": 0,
+   "problemsSlack": null,
+   "limit": 900,
+   "spare": 77
+  },
+  "chrome": {
+   "body": 785,
+   "total": 823,
+   "problemsRowH": 0,
+   "problemsSlack": null,
+   "limit": 960,
+   "spare": 137
+  }
+ },
+ "built-tasting-two": {
+  "drawn": false,
+  "title": "Tasting log",
+  "lines": 5,
+  "boxes": 12,
+  "srows": [
+   {
+    "name": "Hardness",
+    "h": 36,
+    "words": [
+     "lf-lo:soft",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:hard",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "h": 36,
+    "words": [
+     "lf-lo:crumbly",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:gummy",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "h": 36,
+    "words": [
+     "lf-lo:grainy",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:smooth",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "h": 36,
+    "words": [
+     "lf-lo:less",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:more",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Body",
+    "h": 36,
+    "words": [
+     "lf-lo:thin",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:heavy",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Coffee flavour",
+    "h": 36,
+    "words": [
+     "lf-lo:faint",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:strong",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   }
+  ],
+  "safari": {
+   "body": 762.9,
+   "total": 800.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 4.1,
+   "limit": 900,
+   "spare": 99.1
+  },
+  "chrome": {
+   "body": 762.9,
+   "total": 800.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 46.1,
+   "limit": 960,
+   "spare": 159.1
+  }
+ },
+ "batch": {
+  "drawn": true,
+  "title": "Batch log",
+  "lines": 13,
+  "boxes": 9,
+  "srows": [],
+  "safari": {
+   "body": 752,
+   "total": 790,
+   "problemsRowH": 0,
+   "problemsSlack": null,
+   "limit": 810,
+   "spare": 20
+  },
+  "chrome": {
+   "body": 752,
+   "total": 790,
+   "problemsRowH": 0,
+   "problemsSlack": null,
+   "limit": 864,
+   "spare": 74
+  }
+ },
+ "tasting-two": {
+  "drawn": true,
+  "title": "Tasting log",
+  "lines": 4,
+  "boxes": 12,
+  "srows": [
+   {
+    "name": "Hardness",
+    "h": 36,
+    "words": [
+     "lf-lo:soft",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:hard",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "h": 36,
+    "words": [
+     "lf-lo:crumbly",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:gummy",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "h": 36,
+    "words": [
+     "lf-lo:grainy",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:smooth",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "h": 36,
+    "words": [
+     "lf-lo:less",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:more",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Body",
+    "h": 36,
+    "words": [
+     "lf-lo:thin",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:heavy",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Coffee flavour",
+    "h": 36,
+    "words": [
+     "lf-lo:faint",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:strong"
+    ],
+    "under": []
+   }
+  ],
+  "safari": {
+   "body": 729.9,
+   "total": 767.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 4.1,
+   "limit": 810,
+   "spare": 42.1
+  },
+  "chrome": {
+   "body": 729.9,
+   "total": 767.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 46.1,
+   "limit": 864,
+   "spare": 96.1
+  }
+ },
+ "tasting-one": {
+  "drawn": true,
+  "title": "Tasting log",
+  "lines": 4,
+  "boxes": 11,
+  "srows": [
+   {
+    "name": "Hardness",
+    "h": 36,
+    "words": [
+     "lf-lo:soft",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:hard",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "h": 36,
+    "words": [
+     "lf-lo:crumbly",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:gummy",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "h": 36,
+    "words": [
+     "lf-lo:grainy",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:smooth",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "h": 36,
+    "words": [
+     "lf-lo:less",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:more",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Mint",
+    "h": 36,
+    "words": [
+     "lf-lo:faint",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:strong"
+    ],
+    "under": []
+   }
+  ],
+  "safari": {
+   "body": 693.9,
+   "total": 731.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 75.4,
+   "limit": 810,
+   "spare": 78.1
+  },
+  "chrome": {
+   "body": 693.9,
+   "total": 731.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 117.4,
+   "limit": 864,
+   "spare": 132.1
+  }
+ },
+ "tasting-none": {
+  "drawn": true,
+  "title": "Tasting log",
+  "lines": 4,
+  "boxes": 10,
+  "srows": [
+   {
+    "name": "Hardness",
+    "h": 36,
+    "words": [
+     "lf-lo:soft",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:hard",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "h": 36,
+    "words": [
+     "lf-lo:crumbly",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:gummy",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "h": 36,
+    "words": [
+     "lf-lo:grainy",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:smooth",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "h": 36,
+    "words": [
+     "lf-lo:less",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:more",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   }
+  ],
+  "safari": {
+   "body": 657.9,
+   "total": 695.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 184.2,
+   "limit": 810,
+   "spare": 114.1
+  },
+  "chrome": {
+   "body": 657.9,
+   "total": 695.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 226.2,
+   "limit": 864,
+   "spare": 168.1
+  }
+ },
+ "lines-4": {
+  "drawn": true,
+  "title": "Tasting log",
+  "lines": 4,
+  "boxes": 12,
+  "srows": [
+   {
+    "name": "Hardness",
+    "h": 36,
+    "words": [
+     "lf-lo:soft",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:hard",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "h": 36,
+    "words": [
+     "lf-lo:crumbly",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:gummy",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "h": 36,
+    "words": [
+     "lf-lo:grainy",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:smooth",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "h": 36,
+    "words": [
+     "lf-lo:less",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:more",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Body",
+    "h": 36,
+    "words": [
+     "lf-lo:thin",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:heavy",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Coffee flavour",
+    "h": 36,
+    "words": [
+     "lf-lo:faint",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:strong"
+    ],
+    "under": []
+   }
+  ],
+  "safari": {
+   "body": 729.9,
+   "total": 767.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 4.1,
+   "limit": 810,
+   "spare": 42.1
+  },
+  "chrome": {
+   "body": 729.9,
+   "total": 767.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 46.1,
+   "limit": 864,
+   "spare": 96.1
+  }
+ },
+ "lines-5": {
+  "drawn": true,
+  "title": "Tasting log",
+  "lines": 5,
+  "boxes": 12,
+  "srows": [
+   {
+    "name": "Hardness",
+    "h": 36,
+    "words": [
+     "lf-lo:soft",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:hard",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Scoopability",
+    "h": 36,
+    "words": [
+     "lf-lo:crumbly",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:gummy",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Smoothness",
+    "h": 36,
+    "words": [
+     "lf-lo:grainy",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:smooth",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Sweetness",
+    "h": 36,
+    "words": [
+     "lf-lo:less",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:more",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Body",
+    "h": 36,
+    "words": [
+     "lf-lo:thin",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:heavy",
+     "lf-mid:right"
+    ],
+    "under": [
+     0
+    ]
+   },
+   {
+    "name": "Coffee flavour",
+    "h": 36,
+    "words": [
+     "lf-lo:faint",
+     "lf-n1:1",
+     "lf-n5:5",
+     "lf-hi:strong"
+    ],
+    "under": []
+   }
+  ],
+  "safari": {
+   "body": 762.9,
+   "total": 800.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 4.1,
+   "limit": 810,
+   "spare": 9.1
+  },
+  "chrome": {
+   "body": 762.9,
+   "total": 800.9,
+   "problemsRowH": 16.9,
+   "problemsSlack": 46.1,
+   "limit": 864,
+   "spare": 63.1
+  }
+ }
+}

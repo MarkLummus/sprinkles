@@ -24,6 +24,9 @@ import {
   addProblem,
   updateProblem,
   removeProblem,
+  SCALE_WORD_LIMITS,
+  PROBLEM_WORD_LIMIT,
+  wordLimitMessage,
 } from './creation.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate } from './draft.js';
 import { rowFromLibraryRecord } from './versionRow.js';
@@ -495,5 +498,33 @@ describe("the recipe's own problems (TASTE-02)", () => {
     removeProblem(base, 0);
     addProblem(base);
     expect(base).toEqual(before);
+  });
+});
+
+describe('the word limits (Mark 2026-11-16, 12-UI-REVIEW finding 2 option b)', () => {
+  it('holds a scale name to 16, each end word to 12 and a problem to 40', () => {
+    expect(SCALE_WORD_LIMITS).toEqual({ name: 16, low: 12, high: 12 });
+    expect(PROBLEM_WORD_LIMIT).toBe(40);
+  });
+
+  it('wordLimitMessage is null at the limit and the one sentence over it', () => {
+    expect(wordLimitMessage('Burnt sugar note', 16)).toBeNull();
+    expect(wordLimitMessage('Burnt sugar notes', 16)).toBe('Use 16 characters or fewer.');
+    expect(wordLimitMessage('far, far too many', 12)).toBe('Use 12 characters or fewer.');
+  });
+
+  it('counts the trimmed text', () => {
+    expect(wordLimitMessage('  Burnt sugar note  ', 16)).toBeNull();
+  });
+
+  it('counts code points, so an emoji counts once', () => {
+    const lemons = '\u{1F34B}'.repeat(6);
+    expect(wordLimitMessage(`faint ${lemons}`, 12)).toBeNull();
+    expect(`faint ${lemons}`.length).toBe(18);
+  });
+
+  it('a blank text is Required\u2019s, not the limit\u2019s', () => {
+    expect(wordLimitMessage('', 12)).toBeNull();
+    expect(wordLimitMessage('   ', 12)).toBeNull();
   });
 });

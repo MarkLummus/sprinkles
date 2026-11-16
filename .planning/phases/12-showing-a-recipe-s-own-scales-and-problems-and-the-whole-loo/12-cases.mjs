@@ -6,8 +6,10 @@
 // CASES two, one and none are copied as they are from .planning/canvas-generators/p12-capture.mjs
 // (route, version id, declared scales with key, name, low, high, kind and group 'declared',
 // declared problems, marks, ticks, and the pen's picks). The example words are Sid's: they are not
-// Mark's and not in the data. Case `worst` is 12-02's long-words report: Olive Oil v1 with long
-// scale names, long end words and long problem words; it carries marks {} and ticks [] on purpose,
+// Mark's and not in the data. Case `worst` is the longest words the creation editor saves (Mark's
+// limits of 2026-11-16, quick 261116-80u: a scale name of 16 characters, an end word of 12, a
+// problem of 40, each case word exactly at its limit): Olive Oil v1 with those words, injected past
+// the gate the way every case is; it carries marks {} and ticks [] on purpose,
 // because TastingReading reads tasting.marks before its fold (BatchRow.jsx:293-294) and the
 // version route renders it, so inject writing undefined there would throw when `arrive` reloads.
 //
@@ -34,7 +36,7 @@ export const CASES = {
   two: { route: OLIVE_OIL_V1, vid: 'olive-oil-ice-cream-v1', axes: [D('body', 'Body', 'thin', 'heavy', 'goldilocks'), D('coffee', 'Coffee flavour', 'faint', 'strong', 'magnitude')], flaws: ['Bitter', 'Burnt taste'], marks: { sweetness: 4, body: 4, coffee: 2 }, ticks: ['Bitter', 'Burnt taste'], pen: [['Body', 4], ['Coffee flavour', 2]] },
   one: { route: OLIVE_OIL_V1, vid: 'olive-oil-ice-cream-v1', axes: [D('mint', 'Mint', 'faint', 'strong', 'magnitude')], flaws: ['Waxy chips'], marks: { sweetness: 4, mint: 5 }, ticks: ['Waxy chips'], pen: [['Mint', 5]] },
   none: { route: '/notebook/mexican-chocolate/mexican-chocolate-v1', vid: 'mexican-chocolate-v1', pen: [] },
-  worst: { route: OLIVE_OIL_V1, vid: 'olive-oil-ice-cream-v1', axes: [D('browndepth', 'Brown butter and toasted pecan depth', 'barely there at all', 'overwhelmingly nutty', 'magnitude'), D('caramelribbon', 'Ribbon of salted caramel through it', 'too thin and sparse', 'too thick and gluey', 'goldilocks')], flaws: ['Crunchy ice crystals along the edges', 'Sandy lactose grit on the tongue'], marks: {}, ticks: [], pen: [] },
+  worst: { route: OLIVE_OIL_V1, vid: 'olive-oil-ice-cream-v1', axes: [D('sugar', 'Burnt sugar note', 'barely there', 'overwhelming', 'magnitude'), D('flecks', 'Chocolate flecks', 'barely a few', 'far too many', 'goldilocks')], flaws: ['Crunchy ice crystals all along the edges', 'Sandy lactose grit that coats the tongue'], marks: {}, ticks: [], pen: [] },
 };
 
 // Rewrites the version's declared scales and problems and its batches' snapshots and stored
@@ -62,3 +64,20 @@ export async function arrive(page, appUrl, caseKey) {
   }
   return c;
 }
+
+// Sketch 015's refused state (word-limits.html, board P12_WordLimits): a create draft the editor
+// holds ready to save but for its words, laid under 12-board-check.mjs's panel.draft and
+// p12limits-capture.mjs's seed. Shaped as 11-board-save.mjs's READY_TO_SAVE_DRAFT: one Sucrose row
+// of 150 g as addRow writes it (one portion at step 1, no step), no method. The scale is Right in
+// the middle (goldilocks) so 261116-80v (no numbers on a Low to high scale) leaves the panel alone.
+// Three fields are refused: the name (21 over 16), the high end (17 over 12) and the problem
+// (51 over 40). The low end, 'barely a few', is exactly 12 characters on purpose: the board shows
+// the boundary, and an at-limit field stays quiet.
+export const OVERLONG_DRAFT = {
+  name: 'Vanilla',
+  versionLabel: 'Version 1',
+  rows: [{ id: 'r1', libraryId: 'sucrose', portions: [{ step: 1, grams: '150' }] }],
+  method: [],
+  scales: [D('scale-flecks', 'Dark chocolate flecks', 'barely a few', 'far, far too many', 'goldilocks')],
+  problems: ['Crunchy ice crystals all along the edges of the tub'],
+};

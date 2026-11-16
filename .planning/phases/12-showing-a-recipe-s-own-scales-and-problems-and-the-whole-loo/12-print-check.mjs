@@ -9,9 +9,12 @@
 //           lines  13 notes lines on the Batch log and 4 on the Tasting log
 //           fit    each log page's need (body, foot gap, foot) at Safari's 630 px and Chrome's
 //                  672 px content width, against 810 and 864 px; prints the spare
-//           worst  the long-words case: REPORT lines only (need, spare, row heights, how far each
-//                  end word runs past its grid column); it decides nothing (RESEARCH Open
-//                  Question 2: measured and reported, not fixed)
+//           worst  the long-words case: the longest words the creation editor saves (names of 16
+//                  characters, end words of 12, problems of 40; Mark's limits, 2026-11-16, quick
+//                  261116-80u). It decides PASS or FAIL: the Tasting log fits one page at both
+//                  widths, every scale row is 36 px tall (each name on one line), and each own
+//                  scale's low word starts at or right of its name column's edge. It also REPORTs
+//                  the need, spare, row heights and how far each end word runs past its column
 //
 // Prints "PASS <facet> <check>", "FAIL <facet> <check>: <values>" or "REPORT <facet> <fact>" and
 // exits 1 on any FAIL. Each facet runs in its own new browser context and arrives at its case
@@ -270,6 +273,7 @@ function measureNeed({ log, title, widths, ownFrom }) {
         srows: rows.map((row) => ({ name: row.querySelector('.axis-mark__name').textContent, h: r1(row.getBoundingClientRect().height) })),
         problemsH: r1(lf.querySelector('.lf-mrow--plain')?.getBoundingClientRect().height ?? 0),
         anchors: [],
+        lowEdges: [],
       };
       got.need = r1(got.body + got.gap + got.foot);
       // How far each own row's low and high word runs past its grid column. A nowrap grid item sized
@@ -277,6 +281,14 @@ function measureNeed({ log, title, widths, ownFrom }) {
       // edges come from the .lf-sc box and the track widths of its computed grid-template-columns
       // (column 1 for .lf-lo, column 9 for .lf-hi).
       for (const row of rows.slice(ownFrom)) {
+        // The name column's right edge: the row's left plus the first track of its own grid, and
+        // the low word's left edge (its box, which a word wider than its column pushes leftward).
+        const nameTrack = parseFloat(getComputedStyle(row).gridTemplateColumns.split(/\s+/)[0]);
+        got.lowEdges.push({
+          row: row.querySelector('.axis-mark__name').textContent,
+          nameEdge: r1(row.getBoundingClientRect().left + nameTrack),
+          loLeft: r1(row.querySelector('.lf-lo').getBoundingClientRect().left),
+        });
         const sc = row.querySelector('.lf-sc');
         const tracks = getComputedStyle(sc).gridTemplateColumns.split(/\s+/).map(parseFloat);
         const edgeOf = (col) => ({ left: tracks.slice(0, col - 1).reduce((a, w) => a + w, 0), width: tracks[col - 1] });
@@ -328,7 +340,9 @@ async function collectFit(browser, appUrl) {
 }
 
 // ---------------------------------------------------------------------------
-// Facet worst: the long-words case, REPORT lines only (RESEARCH Open Question 2).
+// Facet worst: the longest words the creation editor saves (12-cases.mjs, case worst). Checked,
+// not only reported: the limits are Mark's (2026-11-16), so a FAIL here is reported with both
+// sides' values and no limit, word or CSS is changed to make it pass.
 // ---------------------------------------------------------------------------
 async function collectWorst(browser, appUrl) {
   const out = [];
@@ -344,6 +358,32 @@ async function collectWorst(browser, appUrl) {
       for (const a of got.anchors) {
         out.push(report(f, `${eng.name} ${a.row} ${a.cls === '.lf-lo' ? 'low' : 'high'} word ${JSON.stringify(a.text)}: ${a.w} px wide, its column ${a.colW} px, runs past by ${a.over} px`));
       }
+      out.push(
+        check(
+          f,
+          `longest allowed words: the Tasting log at ${eng.name}'s ${eng.width} px fits one page: need ${got.need} of ${eng.limit}, spare ${spare}`,
+          got.need <= eng.limit,
+          `need ${got.need} exceeds ${eng.limit} by ${-spare}`,
+        ),
+      );
+      const tall = got.srows.filter((r) => Math.abs(r.h - ROW_H) > ROW_TOLERANCE);
+      out.push(
+        check(
+          f,
+          `longest allowed words: at ${eng.name} every scale row is ${ROW_H} px tall (within ${ROW_TOLERANCE} px), each name on one line`,
+          tall.length === 0,
+          tall.map((r) => `${r.name} ${r.h}`).join('; '),
+        ),
+      );
+      const crowded = got.lowEdges.filter((e) => e.loLeft < e.nameEdge);
+      out.push(
+        check(
+          f,
+          `longest allowed words: at ${eng.name} each own scale's low word starts at or right of its name column's edge (${got.lowEdges.map((e) => `${e.row}: word ${e.loLeft}, edge ${e.nameEdge}`).join('; ')})`,
+          got.lowEdges.length > 0 && crowded.length === 0,
+          crowded.length === 0 ? 'no own scale rows read' : crowded.map((e) => `${e.row}: word ${e.loLeft} left of edge ${e.nameEdge}`).join('; '),
+        ),
+      );
     }
   } finally {
     await context.close();

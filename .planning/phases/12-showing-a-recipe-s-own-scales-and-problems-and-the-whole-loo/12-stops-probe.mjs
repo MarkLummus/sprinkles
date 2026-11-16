@@ -4,7 +4,10 @@
 //
 //   PROBE_DIST=<dist> node 12-stops-probe.mjs report <facet...>
 //   PROBE_DIST=<dist> node 12-stops-probe.mjs check <facet...>
-//   facets: pen (the record pen's anchors and stop names), reading (the tasting reading's cells),
+//   facets: pen (the record pen's anchors and stop names; and, on case worst, the longest words
+//           the creation editor saves (Mark's limits, 2026-11-16, quick 261116-80u): at 1366, 768
+//           and 393 every own scale's anchor words stay inside their track and stand apart),
+//           reading (the tasting reading's cells),
 //           editor (the creation editor's stops line and stray "right" words)
 //
 // `report` prints "REPORT <facet> <fact>" lines and exits 0. `check` prints "PASS <facet> <check>"
@@ -57,10 +60,16 @@ const FIXED_TIME = new Date('2026-08-04T12:00:00');
 // form). One constant: a veto of A1 is a one-line edit here (12-01, "If Mark vetoes A1", item 4).
 const EDITOR_STOPS = 'faint · 2 · 3 · 4 · strong';
 
-// A context per facet: WebKit at 1366 by 1024 with touch, a fixed clock (timers keep running),
-// every request not to 127.0.0.1 aborted.
-async function newContext(browser) {
-  const context = await browser.newContext({ viewport: { width: 1366, height: 1024 }, hasTouch: true });
+// A context per facet: WebKit at 1366 by 1024 with touch (768 by 1024 with touch and 393 by 852
+// with touch and isMobile when a facet asks for them), a fixed clock (timers keep running), every
+// request not to 127.0.0.1 aborted.
+const VIEWPORTS = {
+  1366: { viewport: { width: 1366, height: 1024 }, hasTouch: true },
+  768: { viewport: { width: 768, height: 1024 }, hasTouch: true },
+  393: { viewport: { width: 393, height: 852 }, hasTouch: true, isMobile: true },
+};
+async function newContext(browser, width = 1366) {
+  const context = await browser.newContext(VIEWPORTS[width]);
   await context.clock.setFixedTime(FIXED_TIME);
   await context.route('**/*', (route) => {
     const url = new URL(route.request().url());
@@ -126,10 +135,93 @@ async function collectPen(browser, appUrl) {
       checks.push(sameList(`${wanted} anchors`, s.anchors, expect.anchors));
       checks.push(sameList(`${wanted} stop names`, s.names, expect.names));
     }
-    return { facts, checks };
-  } finally {
     await context.close();
+    const worst = await collectWorstPen(browser, appUrl);
+    return { facts: [...facts, ...worst.facts], checks: [...checks, ...worst.checks] };
+  } catch (error) {
+    await context.close().catch(() => {});
+    throw error;
   }
+}
+
+// The gap the 768 Right in the middle scale is held to (Chocolate flecks, Right in the middle):
+// Mark's 12-character end limit leaves about 4 px at the 186 px track (planning estimate 4.25),
+// under the 6 px of 12-UI-REVIEW finding 1. A matter for Mark; this probe holds it to no touching.
+const MIN_GAP = 6;
+const MIDDLE_768_GAP = 1;
+const EDGE_TOLERANCE = 0.5;
+
+// Case worst, the longest allowed words, in the open record pen at 1366, 768 and 393: each own
+// scale's anchor words lie inside the anchors box, stand apart and the page does not scroll
+// sideways. Each width in a fresh context.
+async function collectWorstPen(browser, appUrl) {
+  const facts = [];
+  const checks = [];
+  for (const width of [1366, 768, 393]) {
+    const context = await newContext(browser, width);
+    try {
+      const page = await context.newPage();
+      page.setDefaultTimeout(12000);
+      await arrive(page, appUrl, 'worst');
+      const log = page.locator('.notebook-log');
+      await clickUntil(page, () => log.getByRole('button', { name: /^Record (batch|another)$/ }).first(), 'button:has-text("Add tasting")', 'open the record pen');
+      await clickUntil(page, () => log.getByRole('button', { name: /add tasting/i }).first(), '.notebook-log .axis-mark', 'press Add tasting');
+      await page.waitForTimeout(300);
+      const read = await page.evaluate(() => {
+        const box = (e) => {
+          const r = e.getBoundingClientRect();
+          return { left: r.left, right: r.right };
+        };
+        return {
+          scrollWidth: document.documentElement.scrollWidth,
+          innerWidth: window.innerWidth,
+          scales: [...document.querySelectorAll('.notebook-log .axis-mark')].map((a) => ({
+            name: a.querySelector('.axis-mark__name').textContent,
+            track: box(a.querySelector('.axis-mark__anchors')),
+            words: [...a.querySelectorAll('.axis-mark__anchors span')].map((sp) => ({ text: sp.textContent, ...box(sp) })),
+          })),
+        };
+      });
+      const r1 = (n) => Math.round(n * 100) / 100;
+      for (const name of ['Burnt sugar note', 'Chocolate flecks']) {
+        const s = read.scales.find((x) => x.name === name);
+        const tag = `worst ${width} ${name}`;
+        if (!s || s.words.length < 2) {
+          checks.push({ name: `${tag}: the scale is in the pen with its anchor words`, ok: false, values: `scales: ${read.scales.map((x) => x.name).join(', ')}` });
+          continue;
+        }
+        const words = [...s.words].sort((a, b) => a.left - b.left);
+        const gaps = words.slice(1).map((w, i) => r1(w.left - words[i].right));
+        const trackWidth = r1(s.track.right - s.track.left);
+        facts.push(`${tag}: ${JSON.stringify(words.map((w) => w.text))}, track ${trackWidth} px, gaps ${JSON.stringify(gaps)} px`);
+        const inside = words[0].left >= s.track.left - EDGE_TOLERANCE && words[words.length - 1].right <= s.track.right + EDGE_TOLERANCE;
+        checks.push({
+          name: `${tag}: the anchor words stay inside the ${trackWidth} px track`,
+          ok: inside,
+          values: `first word left ${r1(words[0].left)} against track left ${r1(s.track.left)}, last word right ${r1(words[words.length - 1].right)} against track right ${r1(s.track.right)}`,
+        });
+        const floor = width === 768 && words.length === 3 ? MIDDLE_768_GAP : MIN_GAP;
+        checks.push({
+          name: `${tag}: the anchor words stand at least ${floor} px apart (gaps ${JSON.stringify(gaps)})`,
+          ok: gaps.every((g) => g >= floor),
+          values: `gaps ${JSON.stringify(gaps)}, floor ${floor}`,
+        });
+        if (floor === MIDDLE_768_GAP) {
+          facts.push(
+            `${tag}: held to ${MIDDLE_768_GAP} px (no touching), not ${MIN_GAP}: Mark's 12-character end limit leaves about 4 px at the 186 px track (planning estimate 4.25), under the ${MIN_GAP} px of 12-UI-REVIEW finding 1; measured gaps ${JSON.stringify(gaps)} px, a matter for Mark`,
+          );
+        }
+      }
+      checks.push({
+        name: `worst ${width}: the page does not scroll sideways (scrollWidth ${read.scrollWidth}, innerWidth ${read.innerWidth})`,
+        ok: read.scrollWidth <= read.innerWidth,
+        values: `scrollWidth ${read.scrollWidth} against innerWidth ${read.innerWidth}`,
+      });
+    } finally {
+      await context.close();
+    }
+  }
+  return { facts, checks };
 }
 
 // A check of one list against the list it must equal.

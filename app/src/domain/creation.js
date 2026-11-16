@@ -347,3 +347,26 @@ export function removeProblem(draft, index) {
   assertProblemIndex(draft, index);
   return { ...draft, problems: draft.problems.filter((_problem, at) => at !== index) };
 }
+
+/**
+ * The words a maker may type for a recipe's own scales and problems (Mark's
+ * decision of 2026-11-16, 12-UI-REVIEW.md finding 2, option b, Sid's basis): a
+ * scale's name up to 16 characters, each of its end words up to 12, a problem
+ * up to 40, all counted on the trimmed text. The limits bound the printed
+ * Tasting log's name column (150 px), its word column (76 px) and the record
+ * pen's narrowest track (186 px). They bound what the editor saves, not what a
+ * store file may hold: import is unchanged.
+ */
+export const SCALE_WORD_LIMITS = Object.freeze({ name: 16, low: 12, high: 12 });
+export const PROBLEM_WORD_LIMIT = 40;
+
+/**
+ * wordLimitMessage(text, limit) -> null when the trimmed text holds at most
+ * `limit` characters (counted as code points, so an emoji counts once), else
+ * the one sentence `Use ${limit} characters or fewer.` A blank text is null:
+ * a blank field reads Required, never this. The sentence is Claude's wording
+ * within the shape of the gate's existing ones, for Mark in chat.
+ */
+export function wordLimitMessage(text, limit) {
+  return Array.from(text.trim()).length <= limit ? null : `Use ${limit} characters or fewer.`;
+}

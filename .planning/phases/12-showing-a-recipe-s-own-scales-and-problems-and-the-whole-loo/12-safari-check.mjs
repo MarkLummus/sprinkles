@@ -7,8 +7,10 @@
 //        two own problems) is checked: page 1 holds "Batch log" and "Side 1 of 2", page 2 "Tasting
 //        log" and "Side 2 of 2", no other page holds either side line, both log pages' ink starts
 //        1.5 in down (100.8 to 115.2 pt) and the first page after them starts no more than 0.75 in
-//        down. Case worst (12-cases.mjs: long maker words) is only REPORTed: nothing is fixed this
-//        round (RESEARCH Open Question 2).
+//        down. Case worst (12-cases.mjs: the longest words the creation editor saves, Mark's limits
+//        of 2026-11-16, quick 261116-80u) is checked the same way for its two pages: page 1 alone
+//        holds "Batch log" and "Side 1 of 2", page 2 alone "Tasting log" and "Side 2 of 2". Its
+//        page count and ink bottoms are REPORTed.
 //   sim  opens case two's record pen and reading in mobile Safari in the iOS Simulator (an iPhone
 //        whose Safari reports a width below 724), in the real app, and checks what the app drew:
 //        Coffee flavour's anchors faint and strong only, its stop names, Body's anchors, the
@@ -338,6 +340,12 @@ async function modePdf(base) {
     const bl = holders(pages, /Batch log/);
     const bp = bl.length ? pages[bl[0] - 1] : null;
     report('pdf', `worst: Batch log on page ${bl.join(',') || 'none'}; its ink bottom ${inkBottom(bp) === null ? 'unknown' : `${inkBottom(bp).toFixed(1)} pt down`}`);
+    const eq = (a, want) => a.length === 1 && a[0] === want;
+    const show = (a) => (a.length ? a.join(',') : 'none');
+    if (eq(bl, 1) && eq(s1, 1)) pass('pdf', 'worst: page 1 alone holds Batch log and Side 1 of 2');
+    else fail('pdf', `worst: Batch log on page ${show(bl)}, Side 1 of 2 on page ${show(s1)} (want page 1 only)`);
+    if (eq(t, 2) && eq(s2, 2)) pass('pdf', 'worst: page 2 alone holds Tasting log and Side 2 of 2');
+    else fail('pdf', `worst: Tasting log on page ${show(t)}, Side 2 of 2 on page ${show(s2)} (want page 2 only)`);
   }
 }
 

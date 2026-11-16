@@ -2328,6 +2328,64 @@ describe('Save refuses everything the store file would refuse, all at once, writ
     expect(group.getAttribute('aria-invalid')).toBeNull();
   });
 
+  it('an own scale name and end word and a problem over their word limits show their sentence under the field, write nothing and focus the first (Mark 2026-11-16)', async () => {
+    await startReady();
+    const problemsRegion = () => root().querySelector('section[aria-label="Problems"]');
+    const problemName = () => problemsRegion().querySelector('.mk-card[aria-label="Problem 1"] textarea[aria-label="Name"]');
+    const sentenceOf = (node) => root().querySelector(`#${node.getAttribute('aria-describedby')}`);
+    await click(scalesRegion().querySelector('.mk-add'));
+    await type(inCard('Scale 1', 'Name'), 'Dark chocolate flecks');
+    await type(inCard('Scale 1', 'Low end'), 'barely a few');
+    await type(inCard('Scale 1', 'High end'), 'far, far too many');
+    await click(kindRadio('Scale 1', 'Right in the middle'));
+    await click(problemsRegion().querySelector('.mk-add'));
+    await type(problemName(), 'Crunchy ice crystals all along the edges of the tub');
+    await pressSave();
+
+    expectRefused();
+    const nameMessage = sentenceOf(inCard('Scale 1', 'Name'));
+    expect(nameMessage.textContent).toBe('Use 16 characters or fewer.');
+    expect(nameMessage.classList.contains('field-error')).toBe(true);
+    expect(inCard('Scale 1', 'Name').getAttribute('aria-invalid')).toBe('true');
+    const highMessage = sentenceOf(inCard('Scale 1', 'High end'));
+    expect(highMessage.textContent).toBe('Use 12 characters or fewer.');
+    expect(highMessage.classList.contains('field-error')).toBe(true);
+    expect(inCard('Scale 1', 'High end').getAttribute('aria-invalid')).toBe('true');
+    expect(inCard('Scale 1', 'Low end').getAttribute('aria-invalid')).toBeNull();
+    expect(inCard('Scale 1', 'Low end').getAttribute('aria-describedby')).toBeNull();
+    const problemMessage = sentenceOf(problemName());
+    expect(problemMessage.textContent).toBe('Use 40 characters or fewer.');
+    expect(problemMessage.classList.contains('field-error')).toBe(true);
+    expect(problemName().getAttribute('aria-invalid')).toBe('true');
+    expect(document.activeElement).toBe(inCard('Scale 1', 'Name'));
+
+    await type(inCard('Scale 1', 'Name'), 'Chocolate flecks');
+    expect(inCard('Scale 1', 'Name').getAttribute('aria-invalid')).toBeNull();
+    expect(scalesRegion().querySelectorAll('.field-error')).toHaveLength(1);
+  });
+
+  it('own scale words and a problem exactly at their limits, with spaces around them, save trimmed (Mark 2026-11-16)', async () => {
+    await startReady();
+    const problemsRegion = () => root().querySelector('section[aria-label="Problems"]');
+    await click(scalesRegion().querySelector('.mk-add'));
+    await type(inCard('Scale 1', 'Name'), 'Burnt sugar note');
+    await type(inCard('Scale 1', 'Low end'), ' barely there ');
+    await type(inCard('Scale 1', 'High end'), 'overwhelming');
+    await click(kindRadio('Scale 1', 'Low to high'));
+    await click(problemsRegion().querySelector('.mk-add'));
+    await type(
+      problemsRegion().querySelector('.mk-card[aria-label="Problem 1"] textarea[aria-label="Name"]'),
+      ' Crunchy ice crystals all along the edges ',
+    );
+    await click(saveButton());
+    await flush(() => location.pathname !== '/notebook/new');
+
+    expect(repository.createRecipeWithVersion).toHaveBeenCalledTimes(1);
+    const { version } = repository.createRecipeWithVersion.mock.calls[0][0];
+    expect(version.declaredAxes[0]).toMatchObject({ name: 'Burnt sugar note', low: 'barely there', high: 'overwhelming' });
+    expect(version.declaredFlaws).toEqual(['Crunchy ice crystals all along the edges']);
+  });
+
   it('with the draft fixed, the same press saves', async () => {
     await startReady();
     await click(buttonByText('Add step'));

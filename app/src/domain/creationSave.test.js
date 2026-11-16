@@ -350,6 +350,75 @@ describe('creationSaveBlock: every refusal at once, in page order (D-08 to D-11,
     expect(ids(gate(updateProblem(draft, 1, 'bitter')))).toEqual([]);
   });
 
+  describe('word limits (Mark 2026-11-16, 12-UI-REVIEW finding 2 option b)', () => {
+    const LONG_PROBLEM = 'Crunchy ice crystals all along the edges of the tub';
+    const withScale = (name, low, high, kind = 'goldilocks') => {
+      let draft = addScale(worked(), 'scale-a');
+      draft = updateScale(draft, 'scale-a', 'name', name);
+      draft = updateScale(draft, 'scale-a', 'low', low);
+      draft = updateScale(draft, 'scale-a', 'high', high);
+      return updateScale(draft, 'scale-a', 'kind', kind);
+    };
+
+    it('refuses an own scale name and end word over their limits, under the id its Required takes', () => {
+      expect(gate(withScale('Dark chocolate flecks', 'barely a few', 'far, far too many'))).toEqual([
+        { id: 'scale:scale-a:name', message: 'Use 16 characters or fewer.', target: { kind: 'scaleField', key: 'scale-a', field: 'name' } },
+        { id: 'scale:scale-a:high', message: 'Use 12 characters or fewer.', target: { kind: 'scaleField', key: 'scale-a', field: 'high' } },
+      ]);
+    });
+
+    it('refuses a problem over 40 and leaves one at 40 alone', () => {
+      expect(gate(updateProblem(addProblem(worked()), 0, LONG_PROBLEM))).toEqual([
+        { id: 'problem:0', message: 'Use 40 characters or fewer.', target: { kind: 'problem', index: 0 } },
+      ]);
+      expect(gate(updateProblem(addProblem(worked()), 0, 'Crunchy ice crystals all along the edges'))).toEqual([]);
+    });
+
+    it('two identical over-long problems give two length blocks and no repeat block', () => {
+      const draft = updateProblem(updateProblem(addProblem(addProblem(worked())), 0, LONG_PROBLEM), 1, LONG_PROBLEM);
+      expect(ids(gate(draft))).toEqual(['problem:0', 'problem:1']);
+    });
+
+    it('words exactly at the limits, with spaces around them, are not refused and save trimmed', () => {
+      let draft = withScale(' Burnt sugar note ', ' barely there ', 'overwhelming ', 'magnitude');
+      draft = updateProblem(addProblem(draft), 0, ' Crunchy ice crystals all along the edges ');
+      expect(gate(draft)).toEqual([]);
+      const { version } = build(draft);
+      expect(version.declaredAxes[0]).toMatchObject({ name: 'Burnt sugar note', low: 'barely there', high: 'overwhelming' });
+      expect(version.declaredFlaws).toEqual(['Crunchy ice crystals all along the edges']);
+    });
+
+    it('a blank field is still Required, never the limit sentence, and a kind has no limit', () => {
+      expect(gate(withScale('', 'x', 'y', 'goldilocks'))[0]).toEqual({
+        id: 'scale:scale-a:name',
+        message: 'Required',
+        target: { kind: 'scaleField', key: 'scale-a', field: 'name' },
+      });
+    });
+
+    it('keeps page order with a length block in a scale field place', () => {
+      let draft = blank('');
+      draft = addRow(draft, { rowId: 'row-a', libraryId: 'wholeMilk' });
+      draft = addStep(draft, { afterN: null });
+      draft = addScale(draft, 'scale-a');
+      draft = updateScale(updateScale(draft, 'scale-a', 'name', 'Dark chocolate flecks'), 'scale-a', 'low', 'barely a few lots');
+      draft = updateScale(draft, 'scale-a', 'kind', '');
+      draft = updateProblem(addProblem(draft), 0, LONG_PROBLEM);
+      expect(ids(gate({ ...draft, versionLabel: '' }))).toEqual([
+        'recipe-name',
+        'version-name',
+        'grams:row-a:0',
+        'lead:1',
+        'instruction:1',
+        'scale:scale-a:name',
+        'scale:scale-a:low',
+        'scale:scale-a:high',
+        'scale:scale-a:kind',
+        'problem:0',
+      ]);
+    });
+  });
+
   it('a row whose library entry is missing is refused, never dropped', () => {
     expect(gate(worked(), { libraryById: new Map([...libraryById].filter(([id]) => id !== 'sucrose')) })).toEqual([
       { id: 'gone:row-c', message: 'An ingredient on this recipe is no longer in the library.', target: { kind: 'form' } },

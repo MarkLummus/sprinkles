@@ -1,5 +1,6 @@
 // 11-01: the strict before/after WebKit walk for Phase 11 (D-19), re-recorded at the
 // base commit cf64aa70 (copied from 10-walk.mjs; the twelve scenario bodies are unchanged).
+// The baseline was re-recorded at e37db11a by plan 12-08, after the trace in 12-08-walk-trace.md.
 //
 // The compare allows no difference at all in an existing scenario: every leaf of every
 // snapshot and of every store dump must be equal, and every difference, under `stores.`
@@ -27,7 +28,7 @@
 // by side by the board engine (11-board-check.mjs).
 //
 // Modes (none of compare, selftest and seedtest opens a browser):
-//   node 11-walk.mjs record <out.json>                 (needs PROBE_DIST)
+//   node 11-walk.mjs record <out.json> [--keep-text] [--baseline]   (needs PROBE_DIST)
 //   node 11-walk.mjs compare <a.json> <b.json>         prints MATCH <n> snapshots[; NEW <name> <k>] or every DIFF, exit 1
 //   node 11-walk.mjs selftest <before.json>            doctored copies the compare must refuse
 //   node 11-walk.mjs seedtest <before.json>            the seed rule a new scenario is held to
@@ -1404,7 +1405,7 @@ SCENARIOS.push([
   },
 ]);
 
-async function record(outPath, withText = false) {
+async function record(outPath, withText = false, baseline = false) {
   keepText = withText;
   const { appUrl, close } = await startServers({ appRoot: DIST });
   const browser = await webkit.launch();
@@ -1412,6 +1413,9 @@ async function record(outPath, withText = false) {
   const fails = [];
   try {
     for (const [name, body] of SCENARIOS) {
+      // A baseline holds the twelve baseline scenarios; the five that ALLOWED_NEW_SCENARIOS names
+      // stay NEW in every compare (D-19).
+      if (baseline && ALLOWED_NEW_SCENARIOS.includes(name)) continue;
       const result = await runScenario(browser, appUrl, name, body);
       scenarios.push(result.scenario);
       fails.push(...result.fails);
@@ -2057,8 +2061,9 @@ async function ordertest(pathPlain) {
 }
 
 const [, , mode, first, second] = process.argv;
-if (mode === 'record' && first && (second === undefined || second === '--keep-text')) {
-  await record(first, second === '--keep-text');
+const recordFlags = process.argv.slice(4);
+if (mode === 'record' && first && recordFlags.every((flag) => flag === '--keep-text' || flag === '--baseline')) {
+  await record(first, recordFlags.includes('--keep-text'), recordFlags.includes('--baseline'));
 } else if (mode === 'ordercheck' && first && second) {
   await ordercheck(first, second);
 } else if (mode === 'ordertest' && first) {
@@ -2073,7 +2078,7 @@ if (mode === 'record' && first && (second === undefined || second === '--keep-te
   await normtest();
 } else {
   console.error(
-    'Usage: node 11-walk.mjs record <out.json> [--keep-text] | compare <a.json> <b.json> | selftest <before.json> | seedtest <before.json> | normtest | ordercheck <plain.json> <ordered.json> | ordertest <plain.json> (PROBE_DIST=<dist>)',
+    'Usage: node 11-walk.mjs record <out.json> [--keep-text] [--baseline] | compare <a.json> <b.json> | selftest <before.json> | seedtest <before.json> | normtest | ordercheck <plain.json> <ordered.json> | ordertest <plain.json> (PROBE_DIST=<dist>)',
   );
   process.exit(1);
 }

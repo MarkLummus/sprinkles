@@ -1,22 +1,30 @@
 #!/bin/sh
-# Phase 11 before-walk: record the WebKit walk from a build of the phase's BASE commit,
-# in a temporary git worktree, never from the working tree (D-19, T-11-02).
+# Phase 11 walk baseline: record the WebKit walk from a build of BASE, in a temporary git
+# worktree, never from the working tree (D-19, T-11-02).
 #
 #   sh .planning/phases/11-steps-structure-save-and-print/11-walk-record-base.sh
 #
-# BASE is cf64aa70, the newest commit to touch app/ before any Phase 11 plan
-# ("feat(261025-uge): the rail and the page travel as one block..."); every commit after
-# it up to the start of Phase 11 is docs only. Its app tree is Phase 10's result plus the
-# quick tasks that followed it. The baseline is re-recorded here, not copied from
-# Phase 10, because the snapshot gains a method hash (D-19).
+# BASE is e37db11a, the commit before Phase 12. Its app tree equals af101f6e's, the newest
+# app commit before Phase 12 (a quick fix): `git diff --stat af101f6e e37db11a -- app/` is
+# empty. The recording at the earlier BASE cf64aa70 went stale against the post-Phase-11
+# quick fixes (2026-10-27 to 2026-11-15) that never re-recorded it, and plan 12-08 traced
+# every difference to the app commit that made it before moving BASE
+# (12-08-walk-trace.md). The cf64aa70 recording stays in git history at 4d3b44f7.
 #
 # The script refuses to record (FAIL, exit 1, nothing written) when a commit after BASE
-# touches app/ and is neither a Phase 11 plan's commit nor an executor worktree merge:
-# such a commit would move the base again. It never writes app/dist and never starts Vite.
+# touches app/ and is none of: a Phase 12 plan's commit (matched by
+# [a-z]+\(12(-[0-9]+)?\):), an executor worktree merge, or a commit in NEUTRAL below. Such a
+# commit would move the base again. It never writes app/dist and never starts Vite.
 #
-# Plan 11-07 records BASE cf64aa70 plus the order of Mark's 2026-10-26 answer
-# (decide-p11-row-order-across-steps) and nothing else, so the recorded baseline cannot hide a
-# change on the walked routes (D-19). A patch is therefore applied to the BASE worktree only
+# NEUTRAL names the app commits after e37db11a that are neither a Phase 12 plan's nor a merge:
+# the quick tasks 261116-80u and 261116-80v. Task 1 of plan 12-08 recorded the walk, text
+# included, on a build of e37db11a and on a build of main, and the two compare "MATCH 112
+# snapshots" with no DIFF: those commits moved no walked page text, method text, field, focus,
+# status, button or stored record (12-08-walk-trace.md). A new app commit joins NEUTRAL only
+# with the same proof.
+#
+# A patch may still be applied to the BASE worktree (WALK_PATCH). Plan 11-07's order patch is
+# part of e37db11a and no longer applies, so the default is none. A patch is applied only
 # when it may change the two regions only, and only into the checkout's code: it must change
 # exactly app/src/ui/IngredientTable.jsx and app/src/ui/Method.jsx; each of those files must
 # equal BASE (git show) outside the groupPortionsByStep function and the usesNames line; and
@@ -24,8 +32,8 @@
 # "FAIL patch:" and exits 1 before anything is built or recorded.
 #
 # Knobs (environment):
-#   WALK_PATCH      a patch file applied to the BASE worktree before the build; default
-#                   $PHASE/11-walk-order.patch when that file exists, else none; "none" skips it.
+#   WALK_PATCH      a patch file applied to the BASE worktree before the build; default none;
+#                   "none" skips it.
 #   WALK_OUT        the file recorded into; default $PHASE/11-walk-before.json, the committed
 #                   baseline: set it to a scratch file for any other recording.
 #   WALK_KEEP_TEXT  1 passes --keep-text to record, so each snapshot keeps the text and
@@ -36,13 +44,15 @@ cd "$(git rev-parse --show-toplevel)"
 ROOT=$(pwd)
 
 PHASE=.planning/phases/11-steps-structure-save-and-print
-BASE=cf64aa70
+BASE=e37db11a
 OUT="${WALK_OUT:-$PHASE/11-walk-before.json}"
 SCRATCH="${TMPDIR:-/tmp}/sprinkles-11"
 
-# A Phase 11 plan's commit reads "type(11):" or "type(11-NN):"; a merge of an executor worktree
-# holds "merge executor worktree". Anything else that touched app/ after BASE is a stranger.
-LEFT=$(git log --format='%h %s' "$BASE"..HEAD -- app/ | grep -Eiv '^[0-9a-f]+ [a-z]+\(11(-[0-9]+)?\):|merge executor worktree' || true)
+# A Phase 12 plan's commit reads "type(12):" or "type(12-NN):"; a merge of an executor worktree
+# holds "merge executor worktree". Anything else that touched app/ after BASE is a stranger,
+# except the commits proven neutral (see the header).
+NEUTRAL='1200f350|1acb082b|6b07e2d0|f3b9b384|9fdbd576|aa94c98d|7caf6c11'
+LEFT=$(git log --format='%h %s' "$BASE"..HEAD -- app/ | grep -Eiv '^[0-9a-f]+ [a-z]+\(12(-[0-9]+)?\):|merge executor worktree' | grep -Ev "^($NEUTRAL)[0-9a-f]* " || true)
 if [ -n "$LEFT" ]; then
   echo "FAIL app/ changed after BASE by a commit that is not a Phase 11 plan's:"
   echo "$LEFT"
@@ -59,9 +69,7 @@ git worktree add --detach "$SCRATCH/base" "$BASE"
 trap 'git worktree remove --force "$SCRATCH/base" >/dev/null 2>&1 || true' EXIT
 
 PATCH="${WALK_PATCH:-}"
-if [ -z "$PATCH" ]; then
-  if [ -f "$PHASE/11-walk-order.patch" ]; then PATCH="$PHASE/11-walk-order.patch"; else PATCH=none; fi
-fi
+if [ -z "$PATCH" ]; then PATCH=none; fi
 if [ "$PATCH" != none ]; then
   case "$PATCH" in /*) ;; *) PATCH="$ROOT/$PATCH" ;; esac
   if [ ! -f "$PATCH" ]; then
@@ -157,4 +165,4 @@ npm --prefix "$SCRATCH/base/app" run build -- --outDir "$SCRATCH/dist-base" --em
 KEEP=""
 if [ "${WALK_KEEP_TEXT:-}" = "1" ]; then KEEP="--keep-text"; fi
 # $KEEP is empty or one word, so it is left unquoted on purpose.
-PROBE_DIST="$SCRATCH/dist-base" node "$PHASE/11-walk.mjs" record "$OUT" $KEEP
+PROBE_DIST="$SCRATCH/dist-base" node "$PHASE/11-walk.mjs" record "$OUT" --baseline $KEEP

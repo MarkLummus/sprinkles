@@ -487,6 +487,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261116-80v | No numbers on a Low to high scale: editor line, record pen stops, printed Tasting log | 2026-11-16 | f3b9b384 | .planning/quick/261116-80v-no-numbers-on-a-low-to-high-magnitude-scale-in-three-places |
 | 242 | DESIGN.md is a map: one pointer rule (CLAUDE.md, sid.md, gsd-ui-review) sends section, rule and line citations to .impeccable/design-full.md | 2026-11-21 | 6ec6ecb0 | — |
 | 243 | Move GLOSSARY.md and design-md-hand-draft.md into .planning/archive (/gsd-health W019) | 2026-11-21 | 74da468a | — |
+| 244 | Mark the Phase 12 Design gate 2 MET in ROADMAP.md (sketch 016 approved by Mark) | 2026-11-21 | 700202b5 | — |
 
 ### Roadmap Evolution
 

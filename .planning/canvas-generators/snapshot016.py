@@ -3,6 +3,8 @@
 # .planning/sketches/016-entry-points-pen-preview-row-controls/.
 #   python3 snapshot016.py <dir holding project/*.dc.html as read from the artifact root> <dest>
 #   (read them with the Artifact tool: action read, paths ["project/P12G2_Band.dc.html", ...], out_dir <dir>; never hand-edit a board or a snapshot)
+# Re-run 2026-11-21 after P12G2_RowControls was redrawn for Mark's decision of that day (decide-p12-add-step-place = last-line; two groups; Cmd+Return) and P12G2_StepOrder retitled
+# as decided: row-controls.html and add-step-place.html are retaken (canvas version 528, 1795269711-4219); the other four are byte-equal to the first snapshot.
 # The boards are taken AS SERVED by the canvas (version 1795267623-c53a, canvas version 527, read 2026-11-21), as snapshot015.py does; p12g2.py regenerates all six byte for byte
 # (boards/P12G2_*.dc.html, cmp checked against the served files). Each is made to open on its own: the canvas's support.js line is dropped and the font upload is pointed at the
 # app's own copy of Caveat. Nothing else in the markup or the inlined CSS changes. The canvas wins.

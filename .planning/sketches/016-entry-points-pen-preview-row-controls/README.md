@@ -20,8 +20,8 @@ Authority once approved: these boards, CSS included. Conformance is the board an
 | `notebook-home-more-393.html` | `P12G2_Places` | The Notebook without New recipe; the Notebook with a kept draft, its row without Resume; Home, a tasted recipe's row without Next version; More open without Import and Export. | `look-p12-phone-entry-points` |
 | `one-line-page.html` | `P12G2_DeskPage` | The page the New recipe and Edit addresses show below 724 (the built placeholder place: a title and one line), and three wordings A, B, C. | `look-p12-phone-entry-points`, `decide-p12-desk-page-words` |
 | `pen-preview-step.html` | `P12G2_PenPreview` | 1366. The creation editor's Preview step as built; the version pen's open step as built; the pen drawn with Preview step, shut and open. | `look-p12-pen-preview-step` |
-| `row-controls.html` | `P12G2_RowControls` | 1366. The creation editor's Ingredients and Instructions, as built (41 Tab stops) and drawn (45), the Tab order numbered; then Add ingredient on a row: the row, the picker, the landing in a step group, the landing under "Not in a step yet". | `look-p12-row-controls` |
-| `add-step-place.html` | `P12G2_StepOrder` | 1366. Two places for a step's Add step: A leading its last line, B with the line moved up under the two fields. | `decide-p12-add-step-place` |
+| `row-controls.html` | `P12G2_RowControls` | 1366. **Redrawn 2026-11-21** (see "The redraw" below). The creation editor's Ingredients and Instructions as built (41 Tab stops) and drawn (45), and a step with a target, purpose and aside as built and drawn, the Tab order numbered; Cmd+Return in a step and where focus lands; Preview step pressed; Add ingredient on a row: the row, the picker in its built place, the two landings. | `look-p12-row-controls-r2` (replaces `look-p12-row-controls`) |
+| `add-step-place.html` | `P12G2_StepOrder` | 1366. Two places for a step's Add step: A leading its last line, B with the line moved up under the two fields. **Decided by Mark 2026-11-21: A.** Kept as the record of the choice, as first drawn; its step group order is the first drawing's, not the one to build from. | `decide-p12-add-step-place` (answered: last-line) |
 
 The example recipe Coffee (Heavy cream, Coffee beans, Dextrose, Fine sea salt; steps Steep and Churn) is Sid's, made through the built creation editor in a throwaway profile. The other recipes are the seed's.
 
@@ -35,9 +35,33 @@ The example recipe Coffee (Heavy cream, Coffee beans, Dextrose, Fine sea salt; s
 6. **Drawn in addition to the roadmap text.** A version with an edit kept shows one line under its identity ("Edit kept. Finish it at the desk or on the iPad."), in the built `notebook-version__draft` line's place and role. The build already leaves Record batch and Next version out while an edit is kept (D-24), so without the line the head would show Print sheet and no reason.
 7. **Drawn in addition to the roadmap text.** A version with a Next version draft kept shows one line ("Draft: Version 2 · less cream. Finish it at the desk or on the iPad.") and the pen stays shut. Today the pen reopens there at 393 (measured). Next version has no address of its own, so the line stands in for the one-line page. The record act is drawn as staying; whether a batch may be recorded while that draft is held is for the plan to settle against the one-pen rule.
 8. The version pen's open step gains Preview step on its own line under the two fields, before the uses line, and the creation editor's own preview block (`.mk-preview`) while pressed (Hide preview). The pen's open step has no Add target; that does not change. Reordering steps in the pen is not drawn (`bug-p11-pen-steps-no-reorder`, deferred by Mark).
-9. Row controls, add first (D-08). An ingredient row: grams, Add ingredient, Add to step (only under "Not in a step yet"), Move up, Move down, Remove. A step's last line: Add step, Move up, Move down, Remove. Remove is last on both. A greyed Move button is still a Tab stop, as built.
+9. *(First drawing; replaced by "The redraw" below.)* Row controls, add first (D-08). An ingredient row: grams, Add ingredient, Add to step (only under "Not in a step yet"), Move up, Move down, Remove. A step's last line: Add step, Move up, Move down, Remove. Remove is last on both. A greyed Move button is still a Tab stop, as built.
 10. Add ingredient on a row (D-09) opens the same picker in the same place; the pick lands right after that row, in the same step group and ticked in that step's Uses, or after it and unplaced under "Not in a step yet"; focus goes to the new row's grams, as the build does after any pick. The heading's Add ingredient stays.
-11. Where a step's Add step line stands: `decide-p12-add-step-place` (A drawn on the row controls board; Sid recommends A).
+11. Where a step's Add step line stands: decided by Mark 2026-11-21, A, the last line (`decide-p12-add-step-place`).
+
+## The redraw (2026-11-21, after Mark's decision in chat; proposed, `look-p12-row-controls-r2`)
+
+Mark decided: a step's operations are two groups, kept together whatever the order. One acts on the step itself (lead-in, instruction, aside, targets, purpose, Change ingredients, Preview step); the other on the step among the steps (Add step, Move up, Move down, Remove). Add step stays on the last line. Cmd+Return in a step's field adds a step after it (he tested the key on the iPad with the Magic Keyboard on a probe page; Ctrl+Return too at the desk). His frequency ranking: Add step on nearly every step; aside and target sometimes; Preview step mostly with an aside or target; Move seldom; Remove rarely. The critique of `P12G2_StepOrder` (`.impeccable/critique/2026-11-21T13-42-15Z__generators-boards-p12g2-steporder-dc-html-7590d248.md`) adds: Remove stays the last stop; Preview step comes after both target and aside; show the picker in place.
+
+12. Step, its own group, in Tab order: lead-in, instruction, target (its chips, then Add target), purpose (its field, or Add purpose), the uses line with Change ingredients, aside (its field, or Add aside), Preview step last.
+13. Step, list group, on the last line: Add step, Move up, Move down, Remove.
+14. What moves against the build to give that order: Add purpose leaves the uses line and stands beside Add target; the aside's field moves from above the uses line to below it; Add aside and Preview step make the step group's last line (Preview step leaves the target line); pressed, the preview block stands under that line, above the list line.
+15. Cmd+Return in a step's lead-in or instruction does what its Add step does: a new step after it, focus in the new lead-in. Nothing is typed. The words "Cmd+Return" stand beside every step's Add step in the uses line's small grotesk (proposed class `mk-keys`, existing tokens only: `--face-grotesk`, `--sheet-size-cross-flag`); the button carries `aria-keyshortcuts="Meta+Enter Control+Enter"`.
+16. **For Mark to confirm (Sarge's application of the grouping).** Ingredient row: grams, Add to step when the row is in no step, then Add ingredient, Move up, Move down, Remove.
+17. **For Mark to confirm.** Cmd+Return in a row's grams opens the picker to add an ingredient after that row. The row does not carry the words: on a row in no step they do not fit the line (measured: the controls ran past the cell).
+18. **For Mark to confirm.** The picker opens in its built place, under the table's Total, also when opened from a row; the heading's Add ingredient is away while it is open, as built. On a long table that is away from the row.
+
+Tabs from a step's instruction (counted on the board markup; the Tab walk on it lands on the numbers in order in WebKit and in Chrome):
+
+| To | New step, built | New step, drawn | Written step, built | Written step, drawn |
+|----|----|----|----|----|
+| target (Add target, or the target's label) | 1 | 1 | 1 | 1 |
+| aside (Add aside, or its field) | 5 | 4 | 7 | 7 |
+| Preview step | 2 | 5 | 5 | 8 |
+| Add step | 9 | 6 | 12 | 9 |
+| Remove | 6 | 9 | 9 | 12 |
+
+From a row's grams to Add ingredient: 1 on a row in a step, 2 on a row in no step (Add to step first). The built app's Tab order with a written step was walked in WebKit (26 stops in Instructions) and equals its markup order.
 
 ## What this overrides once approved (leftovers below 724)
 

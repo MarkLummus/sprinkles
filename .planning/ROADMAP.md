@@ -317,8 +317,28 @@ Plans:
 - [x] 12-04-PLAN.md — board against build in WebKit at 1366 and 393 for the record pen, the reading and the printed logs, on 12-07's engine
 - [x] 12-05-PLAN.md — the logs printed to PDF through WebKit, mobile Safari in the iOS Simulator, and every round-one check in one command with the Phase 11 walk unchanged
 
+**Cross-cutting constraints:** <!-- gsd:generated -->
+- Every result is Playwright WebKit or jsdom, labelled device-unverified
+
 **Gap closure** *(after verification)*
 - [x] 12-08-PLAN.md — the Phase 11 walk's selectors repaired for the current build, e37db11a and main recorded equal, the baseline reproduced, every difference traced to its commit and re-recorded at e37db11a, and 12-check.sh to GATE1 PASS
+
+**Round two (Design gate 2)**
+
+**Wave 4** *(after round one)*
+- [ ] 12-09-PLAN.md — below 724 the Notebook's New recipe and Resume and Home's Next version are left out, and the New recipe and Edit addresses show "Done at the desk or on the iPad." with no kept draft touched; PHONE-01 written into REQUIREMENTS and the roadmap
+- [ ] 12-10-PLAN.md — the recipe page's head below 724: the record act and Print sheet, the Edit kept and Draft lines, and a kept Next version draft left shut with no record act on its version (Mark's B); widening opens it
+- [ ] 12-11-PLAN.md — Preview step on an open step in the version pen (bug-p11-pen-step-no-preview)
+- [ ] 12-15-PLAN.md — More, open below 724, without Import and Export, and the Shell pins that pressed them (split out of 12-09; runs beside it)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [ ] 12-12-PLAN.md — the creation editor's step and row controls in sketch 016's two groups, and Add ingredient on each row landing the pick right after it; STRUCT-05 written
+
+**Wave 6** *(blocked on Wave 5 completion)*
+- [ ] 12-13-PLAN.md — Cmd+Return adds and Ctrl+Cmd+Up and Down move a step or row with the caret kept, the keys line under each heading and aria-keyshortcuts, proven by a WebKit keys-and-caret probe
+
+**Wave 7** *(blocked on Wave 6 completion)*
+- [ ] 12-14-PLAN.md — 12-check.sh round two to GATE2 PASS on the final build, the iPad rows walked in WebKit, and the three check rows handed to the orchestrator for Mark (PROOF-02)
 
 **Design gate 1**: MET (Mark, 2026-11-15). Approved and snapshotted boards for the record pen, the reading and the printed log showing a recipe's own scales and problems, a scale of each kind among them, and showing none (sketches 007, 008 and 010 drew only the fixed declared scales). Per the phone brief (PRODUCT.md, "On the phone", Mark 2026-11-15) the record pen's tasting and the reading are also drawn at phone width (393 beside the 350 column) for a recipe's own scales, each kind and none; the printed log needs no 393 board, and no iPhone check is added to this phase's success criteria. The printed-log board also carries the top margin that clears a clipboard holding the batch / tasting log (Mark's List row `adoajjb9sgzbezmyrt4s`, folded in by Mark 2026-11-15), which rides this gate by 12-CONTEXT D-07; its paper check waits for the iPad rows of the second round, so that row stays open. Mark's four answers: `look-p12-pen-and-reading` (approved as drawn), `decide-p12-low-to-high-read-back` (A), `decide-p12-tasting-log-lines` (the Tasting log 4 notes lines, the Batch log 13) and `look-p12-printed-logs` with `look-p12-printed-row-ends-only` (a printed Low to high scale has nothing under its ticks). Snapshot: `.planning/sketches/015-own-scales-and-problems/`. The first planning round plans and builds it.
 

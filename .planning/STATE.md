@@ -4,16 +4,16 @@ milestone: v2.0
 milestone_name: Recipe creation
 current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
-status: verifying
+status: executing
 stopped_at: Completed 12-08-PLAN.md
-last_updated: "2026-11-21T12:57:44.732Z"
+last_updated: "2026-11-21T22:28:23.457Z"
 last_activity: 2026-11-16
 last_activity_desc: Phase 12 execution started
-state_head: 74da468a51e82cbd4b1d93e5731cf9a8de8692f1
+state_head: c049cfade1090af62576e04195b78d0035572dab
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 57
+  total_plans: 64
   completed_plans: 57
   percent: 80
 ---
@@ -29,9 +29,9 @@ See: .planning/PROJECT.md (updated 2026-11-15)
 
 ## Current Position
 
-Phase: 12 (Showing a recipe's own scales and problems, and the whole loop) — EXECUTING
+Phase: 12 (Showing a recipe's own scales and problems, and the whole loop) — READY TO EXECUTE
 Plan: 8 of 8
-Status: Phase complete — ready for verification
+Status: Ready to execute
 Last activity: 2026-11-16 — Phase 12 execution started
 
 Progress: [████████░░] 80%

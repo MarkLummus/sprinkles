@@ -91,6 +91,13 @@ choice rather than assuming one.
 `/gsd-quick-batch` for related fixes. A known one-line CSS fix goes to `/gsd-fast`; a layout
 bug whose cause needs measuring goes to `/gsd-quick`.
 
+## DESIGN.md is a map
+
+Since 2026-11-21 (commit 9056fad4) `DESIGN.md` holds the frontmatter tokens and a short map only.
+The full design text is `.impeccable/design-full.md`. Any citation of a `DESIGN.md` section, named
+rule or line number, in a brief, a plan, a record or a code comment, resolves there; line numbers
+cited before that commit are the same lines in that file.
+
 ## Mark's List
 
 Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `items`) holds what waits on Mark.

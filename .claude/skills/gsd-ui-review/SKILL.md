@@ -47,7 +47,8 @@ Phase: $ARGUMENTS — optional, defaults to last completed phase.
 ## 2. Run the audit as Impeccable
 
 Load the `impeccable` skill and run its **audit** verb against the changed surface. Truth
-sources, in order: DESIGN.md and PRODUCT.md (the Formulation Cookbook), the decision
+sources, in order: DESIGN.md (a map; its full text is `.impeccable/design-full.md`) and
+PRODUCT.md (the Formulation Cookbook), the decision
 register, `.impeccable/` (direction, prior critique snapshots), and
 `.claude/skills/sketch-findings-sprinkles/` (validated cross-cutting targets: type roles,
 6px caption gap, 44px touch targets below 760px, toast/undo feedback conventions).

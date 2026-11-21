@@ -8,8 +8,8 @@ Every board on the active canvas (https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZy
 |---|---|---|---|
 | Boards | 185 | 198 | +13 (Phase 12 Gate 2: 6, Phase 12 Gate 1: 5, Ultra-wide: 2) |
 | Active | 83 | 71 | -12 |
-| Concepts | 3 | 15 | +12 |
-| Archive | 99 | 112 | +13 |
+| Concepts | 3 | 16 | +13 |
+| Archive | 99 | 111 | +12 |
 | Unsure | 60 | 26 | -34 |
 
 If approved as proposed, the active canvas goes from 198 boards on 26 pages to 71 boards on 12 pages; 127 boards leave it and 14 pages empty.
@@ -20,7 +20,7 @@ How Active went from 83 to 71: 10 of the 13 new boards are Active (+10); 22 boar
 
 - **Active:** the newest approved drawing of something built or about to be built. A board another sketch overrides in part stays Active and its row says what it is still the authority for (the six "Part leftover" boards among them).
 - **Archive:** not chosen; a record of a choice whose answer is drawn on another board; an option board whose decision is answered (all of these have a snapshot under `.planning/sketches/`, so the record does not depend on the canvas); an as-built reference; a drawing replaced by a later approved board; a first-session study of something since redrawn and built.
-- **Concepts:** Mark's own three image boards, and, proposed here and marked unsure, the drawings of places that are parked (not built, not about to be built, not rejected).
+- **Concepts:** Mark's own three image boards; AltAskAnExpert, by Mark's canvas comment of 2026-11-21 (a concept still to be discussed); and, proposed here and marked unsure, the drawings of places that are parked (not built, not about to be built, not rejected).
 - **unsure:** I cannot tie the proposal to a decision line. The question that would settle it is below.
 
 ## What would move, by page (in canvas order)
@@ -52,8 +52,8 @@ How Active went from 83 to 71: 10 of the 13 new boards are Active (+10); 22 boar
 | Kitchen | 2 | 0 | 0 | 2 | the whole page, unsure (parked place) |
 | Print formats superseded | 3 | 0 | 3 | 0 | the whole page |
 | Superseded print drafts | 7 | 0 | 7 | 0 | the whole page |
-| Alternates | 6 | 0 | 6 | 0 | the whole page (Mark's own Alternates page) |
-| **Total** | **198** | **71** | **112** | **15** | |
+| Alternates | 6 | 0 | 5 | 1 | the whole page (Mark's own Alternates page): five to Archive; AltAskAnExpert to Concepts (Mark's canvas comment, 2026-11-21) |
+| **Total** | **198** | **71** | **111** | **16** | |
 
 ## Unsure: 26 boards, 6 questions
 
@@ -274,6 +274,6 @@ Rows are in canvas page order, then top to bottom, left to right. Titles are the
 | Alternates | AltOneRecipe | One recipe, three standings | 2026-09-19 to 21 (first canvas session, hand-written) | Archive | first-session alternatives (2026-09-19 to 21); Mark gathered them on a page he named Alternates; what was approved is in DESIGN.md (App marks, the filled action) |
 | Alternates | AltChain | The chain, labelled | 2026-09-19 to 21 (first canvas session, hand-written) | Archive | first-session alternatives (2026-09-19 to 21); Mark gathered them on a page he named Alternates; what was approved is in DESIGN.md (App marks, the filled action) |
 | Alternates | AltBaseAndAdapt | Base and adaptation | 2026-09-19 to 21 (first canvas session, hand-written) | Archive | first-session alternatives (2026-09-19 to 21); Mark gathered them on a page he named Alternates; what was approved is in DESIGN.md (App marks, the filled action) |
-| Alternates | AltAskAnExpert | Ask an expert, with its disclosure | 2026-09-19 to 21 (first canvas session, hand-written) | Archive | first-session alternatives (2026-09-19 to 21); Mark gathered them on a page he named Alternates; what was approved is in DESIGN.md (App marks, the filled action) |
+| Alternates | AltAskAnExpert | Ask an expert, with its disclosure | 2026-09-19 to 21 (first canvas session, hand-written) | Concepts | Mark's comment on this board on the canvas, 2026-11-21: "this is a concept for Ask an Expert - a feature we haven't discussed yet. keep this with other concepts to be discussed." |
 | Alternates | AltMarkContract | What a mark means | 2026-09-19 to 21 (first canvas session, hand-written) | Archive | first-session alternatives (2026-09-19 to 21); Mark gathered them on a page he named Alternates; what was approved is in DESIGN.md (App marks, the filled action) |
 | Alternates | AltFilledAction | The filled action — six alternatives | 2026-09-19 to 21 (first canvas session, hand-written) | Archive | first-session alternatives (2026-09-19 to 21); Mark gathered them on a page he named Alternates; what was approved is in DESIGN.md (App marks, the filled action) |

@@ -12,6 +12,8 @@ tags: [phone, entry-points, notebook, home, more, version-pen, preview-step, cre
 
 Authority: these boards, CSS included. Conformance is the board and the built app side by side in a browser, never prose or a test count. `CONTRACT.md` names what the boards hold so a planner, a checker and UAT cite one source.
 
+> Round-two details (2026-11-21): `CONTRACT.md` section 11 holds Sid's proposals for ten gaps the Phase 12 research found; they are **proposed, not yet approved** (`look-p12-round-two-details`). Whether a batch may be recorded below 724 while a Next version draft is held is Mark's own row, `decide-p12-record-with-draft-held`. Section 3's Home bullet was corrected to the approved board.
+
 ## Mark's answers (all 2026-11-21)
 
 | Where | Answer |

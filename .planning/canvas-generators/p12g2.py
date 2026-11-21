@@ -8,7 +8,8 @@
 #   P12G2_StepOrder    C  the two places for a step's Add step, as first drawn; DECIDED A by Mark 2026-11-21 (decide-p12-add-step-place = last-line); kept as the record of the choice
 # REDRAWN 2026-11-21 (Mark, chat, the same day): P12G2_RowControls only. Two groups, kept together. The step group acts on the step itself, in this Tab order: lead-in, instruction,
 # target, purpose, Change ingredients, aside, Preview step last. The list group acts on the step among the steps, on the step's last line: Add step, Move up, Move down, Remove.
-# Cmd+Return in a step's field adds a step after it (Ctrl+Return too at the desk); the words stand beside Add step. The ingredient row takes the same grouping: grams, Add to step
+# Cmd+Return in a step's field adds a step after it (Ctrl+Return too at the desk); Ctrl+Cmd+Up and Ctrl+Cmd+Down move it (Mark, later the same day); Remove has no key. One line of
+# words under each region's heading names the keys. The ingredient row takes the same grouping: grams, Add to step
 # (when in no step), then Add ingredient, Move up, Move down, Remove, with Cmd+Return in the grams field opening the picker. The redrawn board starts from p12g2c-capture.json;
 # sets A and B and P12G2_StepOrder's panels still start from p12g2-capture.json and regenerate byte for byte.
 # Every panel is the built app's own markup (p12g2-capture.mjs: WebKit, coarse, app/dist of 2026-11-16) under the app's own stylesheets resolved at 393, 723 and 1366 coarse (a canvas
@@ -86,15 +87,23 @@ def steps(h, place='A'):
     if place == 'B':
         h, k2 = re.subn(r'(<p class="method-step__targets">.*?)(<p class="method-step__acts">.*?</p>)', r'\2\1', h); assert k2 == k
     return h
-KEYS_HTML = '<span class="mk-keys">Cmd+Return</span>'      # proposed class: the uses line's own small grotesk (existing tokens only); on a step's Add step, not on an ingredient row (it does not fit the unplaced row's line: measured)
+# How the maker learns the three keys: one line of plain words under each region's heading, once, in the uses line's own small grotesk (proposed class mk-keys, existing tokens only).
+# Not beside each step's controls: three shortcuts on every step's last line would add weight to every step, and on an ingredient row in no step they do not fit the line (measured).
+KEYS_STEP = 'In a step: Cmd+Return adds a step after it. Ctrl+Cmd+Up or Down moves it.'
+KEYS_ROW = 'In a row\'s grams: Cmd+Return adds an ingredient after it. Ctrl+Cmd+Up or Down moves it.'
+MOVE = 'Ctrl+Cmd+Down'
+def keys_line(h, words):
+    i = h.index('</div>', h.index('class="mk-head-row"')) + 6 if 'class="mk-head-row"' in h else h.index('</h2>') + 5      # the heading row; with the picker open the build draws the heading alone
+    return h[:i] + f'<p class="mk-keys">{esc(words)}</p>' + h[i:]
 KEYS = 'Cmd+Return'                                    # how the maker learns the shortcut: plain words beside the control, in the line's own small type
 def rows2(h):
     """The redraw on an ingredient row: the row's own controls first (grams, Add to step when it is in no step), then the list group: Add ingredient, Move up, Move down, Remove."""
     def one(m):
         bs = buttons(m.group(1)); name = re.search(r'aria-label="remove ([^"]*)"', bs['remove']).group(1)
         bs['add-ingredient'] = f'<button type="button" class="text-control" data-act="add-ingredient" aria-label="Add ingredient after {name}" aria-keyshortcuts="Meta+Enter Control+Enter" tabindex="0">Add ingredient</button>'
+        for k, key in (('move-up', 'ArrowUp'), ('move-down', 'ArrowDown')): bs[k] = bs[k].replace(' tabindex', f' aria-keyshortcuts="Control+Meta+{key}" tabindex')
         return '<span class="mk-row-acts">' + SEP_I.join(bs[k] for k in ('add-to-step', 'add-ingredient', 'move-up', 'move-down', 'remove') if k in bs) + '</span>'
-    h, k = re.subn(r'<span class="mk-row-acts">(.*?)</span></td>', lambda m: one(m) + '</td>', h); assert k; return h
+    h, k = re.subn(r'<span class="mk-row-acts">(.*?)</span></td>', lambda m: one(m) + '</td>', h); assert k; return keys_line(h, KEYS_ROW)
 def steps2(h, preview=None):
     """The redraw on a step. Step group, in Tab order: lead-in, instruction, target (its chips, Add target), purpose (its field, or Add purpose beside Add target), the uses line with
     Change ingredients, aside (its field, or Add aside), Preview step last. Then the list group on the last line: Add step (with the shortcut's words), Move up, Move down, Remove.
@@ -107,14 +116,15 @@ def steps2(h, preview=None):
         tg = re.search(r'<p class="method-step__targets">(.*?)</p>', li).group(1).replace(pv.group(0), ''); us = re.search(r'<p class="method-step__uses-line">(.*?)</p>', li).group(1)
         for b in (ap, aa):
             if b: us = us.replace(SEP_S + b.group(0), '')
-        bs = buttons(re.search(r'<p class="method-step__acts">(.*?)</p>', li).group(1)); bs['add-after'] = bs['add-after'].replace(' tabindex', ' aria-keyshortcuts="Meta+Enter Control+Enter" tabindex') + KEYS_HTML
+        bs = buttons(re.search(r'<p class="method-step__acts">(.*?)</p>', li).group(1)); bs['add-after'] = bs['add-after'].replace(' tabindex', ' aria-keyshortcuts="Meta+Enter Control+Enter" tabindex')
+        for k, key in (('move-up', 'ArrowUp'), ('move-down', 'ArrowDown')): bs[k] = bs[k].replace(' tabindex', f' aria-keyshortcuts="Control+Meta+{key}" tabindex')
         pvb = pv.group(0); block = ''
         if preview == n: pvb = pvb.replace('Preview step', 'Hide preview'); block = preview_block()
         head = li[:li.index('<p class="method-step__targets">')]; head = head.replace(pf.group(0), '') if pf else head; head = head.replace(af.group(0), '') if af else head
         fs = re.search(r'<fieldset class="method-step__uses".*?</fieldset>', li, re.S)
         return (head + f'<p class="method-step__targets">{tg}{ap.group(0) if ap else ""}</p>' + (pf.group(0) if pf else '') + f'<p class="method-step__uses-line">{us}</p>' + (fs.group(0) if fs else '') + (af.group(0) if af else '')
                 + f'<p class="method-step__targets">{aa.group(0) if aa else ""}{pvb}</p>' + block + '<p class="method-step__acts">' + SEP_S.join(bs[k] for k in ('add-after', 'move-up', 'move-down', 'remove')) + '</p></div></li>')
-    h, k = re.subn(r'<li class="method-step mk-step" data-step="(\d+)">.*?</div></li>', one, h, flags=re.S); assert k; return h
+    h, k = re.subn(r'<li class="method-step mk-step" data-step="(\d+)">.*?</div></li>', one, h, flags=re.S); assert k; return keys_line(h, KEYS_STEP)
 def preview_block():
     pv = CAP['ed_preview']['method']; a = pv.index('<div class="mk-preview"'); d = 0
     for m in re.finditer(r'<div\b|</div>', pv[a:]):
@@ -159,7 +169,7 @@ NOTE_CSS = '''
 .dl-tab{position:absolute;left:-7px;top:-7px;z-index:3;box-sizing:border-box;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:#7a2e8e;color:#ffffff;font:600 10px/16px var(--face-grotesk);font-style:normal;text-align:center;letter-spacing:0;text-transform:none;pointer-events:none}
 .g2-tabs button > .dl-tab{top:2px}
 '''
-FLAG_CSS = '''.mk-keys{font-family:var(--face-grotesk);font-size:var(--sheet-size-cross-flag);white-space:nowrap}
+FLAG_CSS = '''.mk-keys{font-family:var(--face-grotesk);font-size:var(--sheet-size-cross-flag);margin:var(--gap-xs) 0 var(--gap-xs)}
 .g2-tabs .target-chip{position:relative}
 .dl-tab.dl-tab--mid{left:calc(50% - 30px)}
 .dl-flag{position:absolute;left:0;top:-15px;z-index:4;white-space:nowrap;padding:0 6px;border-radius:3px;background:#7a2e8e;color:#ffffff;font:600 11px/16px var(--face-grotesk);font-style:normal;letter-spacing:0;text-transform:none;pointer-events:none}
@@ -275,24 +285,30 @@ def build_rows():
     built, nb = editor2('ed_base', drawn=False); drawn, nd = editor2('ed_base'); full, nf = editor2('ed_full', part=('method',)); bfull, nbf = editor2('ed_full', drawn=False, part=('method',))
     D, DF = C['drawn'], C['drawn_full']
     r1 = [cell(P('rc-built', 1366, built, f'As built today · {nb} stops', f'A step: target, Preview step, Change ingredients, purpose, aside, then Remove, Move up, Move down, Add step. Add step is {C["built"]["add"]} Tabs after the instruction. A row: grams, Remove, Move up, Move down, Add to step. The order is the one WebKit walked in the built app.', natural=True, w=576, tabs=nb)),
-          cell(P('rc-drawn', 1366, drawn, f'Drawn · {nd} stops', f'Two groups. The step itself: lead-in, instruction, Add target ({D["target"]}), Add purpose, Change ingredients, Add aside ({D["aside"]}), Preview step ({D["preview"]}) closing the group. The step among the steps, on the last line: Add step ({D["add"]} Tabs after the instruction, or {KEYS} from either field), Move up, Move down, Remove ({D["remove"]}, the last stop). A row the same way: grams, Add to step when it is in no step, then Add ingredient, Move up, Move down, Remove; the row does not carry the shortcut\'s words (they do not fit the unplaced row\'s line).', natural=True, w=576, tabs=nd)),
+          cell(P('rc-drawn', 1366, drawn, f'Drawn · {nd} stops', f'Two groups. The step itself: lead-in, instruction, Add target ({D["target"]}), Add purpose, Change ingredients, Add aside ({D["aside"]}), Preview step ({D["preview"]}) closing the group. The step among the steps, on the last line: Add step ({D["add"]} Tabs after the instruction), Move up, Move down, Remove ({D["remove"]}, the last stop). Three keys work from either field and skip the Tabs: {KEYS} adds a step, Ctrl+Cmd+Up and Ctrl+Cmd+Down move it; one line under each heading says so. Remove has no key. A row the same way: grams, Add to step when it is in no step, then Add ingredient, Move up, Move down, Remove, with the same three keys from its grams.', natural=True, w=576, tabs=nd)),
           cell(P('rc-full-built', 1366, bfull, f'As built · step 1 with a target, a purpose and an aside', f'Preview step stands before the purpose and the aside: from the aside it is {tabs_to(f0, "Step 1, Preview step", "Step 1, aside")} Shift+Tabs back. Add step is {C["built_full"]["add"]} Tabs after the instruction.', natural=True, w=576, tabs=nbf)),
-          cell(P('rc-full', 1366, full, f'Drawn · the same step', f'The order holds when the parts are written: target ({DF["target"]}), purpose, Change ingredients, aside ({DF["aside"]}), then Preview step ({DF["preview"]}), 1 Tab after the aside. Add step is {DF["add"]} Tabs after the instruction, Remove {DF["remove"]}; {KEYS} skips them all.', natural=True, w=576, tabs=nf))]
+          cell(P('rc-full', 1366, full, f'Drawn · the same step', f'The order holds when the parts are written: target ({DF["target"]}), purpose, Change ingredients, aside ({DF["aside"]}), then Preview step ({DF["preview"]}), 1 Tab after the aside. Add step is {DF["add"]} Tabs after the instruction, Remove {DF["remove"]}; the keys skip them all.', natural=True, w=576, tabs=nf))]
     s1, _ = editor2('ed_full', tabs=False, part=('method',), marks=[('Step 1, instruction', f'{KEYS} pressed here')])
     s2, _ = editor2('ed_added', tabs=False, part=('method',), marks=[('Step 2, lead-in', 'focus lands here')])
+    s4, _ = editor2('ed_full', tabs=False, part=('method',), marks=[('Step 1, instruction', f'{MOVE} pressed here')])
+    s5, _ = editor2('ed_moved', tabs=False, part=('method',), marks=[('Step 2, instruction', 'the caret stays here')])
     s3, _ = editor2('ed_full', tabs=False, part=('method',), preview='1')
-    r2 = [cell(P('kr-press', 1366, s1, f'1 · {KEYS} in a step\'s lead-in or instruction', f'The words "{KEYS}" stand beside every step\'s Add step, in the line\'s own small type; that is how the maker learns it. Nothing is typed into the field. At the desk Ctrl+Return does the same.', natural=True, w=576)),
+    SM, RM = CAPC['stepMove'], CAPC['rowMove']; assert CAPC['stepMoveOff']['heard'] == SM['heard'] and CAPC['stepMoveOff']['order'] == ['Churn', 'Steep'] and CAPC['rowMoveOff']['heard'] == RM['heard']      # a greyed Move says and does nothing in the build
+    r2 = [cell(P('kr-press', 1366, s1, f'1 · {KEYS} in a step\'s lead-in or instruction', f'One line under the heading names the three keys; that is how the maker learns them, once, with no words added to each step. Nothing is typed into the field. At the desk Ctrl+Return does the same.', natural=True, w=576)),
           cell(P('kr-added', 1366, s2, '2 · A new step after it, focus in its lead-in', 'The same thing Add step does today (built markup of that state): the new step 2 stands after step 1 and focus is in its lead-in, ready to type.', natural=True, w=576)),
+          cell(P('kr-move', 1366, s4, f'1 · {MOVE} in a step\'s lead-in or instruction', 'Ctrl+Cmd+Up moves the step up, Ctrl+Cmd+Down moves it down. Cmd, Option and Shift+Cmd with an arrow keep their own work in the text (caret and selection).', natural=True, w=576)),
+          cell(P('kr-moved', 1366, s5, '2 · The step moves; the caret stays where it was in it', f'Built markup of the state after Move down. Steep is step 2 and the caret is still in its instruction, at the same place. Heard: "{SM["heard"][-1]}", what the Move button says today. At the ends (up on the first step, down on the last) the key does nothing and says nothing, as a greyed Move does today.', natural=True, w=576)),
           cell(P('kr-preview', 1366, s3, 'Preview step pressed', 'It reads Hide preview, and the preview block stands under it, at the end of the step\'s own group and above the list line. (The block is the build\'s, from the two-field step; it shows the target and aside as the Sheet does.)', natural=True, w=576))]
     a1, _ = editor2('ed_base', tabs=False, part=('ing',), marks=[('Heavy cream, 36% fat, grams', f'{KEYS} here, or its Add ingredient')])
     a2, _ = editor2('ed_picker', tabs=False, part=('ing',), cut_pick=True); a3, _ = editor2('ed_after_step', tabs=False, marks=[('Egg yolk (fresh), grams', 'focus lands here')]); a4, _ = editor2('ed_after_unplaced', tabs=False, part=('ing',), marks=[('Cinnamon, grams', 'focus lands here')])
-    r3 = [cell(P('ai-press', 1366, a1, '1 · Add ingredient on Heavy cream, in Step 1', f'Every row has it, after the row\'s own controls. {KEYS} in a row\'s grams does the same. The heading\'s Add ingredient stays and still adds a row under "Not in a step yet".', natural=True, w=576)),
+    r3 = [cell(P('ai-press', 1366, a1, '1 · Add ingredient on Heavy cream, in Step 1', f'Every row has it, after the row\'s own controls. {KEYS} in a row\'s grams does the same; Ctrl+Cmd+Up and Down move the row within its own step group, as its Move buttons do (heard today: "{RM["heard"][-1]}"). The heading\'s Add ingredient stays.', natural=True, w=576)),
           cell(P('ai-pick', 1366, a2, '2 · The picker opens, in its built place', 'Under the table\'s Total, where the heading\'s Add ingredient opens it today (built markup of the region, the list cut short here). The heading\'s Add ingredient is away while it is open, as built. Cancel first.', natural=True, w=576)),
           cell(P('ai-step', 1366, a3, '3 · Egg yolk picked: it lands right after Heavy cream', 'In the same step group, and ticked in that step\'s Uses: step 1 now reads "uses Heavy cream, Egg yolk, Coffee beans". Focus goes to the new row\'s grams, as the build does after any pick.', natural=True, w=576)),
           cell(P('ai-unplaced', 1366, a4, 'On a row under "Not in a step yet"', 'Add ingredient on Fine sea salt, Cinnamon picked: it lands right after Fine sea salt, in no step. On such a row Add to step comes first, then Add ingredient.', natural=True, w=576))]
-    return flow('Creation editor · row controls in two groups, Add step and Add ingredient by Cmd+Return', 'Phase 12 Gate 2, set C, redrawn 2026-11-21 for Mark\'s decision (Add step stays on the last line; the step\'s own controls and the list\'s controls are two groups; Cmd+Return adds). 1366 only. Built markup with the order, the new control and the shortcut\'s words drawn over it. Purple numbers and tags are notes. Proposed.',
+    return flow('Creation editor · row controls in two groups, with keys to add and move', 'Phase 12 Gate 2, set C, redrawn 2026-11-21 for Mark\'s decision (Add step stays on the last line; the step\'s own controls and the list\'s controls are two groups; Cmd+Return adds, Ctrl+Cmd+Up and Down move). 1366 only. Built markup with the order, the new control and the shortcut\'s words drawn over it. Purple numbers and tags are notes. Proposed.',
                 [('The Tab order', 'The iPad Tab walk (D-11) runs once on the drawn order. Uses are shut; open, a step\'s ticks follow Change ingredients as today. The number in brackets is Tabs from the instruction.', r1),
-                 ('Cmd+Return in a step', 'Tested by Mark on the iPad with the Magic Keyboard on a probe page, and in Playwright WebKit.', r2),
+                 ('Keys in a step · add', 'Mark tested the keys on the iPad with the Magic Keyboard on a probe page (the keydown reaches the page and the text is left alone); they also pass in Playwright WebKit. Purple tags are notes.', r2[:2]),
+                 ('Keys in a step · move, and Preview step', 'Remove has no key: it is rare and cannot be undone.', r2[2:]),
                  ('Add ingredient on a row', 'The two "after" panels are the built app\'s own markup for that state, with the drawn controls.', r3)], LABH=176)
 def build_steporder():
     a, na = editor('ed_base', part=('method',)); b, nb = editor('ed_base', place='B', part=('method',))
@@ -305,7 +321,7 @@ TITLES = {'P12G2_Band': 'Recipe page head below 724 · no Next version, Edit or 
           'P12G2_Places': 'Notebook with and without a kept draft, Home, More · 393 · entry points left out (2026-11-21; proposed)',
           'P12G2_DeskPage': 'The one-line page a hidden job\'s address shows · three wordings (2026-11-21; for Mark to pick)',
           'P12G2_PenPreview': 'Version pen · Preview step on an open step · 1366 (2026-11-21; proposed)',
-          'P12G2_RowControls': 'Creation editor · row controls in two groups, Cmd+Return, Add ingredient on each row, Tab order · 1366 (2026-11-21; redrawn the same day; proposed)',
+          'P12G2_RowControls': 'Creation editor · row controls in two groups, keys to add and move, Tab order · 1366 (2026-11-21; redrawn twice the same day; proposed)',
           'P12G2_StepOrder': 'A step\'s Add step · last line or under the fields · 1366 (2026-11-21; Mark picked A, the last line)'}
 BUILD = (('P12G2_Band', build_band), ('P12G2_Places', build_places), ('P12G2_DeskPage', build_deskpage), ('P12G2_PenPreview', build_pen), ('P12G2_RowControls', build_rows), ('P12G2_StepOrder', build_steporder))
 

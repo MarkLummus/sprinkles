@@ -611,7 +611,7 @@
  },
  "rc-drawn": {
   "w": 576,
-  "h": 1233,
+  "h": 1273,
   "overflowX": 0,
   "controls": [
    "Add ingredient",
@@ -692,7 +692,7 @@
  },
  "rc-full": {
   "w": 576,
-  "h": 900,
+  "h": 920,
   "overflowX": 0,
   "controls": [
    "Add step",
@@ -723,7 +723,7 @@
  },
  "kr-press": {
   "w": 576,
-  "h": 900,
+  "h": 920,
   "overflowX": 0,
   "controls": [
    "Add step",
@@ -753,7 +753,7 @@
  },
  "kr-added": {
   "w": 576,
-  "h": 1260,
+  "h": 1280,
   "overflowX": 0,
   "controls": [
    "Add step",
@@ -790,9 +790,69 @@
   "discs": 0,
   "notes": []
  },
+ "kr-move": {
+  "w": 576,
+  "h": 920,
+  "overflowX": 0,
+  "controls": [
+   "Add step",
+   "Remove",
+   "Add target",
+   "Change ingredients",
+   "Preview step",
+   "Add step",
+   "Move up",
+   "Move down",
+   "Remove",
+   "Add target",
+   "Add purpose",
+   "Change ingredients",
+   "Add aside",
+   "Preview step",
+   "Add step",
+   "Move up",
+   "Move down",
+   "Remove"
+  ],
+  "small": [],
+  "ingW": null,
+  "methodW": 528,
+  "discs": 0,
+  "notes": []
+ },
+ "kr-moved": {
+  "w": 576,
+  "h": 920,
+  "overflowX": 0,
+  "controls": [
+   "Add step",
+   "Add target",
+   "Add purpose",
+   "Change ingredients",
+   "Add aside",
+   "Preview step",
+   "Add step",
+   "Move up",
+   "Move down",
+   "Remove",
+   "Remove",
+   "Add target",
+   "Change ingredients",
+   "Preview step",
+   "Add step",
+   "Move up",
+   "Move down",
+   "Remove"
+  ],
+  "small": [],
+  "ingW": null,
+  "methodW": 528,
+  "discs": 0,
+  "notes": []
+ },
  "kr-preview": {
   "w": 576,
-  "h": 957,
+  "h": 977,
   "overflowX": 0,
   "controls": [
    "Add step",
@@ -822,11 +882,11 @@
  },
  "ai-press": {
   "w": 576,
-  "h": 539,
+  "h": 559,
   "overflowX": 0,
   "controls": [
    "Add ingredient",
-   "pressed, or Cmd+Return in its gramsAdd ingredient",
+   "Add ingredient",
    "Move up",
    "Move down",
    "Remove",
@@ -852,7 +912,7 @@
  },
  "ai-pick": {
   "w": 576,
-  "h": 1033,
+  "h": 1053,
   "overflowX": 0,
   "controls": [
    "Add ingredient",
@@ -888,7 +948,7 @@
  },
  "ai-step": {
   "w": 576,
-  "h": 1310,
+  "h": 1350,
   "overflowX": 0,
   "controls": [
    "Add ingredient",
@@ -941,7 +1001,7 @@
  },
  "ai-unplaced": {
   "w": 576,
-  "h": 692,
+  "h": 712,
   "overflowX": 0,
   "controls": [
    "Add ingredient",

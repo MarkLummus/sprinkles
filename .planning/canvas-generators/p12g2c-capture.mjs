@@ -7,6 +7,7 @@
 //   ed_after_step      Egg yolk right after Heavy cream in Step 1, ticked in its Uses (heading Add ingredient, Add to step, Move up)
 //   ed_after_unplaced  Cinnamon after Fine sea salt under Not in a step yet
 //   ed_full            step 1 with a target, a purpose and an aside written, with the real Tab order (tabWalkFull)
+//   ed_moved           Move down pressed on step 1 (stepMove: what the build says and where focus is; stepMoveOff, rowMove, rowMoveOff: the same for a greyed Move and for a row)
 //   ed_added           Add step pressed on step 1: the new step 2 and where focus lands (focusAfterAddStep2)
 // The example words are Sid's. The clock is fixed at 4 Aug 2026.
 import { writeFile } from 'node:fs/promises';
@@ -56,6 +57,11 @@ try {
     await regions('ed_base');
     const walkTabs = async () => { await page.locator('.ingredient-table-region .mk-head-act').focus(); const walk = [await page.evaluate(active)]; for (let i = 0; i < 140; i++) { await page.keyboard.press('Tab'); const a = await page.evaluate(active); walk.push(a); if (!a || a.region === 'other') break; } return walk; };
     out.tabWalk = await walkTabs();
+    // what the build says and where focus goes on a move, and on a greyed Move (the redraw's Ctrl+Cmd+Up and Down do what these buttons do)
+    const heard = () => page.evaluate(() => [...document.querySelectorAll('[role="status"], [aria-live]')].map((e) => e.textContent.trim()).filter(Boolean));
+    await L('Move down, Heavy cream, 36% fat').click(); await page.waitForTimeout(400); out.rowMove = { heard: await heard(), focus: await page.evaluate(active) };
+    await L('Move down, Heavy cream, 36% fat').evaluate((e) => e.click()); await page.waitForTimeout(400); out.rowMoveOff = { heard: await heard(), focus: await page.evaluate(active), order: await page.evaluate(() => [...document.querySelectorAll('.ingredient-table tbody tr[aria-label]')].map((r) => r.getAttribute('aria-label'))) };
+    await L('Move up, Heavy cream, 36% fat').click(); await page.waitForTimeout(400);
     await clickUntil(() => page.locator('.ingredient-table-region .mk-head-act'), '.pick'); await regions('ed_picker'); out.ed_picker.focus = await page.evaluate(active);
     await pickRow('Egg yolk (fresh)').click(); await page.waitForSelector('.pick', { state: 'detached' }); await page.fill('[aria-label="Egg yolk (fresh), grams"]', '60');
     await L('Add to step, Egg yolk (fresh)').click(); await L('Step 1, Steep: add Egg yolk (fresh)').click(); await page.waitForTimeout(200);
@@ -65,6 +71,9 @@ try {
     await L('Step 1, add purpose').click(); await page.fill('[aria-label="Step 1, purpose"]', 'Pulls the coffee into the cream.');
     await L('Step 1, add aside').click(); await page.fill('[aria-label="Step 1, aside"]', 'Do not let it boil.'); await page.locator('[aria-label="Step 1, lead-in"]').focus(); await page.waitForTimeout(300);
     await regions('ed_full'); out.tabWalkFull = await walkTabs();
+    await L('Step 1, move down').click(); await page.waitForTimeout(400); out.stepMove = { heard: await heard(), focus: await page.evaluate(active) }; await regions('ed_moved');
+    await L('Step 2, move down').evaluate((e) => e.click()); await page.waitForTimeout(400); out.stepMoveOff = { heard: await heard(), focus: await page.evaluate(active), order: await page.evaluate(() => [...document.querySelectorAll('.method-step [data-field="lead-in"]')].map((t) => t.value)) };
+    await L('Step 2, move up').click(); await page.waitForTimeout(400);
     await L('Step 1, Add step after it').click(); await page.waitForSelector('[aria-label="Step 3, lead-in"]'); await page.waitForTimeout(300); out.focusAfterAddStep2 = await page.evaluate(active); await regions('ed_added');
     await ctx.close();
   }

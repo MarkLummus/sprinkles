@@ -49,10 +49,11 @@ def cut_sheet(h):
 def drop(h, pat, n=None):
     h2, k = re.subn(pat, '', h); assert k and (n is None or k == n), (pat, k); return h2
 BTN = lambda words, cls='[^"]*': r'<button type="button" class="%s" tabindex="0">%s</button>' % (cls, words)
-def band(h, line=None):
-    """The band below 724 as drawn: no Next version, no Edit, no Resume editing."""
+def band(h, line=None, record=True):
+    """The band below 724 as drawn: no Next version, no Edit, no Resume editing; record=False also leaves the record act out (a Next version draft kept: Mark, decide-p12-record-with-draft-held = B)."""
     a = h.index('<div class="notebook-version__acts">'); b = h.index('</div>', a); acts = h[a:b]
     acts = re.sub(BTN('(?:Next version|Edit|Resume editing)'), '', acts); assert 'Print sheet' in acts
+    if not record: acts, k = re.subn(BTN('Record (?:batch|another|tasting)', 'notebook-action'), '', acts); assert k == 1
     h = h[:a] + acts + h[b:]
     if line:
         i = h.index('</h2>', h.index('class="notebook-version__identity')) + 5; h = h[:i] + f'<p class="notebook-version__draft">{esc(line)}</p>' + h[i:]
@@ -218,7 +219,7 @@ def build_band():
           cell(P('band-tasted-723', 723, band(R('recipe_tasted_723')), 'Tasted, at 723', 'The widest window that still counts as phone width: the same two controls.'))]
     r2 = [cell(P('band-editable', 393, band(R('recipe_editable_393')), 'A version that can be edited', 'No Edit: the band reads as any not yet churned version does.')),
           cell(P('band-editing', 393, band(R('recipe_editing_393'), LINE_EDIT), 'An edit kept', f'No Resume editing. Drawn in addition to the roadmap: one line under the version, "{LINE_EDIT}", so the missing Record batch has a reason. Print sheet stays.')),
-          cell(P('band-draft', 393, band(R('recipe_editable_393'), LINE_DRAFT), 'A Next version draft kept', f'Today the pen reopens here. Drawn: the pen stays shut and one line stands in its place, "{LINE_DRAFT}" Next version has no address of its own, so this line is its one-line page.'))]
+          cell(P('band-draft', 393, band(R('recipe_editable_393'), LINE_DRAFT, record=False), 'A Next version draft kept', f'Today the pen reopens here. Drawn: the pen stays shut and one line stands in its place, "{LINE_DRAFT}" No record act while the draft is kept (Mark, decide-p12-record-with-draft-held, 2026-11-21): Print sheet and the line only, until the draft is finished or cancelled at the desk. Next version has no address of its own, so this line is its one-line page.'))]
     return flow('Recipe page head below 724 · no Next version, Edit or Resume editing', 'Phase 12 Gate 2, set A. Built markup at 393 (one at 723); the three controls are left out, Print sheet stays. Rename, Go to batch, the folds and the log do not change. Approved by Mark 2026-11-21 (look-p12-phone-entry-points).',
                 [('As built today, for comparison', 'The production build of 2026-11-16 at 393.', r0), ('Drawn · the three standings', 'One filled control, the record act the version waits on, then Print sheet.', r1),
                  ('Drawn · kept work', 'What a version shows when an edit or a Next version draft was kept at the desk.', r2)])

@@ -8,6 +8,8 @@
 # Re-run again the same day for the move keys (Ctrl+Cmd+Up, Ctrl+Cmd+Down) and the one line of key words per region: row-controls.html retaken (canvas version 529, 1795269901-446d).
 # Re-run at approval: the five approved boards say approved in their titles and headings and the one-line page's B and C read Not chosen; all five retaken (canvas version 530,
 # 1795294127-0877). add-step-place.html is unchanged.
+# Re-run after Mark's answer on decide-p12-record-with-draft-held (B, 2026-11-21): recipe-head-below-724.html retaken, its draft-kept panel without the record act (canvas version
+# 532, 1795296627-c04d). The other five are unchanged.
 # The boards are taken AS SERVED by the canvas (version 1795267623-c53a, canvas version 527, read 2026-11-21), as snapshot015.py does; p12g2.py regenerates all six byte for byte
 # (boards/P12G2_*.dc.html, cmp checked against the served files). Each is made to open on its own: the canvas's support.js line is dropped and the font upload is pointed at the
 # app's own copy of Caveat. Nothing else in the markup or the inlined CSS changes. The canvas wins.

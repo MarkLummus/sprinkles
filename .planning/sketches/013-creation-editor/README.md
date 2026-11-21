@@ -110,6 +110,6 @@ The boards add no token: every `var()` in the new rules resolves in `app/src/sty
 
 The iPad (WebKit, 1366, coarse pointer) and iPhone are unchecked; the numbers above come from Playwright WebKit on the dev machine. The browser's own select list on the iPad is not drawn and not measured: the board's open list is a stand-in.
 
-## Pointer to sketch 016 (2026-11-21, proposed)
+## Overridden in part by sketch 016 (approved by Mark 2026-11-21)
 
-Sketch 016 (`.planning/sketches/016-entry-points-pen-preview-row-controls/`, Phase 12 Gate 2) is proposed and awaits Mark. Once approved it overrides, below 724 only, decision 10's Resume standing in for New recipe (neither shows there). The snapshots here are not edited; until Mark approves, this sketch stands.
+Sketch 016 (`.planning/sketches/016-entry-points-pen-preview-row-controls/`, Phase 12 Gate 2) was approved by Mark on 2026-11-21. Below 724 only, decision 10's Resume standing in for New recipe is a leftover: neither shows there, and a kept draft keeps its row without Resume. On the canvas `P10_Notebook` is titled Part leftover. The snapshots here are not edited.

@@ -165,6 +165,6 @@ The boards add no token: every `var()` in `P11_CSS` resolves in `app/src/styles/
 
 The iPad (WebKit, 1366, coarse pointer) is unchecked; the numbers above come from Playwright WebKit and Chrome on the dev machine. The move controls' keyboard focus on iPad WebKit is the roadmap's medium-confidence item and is probed on the device from the production build. The Uses checklist, the targets' fields and the preview are drawn, not operated: nothing on a board responds to a press.
 
-## Pointer to sketch 016 (2026-11-21, proposed)
+## Overridden in part by sketch 016 (approved by Mark 2026-11-21)
 
-Sketch 016 (`.planning/sketches/016-entry-points-pen-preview-row-controls/`, Phase 12 Gate 2) is proposed and awaits Mark. Once approved it overrides, below 724, Edit and Resume editing at every width, and at every width the order of a step's and an ingredient row's controls (add first, Add ingredient on each row). The snapshots here are not edited; until Mark approves, this sketch stands.
+Sketch 016 (`.planning/sketches/016-entry-points-pen-preview-row-controls/`, Phase 12 Gate 2) was approved by Mark on 2026-11-21. Leftovers: below 724, Edit and Resume editing at every width (neither shows there; `P11_FirstVersion`); at every width, the order of a step's and an ingredient row's controls and the place of Preview step and the open preview (two groups, Add step first on the last line, Add ingredient on each row, Preview step closing the step's own group; `P11_Steps`, `P11_Structure`). On the canvas those three boards are titled Part leftover. `CONTRACT.md` here still describes the first drawing; sketch 016's `CONTRACT.md` governs where they differ. The snapshots here are not edited.

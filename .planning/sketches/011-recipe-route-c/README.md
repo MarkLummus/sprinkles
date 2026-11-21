@@ -752,6 +752,6 @@ python3 -m http.server 8011   # run from the repo root
 
 then open `http://localhost:8011/.planning/sketches/011-recipe-route-c/index.html`. Serving from the repo root is what makes the font path resolve; a server rooted at `.planning/sketches/` (the 8077 habit from sketch 009) cannot reach it. For the iPad or iPhone, use the Mac's LAN address and hard-reload, since the server sends no cache headers.
 
-## Pointer to sketch 016 (2026-11-21, proposed)
+## Overridden in part by sketch 016 (approved by Mark 2026-11-21)
 
-Sketch 016 (`.planning/sketches/016-entry-points-pen-preview-row-controls/`, Phase 12 Gate 2) is proposed and awaits Mark. Once approved it overrides, below 724 only, decision 30's Next version in the band (the filled record act stays). The snapshots here are not edited; until Mark approves, this sketch stands.
+Sketch 016 (`.planning/sketches/016-entry-points-pen-preview-row-controls/`, Phase 12 Gate 2) was approved by Mark on 2026-11-21. Below 724 only, decision 30's Next version in the band is a leftover: the band there has no Next version (the filled record act stays as decided here). On the canvas `R35C_393PhoneLog` and `R35C_723PhoneLog` are titled Part leftover. The snapshots here are not edited.

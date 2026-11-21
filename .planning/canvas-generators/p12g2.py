@@ -1,5 +1,6 @@
 # Sid, 2026-11-21 (Phase 12 Gate 2; ROADMAP "Design gate 2"; 12-CONTEXT.md D-06, D-08, D-09, D-11; PRODUCT.md "On the phone"; Mark's List rows todo-phone-hide-entry-points,
-# bug-p11-pen-step-no-preview, todo-reorder-row-controls, todo-add-ingredient-per-row). Proposed, not approved: nothing is built until Mark approves.
+# bug-p11-pen-step-no-preview, todo-reorder-row-controls, todo-add-ingredient-per-row). APPROVED by Mark 2026-11-21 on Mark's List (look-p12-phone-entry-points, decide-p12-desk-page-words = A, look-p12-pen-preview-step,
+# look-p12-row-controls-r3 with its four points confirmed; decide-p12-add-step-place = A earlier the same day); the boards' titles and headings say so.
 #   P12G2_Band         A  the recipe page's head below 724: the three standings, a version that can be edited, an edit kept, a Next version draft kept; 393 and one at 723; as built beside
 #   P12G2_Places       A  the Notebook at 393 without and with a kept draft, Home, More
 #   P12G2_DeskPage     A  the one-line page a hidden job's address shows (New recipe, Edit), and three wordings
@@ -218,7 +219,7 @@ def build_band():
     r2 = [cell(P('band-editable', 393, band(R('recipe_editable_393')), 'A version that can be edited', 'No Edit: the band reads as any not yet churned version does.')),
           cell(P('band-editing', 393, band(R('recipe_editing_393'), LINE_EDIT), 'An edit kept', f'No Resume editing. Drawn in addition to the roadmap: one line under the version, "{LINE_EDIT}", so the missing Record batch has a reason. Print sheet stays.')),
           cell(P('band-draft', 393, band(R('recipe_editable_393'), LINE_DRAFT), 'A Next version draft kept', f'Today the pen reopens here. Drawn: the pen stays shut and one line stands in its place, "{LINE_DRAFT}" Next version has no address of its own, so this line is its one-line page.'))]
-    return flow('Recipe page head below 724 · no Next version, Edit or Resume editing', 'Phase 12 Gate 2, set A. Built markup at 393 (one at 723); the three controls are left out, Print sheet stays. Rename, Go to batch, the folds and the log do not change. Proposed.',
+    return flow('Recipe page head below 724 · no Next version, Edit or Resume editing', 'Phase 12 Gate 2, set A. Built markup at 393 (one at 723); the three controls are left out, Print sheet stays. Rename, Go to batch, the folds and the log do not change. Approved by Mark 2026-11-21 (look-p12-phone-entry-points).',
                 [('As built today, for comparison', 'The production build of 2026-11-16 at 393.', r0), ('Drawn · the three standings', 'One filled control, the record act the version waits on, then Print sheet.', r1),
                  ('Drawn · kept work', 'What a version shows when an edit or a Next version draft was kept at the desk.', r2)])
 
@@ -227,17 +228,17 @@ def build_places():
          cell(P('nb-draft', 393, notebook(CAP['notebook_draft_393']['html']), 'Notebook, a new recipe draft kept', 'The draft keeps its row, above the count, without Resume. Its name is not a link, as built.')),
          cell(P('home', 393, home(CAP['home_393']['html']), 'Home', 'A tasted recipe\'s row (Olive Oil, Pineapple) has no Next version: name, standing, nothing else. Record tasting and Record batch rows are unchanged. The lead block loses Next version the same way; Keep developing and Adapt only open the recipe, so they stay.')),
          cell(P('more', 393, more(notebook(CAP['more_393']['html'])), 'More, open', 'Ingredients, Kitchen, then Search under the hairline. No Import, no Export.'))]
-    return flow('Notebook, Home and More at 393 · entry points left out', 'Phase 12 Gate 2, set A. Built markup at 393; the left-out controls are not in the markup. Home\'s own layout cut is 760, but the controls go at 724 like everywhere else. Proposed.', [('', '', r)])
+    return flow('Notebook, Home and More at 393 · entry points left out', 'Phase 12 Gate 2, set A. Built markup at 393; the left-out controls are not in the markup. Home\'s own layout cut is 760, but the controls go at 724 like everywhere else. Approved by Mark 2026-11-21 (look-p12-phone-entry-points).', [('', '', r)])
 
 def build_deskpage():
     r1 = [cell(P('desk-new', 393, desk_page('new', 'A'), 'New recipe · its address at phone width', 'What /notebook/new shows below 724, a kept draft included (the draft is not touched). The built placeholder place: a title and one line. The tabs are the way out.')),
           cell(P('desk-edit', 393, desk_page('edit', 'A'), 'Edit · its address at phone width', 'What a version\'s /edit address shows below 724, with or without a kept edit.'))]
     r2 = [cell(P(f'desk-{c}', 393, desk_page('new', c), cap, sub, h=300)) for c, cap, sub in (
-          ('A', 'A · "Done at the desk or on the iPad." (drawn above)', 'The title names the job, so the line does not repeat it. Shortest. For Edit: the same line.'),
-          ('B', 'B · "New recipe is done at the desk or on the iPad."', 'A whole sentence, as the placeholder places read today ("Recipe book is not built yet."). For Edit: "Editing is done at the desk or on the iPad."'),
-          ('C', 'C · "Needs a wider screen: the desk or the iPad."', 'Stays true in a narrow iPad split view, where A and B tell a maker on the iPad to go to the iPad.'))]
-    return flow('The one-line page a hidden job\'s address shows', 'Phase 12 Gate 2, set A. Reached by a saved link or a kept draft below 724. Proposed; the wording is decide-p12-desk-page-words. The same words end the two band lines on the head board.',
-                [('The page', '', r1), ('Three wordings', 'Each window is cut short; the page is the one above.', r2)])
+          ('A', 'Chosen · A · "Done at the desk or on the iPad." (drawn above)', 'The title names the job, so the line does not repeat it. Shortest. For Edit: the same line.'),
+          ('B', 'Not chosen · B · "New recipe is done at the desk or on the iPad."', 'A whole sentence, as the placeholder places read today ("Recipe book is not built yet."). For Edit: "Editing is done at the desk or on the iPad."'),
+          ('C', 'Not chosen · C · "Needs a wider screen: the desk or the iPad."', 'Stays true in a narrow iPad split view, where A and B tell a maker on the iPad to go to the iPad.'))]
+    return flow('The one-line page a hidden job\'s address shows', 'Phase 12 Gate 2, set A. Reached by a saved link or a kept draft below 724. Approved by Mark 2026-11-21 (look-p12-phone-entry-points). The wording is A (decide-p12-desk-page-words); B and C were not chosen. The same words end the two band lines on the head board.',
+                [('The page', '', r1), ('Three wordings · the record of the choice', 'Mark chose A. Each window is cut short; the page is the one above.', r2)])
 
 # ---- B ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 def build_pen():
@@ -246,7 +247,7 @@ def build_pen():
          cell(P('pv-pen-built', 1366, sheet(pen, page='notebook'), 'As built · Next version, step 1 open', 'No Preview step (the bug). The pen\'s open step has no Add target either; that is not in scope and does not change.', natural=True, w=576)),
          cell(P('pv-pen', 1366, sheet(pen_preview(pen, False), page='notebook'), 'Drawn · Next version, step 1 open', 'Preview step on its own line under the two fields, where the creation editor has it. Tab reaches it after the instruction and before Change ingredients.', natural=True, w=576)),
          cell(P('pv-pen-on', 1366, sheet(pen_preview(pen, True), page='notebook'), 'Drawn · Preview step pressed', 'The control reads Hide preview; the creation editor\'s own preview block shows the step as it will read, from what is typed. Cancel and Done are unchanged, and Done or Cancel closes the preview with the step.', natural=True, w=576))]
-    return flow('Version pen (Next version) · Preview step on an open step', 'Phase 12 Gate 2, set B (bug-p11-pen-step-no-preview). 1366 only. Built markup; only the Preview step line and its preview block are drawn in. Reordering steps in the pen is not drawn (deferred). Proposed.', [('', '', r)])
+    return flow('Version pen (Next version) · Preview step on an open step', 'Phase 12 Gate 2, set B (bug-p11-pen-step-no-preview). 1366 only. Built markup; only the Preview step line and its preview block are drawn in. Reordering steps in the pen is not drawn (deferred). Approved by Mark 2026-11-21 (look-p12-pen-preview-step).', [('', '', r)])
 
 # ---- C ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 def editor(key, drawn=True, place='A', tabs=True, part=('ing', 'method')):      # as first drawn: P12G2_StepOrder's panels only
@@ -305,7 +306,7 @@ def build_rows():
           cell(P('ai-pick', 1366, a2, '2 · The picker opens, in its built place', 'Under the table\'s Total, where the heading\'s Add ingredient opens it today (built markup of the region, the list cut short here). The heading\'s Add ingredient is away while it is open, as built. Cancel first.', natural=True, w=576)),
           cell(P('ai-step', 1366, a3, '3 · Egg yolk picked: it lands right after Heavy cream', 'In the same step group, and ticked in that step\'s Uses: step 1 now reads "uses Heavy cream, Egg yolk, Coffee beans". Focus goes to the new row\'s grams, as the build does after any pick.', natural=True, w=576)),
           cell(P('ai-unplaced', 1366, a4, 'On a row under "Not in a step yet"', 'Add ingredient on Fine sea salt, Cinnamon picked: it lands right after Fine sea salt, in no step. On such a row Add to step comes first, then Add ingredient.', natural=True, w=576))]
-    return flow('Creation editor · row controls in two groups, with keys to add and move', 'Phase 12 Gate 2, set C, redrawn 2026-11-21 for Mark\'s decision (Add step stays on the last line; the step\'s own controls and the list\'s controls are two groups; Cmd+Return adds, Ctrl+Cmd+Up and Down move). 1366 only. Built markup with the order, the new control and the shortcut\'s words drawn over it. Purple numbers and tags are notes. Proposed.',
+    return flow('Creation editor · row controls in two groups, with keys to add and move', 'Phase 12 Gate 2, set C, redrawn 2026-11-21 for Mark\'s decision (Add step stays on the last line; the step\'s own controls and the list\'s controls are two groups; Cmd+Return adds, Ctrl+Cmd+Up and Down move). 1366 only. Built markup with the order, the new control and the shortcut\'s words drawn over it. Purple numbers and tags are notes. Approved by Mark 2026-11-21 (look-p12-row-controls-r3; its four points confirmed).',
                 [('The Tab order', 'The iPad Tab walk (D-11) runs once on the drawn order. Uses are shut; open, a step\'s ticks follow Change ingredients as today. The number in brackets is Tabs from the instruction.', r1),
                  ('Keys in a step · add', 'Mark tested the keys on the iPad with the Magic Keyboard on a probe page (the keydown reaches the page and the text is left alone); they also pass in Playwright WebKit. Purple tags are notes.', r2[:2]),
                  ('Keys in a step · move, and Preview step', 'Remove has no key: it is rare and cannot be undone.', r2[2:]),
@@ -317,12 +318,14 @@ def build_steporder():
          cell(P('so-B', 1366, b, 'B · the row line moves up, right under the two fields', f'Add step is {tabs_to(B, f, t)} Tab after the instruction, the quickest there is. The cost: Move up, Move down and Remove stand between the instruction and its target and ingredients, and Add target is {tabs_to(B, f, "Step 1, Add target")} Tabs away instead of 1.', natural=True, w=576, tabs=nb))]
     return flow('A step\'s Add step · two places for it · decided: A', 'Phase 12 Gate 2, set C. DECIDED by Mark 2026-11-21 (decide-p12-add-step-place): A, the last line. Kept as the record of the choice, as first drawn; the step\'s own controls have since been regrouped on the row controls board, which is the one to build from.', [('', '', r)])
 
-TITLES = {'P12G2_Band': 'Recipe page head below 724 · no Next version, Edit or Resume editing · 393 and 723 (2026-11-21; proposed)',
-          'P12G2_Places': 'Notebook with and without a kept draft, Home, More · 393 · entry points left out (2026-11-21; proposed)',
-          'P12G2_DeskPage': 'The one-line page a hidden job\'s address shows · three wordings (2026-11-21; for Mark to pick)',
-          'P12G2_PenPreview': 'Version pen · Preview step on an open step · 1366 (2026-11-21; proposed)',
-          'P12G2_RowControls': 'Creation editor · row controls in two groups, keys to add and move, Tab order · 1366 (2026-11-21; redrawn twice the same day; proposed)',
+TITLES = {'P12G2_Band': 'Recipe page head below 724 · no Next version, Edit or Resume editing · 393 and 723 (2026-11-21; approved)',
+          'P12G2_Places': 'Notebook with and without a kept draft, Home, More · 393 · entry points left out (2026-11-21; approved)',
+          'P12G2_DeskPage': 'The one-line page a hidden job\'s address shows · wording A chosen, B and C not (2026-11-21; approved)',
+          'P12G2_PenPreview': 'Version pen · Preview step on an open step · 1366 (2026-11-21; approved)',
+          'P12G2_RowControls': 'Creation editor · row controls in two groups, keys to add and move, Tab order · 1366 (2026-11-21; redrawn twice the same day; approved)',
           'P12G2_StepOrder': 'A step\'s Add step · last line or under the fields · 1366 (2026-11-21; Mark picked A, the last line)'}
+LEFTOVERS = {'R35C_393PhoneLog.dc.html': 'no Next version in the band below 724', 'R35C_723PhoneLog.dc.html': 'no Next version in the band below 724', 'P10_Notebook.dc.html': 'no New recipe and no Resume below 724',
+             'P11_FirstVersion.dc.html': 'no Edit or Resume editing below 724', 'P11_Steps.dc.html': 'row controls regrouped, Add step first on the last line', 'P11_Structure.dc.html': 'row controls regrouped, Add ingredient on each row'}
 BUILD = (('P12G2_Band', build_band), ('P12G2_Places', build_places), ('P12G2_DeskPage', build_deskpage), ('P12G2_PenPreview', build_pen), ('P12G2_RowControls', build_rows), ('P12G2_StepOrder', build_steporder))
 
 def build_boards(out):
@@ -349,5 +352,8 @@ if __name__ == '__main__':
             fn = key + '.dc.html'; B[fn] = {**dict(x=x, y=0, page=PAGE[0]), **B.get(fn, {}), 'w': w, 'h': h, 'title': TITLES[key]}      # a board Mark has moved keeps its place
             if fn not in c['order']: c['order'].append(fn)
             x = B[fn]['x'] + w + 240
+        for fn, what in LEFTOVERS.items():
+            pre = f'Part leftover 2026-11-21 (sketch 016): {what} · '
+            if fn in B and not B[fn].get('title', '').startswith('Part leftover'): B[fn]['title'] = pre + B[fn].get('title', fn)
         N['p12g2-title'] = {**dict(x=0, y=-300, maxW=x), **N.get('p12g2-title', {}), **dict(text='Phase 12 Gate 2: entry points left out below 724, Preview step in the version pen, and the creation editor\'s row controls', kind='title1', page=PAGE[0])}
         json.dump(c, open(out + '/project/canvas.json', 'w'), indent=1, ensure_ascii=False); print(sizes)

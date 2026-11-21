@@ -16,6 +16,7 @@ Rule: a board moves between canvases only after Mark approves `CANVAS-INVENTORY.
 
 | Page | Generator(s) |
 |---|---|
+| Phase 12 entry points, pen preview and row controls (Gate 2) | `p12g2.py` (`p12g2-capture.mjs`, `p12g2-measure.mjs`), snapshot `snapshot016.py`; proposed 2026-11-21, awaiting Mark (`look-p12-phone-entry-points`, `decide-p12-desk-page-words`, `look-p12-pen-preview-step`, `look-p12-row-controls`, `decide-p12-add-step-place`) |
 | Phase 12 own scales and problems (Gate 1) | `p12.py` (`p12-capture.mjs`, `p12-measure.mjs`), snapshot `snapshot015.py`; the printed Low to high row's redraw approved by Mark 2026-11-15 (`look-p12-printed-row-ends-only`) |
 | Ultra-wide | `ultrawide.py` (`ultrawide-capture.mjs`, `ultrawide-measure.mjs`; the survey note `.planning/notes/2026-10-26-ultra-wide-survey.md`) |
 | Page notice shape | `noticeshape.py` (`noticeshape-capture.mjs`, `noticeshape-measure.mjs`, `noticeshape-options.json`; screenshots `noticeshape-shots/`) |

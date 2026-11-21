@@ -164,3 +164,7 @@ The boards add no token: every `var()` in `P11_CSS` resolves in `app/src/styles/
 ## Not verified
 
 The iPad (WebKit, 1366, coarse pointer) is unchecked; the numbers above come from Playwright WebKit and Chrome on the dev machine. The move controls' keyboard focus on iPad WebKit is the roadmap's medium-confidence item and is probed on the device from the production build. The Uses checklist, the targets' fields and the preview are drawn, not operated: nothing on a board responds to a press.
+
+## Pointer to sketch 016 (2026-11-21, proposed)
+
+Sketch 016 (`.planning/sketches/016-entry-points-pen-preview-row-controls/`, Phase 12 Gate 2) is proposed and awaits Mark. Once approved it overrides, below 724, Edit and Resume editing at every width, and at every width the order of a step's and an ingredient row's controls (add first, Add ingredient on each row). The snapshots here are not edited; until Mark approves, this sketch stands.

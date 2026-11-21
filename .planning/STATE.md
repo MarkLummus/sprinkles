@@ -6,10 +6,10 @@ current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
 status: verifying
 stopped_at: Completed 12-08-PLAN.md
-last_updated: "2026-11-21T12:50:33.436Z"
+last_updated: "2026-11-21T12:57:44.732Z"
 last_activity: 2026-11-16
 last_activity_desc: Phase 12 execution started
-state_head: 3a290e9d4baaaff04add3fb6200da96c679a0379
+state_head: 74da468a51e82cbd4b1d93e5731cf9a8de8692f1
 progress:
   total_phases: 5
   completed_phases: 4
@@ -485,6 +485,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261116-80u | Limit word lengths in the creation editor: end words 12, scale name 16, problem 40, refused at Save | 2026-11-16 | 1acb082b | .planning/quick/261116-80u-limit-word-lengths-in-the-creation-editor-mark-s-decision-20 |
 | 261116-80v | No numbers on a Low to high scale: editor line, record pen stops, printed Tasting log | 2026-11-16 | f3b9b384 | .planning/quick/261116-80v-no-numbers-on-a-low-to-high-magnitude-scale-in-three-places |
 | 242 | DESIGN.md is a map: one pointer rule (CLAUDE.md, sid.md, gsd-ui-review) sends section, rule and line citations to .impeccable/design-full.md | 2026-11-21 | 6ec6ecb0 | — |
+| 243 | Move GLOSSARY.md and design-md-hand-draft.md into .planning/archive (/gsd-health W019) | 2026-11-21 | 74da468a | — |
 
 ### Roadmap Evolution
 

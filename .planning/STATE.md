@@ -202,6 +202,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [2026-10-28] [general] Add a Delete recipe feature — [todo file](.planning/todos/pending/2026-10-28-add-a-delete-recipe-feature.md)
 - [2026-11-01] [general] Add "Add ingredient" to each ingredient row, like "Add step" on each step — [todo file](.planning/todos/pending/2026-11-01-add-ingredient-on-each-ingredient-row-like-add-step.md)
 - [2026-11-01] [general] Reorder the row controls in Ingredients and Instructions so adding the next row is quick to reach — [todo file](.planning/todos/pending/2026-11-01-reorder-row-controls-so-adding-the-next-row-comes-first.md)
+- [2026-11-21] [ui] Add undo for destructive operations — [todo file](.planning/todos/pending/2026-11-21-add-undo-for-destructive-operations.md) — Needs TBD. Not part of Phase 12; a candidate for after v2.0.
 - [2026-11-21] [planning] Run validate-phase for phases 08 and 10 at v2.0 completion — [todo file](.planning/todos/pending/2026-11-21-run-validate-phase-for-phases-08-and-10-at-v2-0-completion.md)
 
 ### Blockers/Concerns

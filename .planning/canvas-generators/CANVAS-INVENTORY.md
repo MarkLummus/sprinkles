@@ -10,7 +10,7 @@ Every board on the active canvas (https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZy
 | Active | 83 | 71 | -12 |
 | Concepts | 3 | 16 | +13 |
 | Archive | 99 | 111 | +12 |
-| Unsure | 60 | 26 | -34 |
+| Unsure | 60 | 22 | -38 |
 
 If approved as proposed, the active canvas goes from 198 boards on 26 pages to 71 boards on 12 pages; 127 boards leave it and 14 pages empty.
 
@@ -20,7 +20,7 @@ How Active went from 83 to 71: 10 of the 13 new boards are Active (+10); 22 boar
 
 - **Active:** the newest approved drawing of something built or about to be built. A board another sketch overrides in part stays Active and its row says what it is still the authority for (the six "Part leftover" boards among them).
 - **Archive:** not chosen; a record of a choice whose answer is drawn on another board; an option board whose decision is answered (all of these have a snapshot under `.planning/sketches/`, so the record does not depend on the canvas); an as-built reference; a drawing replaced by a later approved board; a first-session study of something since redrawn and built.
-- **Concepts:** Mark's own three image boards; AltAskAnExpert, by Mark's canvas comment of 2026-11-21 (a concept still to be discussed); and, proposed here and marked unsure, the drawings of places that are parked (not built, not about to be built, not rejected).
+- **Concepts:** Mark's own three image boards; AltAskAnExpert, by Mark's canvas comment of 2026-11-21 (a concept still to be discussed); the Recipe book page with RecipeBookSheet, by his canvas comment of the same day ("flag that page as moving to Concepts"); and, proposed here and marked unsure, the drawings of the other parked places, Idea log and Kitchen, and R35_RecipeBookForm (not built, not about to be built, not rejected).
 - **unsure:** I cannot tie the proposal to a decision line. The question that would settle it is below.
 
 ## What would move, by page (in canvas order)
@@ -38,7 +38,7 @@ How Active went from 83 to 71: 10 of the 13 new boards are Active (+10); 22 boar
 | Phase 4 screens | 5 | 5 | 0 | 0 | nothing (the two Draft kept boards are unsure) |
 | Recipe-declared items | 5 | 0 | 5 | 0 | all five, unsure: sketch 015 redraws the same cases |
 | Print method | 6 | 5 | 1 | 0 | MethodPrintAsBuilt (reference) |
-| Print formats | 9 | 5 | 3 | 1 | AsBuiltRecipePage, HolePunchCheck, MarkOnePenWhole (unsure); RecipeBookSheet to Concepts (unsure) |
+| Print formats | 9 | 5 | 3 | 1 | AsBuiltRecipePage, HolePunchCheck, MarkOnePenWhole (unsure); RecipeBookSheet to Concepts by Mark's canvas comment of 2026-11-21, by way of the Recipe book page (that move on the canvas is asked for and not yet done) |
 | Recipe route 03.5 | 38 | 31 | 7 | 0 | R35C_393AllFolded, R35C_PenApp350, R35C_PenApp393, R35C_BysBreak, and the three R35C_PenRange boards (unsure) |
 | Recipe route 03.5 concepts | 51 | 0 | 50 | 1 | the whole page: every option board, with its decision named; R35_RecipeBookForm to Concepts (unsure) |
 | Home | 10 | 0 | 8 | 2 | the whole page: Mark's two image boards to Concepts, the eight first Home and nav drawings to Archive |
@@ -46,7 +46,7 @@ How Active went from 83 to 71: 10 of the 13 new boards are Active (+10); 22 boar
 | Recipe | 3 | 0 | 3 | 0 | the whole page |
 | Recipe History | 3 | 0 | 2 | 1 | the whole page: Mark's image board to Concepts, two studies to Archive |
 | Notebook | 3 | 0 | 3 | 0 | the whole page (superseded by sketch 012) |
-| Recipe book | 3 | 0 | 0 | 3 | the whole page, unsure (parked place) |
+| Recipe book | 3 | 0 | 0 | 3 | the whole page, by Mark's canvas comment of 2026-11-21; RecipeBookSheet joins it from Print formats (asked for, not yet done on the canvas, and the page does not yet carry its flag) |
 | Idea log | 5 | 0 | 0 | 5 | the whole page, unsure (parked place) |
 | Ingredients | 5 | 0 | 5 | 0 | the whole page (superseded by sketch 012) |
 | Kitchen | 2 | 0 | 0 | 2 | the whole page, unsure (parked place) |
@@ -55,12 +55,12 @@ How Active went from 83 to 71: 10 of the 13 new boards are Active (+10); 22 boar
 | Alternates | 6 | 0 | 5 | 1 | the whole page (Mark's own Alternates page): five to Archive; AltAskAnExpert to Concepts (Mark's canvas comment, 2026-11-21) |
 | **Total** | **198** | **71** | **111** | **16** | |
 
-## Unsure: 26 boards, 6 questions
+## Unsure: 22 boards, 6 questions
 
 1. P4_DraftKept and P4_DraftKeptWords draw the page notice in its 2026-10-07 form; the notice is a card at the window's foot since 2026-10-24. Keep them Active for the words and timing, or archive them and let Notice_Shape stand alone? (2 boards: P4_DraftKept, P4_DraftKeptWords)
 2. Does sketch 015 (P12_Logs, P12_Pen, P12_Reading) replace the five Recipe-declared boards of sketch 010 D25 and D26 on the canvas, or do you still read any of them? (5 boards: DeclaredLogPages, DeclaredLogPagesNone, DeclaredLogPagesTwo, DeclaredPage2Variants, DeclaredPenReading)
 3. The three Mark one boards (sketch 010 D6 to D14) predate the log ladder and P10_Pen. Proposed: keep the states and the reading Active, archive the whole-pen board (P10_Pen draws the whole pen as built). Agree, or archive all three? (3 boards: MarkOnePenStates, MarkOnePenWhole, MarkOneReading)
-4. Where do the drawings for places that are parked go (Recipe book, Idea log, Kitchen: 10 first-session boards, plus RecipeBookSheet and R35_RecipeBookForm)? Proposed: Concepts, as ideas still open. Or Archive, or leave them Active. (12 boards: RecipeBookSheet, R35_RecipeBookForm, RecipeBookShelf, RecipeBookByBase, RecipeBookMake, IdeaLogCapture, IdeaLogByOrigin, IdeaEntryOneLine, IdeaEntrySlip, IdeaFromTasting, KitchenTools, KitchenOnTheBatch)
+4. Where do the drawings for the other parked places go (Idea log and Kitchen: 7 first-session boards, plus R35_RecipeBookForm)? Mark answered for the Recipe book page and RecipeBookSheet on 2026-11-21 (Concepts); his comment does not name these. Proposed: Concepts, as ideas still open. Or Archive, or leave them Active. (8 boards: R35_RecipeBookForm, IdeaLogCapture, IdeaLogByOrigin, IdeaEntryOneLine, IdeaEntrySlip, IdeaFromTasting, KitchenTools, KitchenOnTheBatch)
 5. The pen's cut at 724 is built and the three boards (724, 740, 759) show it beside the old 760 cut in the pen's old form. Archive them, or keep them as the only drawing of the pen between 724 and 759? (3 boards: R35C_PenRange724, R35C_PenRange740, R35C_PenRange759)
 6. FirstArrival is the only drawing of Home with no recipes, from the first session. Archive it, or keep it until the empty Home is drawn from the build? (1 board: FirstArrival)
 
@@ -71,6 +71,7 @@ How Active went from 83 to 71: 10 of the 13 new boards are Active (+10); 22 boar
 - P10_LogLadder, P10_Pen and Notice_Shape are approved and built, and no sketch folder holds a snapshot of them. They are Active here for that reason; a snapshot would let the not-chosen panels on them go.
 - `Main.dc.html` ("Home — desktop", proposed Archive) carries the Design type's entry name. The canvas opens on the canvas view (`launch: {view: canvas}`), so nothing points at it.
 - The For Sid note of 2026-10-01 (section rhythm) touches R35C_RecordPenCues, P10_LogLadder and P10_Pen; the ladder answered it. Not acted on here.
+- Mark's canvas comment of 2026-11-21 on RecipeBookSheet asks for a move on the canvas itself: the board (with its title and its sticky) to the Recipe book page, and that page flagged "Moving to Concepts 2026-11-21 · Recipe book". `pagemoves.py` beside this file makes that index change; it is not published yet, so the rows above still give the live page.
 - The 122 notes (titles and stickies) go with their pages. Moving mechanics are in README.md beside this file; a Moved column is added here when the move pass runs.
 
 ## Every board
@@ -134,7 +135,7 @@ Rows are in canvas page order, then top to bottom, left to right. Titles are the
 | Print formats | MarkOnePenWhole | Mark one · the whole record pen with both groups, at 350 and 393 (redrawn 2026-10-07, no Time to draw temp.; approved) | 2026-10-06 to 08 (printstart.py, logforms.py, markone.py; sketch 010) | Archive | sketch 010 D6 to D14: the whole record pen at 350 and 393 as of 2026-10-07; P10_Pen (approved 2026-10-25, built 261025-f8p) draws the whole pen with the churn trio and Tasting as a region. unsure |
 | Print formats | MarkOneReading | Mark one · the reading with At draw and From freezer, at 350 and 393 (redrawn 2026-10-07, no Time to draw temp.; approve | 2026-10-06 to 08 (printstart.py, logforms.py, markone.py; sketch 010) | Active | sketch 010 D6 to D14, CONTRACT section 7 (approved 2026-10-08): the only drawing of the mark-one groups' five states and of their reading; faces since moved to the log ladder (2026-10-24). unsure |
 | Print formats | HolePunchCheck | Punch check · the log sheet with the holes drawn on, front and back (D20; guide, not a target) | 2026-10-06 to 08 (printstart.py, logforms.py, markone.py; sketch 010) | Archive | a guide, not a target (sketch 010 README, D20 settled); drawn before the clipboard drop moved the log pages 1.5 in down (sketch 015); snapshot `010/guide-hole-punch-check.html` |
-| Print formats | RecipeBookSheet | Recipe book sheet · one page | 2026-10-06 to 08 (printstart.py, logforms.py, markone.py; sketch 010) | Concepts | out of sketch 010; the Recipe book print format is parked and "not approved" (`todo-recipe-book-print-format`); not built, not about to be built, not rejected. unsure |
+| Print formats | RecipeBookSheet | Recipe book sheet · one page | 2026-10-06 to 08 (printstart.py, logforms.py, markone.py; sketch 010) | Concepts | Mark's comment on RecipeBookSheet on the canvas, 2026-11-21: "move this to Recipe Book page; flag that page as moving to Concepts". Still on Print formats on the live canvas: the move to the Recipe book page and the page's flag are written (`pagemoves.py`) and not yet published. The Recipe book print format is parked (`todo-recipe-book-print-format`) |
 | Recipe route 03.5 | R35C_393 | C · 393 · the phone page, as the build draws it with decision 41's dots: Mexican Chocolate v3 and Olive Oil v1 (redrawn | 2026-09-26 to 2026-10-05 (gen.py, final.py and the option generators; sketch 011) | Active | sketch 011, the approved route (settled 2026-09-24; decision 33 the final ladder, decision 46 the redraw from the build); Mark's page split of 2026-10-06 keeps here "what is selected and built"; authority for the phone page below 724 |
 | Recipe route 03.5 | R35C_DetailsFold | C · version details, both fold states: closed below 1366, open from 1366 | 2026-09-26 to 2026-10-05 (gen.py, final.py and the option generators; sketch 011) | Active | sketch 011 decision 18: the version details' two fold states |
 | Recipe route 03.5 | R35C_393AllFolded | C · 393 · exploration · every section folded, to see the page height (redrawn 2026-10-04 from the build with decision 41 | 2026-09-26 to 2026-10-05 (gen.py, final.py and the option generators; sketch 011) | Archive | sketch 011 README: "exploration ... Not a decision"; nothing was built from it |
@@ -246,9 +247,9 @@ Rows are in canvas page order, then top to bottom, left to right. Titles are the
 | Notebook | NotebookBench | Notebook — the bench | 2026-09-19 to 21 (first canvas session, hand-written) | Archive | first-session Notebook options, superseded by sketch 012 (approved 2026-10-17: P9_Notebook) |
 | Notebook | NotebookJournal | Notebook — last touched | 2026-09-19 to 21 (first canvas session, hand-written) | Archive | first-session Notebook options, superseded by sketch 012 (approved 2026-10-17: P9_Notebook) |
 | Notebook | NotebookGrams | Notebook — grams first | 2026-09-19 to 21 (first canvas session, hand-written) | Archive | first-session Notebook options, superseded by sketch 012 (approved 2026-10-17: P9_Notebook) |
-| Recipe book | RecipeBookShelf | Recipe book — ready to make | 2026-09-19 to 21 (first canvas session, hand-written) | Concepts | the only drawings of the Recipe book place: parked, "No requirement, no design" (`todo-place-recipe-book`); not about to be built, not rejected. unsure |
-| Recipe book | RecipeBookByBase | Recipe book — by base | 2026-09-19 to 21 (first canvas session, hand-written) | Concepts | the only drawings of the Recipe book place: parked, "No requirement, no design" (`todo-place-recipe-book`); not about to be built, not rejected. unsure |
-| Recipe book | RecipeBookMake | Recipe book — print and make | 2026-09-19 to 21 (first canvas session, hand-written) | Concepts | the only drawings of the Recipe book place: parked, "No requirement, no design" (`todo-place-recipe-book`); not about to be built, not rejected. unsure |
+| Recipe book | RecipeBookShelf | Recipe book — ready to make | 2026-09-19 to 21 (first canvas session, hand-written) | Concepts | Mark's comment on RecipeBookSheet on the canvas, 2026-11-21: "move this to Recipe Book page; flag that page as moving to Concepts": the Recipe book page goes to Concepts. The place is parked (`todo-place-recipe-book`) |
+| Recipe book | RecipeBookByBase | Recipe book — by base | 2026-09-19 to 21 (first canvas session, hand-written) | Concepts | Mark's comment on RecipeBookSheet on the canvas, 2026-11-21: "move this to Recipe Book page; flag that page as moving to Concepts": the Recipe book page goes to Concepts. The place is parked (`todo-place-recipe-book`) |
+| Recipe book | RecipeBookMake | Recipe book — print and make | 2026-09-19 to 21 (first canvas session, hand-written) | Concepts | Mark's comment on RecipeBookSheet on the canvas, 2026-11-21: "move this to Recipe Book page; flag that page as moving to Concepts": the Recipe book page goes to Concepts. The place is parked (`todo-place-recipe-book`) |
 | Idea log | IdeaLogCapture | Idea log — capture first | 2026-09-19 to 21 (first canvas session, hand-written) | Concepts | the only drawings of the Idea log place: parked, "needs discovery" (`todo-place-idea-log`); not about to be built, not rejected. unsure |
 | Idea log | IdeaLogByOrigin | Idea log — where ideas come from | 2026-09-19 to 21 (first canvas session, hand-written) | Concepts | the only drawings of the Idea log place: parked, "needs discovery" (`todo-place-idea-log`); not about to be built, not rejected. unsure |
 | Idea log | IdeaEntryOneLine | Idea log — one line, then more if you want | 2026-09-19 to 21 (first canvas session, hand-written) | Concepts | the only drawings of the Idea log place: parked, "needs discovery" (`todo-place-idea-log`); not about to be built, not rejected. unsure |

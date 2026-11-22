@@ -48,9 +48,9 @@ def main(src, out):
     c = json.load(open(src)); B, N, H = c['boards'], c['notes'], homes()
     before = {k: (v['x'], v['y'], v.get('page')) for k, v in B.items()}
     first = c['pages'][0]['id']; page = lambda o: o.get('page', first)
-    assert {k[:-8] for k in B} == set(H), 'the inventory and the canvas name different boards'
+    assert {k[:-8] for k in B} <= set(H), 'a board on the canvas has no row in the inventory'   # the inventory also keeps the rows of boards that have moved to another canvas
     for fn, m in MOVES.items():
-        if page(B[fn]) != m['page']:
+        if fn in B and page(B[fn]) != m['page']:   # a board that has since left for another canvas is skipped
             B[fn].update(page=m['page'], x=m['x'], y=m['y'])
             for nid, (x, y) in m['notes'].items(): N[nid].update(page=m['page'], x=x, y=y)
     for p in c['pages']:

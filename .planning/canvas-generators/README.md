@@ -7,10 +7,12 @@ Boards on the Claude Design canvases are made by the generators in this folder: 
 | Canvas | URL | Holds |
 |---|---|---|
 | Sprinkles (active) | https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq | approved boards and boards still in play; pages newest first |
-| Sprinkles Concepts | https://claude.ai/artifact/KiuMAYehfBgE4cUjZmNfmU | Mark's own original boards and images (not generated here); empty until the inventory is approved |
-| Sprinkles Archive | https://claude.ai/artifact/1zrdQBJ57GkypsiDdgCBxB | boards and ideas not chosen: superseded drafts, rejected alternatives, option boards whose decision went another way; empty until the inventory is approved |
+| Sprinkles Concepts | https://claude.ai/artifact/KiuMAYehfBgE4cUjZmNfmU | ideas still to be discussed (the Recipe book, Idea log and Kitchen places, Ask an expert); 13 boards since the move pass of 2026-11-21 |
+| Sprinkles Archive | https://claude.ai/artifact/1zrdQBJ57GkypsiDdgCBxB | boards and ideas not chosen: superseded drafts, rejected alternatives, option boards whose decision went another way; 66 boards since the move pass of 2026-11-21 |
 
-Rule: a board moves between canvases only after Mark approves `CANVAS-INVENTORY.md` (Mark's List row `look-canvas-inventory`), and `/marks-list` sends Sid back with his answer. Until then nothing is removed from the active canvas.
+Rule: a board moves between canvases only on Mark's word: he approves its home in `CANVAS-INVENTORY.md`, or names the page to be processed on Mark's List or on the canvas. The first move pass ran on 2026-11-21 for nine pages (`look-canvas-inventory-r4`); `CANVAS-INVENTORY.md` holds what moved and what is still to do.
+
+The layout by destination and the move pass have their own generators: `pagemoves.py` (2026-11-21, version 533: on each mixed page the leaving boards stand apart under Keep, To Archive and To Concepts labels, and a page that leaves whole carries its destination in its name; it reads the homes from the inventory) and `movepass.py` (the nine pages of 2026-11-21: the plan, the two destination indexes and the active index without what left). Both are index-only; board files are copied with the Artifact tool as below.
 
 ## Which generator feeds which page (active canvas)
 
@@ -37,6 +39,7 @@ Rule: a board moves between canvases only after Mark approves `CANVAS-INVENTORY.
 
 A board is HTML, and the Artifact tool's `files` map copies another artifact's published files server side only for non-HTML files, so each board moves by hand:
 
+0. An upload (`/_blob/<id>`) resolves only on its own canvas, and an uploaded stylesheet can name another upload (the app stylesheet names the Caveat font). Copy each upload a moving board names to the destination (`publish`, `asset: true`, `from_url`, `asset_ids`), upload a copy of any stylesheet with its inner address repointed, and repoint the addresses in the board copies. Nothing else in a board changes.
 1. Read the source canvas's `project/canvas.json` (the board's frame, `page` and title) and the board with `action: read`, `path: project/<Board>.dc.html`, `out_dir` in the scratchpad; any uploaded image it names (`/_blob/<id>`, Mark's Concepts boards) is read by its id as `path` and re-uploaded to the destination canvas with `publish`, `asset: true`, and the `src` repointed to the new `/_blob/` url.
 2. Read the destination canvas's `project/canvas.json` (or write a new one with `createdOnFiles` for an empty canvas), add the board's entry (frame, `page`, `title`) and its name in `order`, add its page to `pages` when new, and publish the index with the board file in `files` under the same `project/` path, `root` the scratch folder.
 3. Only then remove it from the source: read the source index again, take the entry out of `boards` and `order` (and its page from `pages` when the page is empty), and publish the index with `"project/<Board>.dc.html": null` in `files`. One canvas write at a time; the source index last so nothing is lost if a publish is refused.

@@ -811,3 +811,78 @@ describe('NotebookPlace starting a recipe', () => {
   });
 
 });
+
+// PHONE-01 (sketch 016 CONTRACT section 3 and section 11 number 4): below 724
+// the Notebook leaves New recipe, Resume and Resume editing out of the markup.
+// By prop, so no matchMedia stub: NotebookPlace reads the width, NotebookList
+// is told it.
+describe('NotebookList below 724 (PHONE-01)', () => {
+  const kept = (name) => ({ versionId: 'v-new', kind: 'create', payload: { recipeId: 'r-new', versionId: 'v-new', name } });
+  const editing = new Map([['r-vanilla', 'v-vanilla']]);
+  const vanilla = makeVersion('v-vanilla', 'r-vanilla', '2026-10-30T00:00:00.000Z');
+  const vanillaRecipe = { id: 'r-vanilla', name: 'Vanilla', description: '' };
+  const editProps = { versions: [...versions, vanilla], batches, recipes: [...recipes, vanillaRecipe], editing };
+  const buttons = (page) => [...page.querySelectorAll('button')].map((button) => button.textContent);
+
+  it('draws the title alone in the head: no New recipe with no draft', () => {
+    const page = render({ versions, batches, recipes, below724: true });
+    expect(page.querySelector('div.nb__head h1').textContent).toBe('Notebook');
+    expect(page.querySelectorAll('div.nb__head > *')).toHaveLength(1);
+    expect(page.querySelector('.nb__head button')).toBeNull();
+    expect(buttons(page)).not.toContain('New recipe');
+    expect(page.querySelector('p.nb__count').textContent).toBe('8 recipes');
+  });
+
+  it('draws a kept draft’s row as rail, name and draft, with no Resume and no nb__draft-act', () => {
+    const page = render({ versions, batches, recipes, draft: kept('Vanilla'), below724: true });
+    const row = page.querySelector('ul.nb__drafts > li.nb__draft');
+    expect(row.querySelector('span.nb__rail')).not.toBeNull();
+    expect(row.querySelector('h2.nb__name').textContent).toBe('Vanilla');
+    expect(row.querySelector('h2.nb__name a')).toBeNull();
+    expect(row.querySelector('p.nb__meta > span').textContent).toBe('draft');
+    expect(row.querySelector('.nb__draft-act')).toBeNull();
+    expect(row.querySelector('button')).toBeNull();
+    expect(buttons(page)).not.toContain('Resume');
+    expect(page.querySelector('p.nb__count').textContent).toBe('8 recipes');
+  });
+
+  it('draws a recipe with a kept edit as any other row: class exactly nb__row, no Resume editing, no nb__row-act', () => {
+    const page = render({ ...editProps, below724: true });
+    const row = [...page.querySelectorAll('li.nb__row')].find((candidate) => candidate.querySelector('.nb__name a').textContent === 'Vanilla');
+    expect(row.className).toBe('nb__row');
+    expect(row.querySelector('.nb__row-act')).toBeNull();
+    expect(page.querySelector('.nb__row-act')).toBeNull();
+    expect(page.querySelector('.nb__row--resume')).toBeNull();
+    expect(buttons(page)).not.toContain('Resume editing');
+    expect(row.querySelector('.nb__name a').getAttribute('href')).toBe(notebookPath('r-vanilla', 'v-vanilla'));
+  });
+
+  it('draws the empty Notebook without New recipe, and its draft row without Resume', () => {
+    const bare = render({ versions: [], batches: [], recipes: [], below724: true });
+    expect(bare.querySelector('div.nb__head h1').textContent).toBe('Notebook');
+    expect(bare.querySelector('.nb__head button')).toBeNull();
+    expect(bare.querySelector('p.place__note').textContent).toBe('No recipes yet.');
+    const withDraft = render({ versions: [], batches: [], recipes: [], draft: kept('Vanilla'), below724: true });
+    expect(withDraft.querySelectorAll('ul.nb__drafts > li.nb__draft')).toHaveLength(1);
+    expect(withDraft.querySelector('.nb__draft-act')).toBeNull();
+    expect(withDraft.querySelector('button')).toBeNull();
+  });
+
+  it('draws all three as built at below724 false, and as built when the prop is left out', () => {
+    for (const below724 of [false, undefined]) {
+      const props = below724 === undefined ? {} : { below724 };
+      const head = render({ versions, batches, recipes, ...props });
+      expect(buttons(head)).toContain('New recipe');
+      const draft = render({ versions, batches, recipes, draft: kept('Vanilla'), ...props });
+      expect(buttons(draft)).toEqual(['Resume']);
+      expect(draft.querySelector('li.nb__draft .nb__draft-act')).not.toBeNull();
+      const edit = render({ ...editProps, ...props });
+      expect(edit.querySelectorAll('li.nb__row--resume')).toHaveLength(1);
+      expect(buttons(edit)).toContain('Resume editing');
+      const bare = render({ versions: [], batches: [], recipes: [], ...props });
+      expect(buttons(bare)).toEqual(['New recipe']);
+      const bareDraft = render({ versions: [], batches: [], recipes: [], draft: kept('Vanilla'), ...props });
+      expect(buttons(bareDraft)).toEqual(['Resume']);
+    }
+  });
+});

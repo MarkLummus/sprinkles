@@ -21,6 +21,7 @@ import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { versionIdentity } from '../domain/lineage.js';
 import { buildDraftRecord } from '../domain/draft.js';
+import { NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
 import { SEED_CATALOG } from '../data/seed-catalog.js';
 import { CatalogFixture } from './catalog.fixtures.jsx';
 
@@ -814,5 +815,63 @@ describe('RecipeList — the loading state (03.4-13, G-03.4-1)', () => {
     expect(markup).toContain('Pick up where you left off');
     expect(markup).toContain('home__loading');
     expect(markup).not.toContain('<li');
+  });
+});
+
+// PHONE-01 (sketch 016 CONTRACT section 3 and section 11 number 3): below 724 a
+// tasted recipe's Home row has no actions span at all and a tasted lead holds
+// Adapt alone; the other two standings are as built. By prop, so no matchMedia
+// stub: RecipeList reads the width, the presentational pieces are told it.
+describe('Home below 724 (PHONE-01)', () => {
+  const tastedBatches = [
+    makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: { tastedDate: '2026-01-02' } }),
+  ];
+  const awaitingBatches = [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: null })];
+  const version = makeVersion({ id: 'v1', recipeId: 'r1' });
+  const widthProp = (below724) => (below724 === undefined ? {} : { below724 });
+  const markupOf = (element) => renderToStaticMarkup(<MemoryRouter>{element}</MemoryRouter>);
+  const rowsAt = (batches, below724) =>
+    markupOf(<RecipeRows versions={[version]} batches={batches} {...widthProp(below724)} />);
+  const leadAt = (standing, batches, below724) =>
+    markupOf(<HomeLead entry={makeEntry({ standing, batches })} {...widthProp(below724)} />);
+  const actionSpans = (markup) => markup.match(/<span class="home__actions">[\s\S]*?<\/span>/g) ?? [];
+  const linkWords = (markup) =>
+    actionSpans(markup).flatMap((span) => [...span.matchAll(/<a [^>]*>([^<]*)<\/a>/g)].map((match) => match[1].trim()));
+
+  it('a tasted row has no .home__actions and neither Next version nor Adapt', () => {
+    const row = rowsAt(tastedBatches, true);
+    expect(row).toContain('Tasted');
+    expect(row).not.toContain('home__actions');
+    expect(row).not.toContain('Next version');
+    expect(row).not.toContain('Adapt');
+  });
+
+  it('a tasted lead has .home__actions with exactly one link, Adapt', () => {
+    const lead = leadAt(TASTED, tastedBatches, true);
+    expect(actionSpans(lead)).toHaveLength(1);
+    expect(linkWords(lead)).toEqual(['Adapt']);
+    expect(lead).not.toContain('Next version');
+  });
+
+  it('awaiting-tasting and not-yet-churned rows and leads are as built', () => {
+    expect(linkWords(rowsAt(awaitingBatches, true))).toEqual(['Record tasting', 'Keep developing']);
+    expect(linkWords(leadAt(AWAITING_TASTING, awaitingBatches, true))).toEqual(['Record tasting', 'Keep developing']);
+    expect(linkWords(rowsAt([], true))).toEqual(['Record batch']);
+    expect(linkWords(leadAt(NOT_YET_CHURNED, [], true))).toEqual(['Record batch']);
+  });
+
+  it('at below724 false, and with the prop left out, a tasted row and lead hold Next version and Adapt', () => {
+    for (const below724 of [false, undefined]) {
+      expect(linkWords(rowsAt(tastedBatches, below724))).toEqual(['Next version', 'Adapt']);
+      expect(linkWords(leadAt(TASTED, tastedBatches, below724))).toEqual(['Next version', 'Adapt']);
+    }
+  });
+
+  it('HomeBody hands the width to its lead and its rows', () => {
+    const body = markupOf(<HomeBody versions={[version]} batches={tastedBatches} catalog={SEED_CATALOG} below724 />);
+    const lead = body.match(/<section class="home__lead"[\s\S]*?<\/section>/)[0];
+    const rows = body.slice(body.indexOf('home__list'));
+    expect(linkWords(lead)).toEqual(['Adapt']);
+    expect(rows).not.toContain('home__actions');
   });
 });

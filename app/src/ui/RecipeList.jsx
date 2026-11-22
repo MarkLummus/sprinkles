@@ -7,6 +7,7 @@ import { activeWork, NOT_YET_CHURNED, AWAITING_TASTING, TASTED, STANDING_WORDS }
 import { notebookPath } from './notebookPaths.js';
 import { batchCountWords } from './countWords.js';
 import { useCatalog } from './CatalogContext.jsx';
+import { useBelow724 } from './useBelowDesktop.js';
 
 // Home — "Active work first" (.impeccable/surfaces/route.md, Home
 // direction amendment 2026-09-20; DESIGN.md "App marks"). The outer
@@ -28,6 +29,7 @@ export function RecipeList() {
   const [batches, setBatches] = useState([]);
   const [recipes, setRecipes] = useState([]);
   const [drafts, setDrafts] = useState([]);
+  const below724 = useBelow724();
 
   useEffect(() => {
     let cancelled = false;
@@ -56,7 +58,7 @@ export function RecipeList() {
         {versions === null ? (
           <p className="home__loading">Loading your recipes…</p>
         ) : (
-          <HomeBody versions={versions} batches={batches} recipes={recipes} drafts={drafts} catalog={catalog} />
+          <HomeBody versions={versions} batches={batches} recipes={recipes} drafts={drafts} catalog={catalog} below724={below724} />
         )}
       </div>
     </div>
@@ -68,7 +70,7 @@ export function RecipeList() {
 // separate presentational component, over plain versions/batches props,
 // so it is testable without driving RecipeList's own fetch effect — the
 // same convention HomeLead and RecipeRows already establish.
-export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog }) {
+export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog, below724 = false }) {
   if (versions.length === 0) {
     return (
       <div className="home__empty">
@@ -124,12 +126,13 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog
         draftVersion={lead && draftVersion ? draftVersion : null}
         draftPath={draftVersion ? notebookPath(draftVersion.recipeId, draftVersion.id, draftBatchId) : null}
         editingIds={editingIds}
+        below724={below724}
       />
       <div className="home__section-row">
         <h2 className="home__section">Recipes</h2>
         <Link className="home__code-link" to="/search" tabIndex={0}>Enter Sheet code</Link>
       </div>
-      <RecipeRows versions={versions} batches={batches} recipes={recipes} editingIds={editingIds} />
+      <RecipeRows versions={versions} batches={batches} recipes={recipes} editingIds={editingIds} below724={below724} />
     </>
   );
 }
@@ -150,7 +153,7 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog
 // convention RecipeRows already establishes. Every recipe lives in the
 // Notebook this phase (03.4-CONTEXT.md), so the place name reads the
 // Notebook's own text companion.
-export function HomeLead({ entry, draftVersion = null, draftPath = null, editingIds = new Set() }) {
+export function HomeLead({ entry, draftVersion = null, draftPath = null, editingIds = new Set(), below724 = false }) {
   if (!entry) return null;
   const nextTime = entry.batches[0]?.churn?.nextTimeNote ?? null;
   return (
@@ -181,7 +184,7 @@ export function HomeLead({ entry, draftVersion = null, draftPath = null, editing
           <p className="home__lead-next-time app-hand">{nextTime}</p>
         </div>
       )}
-      {!editingIds.has(entry.id) && <RowActions entry={entry} />}
+      {!editingIds.has(entry.id) && <RowActions entry={entry} below724={below724} lead />}
     </section>
   );
 }
@@ -202,8 +205,11 @@ function placeNameFor() {
 // "return to a tasting"); every other action opens the recipe at its latest
 // version. Record tasting asks the batch page to open its tasting pen, and
 // Next version asks the recipe page to open its Next version pen, each through
-// route state the page uses once.
-function RowActions({ entry }) {
+// route state the page uses once. Below 724 a tasted recipe loses Next version
+// (PHONE-01, CONTRACT section 3 and section 11 number 3): its row has no actions
+// span at all, and its lead holds Adapt alone. The other two standings are as
+// built at every width.
+function RowActions({ entry, below724 = false, lead = false }) {
   const latestPath = notebookPath(entry.id, entry.latestVersion.id);
   if (entry.standing === NOT_YET_CHURNED) {
     return (
@@ -229,6 +235,16 @@ function RowActions({ entry }) {
     );
   }
   if (entry.standing === TASTED) {
+    if (below724 && !lead) return null;
+    if (below724) {
+      return (
+        <span className="home__actions">
+          <Link to={latestPath} className="home__action home__action--secondary" tabIndex={0}>
+            Adapt
+          </Link>
+        </span>
+      );
+    }
     return (
       <span className="home__actions">
         <Link to={latestPath} state={{ startNextVersion: true }} className="home__action" tabIndex={0}>
@@ -257,7 +273,7 @@ function RowActions({ entry }) {
 //
 // batches and recipes default to [] so the existing tests, which pass
 // versions alone, keep passing.
-export function RecipeRows({ versions, batches = [], recipes = [], editingIds = new Set() }) {
+export function RecipeRows({ versions, batches = [], recipes = [], editingIds = new Set(), below724 = false }) {
   const work = activeWork(versions, batches, recipes);
   return (
     <ul className="home__list">
@@ -279,7 +295,7 @@ export function RecipeRows({ versions, batches = [], recipes = [], editingIds = 
               </span>
               <span className="home__count">{batchCountWords(batchCount)}</span>
             </span>
-            {!editingIds.has(entry.id) && <RowActions entry={entry} />}
+            {!editingIds.has(entry.id) && <RowActions entry={entry} below724={below724} />}
           </li>
         );
       })}

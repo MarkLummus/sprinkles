@@ -13,19 +13,23 @@ import { Button } from './Button.jsx';
 import { PageNotice, usePageNotice } from './PageNotice.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { stripNewlines, submitOnReturn } from './oneLineField.js';
+import { useBelow724 } from './useBelowDesktop.js';
 
 export const DRAFT_DISCARDED_STATUS = 'Draft discarded.';
 
 // The Notebook place (PLACE-02, sketch 012 notebook-place.html): the recipes,
 // one row each, in Home's own order. Since Phase 10 it also starts a recipe:
 // New recipe at the end of the title row opens the entry (a name, Cancel and
-// Start), and a kept creation shows as a draft row with Resume.
+// Start), and a kept creation shows as a draft row with Resume. Below 724 the
+// jobs a phone does not do are left out of the markup (PHONE-01, CONTRACT
+// section 3 and section 11 number 4): New recipe, Resume and Resume editing.
 export function NotebookPlace() {
   // Shell.jsx increments this after a successful import, so the list reloads
   // what the import just wrote (the same context Home and Search read).
   const storeRevision = useOutletContext();
   const navigate = useNavigate();
   const location = useLocation();
+  const below724 = useBelow724();
   const [notice, announce] = usePageNotice();
   const [data, setData] = useState(null);
   const [failed, setFailed] = useState(false);
@@ -157,6 +161,7 @@ export function NotebookPlace() {
         recipes={data.recipes}
         draft={draft}
         editing={editing}
+        below724={below724}
         onStart={handleStart}
         onCancel={() => {
           withdrawnRef.current = true;
@@ -172,8 +177,10 @@ export function NotebookPlace() {
 // (sketch 013 notebook-new-recipe.html, panels nA1 and nB1). New recipe is
 // offered only while no draft is kept and the entry is closed; opening moves
 // focus to Name, and the entry's Cancel returns it to New recipe. Start is the
-// form's submit button, so a click and Enter take the one path.
-function NotebookHead({ draft, recipes, onStart, onCancel }) {
+// form's submit button, so a click and Enter take the one path. Below 724 New
+// recipe is not drawn (PHONE-01); an entry already open as the window narrows
+// stays as it is, so nothing is taken from under the maker's hands.
+function NotebookHead({ draft, recipes, below724 = false, onStart, onCancel }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   // Set when Start is pressed over a blank name; the next keystroke clears it.
@@ -220,7 +227,7 @@ function NotebookHead({ draft, recipes, onStart, onCancel }) {
     <>
       <div className="nb__head">
         <h1 className="place__title">Notebook</h1>
-        {!draft && !open && (
+        {!below724 && !draft && !open && (
           <Button ref={newRef} className="notebook-action" onClick={() => setOpen(true)}>
             New recipe
           </Button>
@@ -264,8 +271,9 @@ function NotebookHead({ draft, recipes, onStart, onCancel }) {
 // The kept creation's row (sketch 013 panels nE1 and nD2): the rail, the name
 // as text ('Untitled' while blank, D-08c), 'draft' and Resume. It is not a
 // recipe, so the count never counts it. The name is a React text child: stored
-// text never reaches the page as markup.
-function NotebookDraftRow({ draft, onResume }) {
+// text never reaches the page as markup. Below 724 Resume is left out of the
+// markup (PHONE-01, CONTRACT section 3).
+function NotebookDraftRow({ draft, below724 = false, onResume }) {
   return (
     <ul className="nb__drafts">
       <li className="nb__draft">
@@ -274,11 +282,13 @@ function NotebookDraftRow({ draft, onResume }) {
         <p className="nb__meta">
           <span>draft</span>
         </p>
-        <span className="nb__draft-act">
-          <Button className="notebook-action--outline" onClick={onResume}>
-            Resume
-          </Button>
-        </span>
+        {!below724 && (
+          <span className="nb__draft-act">
+            <Button className="notebook-action--outline" onClick={onResume}>
+              Resume
+            </Button>
+          </span>
+        )}
       </li>
     </ul>
   );
@@ -288,13 +298,13 @@ function NotebookDraftRow({ draft, onResume }) {
 // effect (the convention RecipeRows and HomeBody set). Every name and
 // description is a React text child: stored text never reaches the page as
 // markup (T-09-06).
-export function NotebookList({ versions, batches = [], recipes = [], draft = null, editing = new Map(), onStart, onCancel, onResume, onResumeEdit }) {
+export function NotebookList({ versions, batches = [], recipes = [], draft = null, editing = new Map(), below724 = false, onStart, onCancel, onResume, onResumeEdit }) {
   const work = activeWork(versions, batches, recipes);
   if (work.length === 0) {
     return (
       <div className="list-page place nb">
-        <NotebookHead draft={draft} recipes={recipes} onStart={onStart} onCancel={onCancel} />
-        {draft && <NotebookDraftRow draft={draft} onResume={onResume} />}
+        <NotebookHead draft={draft} recipes={recipes} below724={below724} onStart={onStart} onCancel={onCancel} />
+        {draft && <NotebookDraftRow draft={draft} below724={below724} onResume={onResume} />}
         <p className="place__note">No recipes yet.</p>
       </div>
     );
@@ -302,15 +312,17 @@ export function NotebookList({ versions, batches = [], recipes = [], draft = nul
   const descriptions = new Map(recipes.map((recipe) => [recipe.id, recipe.description]));
   return (
     <div className="list-page place nb">
-      <NotebookHead draft={draft} recipes={recipes} onStart={onStart} onCancel={onCancel} />
-      {draft && <NotebookDraftRow draft={draft} onResume={onResume} />}
+      <NotebookHead draft={draft} recipes={recipes} below724={below724} onStart={onStart} onCancel={onCancel} />
+      {draft && <NotebookDraftRow draft={draft} below724={below724} onResume={onResume} />}
       <p className="nb__count">{recipeCountWords(work.length)}</p>
       <ul className="nb__list">
         {work.map((entry) => {
           const description = descriptions.get(entry.id);
           // A kept edit on this recipe: the row gains Resume editing (D-05, no
-          // separate draft row for it).
-          const editVersionId = editing.get(entry.id);
+          // separate draft row for it). Below 724 the row reads as any other
+          // (PHONE-01, CONTRACT section 11 number 4): no Resume editing, no
+          // resume styling.
+          const editVersionId = below724 ? undefined : editing.get(entry.id);
           return (
             <li key={entry.id} className={editVersionId ? 'nb__row nb__row--resume' : 'nb__row'}>
               <span className="nb__rail" aria-hidden="true" />

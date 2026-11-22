@@ -179,6 +179,15 @@
   text-underline-offset: var(--app-notebook-link-underline-offset);
 }
 
+/* The one line of words under each region's heading row that teaches the add and move
+   keys (Phase 12, STRUCT-05; sketch 016 row-controls.html section 6): drawn only while
+   the region has a step or a row to key. */
+.notebook .mk-keys {
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-cross-flag);
+  margin: var(--gap-xs) 0 var(--gap-xs);
+}
+
 /* A Move that cannot act (the first item's Move up, the last's Move down): it
    stays in the tab order and does nothing, and reads as the picker's Added does
    (Phase 11, D-16; sketch 014 P11_CSS). */

@@ -4,6 +4,7 @@ import { Checkbox } from './Checkbox.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { useOnDemandField } from './Method.jsx';
 import { StepReading } from './StepReading.jsx';
+import { editorKeyDown } from './editorKeys.js';
 import { holdReturn, stripNewlines } from './oneLineField.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { liveSteps } from '../domain/creationSteps.js';
@@ -66,6 +67,14 @@ function CreationStep({
   // block id; the field carries it as its error, invalid and described by it.
   const leadError = saveMessages?.get(`lead:${step.n}`) ?? null;
   const instructionError = saveMessages?.get(`instruction:${step.n}`) ?? null;
+  // Cmd+Return and Ctrl+Return in a field of this step do what Add step does; Ctrl+Cmd+Up
+  // and Down do what the Move buttons do, with no focus request: the field keeps its focus
+  // and its caret through the move (STRUCT-05, CONTRACT section 6).
+  const addByKey = () => onAddStep(step.n);
+  const moveByKey = (direction) => onMoveStep(step.n, direction, { keyed: true });
+  // The one-line fields keep holdReturn for every other Return; the prose fields let it break the line.
+  const oneLineKeys = { onAdd: addByKey, onMove: moveByKey, otherwise: holdReturn };
+  const proseKeys = { onAdd: addByKey, onMove: moveByKey };
   const leadErrorId = `create-step-${step.n}-lead-error`;
   const instructionErrorId = `create-step-${step.n}-instruction-error`;
 
@@ -95,7 +104,7 @@ function CreationStep({
             aria-invalid={leadError ? 'true' : undefined}
             aria-describedby={leadError ? leadErrorId : undefined}
             onChange={(event) => onChangeStepField(step.n, 'leadIn', stripNewlines(event.target.value))}
-            onKeyDown={holdReturn}
+            onKeyDown={(event) => editorKeyDown(event, oneLineKeys)}
           />
           <FieldFeedback error={leadError} errorId={leadErrorId} required={isBlank(step.leadIn)} />
         </label>
@@ -108,6 +117,7 @@ function CreationStep({
             aria-invalid={instructionError ? 'true' : undefined}
             aria-describedby={instructionError ? instructionErrorId : undefined}
             onChange={(event) => onChangeStepField(step.n, 'instruction', event.target.value)}
+            onKeyDown={(event) => editorKeyDown(event, proseKeys)}
           />
           <FieldFeedback error={instructionError} errorId={instructionErrorId} required={isBlank(step.instruction)} />
         </label>
@@ -133,7 +143,7 @@ function CreationStep({
                   aria-invalid={labelError ? 'true' : undefined}
                   aria-describedby={labelError ? labelErrorId : undefined}
                   onChange={(event) => onChangeTarget(step.n, index, 'label', stripNewlines(event.target.value))}
-                  onKeyDown={holdReturn}
+                  onKeyDown={(event) => editorKeyDown(event, oneLineKeys)}
                 />
                 <FieldFeedback error={labelError} errorId={labelErrorId} required={isBlank(target.label) && !isBlank(target.value)} />
                 <textarea
@@ -145,7 +155,7 @@ function CreationStep({
                   aria-invalid={valueError ? 'true' : undefined}
                   aria-describedby={valueError ? valueErrorId : undefined}
                   onChange={(event) => onChangeTarget(step.n, index, 'value', stripNewlines(event.target.value))}
-                  onKeyDown={holdReturn}
+                  onKeyDown={(event) => editorKeyDown(event, oneLineKeys)}
                 />
                 <FieldFeedback error={valueError} errorId={valueErrorId} required={isBlank(target.value) && !isBlank(target.label)} />
                 <Button
@@ -176,6 +186,7 @@ function CreationStep({
               value={step.purpose ?? ''}
               aria-label={`Step ${number}, purpose`}
               onChange={(event) => onChangeStepField(step.n, 'purpose', event.target.value)}
+              onKeyDown={(event) => editorKeyDown(event, proseKeys)}
               onBlur={purpose.handleBlur}
             />
           </label>
@@ -214,6 +225,7 @@ function CreationStep({
               value={step.aside ?? ''}
               aria-label={`Step ${number}, aside`}
               onChange={(event) => onChangeStepField(step.n, 'aside', event.target.value)}
+              onKeyDown={(event) => editorKeyDown(event, proseKeys)}
               onBlur={aside.handleBlur}
             />
           </label>
@@ -254,6 +266,7 @@ function CreationStep({
             className="text-control"
             data-act="add-after"
             aria-label={`Step ${number}, Add step after it`}
+            aria-keyshortcuts="Meta+Enter Control+Enter"
             onClick={() => onAddStep(step.n)}
           >
             Add step
@@ -263,6 +276,7 @@ function CreationStep({
             className={isFirst ? 'text-control mk-off' : 'text-control'}
             data-act="move-up"
             aria-label={`Step ${number}, move up`}
+            aria-keyshortcuts="Control+Meta+ArrowUp"
             aria-disabled={isFirst ? 'true' : undefined}
             onClick={isFirst ? undefined : () => onMoveStep(step.n, 'up')}
           >
@@ -273,6 +287,7 @@ function CreationStep({
             className={isLast ? 'text-control mk-off' : 'text-control'}
             data-act="move-down"
             aria-label={`Step ${number}, move down`}
+            aria-keyshortcuts="Control+Meta+ArrowDown"
             aria-disabled={isLast ? 'true' : undefined}
             onClick={isLast ? undefined : () => onMoveStep(step.n, 'down')}
           >
@@ -311,6 +326,7 @@ export function CreationSteps({
           Add step
         </Button>
       </div>
+      {steps.length > 0 && <p className="mk-keys">In a step: Cmd+Return adds a step after it. Ctrl+Cmd+Up or Down moves it.</p>}
       {steps.length > 0 && (
         <ol className="method-steps">
           {steps.map((step, index) => (

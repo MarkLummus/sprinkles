@@ -340,6 +340,12 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
         line?.querySelector('[data-act="add-ingredient"]') ??
         line?.querySelector('[data-act="cancel"]') ??
         page.querySelector('.ingredient-table-region .mk-head-act');
+    } else if (typeof request === 'object' && request.kind === 'row-grams') {
+      // The picker a key opened closed unpicked: back to that row's grams; the
+      // heading's Add ingredient when the line is gone.
+      target =
+        page.querySelector(`tr[data-line="${CSS.escape(request.line)}"] textarea`) ??
+        page.querySelector('.ingredient-table-region .mk-head-act');
     } else if (typeof request === 'object' && request.kind === 'row-act') {
       // A row's act, found by its line (`${rowId}:${group}`). After a move the
       // other Move button stands in when the pressed one is now off (D-16).
@@ -430,17 +436,23 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // A row's Add ingredient opens the picker anchored to that row; with the picker
   // already open it moves the landing place and focus goes to Name (CONTRACT
   // section 11, 9b).
-  const handleAddRowAfter = (rowId, group) => {
+  // The opener is 'row' (the row's Add ingredient button) or 'grams' (Cmd+Return or
+  // Ctrl+Return in the row's grams, section 11, 9c): the same landing, and Cancel
+  // goes back to whichever one it was.
+  const handleAddRowAfter = (rowId, group, { opener = 'row' } = {}) => {
     if (picking) focusRequestRef.current = 'picker-name';
-    setPicking({ afterRowId: rowId, group, opener: 'row' });
+    setPicking({ afterRowId: rowId, group, opener });
   };
 
-  // Cancel returns focus to what opened the picker (CONTRACT section 11, 9a).
+  // Cancel returns focus to what opened the picker (CONTRACT section 11, 9a): the
+  // row's Add ingredient, the row's grams when the key opened it, or the heading's.
   const handleCancelPicker = () => {
     const opener = picking;
     setPicking(null);
-    focusRequestRef.current =
-      opener?.opener === 'row' ? { kind: 'picker-opener', line: `${opener.afterRowId}:${opener.group}` } : 'ingredient-target';
+    const line = `${opener?.afterRowId}:${opener?.group}`;
+    if (opener?.opener === 'row') focusRequestRef.current = { kind: 'picker-opener', line };
+    else if (opener?.opener === 'grams') focusRequestRef.current = { kind: 'row-grams', line };
+    else focusRequestRef.current = 'ingredient-target';
   };
 
   const rowName = (rowId) => version.rows.find((row) => row.id === rowId)?.ingredientName ?? '';
@@ -466,7 +478,10 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // the rows under Not in a step yet. Another step's order is as it was. Focus
   // stays on the same Move button of the row (the other one when it turned
   // off), and the word says where the row went.
-  const handleMoveRow = (rowId, group, direction) => {
+  // A keyed move (Ctrl+Cmd+Up or Down in the row's grams, STRUCT-05) asks for no
+  // focus: the grams field keeps it, and React DOM's own restore after the commit
+  // keeps its caret, so nothing here may set a second one.
+  const handleMoveRow = (rowId, group, direction, { keyed = false } = {}) => {
     const ids = groupRows(createDraft, group);
     const at = ids.indexOf(rowId);
     const to = at + (direction === 'up' ? -1 : 1);
@@ -476,7 +491,9 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
     if (group !== UNPLACED_STEP) where = ` in step ${displayNumbers(createDraft.method).get(group)}`;
     else if (liveSteps(createDraft).length > 0) where = ', not in a step yet';
     setCreateDraft((prev) => moveRow(prev, rowId, group, direction));
-    focusRequestRef.current = { kind: 'row-act', line: `${rowId}:${group}`, act: direction === 'up' ? 'move-up' : 'move-down' };
+    if (!keyed) {
+      focusRequestRef.current = { kind: 'row-act', line: `${rowId}:${group}`, act: direction === 'up' ? 'move-up' : 'move-down' };
+    }
     announceStructure(`${rowName(rowId)}, ${position}${where}`);
   };
 
@@ -520,12 +537,13 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // Move a step (STRUCT-02): the stored keys stay as they are and the numbers on
   // screen follow the order. Focus stays on the same Move button of the moved
   // step (D-16). An off button never gets here; the guard is for a stale press.
-  const handleMoveStep = (n, direction) => {
+  // A keyed move (Ctrl+Cmd+Up or Down in a step's field) asks for no focus.
+  const handleMoveStep = (n, direction, { keyed = false } = {}) => {
     const live = liveSteps(createDraft);
     const target = live.findIndex((step) => step.n === n) + (direction === 'up' ? -1 : 1);
     if (target < 0 || target >= live.length) return;
     setCreateDraft((prev) => moveStep(prev, n, direction));
-    focusRequestRef.current = { kind: 'step-act', n, act: direction === 'up' ? 'move-up' : 'move-down' };
+    if (!keyed) focusRequestRef.current = { kind: 'step-act', n, act: direction === 'up' ? 'move-up' : 'move-down' };
     announceStructure(`Step ${target + 1} of ${live.length}`);
   };
 

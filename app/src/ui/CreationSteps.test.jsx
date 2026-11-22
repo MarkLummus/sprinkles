@@ -47,7 +47,11 @@ function Holder({ initial, spies, saveMessages = null }) {
       draft={draft}
       version={version}
       saveMessages={saveMessages}
-      onAddStep={(afterN) => setDraft((prev) => addStep(prev, { afterN }))}
+      onAddStep={(afterN) => {
+        spies?.onAddStep?.(afterN);
+        setDraft((prev) => addStep(prev, { afterN }));
+      }}
+      onMoveStep={(n, direction, options) => spies?.onMoveStep?.(n, direction, options)}
       onChangeStepField={(n, field, value) => setDraft((prev) => setStepField(prev, n, field, value))}
       onAddTarget={(n) => setDraft((prev) => addTarget(prev, n))}
       onChangeTarget={(n, index, side, value) => setDraft((prev) => setTarget(prev, n, index, side, value))}
@@ -553,5 +557,124 @@ describe('the target fields are one-row textareas that stay one line (bug-ipad-t
     expect(held.method[0].targets[0].label).toBe('temp');
     type(field('Step 1, target value'), '85\r\n °C');
     expect(held.method[0].targets[0].value).toBe('85 °C');
+  });
+});
+
+describe('the keys that add and move a step (STRUCT-05, CONTRACT section 6 and section 11, numbers 8, 10, 11)', () => {
+  const FIELDS = [
+    'Step 1, lead-in',
+    'Step 1, instruction',
+    'Step 1, purpose',
+    'Step 1, aside',
+    'Step 1, target label',
+    'Step 1, target value',
+  ];
+  const written = () => withStep(blank(), { leadIn: 'Warm', instruction: 'Warm the milk.', purpose: 'Gentle heat.', aside: 'Do not boil.' }, [['temp', '85 °C']]);
+
+  function keydown(element, init) {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init });
+    let notPrevented;
+    act(() => {
+      notPrevented = element.dispatchEvent(event);
+    });
+    return notPrevented;
+  }
+
+  it('Cmd+Return and Ctrl+Return in each of the six fields add after the step, prevented, and type nothing', () => {
+    const spies = { onAddStep: vi.fn(), onMoveStep: vi.fn() };
+    mount(written(), spies);
+    for (const name of FIELDS) {
+      for (const modifier of ['metaKey', 'ctrlKey']) {
+        spies.onAddStep.mockClear();
+        const before = field(name).value;
+        expect(keydown(field(name), { key: 'Enter', [modifier]: true }), `${name} ${modifier}`).toBe(false);
+        expect(spies.onAddStep, `${name} ${modifier}`).toHaveBeenCalledTimes(1);
+        expect(spies.onAddStep).toHaveBeenCalledWith(held.method[0].n);
+        expect(field(name).value).toBe(before);
+      }
+    }
+    expect(spies.onMoveStep).not.toHaveBeenCalled();
+  });
+
+  it('Ctrl+Cmd+Up and Down in each of the six fields ask for a keyed move of the step', () => {
+    const spies = { onAddStep: vi.fn(), onMoveStep: vi.fn() };
+    mount(written(), spies);
+    const n = held.method[0].n;
+    for (const name of FIELDS) {
+      spies.onMoveStep.mockClear();
+      expect(keydown(field(name), { key: 'ArrowUp', ctrlKey: true, metaKey: true }), name).toBe(false);
+      expect(spies.onMoveStep).toHaveBeenLastCalledWith(n, 'up', { keyed: true });
+      expect(keydown(field(name), { key: 'ArrowDown', ctrlKey: true, metaKey: true }), name).toBe(false);
+      expect(spies.onMoveStep).toHaveBeenLastCalledWith(n, 'down', { keyed: true });
+      expect(spies.onMoveStep).toHaveBeenCalledTimes(2);
+    }
+    expect(spies.onAddStep).not.toHaveBeenCalled();
+  });
+
+  it('a plain Return still breaks the line in the instruction, purpose and aside, and is held in the one-line fields', () => {
+    const spies = { onAddStep: vi.fn(), onMoveStep: vi.fn() };
+    mount(written(), spies);
+    for (const name of ['Step 1, instruction', 'Step 1, purpose', 'Step 1, aside']) {
+      expect(keydown(field(name), { key: 'Enter' }), name).toBe(true);
+    }
+    for (const name of ['Step 1, lead-in', 'Step 1, target label', 'Step 1, target value']) {
+      expect(keydown(field(name), { key: 'Enter' }), name).toBe(false);
+    }
+    expect(spies.onAddStep).not.toHaveBeenCalled();
+    expect(spies.onMoveStep).not.toHaveBeenCalled();
+  });
+
+  it('a held Cmd+Return (a repeat) adds nothing and is prevented, in a prose field and a one-line field', () => {
+    const spies = { onAddStep: vi.fn(), onMoveStep: vi.fn() };
+    mount(written(), spies);
+    for (const name of ['Step 1, instruction', 'Step 1, lead-in']) {
+      expect(keydown(field(name), { key: 'Enter', metaKey: true, repeat: true }), name).toBe(false);
+    }
+    expect(spies.onAddStep).not.toHaveBeenCalled();
+  });
+
+  it('Cmd+arrow alone, and every combination with Shift or Option, keep their own work in the text', () => {
+    const spies = { onAddStep: vi.fn(), onMoveStep: vi.fn() };
+    mount(written(), spies);
+    const name = 'Step 1, instruction';
+    expect(keydown(field(name), { key: 'ArrowUp', metaKey: true })).toBe(true);
+    expect(keydown(field(name), { key: 'ArrowDown', altKey: true })).toBe(true);
+    expect(keydown(field(name), { key: 'ArrowDown', metaKey: true, shiftKey: true })).toBe(true);
+    expect(keydown(field(name), { key: 'ArrowDown', ctrlKey: true, metaKey: true, shiftKey: true })).toBe(true);
+    expect(keydown(field(name), { key: 'Enter', metaKey: true, shiftKey: true })).toBe(true);
+    expect(spies.onAddStep).not.toHaveBeenCalled();
+    expect(spies.onMoveStep).not.toHaveBeenCalled();
+  });
+
+  it("Remove has no key: no combination with Delete or Backspace reaches the step's Remove", () => {
+    const spies = { onAddStep: vi.fn(), onMoveStep: vi.fn(), onRemoveTarget: vi.fn() };
+    mount(written(), spies);
+    for (const key of ['Delete', 'Backspace']) {
+      expect(keydown(field('Step 1, instruction'), { key, ctrlKey: true, metaKey: true })).toBe(true);
+    }
+    expect(q('li.mk-step')).not.toBeNull();
+    expect(spies.onRemoveTarget).not.toHaveBeenCalled();
+  });
+
+  it("one keys line stands right under the Instructions heading row while a step exists, and none while there is no step (CONTRACT section 6, section 11 number 7)", () => {
+    mount(withStep(blank()));
+    const lines = qa('p.mk-keys');
+    expect(lines.map((line) => line.textContent)).toEqual(['In a step: Cmd+Return adds a step after it. Ctrl+Cmd+Up or Down moves it.']);
+    expect(lines[0].previousElementSibling).toBe(q('.mk-head-row'));
+    expect(lines[0].nextElementSibling).toBe(q('ol.method-steps'));
+    act(() => current.root.unmount());
+    current.container.remove();
+    mount(blank());
+    expect(qa('p.mk-keys')).toHaveLength(0);
+  });
+
+  it("the step's Add step, Move up and Move down carry aria-keyshortcuts as the board writes them, and nothing else on the step does", () => {
+    mount(withStep(blank(), {}, [['temp', '85 °C']]));
+    expect(q('[data-act="add-after"]').getAttribute('aria-keyshortcuts')).toBe('Meta+Enter Control+Enter');
+    expect(q('[data-act="move-up"]').getAttribute('aria-keyshortcuts')).toBe('Control+Meta+ArrowUp');
+    expect(q('[data-act="move-down"]').getAttribute('aria-keyshortcuts')).toBe('Control+Meta+ArrowDown');
+    expect(qa('[aria-keyshortcuts]').length).toBe(3);
+    // The heading's Add step carries none: the keys act from a step's field.
+    expect(q('.mk-head-row .mk-head-act').hasAttribute('aria-keyshortcuts')).toBe(false);
   });
 });

@@ -237,11 +237,12 @@ describe('Edit on a saved first version (STRUCT-04)', () => {
     expect(root_().textContent).toContain('edit route');
   });
 
-  it('shows Edit at a narrow width too (research open question 5)', async () => {
+  it('shows no Edit below 724 (PHONE-01)', async () => {
     seedVanilla();
     await mountAt(PAGE_PATH, { width: 600 });
-    expect(buttonByText('Edit')).not.toBeNull();
-    expect(buttonByText('Edit').className).toBe('notebook-link');
+    expect(buttonByText('Edit')).toBeNull();
+    expect(buttonByText('Next version')).toBeNull();
+    expect(actsWords()).toEqual(['Record batch', 'Print sheet']);
   });
 
   it('shows no Edit on a root with a batch, and Next version stands alone with the print link', async () => {
@@ -417,12 +418,15 @@ describe('Resume editing while an edit draft is kept (D-04, D-23)', () => {
     expect(location.pathname).toBe(EDIT_PATH);
   });
 
-  it('draws no Record batch below 724 either, and the record act is gone from the acts row', async () => {
+  it('draws no Record batch below 724 either: the acts read Print sheet and the Edit kept line stands under the identity (PHONE-01)', async () => {
     const { version } = seedVanilla();
     store.drafts.set(VERSION_ID, keptEdit(version));
     await mountAt(PAGE_PATH, { width: 600 });
-    expect(actsWords()).toEqual(['Resume editing', 'Print sheet']);
+    expect(actsWords()).toEqual(['Print sheet']);
     expect(buttonByText('Record batch')).toBeNull();
+    expect(buttonByText('Resume editing')).toBeNull();
+    const lines = [...root_().querySelectorAll('.notebook-version__draft')].map((node) => node.textContent);
+    expect(lines).toEqual(['Edit kept. Finish it at the desk or on the iPad.']);
   });
 
   it('opens no pen for a startNextVersion route intent', async () => {

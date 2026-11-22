@@ -2,6 +2,7 @@
 //
 // Quick task 261002-wmz: each control in the band's acts row, below 724,
 // calls the RecipePage handler it is named for (sketch 011 decision 30).
+// Sketch 016 (PHONE-01) leaves Next version out of the row below 724.
 // renderToStaticMarkup drops handlers, so the clicks need a real render
 // cycle: jsdom, per file, with the BatchRow.signed.test.jsx mount pattern.
 import { describe, it, expect, vi, afterEach } from 'vitest';
@@ -18,7 +19,7 @@ const noop = () => {};
 
 let current = null;
 
-function mount(batches) {
+function mount(batches, extra = {}) {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
@@ -48,6 +49,7 @@ function mount(batches) {
           onSaveOverVersion={noop}
           onToggleShowChanges={noop}
           {...spies}
+          {...extra}
         />
       </MemoryRouter>,
     );
@@ -94,11 +96,22 @@ describe('VersionRow — the band\'s controls below 724 call the handler they ar
     expect(spies.onStartDeveloping).not.toHaveBeenCalled();
   });
 
-  it('the text-control Next version calls onStartDeveloping once and nothing else (Test I)', () => {
+  it('draws no Next version below 724 (PHONE-01): the record act and Print sheet are the row (Test I)', () => {
     const spies = mount([augustSecondBatch]);
-    act(() => buttonNamed('Next version').click());
-    expect(spies.onStartDeveloping).toHaveBeenCalledTimes(1);
+    expect(buttonNamed('Next version')).toBeUndefined();
+    expect([...current.container.querySelectorAll('.notebook-version__acts > *')].map((node) => node.textContent.trim())).toEqual([
+      'Record another',
+      'Print sheet',
+    ]);
+    expect(spies.onStartDeveloping).not.toHaveBeenCalled();
+  });
+
+  it('draws no record act while a Next version draft is held, so nothing can call a handler (Test K)', () => {
+    const spies = mount([augustSecondBatch], { planHeld: true });
+    expect(buttonNamed('Record another')).toBeUndefined();
+    expect([...current.container.querySelectorAll('.notebook-version__acts > *')].map((node) => node.textContent.trim())).toEqual([
+      'Print sheet',
+    ]);
     expect(spies.onStartRecording).not.toHaveBeenCalled();
-    expect(spies.onStartTasting).not.toHaveBeenCalled();
   });
 });

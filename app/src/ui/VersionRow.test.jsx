@@ -707,12 +707,13 @@ describe('VersionRow — every button and checkbox carries an explicit tabindex 
 });
 
 // Sketch 011 decision 30 (Mark, 2026-10-02, "approve the phone-logging
-// boards"), quick task 261002-wmz: below 724 the band's acts row leads with
-// ONE filled control, the record act the version is waiting on, and Next
-// version is the underlined text control beside it. Every assertion is scoped
-// to the acts group's own markup, so the Go to batch row (a sibling in the
-// band grid, 261002-wmy) can never satisfy or break one.
-describe('VersionRow — below 724 the band\'s one filled action is the record act (sketch 011 decision 30, 261002-wmz)', () => {
+// boards"), quick task 261002-wmz, then sketch 016 (PHONE-01): below 724 the
+// band's acts row holds ONE filled control, the record act the version is
+// waiting on, then Print sheet. Next version, Edit and Resume editing are left
+// to the desk and the iPad. Every assertion is scoped to the acts group's own
+// markup, so the Go to batch row (a sibling in the band grid, 261002-wmy) can
+// never satisfy or break one.
+describe('VersionRow — below 724 the band holds the record act and Print sheet (sketch 016, PHONE-01)', () => {
   function actsGroup(markup) {
     const start = markup.indexOf('class="notebook-version__acts"');
     if (start === -1) return '';
@@ -726,56 +727,175 @@ describe('VersionRow — below 724 the band\'s one filled action is the record a
     }));
   }
 
-  const awaitingBatch = { ...augustSecondBatch, tasting: null };
+  // Every control in the row, in order, buttons and links alike.
+  function actLabels(markup) {
+    return [...actsGroup(markup).matchAll(/<(button|a)\b[^>]*>([\s\S]*?)<\/\1>/g)].map((match) =>
+      match[2].replace(/<[^>]*>/g, '').trim(),
+    );
+  }
 
-  it('leads with a filled Record another when the latest batch is tasted, then Next version as a text control (Test A)', () => {
-    const buttons = actButtons(renderVersionRow({ below724: true, batches: [augustSecondBatch] }));
-    expect(buttons.map((button) => button.label)).toEqual(['Record another', 'Next version']);
+  const awaitingBatch = { ...augustSecondBatch, tasting: null };
+  const drafts = (markup) => [...markup.matchAll(/<p class="notebook-version__draft">[\s\S]*?<\/p>/g)].map((m) => m[0]);
+
+  it('reads [Record another, Print sheet] when the latest batch is tasted, the record act filled (Test A)', () => {
+    const markup = renderVersionRow({ below724: true, batches: [augustSecondBatch] });
+    expect(actLabels(markup)).toEqual(['Record another', 'Print sheet']);
+    const buttons = actButtons(markup);
+    expect(buttons).toHaveLength(1);
     expect(buttons[0].attrs).toContain('class="notebook-action"');
     expect(buttons[0].attrs).toContain('tabindex="0"');
-    expect(buttons[1].attrs).toContain('class="notebook-link"');
-    expect(actsGroup(renderVersionRow({ below724: true, batches: [augustSecondBatch] })).match(/class="notebook-action"/g)).toHaveLength(1);
+    expect(actsGroup(markup).match(/class="notebook-action"/g)).toHaveLength(1);
   });
 
-  it('leads with a filled Record batch when the version has no batch (Test B)', () => {
-    const buttons = actButtons(renderVersionRow({ below724: true, batches: [] }));
-    expect(buttons.map((button) => button.label)).toEqual(['Record batch', 'Next version']);
-    expect(buttons[0].attrs).toContain('class="notebook-action"');
-    expect(buttons[1].attrs).toContain('class="notebook-link"');
+  it('reads [Record batch, Print sheet] when the version has no batch (Test B)', () => {
+    const markup = renderVersionRow({ below724: true, batches: [] });
+    expect(actLabels(markup)).toEqual(['Record batch', 'Print sheet']);
+    expect(actButtons(markup)[0].attrs).toContain('class="notebook-action"');
   });
 
   // 261002-wn1 moved Show changes out of the band below 724 (it sits on the
   // Ingredients row, IngredientsHead); this wmz assertion followed the rule.
-  it('keeps Show changes out of the row below 724, and last as a text control from 724 up, when the version has a parent (Test C)', () => {
+  it('keeps Show changes out of the row below 724, and last button from 724 up, when the version has a parent (Test C)', () => {
     const parented = {
       version: childVersion,
       versions: [oliveOilVersion, childVersion],
       parentVersion: oliveOilVersion,
       batches: [augustSecondBatch],
     };
-    const below = actButtons(renderVersionRow({ below724: true, ...parented }));
-    expect(below.map((button) => button.label)).toEqual(['Record another', 'Next version']);
+    expect(actLabels(renderVersionRow({ below724: true, ...parented }))).toEqual(['Record another', 'Print sheet']);
     const above = actButtons(renderVersionRow(parented));
     expect(above.map((button) => button.label)).toEqual(['Next version', 'Show changes']);
     expect(above[1].attrs).toContain('class="notebook-link"');
   });
 
-  it('leads with a filled Record tasting when the latest batch awaits its tasting (Test F)', () => {
-    const buttons = actButtons(renderVersionRow({ below724: true, batches: [awaitingBatch] }));
-    expect(buttons.map((button) => button.label)).toEqual(['Record tasting', 'Next version']);
-    expect(buttons[0].attrs).toContain('class="notebook-action"');
-    expect(buttons[1].attrs).toContain('class="notebook-link"');
-    const withParent = actButtons(
-      renderVersionRow({
-        below724: true,
-        version: childVersion,
-        versions: [oliveOilVersion, childVersion],
-        parentVersion: oliveOilVersion,
-        batches: [awaitingBatch],
-      }),
-    );
+  it('reads [Record tasting, Print sheet] when the latest batch awaits its tasting (Test F)', () => {
+    const markup = renderVersionRow({ below724: true, batches: [awaitingBatch] });
+    expect(actLabels(markup)).toEqual(['Record tasting', 'Print sheet']);
+    expect(actButtons(markup)[0].attrs).toContain('class="notebook-action"');
+    const withParent = renderVersionRow({
+      below724: true,
+      version: childVersion,
+      versions: [oliveOilVersion, childVersion],
+      parentVersion: oliveOilVersion,
+      batches: [awaitingBatch],
+    });
     // 261002-wn1: Show changes is on the Ingredients row below 724, not here.
-    expect(withParent.map((button) => button.label)).toEqual(['Record tasting', 'Next version']);
+    expect(actLabels(withParent)).toEqual(['Record tasting', 'Print sheet']);
+  });
+
+  it('draws no Next version, Edit or Resume editing in any below-724 arrangement (Test M)', () => {
+    for (const batches of [[], [augustSecondBatch], [awaitingBatch]]) {
+      for (const editState of [null, 'loading', 'editable', 'editing']) {
+        for (const planHeld of [false, true]) {
+          const acts = actsGroup(renderVersionRow({ below724: true, batches, editState, planHeld }));
+          expect(acts).not.toContain('Next version');
+          expect(acts).not.toContain('>Edit<');
+          expect(acts).not.toContain('Resume editing');
+          expect(acts).toContain('>Print sheet<');
+        }
+      }
+    }
+  });
+
+  it('an editable version reads [Record batch, Print sheet] with no Edit and no line (Test N)', () => {
+    const markup = renderVersionRow({ below724: true, batches: [], editState: 'editable' });
+    expect(actLabels(markup)).toEqual(['Record batch', 'Print sheet']);
+    expect(markup).not.toContain('notebook-version__draft');
+  });
+
+  it('a kept edit reads [Print sheet] under one Edit kept line, right after the identity heading (Test O)', () => {
+    const markup = renderVersionRow({ below724: true, batches: [], editState: 'editing' });
+    expect(actLabels(markup)).toEqual(['Print sheet']);
+    expect(drafts(markup)).toEqual([
+      '<p class="notebook-version__draft">Edit kept. Finish it at the desk or on the iPad.</p>',
+    ]);
+    expect(markup).toMatch(/<\/h2><p class="notebook-version__draft">Edit kept\./);
+  });
+
+  it('a kept edit says nothing of the kind from 724 up (Test O, guard)', () => {
+    const markup = renderVersionRow({ below724: false, batches: [], editState: 'editing' });
+    expect(markup).not.toContain('Edit kept');
+    expect(actButtons(markup).map((button) => button.label)).toEqual(['Resume editing']);
+  });
+
+  it('an own Next version draft held reads [Print sheet] under "Draft: <name>. Finish it..." in plain text, with no link (Test P)', () => {
+    const ownDraft = { versionId: oliveOilVersion.id, kind: 'plan', payload: { versionLabel: 'less cream' } };
+    const markup = renderVersionRow({ below724: true, batches: [augustSecondBatch], ownDraft, planHeld: true });
+    expect(actLabels(markup)).toEqual(['Print sheet']);
+    expect(drafts(markup)).toEqual([
+      '<p class="notebook-version__draft">Draft: Version 2 · less cream. Finish it at the desk or on the iPad.</p>',
+    ]);
+    expect(markup).toMatch(/<\/h2><p class="notebook-version__draft">Draft: /);
+  });
+
+  it('builds the own draft name by the waiting draft\'s rule: the middot is left out while the name is blank, and markup in a name stays text (Test P2)', () => {
+    const blank = renderVersionRow({
+      below724: true,
+      ownDraft: { versionId: oliveOilVersion.id, kind: 'plan', payload: { versionLabel: '' } },
+      planHeld: true,
+    });
+    expect(drafts(blank)).toEqual([
+      '<p class="notebook-version__draft">Draft: Version 2. Finish it at the desk or on the iPad.</p>',
+    ]);
+    const hostile = renderVersionRow({
+      below724: true,
+      ownDraft: { versionId: oliveOilVersion.id, kind: 'plan', payload: { versionLabel: '<b>x</b>' } },
+      planHeld: true,
+    });
+    expect(hostile).toContain('Version 2 · &lt;b&gt;x&lt;/b&gt;. Finish');
+    expect(hostile).not.toContain('<b>x</b>');
+  });
+
+  it('planHeld with no own draft yet (the read not settled) reads [Print sheet] and no line (Test Q)', () => {
+    const markup = renderVersionRow({ below724: true, batches: [augustSecondBatch], planHeld: true });
+    expect(actLabels(markup)).toEqual(['Print sheet']);
+    expect(markup).not.toContain('notebook-version__draft');
+  });
+
+  it('draws no own-draft line from 724 up, whatever it is handed (Test P3, guard)', () => {
+    const ownDraft = { versionId: oliveOilVersion.id, kind: 'plan', payload: { versionLabel: 'less cream' } };
+    const markup = renderVersionRow({ below724: false, ownDraft });
+    expect(markup).not.toContain('notebook-version__draft');
+    expect(markup).not.toContain('Finish it at the desk');
+  });
+
+  it('another version\'s waiting draft keeps the record act and reads the linked sentence (Test R)', () => {
+    const waiting = { versionId: childVersion.id, kind: 'plan', payload: { versionLabel: '40 g oil' } };
+    const markup = renderVersionRow({
+      below724: true,
+      versions: [oliveOilVersion, childVersion],
+      batches: [augustSecondBatch],
+      draft: waiting,
+    });
+    expect(actLabels(markup)).toEqual(['Record another', 'Print sheet']);
+    const [line] = drafts(markup);
+    expect(line).toMatch(
+      /^<p class="notebook-version__draft">Draft: <a [^>]*href="\/notebook\/olive-oil-ice-cream\/olive-oil-ice-cream-v2"[^>]*>Version 3 · 40 g oil<\/a>\. Finish it at the desk or on the iPad\.<\/p>$/,
+    );
+    expect(drafts(markup)).toHaveLength(1);
+  });
+
+  it('draws one draft line only, the own draft taking the place of another version\'s (Test S)', () => {
+    const own = { versionId: oliveOilVersion.id, kind: 'plan', payload: { versionLabel: 'less cream' } };
+    const waiting = { versionId: childVersion.id, kind: 'plan', payload: { versionLabel: '40 g oil' } };
+    const markup = renderVersionRow({
+      below724: true,
+      versions: [oliveOilVersion, childVersion],
+      ownDraft: own,
+      planHeld: true,
+      draft: waiting,
+    });
+    expect(drafts(markup)).toHaveLength(1);
+    expect(drafts(markup)[0]).toContain('Version 3 · less cream');
+    expect(markup).not.toContain('40 g oil');
+  });
+
+  it('draws no draft line while a pen is open (Test T)', () => {
+    const own = { versionId: oliveOilVersion.id, kind: 'plan', payload: { versionLabel: 'less cream' } };
+    for (const props of [{ ownDraft: own }, { editState: 'editing' }]) {
+      const markup = renderVersionRow({ below724: true, openPen: 'record', mode: 'recording', penDraft: emptyPenDraft(), ...props });
+      expect(markup).not.toContain('notebook-version__draft');
+    }
   });
 
   // Guard (passes before and after): from 724 up the band is as built.
@@ -810,12 +930,12 @@ describe('VersionRow — below 724 the band\'s one filled action is the record a
 describe('VersionRow — the band\'s Show changes is gated off below 724 (261002-wn1)', () => {
   const withParent = { version: childVersion, parentVersion: oliveOilVersion };
 
-  it('renders neither Show changes nor Hide changes below 724, and still renders Next version (Test G)', () => {
+  it('renders neither Show changes nor Hide changes below 724, and no Next version either (Test G)', () => {
     for (const showingChanges of [false, true]) {
       const markup = renderVersionRow({ ...withParent, below724: true, showingChanges });
       expect(markup).not.toContain('Show changes');
       expect(markup).not.toContain('Hide changes');
-      expect(markup).toContain('Next version');
+      expect(markup).not.toContain('Next version');
     }
   });
 
@@ -916,21 +1036,27 @@ describe('VersionRow — Edit and Resume editing (STRUCT-04)', () => {
     expect(acts).not.toContain('Resume editing');
   });
 
-  it('draws Edit below 724 as well, after the record act and Next version', () => {
+  it('draws no Edit below 724 (PHONE-01): the record act and Print sheet only', () => {
     const acts = actsOf(renderVersionRow({ editState: 'editable', below724: true }));
-    expect(acts.indexOf('>Edit<')).toBeGreaterThan(acts.indexOf('Next version'));
-    expect(acts.indexOf('Next version')).toBeGreaterThan(acts.indexOf('Record batch'));
+    expect(acts).not.toContain('>Edit<');
+    expect(acts).not.toContain('Next version');
+    expect(acts.indexOf('Print sheet')).toBeGreaterThan(acts.indexOf('Record batch'));
   });
 
-  it('draws Resume editing in Edit’s place, with no Next version, no Edit and no record act, when editing', () => {
-    for (const below724 of [false, true]) {
-      const acts = actsOf(renderVersionRow({ editState: 'editing', below724 }));
-      expect(acts).toMatch(/<button[^>]*class="notebook-link"[^>]*>Resume editing<\/button>/);
-      expect(acts).not.toContain('Next version');
-      expect(acts).not.toContain('>Edit<');
-      expect(acts).not.toContain('Record batch');
-      expect(acts.indexOf('Print sheet')).toBeGreaterThan(acts.indexOf('Resume editing'));
-    }
+  it('draws Resume editing in Edit’s place, with no Next version, no Edit and no record act, when editing, from 724 up', () => {
+    const acts = actsOf(renderVersionRow({ editState: 'editing', below724: false }));
+    expect(acts).toMatch(/<button[^>]*class="notebook-link"[^>]*>Resume editing<\/button>/);
+    expect(acts).not.toContain('Next version');
+    expect(acts).not.toContain('>Edit<');
+    expect(acts).not.toContain('Record batch');
+    expect(acts.indexOf('Print sheet')).toBeGreaterThan(acts.indexOf('Resume editing'));
+  });
+
+  it('draws no Resume editing below 724 (PHONE-01): Print sheet alone', () => {
+    const acts = actsOf(renderVersionRow({ editState: 'editing', below724: true }));
+    expect(acts).not.toContain('Resume editing');
+    expect(acts).not.toContain('Record batch');
+    expect(acts).toContain('Print sheet');
   });
 
   it('is byte-identical for null, loading and omitted', () => {

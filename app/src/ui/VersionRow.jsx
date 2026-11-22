@@ -21,6 +21,13 @@ const RECORD_ACT_WORDS = {
   [TASTED]: 'Record another',
 };
 
+// The two sentences below 724 that say where kept work is finished (sketch
+// 016, CONTRACT section 2): Next version and Edit stay at the desk and on the
+// iPad. Named once each; the Draft line builds its own start and ends with
+// the second.
+const EDIT_KEPT_LINE = 'Edit kept. Finish it at the desk or on the iPad.';
+const DRAFT_LINE_ENDING = '. Finish it at the desk or on the iPad.';
+
 // The version's own row (sketch 003 variant B, 03.3-01): the front
 // matter's first stacked row, spanning the whole page. Carries the
 // version's own acts (Develop, the history outline, the lineage line) — the
@@ -65,8 +72,9 @@ export function VersionRow({
   // useFold below returns detailsOpen to this default whenever it
   // changes, so an iPad rotation across 1366 resets the fold.
   foldsOpen = true,
-  // Below 724 (useBelow724, RecipePage's read) the acts row leads with the
-  // filled record act and Next version becomes a text control. The two
+  // Below 724 (useBelow724, RecipePage's read) the acts row holds the filled
+  // record act and Print sheet; Next version, Edit and Resume editing are left
+  // to the desk and the iPad (sketch 016, PHONE-01). The two
   // handlers are RecipePage's own: onStartRecording is the one the log's
   // Record another and Record batch call; onStartTasting opens the amend
   // pen on the batch the label rule read, with the tasting step already open
@@ -82,6 +90,12 @@ export function VersionRow({
   // sketch 011 decision 19's band line): the stored record, or null. Named
   // under the identity line only while no pen is open here.
   draft = null,
+  // This version's own held Next version draft (useKeptDraft's heldPlan, below
+  // 724 only), apart from `draft` so the History rail draws no node for it, and
+  // whether a plan draft is held at all (planGuard: also true until the first
+  // read settles). Below 724 either one takes the record act away.
+  ownDraft = null,
+  planHeld = false,
   // Whether this version can be edited (STRUCT-04, plan 11-12), from
   // editStateFor: 'editable' draws Edit beside Next version, 'editing' (an edit
   // draft is kept, a stale one included) draws Resume editing in Edit's place
@@ -184,12 +198,11 @@ export function VersionRow({
   // The waiting draft's own name (the rail's rule, railEntries): the next
   // ordinal, the recipe's version count plus one, then the version name the
   // maker has typed so far, with its middot left out while that is blank.
-  const waitingLabel = draft?.payload?.versionLabel ?? '';
-  const waitingName = draft
-    ? waitingLabel
-      ? `Version ${ordered.length + 1} · ${waitingLabel}`
-      : `Version ${ordered.length + 1}`
-    : null;
+  const draftName = (record) => {
+    const label = record?.payload?.versionLabel ?? '';
+    return label ? `Version ${ordered.length + 1} · ${label}` : `Version ${ordered.length + 1}`;
+  };
+  const waitingName = draft ? draftName(draft) : null;
 
   const versionOrdinalIndex = ordered.findIndex((candidate) => candidate.id === version.id);
   const ceremonyCaption =
@@ -361,15 +374,27 @@ export function VersionRow({
           {isLatest && <span className="notebook-version__latest"> · Latest</span>}
         </h2>
 
-        {/* The waiting draft (sketch 011 decision 19, deferred to Phase 4 by
-            Mark 2026-09-28; 011-options-counts/upright-393.html): a Next
-            version draft kept on another version of this recipe, named under
-            the identity line as a link to the version it was opened on. Only
-            while no pen is open: an open pen has its own draft node. */}
-        {openPen === null && waitingName && (
-          <p className="notebook-version__draft">
-            Draft: <Link to={notebookPath(version.recipeId, draft.versionId)} tabIndex={0}>{waitingName}</Link>
-          </p>
+        {/* The draft line (sketch 011 decision 19, deferred to Phase 4 by
+            Mark 2026-09-28; 011-options-counts/upright-393.html), one line
+            at most, only while no pen is open (an open pen has its own draft
+            node). Below 724 (sketch 016, CONTRACT section 2) a kept edit or
+            this version's own kept Next version draft says where it is
+            finished, and another version's waiting draft gains the same
+            sentence; from 724 up the line is as built: a Next version draft
+            kept on another version of this recipe, named as a link to the
+            version it was opened on. Every name is a text child. */}
+        {openPen === null && below724 && editState === 'editing' ? (
+          <p className="notebook-version__draft">{EDIT_KEPT_LINE}</p>
+        ) : openPen === null && below724 && ownDraft ? (
+          <p className="notebook-version__draft">{`Draft: ${draftName(ownDraft)}${DRAFT_LINE_ENDING}`}</p>
+        ) : (
+          openPen === null &&
+          waitingName && (
+            <p className="notebook-version__draft">
+              Draft: <Link to={notebookPath(version.recipeId, draft.versionId)} tabIndex={0}>{waitingName}</Link>
+              {below724 && DRAFT_LINE_ENDING}
+            </p>
+          )
         )}
 
         {/* The version's own right-hand stack (D-08, sketch 003 variant B,
@@ -435,18 +460,21 @@ export function VersionRow({
 
         {/* The acts group (sketch 003 variant B, index.html:215, 479;
             restyled as App front matter, Task 2): one row, below the dl,
-            only while no pen is open. Below 724 it leads with ONE filled
-            control, the record act the version is waiting on (Record
-            tasting, Record another or Record batch, sketch 011 decision
-            30, Mark 2026-10-02), then Next version as the underlined text
-            control; from 724 up Next version is the filled control, as
-            built, and the record acts live only in BatchRow.jsx's own
-            head. Show changes follows once a parent exists, from 724 up;
+            only while no pen is open. Below 724 it holds the filled record
+            act the version is waiting on (Record tasting, Record another or
+            Record batch, sketch 011 decision 30, Mark 2026-10-02), then
+            Print sheet, and nothing else: Next version, Edit and Resume
+            editing are left out (sketch 016, PHONE-01; it overrides sketch
+            011 decision 30 and Phase 11 D-04, D-05 below 724). The record
+            act waits while a Next version draft is held (planHeld, Mark's B)
+            or an edit is kept. From 724 up Next version is the filled
+            control, as built, and the record acts live only in BatchRow.jsx's
+            own head. Show changes follows once a parent exists, from 724 up;
             below 724 it is on the Ingredients row (IngredientsHead, decision
             30 addendum). */}
         {openPen === null && (
           <div className="notebook-version__acts">
-            {editState !== 'editing' && below724 && (
+            {editState !== 'editing' && !planHeld && below724 && (
               <Button
                 ref={recordActButtonRef}
                 className="notebook-action"
@@ -455,25 +483,25 @@ export function VersionRow({
                 {RECORD_ACT_WORDS[standing]}
               </Button>
             )}
-            {editState !== 'editing' && (
+            {editState !== 'editing' && !below724 && (
               <Button
                 ref={developButtonRef}
-                className={below724 ? 'notebook-link' : 'notebook-action'}
+                className="notebook-action"
                 onClick={onStartDeveloping}
               >
                 Next version
               </Button>
             )}
             {/* STRUCT-04 (CONTRACT section 5, fA1): Edit is an underlined
-                word beside the filled Next version, at every width, only
-                while the version is editable; with an edit kept the same
-                place reads Resume editing (D-04). */}
-            {editState === 'editable' && (
+                word beside the filled Next version, from 724 up, only while
+                the version is editable; with an edit kept the same place
+                reads Resume editing (D-04). Below 724 neither is drawn. */}
+            {editState === 'editable' && !below724 && (
               <Button className="notebook-link" onClick={onEdit}>
                 Edit
               </Button>
             )}
-            {editState === 'editing' && (
+            {editState === 'editing' && !below724 && (
               <Button className="notebook-link" onClick={onEdit}>
                 Resume editing
               </Button>

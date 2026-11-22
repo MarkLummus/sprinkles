@@ -98,6 +98,9 @@ function press(element) {
 }
 
 const targetsLine = () => q('p.method-step__targets');
+// The step's second targets line: Add aside while no aside is written, then Preview step (sketch 016 section 5).
+const asideLine = () => qa('p.method-step__targets')[1];
+const directControls = (line) => [...line.querySelectorAll(':scope > .text-control')].map((node) => node.textContent);
 
 describe('the heading row', () => {
   it('draws Instructions with Add step and no list while the draft holds no step', () => {
@@ -131,10 +134,36 @@ describe('the open step (sketch 014 pB1)', () => {
     expect(field('Step 2, lead-in').value).toBe('Second');
   });
 
-  it('the targets line of a step with no target holds Add target and Preview step', () => {
+  it('a new step has two targets lines: Add target and Add purpose, then Add aside and Preview step (sketch 016 section 5)', () => {
     mount(withStep(blank()));
-    expect([...targetsLine().children].map((node) => node.textContent)).toEqual(['Add target', 'Preview step']);
+    expect(qa('p.method-step__targets')).toHaveLength(2);
+    expect([...targetsLine().children].map((node) => node.textContent)).toEqual(['Add target', 'Add purpose']);
+    expect([...asideLine().children].map((node) => node.textContent)).toEqual(['Add aside', 'Preview step']);
     expect(targetsLine().querySelector('.target-chip')).toBeNull();
+  });
+
+  it('once a purpose and an aside are written the first line holds Add target alone and the second Preview step alone', () => {
+    mount(withStep(blank(), { purpose: 'Dissolves.', aside: 'Whisk slowly.' }));
+    expect(directControls(targetsLine())).toEqual(['Add target']);
+    expect(directControls(asideLine())).toEqual(['Preview step']);
+  });
+
+  it("a step's markup stands in the drawn order: instruction, first targets line, purpose, uses line, aside, second targets line, acts", () => {
+    mount(withStep(blank(), { purpose: 'Dissolves.', aside: 'Whisk slowly.' }));
+    const body = q('.mk-step > .method-step__body');
+    const classOrLabel = [...body.children].map((node) =>
+      node.matches('label') ? node.querySelector('textarea').getAttribute('aria-label') : node.className,
+    );
+    expect(classOrLabel).toEqual([
+      'Step 1, lead-in',
+      'Step 1, instruction',
+      'method-step__targets',
+      'Step 1, purpose',
+      'method-step__uses-line',
+      'Step 1, aside',
+      'method-step__targets',
+      'method-step__acts',
+    ]);
   });
 });
 
@@ -164,7 +193,7 @@ describe('targets (D-10, D-22)', () => {
     expect(chip().querySelector('.target-chip__value-field + .field-requirement')).toBeNull();
   });
 
-  it('the remove control sits inside its own chip, after the value field, and the line keeps Add target and Preview step as its direct controls', () => {
+  it('the remove control sits inside its own chip, after the value field, and the line keeps Add target and Add purpose as its direct controls', () => {
     const removed = vi.fn();
     mount(withStep(blank(), {}, [['temp', '85 °C'], ['hold', '5 min']]), { onRemoveTarget: removed });
     const chips = qa('p.method-step__targets > .target-chip');
@@ -175,10 +204,7 @@ describe('targets (D-10, D-22)', () => {
     expect(remove.getAttribute('aria-label')).toBe('Step 1, remove target 2');
     expect(remove.getAttribute('tabindex')).toBe('0');
     expect(remove.previousElementSibling).toBe(second.querySelector('.target-chip__value-field'));
-    expect([...targetsLine().querySelectorAll(':scope > .text-control')].map((node) => node.textContent)).toEqual([
-      'Add target',
-      'Preview step',
-    ]);
+    expect(directControls(targetsLine())).toEqual(['Add target', 'Add purpose']);
     press(remove);
     expect(removed).toHaveBeenCalledWith(held.method[0].n, 1);
     expect(held.method[0].targets).toEqual([{ label: 'temp', value: '85 °C' }]);
@@ -186,28 +212,36 @@ describe('targets (D-10, D-22)', () => {
 });
 
 describe('purpose and aside on demand', () => {
-  it('offers Add purpose and Add aside while closed, a middot before each, and opens each into its field', () => {
+  it('offers Add purpose on the first targets line and Add aside on the second while closed, none on the uses line, and opens each into its field', () => {
     mount(withStep(blank()));
     const line = q('p.method-step__uses-line');
     expect(line.textContent).toContain('uses nothing yet');
-    expect([...line.querySelectorAll('button')].map((node) => node.textContent)).toEqual([
-      'Change ingredients',
-      'Add purpose',
-      'Add aside',
-    ]);
-    expect([...line.querySelectorAll('span[aria-hidden="true"]')].map((node) => node.textContent)).toEqual(['·', '·']);
+    expect([...line.querySelectorAll('button')].map((node) => node.textContent)).toEqual(['Change ingredients']);
+    expect(line.querySelector('span[aria-hidden="true"]')).toBeNull();
+    expect(directControls(targetsLine())).toEqual(['Add target', 'Add purpose']);
+    expect(directControls(asideLine())).toEqual(['Add aside', 'Preview step']);
     press(field('Step 1, add purpose'));
     expect(field('Step 1, purpose').getAttribute('rows')).toBe('2');
     expect(field('Step 1, add purpose')).toBeNull();
     expect(document.activeElement).toBe(field('Step 1, purpose'));
-    expect(line.querySelectorAll('span[aria-hidden="true"]')).toHaveLength(1);
+    expect(directControls(targetsLine())).toEqual(['Add target']);
     // An empty purpose closes when the maker leaves it (Method's own rule), so
     // the aside is opened after the purpose has words.
     type(field('Step 1, purpose'), 'Dissolves.');
     press(field('Step 1, add aside'));
     expect(field('Step 1, aside')).not.toBeNull();
+    expect(directControls(asideLine())).toEqual(['Preview step']);
     expect([...line.querySelectorAll('button')].map((node) => node.textContent)).toEqual(['Change ingredients']);
-    expect(line.querySelector('span[aria-hidden="true"]')).toBeNull();
+  });
+
+  it('a written aside stands after the uses line and before the second targets line; with the checklist open the fieldset follows the uses line', () => {
+    mount(withStep(blank(), { aside: 'Whisk slowly.' }));
+    const uses = q('p.method-step__uses-line');
+    expect(uses.nextElementSibling).toBe(field('Step 1, aside').closest('label'));
+    expect(field('Step 1, aside').closest('label').nextElementSibling).toBe(asideLine());
+    press(field('Step 1, change ingredients'));
+    expect(uses.nextElementSibling).toBe(q('fieldset.method-step__uses'));
+    expect(q('fieldset.method-step__uses').nextElementSibling).toBe(field('Step 1, aside').closest('label'));
   });
 
   it('draws the fields open for a step that already holds a purpose and an aside, and an empty blur closes one', () => {
@@ -302,15 +336,13 @@ describe('Preview step (sketch 013 decision 34, decision 014 2)', () => {
   const full = () =>
     withStep(blank(), { leadIn: 'Warm the milk', instruction: 'Heat it.', purpose: 'Dissolves.', aside: 'Whisk slowly.' }, [['temp', '85 °C']]);
 
-  it('reads Hide preview while open and draws the step as the Sheet shows it, after the aside field and before the uses line', () => {
+  it('reads Hide preview while open and draws the step as the Sheet shows it, under the second targets line and above the acts line', () => {
     mount(full());
     expect(q('.mk-preview')).toBeNull();
     press(field('Step 1, Preview step'));
     expect(field('Step 1, Hide preview').textContent).toBe('Hide preview');
-    expect([...targetsLine().querySelectorAll(':scope > .text-control')].map((node) => node.textContent)).toEqual([
-      'Add target',
-      'Hide preview',
-    ]);
+    expect(directControls(targetsLine())).toEqual(['Add target']);
+    expect(directControls(asideLine())).toEqual(['Hide preview']);
     const preview = q('.mk-preview');
     expect(preview.getAttribute('role')).toBe('group');
     expect(preview.getAttribute('aria-label')).toBe('Step 1, preview');
@@ -320,8 +352,8 @@ describe('Preview step (sketch 013 decision 34, decision 014 2)', () => {
     expect([...reading.querySelectorAll('.target-chip > span')].map((node) => node.textContent)).toEqual(['temp', '85 °C']);
     expect(reading.querySelector('.method-step__purpose').textContent).toBe('why — Dissolves.');
     expect(reading.querySelector('.method-step__aside').textContent).toBe('Whisk slowly.');
-    expect(preview.previousElementSibling).toBe(field('Step 1, aside').closest('label'));
-    expect(preview.nextElementSibling).toBe(q('p.method-step__uses-line'));
+    expect(preview.previousElementSibling).toBe(asideLine());
+    expect(preview.nextElementSibling).toBe(q('p.method-step__acts'));
     press(field('Step 1, Hide preview'));
     expect(q('.mk-preview')).toBeNull();
     expect(field('Step 1, Preview step').textContent).toBe('Preview step');

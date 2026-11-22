@@ -230,21 +230,21 @@ describe('Move on a step (STRUCT-02, D-16)', () => {
     keep((draft) => ({ ...draft, method: [step(1, 'Warm'), step(2, 'Churn'), step(3, 'Finish')] }));
   });
 
-  it('draws Remove, Move up, Move down and Add step in each step, the first Move up and the last Move down off', async () => {
+  it('draws Add step, Move up, Move down and Remove in each step, Remove last, the first Move up and the last Move down off (sketch 016 section 5)', async () => {
     await open();
     const acts = [...root().querySelectorAll('li.mk-step p.method-step__acts')];
     expect(acts).toHaveLength(3);
     expect([...acts[1].querySelectorAll('button')].map((button) => button.textContent)).toEqual([
-      'Remove',
+      'Add step',
       'Move up',
       'Move down',
-      'Add step',
+      'Remove',
     ]);
     expect([...acts[1].querySelectorAll('button')].map((button) => button.getAttribute('aria-label'))).toEqual([
-      'Step 2, remove',
+      'Step 2, Add step after it',
       'Step 2, move up',
       'Step 2, move down',
-      'Step 2, Add step after it',
+      'Step 2, remove',
     ]);
     expect(field('Step 1, move up').classList.contains('mk-off')).toBe(true);
     expect(field('Step 1, move up').getAttribute('aria-disabled')).toBe('true');
@@ -433,7 +433,7 @@ describe('remove on a row (STRUCT-01, D-15)', () => {
     await click(ctl('milk-row:0', 'remove'));
     expect(groups()).toEqual([]);
     expect(document.activeElement).toBe(root().querySelector('.ingredient-table-region .mk-head-act'));
-    expect(document.activeElement.textContent).toBe('Add ingredient');
+    expect(document.activeElement.classList.contains('mk-head-act')).toBe(true);
   });
 
   it('the only row while the picker is open focuses the picker\'s Cancel', async () => {

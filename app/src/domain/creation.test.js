@@ -12,6 +12,7 @@ import {
   updateNote,
   removeNote,
   addRow,
+  addRowAfter,
   removeRow,
   creationTargets,
   applyStyle,
@@ -30,7 +31,7 @@ import {
 } from './creation.js';
 import { blankCreateDraft, buildDraftRecord, draftMatchesCreate } from './draft.js';
 import { rowFromLibraryRecord } from './versionRow.js';
-import { UNPLACED_STEP, addStep, toggleStepUses, checkAllocation } from './creationSteps.js';
+import { UNPLACED_STEP, addStep, toggleStepUses, checkAllocation, groupRows, placementOf, removeStep, rowLines } from './creationSteps.js';
 import { library } from '../data/library.js';
 import { STYLE_ROWS } from '../data/styles.js';
 
@@ -278,6 +279,83 @@ describe('row operations on a create draft (MAKE-06, D-05, D-07)', () => {
     const before = structuredClone(draft);
     addRow(draft, { rowId: 'row-2', libraryId: 'wholeMilk' });
     removeRow(draft, 'row-1');
+    expect(draft).toEqual(before);
+  });
+});
+
+describe('addRowAfter (STRUCT-05, D-09)', () => {
+  // Three rows a, b, c: a and b ticked into step 1, b also into step 2; c in no step.
+  function seeded() {
+    let draft = ['a', 'b', 'c'].reduce((acc, id) => addRow(acc, { rowId: id, libraryId: 'sucrose' }), blank());
+    draft = addStep(addStep(draft));
+    const [one, two] = draft.method.map((step) => step.n);
+    draft = toggleStepUses(draft, one, 'a');
+    draft = toggleStepUses(draft, one, 'b');
+    draft = toggleStepUses(draft, two, 'b');
+    return { draft, one, two };
+  }
+
+  it('lands right after the anchor in a step group, ticked in that step, one empty portion at it', () => {
+    const { draft, one } = seeded();
+    const next = addRowAfter(draft, { rowId: 'n', libraryId: 'wholeMilk', afterRowId: 'a', group: one });
+    expect(groupRows(next, one)).toEqual(['a', 'n', 'b']);
+    expect(rowLines(next, 'n')).toEqual([{ step: one, grams: '' }]);
+    expect(placementOf(next, 'n')).toEqual([one]);
+    expect(checkAllocation(next)).toBeNull();
+  });
+
+  it('lands right after the anchor in the unplaced group and stays in no step', () => {
+    const { draft } = seeded();
+    const next = addRowAfter(addRow(draft, { rowId: 'd', libraryId: 'sucrose' }), {
+      rowId: 'n',
+      libraryId: 'wholeMilk',
+      afterRowId: 'c',
+      group: UNPLACED_STEP,
+    });
+    expect(next.rows.map((row) => row.id)).toEqual(['a', 'b', 'c', 'n', 'd']);
+    expect(groupRows(next, UNPLACED_STEP)).toEqual(['c', 'n', 'd']);
+    expect(placementOf(next, 'n')).toEqual([]);
+    expect(checkAllocation(next)).toBeNull();
+  });
+
+  it("after a group's last row it is the new last row", () => {
+    const { draft, one } = seeded();
+    const next = addRowAfter(draft, { rowId: 'n', libraryId: 'wholeMilk', afterRowId: 'b', group: one });
+    expect(groupRows(next, one)).toEqual(['a', 'b', 'n']);
+    const unplaced = addRowAfter(draft, { rowId: 'n', libraryId: 'wholeMilk', afterRowId: 'c', group: UNPLACED_STEP });
+    expect(unplaced.rows.map((row) => row.id)).toEqual(['a', 'b', 'c', 'n']);
+  });
+
+  it('on a row that sits in two steps lands only in the group named', () => {
+    const { draft, one, two } = seeded();
+    const next = addRowAfter(draft, { rowId: 'n', libraryId: 'wholeMilk', afterRowId: 'b', group: two });
+    expect(groupRows(next, two)).toEqual(['b', 'n']);
+    expect(groupRows(next, one)).toEqual(['a', 'b']);
+    expect(placementOf(next, 'n')).toEqual([two]);
+    expect(checkAllocation(next)).toBeNull();
+  });
+
+  it('keeps every other row id and place, and every step key', () => {
+    const { draft, one } = seeded();
+    const next = addRowAfter(draft, { rowId: 'n', libraryId: 'wholeMilk', afterRowId: 'a', group: one });
+    expect(next.rows.filter((row) => row.id !== 'n').map((row) => row.id)).toEqual(['a', 'b', 'c']);
+    expect(next.method.map((step) => step.n)).toEqual(draft.method.map((step) => step.n));
+    expect(next.rows.filter((row) => row.id !== 'n')).toEqual(draft.rows);
+  });
+
+  it('throws a RangeError for an anchor not in the group, a step that is not live and a duplicate row id', () => {
+    const { draft, one, two } = seeded();
+    expect(() => addRowAfter(draft, { rowId: 'n', libraryId: 'wholeMilk', afterRowId: 'c', group: one })).toThrow(RangeError);
+    expect(() => addRowAfter(draft, { rowId: 'n', libraryId: 'wholeMilk', afterRowId: 'a', group: two })).toThrow(RangeError);
+    const gone = removeStep(draft, two);
+    expect(() => addRowAfter(gone, { rowId: 'n', libraryId: 'wholeMilk', afterRowId: 'b', group: two })).toThrow(RangeError);
+    expect(() => addRowAfter(draft, { rowId: 'c', libraryId: 'wholeMilk', afterRowId: 'a', group: one })).toThrow(RangeError);
+  });
+
+  it('mutates neither the draft nor its rows', () => {
+    const { draft, one } = seeded();
+    const before = structuredClone(draft);
+    addRowAfter(draft, { rowId: 'n', libraryId: 'wholeMilk', afterRowId: 'a', group: one });
     expect(draft).toEqual(before);
   });
 });

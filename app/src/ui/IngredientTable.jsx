@@ -236,13 +236,16 @@ function RemoveRowControl({ removed, onToggle, lineName }) {
   );
 }
 
-// A creating row's acts (Phase 11, STRUCT-01 to STRUCT-03, D-15 to D-17; sketch
-// 014 add-remove-move.html): Remove · Move up · Move down, and Add to step for a
-// row no step uses once a step exists. A Move that cannot act (the group's first
-// row's up, its last row's down) is .mk-off and aria-disabled, stays in the tab
-// order and does nothing. Every line of a split row carries remove, since each
-// removes the whole row, and names its Move controls by step so no two share a
-// name. Pressed, Add to step turns the span into the chooser: Cancel, then one
+// A creating row's acts (Phase 11, STRUCT-01 to STRUCT-03, D-15 to D-17; Phase
+// 12, STRUCT-05; sketch 016 row-controls.html section 5, which overrides sketch
+// 014's order): Add to step for a row no step uses once a step exists, then Add
+// ingredient · Move up · Move down · Remove. A Move that cannot act (the group's
+// first row's up, its last row's down) is .mk-off and aria-disabled, stays in
+// the tab order and does nothing. Every line of a split row carries remove,
+// since each removes the whole row, and names its Move controls by step so no
+// two share a name. Add ingredient opens the picker and lands the pick right
+// after this line's row (D-09); its class is never the heading control's.
+// Pressed, Add to step turns the span into the chooser: Cancel, then one
 // control per step.
 const ACT_DOT = <span aria-hidden="true"> · </span>;
 
@@ -257,6 +260,7 @@ function RowActs({
   steps,
   onRemove,
   onMove,
+  onAddAfter,
   onOpenChooser,
   onCancelChooser,
   onChoose,
@@ -291,8 +295,16 @@ function RowActs({
   const inStep = stepNumber != null ? ` in step ${stepNumber}` : '';
   return (
     <span className="mk-row-acts">
-      <Button className="text-control" data-act="remove" aria-label={`remove ${name}`} onClick={onRemove}>
-        Remove
+      {canAddToStep && (
+        <>
+          <Button className="text-control" data-act="add-to-step" aria-label={`Add to step, ${name}`} onClick={onOpenChooser}>
+            Add to step
+          </Button>
+          {ACT_DOT}
+        </>
+      )}
+      <Button className="text-control" data-act="add-ingredient" aria-label={`Add ingredient after ${name}`} onClick={onAddAfter}>
+        Add ingredient
       </Button>
       {ACT_DOT}
       <Button
@@ -314,14 +326,10 @@ function RowActs({
       >
         Move down
       </Button>
-      {canAddToStep && (
-        <>
-          {ACT_DOT}
-          <Button className="text-control" data-act="add-to-step" aria-label={`Add to step, ${name}`} onClick={onOpenChooser}>
-            Add to step
-          </Button>
-        </>
-      )}
+      {ACT_DOT}
+      <Button className="text-control" data-act="remove" aria-label={`remove ${name}`} onClick={onRemove}>
+        Remove
+      </Button>
     </span>
   );
 }
@@ -870,6 +878,7 @@ export function IngredientTable({
             steps={creatingSteps}
             onRemove={() => creationRows.onRemoveRow(row.id, portion.step)}
             onMove={(group, direction) => creationRows.onMoveRow(row.id, group, direction)}
+            onAddAfter={() => creationRows.onAddRowAfter(row.id, portion.step)}
             onOpenChooser={() => {
               chooserFocusRef.current = { line: lineKey, act: 'cancel' };
               setChooserRowId(row.id);

@@ -39,6 +39,7 @@ import { applyEditToVersion, buildCreation, creationSaveBlock, lineSaveMessages 
 import {
   addNote,
   addRow,
+  addRowAfter,
   creationSheetVersion,
   creationTitle,
   normalizeCreateDraft,
@@ -48,6 +49,15 @@ import {
 } from '../domain/creation.js';
 
 function doNothing() {}
+
+// Whether the row an Add ingredient was pressed on is still where the picker was
+// opened from (STRUCT-05): groupRows throws for a step that is not live, so the
+// step's liveness is checked first and groupRows is never caught after.
+function anchorHolds(draft, afterRowId, group) {
+  if (afterRowId === null) return false;
+  if (group !== UNPLACED_STEP && !liveSteps(draft).some((step) => step.n === group)) return false;
+  return groupRows(draft, group).includes(afterRowId);
+}
 
 // The refused Save's line under the Ingredients heading row, which Add ingredient
 // and the picker's Name field are described by while it stands.
@@ -201,8 +211,10 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   const [library, setLibrary] = useState(null);
   const [libraryFailed, setLibraryFailed] = useState(false);
   // The picker is open in the place of Add ingredient, and the row just added
-  // holds focus in its grams field until it is left.
-  const [picking, setPicking] = useState(false);
+  // holds focus in its grams field until it is left. null is closed; open, it
+  // names the row the pick lands after and the group that row was pressed in
+  // (null for the heading's, which adds at the end), and what opened it.
+  const [picking, setPicking] = useState(null);
   const [focusRowId, setFocusRowId] = useState(null);
   const { draftRestoreDone } = useKeptDraft({
     writer,
@@ -319,6 +331,15 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
       target = page.querySelector(`li.mk-step[data-step="${request.n}"] [data-field="${request.field}"]`);
     } else if (typeof request === 'object' && request.kind === 'add-step-head') {
       target = page.querySelector('.method-region .mk-head-act');
+    } else if (typeof request === 'object' && request.kind === 'picker-opener') {
+      // The picker closed unpicked: back to the row's Add ingredient that opened
+      // it; its Add to step chooser's Cancel when the chooser has replaced the
+      // acts; the heading's Add ingredient when the line is gone (review item 10).
+      const line = page.querySelector(`tr[data-line="${CSS.escape(request.line)}"]`);
+      target =
+        line?.querySelector('[data-act="add-ingredient"]') ??
+        line?.querySelector('[data-act="cancel"]') ??
+        page.querySelector('.ingredient-table-region .mk-head-act');
     } else if (typeof request === 'object' && request.kind === 'row-act') {
       // A row's act, found by its line (`${rowId}:${group}`). After a move the
       // other Move button stands in when the pressed one is now off (D-16).
@@ -339,6 +360,9 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
       target = page.querySelector(`textarea[aria-label="beforeYouStart note ${createDraft.beforeYouStart.length}"]`);
     } else if (request === 'add-note') {
       target = page.querySelector('.before-region .mk-head-act');
+    } else if (request === 'picker-name') {
+      // The picker focuses Name only when it mounts; one already open is moved.
+      target = page.querySelector('.ingredient-table-region .pick .ing__filters textarea');
     } else {
       // The table region's add control: Add ingredient, or, while the picker is
       // open in its place, the picker's Cancel.
@@ -387,16 +411,36 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // Ingredient rows (MAKE-06). A pick mints the row id here, never in render;
   // every change is a functional update, and the draft keeps the link and the
   // typed grams only (D-07).
+  // A pick from a row's Add ingredient lands right after that row, in its group
+  // (D-09); the heading's, or an anchor that left its group while the picker was
+  // open, adds at the end in no step. The update checks the anchor over its own
+  // previous draft, so a change batched with the pick can only make it fall back.
   const handlePick = (record) => {
     const rowId = freshId();
-    setCreateDraft((prev) => addRow(prev, { rowId, libraryId: record.id }));
-    setPicking(false);
+    const anchor = picking;
+    setCreateDraft((prev) =>
+      anchor && anchorHolds(prev, anchor.afterRowId, anchor.group)
+        ? addRowAfter(prev, { rowId, libraryId: record.id, afterRowId: anchor.afterRowId, group: anchor.group })
+        : addRow(prev, { rowId, libraryId: record.id }),
+    );
+    setPicking(null);
     setFocusRowId(rowId);
   };
 
+  // A row's Add ingredient opens the picker anchored to that row; with the picker
+  // already open it moves the landing place and focus goes to Name (CONTRACT
+  // section 11, 9b).
+  const handleAddRowAfter = (rowId, group) => {
+    if (picking) focusRequestRef.current = 'picker-name';
+    setPicking({ afterRowId: rowId, group, opener: 'row' });
+  };
+
+  // Cancel returns focus to what opened the picker (CONTRACT section 11, 9a).
   const handleCancelPicker = () => {
-    setPicking(false);
-    focusRequestRef.current = 'ingredient-target';
+    const opener = picking;
+    setPicking(null);
+    focusRequestRef.current =
+      opener?.opener === 'row' ? { kind: 'picker-opener', line: `${opener.afterRowId}:${opener.group}` } : 'ingredient-target';
   };
 
   const rowName = (rowId) => version.rows.find((row) => row.id === rowId)?.ingredientName ?? '';
@@ -532,6 +576,10 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
     createDraft.rows.flatMap((row) => rowLines(createDraft, row.id).map((line) => [`${row.id}:${line.step}`, line.grams])),
   );
   const addedIds = new Set(createDraft.rows.map((row) => row.libraryId));
+  const focusLine =
+    focusRowId && createDraft.rows.some((row) => row.id === focusRowId)
+      ? `${focusRowId}:${rowLines(createDraft, focusRowId)[0].step}`
+      : null;
 
   // Cancel ends the creation for good, and only once the delete has succeeded
   // (RESEARCH Pitfall 6): the Notebook must not read 'discarded' over a draft
@@ -766,14 +814,17 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                 penDraft={null}
                 creationRows={{
                   gramsByLine,
-                  // The row just added from the picker is unplaced, so its one line is at step 0.
-                  focusLine: focusRowId ? `${focusRowId}:0` : null,
+                  // The row just added from the picker holds focus in its grams: the line is
+                  // read from where it stands on the committed draft, so a pick that landed
+                  // in a step and one that fell back to no step both find it.
+                  focusLine,
                   lineMessages,
                   onChangeGrams: handleChangeGrams,
                   onBlurGrams: handleBlurGrams,
                   onRemoveRow: handleRemoveRow,
                   onMoveRow: handleMoveRow,
                   onPlaceRow: handlePlaceRow,
+                  onAddRowAfter: handleAddRowAfter,
                 }}
                 onChangePenNoteText={handleChangeNote}
                 onRemovePenNote={handleRemoveNote}
@@ -788,7 +839,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                     <Button
                       className="text-control mk-head-act"
                       aria-describedby={noRowsMessage ? NO_ROWS_ERROR_ID : undefined}
-                      onClick={() => setPicking(true)}
+                      onClick={() => setPicking({ afterRowId: null, group: null, opener: 'heading' })}
                     >
                       Add ingredient
                     </Button>

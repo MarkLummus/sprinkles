@@ -46,6 +46,7 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 - [x] **STRUCT-02**: A maker can reorder steps, and rows within a step, with Move up and Move down buttons that work by touch and keyboard.
 - [x] **STRUCT-03**: A step's stored number and a row's id never change on reorder.
 - [x] **STRUCT-04**: Add, Remove and Move controls appear on a first version that has no batch and no child version, and on no other saved version. The version pen's remove and restore on later versions is unchanged.
+- [ ] **STRUCT-05**: In the creation editor a step's controls stand in two groups: the step's own (lead-in, instruction, targets, purpose, uses, aside, then Preview step) and the step among the steps, on its last line (Add step, Move up, Move down, Remove); an ingredient row's stand the same way (Add to step while it is in no step, then Add ingredient, Move up, Move down, Remove). Add ingredient on a row lands the picked ingredient right after that row, in its step. Cmd+Return (or Ctrl+Return) adds a step or an ingredient after the one being typed in, and Ctrl+Cmd+Up and Down move it, with the caret kept where it was.
 
 ### Sheet code
 
@@ -138,12 +139,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROOF-02 | Phase 12 | Pending |
 | LOG-01 | Phase 12 | Complete |
 | PHONE-01 | Phase 12 | Pending |
+| STRUCT-05 | Phase 12 | Pending |
 
 **Coverage:**
-- v2.0 requirements: 32 total
-- Mapped to phases: 32 (Phase 8: 2, Phase 9: 10, Phase 10: 8, Phase 11: 7, Phase 12: 5)
+- v2.0 requirements: 33 total
+- Mapped to phases: 33 (Phase 8: 2, Phase 9: 10, Phase 10: 8, Phase 11: 7, Phase 12: 6)
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-10-16*
-*Last updated: 2026-11-22: PHONE-01 added for Phase 12's second planning round (12-CONTEXT D-04, D-05); STRUCT-05 follows in plan 12-12*
+*Last updated: 2026-11-22: STRUCT-05 added for Phase 12's second planning round (12-CONTEXT D-04, D-05)*

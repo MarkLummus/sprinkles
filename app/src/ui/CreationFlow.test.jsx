@@ -1066,7 +1066,7 @@ describe('Instructions while creating: the heading row and Add step (MAKE-07, sk
     await click(ingredientsRow().querySelector('.mk-head-act'));
     expect(root().querySelector('.pick')).not.toBeNull();
     expect(root().querySelector('.ingredient-table-region .mk-head-act')).toBeNull();
-    expect(buttonByText('Add ingredient')).toBeNull();
+    expect([...root().querySelectorAll('.mk-head-act')].find((button) => button.textContent === 'Add ingredient')).toBeUndefined();
   });
 });
 
@@ -1246,7 +1246,7 @@ describe('remove deletes a creation row outright (MAKE-06, decision 5, T-01)', (
   const gramsField = (name) => field(`${name}, grams`);
   const tableNames = () =>
     [...root().querySelectorAll('.ingredient-table tbody td.ingredient-table__col-name')].map((cell) => cell.firstChild.textContent);
-  const removeOf = (name) => root().querySelector(`tr[aria-label^="${name},"] button.text-control`);
+  const removeOf = (name) => root().querySelector(`tr[aria-label^="${name},"] button[data-act="remove"]`);
   const noStruckOrStepHeads = () => {
     expect(root().querySelectorAll('.ingredient-table tbody').length).toBeLessThanOrEqual(1);
     expect(root().querySelector('.ingredient-table__step-head')).toBeNull();
@@ -2616,5 +2616,189 @@ describe("Below 724 the editor's addresses show the desk page (PHONE-01, CONTRAC
     expect(source.split('<DeskOnly title="Edit">').length - 1).toBe(1);
     expect(source).not.toMatch(/Component:\s*CreationRoute/);
     expect(source).not.toMatch(/Component:\s*EditRoute/);
+  });
+});
+
+describe('Add ingredient on a row lands the pick right after it (STRUCT-05, D-09, CONTRACT section 5 and 11 number 9)', () => {
+  const SUGAR = 'Sucrose';
+  const MILK = 'Whole milk, 3.5% fat';
+  const CREAM = 'Heavy cream, 36% fat';
+  const SALT = 'Fine sea salt';
+  const DEXTROSE = 'Dextrose';
+  const headingAdd = () => root().querySelector('.ingredient-table-region .mk-head-act');
+  const rowAdd = (name) => root().querySelector(`tr[aria-label^="${name},"] button[data-act="add-ingredient"]`);
+  const pickerCancel = () => root().querySelector('.ingredient-table-region .pick__head button');
+  const pickerName = () => root().querySelector('.ingredient-table-region .pick .ing__filters textarea');
+  const gramsField = (name) => field(`${name}, grams`);
+  const usesBox = (stepNumber, name) =>
+    [...root().querySelectorAll(`fieldset[aria-label="Step ${stepNumber}, uses"] label.method-step__uses-item`)]
+      .find((label) => label.textContent === name)
+      ?.querySelector('input');
+  // Each tbody of the table: its step head (null for a flat table) and its rows' names in order.
+  const groups = () =>
+    [...root().querySelectorAll('.ingredient-table tbody')].map((tbody) => ({
+      head: tbody.querySelector('tr.ingredient-table__step-head')?.textContent ?? null,
+      names: [...tbody.querySelectorAll('td.ingredient-table__col-name')].map((cell) => cell.firstChild.textContent),
+    }));
+
+  async function pickFromPicker(name) {
+    const row = [...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === name);
+    await click(row);
+  }
+
+  async function pickFromHeading(name) {
+    await click(headingAdd());
+    await pickFromPicker(name);
+  }
+
+  // Four rows: Sucrose and Whole milk in Step 1; Heavy cream and Fine sea salt in no step.
+  async function seed() {
+    await startVanilla();
+    for (const name of [SUGAR, MILK, CREAM, SALT]) {
+      await pickFromHeading(name);
+      await type(gramsField(name), '100');
+    }
+    await click(buttonByText('Add step'));
+    await click(field('Step 1, change ingredients'));
+    await click(usesBox(1, SUGAR));
+    await click(usesBox(1, MILK));
+    await click(field('Step 1, done'));
+    expect(groups()).toEqual([
+      { head: 'Step 1', names: [SUGAR, MILK] },
+      { head: 'Not in a step yet', names: [CREAM, SALT] },
+    ]);
+  }
+
+  it("a step row's Add ingredient opens the picker in its place, and the pick lands right after that row, in its step, ticked, holding focus in its grams", async () => {
+    await seed();
+    await click(rowAdd(SUGAR));
+    expect(root().querySelector('.ingredient-table-region .pick')).not.toBeNull();
+    expect(headingAdd()).toBeNull();
+    expect(document.activeElement).toBe(pickerName());
+    await pickFromPicker(DEXTROSE);
+    expect(root().querySelector('.pick')).toBeNull();
+    expect(groups()).toEqual([
+      { head: 'Step 1', names: [SUGAR, DEXTROSE, MILK] },
+      { head: 'Not in a step yet', names: [CREAM, SALT] },
+    ]);
+    expect(root().querySelector('p.method-step__uses-line').textContent.startsWith(`uses ${SUGAR}, ${DEXTROSE}, ${MILK} `)).toBe(true);
+    await click(field('Step 1, change ingredients'));
+    expect(usesBox(1, DEXTROSE).checked).toBe(true);
+    expect(document.activeElement).toBe(gramsField(DEXTROSE));
+    expect(gramsField(DEXTROSE).value).toBe('');
+  });
+
+  it("a step group's last row: the pick becomes the group's new last row", async () => {
+    await seed();
+    await click(rowAdd(MILK));
+    await pickFromPicker(DEXTROSE);
+    expect(groups()[0]).toEqual({ head: 'Step 1', names: [SUGAR, MILK, DEXTROSE] });
+  });
+
+  it("an unplaced row's Add ingredient lands the pick right after it, in no step", async () => {
+    await seed();
+    await click(rowAdd(CREAM));
+    await pickFromPicker(DEXTROSE);
+    expect(groups()).toEqual([
+      { head: 'Step 1', names: [SUGAR, MILK] },
+      { head: 'Not in a step yet', names: [CREAM, DEXTROSE, SALT] },
+    ]);
+    expect(document.activeElement).toBe(gramsField(DEXTROSE));
+  });
+
+  it("the heading's Add ingredient still adds a row in no step, at the end", async () => {
+    await seed();
+    await pickFromHeading(DEXTROSE);
+    expect(groups()).toEqual([
+      { head: 'Step 1', names: [SUGAR, MILK] },
+      { head: 'Not in a step yet', names: [CREAM, SALT, DEXTROSE] },
+    ]);
+    expect(document.activeElement).toBe(gramsField(DEXTROSE));
+  });
+
+  it("while the picker is open another row's Add ingredient moves the landing place, keeps the picker open and puts focus in Name", async () => {
+    await seed();
+    await click(rowAdd(SUGAR));
+    const picker = root().querySelector('.pick');
+    expect(rowAdd(MILK)).not.toBeNull();
+    gramsField(SUGAR).focus();
+    expect(document.activeElement).toBe(gramsField(SUGAR));
+    await click(rowAdd(CREAM));
+    expect(root().querySelector('.pick')).toBe(picker);
+    expect(document.activeElement).toBe(pickerName());
+    await pickFromPicker(DEXTROSE);
+    expect(groups()).toEqual([
+      { head: 'Step 1', names: [SUGAR, MILK] },
+      { head: 'Not in a step yet', names: [CREAM, DEXTROSE, SALT] },
+    ]);
+  });
+
+  it("Cancel returns focus to the row's Add ingredient that opened the picker, and to the heading's when the heading opened it", async () => {
+    await seed();
+    await click(rowAdd(MILK));
+    await click(pickerCancel());
+    expect(root().querySelector('.pick')).toBeNull();
+    expect(document.activeElement).toBe(rowAdd(MILK));
+    await click(headingAdd());
+    await click(pickerCancel());
+    expect(document.activeElement).toBe(headingAdd());
+  });
+
+  it("Cancel with the opener row's Add to step chooser open puts focus on that chooser's Cancel (review item 10)", async () => {
+    await seed();
+    await click(rowAdd(CREAM));
+    await click(root().querySelector('tr[aria-label^="Heavy cream,"] [data-act="add-to-step"]'));
+    expect(root().querySelector('tr[aria-label^="Heavy cream,"] .mk-row-acts--choosing')).not.toBeNull();
+    await click(pickerCancel());
+    expect(root().querySelector('.pick')).toBeNull();
+    expect(document.activeElement).toBe(root().querySelector('tr[aria-label^="Heavy cream,"] [data-act="cancel"]'));
+  });
+
+  describe('an anchor that left its group while the picker was open: the pick lands as the heading would, in no step at the end, and nothing throws', () => {
+    let consoleError;
+    afterEach(() => consoleError?.mockRestore());
+    const noRangeError = () => {
+      for (const call of consoleError.mock.calls) expect(String(call[0])).not.toMatch(/RangeError|no step|is not in group/);
+    };
+
+    it('the anchor row removed', async () => {
+      await seed();
+      consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+      await click(rowAdd(CREAM));
+      await click(root().querySelector('tr[aria-label^="Heavy cream,"] button[data-act="remove"]'));
+      await pickFromPicker(DEXTROSE);
+      expect(groups()).toEqual([
+        { head: 'Step 1', names: [SUGAR, MILK] },
+        { head: 'Not in a step yet', names: [SALT, DEXTROSE] },
+      ]);
+      expect(document.activeElement).toBe(gramsField(DEXTROSE));
+      noRangeError();
+    });
+
+    it("the anchor's step removed", async () => {
+      await seed();
+      consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+      await click(rowAdd(SUGAR));
+      await click(field('Step 1, remove'));
+      await pickFromPicker(DEXTROSE);
+      expect(groups()).toEqual([{ head: null, names: [SUGAR, MILK, CREAM, SALT, DEXTROSE] }]);
+      expect(document.activeElement).toBe(gramsField(DEXTROSE));
+      noRangeError();
+    });
+
+    it('an unplaced anchor placed into a step with Add to step', async () => {
+      await seed();
+      consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+      await click(rowAdd(CREAM));
+      await click(root().querySelector('tr[aria-label^="Heavy cream,"] [data-act="add-to-step"]'));
+      await click(root().querySelector('tr[aria-label^="Heavy cream,"] [data-act="choose-1"]'));
+      await pickFromPicker(DEXTROSE);
+      expect(groups()).toEqual([
+        { head: 'Step 1', names: [SUGAR, MILK, CREAM] },
+        { head: 'Not in a step yet', names: [SALT, DEXTROSE] },
+      ]);
+      expect(document.activeElement).toBe(gramsField(DEXTROSE));
+      noRangeError();
+    });
   });
 });

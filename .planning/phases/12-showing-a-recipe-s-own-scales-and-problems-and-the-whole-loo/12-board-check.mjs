@@ -5,7 +5,7 @@
 // selftest-blind, --evidence, 127.0.0.1 only, WebKit with a coarse pointer. The Phase 11 list of
 // additions (seed, draftKind, anchored full pages, the type check, selftest-blind, notice and
 // anchored-page evidence) stands as 11-board-check.mjs recorded it. Sketch 015's boards do not use
-// the Phase 11 class `.p4-win.<id>`, so the Phase 12 engine changes four things, and only these:
+// the Phase 11 class `.p4-win.<id>`, so the Phase 12 engine changes five things, and only these:
 //   1. One panel reference. A panel may name `panelSelector` (a CSS selector) and `panelIndex`
 //      (which of its matches, from 0). A panel naming neither keeps the Phase 11 lookup
 //      `.p4-win.<id>` at index 0, so a Phase 11 spec still runs unchanged. One helper (panelRef)
@@ -27,6 +27,13 @@
 //      before measuring (12-board-logs.mjs in plan 12-04 uses it to set the print pictures' scale
 //      to 1). It needs a built app, so it is not exercised by this engine's own proofs; 12-04's log
 //      panels exercise it first, and their pageHeight check fails when it does not take.
+//   5. The board's own notes are left out of the board side. Before any board-side reading, every
+//      element matching `.dl-tab, .dl-flag` inside the panel's root is removed from the board's Page.
+//      They are the purple numbered tabs and flag tags of sketch 016's row-controls.html, notes
+//      the CONTRACT says are not in the app, absolutely positioned (removing them moves no box) and
+//      adding digits and words to a board element's text. No other Phase 12 board carries them, so
+//      every other board is untouched. The against side of a stand-in is a board too and is left as
+//      it is: the stand-ins this engine's proofs use draw none.
 // The evidence lift for an anchored full page is rewritten to the one reference (it tags the
 // resolved root and its ancestors by data attribute and hides every other match of the selector by
 // data attribute), but it is not exercised in Phase 12: every sketch 015 panel is cropped (no
@@ -708,6 +715,12 @@ async function processPanel(spec, panel) {
     rep.check(false, `panel ${refText(ref)} not found in the board`, '', 'anchor');
     return finish(rep, panel, label, false);
   }
+
+  // Change 5 (12-12): the board's own purple notes are not in the app; take them out of this panel's
+  // root before either side is read.
+  await boardPage.evaluate(({ selector, index }) => {
+    document.querySelectorAll(selector)[index]?.querySelectorAll('.dl-tab, .dl-flag').forEach((note) => note.remove());
+  }, ref);
 
   let other;
   if (panel.against) {

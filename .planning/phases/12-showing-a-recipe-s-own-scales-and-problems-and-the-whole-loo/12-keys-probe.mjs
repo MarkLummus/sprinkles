@@ -25,8 +25,9 @@
 // 08-walk-server.mjs, and every request to another host is aborted. Everything typed is English.
 import { startServers } from '../08-split-the-recipe-page-along-its-jobs/08-walk-server.mjs';
 import { coffeeBase } from './12-board-rowcontrols.mjs';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const PLAYWRIGHT_CORE =
   process.env.PLAYWRIGHT_CORE ?? '/Users/mark/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core/index.mjs';
@@ -48,6 +49,9 @@ if (!existsSync(path.join(DIST, 'index.html'))) {
   console.log(`FAIL no index.html in PROBE_DIST ${DIST}`);
   process.exit(1);
 }
+
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const BOARD = path.join(HERE, '..', '..', 'sketches/016-entry-points-pen-preview-row-controls/row-controls.html');
 
 const MODES = process.argv.slice(2);
 const KNOWN = ['move', 'keys', 'lines'];
@@ -526,6 +530,105 @@ try {
       report(same(before, await page.evaluate(SNAPSHOT)), `the four combinations in ${name} change no step and no row`);
     }
     await cancelPicker(page);
+    await page.close();
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // lines: the one keys line under each region's heading row.
+  // ---------------------------------------------------------------------------------------------
+  if (MODES.includes('lines')) {
+    mode = 'lines';
+    // The words are the board's own, read from its markup (&#x27; is the plain apostrophe U+0027).
+    const boardLines = [...readFileSync(BOARD, 'utf8').matchAll(/<p class="mk-keys">([^<]*)<\/p>/g)].map((match) => match[1].replaceAll('&#x27;', "'"));
+    const [inStep, inRow] = [boardLines.find((line) => line.startsWith('In a step')), boardLines.find((line) => line.startsWith('In a row'))];
+    report(Boolean(inStep && inRow), "the board's two lines are read from row-controls.html", JSON.stringify([inStep, inRow]));
+
+    const escaped = (name) => name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pickRow = (page, name) =>
+      page.locator('.pick__row', { has: page.locator('.pick__name', { hasText: new RegExp(`^${escaped(name)}$`) }) });
+    const clickUntil = async (page, target, selector) => {
+      for (let i = 0; i < 6; i += 1) {
+        await target().first().click();
+        try {
+          await page.waitForSelector(selector, { timeout: 1200 });
+          return;
+        } catch {
+          // the first click after a navigation can miss: press again
+        }
+      }
+      throw new Error(`never appeared: ${selector}`);
+    };
+    const page = await freshPage(async (p) => {
+      await clickUntil(p, () => p.locator('.nb__head .notebook-action'), '.nb__new textarea');
+      await p.fill('.nb__new textarea', 'Coffee');
+      await p.locator('.nb__new-actions button', { hasText: /^Start$/ }).click();
+      await p.waitForSelector('.ingredient-table-region');
+    });
+    const LINES = () => ({
+      ing: [...document.querySelectorAll('.ingredient-table-region p.mk-keys')].map((p) => ({ text: p.textContent, after: p.previousElementSibling?.className ?? p.previousElementSibling?.tagName })),
+      method: [...document.querySelectorAll('.method-region p.mk-keys')].map((p) => ({ text: p.textContent, after: p.previousElementSibling?.className ?? p.previousElementSibling?.tagName })),
+      all: document.querySelectorAll('p.mk-keys').length,
+    });
+
+    let lines = await page.evaluate(LINES);
+    report(lines.all === 0, 'a new recipe with no row and no step shows no keys line', JSON.stringify(lines));
+
+    await page.locator('.ingredient-table-region .mk-head-act').click();
+    await pickRow(page, 'Heavy cream, 36% fat').click();
+    await page.waitForSelector('.pick', { state: 'detached' });
+    lines = await page.evaluate(LINES);
+    report(
+      lines.ing.length === 1 && lines.ing[0].text === inRow && lines.ing[0].after === 'mk-head-row' && lines.method.length === 0,
+      'after the first pick the Ingredients line stands under the heading row with the board\'s words, and Instructions has none',
+      JSON.stringify(lines),
+    );
+
+    await page.locator('.ingredient-table-region .mk-head-act').click();
+    await page.waitForSelector('.ingredient-table-region .pick');
+    lines = await page.evaluate(LINES);
+    report(
+      lines.ing.length === 1 && lines.ing[0].text === inRow && lines.ing[0].after === 'region-name',
+      'with the picker open the Ingredients line still stands, directly under h2.region-name',
+      JSON.stringify(lines),
+    );
+    await page.locator('.ingredient-table-region .pick__head button').first().click();
+    await page.waitForSelector('.ingredient-table-region .pick', { state: 'detached' });
+
+    await page.locator('.method-region .mk-head-act').click();
+    await page.waitForSelector('[aria-label="Step 1, lead-in"]');
+    lines = await page.evaluate(LINES);
+    report(
+      lines.method.length === 1 && lines.method[0].text === inStep && lines.method[0].after === 'mk-head-row',
+      "after the heading's Add step the Instructions line stands under the heading row with the board's words",
+      JSON.stringify(lines),
+    );
+    await byLabel(page, 'Step 1, remove').click();
+    await page.waitForSelector('li.mk-step', { state: 'detached' });
+    lines = await page.evaluate(LINES);
+    report(lines.method.length === 0 && lines.ing.length === 1, 'after the only step is removed the Instructions line is gone and the Ingredients line stays', JSON.stringify(lines));
+
+    await page.locator('.method-region .mk-head-act').click();
+    await page.waitForSelector('[aria-label="Step 1, lead-in"]');
+    await page.locator('.ingredient-table-region tr[data-line] [data-act="remove"]').first().click();
+    await page.waitForSelector('.ingredient-table-region tr[data-line]', { state: 'detached' });
+    lines = await page.evaluate(LINES);
+    report(lines.ing.length === 0 && lines.method.length === 1, 'after the only row is removed the Ingredients line is gone and the Instructions line stays', JSON.stringify(lines));
+
+    // Its rule reads only --face-grotesk, --sheet-size-cross-flag and --gap-xs: the line's computed look equals a box styled by the three tokens.
+    const look = await page.evaluate(() => {
+      const line = document.querySelector('.method-region p.mk-keys');
+      const twin = document.createElement('p');
+      twin.style.cssText = 'font-family:var(--face-grotesk);font-size:var(--sheet-size-cross-flag);margin:var(--gap-xs) 0 var(--gap-xs)';
+      line.after(twin);
+      const read = (el) => {
+        const style = getComputedStyle(el);
+        return { family: style.fontFamily, size: style.fontSize, top: style.marginTop, bottom: style.marginBottom, left: style.marginLeft, right: style.marginRight };
+      };
+      const result = { line: read(line), twin: read(twin) };
+      twin.remove();
+      return result;
+    });
+    report(same(look.line, look.twin) && look.line.top === '6px', "the line's font face, size and margins are the three tokens' values", JSON.stringify(look.line));
     await page.close();
   }
 

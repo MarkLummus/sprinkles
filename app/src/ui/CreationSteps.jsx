@@ -326,6 +326,7 @@ export function CreationSteps({
           Add step
         </Button>
       </div>
+      {steps.length > 0 && <p className="mk-keys">In a step: Cmd+Return adds a step after it. Ctrl+Cmd+Up or Down moves it.</p>}
       {steps.length > 0 && (
         <ol className="method-steps">
           {steps.map((step, index) => (

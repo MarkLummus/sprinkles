@@ -144,6 +144,11 @@ export function RecipeSheet({
           onToggleShowChanges={onToggleShowChanges}
           act={ingredientsAct}
         />
+        {mode === 'creating' && hasRows && (
+          // The keys line stands under the heading in both its forms, the head row and, with the
+          // picker open, the region name alone (CONTRACT section 6; section 11, number 7).
+          <p className="mk-keys">{"In a row's grams: Cmd+Return adds an ingredient after it. Ctrl+Cmd+Up or Down moves it."}</p>
+        )}
         {ingredientsMessage && (
           // A refused Save with no ingredient (Phase 11, D-11): under the heading row.
           <p className="field-error" id="create-no-rows-error">

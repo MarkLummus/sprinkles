@@ -656,6 +656,18 @@ describe('the keys that add and move a step (STRUCT-05, CONTRACT section 6 and s
     expect(spies.onRemoveTarget).not.toHaveBeenCalled();
   });
 
+  it("one keys line stands right under the Instructions heading row while a step exists, and none while there is no step (CONTRACT section 6, section 11 number 7)", () => {
+    mount(withStep(blank()));
+    const lines = qa('p.mk-keys');
+    expect(lines.map((line) => line.textContent)).toEqual(['In a step: Cmd+Return adds a step after it. Ctrl+Cmd+Up or Down moves it.']);
+    expect(lines[0].previousElementSibling).toBe(q('.mk-head-row'));
+    expect(lines[0].nextElementSibling).toBe(q('ol.method-steps'));
+    act(() => current.root.unmount());
+    current.container.remove();
+    mount(blank());
+    expect(qa('p.mk-keys')).toHaveLength(0);
+  });
+
   it("the step's Add step, Move up and Move down carry aria-keyshortcuts as the board writes them, and nothing else on the step does", () => {
     mount(withStep(blank(), {}, [['temp', '85 °C']]));
     expect(q('[data-act="add-after"]').getAttribute('aria-keyshortcuts')).toBe('Meta+Enter Control+Enter');

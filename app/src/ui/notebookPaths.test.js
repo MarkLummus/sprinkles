@@ -118,7 +118,8 @@ describe('router.jsx routes /notebook/:recipeId to NotebookLatestRedirect (03.5-
   });
 
   it("declares '/notebook/new' before '/notebook/:recipeId' so 'new' is never a recipe id (Phase 10 D-01)", () => {
-    const newAt = routerSource.indexOf("{ path: '/notebook/new', Component: CreationRoute }");
+    // PHONE-01 (12-09): the route's element is now the DeskOnly wrapper over CreationRoute.
+    const newAt = routerSource.indexOf("{ path: '/notebook/new', element: <DeskOnly title=\"New recipe\"><CreationRoute /></DeskOnly> }");
     const recipeAt = routerSource.indexOf("'/notebook/:recipeId'");
     expect(newAt).toBeGreaterThan(-1);
     expect(recipeAt).toBeGreaterThan(-1);

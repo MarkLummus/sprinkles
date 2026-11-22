@@ -82,16 +82,16 @@ function Keyed() {
   return <RecipePage key={`${recipeId}::${versionId}::${batchId ?? ''}`} onPageStatus={() => {}} />;
 }
 
-// A fixed 393 coarse window, as RecipePage.perStep.test.jsx does.
-function installMatchMedia() {
+// A coarse window of the given width, 800 unless a case says otherwise: 724 up (the band draws Next version) and below 984 (a one-column Sheet), PHONE-01.
+function installMatchMedia(width = 800) {
   Element.prototype.scrollIntoView = vi.fn();
   originalMatchMedia = window.matchMedia;
   window.matchMedia = (query) => {
     const max = query.match(/max-width:\s*([\d.]+)px/);
     const min = query.match(/min-width:\s*([\d.]+)px/);
     let matches = false;
-    if (max) matches = 393 <= Number(max[1]);
-    else if (min) matches = 393 >= Number(min[1]);
+    if (max) matches = width <= Number(max[1]);
+    else if (min) matches = width >= Number(min[1]);
     else if (query.includes('pointer: coarse')) matches = true;
     return { matches, media: query, addEventListener() {}, removeEventListener() {} };
   };

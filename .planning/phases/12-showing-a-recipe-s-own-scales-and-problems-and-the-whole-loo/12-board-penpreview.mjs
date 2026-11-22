@@ -129,6 +129,15 @@ const penOnSteps = async (page) => {
   await page.waitForTimeout(300);
 };
 
+// The Tab order through the open step, as the keyboard walks it in WebKit: focus put in the
+// instruction (the field the maker has just written in), then Tab pressed `presses` times.
+const tabSteps = (presses) => async (page) => {
+  await openPen(page);
+  await page.locator('[aria-label="Step 1, instruction"]').focus();
+  for (let i = 0; i < presses; i++) await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+};
+
 // What both pen panels hold: the open step's controls in order (words and names), its two fields, the
 // one line that holds Preview step alone, the uses line and Done and Cancel. The method region is the
 // anchor on both sides: it matches once in the board panel and once in the app's shell.
@@ -169,6 +178,15 @@ export default {
         { selector: '.mk-preview .mk-preview__cue', checks: ['count', 'text', 'font', 'box'] },
         { selector: '.mk-preview .method-step__lead', checks: ['count', 'text', 'box', 'font'] },
       ],
+    }),
+    // CONTRACT section 7: Tab reaches Preview step after the instruction and before Change
+    // ingredients. The same board panel as pv-pen, with a label of its own; `focus` reads
+    // document.activeElement in the app, `box` keeps the panel visible to --selftest.
+    penPanel('pv-pen', 'pen-pv-pen-tab1', tabSteps(1), {
+      elements: [{ selector: '[aria-label="Step 1, Preview step"]', checks: ['count', 'focus', 'box'] }],
+    }),
+    penPanel('pv-pen', 'pen-pv-pen-tab2', tabSteps(2), {
+      elements: [{ selector: '[aria-label="Step 1, change ingredients"]', checks: ['count', 'focus', 'box'] }],
     }),
   ],
 };

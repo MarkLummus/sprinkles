@@ -480,6 +480,12 @@ export function StepPenBody({
         <p className="method-step__flag">{coverageSentence(coveredRows, currentStepNumbers)}</p>
       )}
 
+      {/* The open form's Preview step slot, held empty here. The two branches are unkeyed on purpose so
+          the Edit this step button node is reused as the open step's Cancel and focus stays on it
+          after Cancel (bug-edit-this-step-focus-on-cancel); React pairs them by child position, and
+          this branch's last child must keep standing where the open form's Done/Cancel line stands. */}
+      {null}
+
       <p className="method-step__acts">
         <Button
           className="text-control"

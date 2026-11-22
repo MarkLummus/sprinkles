@@ -301,7 +301,7 @@ Plans:
   2. A recipe created in the app round-trips: it prints, a batch recorded against it marks a custom scale, and after export and import it reopens with the same figures, Sheet code and marks
   3. On the iPad, from the production build, a maker creates a recipe end to end, its scales, problems and targets included, and prints it: Tab reaches every creation control, each Move button included, and after a move focus stays with the moved step or row
 
-**Plans:** 12/16 plans executed in 3 waves for the first planning round (Gate 1; 12-08 is gap closure); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
+**Plans:** 14/16 plans executed in 3 waves for the first planning round (Gate 1; 12-08 is gap closure); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
 
 Plans:
 **Wave 1**
@@ -332,8 +332,8 @@ Plans:
 - [x] 12-15-PLAN.md — More, open below 724, without Import and Export, and the Shell pins that pressed them (split out of 12-09; runs beside it)
 
 **Wave 5** *(blocked on Wave 4 completion)*
-- [ ] 12-12-PLAN.md — the creation editor's step and row controls in sketch 016's two groups, and Add ingredient on each row landing the pick right after it; STRUCT-05 written
-- [ ] 12-16-PLAN.md — the recipe page's head below 724: the record act and Print sheet, the Edit kept and Draft lines, no Next version, Edit or Resume editing (split out of 12-10; runs beside 12-12)
+- [x] 12-12-PLAN.md — the creation editor's step and row controls in sketch 016's two groups, and Add ingredient on each row landing the pick right after it; STRUCT-05 written
+- [x] 12-16-PLAN.md — the recipe page's head below 724: the record act and Print sheet, the Edit kept and Draft lines, no Next version, Edit or Resume editing (split out of 12-10; runs beside 12-12)
 
 **Wave 6** *(blocked on Wave 5 completion)*
 - [ ] 12-13-PLAN.md — Cmd+Return adds and Ctrl+Cmd+Up and Down move a step or row with the caret kept, the keys line under each heading and aria-keyshortcuts, proven by a WebKit keys-and-caret probe
@@ -358,7 +358,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
 | 10. The creation editor, without Save | v2.0 | 12/12 | Complete    | 2026-10-21 |
 | 11. Steps, structure, save and print | v2.0 | 14/14 | Complete    | 2026-11-15 |
-| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 12/16 | In Progress (round one) | - |
+| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 14/16 | In Progress (round one) | - |
 
 ## Later
 

@@ -327,12 +327,13 @@ Plans:
 
 **Wave 4** *(after round one)*
 - [ ] 12-09-PLAN.md — below 724 the Notebook's New recipe and Resume and Home's Next version are left out, and the New recipe and Edit addresses show "Done at the desk or on the iPad." with no kept draft touched; PHONE-01 written into REQUIREMENTS and the roadmap
-- [ ] 12-10-PLAN.md — the recipe page's head below 724: the record act and Print sheet, the Edit kept and Draft lines, and a kept Next version draft left shut with no record act on its version (Mark's B); widening opens it
+- [ ] 12-10-PLAN.md — a kept Next version draft left shut and safe below 724: read from one place, no pen opened over it before, during or after a width crossing, Correct hidden only while it is held (Mark's B and his 2026-11-22 answer); the 393 suites stop pressing Next version
 - [ ] 12-11-PLAN.md — Preview step on an open step in the version pen (bug-p11-pen-step-no-preview)
 - [ ] 12-15-PLAN.md — More, open below 724, without Import and Export, and the Shell pins that pressed them (split out of 12-09; runs beside it)
 
 **Wave 5** *(blocked on Wave 4 completion)*
 - [ ] 12-12-PLAN.md — the creation editor's step and row controls in sketch 016's two groups, and Add ingredient on each row landing the pick right after it; STRUCT-05 written
+- [ ] 12-16-PLAN.md — the recipe page's head below 724: the record act and Print sheet, the Edit kept and Draft lines, no Next version, Edit or Resume editing (split out of 12-10; runs beside 12-12)
 
 **Wave 6** *(blocked on Wave 5 completion)*
 - [ ] 12-13-PLAN.md — Cmd+Return adds and Ctrl+Cmd+Up and Down move a step or row with the caret kept, the keys line under each heading and aria-keyshortcuts, proven by a WebKit keys-and-caret probe

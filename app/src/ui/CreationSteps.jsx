@@ -4,6 +4,7 @@ import { Checkbox } from './Checkbox.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { useOnDemandField } from './Method.jsx';
 import { StepReading } from './StepReading.jsx';
+import { editorKeyDown } from './editorKeys.js';
 import { holdReturn, stripNewlines } from './oneLineField.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { liveSteps } from '../domain/creationSteps.js';
@@ -66,6 +67,9 @@ function CreationStep({
   // block id; the field carries it as its error, invalid and described by it.
   const leadError = saveMessages?.get(`lead:${step.n}`) ?? null;
   const instructionError = saveMessages?.get(`instruction:${step.n}`) ?? null;
+  // Ctrl+Cmd+Up and Down in a field of this step move it, with no focus request:
+  // the field keeps its focus and its caret through the move (STRUCT-05).
+  const moveByKey = (direction) => onMoveStep(step.n, direction, { keyed: true });
   const leadErrorId = `create-step-${step.n}-lead-error`;
   const instructionErrorId = `create-step-${step.n}-instruction-error`;
 
@@ -95,7 +99,7 @@ function CreationStep({
             aria-invalid={leadError ? 'true' : undefined}
             aria-describedby={leadError ? leadErrorId : undefined}
             onChange={(event) => onChangeStepField(step.n, 'leadIn', stripNewlines(event.target.value))}
-            onKeyDown={holdReturn}
+            onKeyDown={(event) => editorKeyDown(event, { onMove: moveByKey, otherwise: holdReturn })}
           />
           <FieldFeedback error={leadError} errorId={leadErrorId} required={isBlank(step.leadIn)} />
         </label>

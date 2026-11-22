@@ -5,16 +5,16 @@ milestone_name: Recipe creation
 current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
 status: executing
-stopped_at: Completed 12-08-PLAN.md
-last_updated: "2026-11-22T20:36:24.835Z"
-last_activity: 2026-11-16
+stopped_at: Completed 12-09-PLAN.md
+last_updated: "2026-11-22T21:45:25.918Z"
+last_activity: 2026-11-22
 last_activity_desc: Phase 12 execution started
-state_head: afd6b91e2eade2297e7b0f5c08e7662affa7c6ae
+state_head: 0331a6e54c032db883e4ebbefdeb7415bcd06e2a
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 65
-  completed_plans: 57
+  completed_plans: 58
   percent: 80
 ---
 
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-11-15)
 
 ## Current Position
 
-Phase: 12 (Showing a recipe's own scales and problems, and the whole loop) — READY TO EXECUTE
-Plan: 8 of 8
+Phase: 12 (Showing a recipe's own scales and problems, and the whole loop) — EXECUTING
+Plan: 10 of 16
 Status: Ready to execute
-Last activity: 2026-11-16 — Phase 12 execution started
+Last activity: 2026-11-22 — Phase 12 execution started
 
 Progress: [████████░░] 80%
 
@@ -163,6 +163,7 @@ Progress: [████████░░] 80%
 | Phase 08 P05 | 12 min | 3 tasks | 8 files |
 | Phase 08 P06 | 2 min | 3 tasks | 6 files |
 | Phase 12 P08 | 43min | 3 tasks | 5 files |
+| Phase 12 P09 | 15 min | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -194,6 +195,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 12]: D-08-1: the Phase 11 walk baseline moves to e37db11a and absorbs every pre-Phase-12 quick fix (class A one-row textareas, class B the rest), nothing after e37db11a (Mark, 2026-11-16)
 - [Phase 12]: 12-08: a hash DIFF line is attributed to the commit whose change is the last to move that step's hash; earlier movers are groups of their own, and 12-08-trace-check.mjs enforces the one-to-one mapping
 - [Phase 12]: 12-08: WALK_PATCH defaults to none in 11-walk-record-base.sh, because 11-07's order patch is part of e37db11a
+- [Phase 12]: 12-09: below 724 the editor addresses are guarded by a DeskOnly route wrapper on the route element, so no editor effect or draft call runs; an entry form already open stays open when the window narrows
+- [Phase 12]: 12-09: desk-edit board panel uses a fixed address with no stored version (DeskOnly mounts nothing under it); the real saved version's edit address is walked by 12-phone-probe.mjs
 
 ### Pending Todos
 
@@ -524,8 +527,8 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-16T14:27:47.175Z
-Stopped at: Completed 12-08-PLAN.md
+Last session: 2026-11-22T21:45:25.463Z
+Stopped at: Completed 12-09-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

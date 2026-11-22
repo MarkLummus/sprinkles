@@ -7,11 +7,14 @@
 #   python3 movepass.py plan   <active canvas.json>                       -> what leaves, as JSON on stdout
 #   python3 movepass.py dest   <active canvas.json> <Archive|Concepts> <destination canvas.json or -> <out>
 #   python3 movepass.py active <active canvas.json> <out>                 -> the active index without what left
+# MOVEPASS=2 in the environment runs the second pass instead (2026-11-22; Mark in chat: "Which pages have no
+# kept boards? They can be moved"): seven whole pages to Archive, Home, Recipe, Notebook, Ingredients,
+# Print formats superseded, Superseded print drafts and Recipe-declared items.
 # Homes are the labels as they read on the canvas when the pass ran, Mark's own edits to them included:
 # on Print formats "Keep · still needed? Yes" over the Mark one states and reading, and "To Archive" over the
 # whole-pen board; on Recipe route 03.5 concepts "To Concepts: move to the Recipe book" over the on-screen
 # Recipe book form; Recipe History renamed "(Archive)" with its Concepts label removed.
-import json, sys, time
+import json, os, sys, time
 import pagemoves as pm
 
 A, C = 'Archive', 'Concepts'
@@ -29,6 +32,11 @@ STAYS_LABELLED = {'page-13'}   # Recipe route 03.5: the pen between 724 and 759 
 NAMES = {'page-8': 'Kitchen', 'page-6': 'Idea log', 'page-5': 'Recipe book', 'page-3': 'Recipe History', 'page-25': 'Alternates',
          'page-14': 'Recipe route 03.5 concepts', 'page-13': 'Recipe route 03.5', 'page-11': 'Print formats', 'page-17': 'Print method'}
 GONE_LABELS = {'page-13': ['dest-page-13-1'], 'page-11': ['dest-page-11-0', 'dest-page-11-1', 'dest-page-11-2', 'dest-page-11-3'], 'page-17': ['dest-page-17-0', 'dest-page-17-1']}
+if os.environ.get('MOVEPASS') == '2':   # the second pass: whole pages only, nothing against its page, no page that stays
+    WHOLE = {'page-9': A, 'page-2': A, 'page-4': A, 'page-7': A, 'page-15': A, 'page-12': A, 'page-18': A}
+    BOARD, NOTE, LAND, GONE_LABELS = {}, {}, {}, {}
+    NAMES = {'page-9': 'Home', 'page-2': 'Recipe', 'page-4': 'Notebook', 'page-7': 'Ingredients', 'page-15': 'Print formats superseded',
+             'page-12': 'Superseded print drafts', 'page-18': 'Recipe-declared items'}
 
 def plan(c):
     B, N = c['boards'], c['notes']; first = c['pages'][0]['id']; page = lambda o: o.get('page', first)
@@ -89,7 +97,6 @@ def active(c, out):
     json.dump(c, open(out + '/project/canvas.json', 'w'), indent=1, ensure_ascii=False)
 
 if __name__ == '__main__':
-    import os
     cmd, src = sys.argv[1], sys.argv[2]; c = json.load(open(src))
     if cmd == 'plan': json.dump(plan(c), sys.stdout, indent=1)
     else:

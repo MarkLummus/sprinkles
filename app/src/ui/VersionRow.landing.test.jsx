@@ -84,10 +84,8 @@ describe('VersionRow — the arrival landing happens once (bug-next-version-canc
     expect(heading().classList.contains('is-landing-focus')).toBe(true);
   });
 
-  it.each([
-    ['from 724 up', false],
-    ['below 724', true],
-  ])('Cancel after Next version returns focus to Next version, twice, %s (Test B)', (_label, below724) => {
+  // The row below 724 is not drawn here: 12-16 takes Next version out of the band there (PHONE-01).
+  it.each([['from 724 up', false]])('Cancel after Next version returns focus to Next version, twice, %s (Test B)', (_label, below724) => {
     mount({ below724 });
     for (let round = 0; round < 2; round += 1) {
       act(() => buttonNamed('Next version').click());

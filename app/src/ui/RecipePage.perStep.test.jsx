@@ -80,16 +80,16 @@ function Keyed() {
   return <RecipePage key={`${recipeId}::${versionId}::${batchId ?? ''}`} onPageStatus={() => {}} />;
 }
 
-// A fixed 393 coarse window, as RecipePage.recordTasting.test.jsx does.
-function installMatchMedia() {
+// A coarse window of the given width, 800 unless a case says otherwise: 724 up (the band draws Next version) and below 984 (a one-column Sheet), PHONE-01.
+function installMatchMedia(width = 800) {
   Element.prototype.scrollIntoView = vi.fn();
   originalMatchMedia = window.matchMedia;
   window.matchMedia = (query) => {
     const max = query.match(/max-width:\s*([\d.]+)px/);
     const min = query.match(/min-width:\s*([\d.]+)px/);
     let matches = false;
-    if (max) matches = 393 <= Number(max[1]);
-    else if (min) matches = 393 >= Number(min[1]);
+    if (max) matches = width <= Number(max[1]);
+    else if (min) matches = width >= Number(min[1]);
     else if (query.includes('pointer: coarse')) matches = true;
     return { matches, media: query, addEventListener() {}, removeEventListener() {} };
   };
@@ -748,7 +748,7 @@ describe('A blocked save prints its sentence in the blocked line (sketch 011 dec
 // Correct, read a split ingredient with one line left like the Sheet; each value stays at
 // its stored index, so nothing stored changes.
 describe('Recording reads like the Sheet when one line is left (sketch 011 decision 56: A recommended)', () => {
-  const band = () => current.container.querySelector('.notebook-version__acts .notebook-action');
+  const band = () => buttonByText(current.container.querySelector('.notebook-log'), 'Record batch'); // the log's own act: the band draws none at 800
   // One tbody per step group (sketch 011 decision 45): every group's rows, in table order.
   const bodyRows = (selector) => [...current.container.querySelectorAll('.ingredient-table tbody')].flatMap((body) => [...body.querySelectorAll(selector)]);
   const field = (label) => current.container.querySelector(`textarea[aria-label="${label}"]`);
@@ -1061,7 +1061,7 @@ describe('the recipe page one-line fields are one-row textareas (bug-ipad-tab-lo
 // bug-record-pen-no-skipped-with-show-changes: Show changes is the reading's own state, so the
 // record pen draws its own steps and table while the address still holds the changes key.
 describe('the record pen draws its own steps whether or not Show changes was on (bug-record-pen-no-skipped-with-show-changes)', () => {
-  const band = () => current.container.querySelector('.notebook-version__acts .notebook-action');
+  const band = () => buttonByText(current.container.querySelector('.notebook-log'), 'Record batch'); // the log's own act: the band draws none at 800
   const sheet = () => current.container.querySelector('article.recipe-page');
   const asMadeLabels = () =>
     [...current.container.querySelectorAll('.ingredient-table .ingredient-table__as-made-field')].map((field) => field.getAttribute('aria-label'));

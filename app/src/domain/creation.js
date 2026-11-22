@@ -9,7 +9,7 @@ import { MAX_RECIPE_PROBLEMS, MAX_RECIPE_SCALES, SCALE_KINDS } from './catalog.j
 import { blankCreateDraft } from './draft.js';
 import { FIGURE_SPECS } from './figures.js';
 import { parseGramsDraft } from './lineage.js';
-import { liveSteps, rowLines } from './creationSteps.js';
+import { UNPLACED_STEP, groupRows, liveSteps, rowLines, toggleStepUses } from './creationSteps.js';
 import { rowFromLibraryRecord } from './versionRow.js';
 
 export const UNTITLED = 'Untitled';
@@ -160,6 +160,38 @@ export function addRow(draft, { rowId, libraryId }) {
   if (typeof libraryId !== 'string' || libraryId === '') throw new TypeError('library id must be a non-empty string');
   if (draft.rows.some((row) => row.id === rowId)) throw new RangeError(`row ${rowId} is already on the draft`);
   return { ...draft, rows: [...draft.rows, { id: rowId, libraryId, portions: [{ step: 1, grams: '' }] }] };
+}
+
+/**
+ * addRowAfter(draft, { rowId, libraryId, afterRowId, group }) -> a new draft
+ * whose new row stands right after `afterRowId` in `group` (STRUCT-05, D-09;
+ * sketch 016 section 5). `group` is a live step's key, and the row is ticked
+ * into that step's uses right after the anchor, or UNPLACED_STEP, and the row
+ * stays in no step, right after the anchor in draft.rows. Every other row keeps
+ * its place and id and no step's key changes. An anchor that is not in the
+ * group, a group that is not a live step and a duplicate row id are caller
+ * bugs and throw a RangeError (groupRows throws for the step).
+ */
+export function addRowAfter(draft, { rowId, libraryId, afterRowId, group }) {
+  const anchors = groupRows(draft, group);
+  if (!anchors.includes(afterRowId)) throw new RangeError(`row ${String(afterRowId)} is not in group ${String(group)}`);
+  const added = addRow(draft, { rowId, libraryId });
+  if (group === UNPLACED_STEP) {
+    const entry = added.rows[added.rows.length - 1];
+    const others = added.rows.slice(0, -1);
+    const at = others.findIndex((row) => row.id === afterRowId);
+    return { ...added, rows: [...others.slice(0, at + 1), entry, ...others.slice(at + 1)] };
+  }
+  const placed = toggleStepUses(added, group, rowId);
+  return {
+    ...placed,
+    method: placed.method.map((step) => {
+      if (step.n !== group) return step;
+      const others = step.uses.filter((id) => id !== rowId);
+      const at = others.indexOf(afterRowId);
+      return { ...step, uses: [...others.slice(0, at + 1), rowId, ...others.slice(at + 1)] };
+    }),
+  };
 }
 
 function assertRowId(draft, rowId) {

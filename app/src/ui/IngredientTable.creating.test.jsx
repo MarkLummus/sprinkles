@@ -46,6 +46,7 @@ function mount(initial = startingDraft, lineMessages = null) {
   const onRemoveRow = vi.fn();
   const onMoveRow = vi.fn();
   const onPlaceRow = vi.fn();
+  const onAddRowAfter = vi.fn();
   function Harness() {
     const [draft, setDraft] = useState(initial);
     setDraftRef = setDraft;
@@ -76,6 +77,7 @@ function mount(initial = startingDraft, lineMessages = null) {
             onPlaceRow(rowId, n);
             setDraft((prev) => placeRow(prev, rowId, n));
           },
+          onAddRowAfter,
         }}
       />
     );
@@ -86,7 +88,7 @@ function mount(initial = startingDraft, lineMessages = null) {
   act(() => {
     root.render(<Harness />);
   });
-  current = { container, root, onBlurGrams, onRemoveRow, onMoveRow, onPlaceRow };
+  current = { container, root, onBlurGrams, onRemoveRow, onMoveRow, onPlaceRow, onAddRowAfter };
   return current;
 }
 
@@ -367,11 +369,11 @@ describe('IngredientTable, creating: the acts line (STRUCT-01 to STRUCT-03, D-15
   const firstGroup = () =>
     [...current.container.querySelector('tbody').querySelectorAll('tr[data-line]')].map((row) => row.getAttribute('data-line'));
 
-  it('reads remove, Move up, Move down on each row, and Add to step on a row no step uses once a step exists', () => {
+  it('reads Add ingredient, Move up, Move down, Remove on each row, with Add to step first on a row no step uses once a step exists (sketch 016 section 5)', () => {
     mount(threeRows);
-    expect(actsText('milk-row:1')).toBe('Remove · Move up · Move down');
-    expect(actsText('sucrose-row:1')).toBe('Remove · Move up · Move down');
-    expect(actsText('cream-row:0')).toBe('Remove · Move up · Move down · Add to step');
+    expect(actsText('milk-row:1')).toBe('Add ingredient · Move up · Move down · Remove');
+    expect(actsText('sucrose-row:1')).toBe('Add ingredient · Move up · Move down · Remove');
+    expect(actsText('cream-row:0')).toBe('Add to step · Add ingredient · Move up · Move down · Remove');
     expect(control('cream-row:0', 'add-to-step').getAttribute('aria-label')).toBe('Add to step, Heavy cream, 36% fat');
     expect(line('milk-row:1').querySelector('.ingredient-table__remove-gap')).not.toBeNull();
     for (const button of current.container.querySelectorAll('.mk-row-acts button')) expect(button.getAttribute('tabindex')).toBe('0');
@@ -386,6 +388,7 @@ describe('IngredientTable, creating: the acts line (STRUCT-01 to STRUCT-03, D-15
       [control('milk-row:1', 'move-up'), `Move up, ${WHOLE_MILK}`],
       [control('milk-row:1', 'move-down'), `Move down, ${WHOLE_MILK}`],
       [control('cream-row:0', 'add-to-step'), 'Add to step, Heavy cream, 36% fat'],
+      [control('milk-row:1', 'add-ingredient'), `Add ingredient after ${WHOLE_MILK}`],
     ];
     for (const [button, name] of names) {
       expect(button.getAttribute('aria-label')).toBe(name);
@@ -401,7 +404,26 @@ describe('IngredientTable, creating: the acts line (STRUCT-01 to STRUCT-03, D-15
   it('offers no Add to step while no step exists', () => {
     mount();
     expect(current.container.querySelector('[data-act="add-to-step"]')).toBeNull();
-    expect(actsText('sucrose-row:0')).toBe('Remove · Move up · Move down');
+    expect(actsText('sucrose-row:0')).toBe('Add ingredient · Move up · Move down · Remove');
+  });
+
+  it("Add ingredient asks for the pressed line's row and group, never takes the heading's class, and is on each line of a split row (D-09, STRUCT-05)", () => {
+    mount(() => toggleStepUses(threeRows(), 2, 'milk-row'));
+    const first = control('milk-row:1', 'add-ingredient');
+    const second = control('milk-row:2', 'add-ingredient');
+    expect(first.getAttribute('aria-label')).toBe(`Add ingredient after ${WHOLE_MILK}`);
+    expect(second.getAttribute('aria-label')).toBe(`Add ingredient after ${WHOLE_MILK}`);
+    expect(first.textContent).toBe('Add ingredient');
+    for (const button of current.container.querySelectorAll('[data-act="add-ingredient"]')) {
+      expect(button.classList.contains('mk-head-act')).toBe(false);
+      expect(button.getAttribute('tabindex')).toBe('0');
+    }
+    press(first);
+    expect(current.onAddRowAfter).toHaveBeenLastCalledWith('milk-row', 1);
+    press(second);
+    expect(current.onAddRowAfter).toHaveBeenLastCalledWith('milk-row', 2);
+    press(control('cream-row:0', 'add-ingredient'));
+    expect(current.onAddRowAfter).toHaveBeenLastCalledWith('cream-row', 0);
   });
 
   it("marks the group's first Move up and last Move down off, focusable, and doing nothing", () => {

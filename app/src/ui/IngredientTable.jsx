@@ -9,6 +9,7 @@ import { gramsDraftMessage, parseGramsDraft } from '../domain/lineage.js';
 import { penDraftRow } from '../domain/penDraft.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { Button } from './Button.jsx';
+import { editorKeyDown } from './editorKeys.js';
 import { holdReturn, stripNewlines } from './oneLineField.js';
 
 // The id of the blocked line's sentence: one blocked line at a time, as the version
@@ -303,7 +304,13 @@ function RowActs({
           {ACT_DOT}
         </>
       )}
-      <Button className="text-control" data-act="add-ingredient" aria-label={`Add ingredient after ${name}`} onClick={onAddAfter}>
+      <Button
+        className="text-control"
+        data-act="add-ingredient"
+        aria-label={`Add ingredient after ${name}`}
+        aria-keyshortcuts="Meta+Enter Control+Enter"
+        onClick={onAddAfter}
+      >
         Add ingredient
       </Button>
       {ACT_DOT}
@@ -311,6 +318,7 @@ function RowActs({
         className={isFirst ? 'text-control mk-off' : 'text-control'}
         data-act="move-up"
         aria-label={`Move up, ${name}${inStep}`}
+        aria-keyshortcuts="Control+Meta+ArrowUp"
         aria-disabled={isFirst ? 'true' : undefined}
         onClick={isFirst ? undefined : () => onMove(group, 'up')}
       >
@@ -321,6 +329,7 @@ function RowActs({
         className={isLast ? 'text-control mk-off' : 'text-control'}
         data-act="move-down"
         aria-label={`Move down, ${name}${inStep}`}
+        aria-keyshortcuts="Control+Meta+ArrowDown"
         aria-disabled={isLast ? 'true' : undefined}
         onClick={isLast ? undefined : () => onMove(group, 'down')}
       >
@@ -853,7 +862,13 @@ export function IngredientTable({
               aria-invalid={messageId ? 'true' : undefined}
               aria-describedby={messageId ?? undefined}
               onChange={(event) => handleCreatingGramsChange(row, portion, stripNewlines(event.target.value))}
-              onKeyDown={holdReturn}
+              onKeyDown={(event) =>
+                editorKeyDown(event, {
+                  onAdd: () => creationRows.onAddRowAfter(row.id, portion.step, { opener: 'grams' }),
+                  onMove: (direction) => creationRows.onMoveRow(row.id, portion.step, direction, { keyed: true }),
+                  otherwise: holdReturn,
+                })
+              }
               onBlur={() => handleCreatingGramsBlur(row, portion, raw)}
             />
             {' g'}

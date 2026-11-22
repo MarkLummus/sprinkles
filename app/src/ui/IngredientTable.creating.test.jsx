@@ -69,8 +69,9 @@ function mount(initial = startingDraft, lineMessages = null) {
             onRemoveRow(rowId, group);
             setDraft((prev) => removeRow(prev, rowId));
           },
-          onMoveRow: (rowId, group, direction) => {
-            onMoveRow(rowId, group, direction);
+          onMoveRow: (...args) => {
+            onMoveRow(...args);
+            const [rowId, group, direction] = args;
             setDraft((prev) => moveRow(prev, rowId, group, direction));
           },
           onPlaceRow: (rowId, n) => {
@@ -577,5 +578,72 @@ describe('IngredientTable, creating: the grams field is a one-row textarea that 
     expect(field(WHOLE_MILK).value).toBe('150');
     leave(WHOLE_MILK);
     expect(rowOf(WHOLE_MILK).querySelector('.field-error')).toBeNull();
+  });
+});
+
+describe('IngredientTable, creating: the keys in a row\'s grams (STRUCT-05, CONTRACT section 6, section 11 numbers 9c, 10, 11)', () => {
+  function rows() {
+    let draft = blankCreateDraft({ recipeId: 'r1', versionId: 'v1', name: 'Vanilla' });
+    draft = addRow(draft, { rowId: 'milk-row', libraryId: 'wholeMilk' });
+    draft = addRow(draft, { rowId: 'sucrose-row', libraryId: 'sucrose' });
+    for (const id of ['milk-row', 'sucrose-row']) draft = setLineGrams(draft, id, UNPLACED_STEP, '100');
+    draft = addStep(draft, { afterN: null });
+    draft = toggleStepUses(draft, 1, 'milk-row');
+    return toggleStepUses(draft, 1, 'sucrose-row');
+  }
+
+  function keydown(element, init) {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init });
+    let notPrevented;
+    act(() => {
+      notPrevented = element.dispatchEvent(event);
+    });
+    return notPrevented;
+  }
+
+  it('Cmd+Return and Ctrl+Return ask the row to add after it, from its own group, with the grams opener, prevented', () => {
+    mount(rows);
+    for (const modifier of ['metaKey', 'ctrlKey']) {
+      current.onAddRowAfter.mockClear();
+      expect(keydown(field(WHOLE_MILK), { key: 'Enter', [modifier]: true })).toBe(false);
+      expect(current.onAddRowAfter).toHaveBeenCalledTimes(1);
+      expect(current.onAddRowAfter).toHaveBeenCalledWith('milk-row', 1, { opener: 'grams' });
+    }
+    expect(field(WHOLE_MILK).value).toBe('100');
+  });
+
+  it('a held Cmd+Return (a repeat) asks nothing and is prevented', () => {
+    mount(rows);
+    expect(keydown(field(WHOLE_MILK), { key: 'Enter', metaKey: true, repeat: true })).toBe(false);
+    expect(current.onAddRowAfter).not.toHaveBeenCalled();
+  });
+
+  it('Ctrl+Cmd+Up and Down ask for a keyed move of the row in its own group, prevented', () => {
+    mount(rows);
+    expect(keydown(field('Sucrose'), { key: 'ArrowUp', ctrlKey: true, metaKey: true })).toBe(false);
+    expect(current.onMoveRow).toHaveBeenLastCalledWith('sucrose-row', 1, 'up', { keyed: true });
+    expect(keydown(field('Sucrose'), { key: 'ArrowDown', ctrlKey: true, metaKey: true })).toBe(false);
+    expect(current.onMoveRow).toHaveBeenLastCalledWith('sucrose-row', 1, 'down', { keyed: true });
+  });
+
+  it('a plain Return stays held, Cmd+arrow alone keeps its work in the text, and Remove has no key', () => {
+    mount(rows);
+    expect(keydown(field(WHOLE_MILK), { key: 'Enter' })).toBe(false);
+    expect(keydown(field(WHOLE_MILK), { key: 'ArrowUp', metaKey: true })).toBe(true);
+    expect(keydown(field(WHOLE_MILK), { key: 'ArrowDown', ctrlKey: true, metaKey: true, shiftKey: true })).toBe(true);
+    expect(keydown(field(WHOLE_MILK), { key: 'Delete', ctrlKey: true, metaKey: true })).toBe(true);
+    expect(current.onAddRowAfter).not.toHaveBeenCalled();
+    expect(current.onMoveRow).not.toHaveBeenCalled();
+    expect(current.onRemoveRow).not.toHaveBeenCalled();
+  });
+
+  it("the row's Add ingredient, Move up and Move down carry aria-keyshortcuts as the board writes them, and nothing else on the row does", () => {
+    mount(rows);
+    const row = rowOf(WHOLE_MILK);
+    expect(row.querySelector('[data-act="add-ingredient"]').getAttribute('aria-keyshortcuts')).toBe('Meta+Enter Control+Enter');
+    expect(row.querySelector('[data-act="move-up"]').getAttribute('aria-keyshortcuts')).toBe('Control+Meta+ArrowUp');
+    expect(row.querySelector('[data-act="move-down"]').getAttribute('aria-keyshortcuts')).toBe('Control+Meta+ArrowDown');
+    expect(row.querySelectorAll('[aria-keyshortcuts]').length).toBe(3);
+    expect(row.querySelector('[data-act="remove"]').hasAttribute('aria-keyshortcuts')).toBe(false);
   });
 });

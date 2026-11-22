@@ -93,35 +93,62 @@ const ROW_ORDER = () =>
     name: tr.querySelector('textarea').getAttribute('aria-label').replace(/, grams.*$/, ''),
     grams: tr.querySelector('textarea').value,
   }));
-// A step's uses, by names, in the step's own order (the sentence of its uses line).
-const USES_LINES = () => [...document.querySelectorAll('li.mk-step p.method-step__uses-line')].map((p) => p.firstChild.textContent.trim());
+// The rows of one group (a step's number, 0 for no step), in table order.
+const GROUP_ROWS = (group) =>
+  [...document.querySelectorAll('.ingredient-table-region tr[data-line]')]
+    .filter((tr) => tr.getAttribute('data-line').endsWith(`:${group}`))
+    .map((tr) => tr.querySelector('textarea').getAttribute('aria-label').replace(/, grams.*$/, ''));
+const GRAMS_LINE = (line) => {
+  const el = document.querySelector(`tr[data-line="${line}"] textarea`);
+  return el ? { label: el.getAttribute('aria-label'), value: el.value, start: el.selectionStart, end: el.selectionEnd, focused: document.activeElement === el } : null;
+};
+const PICKER = () => {
+  const pick = document.querySelector('.ingredient-table-region .pick');
+  const name = pick?.querySelector('.ing__filters textarea') ?? null;
+  return { open: pick !== null, count: document.querySelectorAll('.ingredient-table-region .pick').length, nameFocused: name !== null && document.activeElement === name };
+};
+const SNAPSHOT = () => ({
+  leadIns: [...document.querySelectorAll('li.mk-step textarea[data-field="lead-in"]')].map((el) => el.value),
+  rows: [...document.querySelectorAll('.ingredient-table-region tr[data-line]')].map((tr) => tr.getAttribute('data-line')),
+  uses: [...document.querySelectorAll('li.mk-step p.method-step__uses-line')].map((p) => p.firstChild.textContent.trim()),
+});
 
 // The structure region (the polite word for every structure change): a watcher counts every write to it,
 // so "says nothing" is measured, not read off a text that might repeat.
 const WATCH = () => {
   const el = document.querySelector('.mk-page > p.visually-hidden[role="status"]');
-  window.__structure = { mutations: 0 };
+  window.__structure = { mutations: 0, log: [] };
   new MutationObserver(() => {
     window.__structure.mutations += 1;
+    window.__structure.log.push(el.textContent);
   }).observe(el, { childList: true, characterData: true, subtree: true });
 };
 const RESET_WATCH = () => {
   window.__structure.mutations = 0;
+  window.__structure.log = [];
 };
-const STRUCTURE = () => ({
-  text: document.querySelector('.mk-page > p.visually-hidden[role="status"]').textContent,
-  mutations: window.__structure.mutations,
-});
+// What was said since the last reset: every run of words between two empty states is one announcement.
+const STRUCTURE = () => {
+  const log = window.__structure.log;
+  const said = log.filter((text, i) => text !== '' && (i === 0 || log[i - 1] === ''));
+  return {
+    text: document.querySelector('.mk-page > p.visually-hidden[role="status"]').textContent,
+    mutations: window.__structure.mutations,
+    said,
+  };
+};
 
 const { appUrl, close } = await startServers({ appRoot: DIST });
 const browser = await webkit.launch();
 try {
-  const context = await browser.newContext({ viewport: { width: 1366, height: 1024 }, hasTouch: true });
-  await context.route('**/*', (request) =>
-    new URL(request.request().url()).hostname === '127.0.0.1' ? request.continue() : request.abort(),
-  );
-
+  // A mode starts in its own context, so its stored drafts are its own.
+  const contexts = [];
   const freshPage = async (flow) => {
+    const context = await browser.newContext({ viewport: { width: 1366, height: 1024 }, hasTouch: true });
+    contexts.push(context);
+    await context.route('**/*', (request) =>
+      new URL(request.request().url()).hostname === '127.0.0.1' ? request.continue() : request.abort(),
+    );
     const page = await context.newPage();
     page.setDefaultTimeout(8000);
     await page.goto(`${appUrl}/notebook`, { waitUntil: 'load' });
@@ -207,7 +234,302 @@ try {
     await page.close();
   }
 
-  await context.close();
+  // ---------------------------------------------------------------------------------------------
+  // keys: every field of a step, a row's grams, the add keys, held keys, fields outside a step.
+  // ---------------------------------------------------------------------------------------------
+  if (MODES.includes('keys')) {
+    mode = 'keys';
+    const escaped = (name) => name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pickRow = (page, name) =>
+      page.locator('.pick__row', { has: page.locator('.pick__name', { hasText: new RegExp(`^${escaped(name)}$`) }) });
+    const uses = (page, n, name) =>
+      page.locator(`.method-step[data-step="${n}"] .method-step__uses-item`, { hasText: name }).locator('input');
+    const cancelPicker = (page) => page.locator('.ingredient-table-region .pick__head button').first().click();
+    const GRAMS = (name) => `${name}, grams`;
+    const HEAVY = 'Heavy cream, 36% fat';
+    const BEANS = 'Coffee beans';
+    const EGG = 'Egg yolk (fresh)';
+    const MILK = 'Whole milk, 3.5% fat';
+
+    const page = await freshPage(coffeeBase);
+    const written = { label: 'Heat to', value: '82 °C', purpose: 'Pulls the coffee into the cream.', aside: 'Do not let it boil.' };
+    await byLabel(page, 'Step 1, Add target').click();
+    await page.fill('[aria-label="Step 1, target label"]', written.label);
+    await page.fill('[aria-label="Step 1, target value"]', written.value);
+    await byLabel(page, 'Step 1, add purpose').click();
+    await page.fill('[aria-label="Step 1, purpose"]', written.purpose);
+    await byLabel(page, 'Step 1, add aside').click();
+    await page.fill('[aria-label="Step 1, aside"]', written.aside);
+    await page.waitForTimeout(300);
+
+    // -- a step's six fields: the add keys -------------------------------------------------------------
+    const STEP_FIELDS = ['lead-in', 'instruction', 'purpose', 'aside', 'target label', 'target value'];
+    const selectionsFor = (value) => [
+      ['collapsed caret', 1, 1],
+      ['ranged selection', 1, Math.min(4, value.length)],
+    ];
+    for (const suffix of STEP_FIELDS) {
+      for (const combo of ['Meta+Enter', 'Control+Enter']) {
+        const label = `Step 1, ${suffix}`;
+        const before = await byLabel(page, label).inputValue();
+        await place(page, label, 1, Math.min(3, before.length));
+        await press(page, combo);
+        const focus = await page.evaluate(FOCUS);
+        const count = await page.evaluate(STEP_COUNT);
+        const after = await byLabel(page, label).inputValue();
+        report(
+          count === 3 && focus?.label === 'Step 2, lead-in' && focus?.value === '' && after === before,
+          `${combo} in ${label}: a step lands after it with focus in its lead-in, and the field's words are unchanged`,
+          `${count} steps, ${JSON.stringify(focus)}`,
+        );
+        await byLabel(page, 'Step 2, remove').click();
+        await page.waitForTimeout(150);
+      }
+    }
+    // A held Cmd+Return (repeat true) adds nothing, in a prose field and a one-line field.
+    for (const label of ['Step 1, instruction', 'Step 1, lead-in']) {
+      await place(page, label, 1, 1);
+      await page.evaluate(() => {
+        document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', metaKey: true, repeat: true, bubbles: true, cancelable: true }));
+      });
+      await page.waitForTimeout(200);
+      report((await page.evaluate(STEP_COUNT)) === 2 && (await page.evaluate(FOCUS))?.label === label, `a held Meta+Enter (repeat) in ${label} adds nothing`, `${await page.evaluate(STEP_COUNT)} steps`);
+    }
+
+    // -- a step's other fields: the move keys, caret kept -----------------------------------------------
+    for (const suffix of STEP_FIELDS.slice(1)) {
+      const value = await byLabel(page, `Step 1, ${suffix}`).inputValue();
+      for (const [kind, start, end] of selectionsFor(value)) {
+        await place(page, `Step 1, ${suffix}`, start, end);
+        await page.evaluate(RESET_WATCH);
+        await press(page, 'Control+Meta+ArrowDown');
+        let focus = await page.evaluate(FOCUS);
+        let said = await structure(page);
+        report(
+          same(await page.evaluate(LEAD_INS), ['Churn', 'Steep']) && focus?.label === `Step 2, ${suffix}` && focus?.value === value && focus?.act === null,
+          `ArrowDown in Step 1, ${suffix} (${kind}): the step moves down and the same field holds focus`,
+          JSON.stringify(focus),
+        );
+        report(
+          focus?.start === start && focus?.end === end && same(said.said, ['Step 2 of 2']),
+          `ArrowDown in ${suffix} (${kind}): the selection is ${start}-${end} as before and 'Step 2 of 2' is said once`,
+          `${focus?.start}-${focus?.end}, ${JSON.stringify(said.said)}`,
+        );
+        await page.evaluate(RESET_WATCH);
+        await press(page, 'Control+Meta+ArrowUp');
+        focus = await page.evaluate(FOCUS);
+        said = await structure(page);
+        report(
+          same(await page.evaluate(LEAD_INS), ['Steep', 'Churn']) && focus?.label === `Step 1, ${suffix}` && focus?.start === start && focus?.end === end && same(said.said, ['Step 1 of 2']),
+          `ArrowUp in Step 2, ${suffix} (${kind}): the step moves back, the same field holds focus and the selection ${start}-${end}, 'Step 1 of 2' said once`,
+          `${JSON.stringify(focus)}, ${JSON.stringify(said.said)}`,
+        );
+      }
+    }
+    // Insurance: an empty purpose field is not closed by a blur from the move.
+    await byLabel(page, 'Step 2, add purpose').click();
+    await page.waitForSelector('[aria-label="Step 2, purpose"]');
+    await place(page, 'Step 2, purpose', 0, 0);
+    await press(page, 'Control+Meta+ArrowUp');
+    let focus = await page.evaluate(FOCUS);
+    report(
+      same(await page.evaluate(LEAD_INS), ['Churn', 'Steep']) && focus?.label === 'Step 1, purpose' && focus?.value === '',
+      'ArrowUp from an empty purpose field: the field is still open and holds focus (no blur closed it)',
+      JSON.stringify(focus),
+    );
+    await press(page, 'Control+Meta+ArrowDown');
+    focus = await page.evaluate(FOCUS);
+    report(focus?.label === 'Step 2, purpose' && same(await page.evaluate(LEAD_INS), ['Steep', 'Churn']), 'ArrowDown puts the empty purpose field back, still open and focused', JSON.stringify(focus));
+    await byLabel(page, 'Step 1, lead-in').focus();
+
+    // -- a row's grams: the move keys on a group of two (the board's Heavy cream case) -------------------
+    for (const [kind, start, end] of [['collapsed caret', 1, 1], ['ranged selection', 1, 2]]) {
+      await place(page, GRAMS(HEAVY), start, end);
+      await page.evaluate(RESET_WATCH);
+      await press(page, 'Control+Meta+ArrowDown');
+      let grams = await page.evaluate(FOCUS);
+      let said = await structure(page);
+      report(
+        same(await page.evaluate(GROUP_ROWS, 1), [BEANS, HEAVY]) && grams?.label === GRAMS(HEAVY) && grams?.value === '400' && grams?.act === null && grams?.start === start && grams?.end === end,
+        `ArrowDown in ${HEAVY}'s grams (${kind}): the row moves within step 1, the grams hold focus and the selection ${start}-${end}`,
+        JSON.stringify(grams),
+      );
+      report(same(said.said, [`${HEAVY}, row 2 of 2 in step 1`]), `the announcement reads '${HEAVY}, row 2 of 2 in step 1' (${kind})`, JSON.stringify(said.said));
+      await page.evaluate(RESET_WATCH);
+      await press(page, 'Control+Meta+ArrowUp');
+      grams = await page.evaluate(FOCUS);
+      said = await structure(page);
+      report(
+        same(await page.evaluate(GROUP_ROWS, 1), [HEAVY, BEANS]) && grams?.label === GRAMS(HEAVY) && grams?.start === start && grams?.end === end && same(said.said, [`${HEAVY}, row 1 of 2 in step 1`]),
+        `ArrowUp in ${HEAVY}'s grams (${kind}): back to row 1, the caret kept, '${HEAVY}, row 1 of 2 in step 1' said`,
+        `${JSON.stringify(grams)}, ${JSON.stringify(said.said)}`,
+      );
+    }
+    for (const [where, name, combo] of [['the first row, ArrowUp', HEAVY, 'Control+Meta+ArrowUp'], ['the last row, ArrowDown', BEANS, 'Control+Meta+ArrowDown']]) {
+      await place(page, GRAMS(name), 1, 2);
+      const before = { rows: await page.evaluate(GROUP_ROWS, 1), focus: await page.evaluate(FOCUS) };
+      await page.evaluate(RESET_WATCH);
+      await press(page, combo);
+      const after = { rows: await page.evaluate(GROUP_ROWS, 1), focus: await page.evaluate(FOCUS) };
+      const said = await structure(page);
+      report(same(before, after) && said.mutations === 0, `${where} at a group's end: nothing moves and nothing is said`, `${said.mutations} writes`);
+    }
+
+    // -- a row's grams: Add ingredient by key, the picker, Cancel ------------------------------------------
+    for (const [combo, kind, start, end] of [['Meta+Enter', 'collapsed caret', 1, 1], ['Control+Enter', 'ranged selection', 1, 2]]) {
+      await place(page, GRAMS(HEAVY), start, end);
+      await press(page, combo);
+      const open = await page.evaluate(PICKER);
+      report(open.open && open.count === 1 && open.nameFocused, `${combo} in ${HEAVY}'s grams (${kind}) opens the picker once with focus in its Name`, JSON.stringify(open));
+      await cancelPicker(page);
+      await page.waitForTimeout(200);
+      const back = await page.evaluate(FOCUS);
+      report(!(await page.evaluate(PICKER)).open && back?.label === GRAMS(HEAVY), `Cancel after ${combo} returns focus to ${HEAVY}'s grams`, JSON.stringify(back));
+    }
+    // A held Meta+Enter in the grams opens nothing.
+    await place(page, GRAMS(HEAVY), 1, 1);
+    await page.evaluate(() => {
+      document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', metaKey: true, repeat: true, bubbles: true, cancelable: true }));
+    });
+    await page.waitForTimeout(200);
+    report(!(await page.evaluate(PICKER)).open, 'a held Meta+Enter (repeat) in the grams opens no picker');
+    // Open from Heavy cream, then Meta+Enter in Coffee beans' grams: still one picker, Name focused, the pick lands after Coffee beans.
+    await press(page, 'Meta+Enter');
+    await byLabel(page, GRAMS(BEANS)).focus();
+    await press(page, 'Meta+Enter');
+    const moved = await page.evaluate(PICKER);
+    report(moved.open && moved.count === 1 && moved.nameFocused, "with the picker open, Meta+Enter in another row's grams keeps it open and focuses Name", JSON.stringify(moved));
+    await pickRow(page, EGG).click();
+    await page.waitForSelector('.ingredient-table-region .pick', { state: 'detached' });
+    await page.fill(`[aria-label="${GRAMS(EGG)}"]`, '60');
+    let landed = await page.evaluate(FOCUS);
+    report(same(await page.evaluate(GROUP_ROWS, 1), [HEAVY, BEANS, EGG]) && landed?.label === GRAMS(EGG), 'the pick lands after Coffee beans in step 1 with focus in its grams', `${JSON.stringify(await page.evaluate(GROUP_ROWS, 1))}, ${landed?.label}`);
+    // Meta+Enter opens it from Heavy cream: the pick lands right after Heavy cream.
+    await place(page, GRAMS(HEAVY), 0, 0);
+    await press(page, 'Meta+Enter');
+    await pickRow(page, MILK).click();
+    await page.waitForSelector('.ingredient-table-region .pick', { state: 'detached' });
+    await page.fill(`[aria-label="${GRAMS(MILK)}"]`, '90');
+    landed = await page.evaluate(FOCUS);
+    report(same(await page.evaluate(GROUP_ROWS, 1), [HEAVY, MILK, BEANS, EGG]) && landed?.label === GRAMS(MILK), 'Meta+Enter in Heavy cream, then a pick: it lands right after Heavy cream, focus in its grams', JSON.stringify(await page.evaluate(GROUP_ROWS, 1)));
+
+    // -- held Control+Cmd+Down in the grams: one place per repeat, stops at the end ---------------------------
+    await place(page, GRAMS(HEAVY), 1, 1);
+    await page.evaluate(() => {
+      window.__repeats = [];
+      document.addEventListener('keydown', (event) => event.key === 'ArrowDown' && window.__repeats.push(event.repeat), true);
+    });
+    await page.evaluate(RESET_WATCH);
+    await page.keyboard.down('Control');
+    await page.keyboard.down('Meta');
+    for (let i = 0; i < 5; i += 1) {
+      await page.keyboard.down('ArrowDown');
+      await page.waitForTimeout(220);
+    }
+    await page.keyboard.up('ArrowDown');
+    await page.keyboard.up('Meta');
+    await page.keyboard.up('Control');
+    await page.waitForTimeout(200);
+    const repeats = await page.evaluate(() => window.__repeats);
+    const held = await structure(page);
+    const finalFocus = await page.evaluate(FOCUS);
+    report(repeats.length === 5 && repeats.slice(1).every(Boolean), 'the held key reached the page as one press and four repeats', JSON.stringify(repeats));
+    report(
+      same(await page.evaluate(GROUP_ROWS, 1), [MILK, BEANS, EGG, HEAVY]) && finalFocus?.label === GRAMS(HEAVY) && finalFocus?.start === 1,
+      `held Control+Meta+ArrowDown moved ${HEAVY} one place per keydown to the end of its group, the caret kept`,
+      JSON.stringify(await page.evaluate(GROUP_ROWS, 1)),
+    );
+    report(
+      same(held.said, [`${HEAVY}, row 2 of 4 in step 1`, `${HEAVY}, row 3 of 4 in step 1`, `${HEAVY}, row 4 of 4 in step 1`]),
+      'the held key said each place once and nothing more at the end',
+      JSON.stringify(held.said),
+    );
+
+    // -- a row in no step (draft.rows order), a split row's line ---------------------------------------------
+    await page.locator('.ingredient-table-region .mk-head-act').click();
+    await pickRow(page, 'Cinnamon').click();
+    await page.waitForSelector('.ingredient-table-region .pick', { state: 'detached' });
+    await page.fill(`[aria-label="${GRAMS('Cinnamon')}"]`, '2');
+    const salt = 'Fine sea salt';
+    for (const [kind, start, end] of [['collapsed caret', 0, 0], ['ranged selection', 0, 1]]) {
+      const order = await page.evaluate(GROUP_ROWS, 0);
+      await place(page, GRAMS(salt), start, end);
+      await page.evaluate(RESET_WATCH);
+      await press(page, 'Control+Meta+ArrowDown');
+      const down = await page.evaluate(FOCUS);
+      const said = await structure(page);
+      report(
+        same(order, [salt, 'Cinnamon']) && same(await page.evaluate(GROUP_ROWS, 0), ['Cinnamon', salt]) && down?.label === GRAMS(salt) && down?.start === start && down?.end === end && same(said.said, [`${salt}, row 2 of 2, not in a step yet`]),
+        `ArrowDown in the grams of a row in no step (${kind}): it moves in draft.rows order, the caret kept, '${salt}, row 2 of 2, not in a step yet'`,
+        `${JSON.stringify(await page.evaluate(GROUP_ROWS, 0))}, ${JSON.stringify(said.said)}`,
+      );
+      await press(page, 'Control+Meta+ArrowUp');
+      report(same(await page.evaluate(GROUP_ROWS, 0), [salt, 'Cinnamon']), `ArrowUp puts it back (${kind})`);
+    }
+    // Heavy cream also in step 2: two lines, and a move on its step-2 line moves that group only.
+    await byLabel(page, 'Step 2, change ingredients').click();
+    await uses(page, 2, 'Heavy cream').click();
+    await byLabel(page, 'Step 2, done').click();
+    await page.waitForTimeout(200);
+    const step1Before = await page.evaluate(GROUP_ROWS, 1);
+    const step2Before = await page.evaluate(GROUP_ROWS, 2);
+    const splitLine = await page.evaluate(() =>
+      [...document.querySelectorAll('tr[data-line$=":2"]')].find((tr) => tr.textContent.includes('Heavy cream'))?.getAttribute('data-line'),
+    );
+    await page.evaluate((line) => {
+      const el = document.querySelector(`tr[data-line="${line}"] textarea`);
+      el.focus();
+      el.setSelectionRange(0, 0);
+    }, splitLine);
+    await page.evaluate(RESET_WATCH);
+    await press(page, 'Control+Meta+ArrowUp');
+    const split = await page.evaluate(GRAMS_LINE, splitLine);
+    const splitSaid = await structure(page);
+    report(
+      step2Before.at(-1) === HEAVY && same(await page.evaluate(GROUP_ROWS, 2), [HEAVY, ...step2Before.slice(0, -1)]) && same(await page.evaluate(GROUP_ROWS, 1), step1Before) && split?.focused,
+      "ArrowUp on one line of a split row moves only that line's group, the grams keep focus",
+      `step 1 ${JSON.stringify(await page.evaluate(GROUP_ROWS, 1))}, step 2 ${JSON.stringify(await page.evaluate(GROUP_ROWS, 2))}`,
+    );
+    report(splitSaid.said.length === 1 && splitSaid.said[0].endsWith('in step 2'), 'the move on the split row names step 2', JSON.stringify(splitSaid.said));
+
+    // -- an empty grams field: no blur closes anything or raises a message --------------------------------------
+    await page.fill(`[aria-label="${GRAMS(EGG)}"]`, '');
+    await place(page, GRAMS(EGG), 0, 0);
+    const messagesBefore = await page.evaluate(() => document.querySelectorAll('.ingredient-table-region .field-error').length);
+    await press(page, 'Control+Meta+ArrowUp');
+    const empty = await page.evaluate(FOCUS);
+    const messages = await page.evaluate(() => document.querySelectorAll('.ingredient-table-region .field-error').length);
+    report(
+      empty?.label === GRAMS(EGG) && empty?.value === '' && messages === messagesBefore,
+      'ArrowUp from an empty grams field: it keeps focus and no message is raised by the move',
+      `${JSON.stringify(empty)}, ${messagesBefore} messages before, ${messages} after`,
+    );
+
+    // -- fields outside a step get no key --------------------------------------------------------------------------------
+    await page.fill(`[aria-label="${GRAMS(EGG)}"]`, '60');
+    await page.locator('.ingredient-table-region .mk-head-act').click();
+    await page.waitForSelector('.ingredient-table-region .pick');
+    const outside = [
+      ['Recipe name', () => byLabel(page, 'Recipe name')],
+      ['Recipe description', () => byLabel(page, 'Recipe description')],
+      ['Version name', () => byLabel(page, 'Version name')],
+      ['Serving temperature (beside the Sheet)', () => byLabel(page, 'Serving temperature, degrees Celsius')],
+      ["the picker's Name", () => page.locator('.ingredient-table-region .pick .ing__filters textarea')],
+    ];
+    for (const [name, find] of outside) {
+      await find().focus();
+      const before = await page.evaluate(SNAPSHOT);
+      for (const combo of ['Meta+Enter', 'Control+Enter', 'Control+Meta+ArrowUp', 'Control+Meta+ArrowDown']) {
+        await page.keyboard.press(combo);
+        await page.waitForTimeout(120);
+      }
+      report(same(before, await page.evaluate(SNAPSHOT)), `the four combinations in ${name} change no step and no row`);
+    }
+    await cancelPicker(page);
+    await page.close();
+  }
+
+  for (const context of contexts) await context.close();
 } catch (err) {
   failures += 1;
   console.log(`FAIL ${mode || 'probe'} error: ${String(err.stack ?? err).split('\n').slice(0, 3).join(' | ')}`);

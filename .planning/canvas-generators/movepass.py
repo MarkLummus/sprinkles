@@ -10,6 +10,11 @@
 # MOVEPASS=2 in the environment runs the second pass instead (2026-11-22; Mark in chat: "Which pages have no
 # kept boards? They can be moved"): seven whole pages to Archive, Home, Recipe, Notebook, Ingredients,
 # Print formats superseded, Superseded print drafts and Recipe-declared items.
+# MOVEPASS=3 runs the third (2026-11-22; Mark in chat: "the pages named Archive can be moved to the Archive
+# canvas now"): the two pages he had split off and named for it, "Recipe route 03.5 (Archive)" (the record
+# pen between 724 and 759, which joins the Archive's Recipe route 03.5 page where version 533 had placed it)
+# and "Main (Archive)" (two boards and his own five images, which are notes: their uploads are copied and
+# their addresses repointed, SRC below).
 # Homes are the labels as they read on the canvas when the pass ran, Mark's own edits to them included:
 # on Print formats "Keep · still needed? Yes" over the Mark one states and reading, and "To Archive" over the
 # whole-pen board; on Recipe route 03.5 concepts "To Concepts: move to the Recipe book" over the on-screen
@@ -37,6 +42,15 @@ if os.environ.get('MOVEPASS') == '2':   # the second pass: whole pages only, not
     BOARD, NOTE, LAND, GONE_LABELS = {}, {}, {}, {}
     NAMES = {'page-9': 'Home', 'page-2': 'Recipe', 'page-4': 'Notebook', 'page-7': 'Ingredients', 'page-15': 'Print formats superseded',
              'page-12': 'Superseded print drafts', 'page-18': 'Recipe-declared items'}
+PAGE_TO, SRC = {}, {}   # a page that lands on another page of the destination; upload addresses to repoint in image notes
+if os.environ.get('MOVEPASS') == '3':
+    WHOLE = {'page-13-archive': A, 'page-1': A}
+    BOARD, NOTE, LAND, GONE_LABELS = {}, {}, {}, {}
+    NAMES = {'page-13': 'Recipe route 03.5', 'page-1': 'Main'}
+    PAGE_TO = {'page-13-archive': 'page-13'}
+    SRC = {'148186e3d607e77511d3b8b97216ba42': '45e6373244576a29a51338d1cab1b9c5', '7d52847c90ef7882c52c5ece80e996c3': 'd87757da37934a2538c26684f74cddb8',
+           'd38c1edfed0b2816bec3ccec69b29e61': '2f1b1a4cfa7ec5e072560fc999f3cfc6', 'cad9718a4bf360317c90ae9aa4617608': 'aaaecc79d988f880014989e29627e40d',
+           'e419313876604f5b0426da4a7b818402': '1f1dc28e38e76ab3296f1359f3c2a412'}
 
 def plan(c):
     B, N = c['boards'], c['notes']; first = c['pages'][0]['id']; page = lambda o: o.get('page', first)
@@ -67,19 +81,20 @@ def dest(c, which, d, out):
                        'launch': {'view': 'canvas'}, 'pages': [], 'boards': {}, 'order': [], 'notes': {}, 'noteOrder': [], 'designSystems': []}
     d.setdefault('noteOrder', [])
     for k in [k for k in c['order'] if k in p['boards']]:
-        b = dict(B[k]); b['page'] = b.get('page', first)
+        b = dict(B[k]); b['page'] = b.get('page', first); b['page'] = PAGE_TO.get(b['page'], b['page'])
         if k[:-8] in LAND: b['page'], b['x'], b['y'] = LAND[k[:-8]][:3]
         d['boards'][k] = b
         if k not in d['order']: d['order'].append(k)
     lands = {i: (pg, xy) for pg, _, _, ns in LAND.values() for i, xy in ns.items()}
     for i in [i for i in c['noteOrder'] if i in p['notes']]:
-        n = dict(N[i]); n['page'] = n.get('page', first)
+        n = dict(N[i]); n['page'] = n.get('page', first); n['page'] = PAGE_TO.get(n['page'], n['page'])
+        if n.get('src', '').startswith('/_blob/'): n['src'] = '/_blob/' + SRC[n['src'][7:]]
         if i in lands: n['page'], (n['x'], n['y']) = lands[i]
         d['notes'][i] = n
         if i not in d['noteOrder']: d['noteOrder'].append(i)
     used = {b['page'] for b in d['boards'].values()}; have = {x['id'] for x in d['pages']}
-    for pg in c['pages']:
-        if pg['id'] in used and pg['id'] not in have: d['pages'].append({'id': pg['id'], 'name': NAMES[pg['id']]})
+    for pid in [PAGE_TO.get(pg['id'], pg['id']) for pg in c['pages']]:
+        if pid in used and pid not in have: d['pages'].append({'id': pid, 'name': NAMES[pid]}); have.add(pid)
     json.dump(d, open(out + '/project/canvas.json', 'w'), indent=1, ensure_ascii=False)
 
 def active(c, out):

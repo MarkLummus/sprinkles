@@ -301,7 +301,7 @@ Plans:
   2. A recipe created in the app round-trips: it prints, a batch recorded against it marks a custom scale, and after export and import it reopens with the same figures, Sheet code and marks
   3. On the iPad, from the production build, a maker creates a recipe end to end, its scales, problems and targets included, and prints it: Tab reaches every creation control, each Move button included, and after a move focus stays with the moved step or row
 
-**Plans:** 14/16 plans executed in 3 waves for the first planning round (Gate 1; 12-08 is gap closure); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
+**Plans:** 15/16 plans executed in 3 waves for the first planning round (Gate 1; 12-08 is gap closure); a second planning round adds Gate 2's plans and the iPad proof (12-CONTEXT D-06)
 
 Plans:
 **Wave 1**
@@ -336,7 +336,7 @@ Plans:
 - [x] 12-16-PLAN.md — the recipe page's head below 724: the record act and Print sheet, the Edit kept and Draft lines, no Next version, Edit or Resume editing (split out of 12-10; runs beside 12-12)
 
 **Wave 6** *(blocked on Wave 5 completion)*
-- [ ] 12-13-PLAN.md — Cmd+Return adds and Ctrl+Cmd+Up and Down move a step or row with the caret kept, the keys line under each heading and aria-keyshortcuts, proven by a WebKit keys-and-caret probe
+- [x] 12-13-PLAN.md — Cmd+Return adds and Ctrl+Cmd+Up and Down move a step or row with the caret kept, the keys line under each heading and aria-keyshortcuts, proven by a WebKit keys-and-caret probe
 
 **Wave 7** *(blocked on Wave 6 completion)*
 - [ ] 12-14-PLAN.md — 12-check.sh round two to GATE2 PASS on the final build, the iPad rows walked in WebKit, and the three check rows handed to the orchestrator for Mark (PROOF-02)
@@ -358,7 +358,7 @@ Phases execute in numeric order: 8 → 9 → 10 → 11 → 12. Phases 8 and 9 ar
 | 9. The library and the stored shapes, plus the two places | v2.0 | 17/17 | Complete    | 2026-10-19 |
 | 10. The creation editor, without Save | v2.0 | 12/12 | Complete    | 2026-10-21 |
 | 11. Steps, structure, save and print | v2.0 | 14/14 | Complete    | 2026-11-15 |
-| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 14/16 | In Progress (round one) | - |
+| 12. Showing a recipe's own scales and problems, and the whole loop | v2.0 | 15/16 | In Progress (round one) | - |
 
 ## Later
 

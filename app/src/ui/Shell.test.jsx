@@ -142,24 +142,27 @@ describe('Shell — the bottom tab row and More (D-16, 03.4-03 Task 3)', () => {
     }
   });
 
-  it('the More disclosure holds Ingredients, Kitchen, Search, Import and Export', () => {
+  it('the More disclosure holds Ingredients, Kitchen and Search, and no Import or Export (PHONE-01)', () => {
     const markup = renderAt('/');
     const detailsMatch = markup.match(/<details class="shell__more">([\s\S]*?)<\/details>/);
     expect(detailsMatch, 'expected a details.shell__more element').toBeTruthy();
     const moreMarkup = detailsMatch[1];
-    for (const name of ['Ingredients', 'Kitchen', 'Search', 'Import', 'Export']) {
+    for (const name of ['Ingredients', 'Kitchen', 'Search']) {
       expect(moreMarkup).toContain(name);
+    }
+    for (const name of ['Import', 'Export']) {
+      expect(moreMarkup).not.toContain(name);
     }
   });
 
-  it('renders exactly one <details> element and exactly one file input, shared by the tools row and More', () => {
+  it('renders exactly one <details> element and exactly one file input', () => {
     const markup = renderAt('/');
     expect(markup.match(/<details\b/g)).toHaveLength(1);
     expect(markup.match(/type="file"/g)).toHaveLength(1);
   });
 });
 
-describe("Shell — More's hairline between the places and Search, Import, Export (sketch 011 decision 55, Mark 2026-10-05)", () => {
+describe("Shell — More's hairline between the places and Search (sketch 011 decision 55, Mark 2026-10-05)", () => {
   it("puts the separator item right after Kitchen and right before Search, with the board's exact markup (decision 55, Mark: Search below the hairline)", () => {
     const markup = renderAt('/');
     const detailsMatch = markup.match(/<details class="shell__more">([\s\S]*?)<\/details>/);
@@ -173,11 +176,11 @@ describe("Shell — More's hairline between the places and Search, Import, Expor
     expect(more).not.toContain('Search</a></li><li class="shell__more-sep"');
   });
 
-  it('lists Ingredients, Kitchen, the separator, Search, Import, Export in that order', () => {
+  it('lists Ingredients, Kitchen, the separator, Search in that order', () => {
     const markup = renderAt('/');
     const more = markup.match(/<details class="shell__more">([\s\S]*?)<\/details>/)[1];
     const at = (needle) => more.indexOf(needle);
-    const order = ['Ingredients', 'Kitchen', 'shell__more-sep', 'Search', 'Import', 'Export'].map(at);
+    const order = ['Ingredients', 'Kitchen', 'shell__more-sep', 'Search'].map(at);
     expect(order.every((index) => index >= 0)).toBe(true);
     expect([...order].sort((x, y) => x - y)).toEqual(order);
   });
@@ -241,10 +244,10 @@ describe('Shell — More closes on item activation and route change (G-03.4-3)',
 // attribute's whole effect is in the DOM WebKit reads, and a source regex
 // could pass with the attribute on the wrong element.
 describe('every shell stop carries an explicit tabindex, pinned on rendered markup (G-03.4-r3-3, .planning/debug/ipad-tab-never-enters-app.md)', () => {
-  it('renders exactly 19 shell__place stops (3 tools + 6 rail + 4 tab row + 1 summary + 5 More items), each carrying tabindex="0"', () => {
+  it('renders exactly 17 shell__place stops (3 tools + 6 rail + 4 tab row + 1 summary + 3 More items), each carrying tabindex="0"', () => {
     const markup = renderAt('/');
     const tags = findShellPlaceTags(markup);
-    expect(tags).toHaveLength(19);
+    expect(tags).toHaveLength(17);
     for (const tag of tags) {
       expect(tag).toContain('tabindex="0"');
     }

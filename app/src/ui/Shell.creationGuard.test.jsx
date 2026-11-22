@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 //
 // Phase 10 plan 04 (MAKE-11, D-10, D-10a): while a create draft is kept, pressing
-// Import in the header or in More's list opens no file chooser, reads no file,
+// Import in the header opens no file chooser, reads no file,
 // calls importStore not at all and leaves storeRevision where it was; the page
 // notice says CREATION_IMPORT_BLOCKED_STATUS. The Shell knows at the click, without
 // awaiting, which of three states holds (unknown, absent, present), so a cold-boot
@@ -235,7 +235,6 @@ async function settleImport(text, content) {
 }
 
 const headerImport = () => buttonByText('Import', current.container.querySelector('.shell__tools'));
-const moreImport = () => buttonByText('Import', current.container.querySelector('.shell__more'));
 const notices = () => [...current.container.querySelectorAll('.page-status')];
 const notice = () => notices()[0].textContent;
 
@@ -264,21 +263,12 @@ describe('Import is refused while a create draft is kept (D-10, decide-import-re
     expectRefused(CREATION_IMPORT_BLOCKED_STATUS);
   });
 
-  it('More’s Import is refused the same way', async () => {
-    store.drafts.set('v-kept', createDraftRecord());
-    await mountAt('/');
-    await click(moreImport());
-    expectRefused(CREATION_IMPORT_BLOCKED_STATUS);
-  });
-
   it('with the store empty, Import opens the chooser and the notice is empty', async () => {
     await mountAt('/');
     await click(headerImport());
     expect(chooserClick).toHaveBeenCalledTimes(1);
     expect(notices()).toHaveLength(1);
     expect(notice()).toBe('');
-    await click(moreImport());
-    expect(chooserClick).toHaveBeenCalledTimes(2);
   });
 
   it('a plan draft for a stored version is not a kept creation: Import opens the chooser', async () => {
@@ -596,11 +586,9 @@ describe('Import is refused while an edit draft is kept, naming the recipe (D-04
     expect(editImportBlockedStatus('')).toBe('Save or cancel your changes to Untitled before importing.');
   });
 
-  it('refuses the header and More’s Import on Home, with no chooser and no import', async () => {
+  it('refuses the header’s Import on Home, with no chooser and no import', async () => {
     await mountAt('/');
     await click(headerImport());
-    expectRefused(EDIT_STATUS);
-    await click(moreImport());
     expectRefused(EDIT_STATUS);
   });
 

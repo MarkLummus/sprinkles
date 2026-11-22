@@ -513,7 +513,8 @@ Plan `12-15` removes `Import` and `Export` from the `More` disclosure (`<details
 Both reviewers read the repository and cite `file:line` evidence throughout; both gave every one of
 the seven plans its own section. Astra asks for changes before execution and rates the round HIGH
 risk; Argon rates it MEDIUM with six must-fix items. The findings below are the reviewers' claims.
-They have not yet been checked against the code by the orchestrator.
+They were then checked against the code; the verdicts are in "Verification against the code" at the
+end of this file, and that section is the list to plan from.
 
 ### Agreed Strengths
 
@@ -587,3 +588,101 @@ Raised by Argon only (mostly board-check harness mismatches):
 
 The two reviews overlap little. Astra concentrates on state transitions and on whether the tests
 prove what they claim; Argon concentrates on whether the board checks can pass as specified.
+
+
+---
+
+## Verification against the code
+
+Checked 2026-11-21 by the project's read-only checker, after the reviews: every HIGH and MEDIUM
+finding was read against the plan text and the repository, and four points were measured (board
+DOM, the apostrophe, draft read order over 40 runs, blur on a keyed move in Playwright WebKit;
+device-unverified). The same prompt was also run through two trial reviewers, Gemini 4 Carbon and
+Gemini 4 Neon, which are not reviewers of record; findings only they raised are marked "trial".
+
+| Reviewer | Findings checked | Confirmed | Partial | Refuted |
+|---|---|---|---|---|
+| opencode-astra | 15 | 14 | 1 | 0 |
+| opencode-argon | 20 | 11 | 9 | 0 |
+| Carbon (trial) | 22 | 15 | 7 | 0 |
+| Neon (trial) | 21 | 13 | 6 | 2 |
+
+### What the plans must change, most serious first
+
+1. **12-14, Row 2 Tab step.** Recipe name, Recipe description, Version name, Cancel and Save are all
+   in `header.notebook-band` (`app/src/ui/CreationPage.jsx:691-743`); the body starts at `:760`.
+   Walk from Recipe name through the Sheet and Setup to the last control, and lift the 40-press cap
+   copied from `11-device-steps.mjs:101-108` for that step (the two regions alone are 45 stops).
+2. **12-10 and 12-11, test ownership.** Four existing files break under 12-10 and no plan owns them:
+   `RecipePage.perStep.test.jsx:84-96,130` (fixes 393, presses Next version about 25 times),
+   `RecipePage.beforeYouStart.test.jsx:86-98,255-327`, `VersionRow.landing.test.jsx:87-98` (Test B
+   clicks Next version with `below724: true`), and `RecipePage.edit.test.jsx:420-425` (expects
+   Resume editing at 600; 12-10 names only `:240-245`). `RecipePage.perStep.test.jsx` is in 12-11's
+   `files_modified` in the same wave, and 12-11 forbids changing its pins for another reason.
+   Assign the four files, and settle perStep between 12-10 and 12-11 by sequencing or by giving
+   12-11's page case its own jsdom file.
+3. **12-10, widening window.** `planHeld` is `below724 && ownPlanDraft !== null`, so it goes false in
+   the widening render while the re-run restore is still an effect plus an async `getDraft`. A pen
+   opened in between wins the late-read rule (`useKeptDraft.js:266-277`); the persist effect then
+   deletes the plan record if that pen is clean (`:352-359`) or overwrites it if dirty
+   (`repository.js:468-487`). Keep the openers refused until the re-run restore settles, and add a
+   test that holds the read open. The window is one IndexedDB get; reach by hand is unmeasured.
+4. **12-12, board spec.** `kr-preview`: the board's `.mk-preview` holds only the lead-in (44 px)
+   inside a step with a target, purpose and aside, while the app's preview draws all of them, so
+   `.mk-preview` box and text and everything below cannot match (CONTRACT section 9 bullet 2 says
+   which part of that panel is valid). `ai-pick`: the board lists 11 picker rows, the app 112, so
+   `.pick` box fails on height. `rc-drawn` and `ai-step` each hold both regions and need one spec
+   entry per region (trial).
+5. **12-11, test placement.** `Method.test.jsx` runs in the node environment with
+   `renderToStaticMarkup`; move the press, Done-reopen and Cancel-reopen cases to a jsdom file.
+6. **12-10, Correct gate.** Extending `recordingLocked` to Correct also hides Correct at desk width
+   on a version with a kept edit that has since gained a batch (`BatchRow.jsx:788` draws it ungated
+   today; `RecipePage.edit.test.jsx:440-450` covers that state). Either gate Correct on the held
+   plan draft alone, or accept the desk change and correct 12-10:127, 12-10:243, 12-14:27 and
+   12-14:225. CONTRACT section 9 bullet 5 assumes the build already does this; it does not. This
+   choice is the product owner's.
+7. **12-14, row content.** Rows 1 and 2 type grams for the first pick only and never fill the second
+   step, and Save refuses both (`creationSave.js:182-203`): fill every grams line and the second
+   step before Save. Reword "then Tab to step 2's Move up": focus already lands on the moved step's
+   Move up (`CreationPage.jsx:312-317`) (trial).
+8. **12-10, start-tasting intent.** `useRouteIntents.js:43` waits on `draftRestoreDone` only and
+   consumes the intent at `:52-53`; the plan's handler refuses while `draftsLoaded` is false. The bad
+   order occurred 0 of 40, so it is latent. Close it by gating `:43` and `:55` on `draftsLoaded`
+   (the file is not in `files_modified`).
+9. **12-13.** Say which panel of each pair presses the key (`kr-press` and `kr-move` are
+   before-states). Drop the word "typographic": board, contract and generator all use U+0027. Give
+   Task 2 a path if a caret fails outside the lead-in, and widen the grams matrix (Ctrl+Return, Up,
+   unplaced and split groups). Give panels shared between the row-controls and keys specs distinct
+   labels: `12-board-check.mjs:763` prints `PASS selftest <label>` only, so the plans' own
+   `fails_when` line counts cannot tell the two specs apart (found in verification).
+10. **12-12, picker Cancel.** Define the focus target when the anchor row's Add to step chooser is
+    open; today nothing is focused (`IngredientTable.jsx:264-290`, `CreationPage.jsx:325-349`).
+11. **12-09.** Pass `below724` at both `NotebookList` call sites (`NotebookPlace.jsx:296-297` and
+    `:305-306`) and test the empty Notebook. Name `anchor: '.shell__main'` in the board spec
+    (`12-board-check.mjs:185-216` ignores `scope` without it). Split "touches no draft" on a cold
+    narrow visit from the flush on narrowing an open editor, and assert `listDrafts`. Add the jsdom
+    edit-route crossing or drop it from the truth at 12-09:33 (trial). Home tasted rows by position:
+    Olive Oil is the second `li.home__row`.
+12. **12-14, housekeeping.** Add `12-15-SUMMARY.md` to the precondition. Warn that the selectors in
+    `11-device-steps.mjs` are stale. Correct "every probe refuses app/dist": `12-stops-probe.mjs:47`,
+    `12-print-check.mjs:55` and `12-roundtrip.mjs:69` only require `PROBE_DIST` to be set (trial).
+13. **12-11, removed step.** Say what a removed step's preview shows and which number it carries
+    (`Method.jsx:450-457,700-702`; CONTRACT section 7 is silent).
+14. **12-15.** Name `/notebook` as the `more` panel's route; update the comments at
+    `Shell.jsx:449` and `:681-687`.
+
+### No change needed
+
+- Neon (trial): "Ctrl+Cmd+Down fires blur on an empty purpose, aside or grams". Measured: no blur,
+  no focusout, `onBlur` not called, the field stays open. One empty-field case in the keys probe
+  would be cheap insurance.
+- Neon (trial): "`row-grams` fallback is not automatic". 12-13:114 already has it.
+- Argon: a plan draft written in the same session is absent from `drafts` state. True, and 12-10
+  already reloads at 393 in both places that depend on it.
+
+### Also noted in verification
+
+`planHeld` would be one state read two ways: the page derives it from the `drafts` list read at
+mount, and `useKeptDraft` holds its own from `getDraft`. Item 3 is exactly their disagreement.
+12-10 adds three pieces of implicit state (`planHeldRef`, `restoreRound`, the `keepPlanShut` ref);
+they were not checked against `.planning/state-machines/INVENTORY.md`.

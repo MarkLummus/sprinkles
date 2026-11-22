@@ -1,295 +1,589 @@
 ---
 phase: 12
-reviewers: [codex, opencode]
-reviewed_at: 2026-11-16T03:44:54Z
-plans_reviewed: [12-01-PLAN.md, 12-02-PLAN.md, 12-03-PLAN.md, 12-04-PLAN.md, 12-05-PLAN.md, 12-06-PLAN.md]
+round: 2
+reviewers: [opencode-astra, opencode-argon]
+reviewed_at: 2026-11-22T00:46:34Z
+plans_reviewed: [12-09-PLAN.md, 12-10-PLAN.md, 12-11-PLAN.md, 12-12-PLAN.md, 12-13-PLAN.md, 12-14-PLAN.md, 12-15-PLAN.md]
 models:
-  codex: "gpt-6.1-sol (reasoning=high)"
-  opencode: "openrouter/google/gemini-4-argon#high"
+  opencode-astra: "openrouter/openai/gpt-6-astra#high"
+  opencode-argon: "openrouter/google/gemini-4-argon#high"
 model_sources:
-  codex: "banner"
-  opencode: "pinned"
-plan_coverage:
-  codex:
-    total: 6
-    missing: ["12-05"]
+  opencode-astra: "pinned"
+  opencode-argon: "pinned"
 ---
 
+> Note: opencode-astra and opencode-argon share the opencode adapter; their consensus is cross-model, not cross-tool.
+
 # Cross-AI Plan Review — Phase 12
+
+Round two (Design gate 2): plans 12-09 to 12-15 only. Plans 12-01 to 12-08 were built before this
+review and were not sent; their review is `12-REVIEWS-round-one.md`. The prompt carried the
+round-two part of `12-RESEARCH.md` and sketch 016's `CONTRACT.md`. The Argon lane's first attempt
+failed on OpenRouter credits and was re-run on the same prompt.
 
 <!-- gsd:plan-revision-conflicts:begin -->
 ## Plan-Revision Conflicts
 <!-- gsd:plan-revision-conflicts:end -->
 
-## Codex Review
+## OpenCode Review (opencode-astra)
 
-**Verdict: revise before execution.** Gate 1’s scope and domain approach are sound, but several verification instructions would reject a correct implementation or leave gaps in the claimed proof.
+I’ll check all seven round-two plans against the built code and sketch 016, tracing the draft, focus, and verification paths before assessing each plan.
 
-1. **P1 — 12-01 specifies contradictory radio and ordering assertions.**  
-   Task 1 requires a radio named exactly `2` inside both declared scales, although its goldilocks scale must retain `2: leaning thin`. It also requires all core scales before declared scales, while the desktop pen deliberately interleaves them in row-major order. See [12-01:127](/Users/mark/Documents/projects/sprinkles/.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-01-PLAN.md:127) and [BatchRow.jsx:249](/Users/mark/Documents/projects/sprinkles/app/src/ui/BatchRow.jsx:249).  
-   **Change:** use two magnitude scales for the duplicate-name test; test the mixed-kind labels separately. Preserve desktop ordering and assert declared scales’ relative order.
+Two concrete gaps have emerged: 12-10’s width change can re-enable pen openers before the held draft’s restore finishes, and 12-14’s “Recipe name to Save” Tab walk stops before the Ingredients and Instructions controls. I also found existing phone-width pen tests that the plans haven’t assigned for updating.
 
-2. **P1 — 12-04 contains checks incompatible with the existing engine.**  
-   The common log specification requires `.lf-srow`, `.lf-anchor`, `.lf-num` and `.lf-mid` on the Batch log, which contains none. The engine rejects empty board matches even for count checks. Its proposed negative self-test also expects `count` when a missing board element actually produces `undeclared`. See [12-04:146](/Users/mark/Documents/projects/sprinkles/.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-04-PLAN.md:146), [BatchLogPage:118](/Users/mark/Documents/projects/sprinkles/app/src/ui/PrintLogPages.jsx:118) and [engine:345](/Users/mark/Documents/projects/sprinkles/.planning/phases/11-steps-structure-save-and-print/11-board-check.mjs:345).  
-   **Change:** define separate Batch and Tasting element lists, declare genuine absences explicitly, and expect `undeclared` in that negative self-test.
+Reviewed all **7 round-two plans** against repository HEAD `2f04f6e2`, the existing implementation, tests, harnesses, and approved sketch 016. I also parsed the board markup to verify panel IDs and numbered controls. This is a source-based plan review; the proposed implementations and new probes have not been executed.
 
-3. **P1 — The log fixtures cannot match the required footer text.**  
-   The boards substitute `Coffee · Version 1 · [Sheet code]` and equivalent Mint text. The planned injection changes only scales, problems and tasting data, leaving the Olive Oil identity and actual code. Exact `.lf-foot` comparison therefore fails independently of implementation correctness. See [board substitutions:32](/Users/mark/Documents/projects/sprinkles/.planning/canvas-generators/p12.py:32), [injection:27](/Users/mark/Documents/projects/sprinkles/.planning/canvas-generators/p12-capture.mjs:27) and [footer construction:16](/Users/mark/Documents/projects/sprinkles/app/src/ui/PrintLogPages.jsx:16).  
-   **Change:** specify matching fixture metadata or explicit substitution of illustrative identity fields during comparison, while independently checking the actual stored Sheet code.
+## 12-09
 
-4. **P2 — 12-04 needs a complete panel-selector adaptation.**  
-   The engine’s `.p4-win` assumption appears beyond its main reader: panel classification, evidence handling and stand-in self-test styling also use it. Extending only the named lookup leaves later stages broken. See [classification:647](/Users/mark/Documents/projects/sprinkles/.planning/phases/11-steps-structure-save-and-print/11-board-check.mjs:647), [evidence:610](/Users/mark/Documents/projects/sprinkles/.planning/phases/11-steps-structure-save-and-print/11-board-check.mjs:610) and [self-test styling:695](/Users/mark/Documents/projects/sprinkles/.planning/phases/11-steps-structure-save-and-print/11-board-check.mjs:695).  
-   **Change:** carry one panel reference through lookup, measurement, `against`, screenshots and mutation styling; test those paths explicitly.
+### Summary
+The route-level wrapper is the correct boundary for suppressing the editors without triggering their effects. Notebook and Home changes fit the existing component structure. The principal weakness is contradictory acceptance language around draft access and resizing: preserving pending typing necessarily writes the draft, and the surrounding Shell still reads drafts.
 
-5. **P2 — 12-03’s comparison is narrower than its “every record” claim.**  
-   The copied `dumpStores` reads only recipes, versions, batches and drafts; export carries eight stores. Library, machines, styles, scales and problems would escape the comparison. Also, requiring every B record to match A does not detect A records missing from B. See [dumpStores:280](/Users/mark/Documents/projects/sprinkles/.planning/phases/11-steps-structure-save-and-print/11-walk.mjs:280), [exportStore:793](/Users/mark/Documents/projects/sprinkles/app/src/store/transfer.js:793) and [12-03:144](/Users/mark/Documents/projects/sprinkles/.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-03-PLAN.md:144).  
-   **Change:** compare complete key sets and values in both directions for all eight exported stores. Check local drafts separately.
+### Strengths
+- **The guard is placed before the effects it must suppress.** `CreationRoute` reads drafts and may redirect at `app/src/ui/CreationRoute.jsx:35–46`; `EditRoute` reads the version, recipe, batches, and draft before deciding whether to redirect at `app/src/ui/EditRoute.jsx:42–86`. Wrapping these components prevents those operations on a narrow initial visit.
+- **The existing width hook supports live crossings.** `app/src/ui/useBelowDesktop.js:39–49` uses the approved query and subscribes to changes. No second breakpoint mechanism is needed.
+- **The persistence mechanism supports the intended ordinary crossing case.** Unmount calls `flushPendingDraft` at `app/src/ui/useKeptDraft.js:378–388`, and that function submits the waiting record at lines `45–54`.
 
-6. **P2 — The A1 veto path leaves dependent checks inconsistent.**  
-   12-01 says reverting the editor change requires one function and four test strings. However, 12-06 also hard-codes the numbered editor line and requires that facet to fail on the base build. Honouring a veto without updating the probe would break the final gate. See [12-01:274](/Users/mark/Documents/projects/sprinkles/.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-01-PLAN.md:274) and [12-06 Task 2](/Users/mark/Documents/projects/sprinkles/.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-06-PLAN.md:129).  
-   **Change:** settle the interpretation before execution, or enumerate every dependent expectation affected by a veto.
+### Concerns
+- **MEDIUM — The draft-access requirements contradict both the intended behavior and the surrounding application.**  
+  `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-09-PLAN.md:32` promises that visiting either address “reads, writes and deletes nothing,” while line `68` extends that prohibition to resizing. But:
+  - Shell reads drafts on pathname/state changes at `app/src/ui/Shell.jsx:293–320`.
+  - Narrowing an active editor deliberately writes pending typing through `app/src/ui/useKeptDraft.js:387`.
+  - The prescribed test checks `getDraft`, `saveDraft`, and `deleteDraft`, but not the `listDrafts` call used by `CreationRoute` (`app/src/ui/CreationRoute.jsx:38`).
 
-7. **P2 — Wave 1 already changes print behaviour indirectly.**  
-   Changing `stopWordsFor` to return `null` at magnitude stop 3 changes `PrintLogPages` immediately, because it consumes that value directly. The handoff’s claim that print still shows “right” until 12-02 is inaccurate; the row-height correction arrives later. The bug is also scheduled to close before the final built-app probe runs. See [PrintLogPages.jsx:148](/Users/mark/Documents/projects/sprinkles/app/src/ui/PrintLogPages.jsx:148), [12-01 handoff:289](/Users/mark/Documents/projects/sprinkles/.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-01-PLAN.md:289) and [final probe timing:168](/Users/mark/Documents/projects/sprinkles/.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-05-PLAN.md:168).  
-   **Change:** describe the intermediate print state accurately and close the bug after its relevant final-build checks pass.
+  The wrapper design is sound; the absolute invariant and its test do not describe the same boundary.
 
-The strongest parts should stay: snapshot-based rendering matches [axesForBatch](/Users/mark/Documents/projects/sprinkles/app/src/domain/axes.js:34), real UI export/import exercises the actual [Shell handlers](/Users/mark/Documents/projects/sprinkles/app/src/ui/Shell.jsx:408), and deferring Gate 2 and PROOF-02 correctly follows [D-06](/Users/mark/Documents/projects/sprinkles/.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-CONTEXT.md:30). Long-word overflow should remain an explicit unresolved acceptance risk until its report is reviewed.
+- **LOW — The device rationale is inaccurate.**  
+  `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-09-PLAN.md:38` says the iPad is wider than 724. The approved contract explicitly includes narrow iPad split view at `.planning/sketches/016-entry-points-pen-preview-row-controls/CONTRACT.md:11`. This does not require adding a phone device check, but the rationale should reflect the approved width-based behavior.
 
-Source inspection and parsed board HTML support these findings. The selected axes, AxisMark and PrintLogPages tests passed. WebKit aborted at launch, so browser verification remains unconfirmed. No project files were changed.
+### Suggestions
+- State two separate invariants:
+  1. A **cold narrow visit** never mounts an editor or mutates its draft.
+  2. **Narrowing an active editor** preserves pending edits through the existing flush.
+- Assert `listDrafts` is not called by the suppressed `CreationRoute` in the isolated route test; allow Shell’s established read in full-app tests.
+- Wait explicitly for the asynchronous flush before asserting persisted content, rather than treating placeholder visibility as proof that storage has committed.
+
+### Risk Assessment
+**MEDIUM.** The implementation boundary is appropriate. Acceptance wording needs correction so executors do not remove necessary persistence or claim a stronger isolation guarantee than the application provides.
+
+## 12-10
+
+### Summary
+This plan correctly recognizes the shared draft-key hazard and protects more than the visible band button. However, the proposed widening sequence creates a new interval in which recording becomes available before the held draft is restored. It also underestimates the existing tests and desktop states affected by the change.
+
+### Strengths
+- **The draft-loss mechanism is real and correctly identified.** `plan`, `record`, and `amend` share the same family at `app/src/domain/draft.js:557–560`; `saveDraft` permits same-family replacement at `app/src/store/repository.js:476–487`. Guarding handlers as well as markup is necessary.
+- **Skipping restore before setting `draftStoredRef` is important.** Otherwise the no-record persistence branch deletes the stored draft at `app/src/ui/useKeptDraft.js:352–359`.
+- **The own-version draft needs a separate band prop.** `waitingPlanDraft` excludes the current version at `app/src/ui/RecipePage.jsx:358–368` and also drives History at lines `470–474`. Reusing it would change the rail as well as the head.
+- **Correct is a genuine additional entry point.** It currently ignores `recordingLocked` at `app/src/ui/BatchRow.jsx:788–795`, whereas Record another checks it at line `802`.
+
+### Concerns
+- **HIGH — Widening releases the guard before restoration finishes.**  
+  `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-10-PLAN.md:125` defines `planHeld` as `below724 && ownPlanDraft !== null`. Line `196` clears the held ref and starts another asynchronous restore when the page widens.
+
+  As specified, widening immediately makes `planHeld` false and re-enables the batch-log openers, while `draftsLoaded` remains true. A recording opened during the second `getDraft` can then win the existing late-read rule: `app/src/ui/useKeptDraft.js:266–277` explicitly gives an already-open pen precedence over the stored draft. `handleStartRecording` opens that pen directly at `app/src/ui/useBatchRecording.js:121–133`, and subsequent persistence can replace the held plan record through the same-family write described above.
+
+  The widening tests only wait for successful restoration; they do not attempt an opener while the reread is pending.
+
+- **HIGH — The test migration is incomplete, creating a predictable integration failure.**  
+  The planned changes to narrow expectations are concentrated in `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-10-PLAN.md:169`. Existing suites also deliberately open Next version at 393:
+  - `app/src/ui/RecipePage.perStep.test.jsx:83–94` fixes the width at 393, then waits for and presses Next version at lines `130` and `190`.
+  - `app/src/ui/RecipePage.beforeYouStart.test.jsx:85–96` does the same; line `255` presses Next version.
+  - `app/src/ui/RecipePage.edit.test.jsx:420–425` still expects Resume editing at width 600.
+
+  These failures are consequences of the approved phone change, not defects in Preview step. They need explicit ownership before execution.
+
+- **MEDIUM — “No desktop change” relies on a false stale-edit assumption.**  
+  `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-10-PLAN.md:127` reasons that an edit-kept version has no batch, so Correct never appeared. The repository already tests the opposite state: a kept edit whose version gained a batch, at `app/src/ui/RecipePage.edit.test.jsx:440–450`. Extending `recordingLocked` to Correct changes that desktop state too.
+
+### Suggestions
+- Keep a **held/restoring lock independent of width** until restoration has committed or the stored record has conclusively disappeared. Apply it to all competing pen openers.
+- Add deferred-promise tests for widening: hold `getDraft` unresolved, attempt Record/Correct/Next version, then resolve or reject the read and verify draft preservation.
+- Assign the existing 393 pen tests to a named migration task. Exercise pen behavior at a permitted width, or open wide and narrow where continued editing is specifically under test.
+- Explicitly settle and test Correct’s behavior for a stale kept edit with a batch, including desktop.
+
+### Risk Assessment
+**HIGH.** The prescribed transition can reopen the data-loss path the plan is intended to close. The missing test migration also prevents a clean wave-four integration.
+
+## 12-11
+
+### Summary
+The feature itself is a small, appropriate extension of `StepPenBody`. Reusing `StepReading` and resetting preview state on close are well-founded. The testing instructions need an environment correction, and removed steps are an unaddressed preview state.
+
+### Strengths
+- **The preview reset matches component lifetime.** `StepPenBody` retains its instance across open/closed branches (`app/src/ui/Method.jsx:143–148`), while Done and Cancel clear `openStepN` at lines `633–639`. Resetting on `isOpen === false` covers both.
+- **The renderer already supplies the required content safely.** `app/src/ui/StepReading.jsx:63–77` renders lead-in, instruction, targets, purpose, and aside as React children.
+- **The placement follows the approved addendum.** The existing purpose and aside fields precede the Uses wrapper at `app/src/ui/Method.jsx:266–307`, matching the contract’s “directly before the uses line” instruction.
+
+### Concerns
+- **MEDIUM — Interactive tests are assigned to a static-rendering suite.**  
+  `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-11-PLAN.md:90` puts press, Done/reopen, and Cancel/reopen tests in `Method.test.jsx`. That file intentionally uses `renderToStaticMarkup` in the Node environment (`app/src/ui/Method.test.jsx:1–12`), which cannot execute those interactions or effects.
+
+  The existing page-level suite explicitly explains why interactive tests belong in jsdom at `app/src/ui/RecipePage.perStep.test.jsx:1–17`. The plan assigns only the Done case there.
+
+- **MEDIUM — Removed-step preview behavior is unspecified.**  
+  `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-11-PLAN.md:88` passes every `draftStep` to `StepReading`. Removed steps can still open for editing through `app/src/ui/Method.jsx:450–462`. Their display number may come from the baseline at lines `652–657`, but `StepReading` neither checks `removed` nor marks removal (`app/src/ui/StepReading.jsx:63–77`). Meanwhile the clean recipe filters removed steps through `app/src/domain/rows.js:86–88`.
+
+  Thus the prescribed preview can show a removed step as an ordinary numbered instruction, despite being described as how the step “will read.”
+
+### Suggestions
+- Keep static placement/count assertions in `Method.test.jsx`; put toggle, live-content, Done, Cancel, and reopening assertions in a jsdom suite.
+- Define the removed-step preview treatment and add one regression case. The preview must communicate that the step is excluded from the saved clean reading.
+- Account for the phone-test migration identified under 12-10 before adding more tests to `RecipePage.perStep.test.jsx`.
+
+### Risk Assessment
+**MEDIUM.** Core implementation risk is low, but the planned interactive verification cannot run in its assigned harness, and one reachable state lacks acceptance behavior.
+
+## 12-12
+
+### Summary
+The domain/UI division is strong, and the plan handles several meaningful insertion edges. Two focus paths remain incomplete: the chosen landing group can diverge from the committed insertion, and cancelling the picker can target a control temporarily replaced by the Add-to-step chooser.
+
+### Strengths
+- **The insertion operation uses the correct placement authority.** `groupRows` derives step order from `uses` and unplaced order from `draft.rows` at `app/src/domain/creationSteps.js:93–100`. `toggleStepUses` moves placeholder grams into the selected step at lines `205–215`.
+- **The stale-step guard addresses an actual exception.** `groupRows` throws for a non-live step at `app/src/domain/creationSteps.js:98–99`; checking liveness first is necessary for the proposed fallback.
+- **Allocation assertions test a meaningful invariant.** `checkAllocation` checks missing portions, duplicate placement, and mismatched step sets at `app/src/domain/creationSteps.js:383–410`.
+- **The 45-stop board reference exists.** The `rc-drawn` panel contains 45 numbered controls at `.planning/sketches/016-entry-points-pen-preview-row-controls/row-controls.html:13146`. Its first numbered stop is the heading’s Add ingredient button, so the walk must include its initial focused element.
+
+### Concerns
+- **MEDIUM — The insertion and focus destination can use different draft states.**  
+  `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-12-PLAN.md:127` calculates the landing group from render-time `createDraft`, then repeats the anchor check inside the functional updater over `prev`.
+
+  The second check may fall back to unplaced while the first still selects the old step for focus—the exact batched-change case the plan claims to handle. `app/src/ui/IngredientTable.jsx:625–628` focuses only the exact `${rowId}:${group}` key, so the inserted row can exist without receiving focus.
+
+- **MEDIUM — Cancel checks whether the row line exists, not whether its opener exists.**  
+  The same plan line returns focus to the row’s Add ingredient unless the line is gone. But the unchanged chooser branch replaces all normal row acts with Cancel and step choices (`app/src/ui/IngredientTable.jsx:264–289`).
+
+  Reachable sequence: open the ingredient picker from an unplaced row → open that row’s Add to step chooser → cancel the ingredient picker. The row remains, but its Add ingredient button does not. The existing focus resolver silently does nothing when the requested control is absent (`app/src/ui/CreationPage.jsx:322–349`).
+
+### Suggestions
+- Derive insertion and its actual landing group from one authoritative transition; resolve focus from the committed result rather than a separate pre-update calculation.
+- Add a batched anchor-invalidation test asserting **both placement and focus**.
+- Resolve Cancel’s target after rendering. If the opener was replaced by the chooser, use a defined available target.
+- Explicitly include the initial heading button in the 45-stop recording to avoid an off-by-one walk.
+
+### Risk Assessment
+**MEDIUM.** Data placement is well protected. Focus recovery still has gaps that matter directly to the keyboard-first acceptance criteria.
+
+## 12-13
+
+### Summary
+The field-scoped keyboard design matches the approved contract and sensibly reuses existing operations. The plan’s main weakness is that its fallback decision is made using a narrower experiment than the complete behavior it promises.
+
+### Strengths
+- **The key handler preserves existing text-field semantics.** `holdReturn` already exempts composition and suppresses Enter in one-line fields at `app/src/ui/oneLineField.js:10–13`. The plan preserves that fallback while leaving multiline fields’ ordinary Return behavior intact.
+- **Separating keyed moves from button-focus requests is necessary.** Current move handlers explicitly request focus on Move buttons at `app/src/ui/CreationPage.jsx:425–436` and `479–485`. Reusing them unchanged would violate caret preservation.
+- **Existing stable identities support the proposed approach.** Steps are keyed by stored `step.n` at `app/src/ui/CreationSteps.jsx:315–322`; creation rows use `${row.id}:${portion.step}` at `app/src/ui/IngredientTable.jsx:821–832`.
+- **The plan follows the approved expansion to all six step fields.** That expansion is explicit in `.planning/sketches/016-entry-points-pen-preview-row-controls/CONTRACT.md:118`, overriding the older research recommendation.
+
+### Concerns
+- **MEDIUM — The fallback decision covers only the lead-in probe.**  
+  `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-13-PLAN.md:116–120` selects Branch A or B using lead-in moves. Other fields and grams are tested later at line `154`, while line `150` explicitly says CreationPage is not touched in that task.
+
+  Passing the lead-in experiment does not establish row reconciliation or all field behavior. If grams or purpose fails later, the plan has no equally explicit recovery path despite those failures violating the same requirement.
+
+- **MEDIUM — The browser test matrix is narrower than “every key path.”**  
+  The prescribed grams probe at the same plan’s line `154` exercises Meta+Enter and a downward move within a step. It does not explicitly require:
+  - Ctrl+Enter in grams;
+  - both move directions with collapsed and ranged selections;
+  - unplaced and split-row groups;
+  - repeated moves reaching an endpoint.
+
+  Those cases use distinct grouping paths: unplaced movement modifies `draft.rows`, while placed movement modifies `uses` (`app/src/domain/creationSteps.js:332–347`).
+
+### Suggestions
+- Make Branch B available after **any** field/row caret failure, and extend the implementation and verification file lists accordingly.
+- Add a compact browser matrix covering both row-order mechanisms, both directions, both selection forms, and repeat-to-boundary behavior.
+- Keep the existing independent iPad proof; passing this matrix still does not establish the hardware-keyboard behavior.
+
+### Risk Assessment
+**MEDIUM.** The architecture is appropriate, but the claimed verification coverage exceeds the specified experiments.
+
+## 12-14
+
+### Summary
+The final gate and explicit separation of automated evidence from iPad acceptance are well designed. The handover steps need revision before they can prove PROOF-02: the proposed whole-editor Tab walk terminates too early, and the authoring sequence omits required input needed for its later Save.
+
+### Strengths
+- **The gate retains meaningful existing checks.** `12-check.sh` stops on command failure or a `FAIL` line at `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-check.sh:30–43`, requires import evidence at lines `57–60`, and requires the baseline match at lines `65–68`.
+- **The baseline expectation has a reasonable source basis.** The walk fixes its width at 1366 and separates the five new scenarios at `.planning/phases/11-steps-structure-save-and-print/11-walk.mjs:103–107`. Its button snapshot reads the notebook rather than the shell at line `220`.
+- **Human proof remains genuinely pending.** The plan’s prohibition against completing PROOF-02 before Mark passes the rows is explicit at `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-14-PLAN.md:65–67`.
+
+### Concerns
+- **HIGH — “From Recipe name Tab to Save” does not traverse the editor.**  
+  `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-14-PLAN.md:144` uses that sequence to prove every creation control, including Moves.
+
+  In the actual DOM, Recipe name, Recipe description, Version name, Cancel, and Save are all in the band (`app/src/ui/CreationPage.jsx:687–745`). The editor body begins afterwards at line `760`; Ingredients and Instructions are mounted later at lines `762–821`. Ordinary forward Tab reaches Save **before any row or step control**.
+
+  The automated walk at plan line `147` therefore cannot both follow the written step and prove all controls were reached.
+
+- **MEDIUM — The written authoring sequence does not establish a saveable recipe.**  
+  The same plan’s lines `143–145` explicitly enter grams only for the first picked ingredient, create a second step through Cmd+Return without explicitly filling its fields, then expect Save to succeed. New rows begin with blank grams (`app/src/domain/creation.js:158–162`), and new steps begin with blank lead-in and instruction (`app/src/domain/creationSteps.js:123–128`). Save checks every grams line and both fields of every live step at `app/src/domain/creationSave.js:182–203`.
+
+  The executor would have to add authoring actions beyond the stated sequence to make the walk pass.
+
+- **LOW — The final-build precondition omits 12-15’s summary.**  
+  Dependencies include 12-15, but the concrete precondition at `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-14-PLAN.md:102` only checks summaries 12-09 through 12-13. This is avoidable inconsistency in the final handover check.
+
+### Suggestions
+- Define a full Tab circuit with an explicit end marker after Setup, or separate band, Sheet, and Setup walks. Do not use the first encounter with Save as the endpoint.
+- Make the script and the human row traverse exactly the same sequence; count matching PASS lines only after that equivalence is established.
+- Explicitly instruct Mark to fill every added ingredient’s grams, the second step’s required fields, and each scale/problem’s required words.
+- Specify the structural setup needed for Move tests—such as a group containing two rows—without prescribing recipe content.
+- Include 12-15 in the summary precondition.
+
+### Risk Assessment
+**HIGH.** As written, the handover does not prove the phase’s keyboard-reach success criterion, and its Save expectation depends on unstated actions.
+
+## 12-15
+
+### Summary
+This is the most self-contained plan. Removing the two More entries outright is consistent with how the shell exposes navigation. Preserving the narrow error-panel fallback is also correct. The remaining gap is mainly verification of the resize sequence used to justify that retained path.
+
+### Strengths
+- **Removing the duplicate controls is simpler than retaining unreachable branches.** The tab row is hidden from 724 up at `app/src/styles/shell.css:1078–1084`; More’s Import and Export are separate list items at `app/src/ui/Shell.jsx:729–740`, while the header controls remain at lines `589–609`.
+- **The error panel can survive a width change.** Its reset effect depends on pathname, not width (`app/src/ui/Shell.jsx:287–291`), and `closeImportErrors` chooses the current-width focus target at lines `370–392`.
+- **The retained import guards are real safeguards.** `chooseImportFile` checks the open pen, kept creation, kept edit, edit route, and unread state at `app/src/ui/Shell.jsx:459–482`. Removing only More’s callers preserves that behavior.
+
+### Concerns
+- **LOW — The new test does not exercise the retained transition.**  
+  `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-15-PLAN.md:115` justifies retaining the narrow error path through “open wide, then narrow,” but keeps tests that mount directly at 393 and dispatch a hidden-input change. That is exactly what `app/src/ui/Shell.flyout.test.jsx:399–405` does. It verifies the final state, not the subscription/closure behavior across the crossing.
+
+- **LOW — Other directly affected comments remain inaccurate.**  
+  The plan updates the hairline and focus comments, but `app/src/ui/Shell.jsx:449` still describes “Both Import buttons,” lines `681–690` describe five More items and two Import buttons, and `app/src/styles/shell.css:1263–1265` says all three header tools are duplicated in More.
+
+### Suggestions
+- Add one wide-to-narrow test: open an import error at 1024, narrow to 393, close with focus inside the panel, and verify focus on More’s summary.
+- Update the directly orphaned comments alongside the removal.
+
+### Risk Assessment
+**LOW.** The implementation is narrowly scoped and supported by the existing shell structure.
+
+## Cross-plan assessment
+
+**Coverage complete: 12-09, 12-10, 12-11, 12-12, 12-13, 12-14, and 12-15.**
+
+**Overall risk: HIGH until the draft-transition and iPad-proof gaps are corrected.**
+
+The plans generally respect the approved design, existing domain boundaries, and storage constraints. The principal risks are transition correctness and whether the tests prove what their PASS labels claim.
+
+### Required revisions before execution
+
+1. **Close 12-10’s widening race.** Keep competing pen openers locked throughout held-draft restoration.
+2. **Assign the phone-width test migration.** The nominally independent wave-four plans are not independently green against the current 393 pen suites. In particular, 12-11’s instruction to treat non-preview failures as implementation defects conflicts with 12-10’s intentional removal of Next version.
+3. **Repair 12-14’s full-editor Tab path and authoring prerequisites.** Otherwise the milestone’s decisive device proof is incomplete.
+4. **Make 12-12’s focus destination follow the committed insertion**, including cancellation when another chooser has replaced the opener.
+5. **Align interactive tests and caret fallback coverage with their actual execution environments.**
+
+**Recommendation: request changes, then proceed with the existing overall plan structure.** The product scope does not need reopening; the transition guards, test ownership, and proof steps do.
 
 
 ---
 
-## OpenCode Review
+## OpenCode Review (opencode-argon)
 
-## 12-01
+## 12-09
 
 ### 1. Summary
-Plan `12-01` introduces kind-aware scale presentation in `app/src/domain/axes.js` (`stopWordsFor`, `stopLabelFor`, `middleWordFor`, and `readMarkText`) and wires them into the record pen (`app/src/ui/AxisMark.jsx`), the batch reading (`app/src/ui/BatchRow.jsx`), and the creation editor's scale stops preview (`app/src/domain/creation.js`), addressing `TASTE-04` and decisions `D-01` through `D-03`. The boundary between pure domain logic and UI consumers is clean, backward compatibility for `goldilocks` and unknown/missing kinds is preserved, and the snapshot immutability rule (`axesForBatch`) is explicitly guarded.
+Plan `12-09` implements the first slice of `PHONE-01`: wrapping `/notebook/new` and `/notebook/:recipeId/:versionId/edit` in `DeskOnly` so that below 724 px they render the placeholder markup (`"Done at the desk or on the iPad."`) without mounting `CreationRoute` or `EditRoute`, and gating `New recipe`, `Resume`, `Resume editing`, and Home's `Next version` on `useBelow724()`. The architectural choice to wrap the route `element` in `app/src/router.jsx` rather than guarding inside the route components is sound and guarantees kept drafts cannot be read, modified, or redirected away below 724 px. Two concrete implementation pitfalls in `app/src/ui/NotebookPlace.jsx` and `12-board-check.mjs` need attention during execution.
 
 ### 2. Strengths
-- **Single-source kind branching in the domain (`app/src/domain/axes.js:29-31, 74-78`):** Centralizing `isMagnitude(axis)` inside `stopWordsFor`, `stopLabelFor`, `middleWordFor`, and `readMarkText` prevents UI components (`app/src/ui/AxisMark.jsx:40, 105, 113-117` and `app/src/ui/BatchRow.jsx:310`) from branching on `axis.kind` directly, enforced by negative grep guards in the acceptance criteria.
-- **Exhaustiveness invariant against `SCALE_KINDS` (`app/src/domain/catalog.js:18`):** Requiring `app/src/domain/axes.test.js` to assert that its kind-keyed expected-output table matches `SCALE_KINDS` (`['goldilocks', 'magnitude']`) ensures any future scale kind added to `catalog.js` will immediately fail unit tests until its presentation is defined.
-- **Preservation of batch snapshot isolation (`app/src/domain/axes.js:42-44`, `app/src/ui/BatchRow.jsx:292`):** `TastingReading` continues to read scale definitions exclusively from `axesForBatch(batch)` (`batch.snapshot.coreScales` and `batch.snapshot.declaredAxes`), and Task 2 adds a test where the live `version.declaredAxes` disagrees with `batch.snapshot.declaredAxes` on `kind` to verify stored marks never shift presentation when a version changes.
-- **Clean flex layout behavior on the anchors row (`app/src/ui/AxisMark.jsx:113-117`):** Because `.axis-mark__anchors` already uses `display: flex; justify-content: space-between`, omitting the middle `<span>` when `middleWordFor(axis)` returns `null` places the two remaining `<span>` elements at the left and right ends of the 216 px (or narrow) track without any CSS rules or `:nth-child` selectors breaking.
+- **Route-element boundary prevents draft side effects (`app/src/router.jsx:147,157`, `app/src/ui/CreationRoute.jsx:35-51`, `app/src/ui/EditRoute.jsx:42-91`):** Both `CreationRoute` and `EditRoute` fire `useEffect` reads on mount and call `navigate(..., { replace: true })` when a draft is missing or disqualified. Wrapping `<CreationRoute />` and `<EditRoute />` in `<DeskOnly>` at `app/src/router.jsx:147,157` ensures neither component mounts below 724 px, satisfying the "a kept draft is not touched" invariant by construction (`12-09-PLAN.md:124`).
+- **Debounce-window persistence across width crossings (`app/src/ui/useKeptDraft.js:45-54,378-389`):** When the viewport narrows below 724 px, `DeskOnly` unmounts `CreationPage`, which triggers `useKeptDraft`'s cleanup at `app/src/ui/useKeptDraft.js:387` (`flushPendingDraft()`). Any keystrokes still inside the 250 ms debounce window (`app/src/ui/useKeptDraft.js:367`) are flushed immediately to `repository.saveDraft`, and `12-09-PLAN.md:126-128` explicitly tests this <250 ms crossing in both jsdom and Playwright WebKit.
+- **Preserves existing static-markup tests (`app/src/ui/Placeholder.jsx:6-13`, `app/src/ui/Shell.test.jsx:70`):** Giving `Placeholder` an optional `note = "${name} is not built yet."` prop (`12-09-PLAN.md:120`) and defaulting `below724 = false` on `NotebookList`, `HomeBody`, `HomeLead`, `RecipeRows`, and `RowActions` (`12-09-PLAN.md:156`) keeps `Shell.test.jsx:70`, `NotebookPlace.test.jsx:50-150`, and `RecipeList.test.jsx:59-150` green in the node environment.
 
 ### 3. Concerns
-- **[LOW] Out-of-range stop inputs to `stopLabelFor` (`app/src/domain/axes.js:29-31`):** In RESEARCH Pattern 1, `stopLabelFor(axis, stop)` indexes `stopWordsFor(axis)[stop - 1]` and checks `word === null ? `${stop}` : `${stop}: ${word}``. If an out-of-range `stop` yields `undefined`, `word === null` is `false` and it would return `"6: undefined"`. Checking `word == null` (nullish) instead of `word === null` makes `stopLabelFor` resilient to any unexpected stop index.
-- **[LOW] Flagged assumption A1 on `scaleStopsLine` (`app/src/domain/creation.js:305-310`):** Today `scaleStopsLine` already branches on `scale.kind === 'magnitude'` and returns `` `${scale.low} to ${scale.high}` ``, pinned at `app/src/domain/creation.test.js:445, 452` and `app/src/ui/CreationSetup.test.jsx:309, 416`. Changing this to `'faint · 2 · 3 · 4 · strong'` matches `D-01` and `.planning/sketches/015-own-scales-and-problems/CONTRACT.md` §4, and the plan properly isolates this in Task 3 so it can be reverted in one commit if vetoed by Mark.
+- **[MEDIUM] `12-board-check.mjs` ignores `scope` on full-page panels unless `anchor` is also set (`.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-board-check.mjs:185-216` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-09-PLAN.md:188`):**
+  In `notebook-home-more-393.html:13140-13142` and `one-line-page.html:13140-13141`, every `.fp-win.g2w-393[data-pid="..."]` contains `.shell`, so `12-board-check.mjs:705` classifies them as `kind === 'full'`. In `GATHER` (`12-board-check.mjs:185-216`), `cfg.scope` is **only** consulted inside `if (cfg.kind === 'full' && cfg.anchor)` (`:185-206`); in the `else if (cfg.kind === 'full')` branch (`:207-216`), `queryRoot` is `panelEl ?? document` and `cfg.scope` is ignored. `12-09-PLAN.md:188` states *"so the checks are scoped to `.shell__main` and never read More's list ... and no button, link or textarea in the page (`absent`)"*. If `12-board-places.mjs` sets `scope: '.shell__main'` without setting `anchor: '.shell__main'`, `absent: ['button', 'a', 'textarea']` on `desk-new` and `desk-edit` will query the entire `.shell` (matching the header and tab-bar buttons/links) and fail with `present`.
+- **[MEDIUM] `NotebookList` renders `<NotebookHead>` and `<NotebookDraftRow>` in two separate return branches (`app/src/ui/NotebookPlace.jsx:293-307` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-09-PLAN.md:158,162`):**
+  In `app/src/ui/NotebookPlace.jsx`, `NotebookList` has an early return when `work.length === 0` (`:293-300`) that renders `<NotebookHead ... />` (`:296`) and `{draft && <NotebookDraftRow ... />}` (`:297`), in addition to the main return (`:305-306`). `12-09-PLAN.md:158` instructs `NotebookList` to hand `below724` to `NotebookHead` and `NotebookDraftRow`, and `12-09-PLAN.md:171` checks `grep -c 'below724' >= 4`. If an executor only passes `below724` in the main return at `:305-306` and misses `:296-297`, the grep check will still pass (7 occurrences) and the seed-based tests in `12-09-PLAN.md:162` (`work.length === 8`) will not catch that an empty Notebook below 724 px still renders `New recipe` and `Resume`.
+- **[LOW] Native `querySelectorAll` in `panel.absent` on Home tasted rows (`.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-board-check.mjs:279` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-09-PLAN.md:188`):**
+  `12-09-PLAN.md:188` asks `12-board-places.mjs` to check *"the Home rows' `.home__actions` count and text with a tasted row's span absent"*. Because `12-board-check.mjs:279` passes `absent` selectors to native `queryRoot.querySelectorAll(selector)`, Playwright-only pseudo-selectors like `:has-text("Tasted")` throw a `DOMException`. On panel `home`, Olive Oil is the first row (`li.home__row:first-child`) and Pineapple is the third (`li.home__row:nth-child(3)`), so `absent` must use standard CSS selectors such as `.home__row:first-child .home__actions` or `.home__actions a[href="/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v2"]`.
 
 ### 4. Suggestions
-- In `app/src/domain/axes.js`, write `stopLabelFor` using a nullish check (`word == null ? `${stop}` : `${stop}: ${word}``) and derive `scaleStopsLine` in `app/src/domain/creation.js:305-310` directly via `stopWordsFor(scale).map((word, i) => word ?? `${i + 1}`).join(' · ')` for both `goldilocks` and `magnitude` so `creation.js` does not duplicate stop-numbering logic.
+- In `12-board-places.mjs` (`12-09-PLAN.md:188`), explicitly set `anchor: '.shell__main'` (not just `scope: '.shell__main'`) on all five panels so `12-board-check.mjs:185` activates `scopeEl` on these `kind === 'full'` panels.
+- In `app/src/ui/NotebookPlace.jsx:296-297` and `app/src/ui/NotebookPlace.test.jsx` (`12-09-PLAN.md:158,162`), pass `below724={below724}` in both the `work.length === 0` return (`:296-297`) and the non-empty return (`:305-306`), and include a `versions: []` test case at `below724: true` with and without a kept `draft`.
+- In `12-board-places.mjs` (`12-09-PLAN.md:188`), use standard DOM selectors for `absent` (e.g., `.nb__head button`, `.nb__draft-act`, `.nb__row-act`, `.home__row:first-child .home__actions`).
 
 ### 5. Risk Assessment
-- **Risk Level: LOW** — All changes in `12-01` are pure domain functions and small JSX text/attribute updates with comprehensive unit and static-markup test coverage and zero storage schema changes.
+**LOW-MEDIUM** — The code changes in `Placeholder.jsx`, `DeskOnly.jsx`, `router.jsx`, `NotebookPlace.jsx`, and `RecipeList.jsx` are small and isolated, with the main execution risks being the `anchor` vs `scope` behavior in `12-board-check.mjs:185-216` and the duplicate `<NotebookHead>`/`<NotebookDraftRow>` call sites in `NotebookPlace.jsx:296-306`.
 
 ---
 
-## 12-02
+## 12-10
 
 ### 1. Summary
-Plan `12-02` updates `app/src/ui/PrintLogPages.jsx`, `app/src/styles/print.css`, and `app/src/styles/tokens.css` so that printed `Low to high` scales omit `span.lf-anchor.lf-mid`, every printed `.lf-sc` row holds a 36 px height via an explicit second grid row, and the two printed log pages take a 1 in clipboard drop (`96px` on screen and non-WebKit print, `90px` in WebKit print) offset by reducing the ruled notes lines from 14 to 13 (`BatchLogPage`) and 5 to 4 (`TastingLogPage`). It also builds `12-print-check.mjs` and records `LOG-01` and the split Design Gates 1 and 2 in `.planning/REQUIREMENTS.md` and `.planning/ROADMAP.md`.
+Plan `12-10` implements the recipe page's phone head (`<724` px) and protects a kept `Next version` (`plan`) draft below 724 px per Mark's decision B (`decide-p12-record-with-draft-held`): keeping the `plan` pen shut on load without deleting its stored record, suppressing all record/tasting/correct actions on that version below 724 px, rendering the `Edit kept` and `Draft:` lines in `VersionRow.jsx`, and restoring the `plan` pen when the viewport widens to `>=724` px. The analysis of the single-key `drafts` store (`app/src/store/db.js:61-62`, `app/src/domain/draft.js:557-562`) and `RecipePage.shell.test.js` ownership pins is thorough, but there is a subtle race condition between `draftRestoreDone` (`useKeptDraft.js`) and `draftsLoaded` (`useRecipeData.js`) that affects `useRouteIntents.js`, as well as a pre-load flash of record buttons while `draftsLoaded` is `false`.
 
 ### 2. Strengths
-- **Exact compliance with CSS token and media gates (`app/src/styles/print.test.js:97-115`, `app/src/styles/tokens.test.js:83-95`):** Using `grid-template-rows: auto calc(var(--sheet-size-small-print) * var(--sheet-print-leading-solid))` on `.lf-sc` (`app/src/styles/print.css:326-333`) and declaring both `--sheet-print-clipboard-drop: 96px` and `--sheet-print-clipboard-drop-webkit: 90px` in `app/src/styles/tokens.css:557` satisfies `print.test.js`'s zero-unit-literal rule (`LENGTH.test(sansVars(value))`) and `tokens.test.js`'s zero-unread-token rule.
-- **Engine-specific print drop matching the content-box pattern (`app/src/styles/print.css:486-493, 899-907`, `app/src/ui/PrintSheet.jsx:134`):** Scoping `@media print` rules to `.print-pages--webkit .print-page--log` (`90px`) and `.print-pages--other .print-page--log` (`96px`) while leaving `.print-page--sheet` at `padding: 0` cleanly accounts for WebKit's `1 CSS px = 0.8 pt` scaling (`90 * 0.8 = 72 pt = 1 in`) without affecting bench sheet pages (`D-16`).
-- **Source-pin awareness (`app/src/ui/PrintLogPages.test.jsx:171-187`):** Replacing `stopWordsFor` with `middleWordFor` in `app/src/ui/PrintLogPages.jsx:1, 148` preserves `axesForVersion(version, catalog)` and `problemNames(catalog.problems)`, which `PrintLogPages.test.jsx:184-185` pins by reading `PrintLogPages.jsx` source text.
+- **Preserves `useKeptDraft` single-call-site invariants (`app/src/ui/useKeptDraft.js:210-305`, `app/src/ui/RecipePage.shell.test.js:258-295`):** `RecipePage.shell.test.js:264-280` pins exact occurrence counts of `repository.getDraft(versionId)` (1), `if (draftRestoreStartedRef.current) return;` (1), `draftRestoreStartedRef.current = true` (1), `onRestorePlan(record.payload, record.penOpenedAt)` (1), and `onPageStatus(DRAFT_KEPT_STATUS)` (1), and `:608-625` forbids any `cancelled`/`canceled` identifier in `useKeptDraft.js`. Re-running the existing restore `useEffect` via a `restoreRound` state dependency when `keepPlanShut` flips from `true` to `false` (`12-10-PLAN.md:196`) satisfies all of those source-text pins.
+- **Preserves `RecipePage.test.jsx` Test K and Test L source-text pins (`app/src/ui/RecipePage.test.jsx:1255-1290`):** `RecipePage.test.jsx:1257` concatenates `RecipePage.jsx` and `useBatchRecording.js` and matches `function handleStartTasting(batch)` (`:1278`) and `onStartTasting={handleStartTasting}` on `<VersionRow>` (`:1282`). Destructuring `handleStartTasting: startTasting` and defining `const handleStartTasting = ...` as an arrow function in `RecipePage.jsx` (`12-10-PLAN.md:125`) keeps both regexes matching cleanly.
+- **Separates `ownDraft` from `waitingPlanDraft` (`app/src/ui/RecipePage.jsx:358-369,451,470-474`):** Passing `ownDraft` as a separate prop to `VersionRow` (`12-10-PLAN.md:167`) prevents `RecipeHistory` (`:470-474`) from drawing a spurious draft node in the history rail when the held draft belongs to the current version.
 
 ### 3. Concerns
-- **[MEDIUM] `fit` and `worst` inline style reset in `12-print-check.mjs` interacts with the new `@media print` specificity (`app/src/styles/print.css:899-904`, `.planning/canvas-generators/p12-capture.mjs:51-53`):** Task 1 instructs `12-print-check.mjs` to measure `fit` "as `p12-capture.mjs` `printFacts` measures it". In `.planning/canvas-generators/p12-capture.mjs:51-52`, `printFacts` ran under screen media and set `pg.style.padding = '0'; pg.style.paddingRight = '2px';` so that `body.getBoundingClientRect().height + 16 + foot.getBoundingClientRect().height` measured the unpadded content height at `630px` and `672px` against `810` (`900 - 90`) and `864` (`960 - 96`). That works because `body` (`.lf-body`) and `foot` (`.lf-foot`) are children *inside* `.lf` inside `pg` (`.print-page--log`), so `pg`'s `padding-top` does not add to `body.getBoundingClientRect().height`. However, if `12-print-check.mjs` runs `fit` while `page.emulateMedia({ media: 'print' })` is active, setting `pg.style.padding = '0'` first and then `pg.style.paddingRight = '2px'` is fine (inline styles override `.print-pages--webkit .print-page--log`), whereas restoring `pg.style.cssText = keep[0]` afterward must not leave mutated inline styles before subsequent facets run.
-- **[LOW] Anchor overflow detection in the `worst` facet (`app/src/styles/print.css:326-342, 349-371`):** In `.lf-sc`, `.lf-lo` is `grid-column: 1; justify-self: end` (`76px` column, `--sheet-print-scale-word-col`) and `.lf-hi` is `grid-column: 9; justify-self: start` (`76px` column) with `white-space: nowrap` (`app/src/styles/print.css:340`). Because a CSS grid item with `white-space: nowrap` and default `min-width: auto` expands its own bounding box (`getBoundingClientRect().width > 76`) to fit the text `'barely there at all'` / `'overwhelmingly nutty'` while overflowing the `76px` track (`--sheet-print-scale-word-col`), checking "whether any `.lf-anchor`'s box runs past its grid column" in `12-print-check.mjs` (`worst` facet) should compare `anchor.getBoundingClientRect().width > 76` (or compare `.lf-lo`'s left edge against `.lf-sc`'s left edge and `.lf-hi`'s right edge against `.lf-sc`'s right edge), rather than comparing the element's rect to itself.
+- **[HIGH] Race between `draftRestoreDone` and `draftsLoaded` can drop a valid `startTasting` route intent from Home (`app/src/ui/useRouteIntents.js:42-55`, `app/src/ui/useRecipeData.js:67-83`, `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-10-PLAN.md:125`):**
+  In `app/src/ui/useRouteIntents.js:43`, the `startTastingOnMount` effect checks `if (!startTastingOnMount || startTastingConsumedRef.current || !draftRestoreDone) return;` — unlike `startNextVersionOnMount` at `:67` (`if (!draftRestoreDone || !versionsLoaded || !draftsLoaded) return;`), it does **not** wait for `draftsLoaded`. Meanwhile, `12-10-PLAN.md:125` specifies that `handleStartAmending` in `RecipePage.jsx` refuses *"below 724 while drafts are not yet read (draftsLoaded false)"*. If `useKeptDraft`'s `repository.getDraft(versionId)` resolves before `useRecipeData`'s `repository.listDrafts()` sets `draftsLoaded = true`, `useRouteIntents.js:52-54` will set `startTastingConsumedRef.current = true`, clear `location.state`, and call `onStartAmending`, which will return early because `!draftsLoaded`! Once `draftsLoaded` becomes `true`, the intent is already consumed and the tasting pen will never open even when there is no held draft.
+- **[MEDIUM] Record controls flash during initial load below 724 px before `draftsLoaded` settles (`app/src/ui/RecipePage.jsx:198`, `app/src/ui/VersionRow.jsx:449`, `app/src/ui/BatchRow.jsx:788,802,1335`, `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-10-PLAN.md:125,161`):**
+  In `12-10-PLAN.md:125`, `ownPlanDraft` is `null` while `draftsLoaded` is `false`, so `planHeld` (`below724 && ownPlanDraft !== null`) is `false`, and `editState` (`app/src/ui/RecipePage.jsx:198`) is `'loading'` (not `'editing'`). Consequently, on the first render after `version` and `recipe` load but before `draftsLoaded` is `true`, `VersionRow` (`editState !== 'editing' && !(ownDraft !== null)`) and `BatchRow` (`recordingLocked={editState === 'editing' || planHeld}`) will render `Record batch` / `Record tasting` / `Record another` / `Correct`, and then hide them once `draftsLoaded` resolves (the exact flash `T-11-56` at `app/src/ui/RecipePage.jsx:195-197` was written to prevent for `Edit`).
+- **[MEDIUM] A `plan` draft written in the current session at `>=724` px is not in `RecipePage`'s `drafts` state (`app/src/ui/useRecipeData.js:67-83`, `app/src/ui/useKeptDraft.js:45-54`):**
+  `useRecipeData.js:69` calls `repository.listDrafts()` only once per `versionId` on mount. If a user opens `Next version` at 1366 px, types changes (which `useKeptDraft` saves to IndexedDB via `repository.saveDraft`), and narrows the window below 724 px, the open pen stays open per CONTRACT section 11 number 5b. That works because `openPen === 'plan'`. However, in `12-band-probe.mjs` and `12-board-band.mjs` (`12-10-PLAN.md:131,202`), the page must be reloaded or navigated to after keeping the `plan` draft at 1366 px so `useRecipeData` reads `drafts` and `useKeptDraft` runs with `keepPlanShut: true` (`12-10-PLAN.md:131` does reload at 393, whereas `12-10-PLAN.md:202` says *"band-draft (the same with a Next version draft kept)"* — make sure `12-board-band.mjs` reloads at 393 or seeds the `plan` draft before visiting the route at 393).
+- **[LOW] `absent` selectors in `12-board-band.mjs` must be valid CSS selectors (`.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-10-PLAN.md:202`):**
+  `12-10-PLAN.md:202` says *"with Next version, Edit and Resume editing declared `absent`"*. In `app/src/ui/VersionRow.jsx:449-502`, those buttons carry no `aria-label` or `data-act`, and `12-board-check.mjs:279` uses native `querySelectorAll`. Use `.notebook-version__acts button.notebook-link` (for `band-tasted`, `band-awaiting`, `band-none`, `band-tasted-723`, `band-editable`) and `.notebook-version__acts button` (for `band-editing` and `band-draft`, where only the `<a class="notebook-link">Print sheet</a>` remains).
 
 ### 4. Suggestions
-- In `12-print-check.mjs`'s `worst` facet, check `anchor.getBoundingClientRect().width > 76` (and whether `.lf-lo.getBoundingClientRect().left < sc.getBoundingClientRect().left` or `.lf-hi.getBoundingClientRect().right > sc.getBoundingClientRect().right`) to accurately report horizontal overflow of `.lf-anchor` past its `76px` grid track.
-- Run the `rows` and `drop` facets before `fit` and `worst` (which temporarily mutate `pg.style` and `lf.style`), or restore `cssText` in a `try / finally` block.
+- To eliminate the `startTastingOnMount` race with `draftsLoaded`: either have `useKeptDraft` also expose `planHeld` (since `useKeptDraft` has already resolved `repository.getDraft(versionId)` by the time `draftRestoreDone` becomes `true` at `app/src/ui/useKeptDraft.js:302`), or gate `startTastingOnMount` in `app/src/ui/useRouteIntents.js:43` on `draftsLoaded` just like `startNextVersionOnMount` at `:67` (`if (!startTastingOnMount || startTastingConsumedRef.current || !draftRestoreDone || !draftsLoaded) return;` and add `draftsLoaded` to its dependency array at `:55` — note `RecipePage.shell.test.js:322-331` does not restrict `draftsLoaded` in `useRouteIntents.js`).
+- In `12-board-band.mjs` (`12-10-PLAN.md:202`), seed the Coffee recipe, version, and `edit` / `plan` draft records via `panel.seed` (as `12-cases.mjs` does) or reload the route at 393 after creating them at 1366 so `RecipePage` mounts at 393 with `keepPlanShut: true`.
 
 ### 5. Risk Assessment
-- **Risk Level: LOW** — The CSS and JSX changes are small, directly transcribed from the approved sketch 015 board (`printed-logs.html:4766-4768`), and guarded by existing stylesheet and markup test suites.
+**MEDIUM** — This plan modifies `useKeptDraft.js` and `RecipePage.jsx`, which `CLAUDE.md` and `state-machine-audit` identify as a high-risk state-machine cluster, and must navigate strict source-text pins in `RecipePage.shell.test.js` and `RecipePage.test.jsx`.
 
 ---
 
-## 12-03
+## 12-11
 
 ### 1. Summary
-Plan `12-03` creates the standalone Playwright WebKit round-trip harness (`12-roundtrip.mjs` and `12-roundtrip-check.sh`) to satisfy `PROOF-01` and `D-10`: creating a recipe with both scale kinds (`goldilocks` and `magnitude`) and a custom problem in Profile A, verifying its print route, recording a batch that marks both scales and the problem, verifying the batch reading, exporting via the Shell's Export button, importing into a fresh Profile B via the hidden file input, and verifying field-by-field record equality, exact `buildFigures` output, Sheet code lookup, and deterministic repeatability across two runs.
+Plan `12-11` adds `Preview step` (`p.method-step__targets > Button.text-control`) and the `.mk-preview` block (`StepReading`) to an open step in the version pen (`StepPenBody` in `app/src/ui/Method.jsx`), closing `bug-p11-pen-step-no-preview`. The component change in `Method.jsx` is clean and reuses existing `StepReading` and `.mk-preview` styles, but Task 1's test instructions for `app/src/ui/Method.test.jsx` conflict with that test file's `node` execution environment.
 
 ### 2. Strengths
-- **Gate 2 insulation (`12-03-PLAN.md` Truth 6, `.planning/phases/11-steps-structure-save-and-print/11-walk.mjs:983-1015`):** Driving creation strictly through section-heading actions (`.ingredient-table-region .mk-head-act`, `.method-region .mk-head-act`, `Add scale`, `Add problem`, and `Add {name} to a step`) without touching per-row `Move up`/`Move down` or the `More` menu ensures Gate 2's upcoming row-control reorder and `<724` entry-point changes will not break `12-roundtrip.mjs`.
-- **Real UI export/import exercise (`app/src/ui/Shell.jsx:408-419, 601-609`):** Using `page.waitForEvent('download')` on the Export button (`handleExport`) and `page.setInputFiles('.shell__file-input', ...)` on the hidden file input exercises `exportStore`, `validateStoreFile`, `importStore`, and `storeRevision` remounting end to end in WebKit rather than bypassing the UI.
-- **Byte-for-byte determinism check (`12-roundtrip-check.sh`):** Running `12-roundtrip.mjs` twice under a fixed clock (`FIXED_ISO`) and counted `crypto.randomUUID` and comparing the `--out` dumps with `cmp` prevents flaky timestamps or nondeterministic IDs.
+- **Reuses `StepReading` and `.mk-preview` CSS without duplication (`app/src/ui/Method.jsx:8`, `app/src/ui/StepReading.jsx:63-80`, `app/src/styles/notebook.css:361-379`):** `.notebook .mk-preview` in `app/src/styles/notebook.css:361-379` is scoped under `.notebook`, not `.mk-page`, so it already styles `.mk-preview` inside the version pen with zero CSS changes, matching `pen-preview-step.html:13142-13143`.
+- **Handles unkeyed `StepPenBody` lifecycle across `Done` and `Cancel` (`app/src/ui/Method.jsx:143-148,625-639`):** Because `StepPenBody` stays mounted when switching between its open and closed branches (`isOpen`), resetting `previewing` to `false` via `useEffect` when `isOpen` becomes `false` (`12-11-PLAN.md:86`) prevents a stale preview from reappearing when the step is reopened after `Done` or `Cancel`.
+- **Accurate pin accounting (`app/src/ui/Method.test.jsx:1445-1462,1477-1486`):** `12-11-PLAN.md:68,90` accurately identifies the exact button-count pins in `Method.test.jsx` (`5 -> 6` at `:1447`, `6 -> 7` at `:1459`, and `9 -> 10` `<Button` tags in `Method.jsx` at `:1482`).
 
 ### 3. Concerns
-- **[HIGH] `openRecordPen` selector mismatch on a newly created recipe with zero batches (`app/src/ui/BatchRow.jsx:1335-1339` vs `.planning/phases/11-steps-structure-save-and-print/11-walk.mjs:490-492`):** The `<interfaces>` block in `12-03-PLAN.md` (line 53) instructs the executor to copy `openRecordPen` from `11-walk.mjs:490-512`. In `11-walk.mjs:490-492`, `openRecordPen` clicks `page.locator('.batch-row__record').first()`. However, in `app/src/ui/BatchRow.jsx:1335-1339`, when a version has **zero** batches (`batches.length === 0`, which is true for the newly created `Coffee` recipe in `12-roundtrip.mjs`), the button is rendered as:
-  ```jsx
-  <Button ref={recordButtonRef} className="notebook-action" onClick={() => onStartRecording()}>
-    Record batch
-  </Button>
-  ```
-  It does **not** have the class `.batch-row__record` (which only exists in the batch-row header when `batches.length > 0`, where the button says `"Record another"`). Copying `openRecordPen` verbatim from `11-walk.mjs:490` will time out waiting for `.batch-row__record`!
-- **[MEDIUM] `exportedAt` timestamp in `exportStore` when comparing `--out` files across two runs (`app/src/store/transfer.js:798`):** In `app/src/store/transfer.js:798`, `exportStore` writes `exportedAt: new Date().toISOString()`. In `11-walk.mjs:122-145`, `newScenarioContext` installs `page.clock.setFixedTime(new Date(FIXED_ISO))` (or overrides `Date`). If `page.clock.setFixedTime` is used (which freezes `new Date()`), `exportedAt` will equal `FIXED_ISO` on both runs; if `page.clock.install({ time })` is used instead, `Date` ticks forward with wall-clock elapsed ms during the run, which would make `exportedAt` differ by a few milliseconds between run 1 and run 2 and cause `cmp` in `12-roundtrip-check.sh` to fail!
-- **[LOW] Waiting for `versions` to load on `/search` before clicking `Find` (`app/src/ui/SheetCodeSearch.jsx:50, 112`):** In `SheetCodeSearch.jsx:50, 112`, the `Find` button starts with `disabled={versions === null}` until `repository.listVersions()` resolves in `useEffect`. In Task 2's Sheet code search check in Profile B, clicking `Find` before `disabled` clears will be a no-op.
+- **[HIGH] `app/src/ui/Method.test.jsx` runs in the `node` environment (`renderToStaticMarkup`) and cannot simulate button clicks (`.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-11-PLAN.md:90` vs `app/src/ui/Method.test.jsx:1-12` and `app/src/ui/Method.recording.test.jsx:7-8`):**
+  `12-11-PLAN.md:90` instructs Task 1 to add cases to `Method.test.jsx` where `Preview step` is *"pressed it reads Hide preview and the block stands right after the line with the typed lead-in, instruction, target, purpose and aside; Done then reopening shows Preview step; Cancel the same."*
+  However, `app/src/ui/Method.test.jsx:1-12` has **no** `// @vitest-environment jsdom` docblock and runs in Vitest's `node` environment using `renderToStaticMarkup` (as documented at `app/src/ui/Method.test.jsx:5-7`, `app/src/ui/Method.jsx:97-99`, and `app/src/ui/Method.recording.test.jsx:7-8`: *"jsdom, because renderToStaticMarkup drops handlers and focus; a sibling of Method.test.jsx, which runs in the node environment"*). Because `previewing` is internal `useState(false)` on `StepPenBody` (`12-11-PLAN.md:86`), `renderToStaticMarkup` in `Method.test.jsx` cannot click `Preview step`, `Done`, or `Cancel`, and calling `document.createElement` in `Method.test.jsx` throws `ReferenceError: document is not defined`.
+- **[LOW] Margin number on a removed step in `StepPenBody` (`app/src/ui/Method.jsx:696-704` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-11-PLAN.md:86`):**
+  In `app/src/ui/Method.jsx:700-702`, a step in the developing pen renders `<span className="method-step__n">{marginInfo.frame === 'current' ? marginInfo.number : null}</span>` so a removed step (`marginInfo.frame === 'baseline'`) prints no number in its margin (`D-UAT-5, G-03-14`). `12-11-PLAN.md:86` says *"StepPenBody takes `number` (Method passes `marginInfo.number`)"*. Passing `marginInfo.frame === 'current' ? marginInfo.number : null` instead of `marginInfo.number` keeps the preview's `.method-step__n` consistent with the step's own margin if a removed step is opened and previewed.
 
 ### 4. Suggestions
-- In `12-roundtrip.mjs`, define `openRecordPen` using `. p12-capture.mjs:72`'s role selector:
-  ```js
-  await clickUntil(page, () => page.locator('.notebook-log').getByRole('button', { name: /^Record (batch|another)$/ }).first(), PEN, 'open the record pen');
-  ```
-  rather than `page.locator('.batch-row__record').first()`.
-- Ensure `newScenarioContext` uses `await page.clock.setFixedTime(new Date(FIXED_ISO))` (freezing `Date` at `FIXED_ISO`) so `exportedAt` in the exported JSON is identical across both runs of `12-roundtrip-check.sh`.
-- On `/search`, wait for `.search__form button[type="submit"]:not([disabled])` before filling the Sheet code and clicking `Find`.
+- Move the interactive click/toggle/`Done`/`Cancel` unit test cases from `Method.test.jsx` (`12-11-PLAN.md:90`) into `app/src/ui/RecipePage.perStep.test.jsx` (or `app/src/ui/Method.recording.test.jsx`), which already run under `// @vitest-environment jsdom`, and keep `Method.test.jsx` to static-markup assertions on `renderOpenStepPenBody` (button count, `aria-label="Step 3, Preview step"`, and placement of `p.method-step__targets` after `purpose`/`aside` and before the uses wrapper).
+- In `app/src/ui/Method.jsx:703`, pass `number={marginInfo.frame === 'current' ? marginInfo.number : null}` to `StepPenBody` (and default `number = null` in `StepPenBody` so `renderOpenStepPenBody` in `Method.test.jsx:1280` needs no required prop).
 
 ### 5. Risk Assessment
-- **Risk Level: MEDIUM** — The `.batch-row__record` vs `Record batch` (`.notebook-action`) selector difference on a zero-batch version is a guaranteed timeout if copied unchanged from `11-walk.mjs:490`, and frozen time via `setFixedTime` is required for `cmp` on the exported JSON to succeed.
+**LOW** — Self-contained UI addition in `Method.jsx`; resolving the `node` vs `jsdom` test placement in `Method.test.jsx` avoids a test-runner failure in Task 1.
 
 ---
 
-## 12-04
+## 12-12
 
 ### 1. Summary
-Plan `12-04` copies `11-board-check.mjs` to `12-board-check.mjs`, extending it with `panelSelector`/`panelIndex`, `attr` checks, and `appStyle`, and writes four board spec modules (`12-board-pen.mjs`, `12-board-reading.mjs`, `12-board-logs.mjs`, and `12-board-selftest.mjs`) to verify all 16 drawn panels of sketch 015 (`record-pen.html`, `reading.html`, `printed-logs.html`) against the built app in Playwright WebKit at 1366 and 393 with `--selftest` and `--evidence`.
+Plan `12-12` implements the structural half of `STRUCT-05`: adding `addRowAfter` to `app/src/domain/creation.js`, reordering `RowActs` in `app/src/ui/IngredientTable.jsx` with per-row `Add ingredient`, anchoring the picker in `app/src/ui/CreationPage.jsx` with fallback to `addRow` when an anchor becomes stale, regrouping `CreationStep` in `app/src/ui/CreationSteps.jsx` into two groups, stripping `.dl-tab, .dl-flag` notes in `12-board-check.mjs`, and verifying with `12-board-rowcontrols.mjs` and `12-tab-probe.mjs`. While the domain and React changes are well-specified, inspecting `.planning/canvas-generators/p12g2.py` and `.planning/sketches/016-entry-points-pen-preview-row-controls/row-controls.html` reveals **two board-check mismatches** in Task 3 (`kr-preview` and `ai-pick`) that will cause `12-board-rowcontrols.mjs` to fail if written as described in `12-12-PLAN.md:191`.
 
 ### 2. Strengths
-- **Strict separation of verification from app code (`12-04-PLAN.md` Prohibitions & Task 2):** Prohibiting edits to `app/`, loosening of the 1 px tolerance, or dropping failing elements guarantees that `12-04` is a genuine verification gate and routes any real divergence to a `--gaps` plan or Mark/Sid decision.
-- **Anti-vacuous `--selftest` enforcement (`.planning/phases/11-steps-structure-save-and-print/11-board-check.mjs:687-706`):** Preserving the `1px` font-size mutation pass and the `selftest-blind` check ensures no panel can pass vacuously with only text/count checks.
+- **Safe stale-anchor handling (`app/src/domain/creationSteps.js:93-101`, `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-12-PLAN.md:36,127`):** `groupRows(draft, group)` in `app/src/domain/creationSteps.js:98-99` throws a `RangeError` if `group` is a step `n` that is no longer in `liveSteps(draft)`. `12-12-PLAN.md:127` explicitly specifies `anchorHolds(draft, afterRowId, group)` checking `liveSteps(draft)` before calling `groupRows(draft, group)` both in `handlePick` and inside the `setCreateDraft((prev) => ...)` updater, falling back to `addRow` when the anchor row or its step was removed or placed while the picker was open.
+- **Fixes landing focus for step-placed rows (`app/src/ui/CreationPage.jsx:770`, `app/src/ui/IngredientTable.jsx:625-628`, `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-12-PLAN.md:127`):** Replacing `focusRowId ? "${focusRowId}:0" : null` at `app/src/ui/CreationPage.jsx:770` with `${rowId}:${group}` ensures `gramsInputsRef.current.get(creationFocusLine)?.focus()` at `app/src/ui/IngredientTable.jsx:627` focuses the newly added row's grams field when it lands inside a numbered step (`group !== 0`).
+- **Anchoring strategy isolates 12-12 from 12-13's `.mk-keys` lines (`.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-12-PLAN.md:191`):** Because `row-controls.html` already includes `<p class="mk-keys">` under each region heading while `12-13` adds `<p class="mk-keys">` in the next wave, anchoring `12-board-rowcontrols.mjs` on `.ingredient-table` and `.method-region > ol.method-steps` keeps all `box` coordinates relative to the table and list origins below `.mk-keys`.
 
 ### 3. Concerns
-- **[HIGH] `.lf-foot` `text` mismatch on `two` (Coffee) and `one` (Mint chip) in `12-board-logs.mjs` (`.planning/canvas-generators/p12.py:32-36, 163` vs `.planning/canvas-generators/p12-capture.mjs:22-24, 27-30`):** Task 2 (line 113) specifies for `12-board-logs.mjs`:
-  > "elements .lf-title (box: its top is 144 px below the page top), .lf-line (count, box), .lf-srow (count, box), .lf-anchor (count, text, box), .lf-num (count, text), `.lf-srow .lf-mid` (count) and **.lf-foot (box, text)**."
-  However, inspect `.planning/canvas-generators/p12.py:32-36, 163`: when generating `printed-logs.html`, `p12.py` replaced the `.lf-foot` text on the `two` (Coffee) and `one` (Mint chip) pages with synthetic strings:
-  - `'Coffee · Version 1 · [Sheet code] · Side 1 of 2'` (`printed-logs.html:4775`)
-  - `'Coffee · Version 1 · [Sheet code] · Side 2 of 2'` (`printed-logs.html:4776`)
-  - `'Mint chip · Version 1 · [Sheet code] · Side 2 of 2'` (`printed-logs.html:4777`)
-  Meanwhile, `12-cases.mjs`'s `inject` (copied from `p12-capture.mjs:27-30`) only mutates `v.declaredAxes` and `v.declaredFlaws` on `olive-oil-ice-cream-v1`, leaving `v.sheetTitle` as `'Olive Oil Ice Cream'` and `v.sheetCode` as `'64JH-G408'`. Thus in the app, `.lf-foot` renders `'Olive Oil Ice Cream · Version 1 · 50 g oil · 800 g · 64JH-G408 · Side 1 of 2'`. If `12-board-logs.mjs` includes `'text'` on `.lf-foot` for the `batch`, `tasting-two`, and `tasting-one` panels (without rewriting `.lf-foot` in `steps` or restricting `.lf-foot` `'text'` to the `none` / Mexican Chocolate panel where `CASES['none']['foot'] = None`), `12-board-logs.mjs` will **FAIL** on `.lf-foot[0] text`, and under Task 2's rules the executor is forbidden from dropping `'text'` once specified!
-- **[HIGH] Same-page `panel.against` mutation bug during `--selftest` (`11-board-check.mjs:378-389, 658-659, 678, 693-706`):** Task 2 (line 115) instructs `12-board-selftest.mjs` to define "a panel held against its own board panel by `against` (every check passes)". In `11-board-check.mjs:378-389`, `openBoard(boardPath)` caches one `Page` per board file in `boardPages`. When `spec.board` and `panel.against.board` are the **same** board file:
-  1. `boardPage` and `other.page` are the exact same Playwright `Page` object.
-  2. In `11-board-check.mjs:695`, `const css = panel.against ? \`.p4-win.${panel.against.id} *{font-size:1px !important}\` : '*{font-size:1px !important}';` first hardcodes `.p4-win.${panel.against.id}` (which matches nothing on sketch 015 boards).
-  3. Even if updated to use `panelSelector`, if a panel is held against *itself* on the same `boardPage`, injecting `font-size: 1px !important` into `other.page` and then calling `const [b2, a2] = await read()` (`11-board-check.mjs:699`) re-reads **both** `b2` and `a2` from the same mutated DOM element! Because both `b2` and `a2` shrink identically to `1px`, `compareData(quiet, panel, kind, b2, a2)` finds zero differences (`quiet.failed === 0`), causing `--selftest` to **FAIL** with `FAIL selftest <label>: the 1 px font run produced no FAIL`!
-- **[MEDIUM] Native `querySelectorAll` anchor selector for `12-board-logs.mjs` (`11-board-check.mjs:195`, `app/src/ui/PrintSheet.jsx:160-169`, `printed-logs.html:4775-4778`):** Task 2 (line 113) says: `anchor .print-page--log holding the page title the panel draws`. In `11-board-check.mjs:195`, `root.querySelectorAll(cfg.anchor)` uses the browser's native DOM `querySelectorAll` (which does **not** support Playwright's `:has-text()` pseudo-class), and `anchors.length !== 1` is an immediate FAIL. In the app on `/print`, `.shell` contains **two** `.print-page--log` elements (Batch log and Tasting log), whereas on `printed-logs.html` each `.dl-page` contains **one** `.print-page--log` (and its parent `.print-route__picture` on the board does not carry `aria-label="Batch log"` / `"Tasting log"`). To match 1 element on both the board and the app using standard CSS in `querySelectorAll`, the Batch log panel must use `.print-page--log:not(:has(.lf-srow))` and the Tasting log panels must use `.print-page--log:has(.lf-srow)`.
-- **[MEDIUM] Remaining `.p4-win` references in `11-board-check.mjs` (`lines 142, 610-616, 648, 695`):** `11-board-check.mjs` references `.p4-win` in four places: `GATHER` (line 142), `pictures` `anchoredFull` (lines 611, 616), `processPanel` `kind` detection (line 648), and `--selftest` CSS injection (line 695), plus `panel.against` (line 659) only passes `panelId: panel.against.id` instead of `{ id, panelSelector, panelIndex }`. All four sites plus `panel.against` must be updated in `12-board-check.mjs`.
+- **[HIGH] Panel `kr-preview` in `row-controls.html` has a mismatched `.mk-preview` block from the two-field step (`.planning/canvas-generators/p12g2.py:130-134,297`, `.planning/sketches/016-entry-points-pen-preview-row-controls/row-controls.html:13153`, `CONTRACT.md` §9 bullet 2 vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-12-PLAN.md:40,191`):**
+  In `p12g2.py:297`, panel `kr-preview` was built from `ed_full` (where Step 1 has target `Heat to` / `82 °C`, purpose `Pulls the coffee into the cream.`, and aside `Do not let it boil.`), **but** `preview_block()` (`p12g2.py:130-134`) spliced in `CAP['ed_preview']['method']` from the plain two-field step (`row-controls.html:13153` caption: *"The block is the build's, from the two-field step"*). As `CONTRACT.md` section 9 bullet 2 states: *"The open preview on `row-controls.html` does not show a target or an aside. Its block is the build's preview of a two-field step, placed where section 5 puts it."*
+  In the live app (`app/src/ui/CreationSteps.jsx:194-205`, `app/src/domain/creation.js:95-101`, `app/src/ui/StepReading.jsx:75-77`), pressing `Preview step` on a step that has a target, purpose, and aside renders all three inside `.mk-preview`. Consequently, if `12-board-rowcontrols.mjs` (`12-12-PLAN.md:191`) checks `.mk-preview (box, text)`, `p.method-step__acts (count, box)`, and `li.mk-step button (count, text, box, ...)` on `kr-preview` with the target, purpose, and aside written, `.mk-preview` `text` and `box.h` (plus the `box.y` of `p.method-step__acts` and Step 2 below it) will **fail** against the board!
+- **[HIGH] Panel `ai-pick` in `row-controls.html` truncates `<ul class="pick__list">`, so checking `.pick` `box` will fail on height (`.planning/canvas-generators/p12g2.py:267-268,305`, `.planning/sketches/016-entry-points-pen-preview-row-controls/row-controls.html:13155` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-12-PLAN.md:191`):**
+  In `p12g2.py:267-268`, `editor2('ed_picker', ..., cut_pick=True)` truncates `<ul class="pick__list">` after 2600 characters (`row-controls.html:13155`: *"the list cut short here"*), leaving only 8 `<li class="pick__row">` items on the board instead of all 111 library entries in the live app. In `12-board-check.mjs:325`, the `box` check compares `x`, `y`, `w`, **and `h`** within 1 px. Checking `.pick` with `checks: ['box']` (`12-12-PLAN.md:191`) on `ai-pick` will fail because `a.box.h` in the app (111 items) is ~4500 px taller than `b.box.h` on the board (8 items).
+- **[LOW] `handleCancelPicker` focus fallback when an unplaced anchor row is in `choosing` mode (`app/src/ui/CreationPage.jsx:322-330,397-400` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-12-PLAN.md:127`):**
+  In `12-12-PLAN.md:127`, when the picker was opened from a row (`opener: 'row'`), `handleCancelPicker` requests `{ kind: 'row-act', line: "${afterRowId}:${group}", act: 'add-ingredient' }`, or `'ingredient-target'` when that line is gone. If that unplaced row was switched into the `Add to step` chooser (`mk-row-acts--choosing`, `app/src/ui/IngredientTable.jsx:264-290`) while the picker was open, `tr[data-line="..."]` still exists in the DOM, but `[data-act="add-ingredient"]` is not rendered inside it (`Cancel · Step 1 · Step 2` are rendered instead), so `line?.querySelector('[data-act="add-ingredient"]')` at `app/src/ui/CreationPage.jsx:325` returns `null` and nothing receives focus unless it falls back to `.ingredient-table-region .mk-head-act`.
 
 ### 4. Suggestions
-- In `12-board-logs.mjs`, either check `checks: ['box']` on `.lf-foot` for the `two` and `one` panels and `checks: ['box', 'text']` on the `none` (Mexican Chocolate) panel (explaining in a comment that `p12.py:32, 163` replaces the foot text with `'Coffee · Version 1 · [Sheet code]'` on `two` and `one`), OR have `12-board-logs.mjs`'s `steps` hook set the board's example foot text on the app side after `data-print-ready="true"`.
-- In `12-board-check.mjs` around line 699, reuse `b` from the initial `read()` (`compareData(quiet, panel, kind, b, a2)`) instead of re-reading `b2` after injecting the `1px` font style tag into `other.page`, and tag `other`'s resolved panel element with a temporary `[data-selftest-1px]` attribute so `[data-selftest-1px] * { font-size: 1px !important }` always targets `other`'s panel even when `panel.against` points to the same panel on the same board page.
-- In `12-board-logs.mjs`, use `anchor: '.print-page--log:not(:has(.lf-srow))'` for the Batch log panel and `anchor: '.print-page--log:has(.lf-srow)'` for the three Tasting log panels so native `root.querySelectorAll(cfg.anchor)` matches exactly 1 element on both the board and the app.
-- For `appStyle` in `12-board-logs.mjs`, note that `PrintSheet.jsx:159` sets `--sheet-print-picture-scale` as an inline `style` on `.print-route__pages`, so `appStyle` needs `.print-route__pages { --sheet-print-picture-scale: 1 !important; }` (`!important` is required to override the inline style).
+- For `kr-preview` in `12-board-rowcontrols.mjs` (`12-12-PLAN.md:191`): to match the board's `kr-preview` panel (where Step 1 has target, purpose, and aside open above `.mk-preview`, while `.mk-preview` shows only the two-field step), either:
+  - in `kr-preview`'s `steps(page)`, open `Add target`, `Add purpose`, and `Add aside` on Step 1 without typing non-blank text into them (or type a one-sided target with no `Required` message—note a one-sided target renders `FieldFeedback`, so only blank target + open empty purpose/aside or `appStyle` hiding `.mk-preview .method-step__targets, .mk-preview .method-step__purpose, .mk-preview .method-step__aside { display: none !important }` reproduces the exact board geometry), **or**
+  - check `.mk-preview__cue` (`box`, `text`) and `.mk-preview .method-step__lead` (`box`, `text`, `font`) and Step 1's controls above `.mk-preview`, rather than `.mk-preview`'s full `box`/`text` and the elements shifted below it (citing `CONTRACT.md` section 9 bullet 2).
+- For `ai-pick` in `12-board-rowcontrols.mjs` (`12-12-PLAN.md:191`): check `.pick__head` (`box`, `text`) and `.pick .ing__filters` (`box`) instead of `.pick` (`box`), or pass `appStyle: '.pick__list > li:nth-child(n+9) { display: none !important }'` on the `ai-pick` panel so `.pick`'s height matches the board's 8-item cut (`p12g2.py:268`).
+- In `app/src/ui/CreationPage.jsx:322-330`, if `target` is null in the `'row-act'` (and in 12-13, `'row-grams'`) branch, fall back to `page.querySelector('.ingredient-table-region .mk-head-act')` so focus never drops to `document.body`.
 
 ### 5. Risk Assessment
-- **Risk Level: HIGH** — Without addressing the synthetic `.lf-foot` text in `printed-logs.html` (`p12.py:32, 163`), the same-page `panel.against` `--selftest` mutation in `11-board-check.mjs:695-700`, and the native `querySelectorAll` selector for `.print-page--log`, `12-04` will hit immediate `FAIL`s during execution.
+**MEDIUM-HIGH** — The domain and component changes are solid, but without addressing the `kr-preview` and `ai-pick` board construction quirks from `p12g2.py:130-134,267-268`, Task 3's `12-board-check.mjs` verification step will fail on `box`/`text` comparisons.
 
 ---
 
-## 12-05
+## 12-13
 
 ### 1. Summary
-Plan `12-05` implements the remaining `D-14` Gate 1 checks (`12-safari-check.mjs` and `12-wkprint.swift`) and the unified Gate 1 runner (`12-check.sh`): printing the real `/print` route to PDF via macOS `WKWebView` (`12-wkprint.swift` + `pdf-pages.swift`) to verify one-page fit and the `1.5 in` (`100.8–115.2 pt`) ink top on the two log pages (plus reporting the `worst` long-words case), opening the record pen and reading in mobile Safari in the iOS Simulator (`< 724` width) to verify `Low to high` presentation and zero horizontal scroll, and running the full test suite, probes, round trip, and Phase 11 94-snapshot walk in one command.
+Plan `12-13` completes `STRUCT-05` by adding `editorKeys.js` (`Cmd+Return`/`Ctrl+Return` to add, `Ctrl+Cmd+Up`/`Down` to move while preserving the caret via React DOM's commit-phase selection restore), attaching `aria-keyshortcuts` to the step and row buttons, rendering `p.mk-keys` under the `Instructions` and `Ingredients` headings, and verifying with `12-keys-probe.mjs` and `12-board-keys.mjs`. The plan's two-branch strategy (Branch A relying on React 19's commit-phase restore, Branch B as a fallback) is well-reasoned from the research probes, but there is a **critical text mismatch** in Task 3's instructions regarding the apostrophe in `In a row's grams:` that will break `12-board-keys.mjs` if followed literally.
 
 ### 2. Strengths
-- **Verified PDF point math (`12-05-PLAN.md` Task 1, `.planning/canvas-generators/wkprint.swift:67-71`, `.planning/canvas-generators/pdf-pages.swift:32-39`):** With `WKP_MARGINS="36,36,54,54"` (`36 pt = 0.5 in` top margin) and `--sheet-print-clipboard-drop-webkit: 90px` at WebKit's `0.8 pt/px` print scale (`90 * 0.8 = 72 pt = 1.0 in`), the top border of `.lf-datebox` lands at `36 + 72 = 108 pt` (`1.5 in`) from the top of the 792 pt page, right in the middle of the plan's `100.8 to 115.2 pt` (`1.5 in ± 0.1 in`) check window, while the first sheet page lands at `~36–42 pt` (`<= 54 pt`).
-- **Single-poll-loop guard in `12-wkprint.swift` (`.planning/canvas-generators/wkprint.swift:38-50`):** In `wkprint.swift:38`, `webView(_:didFinish:)` calls `poll()` on every navigation. Because `/p12-seed` navigates to `/notebook/.../print`, copying `wkprint.swift` to `12-wkprint.swift` and guarding `poll()` and `print_()` so they run once with a 240-try (`60 s`) cap prevents duplicate concurrent polling loops and double prints.
-- **Complete regression coverage (`12-check.sh`):** Running `11-walk-check.sh` alongside the new Phase 12 checks ensures the 94 existing snapshots remain untouched.
+- **Avoids racing React 19's commit-phase selection restore (`app/src/ui/CreationPage.jsx:425-437,479-486`, `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-13-PLAN.md:62,114,118-120`):** Passing `{ keyed: true }` to `handleMoveStep` and `handleMoveRow` so `focusRequestRef.current` is left `null` lets React DOM's `restoreSelection` keep focus and `selectionStart`/`selectionEnd` on the moved `<textarea>` even when moving down re-inserts the DOM node.
+- **Proper IME, modifier, and key-repeat guards (`app/src/ui/oneLineField.js:10-14`, `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-13-PLAN.md:109-112`):** `keyIntent` checks `event.nativeEvent?.isComposing === true || event.keyCode === 229`, rejects `altKey` and `shiftKey`, returns `'ignore'` (still calling `event.preventDefault()`) on `event.repeat` for `Enter`, and composes cleanly with `holdReturn` for single-line fields while leaving plain `Enter` unprevented in multi-line fields (`instruction`, `purpose`, `aside`).
+- **Keeps `RecipeSheet` `IngredientsHead` pin intact (`app/src/ui/RecipeSheet.jsx:139-146`, `app/src/ui/RecipeSheet.test.jsx:111-115`, `app/src/ui/RecipePage.test.jsx:1300-1310`):** Placing `<p className="mk-keys">` in `RecipeSheet.jsx` right after `<IngredientsHead ... />` when `mode === 'creating' && hasRows` keeps `<IngredientsHead>` rendered once and keeps the keys line visible under `<h2>Ingredients</h2>` when the picker is open (`ingredientsAct === null`).
 
 ### 3. Concerns
-- **[HIGH] Polling `indexedDB.open('sprinkles')` in `/p12-seed` before the app boots can create a v1 storeless DB or block the v10 upgrade (`app/src/store/db.js:8, 83-104`, `12-05-PLAN.md` Task 1 lines 80-83):** Task 1 states:
-  > "The seed page ... loads the case route in a hidden same-origin iframe so the app seeds its own store, polls the page's IndexedDB 'sprinkles' until the case's version record exists (every 200 ms, up to 30 s), runs inject for the case..."
-  In a fresh `WKWebView` (`WKWebsiteDataStore.nonPersistent()`) or fresh Simulator profile, if the parent `/p12-seed` page calls `indexedDB.open('sprinkles')` (with no version argument) at `t = 0` or `200 ms` *before* the iframe's bundle executes `openDB('sprinkles', 10)` (`app/src/store/db.js:84`):
-  1. `indexedDB.open('sprinkles')` creates `'sprinkles'` at version `1` with **no object stores**; calling `db.transaction('versions')` throws `NotFoundError`.
-  2. Worse, if `/p12-seed`'s `IDBDatabase` connection does not immediately register `db.onversionchange = () => db.close()` and close itself in `finally`, the iframe's `openDB('sprinkles', 10)` will be **blocked** (`db.js:91`) and never finish seeding!
-  Instead of polling `indexedDB.open('sprinkles')` while the iframe is still booting, `/p12-seed` should simply wait until the same-origin iframe's DOM contains `.notebook-log` (`iframe.contentDocument?.querySelector('.notebook-log')`), which proves the app has already opened `'sprinkles'` at version 10, seeded all stores, and loaded the version record!
-- **[MEDIUM] In `sim` mode, the iframe must load/reload the case route *after* `inject` completes (`12-05-PLAN.md` Task 2 lines 110-114):** Task 2 says:
-  > "The seed page's views pen and reading: after inject, it shows the case route in a full-viewport same-origin iframe (fixed, inset 0, no border, the whole window), waits for '.notebook-log' inside it, and drives the app inside the frame..."
-  If `/p12-seed` reuses the hidden iframe that initially loaded the case route to seed the DB without reloading it (`iframe.contentWindow.location.reload()`) or creating a second iframe after `inject(c)` resolves, the React app inside the iframe will still hold the pre-`inject` `Olive Oil v1` state (`Oil` instead of `Coffee flavour`)!
-- **[LOW] `MarkAxis` vs blank pen state in `sim` mode (`12-05-PLAN.md` Task 2 lines 112-119):** In `sim` mode for `view=pen`, Task 2 only asserts `Coffee flavour`'s anchors (`faint`, `strong`), stop `aria-label`s (`1: faint`, `2`, `3`, `4`, `5: strong`), and `Body`'s anchors (`thin`, `right`, `heavy`). Opening the record pen and clicking `Add tasting` is sufficient for those checks, just as in `12-stops-probe.mjs`.
+- **[HIGH] Contradictory apostrophe instruction in Task 3 will cause `12-board-keys.mjs` to fail on `p.mk-keys` text (`.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-13-PLAN.md:182` vs `.planning/canvas-generators/p12g2.py:95` and `.planning/sketches/016-entry-points-pen-preview-row-controls/row-controls.html:13146,13154-13157`):**
+  `12-13-PLAN.md:182` states: *"one `<p className="mk-keys">In a row's grams: Cmd+Return adds an ingredient after it. Ctrl+Cmd+Up or Down moves it.</p>` ... The words are CONTRACT section 8's, verbatim, **typographic apostrophe as the board writes it** (read it from the board's markup)."*
+  However, in `p12g2.py:95` (`KEYS_ROW = 'In a row\'s grams: ...'`) and `row-controls.html:13146` (`In a row&#x27;s grams: ...`), the board uses an **ASCII straight apostrophe `'` (`U+0027`, HTML entity `&#x27;`)**, **not** a curly/typographic apostrophe `’` (`U+2019`)! And `CONTRACT.md` section 8 (`CONTRACT.md:107`) also uses ASCII `'`. If the executor writes `’` (`U+2019`) in `RecipeSheet.jsx`, `12-board-check.mjs` (`b.text === a.text`) on `12-board-keys.mjs` (`rc-drawn`, `ai-pick`) will fail with `board "In a row's grams: ...", app "In a row’s grams: ..."`.
+- **[MEDIUM] Pre-key vs post-key states on `kr-press`/`kr-added` and `kr-move`/`kr-moved` in `12-board-keys.mjs` (`.planning/canvas-generators/p12g2.py:293-296,299-302` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-13-PLAN.md:186`):**
+  `12-13-PLAN.md:186` says: *"kr-press and kr-added (steps place the caret where the board's flag says and press Meta+Enter: focus on the new step's lead-in), kr-move and kr-moved (Control+Meta+ArrowDown: focus and the moved order)."*
+  In `row-controls.html` (`p12g2.py:293-296`), `kr-press` and `kr-move` are the **before-keypress** panels (2 steps: Steep then Churn, with focus in `Step 1, instruction`), whereas `kr-added` (3 steps, focus in `Step 2, lead-in`) and `kr-moved` (2 steps: Churn then Steep, focus in `Step 2, instruction`) are the **after-keypress** panels. If `12-board-keys.mjs` presses `Meta+Enter` in `kr-press`'s `steps` or `Control+Meta+ArrowDown` in `kr-move`'s `steps`, the app will be in the post-keypress state while the board panel is in the pre-keypress state, failing `count`, `text`, `box`, and `focus`.
+- **[LOW] Duplicate evidence filenames when `12-board-rowcontrols.mjs` and `12-board-keys.mjs` run together (`.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-board-check.mjs:605-611` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-13-PLAN.md:186,189`):**
+  Both `12-board-rowcontrols.mjs` and `12-board-keys.mjs` target `row-controls.html` panels `rc-drawn`, `rc-full`, and `ai-pick`. In `12-board-check.mjs:605-611`, if `--evidence` is passed when running both specs together (`12-13-PLAN.md:189`, `12-14-PLAN.md:111`), any two panels across the specs that share `${board}-${label}` fail with `evidence: ... is written by two panels; give one a distinct label`.
+- **[LOW] Branch B fallback selector if step `number` changes on move (`.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-13-PLAN.md:120,237`):**
+  If Branch B (or the post-iPad `/gsd-quick` fallback at `12-13-PLAN.md:237`) is ever needed, note that a step field's `aria-label` (`Step ${number}, instruction`, `CreationSteps.jsx:103`) changes its display `number` when the step moves (`Step 2, instruction` -> `Step 1, instruction`), and only `lead-in` currently has `data-field="lead-in"`. A fallback lookup inside `li.mk-step[data-step="${request.n}"]` must match by field suffix (`textarea[aria-label$=", instruction"]`, etc.) or `data-field`, never the pre-move `aria-label`.
 
 ### 4. Suggestions
-- In `/p12-seed` (`12-safari-check.mjs`), wait for the hidden seeding iframe to render `.notebook-log` (`iframe.contentDocument?.querySelector('.notebook-log')`) before calling `inject(c)`. Never call `indexedDB.open('sprinkles')` before the app has created and seeded the v10 database.
-- After `await inject(c)` completes in `/p12-seed`:
-  - For `view=print`, navigate the top-level window (`location.replace(c.route + '/print')`).
-  - For `view=pen` and `view=reading`, remove the hidden seeding iframe and mount a fresh full-viewport `<iframe src="${c.route}">` (or reload the iframe and wait for a fresh `.notebook-log` after reload) so the iframe's React tree reads the injected IndexedDB records.
+- In `12-13-PLAN.md:182`, replace *"typographic apostrophe as the board writes it"* with *"the ASCII straight apostrophe `'` (`In a row's grams: ...`) as `row-controls.html` (`&#x27;`) and `CONTRACT.md` section 8 write it"*.
+- In `12-board-keys.mjs` (`12-13-PLAN.md:186`), ensure `kr-press` and `kr-move` stop after focusing `Step 1, instruction` (pre-key state), and only `kr-added` (presses `Meta+Enter`) and `kr-moved` (presses `Control+Meta+ArrowDown`) execute the key press. Also give every panel in `12-board-keys.mjs` a distinct `label` (e.g. `keys-rc-drawn-ing`, `keys-rc-drawn-method`, `keys-rc-full`, `keys-ai-pick`) so `--evidence` never collides with `12-board-rowcontrols.mjs`.
+- In `app/src/ui/CreationSteps.test.jsx:41-60` and `app/src/ui/IngredientTable.creating.test.jsx:44-91`, wire `onAddStep`, `onMoveStep`, and `onAddRowAfter` spies in the test harnesses for Task 2's unit tests (`12-13-PLAN.md:152`).
 
 ### 5. Risk Assessment
-- **Risk Level: MEDIUM** — The IndexedDB version-1 race and iframe reload ordering in `/p12-seed` are classic browser harness traps; waiting on the seeding iframe's `.notebook-log` before calling `inject` and loading the target view afterward eliminates both risks cleanly.
+**MEDIUM** — The keyboard handling and React 19 caret preservation are well-validated by research probes, provided the straight apostrophe in `p.mk-keys` and the pre/post panel states in `12-board-keys.mjs` are followed.
 
 ---
 
-## 12-06
+## 12-14
 
 ### 1. Summary
-Plan `12-06` splits the shared test fixtures (`12-cases.mjs`) and the WebKit stops probe (`12-stops-probe.mjs`) out of `12-01` into a parallel Wave 1 plan that touches no files under `app/`. It builds the base commit into a scratch directory, runs `12-stops-probe.mjs` in `report` and `check` modes across the `pen`, `reading`, and `editor` facets to reproduce `bug-p11-low-to-high-scale-centre-mark` on the base build, and verifies that `check` fails on all three facets before `12-01` lands.
+Plan `12-14` extends `12-check.sh` to run both Gate 1 and Gate 2 checks ending with `GATE2 PASS`, authors the three iPad check rows in `12-ipad-rows.md` and walks every numbered step in Playwright WebKit via `12-device-steps.mjs`, moves the two completed todo files to `.planning/todos/completed/`, and hands the rows to the orchestrator at a blocking checkpoint. The verification discipline and walk analysis are strong, but there is a **critical DOM-order error** in Row 2's whole-editor Tab step (`"from Recipe name Tab to Save"`) and a risk of copying stale pre-`e37db11a` selectors from `11-device-steps.mjs`.
 
 ### 2. Strengths
-- **Zero file overlap with `12-01` in Wave 1 (`12-06-PLAN.md` `files_modified`):** Splitting `12-cases.mjs` and `12-stops-probe.mjs` into `12-06` keeps `12-01` focused strictly on `app/src/` and allows both Wave 1 plans to execute in parallel worktrees without merge conflicts.
-- **Self-verifying negative baseline (`12-06-PLAN.md` Task 2 `<verify>`):** Requiring `12-stops-probe.mjs check pen reading editor` to exit non-zero AND produce a `FAIL <facet>` line for every facet (`pen`, `reading`, and `editor`) on the base build proves the probe is not vacuously passing before `12-05` runs it as a positive gate on the final build.
-- **Worktree fallback for sequential Wave 1 execution (`12-06-PLAN.md` Task 1):** Checking `git log --format=%H --grep='(12-01)' -- app` and creating a temporary detached worktree of the parent commit if `12-01` has already committed to the current branch ensures the base build is genuinely pre-`12-01` regardless of whether Wave 1 runs in parallel worktrees or sequentially.
+- **Rigorous proof that Round 2 does not perturb the 94-snapshot Phase 11 walk baseline (`.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-14-PLAN.md:218-230`, `.planning/phases/11-steps-structure-save-and-print/11-walk.mjs:103,200-273`):** `12-14-PLAN.md:218-230` verifies against `11-walk.mjs` that all baseline scenarios run at `WIDTH = 1366`, snapshot `.notebook` (never `.shell`), never press `Edit this step`, and never open `/notebook/new` or `/edit`, while the 5 `NEW` creation/edit scenarios use `.mk-head-act` and `aria-label`s that Round 2 preserves.
+- **First-activation WebKit verification before human handoff (`.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-14-PLAN.md:32,147`):** Requiring `12-device-steps.mjs` to walk every numbered step of `12-ipad-rows.md` with single-activation discipline (`first activation missed`) and verify the step count per row against `12-ipad-rows.md` prevents handing unreachable instructions to Mark.
+- **Live-data privacy and `app/dist` protection (`12-CONTEXT.md` D-12, `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-14-PLAN.md:125,142,160`):** Prohibiting recipe-specific words/figures in `12-ipad-rows.md` (`D-12`) and enforcing scratch `--outDir` builds with `PROBE_DIST` guards keep Mark's served `app/dist` untouched.
 
 ### 3. Concerns
-- **[MEDIUM] Text-node parent class check in the `editor` facet (`app/src/ui/Segmented.jsx:70-80`, `app/src/ui/CreationSetup.jsx:279-288`, `12-06-PLAN.md` Task 2 lines 95-96):** Task 2 states:
-  > "report the card's `.mk-stops` text and every text node inside the Scales section that matches the word right (case-insensitive, whole word) with its parent element's class. check: `.mk-stops` reads 'faint · 2 · 3 · 4 · strong' and **no matching text node stands outside the Kind group's own option labels**."
-  Inspect `app/src/ui/Segmented.jsx:70-80`:
-  ```jsx
-  <label key={option} className="segmented__option">
-    <Radio ... />
-    <span>{option}</span>
-  </label>
-  ```
-  Inside the Kind segmented control, the option text `"Right in the middle"` is inside an unclassed `<span>` (`node.parentElement.tagName === 'SPAN'`, `node.parentElement.className === ''`) whose parent is `<label class="segmented__option">`. If `12-stops-probe.mjs` checks `node.parentElement.classList.contains('segmented__option')` instead of `Boolean(node.parentElement?.closest('label.segmented__option'))`, it will falsely fail `check editor` on the final build (`12-05` Task 3) by treating `"Right in the middle"` as standing outside the Kind group's option labels!
-- **[LOW] `inject` handling of `CASES.worst` when `marks` and `ticks` are omitted (`.planning/canvas-generators/p12-capture.mjs:27-30`, `12-06-PLAN.md` Task 1 line 68):** In `p12-capture.mjs:29`, `inject` writes:
-  ```js
-  if (b.tasting) { b.tasting.marks = c.marks; b.tasting.declaredDefects = c.ticks; }
-  ```
-  For `CASES.worst`, Task 1 specifies `no marks` (and no ticks). If `c.marks` is `undefined`, `b.tasting.marks = c.marks` would set `b.tasting.marks` to `undefined` instead of `{}` (which would throw in `TastingReading` at `BatchRow.jsx:294` `marks[axis.key]` if a reading page were ever opened on `worst`). Using `b.tasting.marks = c.marks ?? {}; b.tasting.declaredDefects = c.ticks ?? [];` in `12-cases.mjs` keeps `inject` safe for all cases.
+- **[HIGH] "from Recipe name Tab to Save" in Row 2 only walks 4 stops in `.notebook-band` and skips the entire editor body (`app/src/ui/CreationPage.jsx:685-828`, `app/src/ui/CreationSetup.jsx:234-340` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-14-PLAN.md:144,147`):**
+  `12-14-PLAN.md:144` specifies in Row 2:
+  *"from Recipe name Tab to Save (Expect every control outlined in turn, each Move button included, a grey one too, none skipped)"*.
+  However, in `app/src/ui/CreationPage.jsx:685-754`, `Recipe name` (`:691`), `Recipe description` (`:706`), `Version name` (`:725`), `Cancel` (`:740`), and **`Save` (`:743`)** all live in `<header className="notebook-band">` at the **top** of the page (there is no footer `Save` in `CreationPage.jsx`: `RecipeSheet` is passed no `foot` prop at `:762-823`). `Before you start`, `Ingredients` (and its `Move` buttons), `Instructions` (and its `Move` buttons), `Balance`, `Watch for`, and `Setup` (`Style`, `Serving temperature`, `Targets`, `Scales`, `Problems`) all sit inside `<div className="notebook-body">` (`:760-828`), **after** `Save` in DOM and Tab order! Tabbing "from Recipe name to Save" takes only 4 Tab presses (`Recipe description` -> `Version name` -> `Cancel` -> `Save`) and stops before reaching a single ingredient row, step, or `Move` button!
+- **[MEDIUM] `11-device-steps.mjs` contains stale pre-`e37db11a` selectors that will fail if copied into `12-device-steps.mjs` (`.planning/phases/11-steps-structure-save-and-print/11-device-steps.mjs:50-51,171-177,213,239,247-255,265` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-14-PLAN.md:136,147`):**
+  `12-14-PLAN.md:136,147` instructs the executor to copy `11-device-steps.mjs`. Unlike `11-walk.mjs` (which `12-08` repaired), `11-device-steps.mjs` was never updated for the post-Phase-11 quick fixes and still uses:
+  - `input[aria-label="${name}, grams"]`, `input[aria-label$=", lead-in"]`, and `.nb__new input` (`11-device-steps.mjs:171-177,213,219`) — all of which are now `<textarea>` (`app/src/ui/oneLineField.js:1-5`);
+  - `'Move Sucrose up'` / `'Move Sucrose down'` (`11-device-steps.mjs:50-51`) — now `'Move up, Sucrose'` / `'Move down, Sucrose'` (`app/src/ui/IngredientTable.jsx:301,311`);
+  - `'Step 1, add a step after it'` (`11-device-steps.mjs:239`) — now `'Step 1, Add step after it'` (`app/src/ui/CreationSteps.jsx:279`);
+  - `'Add ${MILK} to a step'` and `'Add ${MILK} to step 1'` (`11-device-steps.mjs:247-248`) — now `'Add to step, ${MILK}'` and `'Step 1, Warm: add ${MILK}'` (`app/src/ui/IngredientTable.jsx:282,320`);
+  - `'Step 2, change the ingredients'` (`11-device-steps.mjs:265`) — now `'Step 2, change ingredients'` (`app/src/ui/CreationSteps.jsx:211`).
+- **[LOW] Task 1 precondition omits `12-15-SUMMARY.md` (`.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-14-PLAN.md:102`):**
+  `12-14-PLAN.md:102` says `Every round-two app plan has landed: 12-09-SUMMARY.md to 12-13-SUMMARY.md exist`, omitting `12-15-SUMMARY.md` (even though `depends_on` at `:6` and Task 1's action at `:111` require `12-15`'s `12-board-more.mjs`).
 
 ### 4. Suggestions
-- In `12-stops-probe.mjs` (`editor` facet), test whether a text node matching `/\bright\b/i` is inside a Kind option label via `Boolean(node.parentElement?.closest('.segmented__option'))`, and when reporting its parent class, report `node.parentElement?.className || node.parentElement?.closest('[class]')?.className || ''`.
-- In `12-cases.mjs`, default `marks: {}` and `ticks: []` on `CASES.worst` and guard `inject` with `c.marks ?? {}` and `c.ticks ?? []`.
+- In `12-14-PLAN.md:144` (Row 2) and `12-device-steps.mjs` (`12-14-PLAN.md:147`), change *"from Recipe name Tab to Save"* to Tab from `Recipe name` through `Save`, `Before you start`, `Ingredients`, `Instructions`, `Balance`, `Watch for`, and `Setup` all the way to the last control of `Problems` (`Add problem` at the foot of `<aside aria-label="Setup">`, `app/src/ui/CreationSetup.jsx:331`).
+- In `12-14-PLAN.md:136,147`, explicitly warn the executor to copy only the harness structure (`readyFor`, `press`, `tabTo`, `enter`) from `11-device-steps.mjs` and to take all field/control selectors from `11-walk.mjs` (lines 974-1035) and `p12g2c-capture.mjs`.
+- Add `12-15-SUMMARY.md` to Task 1's `<precondition>` at `12-14-PLAN.md:102`.
 
 ### 5. Risk Assessment
-- **Risk Level: LOW** — `12-06` touches only two new harness files in `.planning/phases/12-.../`, and the `.closest('.segmented__option')` check is a simple guard that prevents a false negative when `12-check.sh` runs in Wave 3.
+**MEDIUM** — The DOM-order mistake in Row 2's Tab instruction (`Recipe name` to `Save`) would either cause `12-device-steps.mjs`'s whole-editor Tab check to fail or cause Mark's iPad check to stop after 4 Tabs in the header band; fixing the target end-control in `12-14-PLAN.md:144` resolves it cleanly.
 
 ---
 
-## Cross-Plan Comparison & Overall Assessment
+## 12-15
 
-### Wave & Dependency Ordering
-- **Wave 1 (`12-01`, `12-06`):** Truly independent (`files_modified` are disjoint: `app/src/**` vs `.planning/phases/12-.../12-{cases,stops-probe}.mjs`). `12-06` includes an explicit git-log fallback worktree mechanism if run sequentially after `12-01`.
-- **Wave 2 (`12-02` depends on `12-01` & `12-06`; `12-03` depends on `12-01`):** `12-02` consumes `middleWordFor` from `12-01` and `12-cases.mjs` from `12-06`. `12-03` consumes `12-01`'s domain/UI changes and purposefully avoids asserting `12-02`'s notes-line counts or `.lf-mid` omission so `12-02` and `12-03` can run concurrently in Wave 2 without conflict.
-- **Wave 3 (`12-04` depends on `12-01`, `12-02`, `12-06`; `12-05` depends on `12-01`, `12-02`, `12-03`, `12-06`):** Both Wave 3 plans modify only their own harness files in `.planning/phases/12-.../` and use distinct scratch directories (`dist-04`/`evidence-04` vs `dist-05`/`evidence-05` and `check-...`).
+### 1. Summary
+Plan `12-15` removes `Import` and `Export` from the `More` disclosure (`<details className="shell__more">`) in `app/src/ui/Shell.jsx`, updates the static and jsdom Shell test suites (`Shell.test.jsx`, `Shell.importGuard.test.jsx`, `Shell.creationGuard.test.jsx`, `Shell.flyout.test.jsx`), documents why `closeImportErrors`'s narrow focus fallback to `moreSummaryRef` remains reachable, and verifies the `more` panel of `notebook-home-more-393.html` via `12-board-more.mjs`. The plan is well-scoped and shares no files with `12-09`, `12-10`, or `12-11` in Wave 4.
 
-### Top Actionable Fixes Before Execution
-1. **`12-03` (HIGH):** In `12-roundtrip.mjs`, do not use `.batch-row__record` from `11-walk.mjs:490` to open the record pen on the newly created recipe (which has 0 batches and therefore renders `<Button className="notebook-action">Record batch</Button>` per `app/src/ui/BatchRow.jsx:1336`); match `getByRole('button', { name: /^Record (batch|another)$/ })` instead.
-2. **`12-04` (HIGH):** Account for `.planning/canvas-generators/p12.py:32-36, 163` having replaced `.lf-foot` text on `printed-logs.html` for `two` (`Coffee · Version 1 · [Sheet code]`) and `one` (`Mint chip · Version 1 · [Sheet code]`) while `12-cases.mjs`'s `inject` leaves `olive-oil-ice-cream-v1`'s `sheetTitle` and `sheetCode` intact. Also fix `11-board-check.mjs:695-700` when copying to `12-board-check.mjs` so a same-page `panel.against` stand-in does not mutate both `b2` and `a2` with `1px` font size during `--selftest`, and use `.print-page--log:not(:has(.lf-srow))` / `.print-page--log:has(.lf-srow)` for the log page anchors in native `querySelectorAll`.
-3. **`12-05` (HIGH):** In `12-safari-check.mjs`'s `/p12-seed` page, wait for the hidden seeding iframe to render `.notebook-log` before calling `inject(c)` rather than polling `indexedDB.open('sprinkles')` while the app is still booting (which risks creating a v1 storeless DB or blocking the v10 upgrade in `app/src/store/db.js:84`), and reload/replace the iframe after `inject(c)` in `sim` mode.
-4. **`12-06` (MEDIUM):** In `12-stops-probe.mjs`'s `editor` facet, use `node.parentElement?.closest('.segmented__option')` when checking whether the word `"right"` in `"Right in the middle"` (`app/src/ui/Segmented.jsx:79`, rendered inside an unclassed `<span>` child of `label.segmented__option`) belongs to the Kind option labels.
+### 2. Strengths
+- **Removes dead DOM nodes rather than gating them (`app/src/ui/Shell.jsx:703-742`, `app/src/styles/shell.css:1082-1084`):** Because `.shell__tabs` is `display: none` from 724 px up (`app/src/styles/shell.css:1082-1084`), `More` is only ever visible below 724 px. Removing `Import` and `Export` from `.shell__more` outright (`12-15-PLAN.md:26,85`) rather than gating them on `!below724` avoids leaving two permanently hidden buttons in the DOM at `>=724` px.
+- **Retains reachable narrow Import error focus fallback and CSS rules (`app/src/ui/Shell.jsx:370-376`, `app/src/styles/shell.css:1186-1188,1255-1261`, `app/src/styles/shell.test.js:668-669`):** Keeping `(below724 ? moreSummaryRef : importRef)` in `closeImportErrors` (`12-15-PLAN.md:27,115`) handles the case where an import error panel opened at `>=724` px is closed after the viewport narrows below 724 px, and leaving `app/src/styles/shell.css` untouched keeps `app/src/styles/shell.test.js:668-669` (`expected a phone-block .shell__more li > button rule`) green.
+- **Exact test pin inventory (`app/src/ui/Shell.test.jsx:145,176-183,244`, `app/src/ui/Shell.importGuard.test.jsx:169,188-194`, `app/src/ui/Shell.creationGuard.test.jsx:238,268-282,599-605`):** Every test line cited in `12-15-PLAN.md:66,87` matches the actual repository files and line numbers.
+
+### 3. Concerns
+- **[MEDIUM] Panel `more` in `notebook-home-more-393.html` was captured on `/notebook`, not `/` (`.planning/canvas-generators/p12g2-capture.mjs:47-48`, `.planning/canvas-generators/p12g2.py:231` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-15-PLAN.md:89`):**
+  In `p12g2-capture.mjs:47-48`, `more_393` was captured after `await load('/notebook')`, so in `notebook-home-more-393.html:13143` (panel `more`) the `Notebook` tab in `.shell__tabs` carries `aria-current="page"` (which sets `font-weight: 600` via `.shell__tabs .shell__place[aria-current='page']` at `app/src/styles/shell.css:1200`). `12-15-PLAN.md:89` says *"One panel, `more`, by `panelSelector` `.fp-win.g2w-393[data-pid="more"]` at 393 with a coarse pointer, seed only, its steps opening More by pressing `.shell__more summary`"* without naming `route: '/notebook'`. If `12-board-more.mjs` uses `route: '/'`, `Home` will have `aria-current="page"` instead of `Notebook`, and if `12-board-more.mjs` does not set `anchor: '.shell__tabs'` (since `more` is a `kind === 'full'` panel where `p12g2.py:231` also stripped `New recipe` via `notebook(...)`), any full-page check outside `.shell__tabs` could see `.shell__main` before `12-09` lands.
+- **[LOW] Outdated comments in `app/src/ui/Shell.jsx:449,681-687` (`app/src/ui/Shell.jsx:449,681-687` vs `.planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-15-PLAN.md:85,115`):**
+  `12-15-PLAN.md:85,115` updates the hairline comment (`:715-719`) and the `closeImportErrors` comment (`:370-371`), but `app/src/ui/Shell.jsx:449` (`// Both Import buttons open the one hidden file input through here.`) and `:682-687` (`the fifth being More — Ingredients, Kitchen, Search, Import and Export. ... More's Import opens the same single hidden file input...`) still describe `More`'s `Import` and `Export` buttons.
+
+### 4. Suggestions
+- In `12-board-more.mjs` (`12-15-PLAN.md:89`), set `route: '/notebook'` and `anchor: '.shell__tabs'` so the active tab (`Notebook`) matches `notebook-home-more-393.html`'s `more` panel and the check is scoped strictly to `.shell__tabs` (completely independent of `12-09`'s changes in `.shell__main`), and use `absent: ['.shell__more button']`.
+- Update the comments at `app/src/ui/Shell.jsx:449` and `:681-687` (and the test description at `app/src/ui/Shell.test.jsx:155`) alongside `:370-371` and `:715-719` so no comment in `Shell.jsx` claims `More` still holds `Import` and `Export`.
+
+### 5. Risk Assessment
+**LOW** — Very small, well-isolated deletion in `Shell.jsx` with straightforward test pin updates.
+
+---
+
+## Cross-Plan Comparison & Overall Risk Assessment
+
+### Wave Structure & File Exclusivity
+- **Wave 4 (`12-09`, `12-10`, `12-11`, `12-15`):** Zero file overlap across the four plans. Splitting `12-15` (`Shell.jsx` and `12-board-more.mjs`) out of `12-09` cleanly avoids any file contention in Wave 4. Note that if `12-15`'s `12-board-more.mjs` runs before `12-09` lands, anchoring `12-board-more.mjs` on `.shell__tabs` (`route: '/notebook'`) ensures it does not touch `.shell__main`.
+- **Wave 5 (`12-12`) -> Wave 6 (`12-13`) -> Wave 7 (`12-14`):** Strictly sequential where files overlap (`CreationSteps.jsx`, `IngredientTable.jsx`, `CreationPage.jsx`, `REQUIREMENTS.md`, `ROADMAP.md`).
+
+### Top Must-Fix Issues Before Execution
+1. **`12-13-PLAN.md:182` (HIGH — Board Text Failure):** Fix the instruction claiming `In a row's grams:` uses a *"typographic apostrophe as the board writes it"*. Both `p12g2.py:95` and `row-controls.html:13146` (`&#x27;`) use the ASCII straight apostrophe `'` (`U+0027`). Using `’` (`U+2019`) will fail `12-board-keys.mjs`.
+2. **`12-12-PLAN.md:191` (HIGH — Board Geometry/Text Failures on `kr-preview` and `ai-pick`):** Account for the two board shortcuts in `p12g2.py`:
+   - `kr-preview` (`p12g2.py:130-134,297`, `CONTRACT.md` §9 bullet 2) spliced the two-field preview block into the written step (`ed_full`), so `.mk-preview` on the board lacks the target, purpose, and aside that the real app renders.
+   - `ai-pick` (`p12g2.py:267-268,305`) truncated `<ul class="pick__list">` to 8 items, so checking `.pick` `box` will fail on `box.h` against the 111-item list in the live app (check `.pick__head` and `.pick .ing__filters` `box` instead, or cap the list with `appStyle`).
+3. **`12-14-PLAN.md:144` (HIGH — Wrong Tab Walk Endpoint in Row 2):** In `app/src/ui/CreationPage.jsx:685-828`, `Save` is in `.notebook-band` at the top of the editor (4 Tabs after `Recipe name`), **before** `.notebook-body`. Change *"from Recipe name Tab to Save"* to Tab from `Recipe name` through `Save` and the entire editor to the end of `Problems` (`Add problem` in `<aside aria-label="Setup">`).
+4. **`12-11-PLAN.md:90` (HIGH — Node vs. jsdom Test Environment):** `app/src/ui/Method.test.jsx` runs in Vitest's `node` environment (`renderToStaticMarkup`, no DOM/clicks). Move the interactive click/toggle/`Done`/`Cancel` cases to `app/src/ui/RecipePage.perStep.test.jsx` (which runs in `jsdom`).
+5. **`12-10-PLAN.md:125` (HIGH — `startTastingOnMount` vs. `draftsLoaded` Race):** Because `app/src/ui/useRouteIntents.js:43` waits on `draftRestoreDone` but not `draftsLoaded`, refusing `handleStartAmending` while `!draftsLoaded` can consume and drop a valid `Record tasting` navigation from Home if `getDraft` resolves before `listDrafts`. Gate `useRouteIntents.js:43` on `draftsLoaded` (like `:67`) or derive `planHeld` from `useKeptDraft`'s own `getDraft` read.
+6. **`12-09-PLAN.md:158,188` (MEDIUM — `12-board-check.mjs` `anchor` Requirement & `NotebookList` Empty Branch):** Set `anchor: '.shell__main'` (not just `scope: '.shell__main'`) in `12-board-places.mjs` so `12-board-check.mjs:185` activates scoping on `full` panels, and pass `below724` in both return branches of `NotebookList` (`app/src/ui/NotebookPlace.jsx:296-297,305-306`).
+
+**Overall Round-Two Risk Level:** **MEDIUM** — The product design (`CONTRACT.md`) and codebase architecture are very well aligned, and addressing the six source-verified issues above will prevent false board-check failures, test-environment errors, and route-intent races during execution.
 
 
 ---
 
 ## Consensus Summary
 
-Two source-grounded reviewers (Codex, gpt-6.1-sol; OpenCode, gemini-4-argon), both citing `file:line`. Both say the Gate 1 scope, the domain approach in 12-01 and the D-06 deferral of Gate 2 and PROOF-02 are sound, and both say the verification harnesses as written would fail on a correct build. Codex's verdict is "revise before execution"; OpenCode rates 12-04 HIGH, 12-03 and 12-05 MEDIUM, 12-01, 12-02 and 12-06 LOW. Codex did not write a section per plan (its findings are numbered and name the plans) and could not launch WebKit, so none of its findings is browser-confirmed. No finding here has been checked by the orchestrator against the source; the replan should confirm each before acting.
+Both reviewers read the repository and cite `file:line` evidence throughout; both gave every one of
+the seven plans its own section. Astra asks for changes before execution and rates the round HIGH
+risk; Argon rates it MEDIUM with six must-fix items. The findings below are the reviewers' claims.
+They have not yet been checked against the code by the orchestrator.
 
 ### Agreed Strengths
-- Kind branching lives in the domain readers and the reading draws from the batch snapshot (`axesForBatch`), so stored marks do not move when a version changes.
-- The round trip drives the real Export button and the real file input (`Shell.jsx` handlers), not a store shortcut.
-- Deferring Gate 2 and PROOF-02 follows 12-CONTEXT D-06.
+
+- 12-09: guarding at the route element keeps `CreationRoute` and `EditRoute` from mounting below
+  724, so their draft reads and redirects never run; the unmount flush in `useKeptDraft` carries
+  pending typing across a width crossing.
+- 12-10: the shared draft key between `plan`, `record` and `amend` is a real loss path and the plan
+  guards handlers as well as markup; a separate own-draft prop keeps the History rail unchanged.
+- 12-11: reusing `StepReading` and resetting the preview when the step closes fits how
+  `StepPenBody` stays mounted.
+- 12-12: the stale-anchor check before `groupRows` prevents a real `RangeError`.
+- 12-13: keyed moves must not go through the button-focus request; composing with `holdReturn`
+  keeps Return behaviour in the fields.
+- 12-14: the Phase 11 walk baseline should not change, and PROOF-02 stays pending until Mark passes
+  the rows.
+- 12-15: removing More's Import and Export outright is right, and the narrow error-panel focus
+  fallback stays reachable.
 
 ### Agreed Concerns
-1. **12-04, HIGH: the log boards' footer text cannot match the app.** `p12.py` wrote `Coffee · Version 1 · [Sheet code]` (and the Mint chip equivalent) into the boards; the injected case leaves the Olive Oil title and its real Sheet code. An exact `.lf-foot` text check fails on a correct build, and the plan forbids dropping a check. Fix: matching fixture identity, or a declared substitution, with the stored Sheet code checked separately.
-2. **12-04, MEDIUM: `.p4-win` is assumed all through the copied engine** (panel lookup, kind classification, evidence, `against`, the self-test's 1 px style), not only in the reader the plan names. One panel reference has to be carried through every stage.
-3. **12-04: the self-test as specified cannot pass.** Codex: the negative self-test expects `count` where a missing board element yields `undeclared`. OpenCode: a panel held against itself on the same board page gets the 1 px mutation on both sides, so the mutation run reports no FAIL. Different mechanisms, same step.
 
-### Raised by one reviewer (check before acting)
-- **12-01 (Codex, P1):** Task 1 asks for a radio named exactly `2` in both declared scales although the Right in the middle scale keeps `2: leaning thin`, and asks for all core scales before declared ones although the desktop pen interleaves them in row-major order (`BatchRow.jsx:249`).
-- **12-04 (Codex, P1):** the common log spec requires `.lf-srow`, `.lf-anchor`, `.lf-num`, `.lf-mid` on the Batch log, which has none, and the engine rejects empty board matches.
-- **12-04 (OpenCode, MEDIUM):** the log anchor must be plain CSS matching exactly one element on board and app (`.print-page--log:has(.lf-srow)` and its negation); the picture scale needs `!important` over the inline style.
-- **12-03 (OpenCode, HIGH):** `openRecordPen` copied from `11-walk.mjs:490` clicks `.batch-row__record`, which a version with no batches does not render (`BatchRow.jsx:1335`, "Record batch" is `.notebook-action`).
-- **12-03 (Codex, P2):** the copied `dumpStores` reads four stores where the export carries eight, and compares B against A only, so a record missing from B passes.
-- **12-03 (OpenCode, MEDIUM/LOW):** `exportedAt` needs a frozen clock for the `cmp`; wait for Find to enable on `/search`.
-- **12-05 (OpenCode, HIGH):** the seed page polling `indexedDB.open('sprinkles')` before the app boots can create a storeless v1 database or block the v10 upgrade; wait for `.notebook-log` in the iframe instead, and load the view after `inject`.
-- **12-06 (OpenCode, MEDIUM):** the editor facet's "right" filter must use `closest('.segmented__option')`; the option text sits in an unclassed span.
-- **12-01/12-06 (Codex, P2):** a veto of A1 (the editor's stops line) also breaks 12-06's hard-coded editor expectation and its must-fail-on-base rule.
-- **Wave 1 (Codex, P2):** `stopWordsFor` returning null at stop 3 changes the printed log as soon as 12-01 lands (`PrintLogPages.jsx:148`), so the handoff's "print still shows right until 12-02" is wrong; the row-height fix arrives a wave later. The bug row is also scheduled to close before the final built-app probe.
-- **12-02 (OpenCode, MEDIUM/LOW):** restore inline styles after the `fit` and `worst` facets; measure anchor overflow against the 76 px track, not the element's own box.
+1. **12-14, HIGH (both): the whole-editor Tab step ends too early.** "From Recipe name Tab to Save"
+   reaches Save after four stops, because Save sits in the band above the editor body
+   (`app/src/ui/CreationPage.jsx:685-754`). As written it proves no row or step control.
+2. **12-10, HIGH (both, different mechanisms): an asynchronous gap around the held-draft guard.**
+   Astra: on widening, `planHeld` goes false before the second `getDraft` finishes, so a record pen
+   opened in that interval can win the late-read rule and overwrite the plan draft. Argon: the
+   start-tasting route intent does not wait for `draftsLoaded`, so refusing while drafts are unread
+   consumes and drops a valid intent; the record controls can also flash before `draftsLoaded`.
+3. **12-11, HIGH (Argon) / MEDIUM (Astra): interactive tests are assigned to `Method.test.jsx`,**
+   which renders static markup in the node environment and cannot press a button.
+4. **12-12, MEDIUM (Astra) / LOW (Argon): Cancel on the picker can find no target** when the
+   anchor row has switched to its Add to step chooser, so focus is dropped.
+5. **12-11, MEDIUM (Astra) / LOW (Argon): a removed step's preview is unspecified** (it would read
+   as an ordinary numbered step; the margin number rule is not carried into the preview).
+6. **12-14, LOW (both): the precondition lists summaries 12-09 to 12-13 and omits 12-15.**
+7. **12-15, LOW (both): comments in `Shell.jsx` still describe More's Import and Export.**
 
 ### Divergent Views
-- **12-01:** OpenCode rates it LOW with only a nullish-check suggestion; Codex finds two test assertions a correct implementation cannot satisfy. Worth resolving first, since 12-01 is the only plan that edits `app/`.
-- **12-03:** each reviewer found a different defect (selector on a zero-batch version; comparison breadth). Neither contradicts the other.
+
+Raised by Astra only:
+- 12-10, HIGH: existing 393-wide suites press Next version or expect Resume editing
+  (`RecipePage.perStep.test.jsx`, `RecipePage.beforeYouStart.test.jsx`, `RecipePage.edit.test.jsx`)
+  and no plan owns their migration.
+- 12-10, MEDIUM: extending `recordingLocked` to Correct changes a desktop state the plan says is
+  unchanged (a kept edit whose version gained a batch).
+- 12-09, MEDIUM: "reads, writes and deletes nothing" contradicts the intended flush on narrowing
+  and Shell's own draft read; the test does not watch `listDrafts`.
+- 12-12, MEDIUM: the landing group for focus is computed from render-time state while the insert
+  re-checks the anchor inside the updater, so the two can disagree.
+- 12-13, MEDIUM: the Branch A or B decision rests on a lead-in probe only; the key matrix is
+  narrower than "every key path".
+- 12-14, MEDIUM: the written authoring sequence leaves blank grams and a blank second step, so its
+  Save cannot succeed as written.
+
+Raised by Argon only (mostly board-check harness mismatches):
+- 12-12, HIGH: board panel `kr-preview` shows a two-field preview block inside a fully written
+  step, and `ai-pick` cuts the picker list to eight rows; `box` and `text` checks as planned would
+  fail against the app.
+- 12-13, HIGH: the plan says "typographic apostrophe as the board writes it", but the board and the
+  contract use the ASCII apostrophe.
+- 12-13, MEDIUM: `kr-press` and `kr-move` are before-key panels; pressing the key in their steps
+  puts the app in the after-key state.
+- 12-09, MEDIUM: `12-board-check.mjs` ignores `scope` on full-page panels unless `anchor` is set;
+  `NotebookList` has two return branches and the empty one is easy to miss.
+- 12-10, MEDIUM: a plan draft kept in the same session is not in the page's `drafts` state until a
+  reload, which the board spec must allow for.
+- 12-14, MEDIUM: `11-device-steps.mjs` holds selectors that no longer match the app; copying it
+  would carry them over.
+- 12-15, MEDIUM: the `more` panel was captured on `/notebook`, and the plan names no route.
+- 12-13, LOW: evidence file names collide when the row-controls and keys specs run together.
+
+The two reviews overlap little. Astra concentrates on state transitions and on whether the tests
+prove what they claim; Argon concentrates on whether the board checks can pass as specified.

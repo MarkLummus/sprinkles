@@ -15,6 +15,10 @@
 # pen between 724 and 759, which joins the Archive's Recipe route 03.5 page where version 533 had placed it)
 # and "Main (Archive)" (two boards and his own five images, which are notes: their uploads are copied and
 # their addresses repointed, SRC below).
+# MOVEPASS=4 runs the last (2026-11-22; Mark in chat, against the list of what was left: "Archive the ones
+# that are marked", "Move them and remove the appropriate labels", the two Draft kept boards "Archive", and
+# of the Keep labels and the "(Keep)" suffix "They should come off"): eight boards from five pages that keep
+# the rest, the notes that are theirs alone, then every destination label and suffix off the active canvas.
 # Homes are the labels as they read on the canvas when the pass ran, Mark's own edits to them included:
 # on Print formats "Keep · still needed? Yes" over the Mark one states and reading, and "To Archive" over the
 # whole-pen board; on Recipe route 03.5 concepts "To Concepts: move to the Recipe book" over the on-screen
@@ -43,6 +47,18 @@ if os.environ.get('MOVEPASS') == '2':   # the second pass: whole pages only, not
     NAMES = {'page-9': 'Home', 'page-2': 'Recipe', 'page-4': 'Notebook', 'page-7': 'Ingredients', 'page-15': 'Print formats superseded',
              'page-12': 'Superseded print drafts', 'page-18': 'Recipe-declared items'}
 PAGE_TO, SRC = {}, {}   # a page that lands on another page of the destination; upload addresses to repoint in image notes
+NOTE_AT, RENAME, ALL_LABELS_OFF = {}, {}, False   # a note placed anew beside its board; a page renamed on the active canvas; every dest- label removed
+if os.environ.get('MOVEPASS') == '4':
+    WHOLE, LAND, GONE_LABELS = {}, {}, {}
+    BOARD = {'P12G2_StepOrder': A, 'P12_ReadBack': A, 'P12_LogLines': A, 'P10_LogRhythm': A, 'P10_PenRhythm': A, 'P9_CategoryOptions': A,
+             'P4_DraftKept': A, 'P4_DraftKeptWords': A}
+    NOTE = {'p9-options-note': A, 'p4-draft-note': A, 'p4-words-note': A, 'p10-rhythm-title': A, 'p10-pen-rhythm-title': A}
+    # the two titles stayed behind when version 533 moved their boards aside; they go back over them, at the offsets they had
+    NOTE_AT = {'p10-rhythm-title': (14742, -2504), 'p10-pen-rhythm-title': (17312, -2170)}
+    NAMES = {'page-27': 'Phase 12 entry points, pen preview and row controls (Gate 2)', 'page-26': 'Phase 12 own scales and problems (Gate 1)',
+             'page-22': 'Log column rhythm', 'page-19': 'Phase 9 places', 'page-16': 'Phase 4 screens'}
+    RENAME = {'page-13': 'Recipe route 03.5'}
+    ALL_LABELS_OFF = True
 if os.environ.get('MOVEPASS') == '3':
     WHOLE = {'page-13-archive': A, 'page-1': A}
     BOARD, NOTE, LAND, GONE_LABELS = {}, {}, {}, {}
@@ -89,6 +105,7 @@ def dest(c, which, d, out):
     for i in [i for i in c['noteOrder'] if i in p['notes']]:
         n = dict(N[i]); n['page'] = n.get('page', first); n['page'] = PAGE_TO.get(n['page'], n['page'])
         if n.get('src', '').startswith('/_blob/'): n['src'] = '/_blob/' + SRC[n['src'][7:]]
+        if i in NOTE_AT: n['x'], n['y'] = NOTE_AT[i]
         if i in lands: n['page'], (n['x'], n['y']) = lands[i]
         d['notes'][i] = n
         if i not in d['noteOrder']: d['noteOrder'].append(i)
@@ -101,7 +118,8 @@ def active(c, out):
     p = plan(c); gone_b = set(p[A]['boards']) | set(p[C]['boards']); gone_n = set(p[A]['notes']) | set(p[C]['notes'])
     first = c['pages'][0]['id']
     for pid, ids in GONE_LABELS.items(): gone_n |= set(ids)
-    gone_n |= {i for i, n in c['notes'].items() if i.startswith('dest-') and n.get('page', first) in WHOLE}
+    gone_n |= {i for i, n in c['notes'].items() if i.startswith('dest-') and (ALL_LABELS_OFF or n.get('page', first) in WHOLE)}
+    for pg in c['pages']: pg['name'] = RENAME.get(pg['id'], pg['name'])
     for k in gone_b: del c['boards'][k]
     c['order'] = [k for k in c['order'] if k not in gone_b]
     for i in gone_n: c['notes'].pop(i, None)

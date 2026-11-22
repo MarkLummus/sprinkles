@@ -1,116 +1,136 @@
 ---
 phase: 12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo
-reviewed: 2026-11-16T00:00:00Z
+reviewed: 2026-11-22T00:00:00Z
 depth: standard
-files_reviewed: 14
+files_reviewed: 51
 files_reviewed_list:
   - app/src/domain/axes.js
   - app/src/domain/axes.test.js
   - app/src/domain/creation.js
   - app/src/domain/creation.test.js
-  - app/src/styles/print.css
-  - app/src/styles/print.test.js
-  - app/src/styles/tokens.css
+  - app/src/domain/creationSave.js
+  - app/src/domain/creationSave.test.js
+  - app/src/router.jsx
+  - app/src/styles/notebook.css
+  - app/src/styles/shell.css
   - app/src/ui/AxisMark.jsx
   - app/src/ui/AxisMark.test.jsx
   - app/src/ui/BatchRow.jsx
-  - app/src/ui/BatchRow.test.jsx
+  - app/src/ui/CreationFlow.test.jsx
+  - app/src/ui/CreationPage.jsx
   - app/src/ui/CreationSetup.test.jsx
+  - app/src/ui/CreationSteps.jsx
+  - app/src/ui/CreationSteps.test.jsx
+  - app/src/ui/CreationStructure.test.jsx
+  - app/src/ui/DeskOnly.jsx
+  - app/src/ui/editorKeys.js
+  - app/src/ui/editorKeys.test.js
+  - app/src/ui/IngredientTable.creating.test.jsx
+  - app/src/ui/IngredientTable.jsx
+  - app/src/ui/Method.jsx
+  - app/src/ui/Method.preview.test.jsx
+  - app/src/ui/Method.test.jsx
+  - app/src/ui/notebookPaths.test.js
+  - app/src/ui/NotebookPlace.jsx
+  - app/src/ui/NotebookPlace.test.jsx
+  - app/src/ui/Placeholder.jsx
   - app/src/ui/PrintLogPages.jsx
   - app/src/ui/PrintLogPages.test.jsx
+  - app/src/ui/RecipeList.jsx
+  - app/src/ui/RecipeList.test.jsx
+  - app/src/ui/RecipePage.beforeYouStart.test.jsx
+  - app/src/ui/RecipePage.drafts.test.jsx
+  - app/src/ui/RecipePage.edit.test.jsx
+  - app/src/ui/RecipePage.jsx
+  - app/src/ui/RecipePage.perStep.test.jsx
+  - app/src/ui/RecipeSheet.jsx
+  - app/src/ui/Shell.creationGuard.test.jsx
+  - app/src/ui/Shell.flyout.test.jsx
+  - app/src/ui/Shell.importGuard.test.jsx
+  - app/src/ui/Shell.jsx
+  - app/src/ui/Shell.test.jsx
+  - app/src/ui/useKeptDraft.js
+  - app/src/ui/useKeptDraft.test.jsx
+  - app/src/ui/VersionRow.jsx
+  - app/src/ui/VersionRow.landing.test.jsx
+  - app/src/ui/VersionRow.record.test.jsx
+  - app/src/ui/VersionRow.test.jsx
 findings:
   critical: 0
-  warning: 2
+  warning: 1
   info: 4
-  total: 6
+  total: 5
   necessity: 0
 status: issues_found
 ---
 
-# Phase 12: Code Review Report
+# Phase 12: Code Review Report (round two)
 
-**Reviewed:** 2026-11-16
+This report covers the changes since a523336f. Round one's report is in git history at that commit.
+
+**Reviewed:** 2026-11-22
 **Depth:** standard
-**Files Reviewed:** 14
+**Files Reviewed:** 51
 **Status:** issues_found
 
 ## Summary
 
-I reviewed the Phase 12 diff (e37db11a..HEAD) for the kind-aware scale readers in `axes.js`, their call sites (`AxisMark`, `BatchRow`, `PrintLogPages`, `creation.js`), the clipboard-drop print rules, and the tests added with them.
+I read the delta of every file against a523336f and read the source of the four areas flagged as costliest: `useKeptDraft.js`, `CreationPage.jsx` (picker anchor and focus requests), `editorKeys.js` with its two call sites, and the `Method.jsx` Preview step. I ran the suites for those areas, `src/domain` and `tabindex-scan.test.js` one-shot. 37 files and 1546 tests passed, plus the 31 tabindex-scan tests. I edited no source.
 
-The kind branch really does live in `axes.js` alone. The only components that read the new functions are the three listed above, and none tests a kind itself. Prose still renders as text, and no `dangerouslySetInnerHTML` was added. Every new visual value goes through a token. The `.lf-sc` grid now has an explicit second row, so a Low to high row keeps the height of a Right in the middle row. I found no correctness bug in the domain or UI logic.
+No Critical findings. Specifics on the high-risk areas:
 
-The main risk is in print. The clipboard drop removes 96 px (90 px in WebKit) from each log page, and the compensation is a one-line cut in the Batch log notes and a one-line cut in the Tasting log notes. Phase 12's own measurements show the Batch log nearly full and the Tasting log spilling for long words. No test guards this. The remaining findings are comment and contract hygiene.
+- **useKeptDraft restore and hold.** I traced the crossings: narrowing during a read, widening during the first read, widening then narrowing during the re-read, and a pen opened while shut. None can overwrite or delete a held record.
+  - `planGuard` stays true across the `heldPlan` to `planRestoring` hand-off, because both change in one update.
+  - The persist effect builds no record while `mode` is `reading`, and `draftStoredRef` is never set on the held branch, so it neither writes over nor deletes the held record.
+  - Every pen opener on `RecipePage` goes through a wrapper that checks `planHeld`. `useRouteIntents` receives the wrapped handlers. `BatchRow` and `VersionRow` hide their controls from the same flag, so there is no second derivation of "plan held".
+- **Preview slot in `Method.jsx`.** The `{null}` placeholder lines the closed and open forms up at child index 10, so the `Edit this step` to `Cancel` node reuse that the focus fix depends on holds.
+- **CreationPage picker anchor.** `anchorHolds` checks step liveness before `groupRows`, so the throwing path is unreachable. `handlePick` re-checks the anchor against `prev` inside the functional update. The three focus requests (`picker-opener`, `row-grams`, `picker-name`) all fall back to the heading's Add ingredient.
+- **editorKeys.** IME composition, Alt and Shift are screened out. Handled combinations are always prevented. `holdReturn` still runs for every other key in the one-line fields.
+- **Project rules.** No literal visual values in the added CSS, no `dangerouslySetInnerHTML`, no `idb` import outside the repository, and domain modules import no framework. tabindex-scan passes.
+- **Necessity.** None found.
 
-I read `necessity-review.md` and assessed necessity. I found no necessity findings.
+One Warning and four Info items follow.
 
 ## Warnings
 
-### WR-01: Log pages have almost no slack after the clipboard drop, and the Tasting log can spill onto the first bench page
+### WR-01: Add ingredient buttons on a split row share one accessible name
 
-**File:** `app/src/styles/print.css:915-921`, `app/src/ui/PrintLogPages.jsx:133`, `app/src/ui/PrintLogPages.jsx:206`
-**Issue:** The drop adds 90 px to the top of each log page in WebKit and 96 px elsewhere. The page still has `height: 100%` with `.lf-foot { margin-top: auto }`. Overflow is not contained, because `.print-page` is `overflow: visible` in print. When the body is taller than the page, the foot is pushed past the page box and prints onto the next page.
-
-Phase 12's own measurements, in `12-02-SUMMARY.md` and `12-05-SUMMARY.md`:
-- **Batch log, WebKit:** needs 790 px of 810, so 20 px spare. In the WebKit PDF its ink reaches 756 pt of 756.
-- **Tasting log, normal recipe:** 42 px spare.
-- **Tasting log, long scale names, end words and problem words:** needs 827.8 px of 810. It spills by 17.8 px. "Side 2 of 2" lands on page 3, on top of the first bench page. Long end words also run 28 to 54 px past their 76 px grid column.
-
-12-05 says the long-words case was measured and left for Mark. The code still ships with no guard, and the only tests are line counts. The Batch log is also very close to the limit in WebKit.
-
-The fixed cut of one notes line was sized against a typical recipe, but the Tasting log's height depends on stored, user-typed content: scale names and ends, and problem words. Nothing in the app bounds that content.
-
-**Fix:** Choose one of these:
-- Make the Tasting log notes lines the shrinkable part, for example `flex: 0 1 auto` with a `min-height` of two lines. Alternatively, drop notes lines in `TastingLogPage` according to the count of declared scales and flaws.
-- Contain the page in print so a spill cannot reach the next sheet. Use `overflow: hidden` on `.print-page--log` in `@media print`. That clips the foot instead of overprinting a bench page. It is the lesser evil only if the fit cannot be guaranteed.
-- Cap the length of scale ends and names at the creation step so the measured worst case cannot be reached. Pin the cap with a fit test, not a line-count test.
-
-The mitigation should come before Mark's "long words" decision is closed.
-
-### WR-02: No automated check ties the notes-line counts to the clipboard drop
-
-**File:** `app/src/ui/PrintLogPages.test.jsx:81-85`, `app/src/styles/print.test.js:97-137`
-**Issue:** The only protection for the page-fit trade-off is a test that counts `lf-line` elements: 13 on the Batch log and 4 on the Tasting log. The CSS tests assert that the drop tokens exist and which rules read them. Nothing ties the drop height (96 or 90 px) to the line count (32 px each) and the measured body heights. A later edit to a gap token or a font size can push either log page over its limit with every test still green. The real fit check is the manual script `12-print-check.mjs`, which does not run in the suite. The drop alone costs three lines' height, so cutting one line only works because of existing slack. The tests state the cut without stating that slack.
-
-**Fix:** Add a Playwright or WebKit fit test to the gate, even if it is not in the Vitest run, with a spare-pixels floor for the fullest normal recipe: Batch log at least 15 px, Tasting log at least 30 px. Failing that, record in the tests why the line count is 13 and 4 and where the 20 px and 42 px spare figures come from, so a changed token is caught.
+**File:** `app/src/ui/IngredientTable.jsx:309-316`
+**Issue:** `RowActs` renders once per line of a row. A row ticked into two steps (a split row) therefore has two `Add ingredient` buttons, each labelled `Add ingredient after ${name}`. They land the pick in different groups: `onAddAfter` passes `portion.step`, so one anchors in step 1 and the other in step 2. The file's own comment says Move controls are named by step "so no two share a name", and the Move buttons do carry `${inStep}`. Add ingredient was left out of that rule. A screen reader user hears two identical controls with different effects. Dragon-style voice control ("click Add ingredient after Cream") cannot pick between them.
+**Fix:** Name it as the Move buttons are named.
+```jsx
+aria-label={`Add ingredient after ${name}${inStep}`}
+```
+`inStep` is already computed above the return and is empty for an unsplit row, so existing single-line labels do not change. Update the matching test queries for split rows.
 
 ## Info
 
-### IN-01: `stopWordsFor` now returns `null` entries, and `readMarkWord` remains an exported kind-blind reader
+### IN-01: DeskOnly takes a live editor away on narrowing, unlike NotebookHead
 
-**File:** `app/src/domain/axes.js:37-40`, `app/src/domain/axes.js:100-104`
-**Issue:** `stopWordsFor` used to return five strings. For a magnitude scale it now returns `[low, null, null, null, high]`. The only non-axes caller, `scaleStopsLine` in `creation.js:309`, handles this with `?? index + 1`. Any future caller that joins, maps or lowercases the array will print or crash on `null`.
+**File:** `app/src/ui/DeskOnly.jsx:13-16`
+**Issue:** `NotebookHead`'s comment says an entry already open as the window narrows "stays as it is, so nothing is taken from under the maker's hands". `DeskOnly` does the opposite for the creation and edit editors. If an iPad enters Split View or Slide Over below 724 px mid-edit, `CreationRoute` or `EditRoute` unmounts and the Placeholder replaces it. The draft is not lost: the unmount cleanup in `useKeptDraft` flushes the pending record, and widening reopens it. Two things are lost. The picker, step-chooser and focus state go with the editor. An in-flight Save loses its mounted page.
+**Fix:** Either accept it and say so in the DeskOnly comment, since the contract says "neither mounts", or let an already-mounted editor stay until the route changes. Mark's call, since it is a PHONE-01 contract question.
 
-`readMarkWord` is still exported and still documented as "the word the read view prints". It has no kind awareness: it returns "right" at stop 3 for any scale. Its only remaining caller is `readMarkText`, which guards it by branching first. This leaves a trap: someone using `readMarkWord` directly for a magnitude scale gets "right".
+### IN-02: Home's Record tasting does nothing visible on the phone while a plan draft is held
 
-**Fix:** Keep the null contract but note it on `stopWordsFor`'s own doc line (the doc comment already says "null at stops 2 to 4", so mark it as a contract in the module header). Make `readMarkWord` module-private, or add "Right in the middle only; use readMarkText" to its doc. The `axes.test.js` imports of `readMarkWord` can then go through `readMarkText`.
+**File:** `app/src/ui/RecipeList.jsx:221-229`
+**Issue:** At 724 px and above, a Record tasting link carrying `state.startTasting` lands on a page where the kept draft's pen reopens. Below 724 the draft stays shut, `handleStartAmending` refuses on `planHeld`, and `useRouteIntents` consumes the intent. The maker taps a filled action and arrives on a reading page with no pen and no notice. `VersionRow` does print the "Finish it at the desk or on the iPad" draft line, which is some explanation. The RecipePage comment ("Home's Record tasting ... all stop here") shows this was meant. It is still a dead-ended primary action on Home.
+**Fix:** If Mark wants it fixed, `HomeBody` already computes `draft`. Below 724, when the lead recipe has a plan draft, draw `Keep developing` alone, or send `onPageStatus` a one-line notice when an intent is refused by `planHeld`.
 
-### IN-02: `readMarkText` uses strict equality where `readMarkWord` coerces
+### IN-03: Preview state survives a remove and restore of the open step
 
-**File:** `app/src/domain/axes.js:112-118`
-**Issue:** On the magnitude branch, `stop === 1` and `stop === 5` are strict. `readMarkWord` on the goldilocks branch uses `<=` and `>=`, which coerce. A mark that arrives as the string `"5"` (hand-edited data, or a future import) reads "high (5)" on a Right in the middle scale but "5 of 5" on a Low to high one. A mark of `6` reads "6 of 5". Marks are written only through `setMark` as integers from `STOPS`, so this is not reachable through the UI today. It is an inconsistency between the two branches.
+**File:** `app/src/ui/Method.jsx:144-148, 307-330`
+**Issue:** `previewing` is reset only when `isOpen` goes false. The cross-flag `Remove this step` in the open form can remove the step while it stays open. The Preview block is then hidden by `!draftStep.removed`, but `previewing` stays true. Restoring the step brings the preview back already expanded.
+**Fix:** `useEffect(() => { if (!isOpen || draftStep.removed) setPreviewing(false); }, [isOpen, draftStep.removed]);`
 
-**Fix:** Either compare numerically on both branches, with `Number(stop)`, or state in the doc comment that stops are integers 1 to 5 and that the function trusts the caller.
+### IN-04: `planHeld` is a pure alias of `planGuard`
 
-### IN-03: A test title claims an order it does not check, and one test has a formatting slip
-
-**File:** `app/src/ui/BatchRow.test.jsx:2119-2124`
-**Issue:** The test "a recipe with a Low to high scale and a problem of its own draws both cues, scales first" asserts the cue count and the chip list. It never checks that the scales cue comes before the problems chips. The title overstates the check. The `it(...)` header and its first statement share one line (`() => {    const markup = ...`), a leftover from an edit.
-
-**Fix:** Assert `markup.indexOf('id="axes-declared-cue"') < markup.indexOf(...)` for the problems cue, or rename the test. Put the statement on its own line.
-
-### IN-04: Stale and garbled comments around the changed code
-
-**File:** `app/src/ui/BatchRow.jsx:273-278`, `app/src/domain/axes.js:1-8`, `app/src/styles/tokens.css:558`
-**Issue:**
-- **`BatchRow.jsx`:** the `TastingReading` header comment now ends a clause with "from the batch's own snapshot, D-04's battery); the tasting's own measured cells...". The long line is garbled, and "D-04's battery" now follows the wrong clause.
-- **`axes.js`:** the top comment still opens with "The five whole goldilocks stops" and says `stopWordsFor`, `readMarkWord` and `setMark` "stay constants and functions because they are the battery's controls". The rest of the same comment says the readers are kind-aware from Phase 12.
-- **`tokens.css` (`--sheet-print-clipboard-drop`):** the comment says the token is "the page picture's top padding and every engine's print but WebKit's". On the page picture it is added to the 48 px margin, and it is the whole top padding only in print. The text reads as if it were the page picture's whole top padding.
-
-**Fix:** Reword each comment to match the code.
+**File:** `app/src/ui/RecipePage.jsx:250`
+**Issue:** `const planHeld = planGuard;` adds a second name for the one value. The rest of the file and the `VersionRow` and `BatchRow` props use `planHeld`, while `useKeptDraft` and the comments use `planGuard`. This is not duplicated logic, but a reader chasing "where is plan held derived" has to follow two names.
+**Fix:** Destructure it under the page's name: `const { draftRestoreDone, heldPlan, planGuard: planHeld } = useKeptDraft({ ... });`
 
 ---
 
-_Reviewed: 2026-11-16_
+_Reviewed: 2026-11-22_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_

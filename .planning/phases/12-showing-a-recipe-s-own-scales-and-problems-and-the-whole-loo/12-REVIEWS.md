@@ -641,6 +641,12 @@ Gemini 4 Neon, which are not reviewers of record; findings only they raised are 
    plan draft alone, or accept the desk change and correct 12-10:127, 12-10:243, 12-14:27 and
    12-14:225. CONTRACT section 9 bullet 5 assumes the build already does this; it does not. This
    choice is the product owner's.
+   **Decided (Mark, 2026-11-22, in chat): gate Correct on the held plan draft alone.** Correct is
+   hidden only while a Next version draft is held below 724 (`planHeld`); it is not joined to
+   `recordingLocked`'s edit-kept case, so a version with a kept edit and a batch keeps Correct at
+   every width, as built, and `RecipePage.edit.test.jsx:440-450` holds unchanged. The handler-side
+   refusal of the correct opener while `planHeld` stays. The plans' "desk does not change" wording
+   then stands.
 7. **12-14, row content.** Rows 1 and 2 type grams for the first pick only and never fill the second
    step, and Save refuses both (`creationSave.js:182-203`): fill every grams line and the second
    step before Save. Reword "then Tab to step 2's Move up": focus already lands on the moved step's

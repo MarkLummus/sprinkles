@@ -311,6 +311,42 @@ describe("More's hairline below 724 (sketch 011 decision 55)", () => {
   });
 });
 
+describe('More at phone width holds no Import or Export (PHONE-01; CONTRACT section 3)', () => {
+  const nextTick = () =>
+    act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+  it('at 393 More lists Ingredients, Kitchen, the hairline, Search and no button; at 1024 the header holds Import and Export', async () => {
+    await mountAt(393);
+    const details = current.container.querySelector('details.shell__more');
+    await click(details.querySelector('summary'));
+    await nextTick();
+    expect(details.open).toBe(true);
+    const items = [...details.querySelectorAll('ul > li')];
+    expect(items.map((li) => li.textContent)).toEqual(['Ingredients', 'Kitchen', '', 'Search']);
+    expect(items[2].classList.contains('shell__more-sep')).toBe(true);
+    expect(details.querySelectorAll('button')).toHaveLength(0);
+    expect(details.textContent).not.toMatch(/Import|Export/);
+
+    await setWidth(1024);
+    const tools = [...header().querySelectorAll('.shell__tools button')].map((button) => button.textContent);
+    expect(tools).toEqual(['Import', 'Export']);
+  });
+
+  it("an error panel opened at 1024 and still showing at 393 closes with focus on More's summary (the kept narrow path)", async () => {
+    await mountAt(1024);
+    await chooseFile('not json');
+    expect(panel()).toBeTruthy();
+    await setWidth(393);
+    expect(panel()).toBeTruthy();
+    panelClose().focus();
+    await click(panelClose());
+    expect(panel()).toBeNull();
+    expect(document.activeElement).toBe(current.container.querySelector('details.shell__more > summary'));
+  });
+});
+
 const OLDER_EXPORT = '{"schemaVersion": 3, "recipes": [], "versions": [], "batches": []}';
 
 // Drives the shared hidden file input as a chosen file: one object whose async

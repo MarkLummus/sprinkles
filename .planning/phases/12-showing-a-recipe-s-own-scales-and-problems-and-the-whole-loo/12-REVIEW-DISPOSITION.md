@@ -5,43 +5,43 @@ titles: json
 findings:
   - id: WR-01
     severity: warning
-    disposition: fixed
-    title: "Log pages have almost no slack after the clipboard drop, and the Tasting log can spill onto the first bench page"
+    disposition: open
+    title: "Add ingredient buttons on a split row share one accessible name"
+  - id: IN-01
+    severity: info
+    disposition: open
+    title: "DeskOnly takes a live editor away on narrowing, unlike NotebookHead"
+  - id: IN-02
+    severity: info
+    disposition: open
+    title: "Home's Record tasting does nothing visible on the phone while a plan draft is held"
+  - id: IN-03
+    severity: info
+    disposition: open
+    title: "Preview state survives a remove and restore of the open step"
+  - id: IN-04
+    severity: info
+    disposition: open
+    title: "`planHeld` is a pure alias of `planGuard`"
   - id: WR-02
     severity: warning
     disposition: open
     title: "No automated check ties the notes-line counts to the clipboard drop"
-  - id: IN-01
-    severity: info
-    disposition: open
-    title: "`stopWordsFor` now returns `null` entries, and `readMarkWord` remains an exported kind-blind reader"
-  - id: IN-02
-    severity: info
-    disposition: open
-    title: "`readMarkText` uses strict equality where `readMarkWord` coerces"
-  - id: IN-03
-    severity: info
-    disposition: open
-    title: "A test title claims an order it does not check, and one test has a formatting slip"
-  - id: IN-04
-    severity: info
-    disposition: open
-    title: "Stale and garbled comments around the changed code"
-open: 5
+open: 6
 total: 6
-recorded: 2026-11-16T09:21:28.724Z
+recorded: 2026-11-22T22:52:32.694Z
 ---
 
 # Phase 12: Code Review Disposition
 
 | Finding | Severity | Disposition | Source |
 |---------|----------|-------------|--------|
-| WR-01 | warning | fixed | quick 261116-80u (Mark's word limits; fit pinned by 12-print-check worst and 12-safari-check pdf) |
-| WR-02 | warning | open | - |
+| WR-01 | warning | open | - |
 | IN-01 | info | open | - |
 | IN-02 | info | open | - |
 | IN-03 | info | open | - |
 | IN-04 | info | open | - |
+| WR-02 | warning | open | - (not in the current review) |
 
 Dispositions: `open` (recorded, not yet triaged), `fixed`, `skipped`, `deferred`.
 Set `deferred` by hand and put the reason in the Source cell; both are preserved. A `|` in the reason is kept as prose and escaped on the next run.

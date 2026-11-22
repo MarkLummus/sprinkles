@@ -2,12 +2,13 @@
 // with the shell intact (the rail survives, since this renders inside
 // Shell's Outlet), the place's name as its title, and one sentence naming
 // its status. Nothing else — no list, no empty-state illustration, no
-// link back; the rail is the way out.
-export function Placeholder({ name }) {
+// link back; the rail is the way out. The optional note replaces that one
+// sentence (DeskOnly's desk line, PHONE-01); without it the sentence is as built.
+export function Placeholder({ name, note = `${name} is not built yet.` }) {
   return (
     <div className="list-page place">
       <h1 className="place__title">{name}</h1>
-      <p className="place__note">{name} is not built yet.</p>
+      <p className="place__note">{note}</p>
     </div>
   );
 }

@@ -9,6 +9,8 @@
 import { StrictMode, act } from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { createRoot } from 'react-dom/client';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { MemoryRouter, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router';
 
 const store = vi.hoisted(() => ({ drafts: new Map(), recipes: [], versions: [] }));
@@ -69,6 +71,8 @@ import { repository } from '../store/repository.js';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { NotebookPlace } from './NotebookPlace.jsx';
 import { CreationRoute } from './CreationRoute.jsx';
+import { EditRoute } from './EditRoute.jsx';
+import { DeskOnly } from './DeskOnly.jsx';
 import { RecipePageForRoute } from '../router.jsx';
 import { CatalogFixture } from './catalog.fixtures.jsx';
 import { blankCreateDraft, buildDraftRecord } from '../domain/draft.js';
@@ -2439,5 +2443,178 @@ describe('the band fields are one-row textareas that stay one line (bug-ipad-tab
       await type(field(label), 'Fresh\nmint\r\n');
       expect(field(label).value).toBe('Freshmint');
     }
+  });
+});
+
+// PHONE-01, CONTRACT section 4 and section 11 number 5c: below 724 the two
+// editor addresses show the desk page and mount no editor. The routes wrap the
+// editor in DeskOnly exactly as router.jsx does, over a mutable window width
+// that fires its 'change' listeners (Shell.flyout.test.jsx's model). The routes
+// under test hold no Shell, so no other caller of the drafts store exists.
+describe("Below 724 the editor's addresses show the desk page (PHONE-01, CONTRACT section 4)", () => {
+  let width = 1024;
+  let lists = [];
+
+  function evaluate(query) {
+    const max = query.match(/max-width:\s*([\d.]+)px/);
+    const min = query.match(/min-width:\s*([\d.]+)px/);
+    if (max) return width <= Number(max[1]);
+    if (min) return width >= Number(min[1]);
+    return false;
+  }
+
+  function installWidth(initialWidth) {
+    width = initialWidth;
+    lists = [];
+    Element.prototype.scrollIntoView = vi.fn();
+    originalMatchMedia = window.matchMedia;
+    window.matchMedia = (query) => {
+      const list = {
+        media: query,
+        listeners: new Set(),
+        last: evaluate(query),
+        get matches() {
+          return evaluate(query);
+        },
+        addEventListener(type, fn) {
+          if (type === 'change') list.listeners.add(fn);
+        },
+        removeEventListener(type, fn) {
+          if (type === 'change') list.listeners.delete(fn);
+        },
+      };
+      lists.push(list);
+      return list;
+    };
+  }
+
+  async function setWidth(next) {
+    width = next;
+    await act(async () => {
+      for (const list of lists) {
+        const now = evaluate(list.media);
+        if (now !== list.last) {
+          list.last = now;
+          for (const fn of [...list.listeners]) fn({ matches: now, media: list.media });
+        }
+      }
+    });
+    await flush();
+  }
+
+  async function mountDesk(path, initialWidth) {
+    installWidth(initialWidth);
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const mounted = createRoot(container);
+    current = { container, root: mounted };
+    await act(async () => {
+      mounted.render(
+        <StrictMode>
+          <CatalogFixture>
+            <MemoryRouter initialEntries={[path]}>
+              <Probe />
+              <Routes>
+                <Route element={<Outlet context={0} />}>
+                  <Route path="/notebook" element={<p>Notebook page</p>} />
+                  <Route path="/notebook/new" element={<DeskOnly title="New recipe"><CreationRoute /></DeskOnly>} />
+                  <Route path="/notebook/:recipeId/:versionId/edit" element={<DeskOnly title="Edit"><EditRoute /></DeskOnly>} />
+                </Route>
+              </Routes>
+            </MemoryRouter>
+          </CatalogFixture>
+        </StrictMode>,
+      );
+    });
+    await flush();
+    return container;
+  }
+
+  function editDraftRecord() {
+    return buildDraftRecord({
+      versionId: 'v-edit',
+      kind: 'edit',
+      payload: blankCreateDraft({ recipeId: 'r-edit', versionId: 'v-edit', name: 'Kept edit' }),
+      now: '2026-10-20T09:00:00.000Z',
+    });
+  }
+
+  function expectDeskPage(title) {
+    const page = root().querySelector('.list-page.place');
+    expect(page).not.toBeNull();
+    expect(page.querySelector('h1.place__title').textContent).toBe(title);
+    expect(page.querySelector('p.place__note').textContent).toBe('Done at the desk or on the iPad.');
+    expect(page.querySelector('button, textarea, input, a')).toBeNull();
+    expect(root().querySelector('[aria-label="Recipe name"]')).toBeNull();
+  }
+
+  function expectDraftStoreUntouched() {
+    for (const name of ['listDrafts', 'getDraft', 'saveDraft', 'deleteDraft']) {
+      expect(repository[name]).not.toHaveBeenCalled();
+    }
+  }
+
+  it('a cold visit at 393 to /notebook/new shows the line and leaves a kept create draft alone', async () => {
+    store.drafts.set('v-kept', createDraftRecord('Vanilla'));
+    const before = structuredClone([...store.drafts.entries()]);
+    await mountDesk('/notebook/new', 393);
+
+    expectDeskPage('New recipe');
+    expect(location.pathname).toBe('/notebook/new');
+    expect([...store.drafts.entries()]).toEqual(before);
+    expectDraftStoreUntouched();
+  });
+
+  it('a cold visit at 393 to the edit address shows the line and leaves a kept edit draft alone', async () => {
+    store.drafts.set('v-edit', editDraftRecord());
+    const before = structuredClone([...store.drafts.entries()]);
+    await mountDesk('/notebook/r-edit/v-edit/edit', 393);
+
+    expectDeskPage('Edit');
+    expect(location.pathname).toBe('/notebook/r-edit/v-edit/edit');
+    expect([...store.drafts.entries()]).toEqual(before);
+    expectDraftStoreUntouched();
+  });
+
+  it('the cut is 724: 723 shows the line and 724 shows the editor', async () => {
+    store.drafts.set('v-kept', createDraftRecord('Vanilla'));
+    await mountDesk('/notebook/new', 723);
+    expectDeskPage('New recipe');
+    await setWidth(724);
+    expect(field('Recipe name')).not.toBeNull();
+    expect(root().querySelector('.list-page.place')).toBeNull();
+  });
+
+  it('narrowing an open editor writes what was typed inside the 250 ms window, and widening restores it', async () => {
+    store.drafts.set('v-kept', createDraftRecord('Vanilla'));
+    await mountDesk('/notebook/new', 1024);
+    await flush(() => field('Recipe name') !== null);
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    repository.saveDraft.mockClear();
+    await type(field('Recipe name'), 'Fresh mint');
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+
+    await setWidth(393);
+    expectDeskPage('New recipe');
+    // The unmount flush started the write; await it, not just the page showing.
+    await flush(() => repository.saveDraft.mock.calls.length > 0);
+    await expect(repository.saveDraft.mock.results[0].value).resolves.toBeUndefined();
+    expect(repository.saveDraft).toHaveBeenCalledTimes(1);
+    expect(store.drafts.get('v-kept').payload.name).toBe('Fresh mint');
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+
+    await setWidth(1024);
+    await flush(() => field('Recipe name') !== null);
+    expect(field('Recipe name').value).toBe('Fresh mint');
+  });
+
+  it('router.jsx holds each DeskOnly wrapper once and declares neither editor route through Component', () => {
+    const source = readFileSync(resolve(import.meta.dirname, '../router.jsx'), 'utf8')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/\/\/.*$/gm, '');
+    expect(source.split('<DeskOnly title="New recipe">').length - 1).toBe(1);
+    expect(source.split('<DeskOnly title="Edit">').length - 1).toBe(1);
+    expect(source).not.toMatch(/Component:\s*CreationRoute/);
+    expect(source).not.toMatch(/Component:\s*EditRoute/);
   });
 });

@@ -13,6 +13,7 @@ import { NotebookLatestRedirect, LegacyRecipeRedirect } from './ui/NotebookRedir
 import { CreationRoute } from './ui/CreationRoute.jsx';
 import { EditRoute } from './ui/EditRoute.jsx';
 import { PageNoticeContext } from './ui/PageNotice.jsx';
+import { DeskOnly } from './ui/DeskOnly.jsx';
 
 // A different version, or a different batch of the same version, must be a
 // different page instance (one-pen-rule-leaks.md Evidence 8-9). React
@@ -144,7 +145,8 @@ export const router = createBrowserRouter([
     children: [
       { path: '/', Component: RecipeList },
       // Declared first so 'new' is never read as a recipe id (Phase 10 D-01).
-      { path: '/notebook/new', Component: CreationRoute },
+      // PHONE-01: below 724 the address shows one line, not the editor.
+      { path: '/notebook/new', element: <DeskOnly title="New recipe"><CreationRoute /></DeskOnly> },
       { path: '/notebook/:recipeId', Component: NotebookLatestRedirect },
       { path: '/notebook/:recipeId/:versionId', Component: RecipePageForRoute },
       { path: '/notebook/:recipeId/:versionId/batch/:batchId', Component: RecipePageForRoute },
@@ -154,7 +156,8 @@ export const router = createBrowserRouter([
       { path: '/notebook/:recipeId/:versionId/print', Component: PrintSheetForRoute },
       // D-01: the edit route of a first version: the creation editor over the
       // saved version, until it has a batch or a child.
-      { path: '/notebook/:recipeId/:versionId/edit', Component: EditRoute },
+      // PHONE-01: below 724 the address shows one line, not the editor.
+      { path: '/notebook/:recipeId/:versionId/edit', element: <DeskOnly title="Edit"><EditRoute /></DeskOnly> },
       // D-16: kept indefinitely, not deleted — the old id is a version id.
       { path: '/recipe/:id', Component: LegacyRecipeRedirect },
       { path: '/recipe/:id/batch/:batchId', Component: LegacyRecipeRedirect },

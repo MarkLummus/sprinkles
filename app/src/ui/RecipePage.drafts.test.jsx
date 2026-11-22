@@ -1041,36 +1041,37 @@ describe('below 724 a kept Next version draft (PHONE-01, Mark’s B)', () => {
     expect(store.deleteDraft).not.toHaveBeenCalled();
   });
 
-  it('draws no Record batch on a version with no batch, and pressing the band’s record act opens nothing', async () => {
+  it('draws no Record batch, no band record act and no Next version on a version with no batch, and says where the draft is finished (12-16)', async () => {
     storeDraft(planDraftRecord());
     const before = structuredClone(store.drafts.get(VERSION));
     await mountAt(VERSION_PATH, { width: PHONE });
     await flush(() => false);
 
     expect(logButton('Record batch')).toBeNull();
-    expect(bandRecordAct()).not.toBeNull();
-    await click(bandRecordAct());
-    await flush(() => false);
-    expect(noPenOpen()).toBe(true);
-    // Next version is still drawn by the band until 12-16 and opens nothing here.
-    await click(buttonByText('Next version'));
-    await flush(() => false);
+    expect(bandRecordAct()).toBeNull();
+    expect(buttonByText('Next version')).toBeNull();
+    expect(
+      [...current.container.querySelectorAll('.notebook-version__acts > *')].map((node) => node.textContent.trim()),
+    ).toEqual(['Print sheet']);
+    expect(
+      [...current.container.querySelectorAll('.notebook-version__draft')].map((node) => node.textContent),
+    ).toEqual(['Draft: Version 2 · less milk. Finish it at the desk or on the iPad.']);
+    // The held draft gets no node on the History rail either (Pitfall 6): a lone version still reads as one plain line.
+    expect(current.container.querySelector('.notebook-history__only')).not.toBeNull();
     expect(noPenOpen()).toBe(true);
     expect(store.drafts.get(VERSION)).toEqual(before);
     expect(store.saveDraft).not.toHaveBeenCalled();
     expect(store.deleteDraft).not.toHaveBeenCalled();
   });
 
-  it('the band’s Record tasting opens nothing on a version with an awaiting batch', async () => {
+  it('the band draws no Record tasting on a version with an awaiting batch while a plan draft is held, and opens nothing', async () => {
     store.batches = [awaitingBatch()];
     storeDraft(planDraftRecord());
     const before = structuredClone(store.drafts.get(VERSION));
     await mountAt(BATCH_PATH, { width: PHONE });
     await flush(() => false);
 
-    expect(bandRecordAct().textContent.trim()).toBe('Record tasting');
-    await click(bandRecordAct());
-    await flush(() => false);
+    expect(bandRecordAct()).toBeNull();
     expect(noPenOpen()).toBe(true);
     expect(locationNow.pathname).toBe(BATCH_PATH);
     expect(store.drafts.get(VERSION)).toEqual(before);
@@ -1136,13 +1137,14 @@ describe('below 724 a kept Next version draft (PHONE-01, Mark’s B)', () => {
     await flush(() => false);
     expect(logButton('Record another')).toBeNull();
     expect(logButton('Correct')).toBeNull();
-    await click(bandRecordAct());
+    expect(bandRecordAct()).toBeNull();
     expect(noPenOpen()).toBe(true);
 
     hold.resolve();
     await flush(() => logButton('Record another') !== null);
     expect(logButton('Record another')).not.toBeNull();
     expect(logButton('Correct')).not.toBeNull();
+    expect(bandRecordAct().textContent.trim()).toBe('Record another');
   });
 
   it('another version of the recipe keeps its record act and Correct, and its record pen does not touch the first version’s plan draft', async () => {

@@ -219,7 +219,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // Below 724 the phone opens no pen, so a Next version draft is left shut
   // (keepPlanShut, PHONE-01, CONTRACT section 2); planGuard is the page's one
   // answer to whether one is held (T-12-53).
-  const { draftRestoreDone, planGuard } = useKeptDraft({
+  const { draftRestoreDone, heldPlan, planGuard } = useKeptDraft({
     writer: draftWriter,
     versionId,
     recipeId,
@@ -471,6 +471,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
             amendOpener={amendOpener}
             recordOpener={recordOpener}
             draft={openPen === null ? waitingPlanDraft : null}
+            ownDraft={openPen === null ? heldPlan : null}
+            planHeld={planHeld}
             editState={editState}
             onEdit={() => navigate(editPath(version.recipeId, version.id))}
           />

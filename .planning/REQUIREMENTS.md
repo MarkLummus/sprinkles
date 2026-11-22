@@ -3,7 +3,7 @@
 **Defined:** 2026-10-16
 **Core Value:** Make something you like, understand how it turned out, and know what to keep or change next time. If everything else fails, a maker must still be able to develop a recipe, make it from a printed sheet, and get back a record of what happened that the next version can cite.
 
-Requirement authority is `product-requirements/04-requirements.md` (packet IDs such as REC-01, ING-01). This file selects what milestone v2.0 needs and states it as testable criteria. Category IDs continue those of v1.1 (`EDIT`, `LIB`, `MAKE`); `PLACE`, `STRUCT`, `CODE`, `TASTE`, `PROOF` and `LOG` are new. Archived: `milestones/v1-REQUIREMENTS.md`, `milestones/v1.1-REQUIREMENTS.md`.
+Requirement authority is `product-requirements/04-requirements.md` (packet IDs such as REC-01, ING-01). This file selects what milestone v2.0 needs and states it as testable criteria. Category IDs continue those of v1.1 (`EDIT`, `LIB`, `MAKE`); `PLACE`, `STRUCT`, `CODE`, `TASTE`, `PROOF`, `LOG` and `PHONE` are new. Archived: `milestones/v1-REQUIREMENTS.md`, `milestones/v1.1-REQUIREMENTS.md`.
 
 **ID note (decided 2026-10-16, Mark):** this milestone's tasting-scale requirements were SCALE-01 to SCALE-04 and are now TASTE-01 to TASTE-04, because the product requirement SCALE-01 means quantity scaling (crosswalk: SCALE-01 → TASTE-01, SCALE-02 → TASTE-02, SCALE-03 → TASTE-03, SCALE-04 → TASTE-04). REC-03 and REC-05 are not defined in `product-requirements/04-requirements.md`, so this file says "structure edits on later versions" in words instead.
 
@@ -61,6 +61,10 @@ Requirement authority is `product-requirements/04-requirements.md` (packet IDs s
 ### Printed log
 
 - [x] **LOG-01**: The printed Batch log and Tasting log start about 1.5 in from the top of the paper, so the clip of a clipboard covers none of their lines, and each still prints on one page: the room comes out of their ruled notes lines (Batch log 13, Tasting log 4), and the bench sheet pages keep their 0.5 in margin.
+
+### On the phone
+
+- [ ] **PHONE-01**: Below 724 wide, New recipe, Edit, Resume editing, Next version (on the recipe page and on Home), Import and Export are left out of the page and Print sheet stays; a version with an edit kept or a Next version draft kept says so in one line ending "Finish it at the desk or on the iPad.", and the version holding a kept Next version draft offers no record act; the New recipe and Edit addresses show a page reading "Done at the desk or on the iPad." in place of the editor, and no kept draft is touched.
 
 ### Proof
 
@@ -133,12 +137,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROOF-01 | Phase 12 | Complete |
 | PROOF-02 | Phase 12 | Pending |
 | LOG-01 | Phase 12 | Complete |
+| PHONE-01 | Phase 12 | Pending |
 
 **Coverage:**
-- v2.0 requirements: 31 total
-- Mapped to phases: 31 (Phase 8: 2, Phase 9: 10, Phase 10: 8, Phase 11: 7, Phase 12: 4)
+- v2.0 requirements: 32 total
+- Mapped to phases: 32 (Phase 8: 2, Phase 9: 10, Phase 10: 8, Phase 11: 7, Phase 12: 5)
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-10-16*
-*Last updated: 2026-11-16: LOG-01 added for Phase 12 (12-CONTEXT D-04, D-05); PHONE-01 and STRUCT-05 follow with the second planning round*
+*Last updated: 2026-11-22: PHONE-01 added for Phase 12's second planning round (12-CONTEXT D-04, D-05); STRUCT-05 follows in plan 12-12*

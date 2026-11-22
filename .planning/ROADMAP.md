@@ -295,7 +295,7 @@ Plans:
 
 **Goal**: A batch recorded against a created recipe marks the recipe's own scales and problems, which the record pen, the reading and the printed log show, and a recipe created in the app survives the whole loop, checked on the iPad
 **Depends on**: Phase 11 (Save and print), and through it Phase 10 (the scales and problems a recipe is created with) and Phase 9 (the scale definitions). Each planning round waits for its design gate below (12-CONTEXT D-06); decision 3 is answered and decision 4 is closed
-**Requirements**: TASTE-04, PROOF-01, PROOF-02, LOG-01
+**Requirements**: TASTE-04, PROOF-01, PROOF-02, LOG-01, PHONE-01
 **Success Criteria** (what must be TRUE):
   1. The record pen, the reading and the printed log show the recipe's own scales, each in its kind, and its problems, and "This recipe only" shows only for a recipe that has any
   2. A recipe created in the app round-trips: it prints, a batch recorded against it marks a custom scale, and after export and import it reopens with the same figures, Sheet code and marks

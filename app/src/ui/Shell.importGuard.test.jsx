@@ -2,7 +2,7 @@
 //
 // Quick 261011-dz2, decide-import-refreshes-open-recipe-pens = refuse: while a
 // recipe pen is open (Next version, the record pen with its Tasting section,
-// Correct), pressing Import in the header or in More's list opens no file
+// Correct), pressing Import in the header opens no file
 // chooser, reads no file, calls importStore not at all and leaves storeRevision
 // where it was; the page notice says IMPORT_BLOCKED_STATUS. With no pen open,
 // Import works as before. Shell, the routed wrapper (router.jsx's
@@ -166,7 +166,6 @@ async function chooseFile(content) {
 }
 
 const headerImport = () => buttonByText('Import', current.container.querySelector('.shell__tools'));
-const moreImport = () => buttonByText('Import', current.container.querySelector('.shell__more'));
 const notice = () => current.container.querySelector('.page-status').textContent;
 
 function expectRefused() {
@@ -182,14 +181,6 @@ describe('Import is refused while a pen is open (261011-dz2, decide-import-refre
     await click(buttonByText('Next version'));
     await flush(() => current.container.querySelector('form[aria-label="Next version"]') !== null);
     await click(headerImport());
-    expectRefused();
-  });
-
-  it('Next version pen: More’s Import is refused the same way', async () => {
-    await mountAt(VERSION_PATH);
-    await click(buttonByText('Next version'));
-    await flush(() => current.container.querySelector('form[aria-label="Next version"]') !== null);
-    await click(moreImport());
     expectRefused();
   });
 

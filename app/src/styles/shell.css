@@ -1261,8 +1261,9 @@ button.shell__place {
   }
 
   /* The header's Search/Import/Export controls fold away at this step
-     (D-16, decision 3): all three are duplicated inside More. The tools
-     row itself stays, because the shared hidden file input lives inside it. */
+     (D-16, decision 3): Search is in More, and Import and Export are left
+     out below 724 (PHONE-01). The tools row itself stays, because the
+     hidden file input lives inside it. */
   .shell__tools > .shell__place {
     display: none;
   }

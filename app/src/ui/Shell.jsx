@@ -368,7 +368,9 @@ export function Shell() {
   }
 
   // Close on the Import error panel: when focus was inside the panel, it goes
-  // back to the opener, More's summary below 724 or the bar's Import from there.
+  // back to the opener, the header's Import. Below 724 that control is not
+  // drawn (More holds no Import, PHONE-01), yet a panel opened from 724 up can
+  // still be showing after the window narrows, so focus goes to More's summary.
   function closeImportErrors() {
     const focusWasInside = importErrorsRef.current?.contains(document.activeElement);
     setImportErrors([]);
@@ -446,7 +448,7 @@ export function Shell() {
     (pageNoticeRef.current ?? announceShellNotice)(message);
   }
 
-  // Both Import buttons open the one hidden file input through here. A pen
+  // The header's Import opens the one hidden file input through here. A pen
   // open on the routed page refuses the click (decide-import-refreshes-open-
   // recipe-pens = refuse): no chooser, no file read, a notice instead. So does a
   // kept new recipe draft (D-10): only the state 'absent' opens the chooser. The
@@ -679,15 +681,14 @@ export function Shell() {
         </main>
       </div>
       {/* D-16: below the phone step the rail becomes a bottom tab row of
-          five coloured tabs, the fifth being More — Ingredients, Kitchen,
-          Search, Import and Export. Rendered at every width; the
+          five coloured tabs, the fifth being More — Ingredients, Kitchen
+          and Search. Rendered at every width; the
           phone cut (shell.css) decides which navigation is shown. Because the hidden one leaves the accessibility tree,
-          both may share the rail's own label. More's Import opens the
-          same single hidden file input the tools row's Import opens —
-          one input, two buttons, never two inputs. More's open state is
+          both may share the rail's own label. The one hidden file input
+          belongs to the header's Import alone. More's open state is
           React's now (G-03.4-3): a native <details> toggles only via its
           own <summary>'s activation behaviour, so choosing one of the
-          five items inside never closed it, and because the element sits
+          items inside never closed it, and because the element sits
           outside the Outlet a route change used to reconcile it in place
           with `open` still set. The `<ul>`'s own click handler closes it
           on item activation and an effect keyed on the route closes it on
@@ -713,10 +714,11 @@ export function Shell() {
               <RailPlace place={PLACES[4]} />
             </li>
             {/* The hairline between the places (Ingredients, Kitchen) and Search,
-                Import and Export, grouped as the header groups them (sketch 011
-                decision 55; Mark 2026-10-05, Search below the hairline). It is
-                the rail's own divider, hidden from assistive tech. A tap on it
-                closes More like any tap in the list. */}
+                grouped as the header groups them (sketch 011 decision 55; Mark
+                2026-10-05, Search below the hairline). It is the rail's own
+                divider, hidden from assistive tech. A tap on it closes More
+                like any tap in the list. Import and Export are not here: the
+                phone leaves them to the desk and the iPad (PHONE-01). */}
             <li className="shell__more-sep" aria-hidden="true">
               <hr className="shell__divider" />
             </li>
@@ -725,18 +727,6 @@ export function Shell() {
                 <SearchIcon />
                 Search
               </NavLink>
-            </li>
-            <li>
-              <Button className="shell__place" onClick={chooseImportFile}>
-                <ImportIcon />
-                Import
-              </Button>
-            </li>
-            <li>
-              <Button className="shell__place" onClick={handleExport}>
-                <ExportIcon />
-                Export
-              </Button>
             </li>
           </ul>
         </details>

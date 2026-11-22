@@ -157,8 +157,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     handleToggleDeclaredDefect,
     handleChangeStepChange,
     handleChangeAsMade,
-    handleStartAmending,
-    handleStartTasting,
+    handleStartAmending: startAmending,
+    handleStartTasting: startTasting,
     handleAddTasting,
     handleRemoveTasting,
     handleUndoRemove,
@@ -196,18 +196,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // neither Edit nor Resume editing is drawn, so Edit never shows before a
   // disqualifying batch, child or draft has arrived (T-11-56).
   const editState = version && batchesLoaded && versionsLoaded && draftsLoaded ? editStateFor({ version, versions, batches, drafts }) : 'loading';
-  // D-04's safety net: while an edit is kept, neither pen opens, whatever asks
-  // (the buttons are not drawn, and a route intent that waits for the drafts
-  // read finds the edit and is consumed opening nothing). While 'loading' the
-  // handlers act as today: a pen opened in that moment cannot write over or
-  // delete a kept edit draft (plan 11-03's family guard, plan 11-10's
-  // family-scoped deletes).
-  const handleStartDeveloping = () => {
-    if (editState !== 'editing') startDeveloping();
-  };
-  const handleStartRecording = (options) => {
-    if (editState !== 'editing') startRecording(options);
-  };
 
   // D-20: the tab title leads with the recipe name while the page is mounted
   // (a plain string, never markup, T-04-27); the print route sets its own.
@@ -220,10 +208,18 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     };
   }, [recipeName]);
 
+  // The window's phone cut (724), read once here, above the early returns, like
+  // every hook: the kept-draft restore below needs it, and so do the band, the
+  // sheet and the log further down.
+  const below724 = useBelow724();
+
   // Kept drafts (04-09, D-14 to D-17): the restore, persist and pagehide
   // effects live in useKeptDraft, called after the version pen so it can take
   // the pen's restorePlan (D-08). draftRestoreDone gates the route intents below.
-  const { draftRestoreDone } = useKeptDraft({
+  // Below 724 the phone opens no pen, so a Next version draft is left shut
+  // (keepPlanShut, PHONE-01, CONTRACT section 2); planGuard is the page's one
+  // answer to whether one is held (T-12-53).
+  const { draftRestoreDone, planGuard } = useKeptDraft({
     writer: draftWriter,
     versionId,
     recipeId,
@@ -247,9 +243,39 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     // the entry lets Edit show without a reload. The trim waits for the delete,
     // as the Cancel discard's does (T-11-56).
     onMisfitDeleted: () => setDrafts((kept) => kept.filter((record) => record.versionId !== versionId)),
+    keepPlanShut: below724,
     onPageStatus,
     navigate,
   });
+  const planHeld = planGuard;
+
+  // D-04's safety net: while an edit is kept, neither pen opens, whatever asks
+  // (the buttons are not drawn, and a route intent that waits for the drafts
+  // read finds the edit and is consumed opening nothing). While 'loading' the
+  // handlers act as today: a pen opened in that moment cannot write over or
+  // delete a kept edit draft (plan 11-03's family guard, plan 11-10's
+  // family-scoped deletes).
+  //
+  // PHONE-01 (CONTRACT section 9, Mark's B on decide-p12-record-with-draft-held):
+  // while a Next version draft is held shut, from below 724 or from the
+  // moment the window widens until the re-read settles, no pen of any kind
+  // opens either: a record, tasting, correct or fresh Next version pen would
+  // write over the held draft's one key, or delete it. The band's record act,
+  // Home's Record tasting, a route intent and a stale press all stop here.
+  // handleStartDeveloping also refuses below 724: Next version has no control
+  // there, and only a route intent or a link from history state still asks.
+  const handleStartDeveloping = () => {
+    if (editState !== 'editing' && !planHeld && !below724) startDeveloping();
+  };
+  const handleStartRecording = (options) => {
+    if (editState !== 'editing' && !planHeld) startRecording(options);
+  };
+  const handleStartTasting = (batch) => {
+    if (!planHeld) startTasting(batch);
+  };
+  const handleStartAmending = (batch, options) => {
+    if (!planHeld) startAmending(batch, options);
+  };
 
   // The route intents (useRouteIntents): the band's Record tasting and Home's
   // Next version ask for a pen through route state, each consumed once after the
@@ -303,10 +329,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // live in RecipeSheet; Tasting's fold lives inside TastingReading. Both hooks
   // below must sit above the early returns.
   const belowDesktop = useBelowDesktop();
-  // The recipe band's record act (sketch 011 decision 30): below 724 its
-  // first control is the filled record act. Above the early returns, like
-  // every hook here.
-  const below724 = useBelow724();
   // The Batch fold (sketch 011 decision 50 C1, Mark 2026-10-05) is open on
   // first load at every width. Its default never changes, so no width
   // crossing resets it, and nothing is stored. It lives here so Go to batch can
@@ -565,7 +587,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
             foldsOpen={!belowDesktop}
             batchOpen={batchOpen}
             onToggleBatch={toggleBatch}
-            recordingLocked={editState === 'editing'}
+            recordingLocked={editState === 'editing' || planHeld}
+            correctHeld={planHeld}
           />
         </aside>
       </div>

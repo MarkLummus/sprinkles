@@ -143,6 +143,13 @@ export function useDraftWriter(versionId, family = 'pen') {
 // would read as typed on every render and skip every restore.
 // `baseFingerprint` is an edit page's base, written on every edit record so a
 // later open can tell whether the version moved under it (WR-02); null writes none.
+// `keepPlanShut` is true below 724 (PHONE-01, CONTRACT section 2): the phone opens
+// no pen, so a fitting Next version draft is left where it is, shut and untouched,
+// and comes back as `heldPlan`. `planGuard` is the page's one answer to whether a
+// plan draft is held: true while one is held, while the re-read after the window
+// widens is out, and below 724 until the first restore read has settled. Every pen
+// opener on the page refuses while it is true, so no pen can win the late-read rule
+// below and the persist effect can neither delete nor write over the held record.
 export function useKeptDraft({
   writer,
   versionId,
@@ -169,6 +176,7 @@ export function useKeptDraft({
   createDraft,
   onRestoreCreate,
   onMisfitDeleted = () => {},
+  keepPlanShut = false,
   onPageStatus,
   navigate,
 }) {
@@ -193,6 +201,15 @@ export function useKeptDraft({
   //    (useDraftWriter).
   const [draftRestoreDone, setDraftRestoreDone] = useState(false);
   const draftRestoreStartedRef = useRef(false);
+  // The plan record the restore left shut below 724, or null; whether the re-read
+  // after widening is out; and the round that re-runs the one restore effect. The
+  // flag is read when the read resolves, so the width then decides, not the width
+  // when it began.
+  const [heldPlan, setHeldPlan] = useState(null);
+  const [planRestoring, setPlanRestoring] = useState(false);
+  const [restoreRound, setRestoreRound] = useState(0);
+  const keepPlanShutRef = useRef(keepPlanShut);
+  keepPlanShutRef.current = keepPlanShut;
   const modeRef = useRef(mode);
   modeRef.current = mode;
   // The creation's counterpart of modeRef: the payload the editor holds now,
@@ -215,6 +232,9 @@ export function useKeptDraft({
     Promise.resolve()
       .then(() => repository.getDraft(versionId))
       .then((record) => {
+        // Every outcome of a read ends the widening re-read, in the same update
+        // as the outcome's own state.
+        setPlanRestoring(false);
         // A final discard is out or done: restore nothing and announce
         // nothing, but let the persist effect run if the delete then fails.
         if (endedRef.current) {
@@ -287,6 +307,14 @@ export function useKeptDraft({
           navigate(notebookPath(version.recipeId, version.id, record.amendingBatchId), { replace: true });
           return;
         }
+        // Below 724 a fitting plan record is left where it is: nothing is
+        // restored or announced and draftStoredRef stays unset, so the persist
+        // effect neither writes over it nor deletes it, as for a foreign record.
+        if (!creating && record.kind === 'plan' && keepPlanShutRef.current) {
+          setHeldPlan(record);
+          setDraftRestoreDone(true);
+          return;
+        }
         draftStoredRef.current = true;
         if (creating) {
           onRestoreCreate(record.payload);
@@ -301,8 +329,23 @@ export function useKeptDraft({
         onPageStatus(DRAFT_KEPT_STATUS);
         setDraftRestoreDone(true);
       })
-      .catch(() => setDraftRestoreDone(true));
-  }, [version, batchesLoaded, loadFailed, creating]);
+      .catch(() => {
+        setPlanRestoring(false);
+        setDraftRestoreDone(true);
+      });
+  }, [version, batchesLoaded, loadFailed, creating, restoreRound]);
+
+  // The window widened to 724 or more with a plan record held: read it again
+  // through the one restore effect above, which restores it as a fresh load at
+  // this width does. heldPlan clears and planRestoring starts in one update, so
+  // planGuard never drops between the two.
+  useEffect(() => {
+    if (keepPlanShut || heldPlan === null) return;
+    draftRestoreStartedRef.current = false;
+    setHeldPlan(null);
+    setPlanRestoring(true);
+    setRestoreRound((round) => round + 1);
+  }, [keepPlanShut, heldPlan]);
 
   // Persist: while a pen is open and holds ink, its draft is written 250 ms
   // after the last change; when no pen is open, or the open pen is clean
@@ -388,5 +431,6 @@ export function useKeptDraft({
     };
   }, []);
 
-  return { draftRestoreDone };
+  const planGuard = heldPlan !== null || planRestoring || (keepPlanShut && !draftRestoreDone);
+  return { draftRestoreDone, heldPlan, planGuard };
 }

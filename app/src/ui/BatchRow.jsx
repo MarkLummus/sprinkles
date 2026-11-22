@@ -526,10 +526,17 @@ export function BatchRow({
   // The Batch fold's state, owned by RecipePage (decision 50); open by default for the component tests.
   batchOpen = true,
   onToggleBatch,
-  // True while an edit draft is kept on the version (plan 11-12, D-04): a
-  // batch would close the edit window, so neither Record batch nor Record
-  // another is drawn.
+  // True while an edit draft is kept on the version (plan 11-12, D-04), or a
+  // Next version draft is held shut on the phone (PHONE-01, CONTRACT section 2):
+  // a batch would close the edit window, or its pen would write over the held
+  // draft's one key, so neither Record batch nor Record another is drawn.
   recordingLocked = false,
+  // True while a Next version draft is held shut below 724 (PHONE-01, CONTRACT
+  // section 2, Mark's B on decide-p12-record-with-draft-held): Correct is left
+  // out too, since its pen would write over the held draft. It is not joined to
+  // recordingLocked: a kept edit on a version that has since gained a batch
+  // keeps Correct at every width, as built (Mark, 2026-11-22).
+  correctHeld = false,
 }) {
   // Focus-return for the Correct opener this row owns — closing the pen
   // returns focus to the control that opened it. Must sit above the
@@ -785,7 +792,7 @@ export function BatchRow({
               present only with no pen open and a batch in view. The row
               has no foot acts and no read-view Add tasting (003 line
               256): the pen is the one door (03.3.1 D-01/D-03). */}
-          {openPen === null && openBatch && (
+          {openPen === null && openBatch && !correctHeld && (
             <Button
               ref={amendButtonRef}
               className="text-control batch-row__correct"

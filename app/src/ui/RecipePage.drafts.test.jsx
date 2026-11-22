@@ -30,6 +30,11 @@ const store = vi.hoisted(() => ({
   saveVersion: null,
   createVersion: null,
   saveBatch: null,
+  // PHONE-01 holds: each getDraft call takes the next entry of getDraftHolds
+  // (a promise to wait on, or undefined), and listDrafts waits on listDraftsHold.
+  getDraftCalls: 0,
+  getDraftHolds: [],
+  listDraftsHold: null,
 }));
 
 vi.mock('../store/repository.js', async () => {
@@ -74,12 +79,18 @@ vi.mock('../store/repository.js', async () => {
       createVersion: store.createVersion,
       saveRecipe: vi.fn(async () => {}),
       getDraft: async (versionId) => {
+        store.getDraftCalls += 1;
+        const hold = store.getDraftHolds.shift();
+        if (hold) await hold;
         const found = store.drafts.get(versionId);
         return found ? structuredClone(found) : undefined;
       },
       saveDraft: store.saveDraft,
       deleteDraft: store.deleteDraft,
-      listDrafts: async () => [...store.drafts.values()].map((record) => structuredClone(record)),
+      listDrafts: async () => {
+        if (store.listDraftsHold) await store.listDraftsHold;
+        return [...store.drafts.values()].map((record) => structuredClone(record));
+      },
     },
   };
 });
@@ -93,8 +104,10 @@ import {
 import { CatalogFixture } from './catalog.fixtures.jsx';
 import { blankRecordDraft, draftFromBatch } from '../domain/recordDraft.js';
 import { RECORD_DRAFT_KEYS, buildDraftRecord } from '../domain/draft.js';
-import { oliveOilVersion } from '../data/olive-oil.js';
+import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { draftFromVersion } from '../domain/creationSave.js';
+import { STYLE_ROWS } from '../data/styles.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -110,6 +123,8 @@ let pageStatus = null;
 let locationNow = null;
 let navigationType = null;
 let originalMatchMedia = null;
+let viewportWidth = 1280;
+let mediaListeners = [];
 
 // router.jsx keys RecipePage by its three route parameters, so a different
 // batch address is a new page instance; this wrapper does the same.
@@ -124,19 +139,42 @@ function Where() {
   return null;
 }
 
-// A wide fine-pointer window (the default of jsdom's absent matchMedia is a
-// throw in the width hooks, so every test installs one).
-function installMatchMedia() {
+function matchesAt(query, width) {
+  const max = query.match(/max-width:\s*([\d.]+)px/);
+  const min = query.match(/min-width:\s*([\d.]+)px/);
+  if (max) return width <= Number(max[1]);
+  if (min) return width >= Number(min[1]);
+  return false;
+}
+
+// A fine-pointer window of the given width (1280 unless a test says otherwise;
+// the default of jsdom's absent matchMedia is a throw in the width hooks, so
+// every test installs one). resizeTo fires the change listeners the width
+// hooks registered.
+function installMatchMedia(width = 1280) {
   Element.prototype.scrollIntoView = vi.fn();
   originalMatchMedia = window.matchMedia;
-  window.matchMedia = (query) => {
-    const max = query.match(/max-width:\s*([\d.]+)px/);
-    const min = query.match(/min-width:\s*([\d.]+)px/);
-    let matches = false;
-    if (max) matches = 1280 <= Number(max[1]);
-    else if (min) matches = 1280 >= Number(min[1]);
-    return { matches, media: query, addEventListener() {}, removeEventListener() {} };
-  };
+  viewportWidth = width;
+  mediaListeners = [];
+  window.matchMedia = (query) => ({
+    get matches() {
+      return matchesAt(query, viewportWidth);
+    },
+    media: query,
+    addEventListener(type, listener) {
+      mediaListeners.push({ query, listener });
+    },
+    removeEventListener(type, listener) {
+      mediaListeners = mediaListeners.filter((entry) => entry.listener !== listener);
+    },
+  });
+}
+
+async function resizeTo(width) {
+  viewportWidth = width;
+  await act(async () => {
+    for (const { query, listener } of [...mediaListeners]) listener({ matches: matchesAt(query, width) });
+  });
 }
 
 async function flush(until) {
@@ -149,8 +187,9 @@ async function flush(until) {
   }
 }
 
-async function mountAt(path) {
-  installMatchMedia();
+async function mountAt(path, { width } = {}) {
+  installMatchMedia(width);
+  store.getDraftCalls = 0;
   store.saveDraft.mockClear();
   store.deleteDraft.mockClear();
   store.saveVersion.mockClear();
@@ -197,6 +236,8 @@ afterEach(async () => {
   store.drafts.clear();
   store.batches = [];
   store.withSibling = false;
+  store.getDraftHolds = [];
+  store.listDraftsHold = null;
 });
 
 function nextVersionPen() {
@@ -941,5 +982,294 @@ describe('Home’s Next version opens the pen once (quick 261012-e8l)', () => {
     expect(nextVersionPen()).not.toBeNull();
     expect(versionNameField().value).toBe('');
     expect(store.drafts.has('mocha-v1')).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// PHONE-01 (12-10; CONTRACT sections 2, 9 and 11; Mark's B on
+// decide-p12-record-with-draft-held): below 724 a kept Next version draft stays
+// shut and untouched, and no pen opens over it, before, during or after a
+// width crossing. jsdom only: device-unverified.
+// ---------------------------------------------------------------------------
+const PHONE = 393;
+const SIBLING_PATH = `/notebook/${RECIPE}/olive-oil-ice-cream-v2`;
+const awaitingBatch = () => ({ ...structuredClone(augustSecondBatch), tasting: null });
+
+function deferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((done, fail) => {
+    resolve = done;
+    reject = fail;
+  });
+  return { promise, resolve, reject };
+}
+
+function logButton(text) {
+  return [...current.container.querySelectorAll('.notebook-log button')].find((button) => button.textContent.trim() === text) ?? null;
+}
+
+function bandRecordAct() {
+  return current.container.querySelector('.notebook-version__acts .notebook-action');
+}
+
+function noPenOpen() {
+  return nextVersionPen() === null && pen() === null;
+}
+
+const keptNotices = () => pageStatus.mock.calls.filter(([message]) => message === DRAFT_KEPT_STATUS);
+
+describe('below 724 a kept Next version draft (PHONE-01, Mark’s B)', () => {
+  it('is not restored: no pen, no notice, the store untouched after load and after a second, and no record act in the log', async () => {
+    store.batches = [structuredClone(augustSecondBatch)];
+    storeDraft(planDraftRecord());
+    const before = structuredClone(store.drafts.get(VERSION));
+    await mountAt(VERSION_PATH, { width: PHONE });
+    await flush(() => false);
+
+    expect(noPenOpen()).toBe(true);
+    expect(keptNotices()).toHaveLength(0);
+    expect(store.drafts.get(VERSION)).toEqual(before);
+    expect(logButton('Record another')).toBeNull();
+    expect(logButton('Record batch')).toBeNull();
+    expect(logButton('Correct')).toBeNull();
+
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await elapse(1000);
+    expect(store.drafts.get(VERSION)).toEqual(before);
+    expect(store.saveDraft).not.toHaveBeenCalled();
+    expect(store.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it('draws no Record batch on a version with no batch, and pressing the band’s record act opens nothing', async () => {
+    storeDraft(planDraftRecord());
+    const before = structuredClone(store.drafts.get(VERSION));
+    await mountAt(VERSION_PATH, { width: PHONE });
+    await flush(() => false);
+
+    expect(logButton('Record batch')).toBeNull();
+    expect(bandRecordAct()).not.toBeNull();
+    await click(bandRecordAct());
+    await flush(() => false);
+    expect(noPenOpen()).toBe(true);
+    // Next version is still drawn by the band until 12-16 and opens nothing here.
+    await click(buttonByText('Next version'));
+    await flush(() => false);
+    expect(noPenOpen()).toBe(true);
+    expect(store.drafts.get(VERSION)).toEqual(before);
+    expect(store.saveDraft).not.toHaveBeenCalled();
+    expect(store.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it('the band’s Record tasting opens nothing on a version with an awaiting batch', async () => {
+    store.batches = [awaitingBatch()];
+    storeDraft(planDraftRecord());
+    const before = structuredClone(store.drafts.get(VERSION));
+    await mountAt(BATCH_PATH, { width: PHONE });
+    await flush(() => false);
+
+    expect(bandRecordAct().textContent.trim()).toBe('Record tasting');
+    await click(bandRecordAct());
+    await flush(() => false);
+    expect(noPenOpen()).toBe(true);
+    expect(locationNow.pathname).toBe(BATCH_PATH);
+    expect(store.drafts.get(VERSION)).toEqual(before);
+  });
+
+  it('consumes a startTasting route intent and opens nothing, the plan draft unchanged', async () => {
+    store.batches = [awaitingBatch()];
+    storeDraft(planDraftRecord());
+    const before = structuredClone(store.drafts.get(VERSION));
+    await mountAt({ pathname: BATCH_PATH, state: { startTasting: true } }, { width: PHONE });
+    await flush(() => locationNow.state === null);
+    await flush(() => false);
+
+    expect(locationNow.state).toBeNull();
+    expect(noPenOpen()).toBe(true);
+    expect(store.drafts.get(VERSION)).toEqual(before);
+    expect(store.saveDraft).not.toHaveBeenCalled();
+    expect(store.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it('consumes a startNextVersion route intent and opens nothing', async () => {
+    storeDraft(planDraftRecord());
+    const before = structuredClone(store.drafts.get(VERSION));
+    await mountAt({ pathname: VERSION_PATH, state: { startNextVersion: true } }, { width: PHONE });
+    await flush(() => locationNow.state === null);
+    await flush(() => false);
+
+    expect(locationNow.state).toBeNull();
+    expect(noPenOpen()).toBe(true);
+    expect(store.drafts.get(VERSION)).toEqual(before);
+  });
+
+  it('still deletes a plan draft that no longer fits, quietly, and then offers the record acts', async () => {
+    store.batches = [structuredClone(augustSecondBatch)];
+    const stale = planDraftRecord();
+    delete stale.payload.rows['row-01'];
+    storeDraft(stale);
+    await mountAt(VERSION_PATH, { width: PHONE });
+    await flush(() => store.deleteDraft.mock.calls.length > 0);
+    await flush(() => logButton('Record another') !== null);
+
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION, 'plan');
+    expect(store.drafts.has(VERSION)).toBe(false);
+    expect(keptNotices()).toHaveLength(0);
+    expect(noPenOpen()).toBe(true);
+    expect(logButton('Record another')).not.toBeNull();
+    expect(logButton('Correct')).not.toBeNull();
+  });
+
+  it('still reopens a record draft at this width (only a plan draft is held)', async () => {
+    storeDraft(recordDraftRecord());
+    await mountAt(VERSION_PATH, { width: PHONE });
+    await flush(() => pen() !== null);
+    expect(pen()).not.toBeNull();
+    expect(keptNotices()).toHaveLength(1);
+  });
+
+  it('draws no record act until the first draft read has settled, then draws it when no plan draft is held', async () => {
+    store.batches = [structuredClone(augustSecondBatch)];
+    const hold = deferred();
+    store.getDraftHolds = [hold.promise];
+    await mountAt(VERSION_PATH, { width: PHONE });
+    await flush(() => false);
+    expect(logButton('Record another')).toBeNull();
+    expect(logButton('Correct')).toBeNull();
+    await click(bandRecordAct());
+    expect(noPenOpen()).toBe(true);
+
+    hold.resolve();
+    await flush(() => logButton('Record another') !== null);
+    expect(logButton('Record another')).not.toBeNull();
+    expect(logButton('Correct')).not.toBeNull();
+  });
+
+  it('another version of the recipe keeps its record act and Correct, and its record pen does not touch the first version’s plan draft', async () => {
+    store.withSibling = true;
+    store.batches = [structuredClone(augustSecondBatch)];
+    storeDraft(planDraftRecord());
+    const before = structuredClone(store.drafts.get(VERSION));
+    await mountAt(SIBLING_PATH, { width: PHONE });
+    await flush(() => logButton('Record another') !== null);
+
+    expect(logButton('Correct')).not.toBeNull();
+    await click(logButton('Record another'));
+    await flush(() => pen() !== null);
+    expect(pen()).not.toBeNull();
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await setValue(churnDateField(), '2026-10-09');
+    await elapse(1000);
+    expect(store.drafts.get(VERSION)).toEqual(before);
+    expect(store.saveDraft.mock.calls.every(([record]) => record.versionId !== VERSION)).toBe(true);
+    expect(store.deleteDraft.mock.calls.every(([versionId]) => versionId !== VERSION)).toBe(true);
+  });
+
+  it('opens the tasting pen from a startTasting intent when no plan is held, even while listDrafts is still out (review item 8)', async () => {
+    store.batches = [awaitingBatch()];
+    const listHold = deferred();
+    store.listDraftsHold = listHold.promise;
+    await mountAt({ pathname: BATCH_PATH, state: { startTasting: true } }, { width: PHONE });
+    await flush(() => pen() !== null);
+
+    expect(store.getDraftCalls).toBe(1);
+    expect(pen()).not.toBeNull();
+    expect(locationNow.state).toBeNull();
+    listHold.resolve();
+    await flush(() => false);
+    expect(pen()).not.toBeNull();
+  });
+
+  it('at the desk width the same store reopens the pen as built', async () => {
+    storeDraft(planDraftRecord());
+    await mountAt(VERSION_PATH, { width: 1024 });
+    await flush(() => nextVersionPen() !== null);
+    expect(versionNameField().value).toBe('less milk');
+    expect(keptNotices()).toHaveLength(1);
+  });
+
+  it('a kept edit on a version that has since gained a batch keeps Correct at the desk width, as built', async () => {
+    store.batches = [structuredClone(augustSecondBatch)];
+    storeDraft(
+      buildDraftRecord({
+        versionId: VERSION,
+        kind: 'edit',
+        payload: draftFromVersion(oliveOilVersion, oliveOilRecipe, STYLE_ROWS),
+        now: WRITTEN_AT,
+      }),
+    );
+    await mountAt(VERSION_PATH, { width: 1280 });
+    await flush(() => logButton('Correct') !== null);
+
+    expect(logButton('Correct')).not.toBeNull();
+    expect(logButton('Record another')).toBeNull();
+    expect(buttonByText('Resume editing')).not.toBeNull();
+  });
+});
+
+describe('a held plan draft when the window widens (PHONE-01, review item 3)', () => {
+  async function loadHeldThenWiden(secondRead) {
+    store.batches = [structuredClone(augustSecondBatch)];
+    storeDraft(planDraftRecord());
+    store.getDraftHolds = [undefined, secondRead.promise];
+    await mountAt(VERSION_PATH, { width: PHONE });
+    await flush(() => false);
+    expect(noPenOpen()).toBe(true);
+    await resizeTo(1024);
+    await flush(() => store.getDraftCalls === 2);
+    expect(store.getDraftCalls).toBe(2);
+  }
+
+  it('refuses every opener while the re-read is out, then opens the pen with the draft and its notice', async () => {
+    const before = structuredClone(planDraftRecord());
+    const read = deferred();
+    await loadHeldThenWiden(read);
+
+    expect(logButton('Record another')).toBeNull();
+    expect(logButton('Correct')).toBeNull();
+    await click(buttonByText('Next version'));
+    await flush(() => false);
+    expect(noPenOpen()).toBe(true);
+    expect(store.drafts.get(VERSION)).toEqual(before);
+    expect(store.saveDraft).not.toHaveBeenCalled();
+    expect(store.deleteDraft).not.toHaveBeenCalled();
+
+    read.resolve();
+    await flush(() => nextVersionPen() !== null);
+    expect(nextVersionPen()).not.toBeNull();
+    expect(versionNameField().value).toBe('less milk');
+    expect(keptNotices()).toHaveLength(1);
+    expect(store.drafts.get(VERSION)).toEqual(before);
+    expect(store.getDraftCalls).toBe(2);
+  });
+
+  it('when the held re-read is rejected: no pen opens, the guard releases, and the plan record is still stored', async () => {
+    const before = structuredClone(planDraftRecord());
+    const read = deferred();
+    await loadHeldThenWiden(read);
+
+    await click(buttonByText('Next version'));
+    expect(noPenOpen()).toBe(true);
+    read.reject(new Error('read failed'));
+    await flush(() => logButton('Record another') !== null);
+
+    expect(noPenOpen()).toBe(true);
+    expect(keptNotices()).toHaveLength(0);
+    expect(store.drafts.get(VERSION)).toEqual(before);
+    expect(store.deleteDraft).not.toHaveBeenCalled();
+    await click(buttonByText('Next version'));
+    expect(nextVersionPen()).not.toBeNull();
+    expect(store.drafts.get(VERSION)).toEqual(before);
+  });
+
+  it('a pen open when the window narrows stays open', async () => {
+    storeDraft(planDraftRecord());
+    await mountAt(VERSION_PATH, { width: 1024 });
+    await flush(() => nextVersionPen() !== null);
+    await resizeTo(PHONE);
+    await flush(() => false);
+    expect(nextVersionPen()).not.toBeNull();
+    expect(versionNameField().value).toBe('less milk');
+    expect(store.deleteDraft).not.toHaveBeenCalled();
   });
 });

@@ -1300,6 +1300,45 @@ function renderOpenStepPenBody(stepN, mutateDraft) {
   );
 }
 
+describe('Method — StepPenBody, opened: Preview step (CONTRACT section 7; bug-p11-pen-step-no-preview)', () => {
+  it("draws one p.method-step__targets holding Preview step alone, named 'Step 3, Preview step', immediately before the uses line's wrapper", () => {
+    const markup = renderOpenStepPenBody(3);
+    const line = markup.match(/<p class="method-step__targets"><button\b[^>]*aria-label="Step 3, Preview step"[^>]*>Preview step<\/button><\/p>/);
+    expect(line).not.toBeNull();
+    expect(markup).not.toContain('Hide preview');
+    expect(markup).not.toContain('mk-preview');
+    // Directly before the wrapper that holds the uses line: nothing stands between them.
+    expect(markup).toContain(`${line[0]}<div><p class="method-step__uses-line">`);
+    // The line holds the one button: no Add target (CONTRACT section 7).
+    expect(markup).not.toContain('Add target');
+  });
+
+  it('with a purpose and an aside written, the line stands after both fields and before the uses line (CONTRACT section 11, number 6)', () => {
+    const markup = renderOpenStepPenBody(3, (draft) => {
+      const step = draft.method.find((candidate) => candidate.n === 3);
+      step.purpose = 'Makes it smooth.';
+      step.aside = 'A whisk works too.';
+    });
+    const purposeAt = markup.indexOf('aria-label="Step 3, purpose"');
+    const asideAt = markup.indexOf('aria-label="Step 3, aside"');
+    const previewAt = markup.indexOf('aria-label="Step 3, Preview step"');
+    const usesAt = markup.indexOf('class="method-step__uses-line"');
+    expect(purposeAt).toBeGreaterThan(-1);
+    expect(asideAt).toBeGreaterThan(purposeAt);
+    expect(previewAt).toBeGreaterThan(asideAt);
+    expect(usesAt).toBeGreaterThan(previewAt);
+  });
+
+  it('an open removed step draws no Preview step and no preview block (review item 13)', () => {
+    const markup = renderOpenStepPenBody(3, (draft) => {
+      draft.method.find((candidate) => candidate.n === 3).removed = true;
+    });
+    expect(markup).toContain('Removed step 3, lead-in');
+    expect(markup).not.toContain('Preview step');
+    expect(markup).not.toContain('mk-preview');
+  });
+});
+
 describe('Method — StepPenBody, opened (sketch 011 decisions_recorded 5, Task 3)', () => {
   it('renders its fields, a controls line reading Change ingredients / Add purpose / Add aside, then Cancel and Done — no remove control at all', () => {
     const markup = renderOpenStepPenBody(3);
@@ -1442,21 +1481,21 @@ describe('Method — every button and checkbox carries an explicit tabindex (qui
     }
   });
 
-  it('an open step renders the uses toggle, Add purpose, Add aside, Cancel and Done, each tabindex="0"', () => {
+  it('an open step renders Preview step, the uses toggle, Add purpose, Add aside, Cancel and Done, each tabindex="0" (Preview step joined: bug-p11-pen-step-no-preview)', () => {
     const tags = buttonTags(renderOpenStepPenBody(3));
-    expect(tags).toHaveLength(5);
+    expect(tags).toHaveLength(6);
     for (const tag of tags) {
       expect(tag).toContain('tabindex="0"');
     }
   });
 
-  it('an open step that still uses a removed row also renders Remove this step, each of the six tabindex="0"', () => {
+  it('an open step that still uses a removed row also renders Remove this step, each of the seven tabindex="0" (Preview step joined: bug-p11-pen-step-no-preview)', () => {
     const markup = renderOpenStepPenBody(3, (draft) => {
       draft.rows[0].removed = true;
     });
     expect(markup).toContain('Remove this step');
     const tags = buttonTags(markup);
-    expect(tags).toHaveLength(6);
+    expect(tags).toHaveLength(7);
     for (const tag of tags) {
       expect(tag).toContain('tabindex="0"');
     }
@@ -1474,12 +1513,12 @@ describe('Method — every button and checkbox carries an explicit tabindex (qui
     expect(tags[0]).toContain('tabindex="0"');
   });
 
-  it('Method.jsx holds exactly 9 Button tags and 2 Checkbox tags and no raw button or checkbox input (source text, for the uses list the harness cannot render; the shared components carry tabIndex={0})', () => {
+  it('Method.jsx holds exactly 10 Button tags (Preview step joined: bug-p11-pen-step-no-preview) and 2 Checkbox tags and no raw button or checkbox input (source text, for the uses list the harness cannot render; the shared components carry tabIndex={0})', () => {
     const source = readFileSync(fileURLToPath(new URL('./Method.jsx', import.meta.url)), 'utf8')
       .replace(/\/\*[\s\S]*?\*\//g, '')
       .replace(/\/\/.*$/gm, '');
     expect(source.match(/<Checkbox\b/g) ?? []).toHaveLength(2);
-    expect(source.match(/<Button\b/g) ?? []).toHaveLength(9);
+    expect(source.match(/<Button\b/g) ?? []).toHaveLength(10);
     expect(source.match(/<button\b/g) ?? []).toHaveLength(0);
     const rawCheckboxes = (source.match(/<input\b(?:[^>{]|\{[^}]*\})*>/g) ?? []).filter((tag) => /type="checkbox"/.test(tag));
     expect(rawCheckboxes).toHaveLength(0);

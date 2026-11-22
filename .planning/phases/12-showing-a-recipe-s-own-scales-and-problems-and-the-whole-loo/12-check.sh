@@ -1,19 +1,26 @@
 #!/bin/sh
-# Phase 12 round one's checks in one command, ending "GATE1 PASS".
+# Phase 12's checks in one command: round one's gate, then round two's, ending "GATE2 PASS".
 #
 #   sh .planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-check.sh
 #
-# It runs every round-one check except the board check, which is 12-04's own command
-# (12-board-check.mjs with its four spec modules and --selftest) and runs beside it. Steps, each
-# stopping the script on failure: the whole app suite; one scratch build; the stops probe (pen,
-# reading, editor); the print check (rows, drop, lines, fit, worst); the round trip; the WebKit PDF
+# Round one (unchanged, "GATE1 PASS" prints after it): the whole app suite; one scratch build; the stops probe
+# (pen, reading, editor); the print check (rows, drop, lines, fit, worst); the round trip; the WebKit PDF
 # of the log pages; mobile Safari in the iOS Simulator; the Phase 11 walk, whose line must start
-# "MATCH 94 snapshots". Its last line is GATE1 PASS.
+# "MATCH 94 snapshots" (the five Phase 11 scenarios NEW and passing their own expectations).
+#
+# Round two adds, on the same scratch build, five steps (12-14, D-06): board, the side-by-side board check
+# (12-board-check.mjs with --selftest) over every Phase 12 spec, round one's five (12-board-selftest,
+# -pen, -reading, -logs, -limits) and round two's six (12-board-places, -more, -band, -penpreview,
+# -rowcontrols, -keys); phone, 12-phone-probe.mjs page; band, 12-band-probe.mjs held widen; tabs,
+# 12-tab-probe.mjs; keys, 12-keys-probe.mjs move keys lines. The last line is GATE2 PASS.
+#
+# Phase 11's board specs (11-board-steps, -structure, -first-version, -save) and 11-device-steps.mjs are
+# not run: they hold sketch 014's control order, which sketch 016 overrides.
 #
 # It never starts a Vite server and never writes the build Mark serves (app/dist): the one build
 # goes to a scratch folder keyed by the checkout's directory name, as 11-walk-check.sh keys its own.
 # Every result is device-unverified (Playwright WebKit, a WKWebView and the Simulator are not the
-# iPad); the paper check waits for round two's iPad rows. Round two reruns this after Gate 2 lands.
+# iPad); the iPad proof is Mark's three rows (12-ipad-rows.md), walked first by 12-device-steps.mjs.
 #
 # The app suite runs as `npx vitest run` from app/, which is what `npm --prefix app test` runs; the
 # npm form has hung inside linked worktrees.
@@ -69,3 +76,16 @@ if ! grep -q '^MATCH 94 snapshots' "$SCRATCH/walk.txt"; then
 fi
 
 echo "GATE1 PASS"
+
+step board node "$PHASE/12-board-check.mjs" \
+  "$PHASE/12-board-selftest.mjs" "$PHASE/12-board-pen.mjs" "$PHASE/12-board-reading.mjs" \
+  "$PHASE/12-board-logs.mjs" "$PHASE/12-board-limits.mjs" \
+  "$PHASE/12-board-places.mjs" "$PHASE/12-board-more.mjs" "$PHASE/12-board-band.mjs" \
+  "$PHASE/12-board-penpreview.mjs" "$PHASE/12-board-rowcontrols.mjs" "$PHASE/12-board-keys.mjs" \
+  --selftest
+step phone node "$PHASE/12-phone-probe.mjs" page
+step band node "$PHASE/12-band-probe.mjs" held widen
+step tabs node "$PHASE/12-tab-probe.mjs"
+step keys node "$PHASE/12-keys-probe.mjs" move keys lines
+
+echo "GATE2 PASS"

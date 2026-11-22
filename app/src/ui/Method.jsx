@@ -5,7 +5,7 @@ import { displayNumberOf } from '../domain/stepNumbers.js';
 import { Button } from './Button.jsx';
 import { holdReturn, stripNewlines } from './oneLineField.js';
 import { Checkbox } from './Checkbox.jsx';
-import { StepAside, StepPurpose, StepTargets } from './StepReading.jsx';
+import { StepAside, StepPurpose, StepReading, StepTargets } from './StepReading.jsx';
 
 function joinWithAnd(items) {
   if (items.length <= 1) return items[0] ?? '';
@@ -108,6 +108,7 @@ export function StepPenBody({
   staleFlagVisible,
   currentStepNumbers,
   fieldLabel,
+  number = null,
   isOpen,
   onOpen,
   onDone,
@@ -140,6 +141,13 @@ export function StepPenBody({
   const [usesOpen, setUsesOpen] = useState(false);
   const usesControlRef = useRef(null);
   const leadInRef = useRef(null);
+  // Preview step (CONTRACT section 7; bug-p11-pen-step-no-preview): the open step read as it will read.
+  // Done and Cancel close the step without remounting this component, so the preview is put away when
+  // the step closes, never carried to the next time it opens.
+  const [previewing, setPreviewing] = useState(false);
+  useEffect(() => {
+    if (!isOpen) setPreviewing(false);
+  }, [isOpen]);
   // bug-edit-this-step-focus-on-cancel: the closed step's Edit this step button node is reused as the
   // open step's Cancel, so focus stayed on it. Opening the step puts focus in its lead-in. The branches
   // stay unkeyed so focus after Cancel still lands on Edit this step.
@@ -296,6 +304,31 @@ export function StepPenBody({
       )}
       {showAsideStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.aside}</p>}
 
+      {/* Preview step (CONTRACT section 7 and section 11, number 6): one line holding the one control,
+          directly before the uses line, after the written purpose and aside. A removed step has none:
+          it will not read in the version being made, and its closed form already shows it struck. */}
+      {!draftStep.removed && (
+        <>
+          <p className="method-step__targets">
+            <Button
+              className="text-control"
+              aria-label={fieldLabel(step, draftStep.removed, previewing ? 'Hide preview' : 'Preview step')}
+              onClick={() => setPreviewing((open) => !open)}
+            >
+              {previewing ? 'Hide preview' : 'Preview step'}
+            </Button>
+          </p>
+          {previewing && (
+            <div className="mk-preview" role="group" aria-label={fieldLabel(step, draftStep.removed, 'preview')}>
+              <p className="mk-preview__cue">Preview</p>
+              <ol className="method-steps">
+                <StepReading step={draftStep} number={number} />
+              </ol>
+            </div>
+          )}
+        </>
+      )}
+
       {/* The controls line (D-24, D-23; sketch 011 decisions_recorded 5):
           the uses sentence and its "Change ingredients"/"Done"
           toggle, then the on-demand triggers for purpose and aside — one
@@ -446,6 +479,12 @@ export function StepPenBody({
       {draftStep.removed && coveredRows.length > 0 && (
         <p className="method-step__flag">{coverageSentence(coveredRows, currentStepNumbers)}</p>
       )}
+
+      {/* The open form's Preview step slot, held empty here. The two branches are unkeyed on purpose so
+          the Edit this step button node is reused as the open step's Cancel and focus stays on it
+          after Cancel (bug-edit-this-step-focus-on-cancel); React pairs them by child position, and
+          this branch's last child must keep standing where the open form's Done/Cancel line stands. */}
+      {null}
 
       <p className="method-step__acts">
         <Button
@@ -711,6 +750,7 @@ export function Method({
                   staleFlagVisible={staleFlagVisible}
                   currentStepNumbers={currentStepNumbers}
                   fieldLabel={fieldLabel}
+                  number={marginInfo.frame === 'current' ? marginInfo.number : null}
                   isOpen={openStepN === step.n}
                   onOpen={() => handleOpenStep(step.n)}
                   onDone={handleDoneStep}

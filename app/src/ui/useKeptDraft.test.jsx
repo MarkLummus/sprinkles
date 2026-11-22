@@ -71,7 +71,7 @@ function Harness(props) {
   const [mode, setMode] = useState('reading');
   const [penDraft, setPenDraft] = useState(null);
   const penOpenedAtRef = useRef(null);
-  const { draftRestoreDone } = useKeptDraft({
+  const { draftRestoreDone, heldPlan, planGuard } = useKeptDraft({
     writer,
     versionId: props.versionId,
     recipeId: props.recipeId,
@@ -95,6 +95,7 @@ function Harness(props) {
       setMode('developing');
     },
     onRestoreRecord,
+    keepPlanShut: props.keepPlanShut,
     onPageStatus,
     navigate,
   });
@@ -108,7 +109,7 @@ function Harness(props) {
     setPenDraft,
     discardDraft: writer.discardDraft,
   };
-  renders.push({ mode, penDraft, draftRestoreDone });
+  renders.push({ mode, penDraft, draftRestoreDone, heldPlan, planGuard });
   return null;
 }
 
@@ -121,25 +122,35 @@ async function flush() {
   }
 }
 
-async function mountStrict(batches) {
+async function mountStrict(batches, { keepPlanShut } = {}) {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
-  current = { container, root };
+  const draw = (shut) => (
+    <StrictMode>
+      <Harness
+        versionId={oliveOilVersion.id}
+        recipeId={oliveOilVersion.recipeId}
+        version={oliveOilVersion}
+        batches={batches}
+        batchId={undefined}
+        batchesLoaded
+        loadFailed={false}
+        keepPlanShut={shut}
+      />
+    </StrictMode>
+  );
+  current = { container, root, draw };
   await act(async () => {
-    root.render(
-      <StrictMode>
-        <Harness
-          versionId={oliveOilVersion.id}
-          recipeId={oliveOilVersion.recipeId}
-          version={oliveOilVersion}
-          batches={batches}
-          batchId={undefined}
-          batchesLoaded
-          loadFailed={false}
-        />
-      </StrictMode>,
-    );
+    root.render(draw(keepPlanShut));
+  });
+  await flush();
+}
+
+// Re-renders the mounted harness with a new keepPlanShut: the window crossing 724.
+async function setKeepPlanShut(shut) {
+  await act(async () => {
+    current.root.render(current.draw(shut));
   });
   await flush();
 }
@@ -1157,5 +1168,159 @@ describe("a version's one draft key is guarded by family (T-11-28, T-11-55)", ()
     await flush();
     expect(repo.deleteDraft).toHaveBeenCalledWith('v-saved', 'pen');
     expect(stored.get('v-saved')).toEqual({ kind: 'edit', versionId: 'v-saved' });
+  });
+});
+
+// 12-10 (PHONE-01, CONTRACT section 2): below 724 the restore leaves a fitting
+// plan record where it is, and exposes it as heldPlan with planGuard true.
+describe('keepPlanShut (PHONE-01)', () => {
+  const planRecord = () =>
+    buildDraftRecord({
+      versionId: oliveOilVersion.id,
+      kind: 'plan',
+      payload: { ...penDraftFromVersion(oliveOilVersion), versionLabel: 'held shut' },
+      penOpenedAt: OPENED_AT,
+      now: WRITTEN_AT,
+    });
+  const last = () => renders[renders.length - 1];
+
+  it('does not restore, delete or announce a fitting plan record, and returns it as heldPlan with planGuard true', async () => {
+    repo.getDraft.mockResolvedValue(structuredClone(planRecord()));
+    await mountStrict([], { keepPlanShut: true });
+
+    expect(repo.getDraft).toHaveBeenCalledTimes(1);
+    expect(restorePlanSpy).not.toHaveBeenCalled();
+    expect(onPageStatus).not.toHaveBeenCalled();
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+    expect(repo.saveDraft).not.toHaveBeenCalled();
+    expect(last().mode).toBe('reading');
+    expect(last().draftRestoreDone).toBe(true);
+    expect(last().heldPlan).toEqual(planRecord());
+    expect(last().planGuard).toBe(true);
+  });
+
+  it('still deletes a plan record that no longer fits, and its planGuard is false', async () => {
+    const stale = planRecord();
+    delete stale.payload.rows['row-01'];
+    repo.getDraft.mockResolvedValue(structuredClone(stale));
+    await mountStrict([], { keepPlanShut: true });
+
+    expect(repo.deleteDraft).toHaveBeenCalledWith(oliveOilVersion.id, 'plan');
+    expect(restorePlanSpy).not.toHaveBeenCalled();
+    expect(last().heldPlan).toBeNull();
+    expect(last().planGuard).toBe(false);
+  });
+
+  it('still restores a record draft, and holds nothing', async () => {
+    const payload = { ...draftFromBatch(augustSecondBatch), churnDate: '2026-10-11' };
+    repo.getDraft.mockResolvedValue(structuredClone(buildDraftRecord({ versionId: oliveOilVersion.id, kind: 'record', payload, now: WRITTEN_AT })));
+    await mountStrict([], { keepPlanShut: true });
+
+    expect(onRestoreRecord).toHaveBeenCalledTimes(1);
+    expect(last().heldPlan).toBeNull();
+    expect(last().planGuard).toBe(false);
+  });
+
+  it('holds planGuard true until the first read settles, with nothing stored it then releases', async () => {
+    let resolveRead;
+    repo.getDraft.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveRead = resolve;
+        }),
+    );
+    await mountStrict([], { keepPlanShut: true });
+    expect(last().draftRestoreDone).toBe(false);
+    expect(last().planGuard).toBe(true);
+
+    await act(async () => {
+      resolveRead(undefined);
+    });
+    await flush();
+    expect(last().draftRestoreDone).toBe(true);
+    expect(last().planGuard).toBe(false);
+  });
+
+  it('a page that does not keep plans shut has planGuard false before and after the read', async () => {
+    let resolveRead;
+    repo.getDraft.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveRead = resolve;
+        }),
+    );
+    await mountStrict([]);
+    expect(last().planGuard).toBe(false);
+    await act(async () => {
+      resolveRead(undefined);
+    });
+    await flush();
+    expect(last().planGuard).toBe(false);
+  });
+
+  it('flipping keepPlanShut to false restores the held record once with the notice, through the one read path', async () => {
+    repo.getDraft.mockResolvedValue(structuredClone(planRecord()));
+    await mountStrict([], { keepPlanShut: true });
+    expect(restorePlanSpy).not.toHaveBeenCalled();
+
+    await setKeepPlanShut(false);
+
+    expect(repo.getDraft).toHaveBeenCalledTimes(2);
+    expect(restorePlanSpy).toHaveBeenCalledTimes(1);
+    expect(restorePlanSpy).toHaveBeenCalledWith(planRecord().payload, OPENED_AT);
+    expect(onPageStatus).toHaveBeenCalledTimes(1);
+    expect(onPageStatus).toHaveBeenCalledWith(DRAFT_KEPT_STATUS);
+    expect(last().mode).toBe('developing');
+    expect(last().heldPlan).toBeNull();
+    expect(last().planGuard).toBe(false);
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it('keeps planGuard true from the crossing until the re-read settles, and holds the record again if the window narrowed back', async () => {
+    let calls = 0;
+    let resolveSecond;
+    repo.getDraft.mockImplementation(() => {
+      calls += 1;
+      if (calls === 1) return Promise.resolve(structuredClone(planRecord()));
+      return new Promise((resolve) => {
+        resolveSecond = resolve;
+      });
+    });
+    await mountStrict([], { keepPlanShut: true });
+    expect(last().planGuard).toBe(true);
+
+    await setKeepPlanShut(false);
+    expect(calls).toBe(2);
+    expect(last().planGuard).toBe(true);
+    expect(restorePlanSpy).not.toHaveBeenCalled();
+
+    await setKeepPlanShut(true);
+    expect(last().planGuard).toBe(true);
+    await act(async () => {
+      resolveSecond(structuredClone(planRecord()));
+    });
+    await flush();
+
+    expect(restorePlanSpy).not.toHaveBeenCalled();
+    expect(onPageStatus).not.toHaveBeenCalled();
+    expect(last().mode).toBe('reading');
+    expect(last().heldPlan).toEqual(planRecord());
+    expect(last().planGuard).toBe(true);
+    expect(repo.deleteDraft).not.toHaveBeenCalled();
+    expect(repo.saveDraft).not.toHaveBeenCalled();
+  });
+
+  it('flipping keepPlanShut with the pen already open changes nothing', async () => {
+    repo.getDraft.mockResolvedValue(undefined);
+    await mountStrict([], { keepPlanShut: false });
+    await act(async () => {
+      controls.openPlanPen({ ...penDraftFromVersion(oliveOilVersion), versionLabel: 'typed' }, OPENED_AT);
+    });
+    await setKeepPlanShut(true);
+    await setKeepPlanShut(false);
+
+    expect(repo.getDraft).toHaveBeenCalledTimes(1);
+    expect(last().mode).toBe('developing');
+    expect(last().planGuard).toBe(false);
   });
 });

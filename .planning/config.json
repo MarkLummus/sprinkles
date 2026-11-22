@@ -108,14 +108,14 @@
   },
   "review": {
     "models": {
-      "opencode": "openrouter/google/gemini-4-argon"
+      "opencode": "openrouter/google/gemini-4-carbon"
     },
     "timeouts": {
       "opencode": 2400
     },
     "default_reviewers": [
       "opencode-astra",
-      "opencode-argon"
+      "opencode-carbon"
     ],
     "parallel_lanes": true,
     "reviewer_instances": {
@@ -123,9 +123,9 @@
         "cli": "opencode",
         "model": "openrouter/openai/gpt-6-astra"
       },
-      "opencode-argon": {
+      "opencode-carbon": {
         "cli": "opencode",
-        "model": "openrouter/google/gemini-4-argon"
+        "model": "openrouter/google/gemini-4-carbon"
       }
     }
   }

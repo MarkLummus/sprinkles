@@ -9,11 +9,15 @@ import { displayNumbers } from '../domain/stepNumbers.js';
 import { liveSteps } from '../domain/creationSteps.js';
 
 // The creation editor's Instructions region (Phase 11, MAKE-07, sketch 013
-// decisions 32 to 34, sketch 014 instructions-steps.html): the heading row with
-// Add step, then each live step drawn open with no box, its number level with
-// its lead-in. A step's body is its own component so the state that belongs to
-// one step (the preview, the on-demand purpose and aside) lives with it. Every
-// stored string is a React text child, never markup.
+// decisions 32 to 34, sketch 014 instructions-steps.html; Phase 12, STRUCT-05,
+// sketch 016 row-controls.html section 5): the heading row with Add step, then
+// each live step drawn open with no box, its number level with its lead-in. A
+// step's controls stand in two groups: its own (lead-in, instruction, targets,
+// purpose, uses, aside, then Preview step) and its place among the steps, on
+// its last line (Add step, Move up, Move down, Remove). A step's body is its
+// own component so the state that belongs to one step (the preview, the
+// on-demand purpose and aside) lives with it. Every stored string is a React
+// text child, never markup.
 
 const isBlank = (text) => text.trim() === '';
 
@@ -114,8 +118,8 @@ function CreationStep({
             const labelErrorId = `create-step-${step.n}-target-${index}-label-error`;
             const valueErrorId = `create-step-${step.n}-target-${index}-value-error`;
             // The remove control sits inside its own chip, after the value field,
-            // so Add target and Preview step stay the line's direct controls
-            // (D-22; drawn on no board). A target with one side blank refuses
+            // so Add target and Add purpose stay the line's direct controls
+            // (D-22; sketch 016 section 5). A target with one side blank refuses
             // Save, so Required stands under that side (D-10); both blank is
             // dropped at Save.
             return (
@@ -157,13 +161,11 @@ function CreationStep({
           <Button className="text-control" aria-label={`Step ${number}, Add target`} onClick={() => onAddTarget(step.n)}>
             Add target
           </Button>
-          <Button
-            className="text-control"
-            aria-label={`Step ${number}, ${previewing ? 'Hide preview' : 'Preview step'}`}
-            onClick={() => setPreviewing((open) => !open)}
-          >
-            {previewing ? 'Hide preview' : 'Preview step'}
-          </Button>
+          {!purpose.isOpen && (
+            <Button className="text-control" aria-label={`Step ${number}, add purpose`} onClick={purpose.openField}>
+              Add purpose
+            </Button>
+          )}
         </p>
         {purpose.isOpen && (
           <label className="method-step__field">
@@ -178,31 +180,6 @@ function CreationStep({
             />
           </label>
         )}
-        {aside.isOpen && (
-          <label className="method-step__field">
-            <textarea
-              ref={aside.fieldRef}
-              className="prose-field"
-              rows="2"
-              value={step.aside ?? ''}
-              aria-label={`Step ${number}, aside`}
-              onChange={(event) => onChangeStepField(step.n, 'aside', event.target.value)}
-              onBlur={aside.handleBlur}
-            />
-          </label>
-        )}
-        {previewing && projected && (
-          // The step as the Sheet shows it, in the printed treatment (sketch 013
-          // decision 34, decision 014 2): the projected step, so a target with
-          // one side blank and an empty purpose or aside read as the Sheet reads
-          // them.
-          <div className="mk-preview" role="group" aria-label={`Step ${number}, preview`}>
-            <p className="mk-preview__cue">Preview</p>
-            <ol className="method-steps">
-              <StepReading step={projected} number={number} />
-            </ol>
-          </div>
-        )}
         <p className="method-step__uses-line" onKeyDown={handleUsesKeyDown}>
           {usesSentence(step, rows)}{' '}
           <Button
@@ -213,22 +190,6 @@ function CreationStep({
           >
             {usesOpen ? 'Done' : 'Change ingredients'}
           </Button>
-          {!purpose.isOpen && (
-            <>
-              <span aria-hidden="true">·</span>
-              <Button className="text-control" aria-label={`Step ${number}, add purpose`} onClick={purpose.openField}>
-                Add purpose
-              </Button>
-            </>
-          )}
-          {!aside.isOpen && (
-            <>
-              <span aria-hidden="true">·</span>
-              <Button className="text-control" aria-label={`Step ${number}, add aside`} onClick={aside.openField}>
-                Add aside
-              </Button>
-            </>
-          )}
         </p>
         {usesOpen && (
           // Every row of the table, in the table's order, whatever the step's own
@@ -244,13 +205,58 @@ function CreationStep({
             ))}
           </fieldset>
         )}
-        {/* The step's own structure controls (Phase 11, STRUCT-01 to STRUCT-03,
-            sketch 014 add-remove-move.html). A move that cannot act is .mk-off
-            and aria-disabled: it stays in the tab order and does nothing (D-16).
-            Add step here adds right after this step. */}
+        {aside.isOpen && (
+          <label className="method-step__field">
+            <textarea
+              ref={aside.fieldRef}
+              className="prose-field"
+              rows="2"
+              value={step.aside ?? ''}
+              aria-label={`Step ${number}, aside`}
+              onChange={(event) => onChangeStepField(step.n, 'aside', event.target.value)}
+              onBlur={aside.handleBlur}
+            />
+          </label>
+        )}
+        <p className="method-step__targets">
+          {!aside.isOpen && (
+            <Button className="text-control" aria-label={`Step ${number}, add aside`} onClick={aside.openField}>
+              Add aside
+            </Button>
+          )}
+          <Button
+            className="text-control"
+            aria-label={`Step ${number}, ${previewing ? 'Hide preview' : 'Preview step'}`}
+            onClick={() => setPreviewing((open) => !open)}
+          >
+            {previewing ? 'Hide preview' : 'Preview step'}
+          </Button>
+        </p>
+        {previewing && projected && (
+          // The step as the Sheet shows it, in the printed treatment (sketch 013
+          // decision 34, decision 014 2): the projected step, so a target with
+          // one side blank and an empty purpose or aside read as the Sheet reads
+          // them.
+          <div className="mk-preview" role="group" aria-label={`Step ${number}, preview`}>
+            <p className="mk-preview__cue">Preview</p>
+            <ol className="method-steps">
+              <StepReading step={projected} number={number} />
+            </ol>
+          </div>
+        )}
+        {/* The step among the steps, its last line (Phase 11, STRUCT-01 to STRUCT-03;
+            sketch 016 section 5, which overrides sketch 014's order): Add step ·
+            Move up · Move down · Remove, Remove the step's last stop. A move that
+            cannot act is .mk-off and aria-disabled: it stays in the tab order and
+            does nothing (D-16). Add step here adds right after this step. */}
         <p className="method-step__acts">
-          <Button className="text-control" data-act="remove" aria-label={`Step ${number}, remove`} onClick={() => onRemoveStep(step.n)}>
-            Remove
+          <Button
+            className="text-control"
+            data-act="add-after"
+            aria-label={`Step ${number}, Add step after it`}
+            onClick={() => onAddStep(step.n)}
+          >
+            Add step
           </Button>
           <span aria-hidden="true">·</span>
           <Button
@@ -273,13 +279,8 @@ function CreationStep({
             Move down
           </Button>
           <span aria-hidden="true">·</span>
-          <Button
-            className="text-control"
-            data-act="add-after"
-            aria-label={`Step ${number}, Add step after it`}
-            onClick={() => onAddStep(step.n)}
-          >
-            Add step
+          <Button className="text-control" data-act="remove" aria-label={`Step ${number}, remove`} onClick={() => onRemoveStep(step.n)}>
+            Remove
           </Button>
         </p>
       </div>

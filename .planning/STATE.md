@@ -5,16 +5,16 @@ milestone_name: Recipe creation
 current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
 status: executing
-stopped_at: Completed 12-09-PLAN.md
-last_updated: "2026-11-22T21:45:25.918Z"
+stopped_at: Completed 12-14-PLAN.md
+last_updated: "2026-11-22T22:43:04.644Z"
 last_activity: 2026-11-22
 last_activity_desc: Phase 12 execution started
-state_head: 0331a6e54c032db883e4ebbefdeb7415bcd06e2a
+state_head: e04a1bfe319cf9480be0aae7e208a991d80d9814
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 65
-  completed_plans: 58
+  completed_plans: 65
   percent: 80
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-11-15)
 ## Current Position
 
 Phase: 12 (Showing a recipe's own scales and problems, and the whole loop) — EXECUTING
-Plan: 10 of 16
+Plan: 11 of 16
 Status: Ready to execute
 Last activity: 2026-11-22 — Phase 12 execution started
 
@@ -164,6 +164,7 @@ Progress: [████████░░] 80%
 | Phase 08 P06 | 2 min | 3 tasks | 6 files |
 | Phase 12 P08 | 43min | 3 tasks | 5 files |
 | Phase 12 P09 | 15 min | 3 tasks | 13 files |
+| Phase 12 P14 | 40min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -197,6 +198,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 12]: 12-08: WALK_PATCH defaults to none in 11-walk-record-base.sh, because 11-07's order patch is part of e37db11a
 - [Phase 12]: 12-09: below 724 the editor addresses are guarded by a DeskOnly route wrapper on the route element, so no editor effect or draft call runs; an entry form already open stays open when the window narrows
 - [Phase 12]: 12-09: desk-edit board panel uses a fixed address with no stored version (DeskOnly mounts nothing under it); the real saved version's edit address is walked by 12-phone-probe.mjs
+- [Phase 12]: 12-14: PROOF-02 stays pending until Mark passes the three iPad rows on Mark's List; automated GATE2 PASS is not device verification
 
 ### Pending Todos
 
@@ -527,8 +529,8 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-22T21:45:25.463Z
-Stopped at: Completed 12-09-PLAN.md
+Last session: 2026-11-22T22:43:04.200Z
+Stopped at: Completed 12-14-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

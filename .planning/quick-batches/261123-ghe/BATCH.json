@@ -4,13 +4,13 @@
   "created_at": "2026-11-23T16:52:05.714Z",
   "options": {},
   "base_revision": "fa19967d15fdd106f55f5f93dcf87b0c3666051a",
-  "head_revision": null,
+  "head_revision": "07dfb34559a5a444d5dc26eeb17f69537331e462",
   "items": [
     {
       "quick_id": "261123-ghf",
       "client_id": null,
       "description": "bug-pen-huge-grams-on-removed-line-backup-refuses (Mark answered Fix it): in the Next version pen a whole number of 309 or more digits in the amount of a removed line, or of a line in a removed step, is read as Infinity and saved, and the exported backup then refuses to import; the pen must fall back to the stored amount for a removed line whose typed amount is not a finite number (parseGramsDraft, penDraftRows in app/src/domain/penDraft.js); failing round-trip test first, see .planning/quick/261123-bdk-*/261123-bdk-SUMMARY.md.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "planned_files": [
         "app/src/domain/penDraft.js",
@@ -20,18 +20,18 @@
       ],
       "directory": null,
       "worktree": null,
-      "dispatched_worktree": null,
-      "dispatched_branch": null,
-      "dispatched_base": null,
+      "dispatched_worktree": "/Users/mark/Documents/projects/sprinkles/.claude/worktrees/agent-a8f0980fe9f6e1ccd",
+      "dispatched_branch": "worktree-agent-a8f0980fe9f6e1ccd",
+      "dispatched_base": "27a9f61f96495dc82782a93ce63c14c8443f393b",
       "wave": 0,
-      "commit": null,
+      "commit": "2996746f",
       "failure_reason": null
     },
     {
       "quick_id": "261123-ghg",
       "client_id": null,
       "description": "bug-pen-removed-step-words-shift-left (Mark answered Fix it): in the Next version pen a removed step's words start 12 px left of the other steps (92 against 104 at 1366) because its empty number cell is 0 wide; keep the number column's width for a removed step so the words line up (app/src/ui/Method.jsx and its stylesheet); measure before and after in Playwright WebKit and Chromium on a scratch build.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "planned_files": [
         "app/src/styles/app.css",
@@ -46,14 +46,14 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 0,
-      "commit": null,
+      "commit": "dc03ad5c",
       "failure_reason": null
     },
     {
       "quick_id": "261123-ghh",
       "client_id": null,
       "description": "Pen refused target says Required (Mark approved look-p12-pen-target-required; closes bug-pen-saves-blank-lead-in): build sketch 016 CONTRACT section 13 \"The pen's refused target\" and snapshot pen-target-required.html: the open step's target chip becomes the creation editor's inline grid, Required under the blank side with aria-invalid and aria-describedby, the grid applies to a chip that is not refused too so a changed value's struck value keeps one line; this is the held Task 3 of quick 261122-tqn (app/src/ui/Method.jsx, notebook stylesheet).",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "261123-ghg"
       ],
@@ -70,14 +70,14 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 1,
-      "commit": null,
+      "commit": "8ed16c3f",
       "failure_reason": null
     },
     {
       "quick_id": "261123-ghi",
       "client_id": null,
       "description": "Ingredient picker opens after its row (Mark approved look-p12-picker-after-row): build sketch 016 CONTRACT section 13 \"The picker stands after its row\" and snapshot picker-after-row.html in the creation editor at 1366: the picker is a table row directly after the row that opened it (at the end, before the total, from the heading's Add ingredient), it moves when another row's Add ingredient is pressed keeping Name and Category, Cancel returns focus to the opener, a pick lands where the picker stood, the opener row stays in view, the picker's aria-label names the place, no pick__where line (app/src/ui/CreationPage.jsx, IngredientTable.jsx and their stylesheets).",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "261123-ghh"
       ],
@@ -99,14 +99,14 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 2,
-      "commit": null,
+      "commit": "5e3232d2",
       "failure_reason": null
     },
     {
       "quick_id": "261123-ghj",
       "client_id": null,
       "description": "Home below 724 with a Next version draft kept (Mark answered decide-p12-home-row-sentence = leave out): build sketch 016 CONTRACT section 12 \"Home below 724\" and section 13 \"Home's rows below 724\" and snapshot home-held-draft-393.html, third panel: the lead reads \"Draft: <draft name>. Finish it in a wider window.\" as plain text with no Go to draft, a record action whose version holds the kept draft is left out, a row whose action is left out reads the same sentence in its place, and Keep developing is left out below 724; from 724 up nothing changes (app/src/ui/RecipeList.jsx and its stylesheet; share the sentence with VersionRow.jsx, do not add a second copy).",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "planned_files": [
         "app/src/ui/VersionRow.jsx",
@@ -127,14 +127,14 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 0,
-      "commit": null,
+      "commit": "802ade2c",
       "failure_reason": null
     },
     {
       "quick_id": "261123-ghk",
       "client_id": null,
       "description": "Step order in the Next version pen (Mark answered bug-p11-pen-steps-no-reorder = fix, decide-p12-pen-order-scope = order only, decide-p12-pen-order-mark = the words \"was step 4\", look-p12-pen-step-order = approved): build sketch 017 (.planning/sketches/017-pen-step-order/ CONTRACT.md and both snapshots): Move up and Move down on each closed live step with the creation editor's words, focus and announcement, a removed step and an open step have no Move, the pen and the Ingredients table follow the draft's order, a changed order counts as an unsaved change, Show changes and the pen mark each live step whose number changed with \"was step N\", the saved page read plain and the printed sheet carry no mark; no stored shape change, no DB_VERSION change, no move keys, no Add step (app/src/ui/Method.jsx, RecipeSheet.jsx, app/src/domain/penDraft.js, lineage.js buildDiff).",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "261123-ghf",
         "261123-ghg",
@@ -168,7 +168,7 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 3,
-      "commit": null,
+      "commit": "2e030ce6",
       "failure_reason": null
     }
   ]

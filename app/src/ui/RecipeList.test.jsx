@@ -853,9 +853,12 @@ describe('Home below 724 (PHONE-01)', () => {
     expect(lead).not.toContain('Next version');
   });
 
-  it('awaiting-tasting and not-yet-churned rows and leads are as built', () => {
+  // Mark's answer to decide-p12-home-row-sentence (2026-11-23): Keep developing
+  // is left out of Home's lead below 724, with or without a kept draft, so an
+  // awaiting lead holds Record tasting alone (U4). The rows are as built.
+  it('awaiting-tasting and not-yet-churned rows and leads are as built, except an awaiting lead below 724 leaves Keep developing out', () => {
     expect(linkWords(rowsAt(awaitingBatches, true))).toEqual(['Record tasting', 'Keep developing']);
-    expect(linkWords(leadAt(AWAITING_TASTING, awaitingBatches, true))).toEqual(['Record tasting', 'Keep developing']);
+    expect(linkWords(leadAt(AWAITING_TASTING, awaitingBatches, true))).toEqual(['Record tasting']);
     expect(linkWords(rowsAt([], true))).toEqual(['Record batch']);
     expect(linkWords(leadAt(NOT_YET_CHURNED, [], true))).toEqual(['Record batch']);
   });
@@ -873,5 +876,155 @@ describe('Home below 724 (PHONE-01)', () => {
     const rows = body.slice(body.indexOf('home__list'));
     expect(linkWords(lead)).toEqual(['Adapt']);
     expect(rows).not.toContain('home__actions');
+  });
+});
+
+// Sketch 016 CONTRACT sections 12 and 13, and Mark's answer to
+// decide-p12-home-row-sentence (2026-11-23): below 724, a lead named by a kept
+// Next version draft says "Draft: <name>. Finish it in a wider window." as
+// plain text; a record act whose version holds that draft is left out of the
+// markup; a row that loses it holds the same sentence in its place; and Keep
+// developing is left out of every lead. From 724 up Home is as built.
+describe('Home below 724 with a Next version draft kept (sketch 016 CONTRACT sections 12 and 13)', () => {
+  const versions = [
+    makeVersion({ id: 'mc-3', recipeId: 'mc', versionLabel: 'v3', createdAt: '2026-01-01T00:00:00.000Z' }),
+    makeVersion({ id: 'mc-4', recipeId: 'mc', versionLabel: 'v4', createdAt: '2026-02-01T00:00:00.000Z' }),
+    makeVersion({ id: 'ub-2', recipeId: 'ub', versionLabel: 'base', createdAt: '2026-01-03T00:00:00.000Z' }),
+    makeVersion({ id: 'co-2', recipeId: 'co', versionLabel: 'coco', createdAt: '2026-01-04T00:00:00.000Z' }),
+    makeVersion({ id: 'ol-1', recipeId: 'ol', versionLabel: 'oil', createdAt: '2026-01-05T00:00:00.000Z' }),
+  ];
+  const recipes = [
+    { id: 'mc', name: 'Mexican Chocolate', description: '' },
+    { id: 'ub', name: 'Underbelly Light Base', description: '' },
+    { id: 'co', name: 'Coconut', description: '' },
+    { id: 'ol', name: 'Olive Oil', description: '' },
+  ];
+  const awaiting = (id, versionId) =>
+    makeBatch({ id, versionId, churn: { churnDate: '2026-01-02' }, tasting: null });
+  const batches = [
+    awaiting('b-mc', 'mc-3'),
+    awaiting('b-co', 'co-2'),
+    makeBatch({ id: 'b-ol', versionId: 'ol-1', churn: { churnDate: '2026-01-02' }, tasting: { tastedDate: '2026-01-03' } }),
+  ];
+  const planOn = (versionId, label, updatedAt) =>
+    draftOn(versionId, { payload: { ...planPayloadFor(oliveOilVersion), versionLabel: label }, updatedAt });
+  const mcDraft = planOn('mc-3', 'more cinnamon', '2026-03-02T00:00:00.000Z');
+  const ubDraft = planOn('ub-2', 'less cream', '2026-03-01T00:00:00.000Z');
+
+  const bodyAt = (drafts, below724, extra = {}) =>
+    renderToStaticMarkup(
+      <MemoryRouter>
+        <HomeBody
+          versions={versions}
+          batches={batches}
+          recipes={recipes}
+          drafts={drafts}
+          catalog={SEED_CATALOG}
+          {...(below724 === undefined ? {} : { below724 })}
+          {...extra}
+        />
+      </MemoryRouter>,
+    );
+  const rowOf = (markup, recipeId) =>
+    markup.match(/<li class="home__row">[\s\S]*?<\/li>/g).find((row) => row.includes(`href="/notebook/${recipeId}/`));
+  const wordsIn = (markup) =>
+    [...markup.matchAll(/<a [^>]*class="home__action[^"]*"[^>]*>([^<]*)<\/a>/g)].map((match) => match[1].trim());
+  const sentence = (name) => `Draft: ${name}. Finish it in a wider window.`;
+  const rowDrafts = (markup) => markup.match(/<p class="home__row-draft">/g) ?? [];
+
+  it('B1: the lead line is the sentence as plain text, with no link and no Go to draft', () => {
+    const markup = bodyAt([mcDraft, ubDraft], true);
+    expect(draftLine(markup)).toBe(`<p class="home__lead-draft">${sentence('Version 3 · more cinnamon')}</p>`);
+  });
+
+  it('B2: the lead holds no actions span, Record tasting being left out with its version held and Keep developing out below 724', () => {
+    expect(leadOf(bodyAt([mcDraft, ubDraft], true))).not.toContain('home__actions');
+  });
+
+  it('B3: the row that loses its record act has no actions and holds the sentence right after its meta', () => {
+    const markup = bodyAt([mcDraft, ubDraft], true);
+    const mc = rowOf(markup, 'mc');
+    expect(mc).not.toContain('home__actions');
+    expect(mc).toMatch(
+      new RegExp(`</span></span><p class="home__row-draft">${sentence('Version 3 · more cinnamon').replace(/[.·]/g, '\\$&')}</p></li>$`),
+    );
+    const ub = rowOf(markup, 'ub');
+    expect(ub).not.toContain('home__actions');
+    expect(ub).toContain(`<p class="home__row-draft">${sentence('Version 2 · less cream')}</p>`);
+    expect(wordsIn(rowOf(markup, 'co'))).toEqual(['Record tasting', 'Keep developing']);
+    const ol = rowOf(markup, 'ol');
+    expect(ol).not.toContain('home__actions');
+    expect(ol).not.toContain('home__row-draft');
+    expect(rowDrafts(markup)).toHaveLength(2);
+  });
+
+  it('B4: a draft on another version than the record act opens leaves the act in the lead and the row, the lead naming the draft (U5)', () => {
+    const other = planOn('mc-4', 'later', '2026-03-02T00:00:00.000Z');
+    const markup = bodyAt([other], true);
+    expect(draftLine(markup)).toBe(`<p class="home__lead-draft">${sentence('Version 3 · later')}</p>`);
+    expect(wordsIn(leadOf(markup))).toEqual(['Record tasting']);
+    const mc = rowOf(markup, 'mc');
+    expect(wordsIn(mc)).toEqual(['Record tasting', 'Keep developing']);
+    expect(mc).not.toContain('home__row-draft');
+  });
+
+  it('B6: a kept Correct draft keeps the built line and link, and the lead its Record tasting (U1)', () => {
+    const correct = correctDraftOn('mc-3', 'b-mc');
+    const markup = bodyAt([correct], true);
+    expect(draftLine(markup)).toContain('Draft open on this version ·');
+    expect(draftHref(markup)).toBe('/notebook/mc/mc-3/batch/b-mc');
+    expect(draftLine(markup)).toContain('Go to draft');
+    expect(wordsIn(leadOf(markup))).toEqual(['Record tasting']);
+    expect(markup).not.toContain('home__row-draft');
+  });
+
+  it('B7: a recipe with an edit kept has no actions and no sentence on its row (U2)', () => {
+    const edit = buildDraftRecord({
+      versionId: 'ub-2',
+      kind: 'edit',
+      payload: { recipeId: 'ub', versionId: 'ub-2', name: 'Underbelly Light Base' },
+      now: '2026-03-01T00:00:00.000Z',
+    });
+    const markup = bodyAt([mcDraft, edit], true);
+    const ub = rowOf(markup, 'ub');
+    expect(ub).not.toContain('home__actions');
+    expect(ub).not.toContain('home__row-draft');
+  });
+
+  it('B8: a version name typed as markup renders as text in the lead and on the row', () => {
+    const markup = bodyAt([planOn('mc-3', '<b>x</b>', '2026-03-02T00:00:00.000Z')], true);
+    expect(draftLine(markup)).toContain('Version 3 · &lt;b&gt;x&lt;/b&gt;');
+    expect(rowOf(markup, 'mc')).toContain('Version 3 · &lt;b&gt;x&lt;/b&gt;');
+    expect(markup).not.toContain('<b>');
+  });
+
+  it('B9: from 724 up Home is as built, whether the prop is false or left out', () => {
+    const drafts = [mcDraft, ubDraft];
+    const widthFalse = bodyAt(drafts, false);
+    expect(bodyAt(drafts, undefined)).toBe(widthFalse);
+    expect(draftLine(widthFalse)).toMatch(/^<p class="home__lead-draft">Draft open on this version ·\s*<a [^>]*>Go to draft<\/a><\/p>$/);
+    expect(wordsIn(leadOf(widthFalse))).toEqual(['Record tasting', 'Keep developing']);
+    expect(wordsIn(rowOf(widthFalse, 'mc'))).toEqual(['Record tasting', 'Keep developing']);
+    expect(wordsIn(rowOf(widthFalse, 'ub'))).toEqual(['Record batch']);
+    expect(wordsIn(rowOf(widthFalse, 'co'))).toEqual(['Record tasting', 'Keep developing']);
+    expect(wordsIn(rowOf(widthFalse, 'ol'))).toEqual(['Next version', 'Adapt']);
+    expect(widthFalse).not.toContain('home__row-draft');
+  });
+
+  it('B10: a stale plan draft is not named and the actions are as built (U7)', () => {
+    const stale = { ...mcDraft, shapeVersion: 2 };
+    const markup = bodyAt([stale], true);
+    expect(draftLine(markup)).toBeNull();
+    expect(wordsIn(rowOf(markup, 'mc'))).toEqual(['Record tasting', 'Keep developing']);
+    expect(markup).not.toContain('home__row-draft');
+  });
+
+  it('B11: a plan draft on a tasted recipe leads with the sentence and Adapt, its row bare (U3, U6)', () => {
+    const markup = bodyAt([planOn('ol-1', 'more oil', '2026-03-02T00:00:00.000Z')], true);
+    expect(draftLine(markup)).toBe(`<p class="home__lead-draft">${sentence('Version 2 · more oil')}</p>`);
+    expect(wordsIn(leadOf(markup))).toEqual(['Adapt']);
+    const ol = rowOf(markup, 'ol');
+    expect(ol).not.toContain('home__actions');
+    expect(ol).not.toContain('home__row-draft');
   });
 });

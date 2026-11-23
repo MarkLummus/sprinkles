@@ -225,6 +225,23 @@ describe('home.css is wired in (main.jsx, 260917-h83 precedent)', () => {
   });
 });
 
+describe('the held-draft sentence on a row below 724 (sketch 016 CONTRACT section 13)', () => {
+  test('a top-level .home__row-draft rule takes the actions place in the meta face and the app text colour', () => {
+    const rule = rules.find((r) => r.selector === '.home__row-draft' && r.media === undefined);
+    expect(rule, 'expected a top-level .home__row-draft rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/grid-area:\s*actions/);
+    expect(rule.declarations).toMatch(/margin:\s*0/);
+    expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--app-size-meta\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--app-text\)/);
+  });
+
+  test('RecipeList.jsx renders the home__row-draft class exactly once — the rule is never an orphan', () => {
+    const matches = recipeListJsxSource.match(/home__row-draft/g) ?? [];
+    expect(matches).toHaveLength(1);
+  });
+});
+
 describe('the loading line (03.4-13, G-03.4-1)', () => {
   test('a top-level .home__loading rule exists and reads the meta size and the secondary text colour from tokens', () => {
     const rule = rules.find((r) => r.selector === '.home__loading' && r.media === undefined);

@@ -613,7 +613,10 @@ describe('blockedSaveMessage', () => {
 
   describe('a line whose step the draft removes (03.6, decision 51 answer 2)', () => {
     const base = { versionLabel: '60 g oil · 800 g', reason: '' };
-    const stepTwo = (removed) => [{ n: 2, removed }, { n: 3, removed: false }];
+    // Steps with their words, as a real draft holds them: a step with no lead-in or instruction is
+    // refused by the step rule (bug-pen-saves-blank-lead-in), which these cases are not about.
+    const words = { leadIn: 'Lead-in', instruction: 'Instruction' };
+    const stepTwo = (removed) => [{ n: 2, removed, ...words }, { n: 3, removed: false, ...words }];
     // row-01 is Whole milk: its lines sit in step 2 and step 3.
     const milk = (first, second) => validRows({ 'row-01': { portions: [{ grams: first, removed: false }, { grams: second, removed: false }] } });
 

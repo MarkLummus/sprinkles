@@ -14,7 +14,7 @@ import { addGrams, checkAllocation, groupRows, liveSteps, rowLines, UNPLACED_STE
 import { CREATE_DRAFT_KEYS } from './draft.js';
 import { FIGURE_SPECS } from './figures.js';
 import { sameRecord } from './firstVersion.js';
-import { gramsDraftMessage, parseGramsDraft } from './lineage.js';
+import { gramsDraftMessage, parseGramsDraft, REQUIRED, stepRequiredFields } from './lineage.js';
 import { createRecipe } from './newRecipe.js';
 import { recipeNameMessage } from './recipe.js';
 import { activeRows, activeSteps } from './rows.js';
@@ -27,8 +27,6 @@ export const PROBLEM_REPEATED = 'This problem is already listed.';
 // Unreachable in v2.0 (the library never deletes an entry and Import is refused
 // while a draft is kept): a row whose entry is gone is refused, never dropped.
 export const LIBRARY_ENTRY_GONE = 'An ingredient on this recipe is no longer in the library.';
-
-const REQUIRED = 'Required';
 
 function hasWords(value) {
   return typeof value === 'string' && value.trim() !== '';
@@ -198,16 +196,11 @@ export function creationSaveBlock(draft, { libraryById }) {
 
   // Instructions.
   for (const step of liveSteps(draft)) {
-    const { n } = step;
-    if (!hasWords(step.leadIn)) add(`lead:${n}`, REQUIRED, { kind: 'stepLeadIn', n });
-    if (!hasWords(step.instruction)) add(`instruction:${n}`, REQUIRED, { kind: 'stepInstruction', n });
-    (step.targets ?? []).forEach((target, index) => {
-      const labelBlank = !hasWords(target.label);
-      const valueBlank = !hasWords(target.value);
-      if (labelBlank === valueBlank) return;
-      const side = labelBlank ? 'label' : 'value';
-      add(`target:${n}:${index}:${side}`, REQUIRED, { kind: 'stepTarget', n, index, side });
-    });
+    for (const target of stepRequiredFields(step)) {
+      if (target.kind === 'stepLeadIn') add(`lead:${target.n}`, REQUIRED, target);
+      else if (target.kind === 'stepInstruction') add(`instruction:${target.n}`, REQUIRED, target);
+      else add(`target:${target.n}:${target.index}:${target.side}`, REQUIRED, target);
+    }
   }
 
   // The recipe's own scales and problems.

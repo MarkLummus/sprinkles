@@ -2,7 +2,13 @@
 // The version pen's draft, read and changed by pure functions, which
 // RecipePage drives through usePenDraft (Phase 5, D-01).
 import { isLineRemoved } from './rows.js';
-import { blockedSaveMessage, blockedSaveRowId, blockedSaveLineIndex, parseGramsDraft } from './lineage.js';
+import {
+  blockedSaveMessage,
+  blockedSaveRowId,
+  blockedSaveLineIndex,
+  blockedSaveStepField,
+  parseGramsDraft,
+} from './lineage.js';
 
 // A draft row, found by its row id (D-03; closes T-03.6-02). Row ids come
 // from stored versions, and an imported file can carry any string, so the
@@ -248,13 +254,20 @@ export function penDraftVersion(version, penDraft) {
 // controls, with the field it names (D-21): the same traversal that named the
 // message also names the row it blocked on, so the two can never disagree
 // (T-03.1-21). A row id marks and focuses that row's grams field; no row id
-// means the block is the version line's own. Null when nothing blocks.
+// means the block is the version line's own or a step field's: when no row
+// blocks, a step field the same traversal names (a blank lead-in, a blank
+// instruction or a target with one side blank) is the target. Null when
+// nothing blocks.
 export function penSaveBlock(penDraft, version, scopedVersions) {
   const message = blockedSaveMessage(penDraft, version, scopedVersions);
   if (!message) return null;
   const rowId = blockedSaveRowId(penDraft, version, scopedVersions);
-  if (!rowId) return { message, target: { kind: 'versionLine' } };
-  return { message, target: { kind: 'row', rowId, index: blockedSaveLineIndex(penDraft, version, scopedVersions) } };
+  if (rowId) {
+    return { message, target: { kind: 'row', rowId, index: blockedSaveLineIndex(penDraft, version, scopedVersions) } };
+  }
+  const stepField = blockedSaveStepField(penDraft, version, scopedVersions);
+  if (stepField) return { message, target: stepField };
+  return { message, target: { kind: 'versionLine' } };
 }
 
 // The pen's fields coerced for the domain constructor (createChildVersion,

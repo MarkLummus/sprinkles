@@ -427,6 +427,27 @@
   border: var(--rule-ink-field) solid var(--sheet-ink);
 }
 
+/* The picker as a row of the ingredient table, after the row that opened it (sketch 016
+   CONTRACT section 13, picker-after-row.html): the board's two rules with .notebook in
+   place of its panel wrapper. The third rule is not the board's: the table's grams rule
+   right-aligns every .ink-field in the table, which would reach the picker's Name and
+   Category (the board draws that), but the contract keeps the picker as built, so its
+   fields stay start-aligned. */
+.notebook .ingredient-table tr.ingredient-table__pick {
+  display: block;
+  padding: 0 0 var(--gap-s);
+}
+
+.notebook .ingredient-table tr.ingredient-table__pick > td {
+  display: block;
+  padding: 0;
+  border: 0;
+}
+
+.notebook .ingredient-table__pick .ink-field {
+  text-align: start;
+}
+
 .notebook .pick__head {
   display: flex;
   align-items: center;

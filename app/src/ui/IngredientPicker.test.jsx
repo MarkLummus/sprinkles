@@ -9,9 +9,9 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 // IngredientPicker.jsx reads the place's words from IngredientsPlace.jsx, which
 // imports the repository, whose module opens the real IndexedDB at load.
 vi.mock('../store/repository.js', () => ({ repository: {} }));
-import { act } from 'react';
+import { act, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { IngredientPicker } from './IngredientPicker.jsx';
+import { IngredientPicker, NO_FILTERS } from './IngredientPicker.jsx';
 import { library } from '../data/library.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -20,14 +20,38 @@ const records = Object.entries(library).map(([id, entry]) => ({ id, entry }));
 
 let mounted = null;
 
+// The page holds the filters (a picker drawn anew in another row keeps them), so the
+// harness holds them in state and reports each change to the spy as well.
+function Harness({ onChangeFilters, ...rest }) {
+  const [filters, setFilters] = useState(NO_FILTERS);
+  return (
+    <IngredientPicker
+      {...rest}
+      filters={filters}
+      onChangeFilters={(next) => {
+        onChangeFilters(next);
+        setFilters(next);
+      }}
+    />
+  );
+}
+
 async function mount(props) {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
   mounted = { container, root };
-  const merged = { records, addedIds: new Set(), onPick: vi.fn(), onCancel: vi.fn(), ...props };
+  const merged = {
+    records,
+    addedIds: new Set(),
+    onPick: vi.fn(),
+    onCancel: vi.fn(),
+    onChangeFilters: vi.fn(),
+    label: 'Add ingredient',
+    ...props,
+  };
   await act(async () => {
-    root.render(<IngredientPicker {...merged} />);
+    root.render(<Harness {...merged} />);
   });
   return { container, props: merged };
 }
@@ -146,9 +170,24 @@ describe('IngredientPicker filters as the Ingredients place does (decision 4, D-
     expect(event.defaultPrevented).toBe(true);
   });
 
-  it('opening the picker focuses Name', async () => {
-    const { container } = await mount();
-    expect(document.activeElement).toBe(container.querySelector('textarea.ink-field'));
+  it('mounting the picker moves no focus: the page puts focus in Name when it opens or moves the picker', async () => {
+    await mount();
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  it("names its group by the label it is given, the place it stands in", async () => {
+    const { container } = await mount({ label: 'Add ingredient after Sucrose, in step 1' });
+    expect(container.querySelector('div.pick').getAttribute('aria-label')).toBe('Add ingredient after Sucrose, in step 1');
+  });
+
+  it('reports each filter change with both filters, and Clear filters reports none', async () => {
+    const { container, props } = await mount();
+    await typeName(container, 'milk');
+    expect(props.onChangeFilters).toHaveBeenLastCalledWith({ query: 'milk', category: 'All' });
+    await chooseCategory(container, 'dairy');
+    expect(props.onChangeFilters).toHaveBeenLastCalledWith({ query: 'milk', category: 'dairy' });
+    await click(clearButton(container));
+    expect(props.onChangeFilters).toHaveBeenLastCalledWith(NO_FILTERS);
   });
 });
 

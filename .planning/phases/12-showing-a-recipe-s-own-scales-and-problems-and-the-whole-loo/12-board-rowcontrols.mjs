@@ -9,7 +9,8 @@
 //   - an ingredient row's: Add to step while it is in no step, then Add ingredient, Move up,
 //     Move down, Remove; Add ingredient opens the picker in its built place and the pick lands
 //     right after that row, in its step.
-// Seven panels, nine entries: a panel holding both regions gets one entry per region (the anchor
+// The default export is two specs: this board's six panels (eight entries), and picker-after-row.html's
+// six panels, one entry each (261123-ghi). Six panels of the first board, eight entries: a panel holding both regions gets one entry per region (the anchor
 // must match once), labelled `rowcontrols-<pid>-ing` or `rowcontrols-<pid>-method` so the
 // --selftest lines and the --evidence files stay apart from 12-board-keys.mjs's (review item 4,
 // item 9). The Ingredients entries are anchored on `.ingredient-table` (scope
@@ -25,8 +26,10 @@
 //     preview, the second targets line holding Hide preview, the preview's cue and its lead, and
 //     nothing at or below the preview's foot;
 //   - ai-press, ai-unplaced: Ingredients only (the row checks);
-//   - ai-pick: Ingredients only. The board lists 11 picker rows, the app the whole library, so `.pick`
-//     itself is never boxed: its head, its filters and its first eleven rows are;
+//   - ai-pick is no longer here: row-controls.html draws the picker under the Total, which sketch 016
+//     CONTRACT section 13 supersedes ("The picker stands after its row"). The picker is held against
+//     the approved board by the second spec below (picker-after-row.html), and its keys line, row
+//     buttons and no-head-row checks moved there with it (12-board-keys.mjs's ai-pick entry too);
 //   - ai-step: both regions, Egg yolk landed right after Heavy cream in Step 1.
 // No `aria-keyshortcuts` check here: 12-13 adds the attribute and its spec checks it.
 //
@@ -200,7 +203,7 @@ function entry({ pid, region, flow, elements, absent }) {
   };
 }
 
-export default {
+const rowControls = {
   board: BOARD,
   panels: [
     entry({ pid: 'rc-drawn', region: 'ing', flow: coffeeBase, elements: rowActs }),
@@ -224,20 +227,6 @@ export default {
       ],
     }),
     entry({ pid: 'ai-press', region: 'ing', flow: coffeeBase, elements: rowActs }),
-    // The board lists 11 picker rows and the app the whole library: `.pick` is never boxed, and the
-    // heading's Add ingredient is away while the picker is open (CONTRACT section 5).
-    entry({
-      pid: 'ai-pick',
-      region: 'ing',
-      flow: pickerFromRow,
-      elements: [
-        ...rowActs,
-        { selector: '.pick__head', checks: ['text', 'box'] },
-        { selector: '.pick .ing__filters', checks: ['box'] },
-        { selector: '.pick__list > li:nth-child(-n+11) > .pick__row', checks: ['count', 'text', 'box'] },
-      ],
-      absent: ['.mk-head-act'],
-    }),
     entry({ pid: 'ai-step', region: 'ing', flow: afterStep, elements: rowActs }),
     entry({
       pid: 'ai-step',
@@ -251,3 +240,148 @@ export default {
     entry({ pid: 'ai-unplaced', region: 'ing', flow: afterUnplaced, elements: rowActs }),
   ],
 };
+
+// ---------------------------------------------------------------------------
+// The picker after its row (261123-ghi): picker-after-row.html, CONTRACT section 13. Six panels at
+// 1366: four with the picker open (from Heavy cream's row; moved to Dextrose's row; from the
+// heading, with a row under Not in a step yet; from the heading, with every row in a step) and two
+// with it closed (after Cancel, after a pick). Each is anchored on the whole Ingredients region.
+// The board lists 11 picker rows and the app the whole library: `.pick` is never boxed, its head,
+// its filters and its first eleven rows are, and the open panels do not compare the region's height.
+// ---------------------------------------------------------------------------
+const PICKER_BOARD = '.planning/sketches/016-entry-points-pen-preview-row-controls/picker-after-row.html';
+const REGION = { anchor: '.ingredient-table-region', scope: '.ingredient-table-region' };
+
+const pickerRowChecks = [
+  { selector: 'h2.region-name', checks: ['count', 'text', 'box'] },
+  { selector: 'p.mk-keys', checks: ['count', 'text', 'font', 'box'] },
+  {
+    selector: '.mk-row-acts button',
+    checks: ['count', 'text', 'box', { attr: 'aria-label' }, { attr: 'data-act' }, { attr: 'aria-keyshortcuts' }],
+  },
+  { selector: 'tr[data-line]', checks: ['count', 'box'] },
+  { selector: '.ingredient-table__col-name', checks: ['text'] },
+  { selector: 'tr.ingredient-table__step-head', checks: ['count', 'text', 'box'] },
+];
+
+const openPickerChecks = [
+  ...pickerRowChecks,
+  { selector: 'tr.ingredient-table__pick', checks: ['count', 'box'] },
+  { selector: '.pick', checks: ['count', { attr: 'aria-label' }] },
+  { selector: '.pick__head', checks: ['text', 'box'] },
+  { selector: '.pick .ing__filters', checks: ['box'] },
+  { selector: '.pick__list > li:nth-child(-n+11) > .pick__row', checks: ['count', 'text', 'box'] },
+];
+
+const closedPickerChecks = [
+  ...pickerRowChecks,
+  { selector: '.mk-head-row', checks: ['count', 'box'] },
+  { selector: '.mk-head-act', checks: ['count', 'text', 'box'] },
+];
+
+// The picker moved to Dextrose's row, which is in Step 2.
+async function pickerMoved(page) {
+  await pickerFromRow(page);
+  await label(page, 'Add ingredient after Dextrose').click();
+  await page.waitForTimeout(300);
+}
+
+// The picker's Cancel: focus returns to Heavy cream's Add ingredient.
+async function pickerCancelled(page) {
+  await pickerFromRow(page);
+  await page.locator('.pick__head button').click();
+  await page.waitForSelector('.pick', { state: 'detached' });
+  await page.waitForTimeout(300);
+}
+
+// A pick: Egg yolk lands right after Heavy cream and focus lands in its grams. The board draws this
+// state with Fine sea salt already placed in Step 2 (no Not in a step yet body), so the flow places it first.
+async function pickerPicked(page) {
+  await coffeeBase(page);
+  await label(page, 'Add to step, Fine sea salt').click();
+  await label(page, 'Step 2, Churn: add Fine sea salt').click();
+  await page.waitForTimeout(300);
+  await clickUntil(page, () => label(page, 'Add ingredient after Heavy cream, 36% fat'), '.pick');
+  await pickRow(page, 'Egg yolk (fresh)').click();
+  await page.waitForSelector('.pick', { state: 'detached' });
+  await page.waitForTimeout(300);
+}
+
+// The heading's Add ingredient, the Coffee example as first written (Fine sea salt in no step).
+async function pickerFromHeading(page) {
+  await coffeeBase(page);
+  await clickUntil(page, () => page.locator('.ingredient-table-region .mk-head-act'), '.pick');
+  await page.waitForTimeout(300);
+}
+
+// Every row in a step: Fine sea salt placed into Step 2, then the heading's Add ingredient.
+async function pickerAllPlaced(page) {
+  await coffeeBase(page);
+  await label(page, 'Add to step, Fine sea salt').click();
+  await label(page, 'Step 2, Churn: add Fine sea salt').click();
+  await page.waitForTimeout(300);
+  await clickUntil(page, () => page.locator('.ingredient-table-region .mk-head-act'), '.pick');
+  await page.waitForTimeout(300);
+}
+
+function pickerEntry({ pid, flow, elements, absent, pageHeight = false, keepFocus = false }) {
+  return {
+    id: `picker-${pid}`,
+    label: `picker-${pid}`,
+    width: 1366,
+    panelSelector: panelSelector(pid),
+    panelIndex: 0,
+    route: '/notebook',
+    library: 'current',
+    ready: '.nb__head',
+    steps: keepFocus ? flow : settle(flow),
+    ...REGION,
+    ...(pageHeight ? { pageHeight: true } : {}),
+    elements,
+    ...(absent ? { absent } : {}),
+  };
+}
+
+const openAbsent = ['.mk-head-row', '.mk-head-act'];
+const closedAbsent = ['.pick', 'tr.ingredient-table__pick'];
+
+const pickerAfterRow = {
+  board: PICKER_BOARD,
+  panels: [
+    pickerEntry({ pid: 'pa-step', flow: pickerFromRow, elements: openPickerChecks, absent: openAbsent }),
+    pickerEntry({
+      pid: 'pa-other',
+      flow: pickerMoved,
+      keepFocus: true,
+      elements: [...openPickerChecks, { selector: '.pick .ing__filters textarea', checks: ['count', 'focus'] }],
+      absent: openAbsent,
+    }),
+    pickerEntry({
+      pid: 'pa-cancel',
+      flow: pickerCancelled,
+      keepFocus: true,
+      elements: [
+        ...closedPickerChecks,
+        { selector: '[aria-label="Add ingredient after Heavy cream, 36% fat"]', checks: ['count', 'focus'] },
+      ],
+      absent: closedAbsent,
+      pageHeight: true,
+    }),
+    pickerEntry({
+      pid: 'pa-picked',
+      flow: pickerPicked,
+      keepFocus: true,
+      elements: [
+        ...closedPickerChecks,
+        { selector: '[aria-label="Egg yolk (fresh), grams"]', checks: ['count', 'focus'] },
+        { selector: 'textarea.mk-focus', checks: ['count'] },
+      ],
+      absent: closedAbsent,
+      pageHeight: true,
+    }),
+    pickerEntry({ pid: 'pa-heading', flow: pickerFromHeading, elements: openPickerChecks, absent: openAbsent }),
+    pickerEntry({ pid: 'pa-allplaced', flow: pickerAllPlaced, elements: openPickerChecks, absent: openAbsent }),
+  ],
+};
+
+export default [rowControls, pickerAfterRow];

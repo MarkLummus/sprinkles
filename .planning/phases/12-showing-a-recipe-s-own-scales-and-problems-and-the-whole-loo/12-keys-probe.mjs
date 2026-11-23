@@ -25,7 +25,7 @@
 // 08-walk-server.mjs, and every request to another host is aborted. Everything typed is English.
 import { startServers } from '../08-split-the-recipe-page-along-its-jobs/08-walk-server.mjs';
 import { coffeeBase } from './12-board-rowcontrols.mjs';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -39,18 +39,34 @@ if (!existsSync(PLAYWRIGHT_CORE)) {
 }
 const { webkit } = await import(PLAYWRIGHT_CORE);
 
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = path.resolve(HERE, '..', '..', '..');
 // No default: the probe must never fall back to app/dist.
 if (!process.env.PROBE_DIST) {
   console.log('FAIL PROBE_DIST is not set: build to a scratch folder and pass it (the probe never serves app/dist)');
   process.exit(1);
 }
 const DIST = path.resolve(process.env.PROBE_DIST);
+const realOf = (candidate) => {
+  try {
+    return realpathSync(candidate);
+  } catch {
+    return candidate;
+  }
+};
+if (
+  realOf(DIST) === realOf(path.join(REPO_ROOT, 'app', 'dist')) ||
+  DIST.endsWith(`${path.sep}app${path.sep}dist`) ||
+  realOf(DIST).endsWith(`${path.sep}app${path.sep}dist`)
+) {
+  console.log(`FAIL PROBE_DIST resolves to app/dist (${DIST}): build to a scratch folder instead`);
+  process.exit(1);
+}
 if (!existsSync(path.join(DIST, 'index.html'))) {
   console.log(`FAIL no index.html in PROBE_DIST ${DIST}`);
   process.exit(1);
 }
 
-const HERE = path.dirname(fileURLToPath(import.meta.url));
 const BOARD = path.join(HERE, '..', '..', 'sketches/016-entry-points-pen-preview-row-controls/row-controls.html');
 
 const MODES = process.argv.slice(2);

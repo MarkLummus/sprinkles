@@ -2,7 +2,7 @@
 // Vitest's default node environment — imports no store, no component, and
 // no framework.
 import { describe, it, expect } from 'vitest';
-import { displayNumbers, displayNumberOf } from './stepNumbers.js';
+import { displayNumbers, displayNumberOf, keptOrderChanged } from './stepNumbers.js';
 
 function makeMethod(count) {
   const method = [];
@@ -114,5 +114,48 @@ describe('displayNumberOf', () => {
     const map = displayNumbers(makeMethod(3));
     expect(displayNumberOf(map, null)).toBeNull();
     expect(displayNumberOf(map, undefined)).toBeNull();
+  });
+});
+
+// Sketch 017 CONTRACT section 5: the steps live in both arrays, each read in its
+// own order. A removal alone is no change of order; passing a removed step is not
+// a move; and the pen's dirty check and the "was step N" mark read this one rule.
+describe('keptOrderChanged (sketch 017 CONTRACT section 5)', () => {
+  // A number is a live step; a string such as '4r' is that key, removed.
+  const method = (...keys) =>
+    keys.map((key) => (typeof key === 'string' ? { n: Number.parseInt(key, 10), removed: true } : { n: key, removed: false }));
+
+  it('is false for two equal arrays', () => {
+    expect(keptOrderChanged(method(1, 2, 3), method(1, 2, 3))).toBe(false);
+  });
+
+  it('is true when two live steps swap', () => {
+    expect(keptOrderChanged(method(1, 2, 3, 4, 5), method(1, 2, 4, 3, 5))).toBe(true);
+  });
+
+  it('is false for a removal alone', () => {
+    expect(keptOrderChanged(method(1, 2, '4r', 3, 5), method(1, 2, 4, 3, 5))).toBe(false);
+  });
+
+  it('is true for a live step moved past a step removed in the first array', () => {
+    expect(keptOrderChanged(method(1, 3, 2, '4r', 5), method(1, 2, 4, 3, 5))).toBe(true);
+  });
+
+  it('is false for a step removed in both and passed over and back', () => {
+    expect(keptOrderChanged(method(1, 2, 3, 5, '4r'), method(1, 2, 3, '4r', 5))).toBe(false);
+  });
+
+  it('is false when a step live in the first array is removed in the second and nothing else moved', () => {
+    expect(keptOrderChanged(method(1, 2, 3), method(1, '2r', 3))).toBe(false);
+  });
+
+  it('never mutates or sorts what it is given', () => {
+    const a = method(1, 3, 2, '4r', 5);
+    const b = method(1, 2, 4, 3, 5);
+    const aCopy = structuredClone(a);
+    const bCopy = structuredClone(b);
+    keptOrderChanged(a, b);
+    expect(a).toEqual(aCopy);
+    expect(b).toEqual(bCopy);
   });
 });

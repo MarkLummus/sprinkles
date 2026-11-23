@@ -10,11 +10,14 @@ import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
 import { describe, it, beforeEach, expect } from 'vitest';
 import { createRepository } from './repository.js';
+import { buildDraftRecord, draftMatchesVersion } from '../domain/draft.js';
+import { moveStep } from '../domain/creationSteps.js';
 import { seedIfEmpty } from './seed.js';
 import { exportStore, validateStoreFile, importStore } from './transfer.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { createChildVersion, saveOverVersion, versionsForRecipe } from '../domain/lineage.js';
 import {
+  isPenDraftDirty,
   penDraftFromVersion,
   penFieldsFromDraft,
   penSaveBlock,
@@ -149,6 +152,54 @@ describe('a removed step with a blank field, saved through the pen', () => {
     expect(saved.removed).toBe(true);
     expect(saved.instruction).toBe('Warm the milk first');
     expect(saved.uses).toEqual(was.uses.includes(rowId) ? was.uses.filter((u) => u !== rowId) : was.uses.concat(rowId));
+  });
+});
+
+// Sketch 017 CONTRACT sections 4 and 7: the pen saves the order it shows, a
+// backup holding that order passes validateStoreFile and imports, and a kept
+// draft with the order restores. These are pins: the domain already holds, so a
+// failure here is a finding.
+describe('a step order changed through the pen', () => {
+  it.each(SAVES)('exports, passes the store file check and imports in the order saved (%s)', async (kind) => {
+    const { repository, opened } = await setUp(kind);
+    let savedFields = null;
+    const id = await savedThroughPen(repository, opened, kind, (draft) => {
+      const moved = moveStep(draft, 3, 'up');
+      savedFields = penFieldsFromDraft(moved, opened);
+      return moved;
+    });
+
+    const second = await roundTrip(repository);
+    const imported = await second.getVersion(id);
+    expect(imported.method.map((step) => step.n)).toEqual(savedFields.method.map((step) => step.n));
+    for (const step of imported.method) {
+      expect(step).toEqual(savedFields.method.find((candidate) => candidate.n === step.n));
+    }
+  });
+
+  it.each(SAVES)('a step removed and another moved past it imports in the draft order (%s)', async (kind) => {
+    const { repository, opened } = await setUp(kind);
+    let draftOrder = null;
+    const id = await savedThroughPen(repository, opened, kind, (draft) => {
+      const moved = moveStep(togglePenStepRemoved(draft, 2), 3, 'up');
+      draftOrder = moved.method.map((step) => step.n);
+      return moved;
+    });
+
+    const second = await roundTrip(repository);
+    const imported = await second.getVersion(id);
+    expect(imported.method.map((step) => step.n)).toEqual(draftOrder);
+    expect(imported.method.find((step) => step.n === 2).removed).toBe(true);
+  });
+
+  it('a kept pen draft with the moved order passes draftMatchesVersion and reads as unsaved work', async () => {
+    const { repository, opened } = await setUp('new');
+    const payload = moveStep(penDraftFromVersion(opened), 3, 'up');
+    const record = buildDraftRecord({ versionId: opened.id, kind: 'plan', payload, penOpenedAt: NOW, now: NOW });
+    await repository.saveDraft(record);
+    const read = await repository.getDraft(opened.id);
+    expect(draftMatchesVersion(read, opened, [], null)).toBe(true);
+    expect(isPenDraftDirty('developing', read.payload, opened)).toBe(true);
   });
 });
 

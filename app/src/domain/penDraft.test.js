@@ -450,9 +450,24 @@ describe('penFieldsFromDraft', () => {
     const fields = penFieldsFromDraft(draft, version);
     expect(fields.versionLabel).toBe('v-next');
     expect(fields.citedBatchId).toBe('batch-1');
-    expect(fields.method).toBe(draft.method);
+    expect(fields.method).toEqual(draft.method);
     expect(fields.authored).toBe(draft.authored);
     expect(fields.rows.length).toBe(version.rows.length);
+  });
+
+  it('drops a live step target with both sides blank and keeps the others as typed', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    const step = draft.method.find((candidate) => candidate.n === 2);
+    step.targets = [
+      { label: '', value: '' },
+      { label: '  ', value: '  ' },
+      { label: 'temp', value: '4 C' },
+    ];
+    const saved = penFieldsFromDraft(draft, version).method;
+    expect(saved.find((candidate) => candidate.n === 2).targets).toEqual([{ label: 'temp', value: '4 C' }]);
+    expect(saved.filter((candidate) => candidate.n !== 2)).toEqual(draft.method.filter((candidate) => candidate.n !== 2));
   });
 
   it('leaves its arguments as they were and answers the same twice', () => {

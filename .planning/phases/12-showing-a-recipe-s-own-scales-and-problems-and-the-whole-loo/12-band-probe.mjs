@@ -16,8 +16,10 @@
 //            act (drawn until 12-16 takes it out) and the band's Next version opens no pen, and the drafts
 //            dump is identical after load and after 2 s.
 //   Mocha    the same, with Record another and Correct absent from the log and the band's Record tasting
-//            opening nothing; then Home's Record tasting link (the awaiting batch's address) is pressed at 393:
-//            the page opens with no pen, the route state is cleared, the plan draft is byte-identical.
+//            opening nothing. Then Home at 393 (quick 261123-ghj, Mark's answer to decide-p12-home-row-sentence):
+//            the lead and both rows read their "Draft: ... Finish it in a wider window." sentence, the lead and the
+//            two rows hold no actions span, no link on Home opens either recipe's record act, and the drafts dump is
+//            byte-identical after load and after 2 s.
 // Mode `widen` (the held state of Vanilla loaded at 393):
 //   setViewportSize 1366 opens the Next version pen holding the typed version name, the plan record still stored;
 //   narrowing to 393 with the pen open leaves the pen open.
@@ -294,24 +296,49 @@ try {
       });
     }
 
-    await check('Mocha: Home\'s Record tasting at 393 opens the page with no pen, clears the route state, and leaves the plan draft byte-identical', async () => {
-      // Home's Record tasting is the awaiting batch's own address with startTasting route state; the plan
-      // draft is on the same version, set up at its address without the batch segment.
-      await visit('/', '.home__row, .home__lead');
-      const link = page.locator('a.home__action', { hasText: /^Record tasting$/ }).first();
-      await link.waitFor();
-      const href = await link.getAttribute('href');
-      if (!href || !href.includes('/batch/') || !href.includes(mocha.split('/')[3])) throw new Error(`Record tasting links to ${href}`);
-      const stored = await dumpText(page);
-      await page.locator('a.home__action', { hasText: /^Record tasting$/ }).first().click();
-      await page.waitForFunction(() => location.pathname.includes('/batch/'));
-      await page.waitForSelector('.notebook-version__identity');
-      await page.waitForTimeout(1200);
-      const cleared = await until(() => page.evaluate(() => (history.state?.usr ?? null) === null));
-      if (!cleared) throw new Error('the route state was not cleared');
-      if ((await openPens()) !== 0) throw new Error('a pen opened');
-      if ((await dumpText(page)) !== stored) throw new Error('the plan draft changed');
-      return `href ${href}; route state cleared; drafts dump identical`;
+    // Quick 261123-ghj (Mark's answer to decide-p12-home-row-sentence, 2026-11-23): below 724 Home no longer
+    // draws a record act on a version holding a kept Next version draft, so there is no link to press (the
+    // earlier check pressed Home's Record tasting here). Home says where the draft is finished instead, in the
+    // lead and on the row, and reads the drafts without writing them.
+    await check('Home at 393 offers no record act on a version holding a plan draft, says where it is finished in the lead and on the row, and writes nothing', async () => {
+      const before = await dumpText(page);
+      await visit('/', '.home__list');
+      await page.waitForTimeout(600);
+      const read = await page.evaluate(
+        ([mochaAddress, vanillaAddress]) => {
+          const rowFor = (address) =>
+            [...document.querySelectorAll('li.home__row')].find((row) => row.querySelector('.home__name a')?.getAttribute('href') === address);
+          const describe = (row) =>
+            row === undefined
+              ? null
+              : { actions: row.querySelectorAll('.home__actions').length, line: row.querySelector('p.home__row-draft')?.textContent ?? null };
+          const lead = document.querySelector('.home__lead');
+          return {
+            leadActions: lead.querySelectorAll('.home__actions').length,
+            leadLine: lead.querySelector('p.home__lead-draft')?.textContent ?? null,
+            leadLinks: lead.querySelectorAll('p.home__lead-draft a').length,
+            mocha: describe(rowFor(mochaAddress)),
+            vanilla: describe(rowFor(vanillaAddress)),
+            actHrefs: [...document.querySelectorAll('a.home__action')].map((link) => link.getAttribute('href')),
+          };
+        },
+        [mocha, vanilla],
+      );
+      const mochaWords = 'Draft: Version 2 · more cocoa. Finish it in a wider window.';
+      const vanillaWords = 'Draft: Version 2 · less cream. Finish it in a wider window.';
+      if (read.leadActions !== 0) throw new Error(`the lead holds ${read.leadActions} actions span`);
+      if (read.leadLinks !== 0) throw new Error('the lead line holds a link');
+      if (read.leadLine !== mochaWords) throw new Error(`the lead reads ${JSON.stringify(read.leadLine)}`);
+      if (!read.mocha) throw new Error('the probe\'s Mocha row is not on Home');
+      if (read.mocha.actions !== 0 || read.mocha.line !== mochaWords) throw new Error(`the Mocha row reads ${JSON.stringify(read.mocha)}`);
+      if (!read.vanilla) throw new Error('the probe\'s Vanilla row is not on Home');
+      if (read.vanilla.actions !== 0 || read.vanilla.line !== vanillaWords) throw new Error(`the Vanilla row reads ${JSON.stringify(read.vanilla)}`);
+      const offered = read.actHrefs.filter((href) => href && (href.startsWith(mocha) || href.startsWith(vanilla)));
+      if (offered.length > 0) throw new Error(`Home links ${offered.join(', ')}`);
+      if ((await dumpText(page)) !== before) throw new Error('the drafts dump changed after load');
+      await page.waitForTimeout(2000);
+      if ((await dumpText(page)) !== before) throw new Error('the drafts dump changed after 2 s');
+      return `lead and both rows read the sentence, no actions span in the lead or either row, no record link to either version; drafts dump identical after load and after 2 s`;
     });
   }
 

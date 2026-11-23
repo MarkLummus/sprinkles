@@ -1272,6 +1272,35 @@ describe("the version pen's open-step chip is the creation editor's grid (look-p
   });
 });
 
+// look-p12-picker-after-row (Mark approved 2026-11-23): the picker is a row of the ingredient
+// table, drawn by the board's two rules from picker-after-row.html (sketch 016 CONTRACT section
+// 13), plus one rule that keeps the built picker's fields start-aligned inside the table.
+describe("the ingredient picker's row is drawn as picker-after-row.html draws it (look-p12-picker-after-row)", () => {
+  const pick = '.notebook .ingredient-table tr.ingredient-table__pick';
+  const find = (selector) => rules.find((rule) => rule.selector === selector && rule.media === undefined);
+
+  test('the row is a block with the gap under it', () => {
+    const rule = find(pick);
+    expect(rule, 'expected the picker row rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/display:\s*block/);
+    expect(rule.declarations).toMatch(/padding:\s*0 0 var\(--gap-s\)/);
+  });
+
+  test('its one cell is a block with no padding and no border', () => {
+    const rule = find(`${pick} > td`);
+    expect(rule, 'expected the picker cell rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/display:\s*block/);
+    expect(rule.declarations).toMatch(/padding:\s*0/);
+    expect(rule.declarations).toMatch(/border:\s*0/);
+  });
+
+  test("the picker's fields keep the built start alignment the table's grams rule would take", () => {
+    const rule = find('.notebook .ingredient-table__pick .ink-field');
+    expect(rule, 'expected the picker fields rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/text-align:\s*start/);
+  });
+});
+
 describe('a read-only step reads as the Sheet prints it (plan 11-04)', () => {
   const find = (selector) => rules.find((rule) => rule.selector === selector && rule.media === undefined);
 

@@ -15,15 +15,16 @@
 // is anchored on the whole region (`.ingredient-table-region`, `.method-region`), so the heading row
 // and the keys line count and the region's own height is compared (`pageHeight`).
 //
-// Eight entries over seven panels (a panel holding both regions gets one entry per region, the anchor
+// Seven entries over six panels (a panel holding both regions gets one entry per region, the anchor
 // must match once), labelled `keys-<pid>-ing` or `keys-<pid>-method`: 12-board-check.mjs prints
 // `PASS selftest <label>` only, so the label tells this spec's lines from 12-board-rowcontrols.mjs's
 // and keeps the two specs' `--evidence` files apart when they run together (review item 9).
 //   - rc-drawn: both regions, the Coffee example as first written;
 //   - rc-full: Instructions only, step 1 with a target, a purpose and an aside written;
-//   - ai-pick: Ingredients only, the picker open from Heavy cream's Add ingredient. The board lists 11
-//     picker rows and the app the whole library, so the region's height is not compared and `.pick`
-//     itself is never boxed: the heading, the keys line and the table are;
+//   - ai-pick is no longer here: row-controls.html draws the picker under the Total, superseded by sketch
+//     016 CONTRACT section 13. Its checks (the region name, the keys line with its font, the row buttons'
+//     aria-keyshortcuts, no head row) are held by 12-board-rowcontrols.mjs's picker-after-row.html spec,
+//     in its pa-step entry (261123-ghi);
 //   - kr-press, kr-added, kr-move, kr-moved: Instructions only.
 // The board's panels are the built app's markup, so each entry's steps make the Coffee recipe through
 // the editor's own controls (12-board-rowcontrols.mjs's coffeeBase, the p12g2-capture.mjs desk flow)
@@ -99,13 +100,6 @@ const afterKey = (combo) => async (page) => {
   await page.waitForTimeout(400);
 };
 
-// The picker opened from Heavy cream's Add ingredient (the board's second picture of ai-pick).
-async function pickerFromRow(page) {
-  await coffeeBase(page);
-  await clickUntil(page, () => label(page, 'Add ingredient after Heavy cream, 36% fat'), '.pick');
-  await page.waitForTimeout(300);
-}
-
 // Nothing holds focus when the boxes are read: a focused field's own ring is not drawn on the board.
 // The four key states keep it: their `focus` check reads it.
 const settle = (flow) => async (page) => {
@@ -163,21 +157,6 @@ export default {
     entry({ pid: 'rc-drawn', region: 'ing', flow: coffeeBase, elements: [...headAndLine, ...rowButtons] }),
     entry({ pid: 'rc-drawn', region: 'method', flow: coffeeBase, elements: [...headAndLine, ...stepButtons] }),
     entry({ pid: 'rc-full', region: 'method', flow: stepFull, elements: [...headAndLine, ...stepButtons] }),
-    // The picker open from a row: the heading's Add ingredient is away, so the line stands under the
-    // region name alone (CONTRACT section 11, number 7). The board lists 11 picker rows and the app
-    // the whole library: no region height, no `.pick` box.
-    entry({
-      pid: 'ai-pick',
-      region: 'ing',
-      flow: pickerFromRow,
-      pageHeight: false,
-      elements: [
-        { selector: 'h2.region-name', checks: ['count', 'text', 'box'] },
-        { selector: 'p.mk-keys', checks: ['count', 'text', 'font', 'box'] },
-        ...rowButtons,
-      ],
-      absent: ['.mk-head-row', '.mk-head-act'],
-    }),
     // The four key states. The "before" entries place the caret and press nothing; the "after" entries
     // press the key. `focus` reads document.activeElement in the app.
     entry({

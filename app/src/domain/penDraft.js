@@ -271,29 +271,60 @@ export function penSaveBlock(penDraft, version, scopedVersions) {
   return { message, target: { kind: 'versionLine' } };
 }
 
-// The method as the pen saves it: a step's target whose label and value both
-// hold no words is dropped, as the creation editor drops it (buildCreation in
-// creationSave.js). The store file check refuses such a target, and a backup
-// holding it would not import. Every other part of a step saves as typed.
-function savedMethod(penDraft) {
-  return penDraft.method.map((step) => ({
-    ...step,
-    targets: (step.targets ?? []).filter((target) => hasWords(target.label) || hasWords(target.value)),
-  }));
+// The method as the pen saves it. The store file check refuses a step with a
+// blank lead-in or instruction and a target with a blank side, and a backup
+// holding one would not import. The pen's gate reads live steps only
+// (findBlockedStep skips a removed one), so a removed step reaches here with
+// whatever the draft holds. A target of both blank sides is dropped on any step,
+// as the creation editor drops it (buildCreation in creationSave.js). On a
+// removed step, a lead-in or instruction that holds no words, and a target with
+// exactly one blank side, save as the version the pen opened on holds them: that
+// step's own lead-in or instruction, or its target at the same position. Each
+// target is judged by its position in the draft before any is dropped. The
+// opened step and target always exist: the pen adds and removes neither, and a
+// kept draft must pass draftMatchesVersion.
+function savedMethod(penDraft, version) {
+  return penDraft.method.map((step) => {
+    const opened = step.removed === true ? version.method.find((candidate) => candidate.n === step.n) : null;
+    const targets = (step.targets ?? [])
+      .map((target, index) => {
+        if (opened && hasWords(target.label) !== hasWords(target.value)) return opened.targets[index];
+        return target;
+      })
+      .filter((target) => hasWords(target.label) || hasWords(target.value));
+    if (!opened) return { ...step, targets };
+    return {
+      ...step,
+      leadIn: hasWords(step.leadIn) ? step.leadIn : opened.leadIn,
+      instruction: hasWords(step.instruction) ? step.instruction : opened.instruction,
+      targets,
+    };
+  });
 }
 
 // The pen's fields coerced for the domain constructor (createChildVersion,
 // saveOverVersion): rows' grams strings are parsed here, at save time, never
 // on keystroke (Pitfall 5). A reason of nothing but whitespace is treated as
-// blank and stored as null, exactly as an empty reason already was. The method
-// is the draft's with a both-blank target dropped (savedMethod).
+// blank and stored as null, exactly as an empty reason already was.
+//
+// The method is saved by one rule: every step saves as typed, except
+// (a) on any step, a target whose label and value both hold no words is dropped,
+// as the creation editor drops it; and
+// (b) on a removed step, a lead-in or an instruction that holds no words, or a
+// target with exactly one side that holds no words, saves as the version the pen
+// opened on holds it: that step's own lead-in, instruction, or its target at the
+// same position. "Holds words" is lineage.js hasWords, the rule the pen gate and
+// the creation editor already read. Everything else on a removed step saves as
+// typed. On a live step the gate refuses (b)'s fields before Save, so only (a)
+// ever acts there. (b) mirrors penDraftRows, which saves a removed line's grams
+// as that portion's stored amount when the typed one does not read.
 export function penFieldsFromDraft(penDraft, version) {
   return {
     versionLabel: penDraft.versionLabel,
     reason: penDraft.reason.trim() === '' ? null : penDraft.reason,
     citedBatchId: penDraft.citedBatchId,
     rows: penDraftRows(version, penDraft),
-    method: savedMethod(penDraft),
+    method: savedMethod(penDraft, version),
     sheetTitle: penDraft.sheetTitle,
     sheetDescription: penDraft.sheetDescription,
     authored: penDraft.authored,

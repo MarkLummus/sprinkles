@@ -524,14 +524,16 @@ describe('the pen marks a step whose number changed with its number on the opene
     expect(markCount(tab)).toBe(0);
   });
 
-  it("W2: a removal alone marks nothing new; with a move every changed number is marked, and Restore brings the marks back", async () => {
+  it('W2(a): a removal alone marks nothing new', async () => {
     await storeCoffee();
-    const fresh = await openPen(catalog);
-    await press(fresh, 'Step 3, remove');
+    const tab = await openPen(catalog);
+    await press(tab, 'Step 3, remove');
     // Bound: a removal alone passes before the change as well.
-    expect(marks(fresh)).toEqual(['', '', ' removed', '', '']);
-    await unmountTab(fresh);
+    expect(marks(tab)).toEqual(['', '', ' removed', '', '']);
+  });
 
+  it('W2(b): with a move every changed number is marked, and Restore brings pm-twice back', async () => {
+    await storeCoffee();
     const tab = await openPen(catalog);
     await press(tab, 'Step 4, move up');
     await press(tab, 'Step 3, move up');

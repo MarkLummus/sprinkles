@@ -6,10 +6,12 @@
 // Never mutates either version, its rows, their embedded ingredient
 // records, or method steps, and never sorts: the row descriptors follow
 // current.rows order and the step descriptors follow current.method's own
-// order (already ascending n).
+// order, which is the version's step order and need not follow the stored keys
+// (a step moved in the creation editor or the pen keeps its key).
 import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue } from './composition.js';
 import { buildFigures } from './figures.js';
 import { activeRows, activeSteps, isLineRemoved, isRowRemoved } from './rows.js';
+import { displayNumberOf, keptOrderChanged, movedFromNumbers } from './stepNumbers.js';
 
 function activeMass(version) {
   const balance = computeBalance(activeRows(version));
@@ -180,7 +182,7 @@ function buildTargetDiff(currentTargets, baselineTargets) {
   return descriptors;
 }
 
-function buildStepDiff(step, baseStep) {
+function buildStepDiff(step, baseStep, movedFrom) {
   if (!baseStep) {
     return {
       n: step.n,
@@ -194,6 +196,7 @@ function buildStepDiff(step, baseStep) {
       usesChanged: true,
       removed: step.removed ?? false,
       removedChanged: true,
+      movedFrom,
     };
   }
   // An absent optional field and an empty-string one are the same fact —
@@ -225,12 +228,14 @@ function buildStepDiff(step, baseStep) {
     usesChanged: !sameSet(step.uses ?? [], baseStep.uses ?? []),
     removed,
     removedChanged: removed !== baseRemoved,
+    movedFrom,
   };
 }
 
 /**
  * buildDiff(current, baseline) -> { versionLabelChanged, sheetTitleChanged,
- * sheetDescriptionChanged, rows, steps, targetsChanged, figures, total }.
+ * sheetDescriptionChanged, rows, steps, stepOrderChanged, targetsChanged, figures,
+ * total }.
  * The one comparison of two
  * versions, computed at display precision so a change no reader can see is
  * never reported as one: shares compare formatShareOfBatch's own printed
@@ -258,7 +263,14 @@ function buildStepDiff(step, baseStep) {
  * baseline's `removed` is read through the baseline's own method, so
  * `removedChanged` is true only where the two versions differ.
  * `steps` is one descriptor per step of `current`, in
- * `current.method`'s own order (already ascending n); each step descriptor
+ * `current.method`'s own order, which is the version's step order and need not
+ * follow the stored keys (a step moved in the creation editor or the pen keeps
+ * its key, sketch 017 README question 4); `stepOrderChanged` is keptOrderChanged
+ * over the two methods, true when the steps live in both stand in a different
+ * order (sketch 017 CONTRACT section 5); each step descriptor also carries
+ * `movedFrom`, the step's number on `baseline` when the order changed and its
+ * number differs from that, else null (movedFromNumbers, CONTRACT section 5);
+ * each step descriptor
  * carries `leadInChanged`/`instructionChanged`/`purposeChanged`/
  * `asideChanged`, one per text field, with `textChanged` computed as their
  * disjunction — never a separate four-way expression, so the aggregate can
@@ -288,7 +300,9 @@ export function buildDiff(current, baseline) {
   const rows = current.rows.map((row) => buildRowDiff(row, baselineRowById.get(row.id), currentMass, baselineMass, current.method, baseline.method));
 
   const baselineStepByN = new Map(baseline.method.map((step) => [step.n, step]));
-  const steps = current.method.map((step) => buildStepDiff(step, baselineStepByN.get(step.n)));
+  const stepOrderChanged = keptOrderChanged(current.method, baseline.method);
+  const movedFrom = movedFromNumbers(current.method, baseline.method);
+  const steps = current.method.map((step) => buildStepDiff(step, baselineStepByN.get(step.n), displayNumberOf(movedFrom, step.n)));
 
   const currentFigures = buildFigures({ ...current, rows: activeRows(current), method: activeSteps(current) });
   const baselineFigures = buildFigures({ ...baseline, rows: activeRows(baseline), method: activeSteps(baseline) });
@@ -318,6 +332,7 @@ export function buildDiff(current, baseline) {
     sheetDescriptionChanged: current.sheetDescription !== baseline.sheetDescription,
     rows,
     steps,
+    stepOrderChanged,
     targetsChanged: !bandsEqual(current.targets, baseline.targets),
     figures,
     total,

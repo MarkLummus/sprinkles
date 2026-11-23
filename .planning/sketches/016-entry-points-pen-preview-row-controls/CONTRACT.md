@@ -121,3 +121,25 @@ The round-two research (`12-RESEARCH.md`, "Open Questions") found eleven gaps. Q
 11. **A held key (proposed default).** Holding Cmd+Return adds one step or opens the picker once: repeats are ignored. Holding Ctrl+Cmd+Up or Down keeps moving the step or row one place per repeat and stops at the end.
 
 What the research settled from the code, with no decision needed (section 9): the caret after a keyed move (mechanism from the code, result on the iPad), what the open preview shows for a written step (the build's own reading of the step, targets, purpose and aside included), the Uses checklist's place and Tab order (after the uses line; Change ingredients, then the ticks, then the aside), and where the page goes when the picker opens from a row (to the picker's Name, then back to the new row's grams).
+
+## 12. Round-two redraws (drawn 2026-11-22; NOT approved until Mark answers the three rows)
+
+Files: `home-held-draft-393.html`, `desk-line-words.html`, `picker-says-where.html` (canvas boards `P12R2_HomeDraft`, `P12R2_DeskLine`, `P12R2_PickerWhere`). On each, the "As built" panels are for comparison. `<closing>` is the closing words Mark picks on `decide-p12-desk-line-closing-words`; until then it is the built "at the desk or on the iPad".
+
+**Home below 724 with a Next version draft kept** (`look-p12-home-held-draft`):
+- The lead's draft line (`p.home__lead-draft`) reads "Draft: <draft name>. Finish it <closing>.", the draft's name as the version page words it; plain text, no link. No "Draft open on this version", no Go to draft.
+- An action whose version holds a kept Next version draft is not in the markup: Record batch (the latest version holds it), Record tasting (the awaiting batch's version holds it). The lead keeps its other action; a row whose filled action goes has no `span.home__actions`.
+- Rows carry no reason. From 724 up Home is as built.
+
+**The one-line page** (`decide-p12-desk-line-closing-words`):
+- Nothing kept: `h1.place__title` (New recipe, Edit), then `p.place__note` "Done <closing>."
+- An edit kept (Edit): the note reads "Edit kept. Finish it <closing>." A new-recipe draft kept (New recipe): "Draft: <draft recipe's name>. Finish it <closing>." The page reads the draft and never writes it.
+- Edit, both states: between the title and the note, `p.place__for` holding one link, "<recipe name> · <version identity>", to the version's page; 44 high.
+- The same `<closing>` ends the recipe head's two lines (section 2) and Home's lead line.
+
+**The picker** (`look-p12-picker-says-where`; 1366):
+- `p.pick__where` after `div.pick__head`, before the Name field: "After <row> · in step <n>", "After <row> · not in a step yet", or "At the end · not in a step yet" (the heading's Add ingredient). The heading (`span.pen-caption`) stays "Add ingredient".
+- The picker group's `aria-label` is "Add ingredient after <row>, in step <n>" and its like.
+- The line follows the landing place when another row's Add ingredient is pressed with the picker open.
+
+Words added: Draft: <name>. Finish it <closing>. (Home's lead; the New recipe page) · After <row> · in step <n> · After <row> · not in a step yet · At the end · not in a step yet · the candidates for <closing>.

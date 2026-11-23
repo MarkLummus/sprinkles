@@ -1,0 +1,1408 @@
+{
+ "hd-built": {
+  "w": 393,
+  "h": 1520,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Mexican Chocolate",
+    241.2,
+    44
+   ],
+   [
+    "Go to draft",
+    70,
+    44
+   ],
+   [
+    "Record tasting",
+    157.5,
+    44
+   ],
+   [
+    "Keep developing",
+    157.5,
+    44
+   ],
+   [
+    "Enter Sheet code",
+    111.2,
+    44
+   ],
+   [
+    "Mexican Chocolate",
+    205.8,
+    44
+   ],
+   [
+    "Record tasting",
+    353,
+    44
+   ],
+   [
+    "Olive Oil Ice Cream, circulator",
+    287.7,
+    56
+   ],
+   [
+    "Pineapple",
+    106.8,
+    44
+   ],
+   [
+    "Underbelly Light Base",
+    224.4,
+    56
+   ],
+   [
+    "Record batch",
+    353,
+    44
+   ],
+   [
+    "Coconut",
+    92.4,
+    44
+   ],
+   [
+    "Record tasting",
+    353,
+    44
+   ],
+   [
+    "Mocha",
+    73.6,
+    44
+   ],
+   [
+    "Record tasting",
+    353,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "home__lead-draft",
+    "words": "Draft open on this version · Go to draft",
+    "w": 327,
+    "h": 44,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "hd-drawn": {
+  "w": 393,
+  "h": 1422,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Mexican Chocolate",
+    241.2,
+    44
+   ],
+   [
+    "Keep developing",
+    327,
+    44
+   ],
+   [
+    "Enter Sheet code",
+    111.2,
+    44
+   ],
+   [
+    "Mexican Chocolate",
+    205.8,
+    44
+   ],
+   [
+    "Olive Oil Ice Cream, circulator",
+    287.7,
+    56
+   ],
+   [
+    "Pineapple",
+    106.8,
+    44
+   ],
+   [
+    "Underbelly Light Base",
+    224.4,
+    56
+   ],
+   [
+    "Coconut",
+    92.4,
+    44
+   ],
+   [
+    "Record tasting",
+    353,
+    44
+   ],
+   [
+    "Mocha",
+    73.6,
+    44
+   ],
+   [
+    "Record tasting",
+    353,
+    44
+   ],
+   [
+    "Standard Base",
+    157.1,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "home__lead-draft",
+    "words": "Draft: Version 5 · more cinnamon. Finish it at the desk or on the iPad.",
+    "w": 327,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "hd-page": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Rename",
+    54.4,
+    44
+   ],
+   [
+    "VersionShow details",
+    353,
+    44
+   ],
+   [
+    "Print sheet",
+    73.6,
+    44
+   ],
+   [
+    "Go to batchAwaiting tasting",
+    353,
+    44
+   ],
+   [
+    "HistoryShow4 versions",
+    353,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "notebook-version__draft",
+    "words": "Draft: Version 5 · more cinnamon. Finish it at the desk or on the iPad.",
+    "w": 353,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "hd-page-none": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Rename",
+    54.4,
+    44
+   ],
+   [
+    "VersionShow details",
+    353,
+    44
+   ],
+   [
+    "Print sheet",
+    73.6,
+    44
+   ],
+   [
+    "Go to batchNot yet churned",
+    353,
+    44
+   ],
+   [
+    "HistoryShow2 versions",
+    353,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "notebook-version__draft",
+    "words": "Draft: Version 3 · less cream. Finish it at the desk or on the iPad.",
+    "w": 353,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-built-new": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [],
+  "lines": [
+   {
+    "cls": "place__note",
+    "words": "Done at the desk or on the iPad.",
+    "w": 353,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-built-edit": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [],
+  "lines": [
+   {
+    "cls": "place__note",
+    "words": "Done at the desk or on the iPad.",
+    "w": 353,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-built-edit-723": {
+  "w": 723,
+  "h": 620,
+  "overflowX": 0,
+  "controls": [],
+  "lines": [
+   {
+    "cls": "place__note",
+    "words": "Done at the desk or on the iPad.",
+    "w": 563.4,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-new": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [],
+  "lines": [
+   {
+    "cls": "place__note",
+    "words": "Done at the desk or on the iPad, in a wide window.",
+    "w": 353,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-edit": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Coffee · Version 1",
+    113,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "place__for",
+    "words": "Coffee · Version 1",
+    "w": 353,
+    "h": 44,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   },
+   {
+    "cls": "place__note",
+    "words": "Done at the desk or on the iPad, in a wide window.",
+    "w": 353,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-edit-723": {
+  "w": 723,
+  "h": 620,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Coffee · Version 1",
+    113,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "place__for",
+    "words": "Coffee · Version 1",
+    "w": 683,
+    "h": 44,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   },
+   {
+    "cls": "place__note",
+    "words": "Done at the desk or on the iPad, in a wide window.",
+    "w": 563.4,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-new-kept": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [],
+  "lines": [
+   {
+    "cls": "place__note",
+    "words": "Draft: Coffee. Finish it at the desk or on the iPad, in a wide window.",
+    "w": 353,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-edit-kept": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Coffee · Version 1",
+    113,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "place__for",
+    "words": "Coffee · Version 1",
+    "w": 353,
+    "h": 44,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   },
+   {
+    "cls": "place__note",
+    "words": "Edit kept. Finish it at the desk or on the iPad, in a wide window.",
+    "w": 353,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-edit-kept-723": {
+  "w": 723,
+  "h": 620,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Coffee · Version 1",
+    113,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "place__for",
+    "words": "Coffee · Version 1",
+    "w": 683,
+    "h": 44,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   },
+   {
+    "cls": "place__note",
+    "words": "Edit kept. Finish it at the desk or on the iPad, in a wide window.",
+    "w": 563.4,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-head-edit": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Rename",
+    54.4,
+    44
+   ],
+   [
+    "VersionShow details",
+    353,
+    44
+   ],
+   [
+    "Print sheet",
+    73.6,
+    44
+   ],
+   [
+    "Go to batchNot yet churned",
+    353,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "notebook-version__draft",
+    "words": "Edit kept. Finish it at the desk or on the iPad, in a wide window.",
+    "w": 353,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-head-draft": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Rename",
+    54.4,
+    44
+   ],
+   [
+    "VersionShow details",
+    353,
+    44
+   ],
+   [
+    "Print sheet",
+    73.6,
+    44
+   ],
+   [
+    "Go to batchNot yet churned",
+    353,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "notebook-version__draft",
+    "words": "Draft: Version 2 · less cream. Finish it at the desk or on the iPad, in a wide window.",
+    "w": 353,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-home": {
+  "w": 393,
+  "h": 1422,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Mexican Chocolate",
+    241.2,
+    44
+   ],
+   [
+    "Keep developing",
+    327,
+    44
+   ],
+   [
+    "Enter Sheet code",
+    111.2,
+    44
+   ],
+   [
+    "Mexican Chocolate",
+    205.8,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "home__lead-draft",
+    "words": "Draft: Version 5 · more cinnamon. Finish it at the desk or on the iPad, in a wide window.",
+    "w": 327,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-head-draft-B": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Rename",
+    54.4,
+    44
+   ],
+   [
+    "VersionShow details",
+    353,
+    44
+   ],
+   [
+    "Print sheet",
+    73.6,
+    44
+   ],
+   [
+    "Go to batchNot yet churned",
+    353,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "notebook-version__draft",
+    "words": "Draft: Version 2 · less cream. Finish it in a wider window.",
+    "w": 353,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-new-B": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [],
+  "lines": [
+   {
+    "cls": "place__note",
+    "words": "Done in a wider window.",
+    "w": 353,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-head-draft-C": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Rename",
+    54.4,
+    44
+   ],
+   [
+    "VersionShow details",
+    353,
+    44
+   ],
+   [
+    "Print sheet",
+    73.6,
+    44
+   ],
+   [
+    "Go to batchNot yet churned",
+    353,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "notebook-version__draft",
+    "words": "Draft: Version 2 · less cream. Finish it at the desk, or on the iPad full screen.",
+    "w": 353,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-new-C": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [],
+  "lines": [
+   {
+    "cls": "place__note",
+    "words": "Done at the desk, or on the iPad full screen.",
+    "w": 353,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-cand-A": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Coffee · Version 1",
+    113,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "place__for",
+    "words": "Coffee · Version 1",
+    "w": 353,
+    "h": 44,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   },
+   {
+    "cls": "place__note",
+    "words": "Edit kept. Finish it at the desk or on the iPad, in a wide window.",
+    "w": 353,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-cand-B": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Coffee · Version 1",
+    113,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "place__for",
+    "words": "Coffee · Version 1",
+    "w": 353,
+    "h": 44,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   },
+   {
+    "cls": "place__note",
+    "words": "Edit kept. Finish it in a wider window.",
+    "w": 353,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "dl-cand-C": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Coffee · Version 1",
+    113,
+    44
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "place__for",
+    "words": "Coffee · Version 1",
+    "w": 353,
+    "h": 44,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   },
+   {
+    "cls": "place__note",
+    "words": "Edit kept. Finish it at the desk, or on the iPad full screen.",
+    "w": 353,
+    "h": 34,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "pw-built": {
+  "w": 576,
+  "h": 1057,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add to step",
+    69.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Cancel",
+    41.6,
+    44
+   ],
+   [
+    "Alcohol 40%Other · Freezing 297Add",
+    502,
+    48
+   ],
+   [
+    "AlluloseSugar · Sugar 100% · Freezing 19",
+    502,
+    48
+   ],
+   [
+    "Almond Paste (pure)Flavor · Fat 49.93% ·",
+    502,
+    65
+   ],
+   [
+    "AppleFruit · Fat 0.17% · Sugar 10.39% · ",
+    502,
+    65
+   ],
+   [
+    "ApricotFruit · Fat 0.39% · Sugar 9.24% ·",
+    502,
+    65
+   ],
+   [
+    "Atomized glucose 40 DE (dried)Sugar · Su",
+    502,
+    48
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "pen-caption",
+    "words": "Add ingredient",
+    "w": 108.8,
+    "h": 16.2,
+    "lines": 1,
+    "font": "12px/500",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.2
+   }
+  ]
+ },
+ "pw-step": {
+  "w": 576,
+  "h": 1086,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add to step",
+    69.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Cancel",
+    41.6,
+    44
+   ],
+   [
+    "Alcohol 40%Other · Freezing 297Add",
+    502,
+    48
+   ],
+   [
+    "AlluloseSugar · Sugar 100% · Freezing 19",
+    502,
+    48
+   ],
+   [
+    "Almond Paste (pure)Flavor · Fat 49.93% ·",
+    502,
+    65
+   ],
+   [
+    "AppleFruit · Fat 0.17% · Sugar 10.39% · ",
+    502,
+    65
+   ],
+   [
+    "ApricotFruit · Fat 0.39% · Sugar 9.24% ·",
+    502,
+    65
+   ],
+   [
+    "Atomized glucose 40 DE (dried)Sugar · Su",
+    502,
+    48
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "pen-caption",
+    "words": "Add ingredient",
+    "w": 108.8,
+    "h": 16.2,
+    "lines": 1,
+    "font": "12px/500",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.2
+   },
+   {
+    "cls": "pick__where",
+    "words": "After Heavy cream, 36% fat · in step 1",
+    "w": 502,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "pw-unplaced": {
+  "w": 576,
+  "h": 1086,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add to step",
+    69.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Cancel",
+    41.6,
+    44
+   ],
+   [
+    "Alcohol 40%Other · Freezing 297Add",
+    502,
+    48
+   ],
+   [
+    "AlluloseSugar · Sugar 100% · Freezing 19",
+    502,
+    48
+   ],
+   [
+    "Almond Paste (pure)Flavor · Fat 49.93% ·",
+    502,
+    65
+   ],
+   [
+    "AppleFruit · Fat 0.17% · Sugar 10.39% · ",
+    502,
+    65
+   ],
+   [
+    "ApricotFruit · Fat 0.39% · Sugar 9.24% ·",
+    502,
+    65
+   ],
+   [
+    "Atomized glucose 40 DE (dried)Sugar · Su",
+    502,
+    48
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "pen-caption",
+    "words": "Add ingredient",
+    "w": 108.8,
+    "h": 16.2,
+    "lines": 1,
+    "font": "12px/500",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.2
+   },
+   {
+    "cls": "pick__where",
+    "words": "After Fine sea salt · not in a step yet",
+    "w": 502,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "pw-heading": {
+  "w": 576,
+  "h": 1086,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Add to step",
+    69.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    88.8,
+    44
+   ],
+   [
+    "Move up",
+    51.7,
+    44
+   ],
+   [
+    "Move down",
+    69,
+    44
+   ],
+   [
+    "Remove",
+    48.2,
+    44
+   ],
+   [
+    "Cancel",
+    41.6,
+    44
+   ],
+   [
+    "Alcohol 40%Other · Freezing 297Add",
+    502,
+    48
+   ],
+   [
+    "AlluloseSugar · Sugar 100% · Freezing 19",
+    502,
+    48
+   ],
+   [
+    "Almond Paste (pure)Flavor · Fat 49.93% ·",
+    502,
+    65
+   ],
+   [
+    "AppleFruit · Fat 0.17% · Sugar 10.39% · ",
+    502,
+    65
+   ],
+   [
+    "ApricotFruit · Fat 0.39% · Sugar 9.24% ·",
+    502,
+    65
+   ],
+   [
+    "Atomized glucose 40 DE (dried)Sugar · Su",
+    502,
+    48
+   ]
+  ],
+  "lines": [
+   {
+    "cls": "pen-caption",
+    "words": "Add ingredient",
+    "w": 108.8,
+    "h": 16.2,
+    "lines": 1,
+    "font": "12px/500",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.2
+   },
+   {
+    "cls": "pick__where",
+    "words": "At the end · not in a step yet",
+    "w": 502,
+    "h": 17,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   }
+  ]
+ }
+}

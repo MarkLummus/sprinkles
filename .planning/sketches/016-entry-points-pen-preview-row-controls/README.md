@@ -122,3 +122,63 @@ Device-unverified: all of it. This is Playwright WebKit on a Mac, not Mark's iPa
 
 - The version pen's open step ends with Cancel as a text control and Done as an unstyled button (`<button type="button">` with no class) in the build. Shown as built on the pen board.
 - At 393 a kept edit draft's `/edit` address and `/notebook/new` open the full creation editor today.
+
+## Round-two redraws (2026-11-22; drawn, waiting on Mark)
+
+Three decided redraws from Mark's answers of 2026-11-22 (section "Mark's answers after the round-two build"). Three new boards on the same canvas page, in a second row under the approved ones (canvas version 587, 1795401178-8f0f); the six approved boards and their snapshots are not touched. Made by `canvas-generators/p12r2.py` from `p12r2-capture.mjs` (WebKit, coarse, a scratch build of commit b06add6f, the round-two build), measured by `p12r2-measure.mjs` in WebKit and Chrome. `CONTRACT.md` section 12 holds the build rules. **None is approved yet**; a `/gsd-quick` follows each answer.
+
+| File | Canvas board | What it draws | Mark's List |
+|------|--------------|---------------|-------------|
+| `home-held-draft-393.html` | `P12R2_HomeDraft` | Home at 393 with two Next version drafts kept (Mexican Chocolate Version 3, whose batch awaits a tasting; Underbelly Light Base Version 2, not yet churned): as built, drawn, and the two version pages the left-out actions lead to today. | `look-p12-home-held-draft` (from `decide-p12-phone-home-held-draft`) |
+| `desk-line-words.html` | `P12R2_DeskLine` | The one-line page as built (New recipe, Edit, Edit at 723); drawn with nothing kept and with work kept, at 393 and 723; Edit naming its recipe as a link back; the same closing words on the two recipe-head lines and on Home's lead; three candidates for the closing words. | `decide-p12-desk-line-closing-words` (from `decide-p12-desk-line-words`) |
+| `picker-says-where.html` | `P12R2_PickerWhere` | 1366. The picker in its built place: as built, then with one line under its heading naming where the pick lands, opened from a row in a step, from a row in no step, and from the heading's Add ingredient. | `look-p12-picker-says-where` (from `decide-p12-picker-says-where`) |
+
+### Redraw 1: Home follows the version page
+
+19. Below 724, Home's lead reads the version page's own sentence in place of "Draft open on this version · Go to draft": "Draft: Version 5 · more cinnamon. Finish it at the desk or on the iPad.", plain text, no link (`p.home__lead-draft`). Two lines at 393 (327 wide, 14 px).
+20. Below 724, an action whose version holds a kept Next version draft is left out of the markup: Record batch when the latest version holds it, Record tasting when the version of the batch awaiting its tasting holds it. In the lead the other action stays (Keep developing, which opens a version that holds no draft). A row loses its whole actions span, as a tasted row does. A row gives no reason; the recipe page's head does, as for the Notebook row of a recipe with an edit kept (`CONTRACT.md` section 11, number 4).
+21. From 724 up nothing changes. Decision B stands (no record act from the phone on the version that holds the draft).
+22. The words are the built ones. Redraw 2 changes the closing words of this line with the others.
+
+### Redraw 2: the desk line
+
+23. The closing words are one phrase, used in every sentence that sends work to the desk: the one-line page, the two recipe-head lines, Home's lead line. Three candidates, for Mark to pick (`decide-p12-desk-line-closing-words`): A "at the desk or on the iPad, in a wide window" (recommended, drawn on every panel that is not a candidate panel); B "in a wider window"; C "at the desk, or on the iPad full screen".
+24. Nothing kept: "Done <closing>." under the title, for New recipe and for Edit, as built.
+25. Work kept: the page says so in the head's own sentences. Edit with an edit kept: "Edit kept. Finish it <closing>." New recipe with a draft kept: "Draft: Coffee. Finish it <closing>." (the head's Draft sentence, the name being the draft recipe's; plain text). The page reads the kept draft and never writes it.
+26. Edit names what it would edit: one line under the title, the recipe's name and the version's identity ("Coffee · Version 1"), a link to that version's page, which works at this width (proposed class `place__for`, Home's own text link from existing tokens; 110.5 to 113 × 44).
+27. The recipe-head lines and Home's lead take the same closing words: "Edit kept. Finish it <closing>." and "Draft: <draft name>. Finish it <closing>." Nothing else on those boards changes.
+
+Measured at 393 (WebKit; Chrome in brackets where it differs), lines of 14 px text:
+
+| Sentence | A | B | C |
+|----------|---|---|---|
+| "Done …" (page) | 1 | 1 | 1 |
+| "Edit kept. Finish it …" (page and head) | 2 | 1 | 2 (1) |
+| "Draft: Version 2 · less cream. Finish it …" (head) | 2 | 2 (1) | 2 |
+| "Draft: Version 5 · more cinnamon. Finish it …" (Home's lead, 327 wide) | 2 | not drawn | not drawn |
+
+At 723 every A sentence drawn is one line.
+
+### Redraw 3: the picker says where
+
+28. One line under the picker's heading row (`div.pick__head`), before Name, names where the pick lands (proposed class `pick__where`: grotesk, the picker's own small size, existing tokens only; 14 px, one line, 502 wide):
+    - from a row in a step: "After Heavy cream, 36% fat · in step 1" (the step by its number, as the build already says it aloud: "row 2 of 2 in step 1");
+    - from a row in no step: "After Fine sea salt · not in a step yet" (the table's own words for that group);
+    - from the heading's Add ingredient: "At the end · not in a step yet".
+29. The heading stays "Add ingredient" (12 px capitals; the place in capitals beside Cancel was not drawn: an ingredient's name in capitals reads badly and a long one wraps). The picker group's accessible name carries the place too ("Add ingredient after Heavy cream, 36% fat, in step 1").
+30. Pressing another row's Add ingredient while the picker is open changes the line. The picker stays where it is built.
+
+### Measured (round two)
+
+- All 27 panels: no sideways overflow, WebKit and Chrome.
+- Home drawn at 393: the lead holds Keep developing alone (327 × 44); Mexican Chocolate's and Underbelly Light Base's rows have no action; Coconut's and Mocha's Record tasting are unchanged (353 × 44).
+- As built, the picker opened from Heavy cream's row stands 373 px below the button on this four-row table (the review measured 483 on its own table) and focus is in Name.
+- Device-unverified: all of it (Playwright WebKit and Chrome on a Mac).
+
+### Not settled by these boards
+
+- A recipe with no steps, and an empty table: the picker line is stated, not drawn. With no steps the table shows no "Not in a step yet" label, so the line would read "After Fine sea salt" or "At the end"; with no rows there is no line.
+- Whether the picker line is announced when it changes (focus goes to Name each time) is for the plan.
+- A kept record or Correct draft below 724: Home's "Draft open on this version · Go to draft" is assumed as built there (the pen reopens on the phone); not walked.
+- A recipe with an edit kept: Home shows no action and no line at any width, as built. Not drawn.
+- The approved boards no longer regenerate byte for byte from `p12g2.py`: the app's stylesheets changed with the round-two build (the inlined CSS differs from `boards/P12G2_*.dc.html`). The served boards and the snapshots are unchanged; regenerating them needs `SPRINKLES_STYLES` pointed at the stylesheets of 2026-11-21.

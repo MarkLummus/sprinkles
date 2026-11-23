@@ -177,9 +177,11 @@ export function NotebookPlace() {
 // (sketch 013 notebook-new-recipe.html, panels nA1 and nB1). New recipe is
 // offered only while no draft is kept and the entry is closed; opening moves
 // focus to Name, and the entry's Cancel returns it to New recipe. Start is the
-// form's submit button, so a click and Enter take the one path. Below 724 New
-// recipe is not drawn (PHONE-01); an entry already open as the window narrows
-// stays as it is, so nothing is taken from under the maker's hands.
+// form's submit button, so a click and Enter take the one path. Below 724 neither
+// New recipe nor the entry is drawn (PHONE-01, bug-p12-start-after-narrowing-strands-draft):
+// starting a recipe is a desk job, as the editor is (DeskOnly.jsx). An entry open
+// as the window narrows leaves the page with what was typed kept, and is drawn
+// again from 724 up.
 function NotebookHead({ draft, recipes, below724 = false, onStart, onCancel }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
@@ -233,7 +235,7 @@ function NotebookHead({ draft, recipes, below724 = false, onStart, onCancel }) {
           </Button>
         )}
       </div>
-      {!draft && open && (
+      {!below724 && !draft && open && (
         <form className="nb__new" aria-label="New recipe" onSubmit={handleSubmit}>
           <label className="notebook-field">
             <span className="notebook-caption">Name</span>

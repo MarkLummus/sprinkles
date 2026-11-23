@@ -2,6 +2,8 @@
 
 **Drawn, not approved.** Mark has not answered `decide-p12-pen-order-scope`, `decide-p12-pen-order-mark` or `look-p12-pen-step-order`. No plan builds from this until he does; his answers are then written into `README.md` and this file.
 
+**APPROVED 2026-11-23** by Mark's answers: scope is order only (`decide-p12-pen-order-scope`), the mark is A, the words "was step 4" (`decide-p12-pen-order-mark`), and the pen board is approved (`look-p12-pen-step-order`). The move keys are not built. Where a section below says it waits on one of those rows, read the answer here.
+
 Read with the files themselves. Their markup and inlined CSS are the authority; this note names what they hold so a planner, a checker and UAT cite one source.
 
 Targets once approved: `pen-step-order.html`, its two "Drawn" rows; `step-order-shown.html`, the panel Mark picks and its second row. On each board the "As built" panels are for comparison and are not targets. Purple tags are notes, not in the app.

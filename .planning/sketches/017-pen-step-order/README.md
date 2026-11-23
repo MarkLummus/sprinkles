@@ -10,6 +10,16 @@ tags: [version-pen, steps, order, move, show-changes, phase-12]
 
 **Drawn, not approved.** Mark answered `bug-p11-pen-steps-no-reorder` on 2026-11-23 with "Fix it: plan reordering in the version pen (scope decision, Sid's drawing, then a build)". That settles one thing: a later version may change the order of its steps in the Next version pen. Everything below is drawn for him to answer; nothing is built and no plan cites this until he does.
 
+## Mark's answers (2026-11-23)
+
+| Where | Answer |
+|-------|--------|
+| `decide-p12-pen-order-scope` | Order only, as drawn. No step is added; no ingredient's amount changes step. |
+| `decide-p12-pen-order-mark` | A: the words "was step 4". |
+| `look-p12-pen-step-order` | Approved. Mark did not ask for the move keys in the pen, so they are not built. |
+
+The boards are approved by these answers; the "Drawn, not approved" lines above and below predate them.
+
 Why a new sketch and not a section of 016: 016 answers three Gate 2 questions and has had three rounds; this is a new capability on later versions, against Phase 11's boundary (11-CONTEXT: "structure edits on any later version" out; STRUCT-04), with its own decisions and a build of its own that should cite one contract. 016's decision 8 ("Reordering steps in the pen is not drawn") points here.
 
 Authority: these boards, CSS included. Conformance is the board and the built app side by side in a browser, never prose or a test count. `CONTRACT.md` names what the boards hold.

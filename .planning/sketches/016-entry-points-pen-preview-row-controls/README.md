@@ -49,6 +49,16 @@ Authority: these boards, CSS included. Conformance is the board and the built ap
 | `look-p12-home-held-draft` | Not approved yet. Mark's note: "1 & 2 - keep these open til I hear back on 3 & 4. 3. Opens version 4 for editing on the phone? 4. I want the sentence on the row too." |
 | `look-p12-picker-says-where` | Not approved. Mark's note: "I wanna push back on this. Why are we pushing the row off the screen? Why not insert the ingredient picker after the row and shift the non-needed rows off screen?" |
 
+## Mark's answers on the round-three redraws (2026-11-23)
+
+| Where | Answer |
+|-------|--------|
+| `decide-p12-home-row-sentence` | Approved, and Keep developing is left out below 724 (the third panel of `home-held-draft-393.html`). |
+| `look-p12-picker-after-row` | Approved (`picker-after-row.html`). |
+| `look-p12-pen-target-required` | Approved (`pen-target-required.html`). |
+
+`CONTRACT.md` section 13 is approved by these answers.
+
 ## What is here
 
 | File | Canvas board (page "Phase 12 entry points, pen preview and row controls (Gate 2)") | What it draws | Mark's List |

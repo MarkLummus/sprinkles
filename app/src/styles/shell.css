@@ -350,6 +350,24 @@ button.shell__place {
   color: var(--app-text-secondary);
 }
 
+/* The Edit page's one link back to the version it would edit, between the
+   title and the note (sketch 016 CONTRACT section 12; desk-line-words.html). */
+.place__for {
+  margin: 0;
+  font-size: var(--app-size-meta);
+}
+
+.place__for a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  color: var(--app-blue-text);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+  border-radius: var(--app-radius-control);
+}
+
 /* The Search page's Sheet code field and its Find button (SheetCodeSearch.jsx):
    one row, the button on the field's bottom edge; the field takes the row's
    spare width up to the prose measure, and the row wraps only if a window is

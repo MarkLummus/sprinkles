@@ -25,8 +25,8 @@ const RECORD_ACT_WORDS = {
 // 016, CONTRACT sections 2 and 12): Next version and Edit are done in a wider
 // window. Named once each; the Draft line builds its own start and ends with
 // the second.
-const EDIT_KEPT_LINE = 'Edit kept. Finish it in a wider window.';
-const DRAFT_LINE_ENDING = '. Finish it in a wider window.';
+export const EDIT_KEPT_LINE = 'Edit kept. Finish it in a wider window.';
+export const DRAFT_LINE_ENDING = '. Finish it in a wider window.';
 
 // The version's own row (sketch 003 variant B, 03.3-01): the front
 // matter's first stacked row, spanning the whole page. Carries the

@@ -28,6 +28,20 @@ const RECORD_ACT_WORDS = {
 export const EDIT_KEPT_LINE = 'Edit kept. Finish it in a wider window.';
 export const DRAFT_LINE_ENDING = '. Finish it in a wider window.';
 
+// The waiting draft's own name (the rail's rule, railEntries): the next
+// ordinal, the recipe's version count plus one, then the version name the
+// maker has typed so far, with its middot left out while that is blank.
+function draftName(record, versionCount) {
+  const label = record?.payload?.versionLabel ?? '';
+  return label ? `Version ${versionCount + 1} · ${label}` : `Version ${versionCount + 1}`;
+}
+
+// The version page's held line and Home's lead and rows say this one sentence
+// (sketch 016, CONTRACT sections 2, 12 and 13).
+export function heldDraftLine(record, versionCount) {
+  return `Draft: ${draftName(record, versionCount)}${DRAFT_LINE_ENDING}`;
+}
+
 // The version's own row (sketch 003 variant B, 03.3-01): the front
 // matter's first stacked row, spanning the whole page. Carries the
 // version's own acts (Develop, the history outline, the lineage line) — the
@@ -195,14 +209,7 @@ export function VersionRow({
   // own position in the same ordered array versionIdentity reads — absent
   // during the pre-load paint, the same edge case versionIdentity itself
   // already handles by falling back to no guessed number.
-  // The waiting draft's own name (the rail's rule, railEntries): the next
-  // ordinal, the recipe's version count plus one, then the version name the
-  // maker has typed so far, with its middot left out while that is blank.
-  const draftName = (record) => {
-    const label = record?.payload?.versionLabel ?? '';
-    return label ? `Version ${ordered.length + 1} · ${label}` : `Version ${ordered.length + 1}`;
-  };
-  const waitingName = draft ? draftName(draft) : null;
+  const waitingName = draft ? draftName(draft, ordered.length) : null;
 
   const versionOrdinalIndex = ordered.findIndex((candidate) => candidate.id === version.id);
   const ceremonyCaption =
@@ -386,7 +393,7 @@ export function VersionRow({
         {openPen === null && below724 && editState === 'editing' ? (
           <p className="notebook-version__draft">{EDIT_KEPT_LINE}</p>
         ) : openPen === null && below724 && ownDraft ? (
-          <p className="notebook-version__draft">{`Draft: ${draftName(ownDraft)}${DRAFT_LINE_ENDING}`}</p>
+          <p className="notebook-version__draft">{heldDraftLine(ownDraft, ordered.length)}</p>
         ) : (
           openPen === null &&
           waitingName && (

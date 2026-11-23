@@ -8,6 +8,7 @@ import { notebookPath } from './notebookPaths.js';
 import { batchCountWords } from './countWords.js';
 import { useCatalog } from './CatalogContext.jsx';
 import { useBelow724 } from './useBelowDesktop.js';
+import { heldDraftLine } from './VersionRow.jsx';
 
 // Home — "Active work first" (.impeccable/surfaces/route.md, Home
 // direction amendment 2026-09-20; DESIGN.md "App marks"). The outer
@@ -94,17 +95,26 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog
   // the list below, which keeps its order) and names it. Only a draft that
   // will reopen on its version is named: the same draftMatchesVersion check
   // the recipe page's restore runs, so "Go to draft" never opens a page that
-  // deletes the draft (WR-09).
-  const draft = newestDraft(
-    drafts.filter((record) => {
-      const version = versions.find((candidate) => candidate.id === record.versionId);
-      return (
-        version !== undefined &&
-        draftMatchesVersion(record, version, batches.filter((batch) => batch.versionId === version.id), catalog)
-      );
-    }),
-  );
+  // deletes the draft (WR-09). Below 724 (sketch 016 CONTRACT sections 12 and
+  // 13, Mark's answer to decide-p12-home-row-sentence, 2026-11-23) that same
+  // draft is held shut on the version page, so Home says where it is finished
+  // instead of linking to it, and leaves out the record act on its version.
+  const fitting = drafts.filter((record) => {
+    const version = versions.find((candidate) => candidate.id === record.versionId);
+    return (
+      version !== undefined &&
+      draftMatchesVersion(record, version, batches.filter((batch) => batch.versionId === version.id), catalog)
+    );
+  });
+  const draft = newestDraft(fitting);
   const draftVersion = draft ? versions.find((version) => version.id === draft.versionId) : null;
+  // A Map keyed by version id, never an object written by a stored id.
+  const heldPlans = new Map();
+  if (below724) {
+    for (const record of fitting) {
+      if (record.kind === 'plan') heldPlans.set(record.versionId, record);
+    }
+  }
   // D-24: a recipe holding a kept edit draft offers no Next version or Record
   // batch here either (either would close the edit window). The draft's version
   // names the recipe; an edit draft whose version is gone names none.
@@ -119,12 +129,15 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog
   // link goes (a fitting one always has that batch); the other two kinds open
   // on the version.
   const draftBatchId = draft?.kind === 'amend' ? draft.amendingBatchId : null;
+  const leadDraftLine = lead && below724 && draft?.kind === 'plan' ? heldDraftLine(draft, lead.versions.length) : null;
   return (
     <>
       <HomeLead
         entry={lead}
         draftVersion={lead && draftVersion ? draftVersion : null}
         draftPath={draftVersion ? notebookPath(draftVersion.recipeId, draftVersion.id, draftBatchId) : null}
+        draftLine={leadDraftLine}
+        heldPlans={heldPlans}
         editingIds={editingIds}
         below724={below724}
       />
@@ -132,7 +145,14 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog
         <h2 className="home__section">Recipes</h2>
         <Link className="home__code-link" to="/search" tabIndex={0}>Enter Sheet code</Link>
       </div>
-      <RecipeRows versions={versions} batches={batches} recipes={recipes} editingIds={editingIds} below724={below724} />
+      <RecipeRows
+        versions={versions}
+        batches={batches}
+        recipes={recipes}
+        editingIds={editingIds}
+        heldPlans={heldPlans}
+        below724={below724}
+      />
     </>
   );
 }
@@ -153,7 +173,15 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [], catalog
 // convention RecipeRows already establishes. Every recipe lives in the
 // Notebook this phase (03.4-CONTEXT.md), so the place name reads the
 // Notebook's own text companion.
-export function HomeLead({ entry, draftVersion = null, draftPath = null, editingIds = new Set(), below724 = false }) {
+export function HomeLead({
+  entry,
+  draftVersion = null,
+  draftPath = null,
+  draftLine = null,
+  heldPlans = new Map(),
+  editingIds = new Set(),
+  below724 = false,
+}) {
   if (!entry) return null;
   const nextTime = entry.batches[0]?.churn?.nextTimeNote ?? null;
   return (
@@ -165,7 +193,8 @@ export function HomeLead({ entry, draftVersion = null, draftPath = null, editing
           <Link to={notebookPath(entry.id, entry.latestVersion.id)} tabIndex={0}>{entry.name}</Link>
         </h2>
         <p className="home__lead-meta">{versionIdentity(entry.versions, draftVersion ?? entry.latestVersion)}</p>
-        {draftVersion && (
+        {draftVersion && draftLine !== null && <p className="home__lead-draft">{draftLine}</p>}
+        {draftVersion && draftLine === null && (
           <p className="home__lead-draft">
             Draft open on this version ·{' '}
             <Link to={draftPath} tabIndex={0}>Go to draft</Link>
@@ -184,7 +213,9 @@ export function HomeLead({ entry, draftVersion = null, draftPath = null, editing
           <p className="home__lead-next-time app-hand">{nextTime}</p>
         </div>
       )}
-      {!editingIds.has(entry.id) && <RowActions entry={entry} below724={below724} lead />}
+      {!editingIds.has(entry.id) && (
+        <RowActions entry={entry} below724={below724} held={heldPlans.has(recordActVersionId(entry))} lead />
+      )}
     </section>
   );
 }
@@ -197,6 +228,15 @@ function placeNameFor() {
   return 'Notebook';
 }
 
+// The version the row's record act opens (sketch 016 CONTRACT sections 12 and
+// 13): the latest version for Record batch, the awaiting batch's version for
+// Record tasting, and none for a tasted recipe, which Home gives no record act.
+function recordActVersionId(entry) {
+  if (entry.standing === NOT_YET_CHURNED) return entry.latestVersion.id;
+  if (entry.standing === AWAITING_TASTING) return entry.batches[0].versionId;
+  return null;
+}
+
 // The row's next action(s) (D-07, D-11): one filled action, and at most
 // one outline secondary, chosen by the recipe's own standing. Record
 // tasting is the one action that opens the newest batch at its own address,
@@ -207,11 +247,16 @@ function placeNameFor() {
 // Next version asks the recipe page to open its Next version pen, each through
 // route state the page uses once. Below 724 a tasted recipe loses Next version
 // (PHONE-01, CONTRACT section 3 and section 11 number 3): its row has no actions
-// span at all, and its lead holds Adapt alone. The other two standings are as
-// built at every width.
-function RowActions({ entry, below724 = false, lead = false }) {
+// span at all, and its lead holds Adapt alone. Also below 724, a record act on
+// a version holding a kept Next version draft is held and returns nothing, the
+// whole span (CONTRACT sections 12 and 13), and Keep developing is left out of
+// the lead, with or without a draft (Mark's answer to
+// decide-p12-home-row-sentence, 2026-11-23). A row's Keep developing is as
+// built.
+function RowActions({ entry, below724 = false, lead = false, held = false }) {
   const latestPath = notebookPath(entry.id, entry.latestVersion.id);
   if (entry.standing === NOT_YET_CHURNED) {
+    if (held) return null;
     return (
       <span className="home__actions">
         <Link to={latestPath} className="home__action" tabIndex={0}>
@@ -221,6 +266,7 @@ function RowActions({ entry, below724 = false, lead = false }) {
     );
   }
   if (entry.standing === AWAITING_TASTING) {
+    if (held) return null;
     const awaiting = entry.batches[0];
     const tastingPath = notebookPath(entry.id, awaiting.versionId, awaiting.id);
     return (
@@ -228,9 +274,11 @@ function RowActions({ entry, below724 = false, lead = false }) {
         <Link to={tastingPath} state={{ startTasting: true }} className="home__action" tabIndex={0}>
           Record tasting
         </Link>
-        <Link to={latestPath} className="home__action home__action--secondary" tabIndex={0}>
-          Keep developing
-        </Link>
+        {!(below724 && lead) && (
+          <Link to={latestPath} className="home__action home__action--secondary" tabIndex={0}>
+            Keep developing
+          </Link>
+        )}
       </span>
     );
   }
@@ -273,12 +321,20 @@ function RowActions({ entry, below724 = false, lead = false }) {
 //
 // batches and recipes default to [] so the existing tests, which pass
 // versions alone, keep passing.
-export function RecipeRows({ versions, batches = [], recipes = [], editingIds = new Set(), below724 = false }) {
+export function RecipeRows({
+  versions,
+  batches = [],
+  recipes = [],
+  editingIds = new Set(),
+  heldPlans = new Map(),
+  below724 = false,
+}) {
   const work = activeWork(versions, batches, recipes);
   return (
     <ul className="home__list">
       {work.map((entry) => {
         const batchCount = entry.batches.length;
+        const heldPlan = heldPlans.get(recordActVersionId(entry));
         return (
           <li key={entry.id} className="home__row">
             <span className="home__rail" aria-hidden="true" />
@@ -295,7 +351,12 @@ export function RecipeRows({ versions, batches = [], recipes = [], editingIds = 
               </span>
               <span className="home__count">{batchCountWords(batchCount)}</span>
             </span>
-            {!editingIds.has(entry.id) && <RowActions entry={entry} below724={below724} />}
+            {!editingIds.has(entry.id) &&
+              (heldPlan ? (
+                <p className="home__row-draft">{heldDraftLine(heldPlan, entry.versions.length)}</p>
+              ) : (
+                <RowActions entry={entry} below724={below724} />
+              ))}
           </li>
         );
       })}

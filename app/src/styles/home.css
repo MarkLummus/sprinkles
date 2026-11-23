@@ -337,6 +337,18 @@
   gap: var(--gap-s);
 }
 
+/* The row's held-draft sentence below 724 (sketch 016 CONTRACT section 13,
+   home-held-draft-393.html): plain text in the actions place, where the
+   record act would stand. It renders only below 724, so it sits at the top
+   level, in no media block. */
+.home__row-draft {
+  grid-area: actions;
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text);
+}
+
 /* The filled action (D-07, DESIGN.md "The filled action"): the app
    blue's text companion as the fill, the app background as the label
    colour. The App radius and the shared touch minimum apply to both the

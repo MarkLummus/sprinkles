@@ -1236,6 +1236,42 @@ describe('a target chip places its refused message under its own field', () => {
   });
 });
 
+// look-p12-pen-target-required (Mark approved 2026-11-23): the version pen's open-step chip is
+// the creation editor's two-row grid, copied from pen-target-required.html's four drawn rules
+// (sketch 016 CONTRACT section 13, README decision 44). The columns flow in markup order and
+// Required stands on the second row, under the field it follows.
+describe("the version pen's open-step chip is the creation editor's grid (look-p12-pen-target-required)", () => {
+  const chip = '.notebook .method-step__open-fields .target-chip';
+  const find = (selector) => rules.find((rule) => rule.selector === selector && rule.media === undefined);
+
+  test('the chip is an inline grid whose columns flow in markup order', () => {
+    const rule = find(chip);
+    expect(rule, 'expected the chip rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/display:\s*inline-grid/);
+    expect(rule.declarations).toMatch(/grid-auto-flow:\s*column/);
+    expect(rule.declarations).toMatch(/justify-content:\s*start/);
+    expect(rule.declarations).toMatch(/column-gap:\s*var\(--gap-hair\)/);
+  });
+
+  test('every child stands on row 1', () => {
+    const rule = find(`${chip} > *`);
+    expect(rule, 'expected the children rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/grid-row:\s*1/);
+  });
+
+  test('the struck value centres against the fields', () => {
+    const rule = find(`${chip} > .struck-value`);
+    expect(rule, 'expected the struck value rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/align-self:\s*center/);
+  });
+
+  test('Required stands on row 2', () => {
+    const rule = find(`${chip} > .field-error`);
+    expect(rule, 'expected the error rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/grid-row:\s*2/);
+  });
+});
+
 describe('a read-only step reads as the Sheet prints it (plan 11-04)', () => {
   const find = (selector) => rules.find((rule) => rule.selector === selector && rule.media === undefined);
 

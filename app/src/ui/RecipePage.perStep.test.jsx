@@ -1350,12 +1350,18 @@ describe('bug-pen-saves-blank-lead-in: a step field the pen refuses', () => {
   });
 });
 
-// The same row, for a target with one side blank. The word Required drawn under the blank
-// side turns the pen's one-line chip into two rows and no board draws that, so that held
-// part is not asserted here; what is asserted is that the save is refused and focus lands
-// in the blank field.
+// The same row, for a target with one side blank. The part that was held is now drawn and
+// approved (pen-target-required.html, look-p12-pen-target-required), and these tests assert it:
+// Required stands directly after the blank side, inside the chip, wired to the field, and the
+// next edit anywhere in the pen takes it away.
 describe('bug-pen-saves-blank-lead-in: a target with one side blank', () => {
   const field = (label) => current.container.querySelector(`textarea[aria-label="${label}"]`);
+  const errors = () => [...current.container.querySelectorAll('.field-error')];
+
+  function expectNothingStored() {
+    expect(store.createVersion).not.toHaveBeenCalled();
+    expect(store.saveVersion).not.toHaveBeenCalled();
+  }
 
   async function refuseTargetSide(side) {
     installMatchMedia();
@@ -1367,20 +1373,119 @@ describe('bug-pen-saves-blank-lead-in: a target with one side blank', () => {
     await click(buttonByText(container, 'Save as new version'));
   }
 
-  it('U7: a blank value is refused, nothing is stored, and focus is in the value field', async () => {
+  it('U7: a blank value is refused, nothing is stored, focus is in the value field, and Required stands after it', async () => {
     await refuseTargetSide('value');
 
-    expect(store.createVersion).not.toHaveBeenCalled();
-    expect(store.saveVersion).not.toHaveBeenCalled();
-    expect(document.activeElement).toBe(field('Step 1, target 1, value'));
+    expectNothingStored();
+    const value = field('Step 1, target 1, value');
+    const label = field('Step 1, target 1, label');
+    expect(document.activeElement).toBe(value);
+    const found = errors();
+    expect(found).toHaveLength(1);
+    expect(found[0].textContent).toBe('Required');
+    expect(found[0].id).toBe('step-field-error');
+    expect(value.getAttribute('aria-invalid')).toBe('true');
+    expect(value.getAttribute('aria-describedby')).toBe('step-field-error');
+    expect(value.nextElementSibling).toBe(found[0]);
+    const chip = value.closest('.target-chip');
+    expect(found[0].parentElement).toBe(chip);
+    const struck = chip.querySelector('.struck-value');
+    expect(struck.textContent).toBe('temp room');
+    expect([...chip.children]).toEqual([struck, label, value, found[0]]);
+    expect(label.hasAttribute('aria-invalid')).toBe(false);
+    expect(label.hasAttribute('aria-describedby')).toBe(false);
   });
 
-  it('U8: a blank label is refused, nothing is stored, and focus is in the label field', async () => {
+  it('U8: a blank label is refused, nothing is stored, focus is in the label field, and Required stands after it', async () => {
     await refuseTargetSide('label');
 
-    expect(store.createVersion).not.toHaveBeenCalled();
-    expect(store.saveVersion).not.toHaveBeenCalled();
-    expect(document.activeElement).toBe(field('Step 1, target 1, label'));
+    expectNothingStored();
+    const value = field('Step 1, target 1, value');
+    const label = field('Step 1, target 1, label');
+    expect(document.activeElement).toBe(label);
+    const found = errors();
+    expect(found).toHaveLength(1);
+    expect(found[0].textContent).toBe('Required');
+    expect(found[0].id).toBe('step-field-error');
+    expect(label.getAttribute('aria-invalid')).toBe('true');
+    expect(label.getAttribute('aria-describedby')).toBe('step-field-error');
+    expect(label.nextElementSibling).toBe(found[0]);
+    const chip = label.closest('.target-chip');
+    expect(found[0].parentElement).toBe(chip);
+    expect([...chip.children]).toEqual([label, found[0], value]);
+    expect(value.hasAttribute('aria-invalid')).toBe(false);
+    expect(value.hasAttribute('aria-describedby')).toBe(false);
+  });
+
+  it('U9: typing in the blank side removes Required, and the next Save stores what was typed', async () => {
+    await refuseTargetSide('value');
+    expect(errors()).toHaveLength(1);
+
+    await setValue(field('Step 1, target 1, value'), 'warm');
+
+    expect(errors()).toHaveLength(0);
+    expect(field('Step 1, target 1, value').hasAttribute('aria-invalid')).toBe(false);
+    expect(field('Step 1, target 1, value').hasAttribute('aria-describedby')).toBe(false);
+
+    await click(buttonByText(current.container, 'Save as new version'));
+    await flush(() => store.createVersion.mock.calls.length > 0);
+
+    expect(store.createVersion).toHaveBeenCalledTimes(1);
+    const child = store.createVersion.mock.calls[0][0];
+    expect(child.method.find((step) => step.n === 1).targets).toEqual([{ label: 'temp', value: 'warm' }]);
+  });
+
+  it('U10: an edit anywhere in the pen removes Required, Version name included', async () => {
+    await refuseTargetSide('value');
+    expect(errors()).toHaveLength(1);
+
+    await setValue(field('Version name'), 'v3');
+
+    expect(errors()).toHaveLength(0);
+    expect(field('Step 1, target 1, value').hasAttribute('aria-invalid')).toBe(false);
+  });
+
+  it('U11: a target with both sides blank is never refused, no Required is drawn, and Save drops it', async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await setValue(field('Version name'), 'v2');
+    await click(buttonByLabel('Step 1, edit this step'));
+    await setValue(field('Step 1, target 1, label'), '');
+    await setValue(field('Step 1, target 1, value'), '');
+
+    await click(buttonByText(container, 'Save as new version'));
+
+    expect(errors()).toHaveLength(0);
+    await flush(() => store.createVersion.mock.calls.length > 0);
+    expect(store.createVersion).toHaveBeenCalledTimes(1);
+    const child = store.createVersion.mock.calls[0][0];
+    expect(child.method.find((step) => step.n === 1).targets).toEqual([]);
+  });
+
+  it('U12: two targets on one step with the second refused, Required stands in the second chip only', async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await setValue(field('Version name'), 'v2');
+    await click(buttonByLabel('Step 2, edit this step'));
+    await setValue(field('Step 2, target 2, value'), '');
+
+    await click(buttonByText(container, 'Save as new version'));
+
+    expectNothingStored();
+    const value = field('Step 2, target 2, value');
+    expect(document.activeElement).toBe(value);
+    const found = errors();
+    expect(found).toHaveLength(1);
+    const chips = [...value.closest('.method-step__open-fields').querySelectorAll('.target-chip')];
+    expect(chips).toHaveLength(2);
+    expect(found[0].parentElement).toBe(chips[1]);
+    expect(value.nextElementSibling).toBe(found[0]);
+    expect(chips[0].querySelector('.field-error')).toBeNull();
+    for (const textarea of chips[0].querySelectorAll('textarea')) {
+      expect(textarea.hasAttribute('aria-invalid')).toBe(false);
+    }
   });
 });
 

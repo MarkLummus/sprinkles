@@ -277,6 +277,11 @@ export function StepPenBody({
           <p className="method-step__targets">
             {draftStep.targets.map((target, index) => {
               const targetDiff = stepDiff.targets[index];
+              // Required stands directly after the blank side, inside the chip: the chip's grid puts it
+              // on the second row under the field it follows (sketch 016 CONTRACT section 13).
+              const refusedHere = blocked?.kind === 'stepTarget' && blocked.index === index;
+              const labelError = refusedHere && blocked.side === 'label' ? blockedMessage : null;
+              const valueError = refusedHere && blocked.side === 'value' ? blockedMessage : null;
               return (
                 <span className="target-chip" key={index}>
                   {targetDiff?.changed && targetDiff.from != null && (
@@ -289,9 +294,12 @@ export function StepPenBody({
                     ref={(element) => registerTargetField(index, 'label', element)}
                     value={target.label}
                     aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, label`)}
+                    aria-invalid={labelError ? 'true' : undefined}
+                    aria-describedby={labelError ? STEP_FIELD_ERROR_ID : undefined}
                     onChange={(event) => onChangePenStepTarget(step.n, index, 'label', stripNewlines(event.target.value))}
                     onKeyDown={holdReturn}
                   />
+                  <FieldFeedback error={labelError} errorId={STEP_FIELD_ERROR_ID} />
                   <textarea
                     rows="1"
                     cols="20"
@@ -299,9 +307,12 @@ export function StepPenBody({
                     ref={(element) => registerTargetField(index, 'value', element)}
                     value={target.value}
                     aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, value`)}
+                    aria-invalid={valueError ? 'true' : undefined}
+                    aria-describedby={valueError ? STEP_FIELD_ERROR_ID : undefined}
                     onChange={(event) => onChangePenStepTarget(step.n, index, 'value', stripNewlines(event.target.value))}
                     onKeyDown={holdReturn}
                   />
+                  <FieldFeedback error={valueError} errorId={STEP_FIELD_ERROR_ID} />
                 </span>
               );
             })}

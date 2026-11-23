@@ -18,7 +18,10 @@ import {
   penFieldsFromDraft,
   penSaveBlock,
   setPenField,
+  setPenStepField,
   setPenStepTarget,
+  togglePenStepRemoved,
+  togglePenStepUses,
 } from '../domain/penDraft.js';
 
 beforeEach(() => {
@@ -88,5 +91,57 @@ describe('a live step with a target of both sides blank, saved through the pen',
     const second = await roundTrip(repository);
     const imported = await second.getVersion(id);
     expect(imported.method.find((step) => step.n === 1).targets).toEqual([]);
+  });
+});
+
+describe('a removed step with a blank field, saved through the pen', () => {
+  const removedStep1 = (edit) => (draft) => togglePenStepRemoved(edit(draft), 1);
+
+  it.each(SAVES)('a blank lead-in saves as the opened step holds it (%s)', async (kind) => {
+    const { repository, opened } = await setUp(kind);
+    const id = await savedThroughPen(repository, opened, kind, removedStep1((d) => setPenStepField(d, 1, 'leadIn', '')));
+
+    const second = await roundTrip(repository);
+    const step = (await second.getVersion(id)).method.find((s) => s.n === 1);
+    expect(step.removed).toBe(true);
+    expect(step.leadIn).toBe(opened.method.find((s) => s.n === 1).leadIn);
+  });
+
+  it.each(SAVES)('a blank instruction saves as the opened step holds it (%s)', async (kind) => {
+    const { repository, opened } = await setUp(kind);
+    const id = await savedThroughPen(repository, opened, kind, removedStep1((d) => setPenStepField(d, 1, 'instruction', '')));
+
+    const second = await roundTrip(repository);
+    const step = (await second.getVersion(id)).method.find((s) => s.n === 1);
+    expect(step.removed).toBe(true);
+    expect(step.instruction).toBe(opened.method.find((s) => s.n === 1).instruction);
+  });
+
+  it.each(SAVES)('a target with one side blank saves as the opened step holds it (%s)', async (kind) => {
+    const { repository, opened } = await setUp(kind);
+    const id = await savedThroughPen(repository, opened, kind, removedStep1((d) => setPenStepTarget(d, 1, 0, 'value', '')));
+
+    const second = await roundTrip(repository);
+    const step = (await second.getVersion(id)).method.find((s) => s.n === 1);
+    expect(step.removed).toBe(true);
+    expect(step.targets[0]).toEqual(opened.method.find((s) => s.n === 1).targets[0]);
+  });
+
+  it.each(SAVES)('an edit that holds words is saved as typed (%s)', async (kind) => {
+    const { repository, opened } = await setUp(kind);
+    const rowId = opened.rows[0].id;
+    const id = await savedThroughPen(
+      repository,
+      opened,
+      kind,
+      removedStep1((d) => togglePenStepUses(setPenStepField(d, 1, 'instruction', 'Warm the milk first'), 1, rowId)),
+    );
+
+    const second = await roundTrip(repository);
+    const saved = (await second.getVersion(id)).method.find((s) => s.n === 1);
+    const was = opened.method.find((s) => s.n === 1);
+    expect(saved.removed).toBe(true);
+    expect(saved.instruction).toBe('Warm the milk first');
+    expect(saved.uses).toEqual(was.uses.includes(rowId) ? was.uses.filter((u) => u !== rowId) : was.uses.concat(rowId));
   });
 });

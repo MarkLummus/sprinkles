@@ -470,6 +470,50 @@ describe('penFieldsFromDraft', () => {
     expect(saved.filter((candidate) => candidate.n !== 2)).toEqual(draft.method.filter((candidate) => candidate.n !== 2));
   });
 
+  it("saves a removed step's blank lead-in and instruction as the opened step holds them, and the rest as typed", () => {
+    const version = clone();
+    let draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    draft = setPenStepField(draft, 1, 'leadIn', '   ');
+    draft = setPenStepField(draft, 1, 'instruction', '');
+    draft = setPenStepField(draft, 1, 'purpose', 'A new purpose');
+    draft = setPenStepField(draft, 1, 'aside', 'A new aside');
+    draft = togglePenStepUses(draft, 1, version.rows[0].id);
+    draft = togglePenStepRemoved(draft, 1);
+    const opened = version.method.find((step) => step.n === 1);
+    const saved = penFieldsFromDraft(draft, version).method.find((step) => step.n === 1);
+    const typed = draft.method.find((step) => step.n === 1);
+    expect(saved.leadIn).toBe(opened.leadIn);
+    expect(saved.instruction).toBe(opened.instruction);
+    expect(saved.purpose).toBe('A new purpose');
+    expect(saved.aside).toBe('A new aside');
+    expect(saved.uses).toEqual(typed.uses);
+    expect(saved.removed).toBe(true);
+  });
+
+  it("drops a removed step's both-blank target and falls a one-sided one back at its own position", () => {
+    const version = clone();
+    let draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    const opened = version.method.find((step) => step.n === 2);
+    expect(opened.targets.length).toBe(2);
+    draft = setPenStepTarget(draft, 2, 0, 'label', '');
+    draft = setPenStepTarget(draft, 2, 0, 'value', '');
+    draft = setPenStepTarget(draft, 2, 1, 'value', '');
+    draft = togglePenStepRemoved(draft, 2);
+    const saved = penFieldsFromDraft(draft, version).method.find((step) => step.n === 2);
+    expect(saved.targets).toEqual([opened.targets[1]]);
+  });
+
+  it("passes a live step's blank lead-in through as typed, so the gate's refusal is never hidden", () => {
+    const version = clone();
+    let draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    draft = setPenStepField(draft, 1, 'leadIn', '');
+    const saved = penFieldsFromDraft(draft, version).method.find((step) => step.n === 1);
+    expect(saved.leadIn).toBe('');
+  });
+
   it('leaves its arguments as they were and answers the same twice', () => {
     const version = clone();
     const draft = cleanDraftFor(version);

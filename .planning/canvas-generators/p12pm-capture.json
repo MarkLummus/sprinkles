@@ -1,0 +1,3103 @@
+{
+ "dist": "/private/tmp/claude-501/-Users-mark-Documents-projects-sprinkles/c53b815f-c9c0-4392-9afe-1d608eb4dfd9/scratchpad/src/app/dist",
+ "commit": "65678e4f",
+ "engine": "webkit",
+ "at": "2026-11-23T13:33:18.954Z",
+ "ed_before": {
+  "method": "<section class=\"method-region\" aria-label=\"Instructions\"><div class=\"mk-head-row\"><h2 class=\"region-name\">Instructions</h2><button type=\"button\" class=\"text-control mk-head-act\" tabindex=\"0\">Add step</button></div><p class=\"mk-keys\">In a step: Cmd+Return adds a step after it. Ctrl+Cmd+Up or Down moves it.</p><ol class=\"method-steps\"><li class=\"method-step mk-step\" data-step=\"1\"><span class=\"method-step__n\" aria-hidden=\"true\">1</span><div class=\"method-step__body\"><label class=\"method-step__field\"><textarea class=\"prose-field prose-field--lead-in\" rows=\"1\" data-field=\"lead-in\" aria-label=\"Step 1, lead-in\">Steep</textarea></label><label class=\"method-step__field\"><textarea class=\"prose-field\" rows=\"2\" aria-label=\"Step 1, instruction\">Warm the cream with the beans and hold for ten minutes.</textarea></label><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, Add target\" tabindex=\"0\">Add target</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, add purpose\" tabindex=\"0\">Add purpose</button></p><p class=\"method-step__uses-line\">uses Heavy cream, 36% fat, Coffee beans <button type=\"button\" class=\"text-control\" aria-label=\"Step 1, change ingredients\" tabindex=\"0\">Change ingredients</button></p><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, add aside\" tabindex=\"0\">Add aside</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, Preview step\" tabindex=\"0\">Preview step</button></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-after\" aria-label=\"Step 1, Add step after it\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-up\" aria-label=\"Step 1, move up\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" aria-disabled=\"true\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Step 1, move down\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"Step 1, remove\" tabindex=\"0\">Remove</button></p></div></li><li class=\"method-step mk-step\" data-step=\"2\"><span class=\"method-step__n\" aria-hidden=\"true\">2</span><div class=\"method-step__body\"><label class=\"method-step__field\"><textarea class=\"prose-field prose-field--lead-in\" rows=\"1\" data-field=\"lead-in\" aria-label=\"Step 2, lead-in\">Strain</textarea></label><label class=\"method-step__field\"><textarea class=\"prose-field\" rows=\"2\" aria-label=\"Step 2, instruction\">Strain out the beans.</textarea></label><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, Add target\" tabindex=\"0\">Add target</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, add purpose\" tabindex=\"0\">Add purpose</button></p><p class=\"method-step__uses-line\">uses nothing yet <button type=\"button\" class=\"text-control\" aria-label=\"Step 2, change ingredients\" tabindex=\"0\">Change ingredients</button></p><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, add aside\" tabindex=\"0\">Add aside</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, Preview step\" tabindex=\"0\">Preview step</button></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-after\" aria-label=\"Step 2, Add step after it\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Step 2, move up\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Step 2, move down\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"Step 2, remove\" tabindex=\"0\">Remove</button></p></div></li><li class=\"method-step mk-step\" data-step=\"3\"><span class=\"method-step__n\" aria-hidden=\"true\">3</span><div class=\"method-step__body\"><label class=\"method-step__field\"><textarea class=\"prose-field prose-field--lead-in\" rows=\"1\" data-field=\"lead-in\" aria-label=\"Step 3, lead-in\">Sweeten</textarea></label><label class=\"method-step__field\"><textarea class=\"prose-field\" rows=\"2\" aria-label=\"Step 3, instruction\">Stir in the dextrose and the salt.</textarea></label><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, Add target\" tabindex=\"0\">Add target</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, add purpose\" tabindex=\"0\">Add purpose</button></p><p class=\"method-step__uses-line\">uses Dextrose, Fine sea salt <button type=\"button\" class=\"text-control\" aria-label=\"Step 3, change ingredients\" tabindex=\"0\">Change ingredients</button></p><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, add aside\" tabindex=\"0\">Add aside</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, Preview step\" tabindex=\"0\">Preview step</button></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-after\" aria-label=\"Step 3, Add step after it\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Step 3, move up\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Step 3, move down\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"Step 3, remove\" tabindex=\"0\">Remove</button></p></div></li><li class=\"method-step mk-step\" data-step=\"4\"><span class=\"method-step__n\" aria-hidden=\"true\">4</span><div class=\"method-step__body\"><label class=\"method-step__field\"><textarea class=\"prose-field prose-field--lead-in\" rows=\"1\" data-field=\"lead-in\" aria-label=\"Step 4, lead-in\">Rest</textarea></label><label class=\"method-step__field\"><textarea class=\"prose-field\" rows=\"2\" aria-label=\"Step 4, instruction\">Rest the base for an hour.</textarea></label><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, Add target\" tabindex=\"0\">Add target</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, add purpose\" tabindex=\"0\">Add purpose</button></p><p class=\"method-step__uses-line\">uses nothing yet <button type=\"button\" class=\"text-control\" aria-label=\"Step 4, change ingredients\" tabindex=\"0\">Change ingredients</button></p><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, add aside\" tabindex=\"0\">Add aside</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, Preview step\" tabindex=\"0\">Preview step</button></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-after\" aria-label=\"Step 4, Add step after it\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Step 4, move up\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Step 4, move down\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"Step 4, remove\" tabindex=\"0\">Remove</button></p></div></li><li class=\"method-step mk-step\" data-step=\"5\"><span class=\"method-step__n\" aria-hidden=\"true\">5</span><div class=\"method-step__body\"><label class=\"method-step__field\"><textarea class=\"prose-field prose-field--lead-in\" rows=\"1\" data-field=\"lead-in\" aria-label=\"Step 5, lead-in\">Churn</textarea></label><label class=\"method-step__field\"><textarea class=\"prose-field\" rows=\"2\" aria-label=\"Step 5, instruction\">Chill the base, then churn.</textarea></label><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, Add target\" tabindex=\"0\">Add target</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, add purpose\" tabindex=\"0\">Add purpose</button></p><p class=\"method-step__uses-line\">uses nothing yet <button type=\"button\" class=\"text-control\" aria-label=\"Step 5, change ingredients\" tabindex=\"0\">Change ingredients</button></p><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, add aside\" tabindex=\"0\">Add aside</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, Preview step\" tabindex=\"0\">Preview step</button></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-after\" aria-label=\"Step 5, Add step after it\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Step 5, move up\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-down\" aria-label=\"Step 5, move down\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" aria-disabled=\"true\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"Step 5, remove\" tabindex=\"0\">Remove</button></p></div></li></ol></section>",
+  "ing": "<section class=\"ingredient-table-region\" aria-label=\"Ingredients\"><div class=\"mk-head-row\"><h2 class=\"region-name\">Ingredients</h2><button type=\"button\" class=\"text-control mk-head-act\" tabindex=\"0\">Add ingredient</button></div><p class=\"mk-keys\">In a row's grams: Cmd+Return adds an ingredient after it. Ctrl+Cmd+Up or Down moves it.</p><table class=\"ingredient-table is-developing\"><thead><tr><th scope=\"col\" class=\"ingredient-table__col-name\" colspan=\"2\">Ingredient</th><th scope=\"col\" class=\"ingredient-table__col-numeric\">% of batch</th></tr></thead><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 1<span class=\"ingredient-table__step-head-lead\">Steep</span></td></tr><tr data-line=\"718b1172-44da-4cb7-a01f-c3b14b6c261a:1\" aria-label=\"Heavy cream, 36% fat, 400 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Heavy cream, 36% fat, grams\">400</textarea> g</span></td><td class=\"ingredient-table__col-name\">Heavy cream, 36% fat<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><span class=\"mk-row-acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-ingredient\" aria-label=\"Add ingredient after Heavy cream, 36% fat\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add ingredient</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-up\" aria-label=\"Move up, Heavy cream, 36% fat\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" aria-disabled=\"true\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Move down, Heavy cream, 36% fat\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"remove Heavy cream, 36% fat\" tabindex=\"0\">Remove</button></span></td><td class=\"ingredient-table__col-numeric\">71.3%</td></tr><tr data-line=\"07d567be-7874-448b-ba9d-8835aafc55e7:1\" aria-label=\"Coffee beans, 40 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Coffee beans, grams\">40</textarea> g</span></td><td class=\"ingredient-table__col-name\">Coffee beans<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><span class=\"mk-row-acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-ingredient\" aria-label=\"Add ingredient after Coffee beans\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add ingredient</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Move up, Coffee beans\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-down\" aria-label=\"Move down, Coffee beans\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" aria-disabled=\"true\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"remove Coffee beans\" tabindex=\"0\">Remove</button></span></td><td class=\"ingredient-table__col-numeric\">7.1%</td></tr></tbody><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 3<span class=\"ingredient-table__step-head-lead\">Sweeten</span></td></tr><tr data-line=\"fb50c824-31ed-4fc5-a70b-d93a8cb19676:3\" aria-label=\"Dextrose, 120 g\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Dextrose, grams\">120</textarea> g</span></td><td class=\"ingredient-table__col-name\">Dextrose<span class=\"ingredient-table__remove-gap\"> </span><span class=\"mk-row-acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-ingredient\" aria-label=\"Add ingredient after Dextrose\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add ingredient</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-up\" aria-label=\"Move up, Dextrose\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" aria-disabled=\"true\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Move down, Dextrose\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"remove Dextrose\" tabindex=\"0\">Remove</button></span></td><td class=\"ingredient-table__col-numeric\">21.4%</td></tr><tr data-line=\"9cd4faa6-dd9c-4538-8abd-3ab384e2f986:3\" aria-label=\"Fine sea salt, 1 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Fine sea salt, grams\">1</textarea> g</span></td><td class=\"ingredient-table__col-name\">Fine sea salt<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><span class=\"mk-row-acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-ingredient\" aria-label=\"Add ingredient after Fine sea salt\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add ingredient</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Move up, Fine sea salt\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-down\" aria-label=\"Move down, Fine sea salt\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" aria-disabled=\"true\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"remove Fine sea salt\" tabindex=\"0\">Remove</button></span></td><td class=\"ingredient-table__col-numeric\">0.2%</td></tr></tbody><tfoot><tr aria-label=\"Total, plan 561.0 grams\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">561.0 g</span></td><td class=\"ingredient-table__col-name\">Total</td><td class=\"ingredient-table__col-numeric\"></td></tr></tfoot></table></section>",
+  "geo": {
+   "region": {
+    "x": 80,
+    "y": 1059.3,
+    "w": 528,
+    "h": 1712.6
+   },
+   "list": {
+    "x": 80,
+    "y": 1130.3,
+    "w": 528,
+    "h": 1641.6
+   },
+   "steps": [
+    {
+     "id": "1",
+     "li": {
+      "x": 80,
+      "y": 1130.3,
+      "w": 528,
+      "h": 312.3
+     },
+     "n": {
+      "words": "1",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1138.8,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1130.3,
+      "w": 504,
+      "h": 312.3
+     },
+     "acts": {
+      "x": 104,
+      "y": 1383.6,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Add step",
+        "label": "Step 1, Add step after it",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1383.6,
+        "w": 54.1,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 166.2,
+        "y": 1395.9,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move up",
+        "label": "Step 1, move up",
+        "cls": "text-control mk-off",
+        "x": 178.4,
+        "y": 1383.6,
+        "w": 51.7,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 238,
+        "y": 1395.9,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move down",
+        "label": "Step 1, move down",
+        "cls": "text-control",
+        "x": 250.3,
+        "y": 1383.6,
+        "w": 69,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 327.3,
+        "y": 1395.9,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 1, remove",
+        "cls": "text-control",
+        "x": 339.5,
+        "y": 1383.6,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "2",
+     "li": {
+      "x": 80,
+      "y": 1462.6,
+      "w": 528,
+      "h": 312.3
+     },
+     "n": {
+      "words": "2",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1471.2,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1462.6,
+      "w": 504,
+      "h": 312.3
+     },
+     "acts": {
+      "x": 104,
+      "y": 1716,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Add step",
+        "label": "Step 2, Add step after it",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1716,
+        "w": 54.1,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 166.2,
+        "y": 1728.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move up",
+        "label": "Step 2, move up",
+        "cls": "text-control",
+        "x": 178.4,
+        "y": 1716,
+        "w": 51.7,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 238,
+        "y": 1728.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move down",
+        "label": "Step 2, move down",
+        "cls": "text-control",
+        "x": 250.3,
+        "y": 1716,
+        "w": 69,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 327.3,
+        "y": 1728.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 2, remove",
+        "cls": "text-control",
+        "x": 339.5,
+        "y": 1716,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "3",
+     "li": {
+      "x": 80,
+      "y": 1795,
+      "w": 528,
+      "h": 312.3
+     },
+     "n": {
+      "words": "3",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1803.5,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1795,
+      "w": 504,
+      "h": 312.3
+     },
+     "acts": {
+      "x": 104,
+      "y": 2048.3,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Add step",
+        "label": "Step 3, Add step after it",
+        "cls": "text-control",
+        "x": 104,
+        "y": 2048.3,
+        "w": 54.1,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 166.2,
+        "y": 2060.5,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move up",
+        "label": "Step 3, move up",
+        "cls": "text-control",
+        "x": 178.4,
+        "y": 2048.3,
+        "w": 51.7,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 238,
+        "y": 2060.5,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move down",
+        "label": "Step 3, move down",
+        "cls": "text-control",
+        "x": 250.3,
+        "y": 2048.3,
+        "w": 69,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 327.3,
+        "y": 2060.5,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 3, remove",
+        "cls": "text-control",
+        "x": 339.5,
+        "y": 2048.3,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "4",
+     "li": {
+      "x": 80,
+      "y": 2127.3,
+      "w": 528,
+      "h": 312.3
+     },
+     "n": {
+      "words": "4",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 2135.8,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 2127.3,
+      "w": 504,
+      "h": 312.3
+     },
+     "acts": {
+      "x": 104,
+      "y": 2380.6,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Add step",
+        "label": "Step 4, Add step after it",
+        "cls": "text-control",
+        "x": 104,
+        "y": 2380.6,
+        "w": 54.1,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 166.2,
+        "y": 2392.8,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move up",
+        "label": "Step 4, move up",
+        "cls": "text-control",
+        "x": 178.4,
+        "y": 2380.6,
+        "w": 51.7,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 238,
+        "y": 2392.8,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move down",
+        "label": "Step 4, move down",
+        "cls": "text-control",
+        "x": 250.3,
+        "y": 2380.6,
+        "w": 69,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 327.3,
+        "y": 2392.8,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 4, remove",
+        "cls": "text-control",
+        "x": 339.5,
+        "y": 2380.6,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "5",
+     "li": {
+      "x": 80,
+      "y": 2459.6,
+      "w": 528,
+      "h": 312.3
+     },
+     "n": {
+      "words": "5",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 2468.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 2459.6,
+      "w": 504,
+      "h": 312.3
+     },
+     "acts": {
+      "x": 104,
+      "y": 2712.9,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Add step",
+        "label": "Step 5, Add step after it",
+        "cls": "text-control",
+        "x": 104,
+        "y": 2712.9,
+        "w": 54.1,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 166.2,
+        "y": 2725.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move up",
+        "label": "Step 5, move up",
+        "cls": "text-control",
+        "x": 178.4,
+        "y": 2712.9,
+        "w": 51.7,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 238,
+        "y": 2725.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move down",
+        "label": "Step 5, move down",
+        "cls": "text-control mk-off",
+        "x": 250.3,
+        "y": 2712.9,
+        "w": 69,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 327.3,
+        "y": 2725.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 5, remove",
+        "cls": "text-control",
+        "x": 339.5,
+        "y": 2712.9,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "focus": {
+   "tag": "BUTTON",
+   "t": "Step 3, change ingredients",
+   "cls": "text-control",
+   "disabled": null
+  },
+  "live": [],
+  "url": "/notebook/new"
+ },
+ "ed_moved": {
+  "method": "<section class=\"method-region\" aria-label=\"Instructions\"><div class=\"mk-head-row\"><h2 class=\"region-name\">Instructions</h2><button type=\"button\" class=\"text-control mk-head-act\" tabindex=\"0\">Add step</button></div><p class=\"mk-keys\">In a step: Cmd+Return adds a step after it. Ctrl+Cmd+Up or Down moves it.</p><ol class=\"method-steps\"><li class=\"method-step mk-step\" data-step=\"1\"><span class=\"method-step__n\" aria-hidden=\"true\">1</span><div class=\"method-step__body\"><label class=\"method-step__field\"><textarea class=\"prose-field prose-field--lead-in\" rows=\"1\" data-field=\"lead-in\" aria-label=\"Step 1, lead-in\">Steep</textarea></label><label class=\"method-step__field\"><textarea class=\"prose-field\" rows=\"2\" aria-label=\"Step 1, instruction\">Warm the cream with the beans and hold for ten minutes.</textarea></label><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, Add target\" tabindex=\"0\">Add target</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, add purpose\" tabindex=\"0\">Add purpose</button></p><p class=\"method-step__uses-line\">uses Heavy cream, 36% fat, Coffee beans <button type=\"button\" class=\"text-control\" aria-label=\"Step 1, change ingredients\" tabindex=\"0\">Change ingredients</button></p><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, add aside\" tabindex=\"0\">Add aside</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, Preview step\" tabindex=\"0\">Preview step</button></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-after\" aria-label=\"Step 1, Add step after it\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-up\" aria-label=\"Step 1, move up\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" aria-disabled=\"true\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Step 1, move down\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"Step 1, remove\" tabindex=\"0\">Remove</button></p></div></li><li class=\"method-step mk-step\" data-step=\"2\"><span class=\"method-step__n\" aria-hidden=\"true\">2</span><div class=\"method-step__body\"><label class=\"method-step__field\"><textarea class=\"prose-field prose-field--lead-in\" rows=\"1\" data-field=\"lead-in\" aria-label=\"Step 2, lead-in\">Strain</textarea></label><label class=\"method-step__field\"><textarea class=\"prose-field\" rows=\"2\" aria-label=\"Step 2, instruction\">Strain out the beans.</textarea></label><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, Add target\" tabindex=\"0\">Add target</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, add purpose\" tabindex=\"0\">Add purpose</button></p><p class=\"method-step__uses-line\">uses nothing yet <button type=\"button\" class=\"text-control\" aria-label=\"Step 2, change ingredients\" tabindex=\"0\">Change ingredients</button></p><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, add aside\" tabindex=\"0\">Add aside</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, Preview step\" tabindex=\"0\">Preview step</button></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-after\" aria-label=\"Step 2, Add step after it\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Step 2, move up\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Step 2, move down\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"Step 2, remove\" tabindex=\"0\">Remove</button></p></div></li><li class=\"method-step mk-step\" data-step=\"4\"><span class=\"method-step__n\" aria-hidden=\"true\">3</span><div class=\"method-step__body\"><label class=\"method-step__field\"><textarea class=\"prose-field prose-field--lead-in\" rows=\"1\" data-field=\"lead-in\" aria-label=\"Step 3, lead-in\">Rest</textarea></label><label class=\"method-step__field\"><textarea class=\"prose-field\" rows=\"2\" aria-label=\"Step 3, instruction\">Rest the base for an hour.</textarea></label><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, Add target\" tabindex=\"0\">Add target</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, add purpose\" tabindex=\"0\">Add purpose</button></p><p class=\"method-step__uses-line\">uses nothing yet <button type=\"button\" class=\"text-control\" aria-label=\"Step 3, change ingredients\" tabindex=\"0\">Change ingredients</button></p><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, add aside\" tabindex=\"0\">Add aside</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, Preview step\" tabindex=\"0\">Preview step</button></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-after\" aria-label=\"Step 3, Add step after it\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Step 3, move up\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Step 3, move down\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"Step 3, remove\" tabindex=\"0\">Remove</button></p></div></li><li class=\"method-step mk-step\" data-step=\"3\"><span class=\"method-step__n\" aria-hidden=\"true\">4</span><div class=\"method-step__body\"><label class=\"method-step__field\"><textarea class=\"prose-field prose-field--lead-in\" rows=\"1\" data-field=\"lead-in\" aria-label=\"Step 4, lead-in\">Sweeten</textarea></label><label class=\"method-step__field\"><textarea class=\"prose-field\" rows=\"2\" aria-label=\"Step 4, instruction\">Stir in the dextrose and the salt.</textarea></label><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, Add target\" tabindex=\"0\">Add target</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, add purpose\" tabindex=\"0\">Add purpose</button></p><p class=\"method-step__uses-line\">uses Dextrose, Fine sea salt <button type=\"button\" class=\"text-control\" aria-label=\"Step 4, change ingredients\" tabindex=\"0\">Change ingredients</button></p><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, add aside\" tabindex=\"0\">Add aside</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, Preview step\" tabindex=\"0\">Preview step</button></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-after\" aria-label=\"Step 4, Add step after it\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Step 4, move up\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Step 4, move down\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"Step 4, remove\" tabindex=\"0\">Remove</button></p></div></li><li class=\"method-step mk-step\" data-step=\"5\"><span class=\"method-step__n\" aria-hidden=\"true\">5</span><div class=\"method-step__body\"><label class=\"method-step__field\"><textarea class=\"prose-field prose-field--lead-in\" rows=\"1\" data-field=\"lead-in\" aria-label=\"Step 5, lead-in\">Churn</textarea></label><label class=\"method-step__field\"><textarea class=\"prose-field\" rows=\"2\" aria-label=\"Step 5, instruction\">Chill the base, then churn.</textarea></label><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, Add target\" tabindex=\"0\">Add target</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, add purpose\" tabindex=\"0\">Add purpose</button></p><p class=\"method-step__uses-line\">uses nothing yet <button type=\"button\" class=\"text-control\" aria-label=\"Step 5, change ingredients\" tabindex=\"0\">Change ingredients</button></p><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, add aside\" tabindex=\"0\">Add aside</button><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, Preview step\" tabindex=\"0\">Preview step</button></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-after\" aria-label=\"Step 5, Add step after it\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Step 5, move up\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-down\" aria-label=\"Step 5, move down\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" aria-disabled=\"true\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"Step 5, remove\" tabindex=\"0\">Remove</button></p></div></li></ol></section>",
+  "ing": "<section class=\"ingredient-table-region\" aria-label=\"Ingredients\"><div class=\"mk-head-row\"><h2 class=\"region-name\">Ingredients</h2><button type=\"button\" class=\"text-control mk-head-act\" tabindex=\"0\">Add ingredient</button></div><p class=\"mk-keys\">In a row's grams: Cmd+Return adds an ingredient after it. Ctrl+Cmd+Up or Down moves it.</p><table class=\"ingredient-table is-developing\"><thead><tr><th scope=\"col\" class=\"ingredient-table__col-name\" colspan=\"2\">Ingredient</th><th scope=\"col\" class=\"ingredient-table__col-numeric\">% of batch</th></tr></thead><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 1<span class=\"ingredient-table__step-head-lead\">Steep</span></td></tr><tr data-line=\"718b1172-44da-4cb7-a01f-c3b14b6c261a:1\" aria-label=\"Heavy cream, 36% fat, 400 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Heavy cream, 36% fat, grams\">400</textarea> g</span></td><td class=\"ingredient-table__col-name\">Heavy cream, 36% fat<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><span class=\"mk-row-acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-ingredient\" aria-label=\"Add ingredient after Heavy cream, 36% fat\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add ingredient</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-up\" aria-label=\"Move up, Heavy cream, 36% fat\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" aria-disabled=\"true\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Move down, Heavy cream, 36% fat\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"remove Heavy cream, 36% fat\" tabindex=\"0\">Remove</button></span></td><td class=\"ingredient-table__col-numeric\">71.3%</td></tr><tr data-line=\"07d567be-7874-448b-ba9d-8835aafc55e7:1\" aria-label=\"Coffee beans, 40 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Coffee beans, grams\">40</textarea> g</span></td><td class=\"ingredient-table__col-name\">Coffee beans<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><span class=\"mk-row-acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-ingredient\" aria-label=\"Add ingredient after Coffee beans\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add ingredient</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Move up, Coffee beans\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-down\" aria-label=\"Move down, Coffee beans\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" aria-disabled=\"true\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"remove Coffee beans\" tabindex=\"0\">Remove</button></span></td><td class=\"ingredient-table__col-numeric\">7.1%</td></tr></tbody><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 4<span class=\"ingredient-table__step-head-lead\">Sweeten</span></td></tr><tr data-line=\"fb50c824-31ed-4fc5-a70b-d93a8cb19676:3\" aria-label=\"Dextrose, 120 g\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Dextrose, grams\">120</textarea> g</span></td><td class=\"ingredient-table__col-name\">Dextrose<span class=\"ingredient-table__remove-gap\"> </span><span class=\"mk-row-acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-ingredient\" aria-label=\"Add ingredient after Dextrose\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add ingredient</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-up\" aria-label=\"Move up, Dextrose\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" aria-disabled=\"true\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"move-down\" aria-label=\"Move down, Dextrose\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"remove Dextrose\" tabindex=\"0\">Remove</button></span></td><td class=\"ingredient-table__col-numeric\">21.4%</td></tr><tr data-line=\"9cd4faa6-dd9c-4538-8abd-3ab384e2f986:3\" aria-label=\"Fine sea salt, 1 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Fine sea salt, grams\">1</textarea> g</span></td><td class=\"ingredient-table__col-name\">Fine sea salt<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><span class=\"mk-row-acts\"><button type=\"button\" class=\"text-control\" data-act=\"add-ingredient\" aria-label=\"Add ingredient after Fine sea salt\" aria-keyshortcuts=\"Meta+Enter Control+Enter\" tabindex=\"0\">Add ingredient</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"move-up\" aria-label=\"Move up, Fine sea salt\" aria-keyshortcuts=\"Control+Meta+ArrowUp\" tabindex=\"0\">Move up</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control mk-off\" data-act=\"move-down\" aria-label=\"Move down, Fine sea salt\" aria-keyshortcuts=\"Control+Meta+ArrowDown\" aria-disabled=\"true\" tabindex=\"0\">Move down</button><span aria-hidden=\"true\"> · </span><button type=\"button\" class=\"text-control\" data-act=\"remove\" aria-label=\"remove Fine sea salt\" tabindex=\"0\">Remove</button></span></td><td class=\"ingredient-table__col-numeric\">0.2%</td></tr></tbody><tfoot><tr aria-label=\"Total, plan 561.0 grams\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">561.0 g</span></td><td class=\"ingredient-table__col-name\">Total</td><td class=\"ingredient-table__col-numeric\"></td></tr></tfoot></table></section>",
+  "geo": {
+   "region": {
+    "x": 80,
+    "y": 1059.3,
+    "w": 528,
+    "h": 1712.6
+   },
+   "list": {
+    "x": 80,
+    "y": 1130.3,
+    "w": 528,
+    "h": 1641.6
+   },
+   "steps": [
+    {
+     "id": "1",
+     "li": {
+      "x": 80,
+      "y": 1130.3,
+      "w": 528,
+      "h": 312.3
+     },
+     "n": {
+      "words": "1",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1138.8,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1130.3,
+      "w": 504,
+      "h": 312.3
+     },
+     "acts": {
+      "x": 104,
+      "y": 1383.6,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Add step",
+        "label": "Step 1, Add step after it",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1383.6,
+        "w": 54.1,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 166.2,
+        "y": 1395.9,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move up",
+        "label": "Step 1, move up",
+        "cls": "text-control mk-off",
+        "x": 178.4,
+        "y": 1383.6,
+        "w": 51.7,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 238,
+        "y": 1395.9,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move down",
+        "label": "Step 1, move down",
+        "cls": "text-control",
+        "x": 250.3,
+        "y": 1383.6,
+        "w": 69,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 327.3,
+        "y": 1395.9,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 1, remove",
+        "cls": "text-control",
+        "x": 339.5,
+        "y": 1383.6,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "2",
+     "li": {
+      "x": 80,
+      "y": 1462.6,
+      "w": 528,
+      "h": 312.3
+     },
+     "n": {
+      "words": "2",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1471.2,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1462.6,
+      "w": 504,
+      "h": 312.3
+     },
+     "acts": {
+      "x": 104,
+      "y": 1716,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Add step",
+        "label": "Step 2, Add step after it",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1716,
+        "w": 54.1,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 166.2,
+        "y": 1728.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move up",
+        "label": "Step 2, move up",
+        "cls": "text-control",
+        "x": 178.4,
+        "y": 1716,
+        "w": 51.7,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 238,
+        "y": 1728.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move down",
+        "label": "Step 2, move down",
+        "cls": "text-control",
+        "x": 250.3,
+        "y": 1716,
+        "w": 69,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 327.3,
+        "y": 1728.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 2, remove",
+        "cls": "text-control",
+        "x": 339.5,
+        "y": 1716,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "4",
+     "li": {
+      "x": 80,
+      "y": 1795,
+      "w": 528,
+      "h": 312.3
+     },
+     "n": {
+      "words": "3",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1803.5,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1795,
+      "w": 504,
+      "h": 312.3
+     },
+     "acts": {
+      "x": 104,
+      "y": 2048.3,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Add step",
+        "label": "Step 3, Add step after it",
+        "cls": "text-control",
+        "x": 104,
+        "y": 2048.3,
+        "w": 54.1,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 166.2,
+        "y": 2060.5,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move up",
+        "label": "Step 3, move up",
+        "cls": "text-control",
+        "x": 178.4,
+        "y": 2048.3,
+        "w": 51.7,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 238,
+        "y": 2060.5,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move down",
+        "label": "Step 3, move down",
+        "cls": "text-control",
+        "x": 250.3,
+        "y": 2048.3,
+        "w": 69,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 327.3,
+        "y": 2060.5,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 3, remove",
+        "cls": "text-control",
+        "x": 339.5,
+        "y": 2048.3,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "3",
+     "li": {
+      "x": 80,
+      "y": 2127.3,
+      "w": 528,
+      "h": 312.3
+     },
+     "n": {
+      "words": "4",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 2135.8,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 2127.3,
+      "w": 504,
+      "h": 312.3
+     },
+     "acts": {
+      "x": 104,
+      "y": 2380.6,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Add step",
+        "label": "Step 4, Add step after it",
+        "cls": "text-control",
+        "x": 104,
+        "y": 2380.6,
+        "w": 54.1,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 166.2,
+        "y": 2392.8,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move up",
+        "label": "Step 4, move up",
+        "cls": "text-control",
+        "x": 178.4,
+        "y": 2380.6,
+        "w": 51.7,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 238,
+        "y": 2392.8,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move down",
+        "label": "Step 4, move down",
+        "cls": "text-control",
+        "x": 250.3,
+        "y": 2380.6,
+        "w": 69,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 327.3,
+        "y": 2392.8,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 4, remove",
+        "cls": "text-control",
+        "x": 339.5,
+        "y": 2380.6,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "5",
+     "li": {
+      "x": 80,
+      "y": 2459.6,
+      "w": 528,
+      "h": 312.3
+     },
+     "n": {
+      "words": "5",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 2468.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 2459.6,
+      "w": 504,
+      "h": 312.3
+     },
+     "acts": {
+      "x": 104,
+      "y": 2712.9,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Add step",
+        "label": "Step 5, Add step after it",
+        "cls": "text-control",
+        "x": 104,
+        "y": 2712.9,
+        "w": 54.1,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 166.2,
+        "y": 2725.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move up",
+        "label": "Step 5, move up",
+        "cls": "text-control",
+        "x": 178.4,
+        "y": 2712.9,
+        "w": 51.7,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 238,
+        "y": 2725.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Move down",
+        "label": "Step 5, move down",
+        "cls": "text-control mk-off",
+        "x": 250.3,
+        "y": 2712.9,
+        "w": 69,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 327.3,
+        "y": 2725.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 5, remove",
+        "cls": "text-control",
+        "x": 339.5,
+        "y": 2712.9,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "focus": {
+   "tag": "BUTTON",
+   "t": "Step 3, move up",
+   "cls": "text-control",
+   "disabled": null
+  },
+  "live": [
+   "Step 3 of 5"
+  ],
+  "url": "/notebook/new"
+ },
+ "ed_off": {
+  "focus": {
+   "tag": "BUTTON",
+   "t": "Step 1, move up",
+   "cls": "text-control mk-off",
+   "disabled": "true"
+  },
+  "live": [
+   "Step 3 of 5"
+  ],
+  "order": [
+   "Steep",
+   "Strain",
+   "Rest",
+   "Sweeten",
+   "Churn"
+  ]
+ },
+ "v1": "/notebook/85bf3870-112b-4814-a5d7-b211cbd8a175/aae3f67d-9918-4f0e-af7c-e5e8cfbb09a1",
+ "v1_stored": {
+  "keys": [
+   1,
+   2,
+   4,
+   3,
+   5
+  ],
+  "removed": [],
+  "leadIns": [
+   "Steep",
+   "Strain",
+   "Rest",
+   "Sweeten",
+   "Churn"
+  ],
+  "portions": [
+   [
+    "Heavy cream, 36% fat",
+    [
+     1
+    ]
+   ],
+   [
+    "Coffee beans",
+    [
+     1
+    ]
+   ],
+   [
+    "Dextrose",
+    [
+     3
+    ]
+   ],
+   [
+    "Fine sea salt",
+    [
+     3
+    ]
+   ]
+  ],
+  "uses": [
+   2,
+   0,
+   0,
+   2,
+   0
+  ],
+  "parent": null
+ },
+ "v1_reading": {
+  "method": "<section class=\"method-region\" aria-label=\"Instructions\"><h2 class=\"region-name\">Instructions</h2><ol class=\"method-steps\" role=\"list\"><li id=\"method-step-1\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">1</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Steep.</b> Warm the cream with the beans and hold for ten minutes.</span></p></div></li><li id=\"method-step-2\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">2</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Strain.</b> Strain out the beans.</span></p></div></li><li id=\"method-step-4\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">3</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Rest.</b> Rest the base for an hour.</span></p></div></li><li id=\"method-step-3\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">4</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Sweeten.</b> Stir in the dextrose and the salt.</span></p></div></li><li id=\"method-step-5\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">5</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Churn.</b> Chill the base, then churn.</span></p></div></li></ol></section>",
+  "ing": "<section class=\"ingredient-table-region\" aria-label=\"Ingredients\"><h2 class=\"region-name\">Ingredients</h2><table class=\"ingredient-table\"><thead><tr><th scope=\"col\" class=\"ingredient-table__col-name\" colspan=\"2\">Ingredient</th><th scope=\"col\" class=\"ingredient-table__col-numeric\">% of batch</th></tr></thead><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 1<span class=\"ingredient-table__step-head-lead\">Steep</span></td></tr><tr aria-label=\"Heavy cream, 36% fat, 400 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">400 g</span></td><td class=\"ingredient-table__col-name\">Heavy cream, 36% fat<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span></td><td class=\"ingredient-table__col-numeric\">71.3%</td></tr><tr aria-label=\"Coffee beans, 40 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">40 g</span></td><td class=\"ingredient-table__col-name\">Coffee beans<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span></td><td class=\"ingredient-table__col-numeric\">7.1%</td></tr></tbody><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 4<span class=\"ingredient-table__step-head-lead\">Sweeten</span></td></tr><tr aria-label=\"Dextrose, 120 g\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">120 g</span></td><td class=\"ingredient-table__col-name\">Dextrose</td><td class=\"ingredient-table__col-numeric\">21.4%</td></tr><tr aria-label=\"Fine sea salt, 1 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">1 g</span></td><td class=\"ingredient-table__col-name\">Fine sea salt<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span></td><td class=\"ingredient-table__col-numeric\">0.2%</td></tr></tbody><tfoot><tr aria-label=\"Total, plan 561.0 grams\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">561.0 g</span></td><td class=\"ingredient-table__col-name\">Total</td><td class=\"ingredient-table__col-numeric\"></td></tr></tfoot></table></section>",
+  "geo": {
+   "region": {
+    "x": 80,
+    "y": 879.4,
+    "w": 528,
+    "h": 769.8
+   },
+   "list": {
+    "x": 80,
+    "y": 904.3,
+    "w": 528,
+    "h": 195
+   },
+   "steps": [
+    {
+     "id": "method-step-1",
+     "li": {
+      "x": 80,
+      "y": 904.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "1",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 904.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 908.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-2",
+     "li": {
+      "x": 80,
+      "y": 947.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "2",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 947.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 951.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-4",
+     "li": {
+      "x": 80,
+      "y": 990.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "3",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 990.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 994.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-3",
+     "li": {
+      "x": 80,
+      "y": 1033.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "4",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1033.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1037.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-5",
+     "li": {
+      "x": 80,
+      "y": 1076.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "5",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1076.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1080.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    }
+   ]
+  },
+  "focus": {
+   "tag": "H2",
+   "t": "Version 1 · Latest",
+   "cls": "notebook-version__identity is-landing-focus",
+   "disabled": null
+  },
+  "live": [
+   "Recipe saved."
+  ],
+  "url": "/notebook/85bf3870-112b-4814-a5d7-b211cbd8a175/aae3f67d-9918-4f0e-af7c-e5e8cfbb09a1"
+ },
+ "v1_print": {
+  "words": "Sprinkles\n\nSearch\nImport\nExport\n\nPRINT SHEET\nCoffee · Version 1 · Saved 4 Aug 2026 · Sheet code 02JH-M5S5\nPrint\nCHURNED\nBatch log\nOUT OF MACHINE\n°C\nDURATION\nmin\nAT DRAW\nMARK ONE\nNothing to note\nNot evaluated\nSee below\nEXIT CONSISTENCY\nSmooth ribbon\nWet, soupy\nChunky, separated\nAIRINESS\nLow, dense\nMedium, standard\nHigh, airy\nNOTES\nAT THE MACHINE · INGREDIENT NOTES · NEXT TIME\nCoffee · Version 1 · 02JH-M5S5 · Side 1 of 2\nTASTED\nTasting log\nTEMPERING\nmin\nTEMPERATURE\n°C\nMELT TEST\ng lost at 20 min\nMELT STYLE\nWatery, weeping\nCreamy puddle\nStable foam\nFROM FREEZER\nMARK ONE\nNothing to note\nNot evaluated\nSee below\nHARDNESS\nsoft\n1\n5\nhard\nright\nSCOOPABILITY\ncrumbly\n1\n5\ngummy\nright\nSMOOTHNESS\ngrainy\n1\n5\nsmooth\nright\nSWEETNESS\nless\n1\n5\nmore\nright\n\nAny problems?\nselect all that apply\n\nCoarse, icy\nSandy, gritty\nGummy, elastic\nGreasy film\nNOTES\nHOW DID IT TURN OUT?\nCoffee · Version 1 · 02JH-M5S5 · Side 2 of 2\nCoffee\n\nStrong and cold.\n\nINGREDIENTS\nAS MADE\tINGREDIENT\nSTEP 1Steep\n400 g\tHeavy cream, 36% fatestimated\n\n40 g\tCoffee beansestimated\n\nSTEP 4Sweeten\n120 g\tDextrose\n1 g\tFine sea saltestimated\n\n561.0 g\tTotal\nBALANCE\nFreezing · PAC\n43.8\n\nestimated: Heavy cream, 36% fat, and Fine sea salt\n\n0\nno target set\n40\nSweetness · POD\n15.3\n\nestimated: Heavy cream, 36% fat\n\n0\nno target set\n40\nFat\n25.7%\n0\nno target set\n30\n\nMilkfat 25.7% and added fat 0.0% — 0% of fat.\n\nMilk solids · MSNF\n3.9%\n\nestimated: Heavy cream, 36% fat\n\n0\nno target set\n15\nSugar\n21.4%\n0\nno target set\n25\nSolids\n58.2%\n\nestimated: Heavy cream, 36% fat, and Coffee beans\n\n25\nno target set\n55\n\nComputed from coefficient set 2026.1 (slice transcription). PAC relative to sucrose = 100, the same reference basis lactose's own PAC (100) is expressed against; lactose is taken as 54.5% of MSNF. Heavy cream, 36% fat, Coffee beans, and Fine sea salt are estimated.\n\nINSTRUCTIONS\n1\n\nSteep. Warm the cream with the beans and hold for ten minutes.\n\n2\n\nStrain. Strain out the beans.\n\n3\n\nRest. Rest the base for an hour.\n\n4\n\nSweeten. Stir in the dextrose and the salt.\n\n5\n\nChurn. Chill the base, then churn.\n\nCoffee · Version 1 · 02JH-M5S5",
+  "html": 43853
+ },
+ "pen": {
+  "method": "<section class=\"method-region\" aria-label=\"Instructions\"><h2 class=\"region-name\">Instructions</h2><ol class=\"method-steps\" role=\"list\"><li id=\"method-step-1\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">1</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Steep.</b> Warm the cream with the beans and hold for ten minutes.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-2\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">2</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Strain.</b> Strain out the beans.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-4\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">3</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Rest.</b> Rest the base for an hour.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-3\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">4</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Sweeten.</b> Stir in the dextrose and the salt.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-5\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">5</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Churn.</b> Chill the base, then churn.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, remove\" tabindex=\"0\">Remove</button></p></div></li></ol></section>",
+  "ing": "<section class=\"ingredient-table-region\" aria-label=\"Ingredients\"><h2 class=\"region-name\">Ingredients</h2><table class=\"ingredient-table is-developing\"><thead><tr><th scope=\"col\" class=\"ingredient-table__col-name\" colspan=\"2\">Ingredient</th><th scope=\"col\" class=\"ingredient-table__col-numeric\">% of batch</th></tr></thead><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 1<span class=\"ingredient-table__step-head-lead\">Steep</span></td></tr><tr aria-label=\"Heavy cream, 36% fat, 400 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Heavy cream, 36% fat, grams\">400</textarea> g</span></td><td class=\"ingredient-table__col-name\">Heavy cream, 36% fat<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">71.3%</td></tr><tr aria-label=\"Coffee beans, 40 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Coffee beans, grams\">40</textarea> g</span></td><td class=\"ingredient-table__col-name\">Coffee beans<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">7.1%</td></tr></tbody><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 4<span class=\"ingredient-table__step-head-lead\">Sweeten</span></td></tr><tr aria-label=\"Dextrose, 120 g\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Dextrose, grams\">120</textarea> g</span></td><td class=\"ingredient-table__col-name\">Dextrose<span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">21.4%</td></tr><tr aria-label=\"Fine sea salt, 1 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Fine sea salt, grams\">1</textarea> g</span></td><td class=\"ingredient-table__col-name\">Fine sea salt<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">0.2%</td></tr></tbody><tfoot><tr aria-label=\"Total, plan 561.0 grams\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">561.0 g</span></td><td class=\"ingredient-table__col-name\">Total</td><td class=\"ingredient-table__col-numeric\"></td></tr></tfoot></table></section>",
+  "geo": {
+   "region": {
+    "x": 80,
+    "y": 1390.3,
+    "w": 528,
+    "h": 614.6
+   },
+   "list": {
+    "x": 80,
+    "y": 1415.1,
+    "w": 528,
+    "h": 519.8
+   },
+   "steps": [
+    {
+     "id": "method-step-1",
+     "li": {
+      "x": 80,
+      "y": 1415.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "1",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1415.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1419.1,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1444.1,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 1, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1444.1,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1456.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 1, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1444.1,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-2",
+     "li": {
+      "x": 80,
+      "y": 1523.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "2",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1523.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1527.1,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1552.1,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 2, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1552.1,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1564.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 2, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1552.1,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-4",
+     "li": {
+      "x": 80,
+      "y": 1631.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "3",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1631.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1635,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1660,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 3, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1660,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1672.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 3, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1660,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-3",
+     "li": {
+      "x": 80,
+      "y": 1739,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "4",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1739,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1743,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1768,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 4, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1768,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1780.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 4, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1768,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-5",
+     "li": {
+      "x": 80,
+      "y": 1847,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "5",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1847,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1851,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1876,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 5, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1876,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1888.2,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 5, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1876,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "focus": {
+   "tag": "TEXTAREA",
+   "t": "Version name",
+   "cls": "ink-field",
+   "disabled": null
+  },
+  "live": [],
+  "url": "/notebook/85bf3870-112b-4814-a5d7-b211cbd8a175/aae3f67d-9918-4f0e-af7c-e5e8cfbb09a1",
+  "tabStops": [
+   "Step 1, edit this step",
+   "Step 1, remove",
+   "Step 2, edit this step",
+   "Step 2, remove",
+   "Step 3, edit this step",
+   "Step 3, remove",
+   "Step 4, edit this step",
+   "Step 4, remove",
+   "Step 5, edit this step",
+   "Step 5, remove"
+  ],
+  "widths": {
+   "sheet": 920,
+   "page": 920,
+   "method": 528,
+   "lead": 504,
+   "table": 528
+  }
+ },
+ "pen_open": {
+  "method": "<section class=\"method-region\" aria-label=\"Instructions\"><h2 class=\"region-name\">Instructions</h2><ol class=\"method-steps\" role=\"list\"><li id=\"method-step-1\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">1</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Steep.</b> Warm the cream with the beans and hold for ten minutes.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-2\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">2</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Strain.</b> Strain out the beans.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-4\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">3</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Rest.</b> Rest the base for an hour.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-3\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">4</span><div class=\"method-step__body\"><div class=\"method-step__open-fields\"><label class=\"method-step__field\"><textarea rows=\"1\" class=\"prose-field prose-field--lead-in\" aria-label=\"Step 4, lead-in\">Sweeten</textarea></label><label class=\"method-step__field\"><textarea class=\"prose-field\" rows=\"2\" aria-label=\"Step 4, instruction\">Stir in the dextrose and the salt.</textarea></label></div><p class=\"method-step__targets\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, Preview step\" tabindex=\"0\">Preview step</button></p><div><p class=\"method-step__uses-line\">uses Dextrose, Fine sea salt <button type=\"button\" class=\"text-control\" aria-label=\"Step 4, change ingredients\" tabindex=\"0\">Change ingredients</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, add purpose\" tabindex=\"0\">Add purpose</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, add aside\" tabindex=\"0\">Add aside</button></p></div><p class=\"method-step__done-cancel\"><button type=\"button\" class=\"text-control\" tabindex=\"0\">Cancel</button><button type=\"button\" tabindex=\"0\">Done</button></p></div></li><li id=\"method-step-5\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">5</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Churn.</b> Chill the base, then churn.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 5, remove\" tabindex=\"0\">Remove</button></p></div></li></ol></section>",
+  "ing": "<section class=\"ingredient-table-region\" aria-label=\"Ingredients\"><h2 class=\"region-name\">Ingredients</h2><table class=\"ingredient-table is-developing\"><thead><tr><th scope=\"col\" class=\"ingredient-table__col-name\" colspan=\"2\">Ingredient</th><th scope=\"col\" class=\"ingredient-table__col-numeric\">% of batch</th></tr></thead><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 1<span class=\"ingredient-table__step-head-lead\">Steep</span></td></tr><tr aria-label=\"Heavy cream, 36% fat, 400 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Heavy cream, 36% fat, grams\">400</textarea> g</span></td><td class=\"ingredient-table__col-name\">Heavy cream, 36% fat<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">71.3%</td></tr><tr aria-label=\"Coffee beans, 40 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Coffee beans, grams\">40</textarea> g</span></td><td class=\"ingredient-table__col-name\">Coffee beans<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">7.1%</td></tr></tbody><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 4<span class=\"ingredient-table__step-head-lead\">Sweeten</span></td></tr><tr aria-label=\"Dextrose, 120 g\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Dextrose, grams\">120</textarea> g</span></td><td class=\"ingredient-table__col-name\">Dextrose<span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">21.4%</td></tr><tr aria-label=\"Fine sea salt, 1 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Fine sea salt, grams\">1</textarea> g</span></td><td class=\"ingredient-table__col-name\">Fine sea salt<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">0.2%</td></tr></tbody><tfoot><tr aria-label=\"Total, plan 561.0 grams\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">561.0 g</span></td><td class=\"ingredient-table__col-name\">Total</td><td class=\"ingredient-table__col-numeric\"></td></tr></tfoot></table></section>",
+  "geo": {
+   "region": {
+    "x": 80,
+    "y": 1390.3,
+    "w": 528,
+    "h": 723.1
+   },
+   "list": {
+    "x": 80,
+    "y": 1415.1,
+    "w": 528,
+    "h": 698.2
+   },
+   "steps": [
+    {
+     "id": "method-step-1",
+     "li": {
+      "x": 80,
+      "y": 1415.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "1",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1415.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1419.1,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1444.1,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 1, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1444.1,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1456.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 1, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1444.1,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-2",
+     "li": {
+      "x": 80,
+      "y": 1523.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "2",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1523.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1527.1,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1552.1,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 2, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1552.1,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1564.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 2, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1552.1,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-4",
+     "li": {
+      "x": 80,
+      "y": 1631.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "3",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1631.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1635,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1660,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 3, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1660,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1672.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 3, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1660,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-3",
+     "li": {
+      "x": 80,
+      "y": 1739,
+      "w": 528,
+      "h": 266.3
+     },
+     "n": {
+      "words": "4",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1747.6,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1739,
+      "w": 504,
+      "h": 266.3
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-5",
+     "li": {
+      "x": 80,
+      "y": 2025.4,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "5",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 2025.4,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 2029.3,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 2054.3,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 5, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 2054.3,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 2066.6,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 5, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 2054.3,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "focus": {
+   "tag": "TEXTAREA",
+   "t": "Step 4, lead-in",
+   "cls": "prose-field prose-field--lead-in",
+   "disabled": null
+  },
+  "live": [],
+  "url": "/notebook/85bf3870-112b-4814-a5d7-b211cbd8a175/aae3f67d-9918-4f0e-af7c-e5e8cfbb09a1"
+ },
+ "pen_removed": {
+  "method": "<section class=\"method-region\" aria-label=\"Instructions\"><h2 class=\"region-name\">Instructions</h2><ol class=\"method-steps\" role=\"list\"><li id=\"method-step-1\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">1</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Steep.</b> Warm the cream with the beans and hold for ten minutes.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-2\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">2</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Strain.</b> Strain out the beans.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-4\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\"></span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span class=\"method-step__prose--struck\"><b>Rest.</b> Rest the base for an hour.</span><span class=\"method-step__skipped-label\"> removed</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Removed step 3, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Removed step 3, restore\" tabindex=\"0\">Restore</button></p></div></li><li id=\"method-step-3\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">3</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Sweeten.</b> Stir in the dextrose and the salt.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" tabindex=\"0\" aria-label=\"Step 3, edit this step\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-5\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">4</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Churn.</b> Chill the base, then churn.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, remove\" tabindex=\"0\">Remove</button></p></div></li></ol></section>",
+  "ing": "<section class=\"ingredient-table-region\" aria-label=\"Ingredients\"><h2 class=\"region-name\">Ingredients</h2><table class=\"ingredient-table is-developing\"><thead><tr><th scope=\"col\" class=\"ingredient-table__col-name\" colspan=\"2\">Ingredient</th><th scope=\"col\" class=\"ingredient-table__col-numeric\">% of batch</th></tr></thead><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 1<span class=\"ingredient-table__step-head-lead\">Steep</span></td></tr><tr aria-label=\"Heavy cream, 36% fat, 400 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Heavy cream, 36% fat, grams\">400</textarea> g</span></td><td class=\"ingredient-table__col-name\">Heavy cream, 36% fat<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">71.3%</td></tr><tr aria-label=\"Coffee beans, 40 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Coffee beans, grams\">40</textarea> g</span></td><td class=\"ingredient-table__col-name\">Coffee beans<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">7.1%</td></tr></tbody><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 3<span class=\"ingredient-table__step-head-lead\">Sweeten</span></td></tr><tr aria-label=\"Dextrose, 120 g\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Dextrose, grams\">120</textarea> g</span></td><td class=\"ingredient-table__col-name\">Dextrose<span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">21.4%</td></tr><tr aria-label=\"Fine sea salt, 1 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Fine sea salt, grams\">1</textarea> g</span></td><td class=\"ingredient-table__col-name\">Fine sea salt<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">0.2%</td></tr></tbody><tfoot><tr aria-label=\"Total, plan 561.0 grams\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">561.0 g</span></td><td class=\"ingredient-table__col-name\">Total</td><td class=\"ingredient-table__col-numeric\"></td></tr></tfoot></table></section>",
+  "geo": {
+   "region": {
+    "x": 80,
+    "y": 1390.3,
+    "w": 528,
+    "h": 614.6
+   },
+   "list": {
+    "x": 80,
+    "y": 1415.1,
+    "w": 528,
+    "h": 515.9
+   },
+   "steps": [
+    {
+     "id": "method-step-1",
+     "li": {
+      "x": 80,
+      "y": 1415.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "1",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1415.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1419.1,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1444.1,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 1, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1444.1,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1456.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 1, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1444.1,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-2",
+     "li": {
+      "x": 80,
+      "y": 1523.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "2",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1523.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1527.1,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1552.1,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 2, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1552.1,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1564.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 2, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1552.1,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-4",
+     "li": {
+      "x": 80,
+      "y": 1631.1,
+      "w": 528,
+      "h": 84
+     },
+     "n": {
+      "words": "",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1646.2,
+      "w": 0,
+      "h": 0
+     },
+     "body": {
+      "x": 92,
+      "y": 1631.1,
+      "w": 516,
+      "h": 84
+     },
+     "acts": {
+      "x": 92,
+      "y": 1656.1,
+      "w": 516,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Removed step 3, edit this step",
+        "cls": "text-control",
+        "x": 92,
+        "y": 1656.1,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 179,
+        "y": 1668.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Restore",
+        "label": "Removed step 3, restore",
+        "cls": "text-control",
+        "x": 191.3,
+        "y": 1656.1,
+        "w": 46.4,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-3",
+     "li": {
+      "x": 80,
+      "y": 1735.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "3",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1735.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1739,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1764,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 3, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1764,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1776.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 3, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1764,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-5",
+     "li": {
+      "x": 80,
+      "y": 1843,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "4",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1843,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1847,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1872,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 4, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1872,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1884.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 4, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1872,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "focus": {
+   "tag": "BUTTON",
+   "t": "Removed step 3, restore",
+   "cls": "text-control",
+   "disabled": null
+  },
+  "live": [],
+  "url": "/notebook/85bf3870-112b-4814-a5d7-b211cbd8a175/aae3f67d-9918-4f0e-af7c-e5e8cfbb09a1"
+ },
+ "v2": "/notebook/85bf3870-112b-4814-a5d7-b211cbd8a175/042c968a-2716-4740-8231-9eb0a23cc7ef",
+ "v2_stored": {
+  "keys": [
+   1,
+   2,
+   4,
+   3,
+   5
+  ],
+  "removed": [
+   4
+  ],
+  "leadIns": [
+   "Steep",
+   "Strain",
+   "Rest",
+   "Sweeten",
+   "Churn"
+  ],
+  "portions": [
+   [
+    "Heavy cream, 36% fat",
+    [
+     1
+    ]
+   ],
+   [
+    "Coffee beans",
+    [
+     1
+    ]
+   ],
+   [
+    "Dextrose",
+    [
+     3
+    ]
+   ],
+   [
+    "Fine sea salt",
+    [
+     3
+    ]
+   ]
+  ],
+  "uses": [
+   2,
+   0,
+   0,
+   2,
+   0
+  ],
+  "parent": "aae3f67d-9918-4f0e-af7c-e5e8cfbb09a1"
+ },
+ "v2_reading": {
+  "method": "<section class=\"method-region\" aria-label=\"Instructions\"><h2 class=\"region-name\">Instructions</h2><ol class=\"method-steps\" role=\"list\"><li id=\"method-step-1\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">1</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Steep.</b> Warm the cream with the beans and hold for ten minutes.</span></p></div></li><li id=\"method-step-2\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">2</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Strain.</b> Strain out the beans.</span></p></div></li><li id=\"method-step-3\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">3</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Sweeten.</b> Stir in the dextrose and the salt.</span></p></div></li><li id=\"method-step-5\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">4</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Churn.</b> Chill the base, then churn.</span></p></div></li></ol></section>",
+  "ing": "<section class=\"ingredient-table-region\" aria-label=\"Ingredients\"><h2 class=\"region-name\">Ingredients</h2><table class=\"ingredient-table\"><thead><tr><th scope=\"col\" class=\"ingredient-table__col-name\" colspan=\"2\">Ingredient</th><th scope=\"col\" class=\"ingredient-table__col-numeric\">% of batch</th></tr></thead><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 1<span class=\"ingredient-table__step-head-lead\">Steep</span></td></tr><tr aria-label=\"Heavy cream, 36% fat, 400 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">400 g</span></td><td class=\"ingredient-table__col-name\">Heavy cream, 36% fat<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span></td><td class=\"ingredient-table__col-numeric\">71.3%</td></tr><tr aria-label=\"Coffee beans, 40 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">40 g</span></td><td class=\"ingredient-table__col-name\">Coffee beans<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span></td><td class=\"ingredient-table__col-numeric\">7.1%</td></tr></tbody><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 3<span class=\"ingredient-table__step-head-lead\">Sweeten</span></td></tr><tr aria-label=\"Dextrose, 120 g\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">120 g</span></td><td class=\"ingredient-table__col-name\">Dextrose</td><td class=\"ingredient-table__col-numeric\">21.4%</td></tr><tr aria-label=\"Fine sea salt, 1 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">1 g</span></td><td class=\"ingredient-table__col-name\">Fine sea salt<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span></td><td class=\"ingredient-table__col-numeric\">0.2%</td></tr></tbody><tfoot><tr aria-label=\"Total, plan 561.0 grams\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">561.0 g</span></td><td class=\"ingredient-table__col-name\">Total</td><td class=\"ingredient-table__col-numeric\"></td></tr></tfoot></table></section>",
+  "geo": {
+   "region": {
+    "x": 80,
+    "y": 1018.4,
+    "w": 528,
+    "h": 769.8
+   },
+   "list": {
+    "x": 80,
+    "y": 1043.3,
+    "w": 528,
+    "h": 152
+   },
+   "steps": [
+    {
+     "id": "method-step-1",
+     "li": {
+      "x": 80,
+      "y": 1043.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "1",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1043.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1047.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-2",
+     "li": {
+      "x": 80,
+      "y": 1086.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "2",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1086.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1090.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-3",
+     "li": {
+      "x": 80,
+      "y": 1129.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "3",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1129.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1133.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-5",
+     "li": {
+      "x": 80,
+      "y": 1172.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "4",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1172.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1176.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    }
+   ]
+  },
+  "focus": {
+   "tag": "H2",
+   "t": "Version 2 · sweeten warm · Latest",
+   "cls": "notebook-version__identity is-landing-focus",
+   "disabled": null
+  },
+  "live": [
+   "Version saved."
+  ],
+  "url": "/notebook/85bf3870-112b-4814-a5d7-b211cbd8a175/042c968a-2716-4740-8231-9eb0a23cc7ef"
+ },
+ "v2_changes": {
+  "method": "<section class=\"method-region\" aria-label=\"Instructions\"><h2 class=\"region-name\">Instructions</h2><ol class=\"method-steps\" role=\"list\"><li id=\"method-step-1\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">1</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Steep.</b> Warm the cream with the beans and hold for ten minutes.</span></p></div></li><li id=\"method-step-2\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">2</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Strain.</b> Strain out the beans.</span></p></div></li><li id=\"method-step-4\" class=\"method-step\"><span class=\"method-step__n method-step__n--struck\" aria-hidden=\"true\">3</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span class=\"method-step__prose--struck\"><b>Rest.</b> Rest the base for an hour.</span><span class=\"method-step__skipped-label\"> removed</span></p></div></li><li id=\"method-step-3\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">3</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Sweeten.</b> Stir in the dextrose and the salt.</span></p></div></li><li id=\"method-step-5\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">4</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Churn.</b> Chill the base, then churn.</span></p></div></li></ol></section>",
+  "ing": "<section class=\"ingredient-table-region\" aria-label=\"Ingredients\"><h2 class=\"region-name\">Ingredients</h2><table class=\"ingredient-table\"><thead><tr><th scope=\"col\" class=\"ingredient-table__col-name\" colspan=\"2\">Ingredient</th><th scope=\"col\" class=\"ingredient-table__col-numeric\">% of batch</th></tr></thead><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 1<span class=\"ingredient-table__step-head-lead\">Steep</span></td></tr><tr aria-label=\"Heavy cream, 36% fat, 400 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">400 g</span></td><td class=\"ingredient-table__col-name\">Heavy cream, 36% fat<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span></td><td class=\"ingredient-table__col-numeric\">71.3%</td></tr><tr aria-label=\"Coffee beans, 40 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">40 g</span></td><td class=\"ingredient-table__col-name\">Coffee beans<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span></td><td class=\"ingredient-table__col-numeric\">7.1%</td></tr></tbody><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 3<span class=\"ingredient-table__step-head-lead\">Sweeten</span></td></tr><tr aria-label=\"Dextrose, 120 g\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">120 g</span></td><td class=\"ingredient-table__col-name\">Dextrose</td><td class=\"ingredient-table__col-numeric\">21.4%</td></tr><tr aria-label=\"Fine sea salt, 1 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">1 g</span></td><td class=\"ingredient-table__col-name\">Fine sea salt<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span></td><td class=\"ingredient-table__col-numeric\">0.2%</td></tr></tbody><tfoot><tr aria-label=\"Total, plan 561.0 grams\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">561.0 g</span></td><td class=\"ingredient-table__col-name\">Total</td><td class=\"ingredient-table__col-numeric\"></td></tr></tfoot></table></section>",
+  "geo": {
+   "region": {
+    "x": 80,
+    "y": 1018.4,
+    "w": 528,
+    "h": 769.8
+   },
+   "list": {
+    "x": 80,
+    "y": 1043.3,
+    "w": 528,
+    "h": 195
+   },
+   "steps": [
+    {
+     "id": "method-step-1",
+     "li": {
+      "x": 80,
+      "y": 1043.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "1",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1043.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1047.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-2",
+     "li": {
+      "x": 80,
+      "y": 1086.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "2",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1086.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1090.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-4",
+     "li": {
+      "x": 80,
+      "y": 1129.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "3",
+      "cls": "method-step__n method-step__n--struck",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "line-through",
+      "x": 80,
+      "y": 1129.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1133.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-3",
+     "li": {
+      "x": 80,
+      "y": 1172.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "3",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1172.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1176.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    },
+    {
+     "id": "method-step-5",
+     "li": {
+      "x": 80,
+      "y": 1215.3,
+      "w": 528,
+      "h": 23
+     },
+     "n": {
+      "words": "4",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1215.3,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1219.2,
+      "w": 504,
+      "h": 19
+     },
+     "acts": null
+    }
+   ]
+  },
+  "focus": {
+   "tag": "BUTTON",
+   "t": "Hide changes",
+   "cls": "notebook-link",
+   "disabled": null
+  },
+  "live": [
+   "Version saved."
+  ],
+  "url": "/notebook/85bf3870-112b-4814-a5d7-b211cbd8a175/042c968a-2716-4740-8231-9eb0a23cc7ef?changes="
+ },
+ "pen2": {
+  "method": "<section class=\"method-region\" aria-label=\"Instructions\"><h2 class=\"region-name\">Instructions</h2><ol class=\"method-steps\" role=\"list\"><li id=\"method-step-1\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">1</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Steep.</b> Warm the cream with the beans and hold for ten minutes.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 1, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-2\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">2</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Strain.</b> Strain out the beans.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 2, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-4\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\"></span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span class=\"method-step__prose--struck\"><b>Rest.</b> Rest the base for an hour.</span><span class=\"method-step__skipped-label\"> removed</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Removed step, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Removed step, restore\" tabindex=\"0\">Restore</button></p></div></li><li id=\"method-step-3\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">3</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Sweeten.</b> Stir in the dextrose and the salt.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 3, remove\" tabindex=\"0\">Remove</button></p></div></li><li id=\"method-step-5\" class=\"method-step\"><span class=\"method-step__n\" aria-hidden=\"true\">4</span><div class=\"method-step__body\"><p class=\"method-step__lead\"><span><b>Churn.</b> Chill the base, then churn.</span></p><p class=\"method-step__acts\"><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, edit this step\" tabindex=\"0\">Edit this step</button><span aria-hidden=\"true\">·</span><button type=\"button\" class=\"text-control\" aria-label=\"Step 4, remove\" tabindex=\"0\">Remove</button></p></div></li></ol></section>",
+  "ing": "<section class=\"ingredient-table-region\" aria-label=\"Ingredients\"><h2 class=\"region-name\">Ingredients</h2><table class=\"ingredient-table is-developing\"><thead><tr><th scope=\"col\" class=\"ingredient-table__col-name\" colspan=\"2\">Ingredient</th><th scope=\"col\" class=\"ingredient-table__col-numeric\">% of batch</th></tr></thead><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 1<span class=\"ingredient-table__step-head-lead\">Steep</span></td></tr><tr aria-label=\"Heavy cream, 36% fat, 400 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Heavy cream, 36% fat, grams\">400</textarea> g</span></td><td class=\"ingredient-table__col-name\">Heavy cream, 36% fat<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">71.3%</td></tr><tr aria-label=\"Coffee beans, 40 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Coffee beans, grams\">40</textarea> g</span></td><td class=\"ingredient-table__col-name\">Coffee beans<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">7.1%</td></tr></tbody><tbody><tr class=\"ingredient-table__step-head\"><td colspan=\"3\">Step 3<span class=\"ingredient-table__step-head-lead\">Sweeten</span></td></tr><tr aria-label=\"Dextrose, 120 g\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Dextrose, grams\">120</textarea> g</span></td><td class=\"ingredient-table__col-name\">Dextrose<span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">21.4%</td></tr><tr aria-label=\"Fine sea salt, 1 g, estimated\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\"><textarea rows=\"1\" inputmode=\"decimal\" class=\"ink-field\" aria-label=\"Fine sea salt, grams\">1</textarea> g</span></td><td class=\"ingredient-table__col-name\">Fine sea salt<span class=\"target-chip ingredient-table__flag\"><span class=\"target-chip__value\">estimated</span></span><span class=\"ingredient-table__remove-gap\"> </span><button type=\"button\" class=\"text-control\" tabindex=\"0\">Remove</button></td><td class=\"ingredient-table__col-numeric\">0.2%</td></tr></tbody><tfoot><tr aria-label=\"Total, plan 561.0 grams\"><td class=\"ingredient-table__col-grams\"><span class=\"ingredient-table__plan-grams\">561.0 g</span></td><td class=\"ingredient-table__col-name\">Total</td><td class=\"ingredient-table__col-numeric\"></td></tr></tfoot></table></section>",
+  "geo": {
+   "region": {
+    "x": 80,
+    "y": 1390.3,
+    "w": 528,
+    "h": 614.6
+   },
+   "list": {
+    "x": 80,
+    "y": 1415.1,
+    "w": 528,
+    "h": 515.9
+   },
+   "steps": [
+    {
+     "id": "method-step-1",
+     "li": {
+      "x": 80,
+      "y": 1415.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "1",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1415.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1419.1,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1444.1,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 1, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1444.1,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1456.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 1, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1444.1,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-2",
+     "li": {
+      "x": 80,
+      "y": 1523.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "2",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1523.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1527.1,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1552.1,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 2, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1552.1,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1564.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 2, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1552.1,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-4",
+     "li": {
+      "x": 80,
+      "y": 1631.1,
+      "w": 528,
+      "h": 84
+     },
+     "n": {
+      "words": "",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1646.2,
+      "w": 0,
+      "h": 0
+     },
+     "body": {
+      "x": 92,
+      "y": 1631.1,
+      "w": 516,
+      "h": 84
+     },
+     "acts": {
+      "x": 92,
+      "y": 1656.1,
+      "w": 516,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Removed step, edit this step",
+        "cls": "text-control",
+        "x": 92,
+        "y": 1656.1,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 179,
+        "y": 1668.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Restore",
+        "label": "Removed step, restore",
+        "cls": "text-control",
+        "x": 191.3,
+        "y": 1656.1,
+        "w": 46.4,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-3",
+     "li": {
+      "x": 80,
+      "y": 1735.1,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "3",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1735.1,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1739,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1764,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 3, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1764,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1776.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 3, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1764,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    },
+    {
+     "id": "method-step-5",
+     "li": {
+      "x": 80,
+      "y": 1843,
+      "w": 528,
+      "h": 88
+     },
+     "n": {
+      "words": "4",
+      "cls": "method-step__n",
+      "font": "20px/400 -apple-system",
+      "lh": "normal",
+      "deco": "none",
+      "x": 80,
+      "y": 1843,
+      "w": 12,
+      "h": 23
+     },
+     "body": {
+      "x": 104,
+      "y": 1847,
+      "w": 504,
+      "h": 84
+     },
+     "acts": {
+      "x": 104,
+      "y": 1872,
+      "w": 504,
+      "h": 44,
+      "gap": "8px",
+      "kids": [
+       {
+        "tag": "BUTTON",
+        "words": "Edit this step",
+        "label": "Step 4, edit this step",
+        "cls": "text-control",
+        "x": 104,
+        "y": 1872,
+        "w": 79,
+        "h": 44
+       },
+       {
+        "tag": "SPAN",
+        "words": "·",
+        "label": null,
+        "cls": "",
+        "x": 191.1,
+        "y": 1884.3,
+        "w": 4.2,
+        "h": 18
+       },
+       {
+        "tag": "BUTTON",
+        "words": "Remove",
+        "label": "Step 4, remove",
+        "cls": "text-control",
+        "x": 203.3,
+        "y": 1872,
+        "w": 48.2,
+        "h": 44
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "focus": {
+   "tag": "TEXTAREA",
+   "t": "Version name",
+   "cls": "ink-field",
+   "disabled": null
+  },
+  "live": [],
+  "url": "/notebook/85bf3870-112b-4814-a5d7-b211cbd8a175/042c968a-2716-4740-8231-9eb0a23cc7ef"
+ }
+}

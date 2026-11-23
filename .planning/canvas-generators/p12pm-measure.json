@@ -1,0 +1,3130 @@
+{
+ "pm-create": {
+  "w": 576,
+  "h": 764,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 312.3,
+    "n": "1",
+    "nBox": [
+     24,
+     103.5,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": null,
+    "acts": {
+     "box": [
+      48,
+      348.3,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 331.8,
+     "kids": [
+      [
+       "Add step",
+       "Step 1, Add step after it",
+       "on",
+       null,
+       48,
+       348.3,
+       54.1,
+       44
+      ],
+      [
+       "Move up",
+       "Step 1, move up",
+       "off",
+       "true",
+       122.4,
+       348.3,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 1, move down",
+       "on",
+       null,
+       194.3,
+       348.3,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 1, remove",
+       "on",
+       null,
+       283.5,
+       348.3,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 312.3,
+    "n": "2",
+    "nBox": [
+     24,
+     435.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": null,
+    "acts": {
+     "box": [
+      48,
+      680.7,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 331.8,
+     "kids": [
+      [
+       "Add step",
+       "Step 2, Add step after it",
+       "on",
+       null,
+       48,
+       680.7,
+       54.1,
+       44
+      ],
+      [
+       "Move up",
+       "Step 2, move up",
+       "on",
+       null,
+       122.4,
+       680.7,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 2, move down",
+       "on",
+       null,
+       194.3,
+       680.7,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 2, remove",
+       "on",
+       null,
+       283.5,
+       680.7,
+       48.2,
+       44
+      ]
+     ]
+    }
+   }
+  ],
+  "heads": [],
+  "stops": [
+   "Add step",
+   "Step 1, lead-in",
+   "Step 1, instruction",
+   "Step 1, Add target",
+   "Step 1, add purpose",
+   "Step 1, change ingredients",
+   "Step 1, add aside",
+   "Step 1, Preview step",
+   "Step 1, Add step after it",
+   "Step 1, move up",
+   "Step 1, move down",
+   "Step 1, remove",
+   "Step 2, lead-in",
+   "Step 2, instruction",
+   "Step 2, Add target",
+   "Step 2, add purpose",
+   "Step 2, change ingredients",
+   "Step 2, add aside",
+   "Step 2, Preview step",
+   "Step 2, Add step after it",
+   "Step 2, move up",
+   "Step 2, move down",
+   "Step 2, remove"
+  ],
+  "tabWalkEqualsMarkup": true,
+  "walked": 23
+ },
+ "pm-built": {
+  "w": 576,
+  "h": 593,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 88,
+    "n": "1",
+    "nBox": [
+     24,
+     48.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Steep. Warm the cream with the beans and hold for ten minutes.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      77.9,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 195.5,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 1, edit this step",
+       "on",
+       null,
+       48,
+       77.9,
+       79,
+       44
+      ],
+      [
+       "Remove",
+       "Step 1, remove",
+       "on",
+       null,
+       147.3,
+       77.9,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "2",
+    "nBox": [
+     24,
+     156.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Strain. Strain out the beans.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      185.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 195.5,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 2, edit this step",
+       "on",
+       null,
+       48,
+       185.8,
+       79,
+       44
+      ],
+      [
+       "Remove",
+       "Step 2, remove",
+       "on",
+       null,
+       147.3,
+       185.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "3",
+    "nBox": [
+     24,
+     264.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Rest. Rest the base for an hour.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      293.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 195.5,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 3, edit this step",
+       "on",
+       null,
+       48,
+       293.8,
+       79,
+       44
+      ],
+      [
+       "Remove",
+       "Step 3, remove",
+       "on",
+       null,
+       147.3,
+       293.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "4",
+    "nBox": [
+     24,
+     372.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Sweeten. Stir in the dextrose and the salt.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      401.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 195.5,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 4, edit this step",
+       "on",
+       null,
+       48,
+       401.8,
+       79,
+       44
+      ],
+      [
+       "Remove",
+       "Step 4, remove",
+       "on",
+       null,
+       147.3,
+       401.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "5",
+    "nBox": [
+     24,
+     480.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Churn. Chill the base, then churn.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      509.7,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 195.5,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 5, edit this step",
+       "on",
+       null,
+       48,
+       509.7,
+       79,
+       44
+      ],
+      [
+       "Remove",
+       "Step 5, remove",
+       "on",
+       null,
+       147.3,
+       509.7,
+       48.2,
+       44
+      ]
+     ]
+    }
+   }
+  ],
+  "heads": [],
+  "stops": [
+   "Step 1, edit this step",
+   "Step 1, remove",
+   "Step 2, edit this step",
+   "Step 2, remove",
+   "Step 3, edit this step",
+   "Step 3, remove",
+   "Step 4, edit this step",
+   "Step 4, remove",
+   "Step 5, edit this step",
+   "Step 5, remove"
+  ],
+  "tabWalkEqualsMarkup": true,
+  "walked": 10
+ },
+ "pm-moves": {
+  "w": 576,
+  "h": 593,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 88,
+    "n": "1",
+    "nBox": [
+     24,
+     48.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Steep. Warm the cream with the beans and hold for ten minutes.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      77.9,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 1, edit this step",
+       "on",
+       null,
+       48,
+       77.9,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 1, move up",
+       "off",
+       "true",
+       147.3,
+       77.9,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 1, move down",
+       "on",
+       null,
+       219.2,
+       77.9,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 1, remove",
+       "on",
+       null,
+       308.4,
+       77.9,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "2",
+    "nBox": [
+     24,
+     156.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Strain. Strain out the beans.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      185.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 2, edit this step",
+       "on",
+       null,
+       48,
+       185.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 2, move up",
+       "on",
+       null,
+       147.3,
+       185.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 2, move down",
+       "on",
+       null,
+       219.2,
+       185.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 2, remove",
+       "on",
+       null,
+       308.4,
+       185.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "3",
+    "nBox": [
+     24,
+     264.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Rest. Rest the base for an hour.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      293.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 3, edit this step",
+       "on",
+       null,
+       48,
+       293.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 3, move up",
+       "on",
+       null,
+       147.3,
+       293.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 3, move down",
+       "on",
+       null,
+       219.2,
+       293.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 3, remove",
+       "on",
+       null,
+       308.4,
+       293.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "4",
+    "nBox": [
+     24,
+     372.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Sweeten. Stir in the dextrose and the salt.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      401.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 4, edit this step",
+       "on",
+       null,
+       48,
+       401.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 4, move up",
+       "on",
+       null,
+       147.3,
+       401.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 4, move down",
+       "on",
+       null,
+       219.2,
+       401.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 4, remove",
+       "on",
+       null,
+       308.4,
+       401.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "5",
+    "nBox": [
+     24,
+     480.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Churn. Chill the base, then churn.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      509.7,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 5, edit this step",
+       "on",
+       null,
+       48,
+       509.7,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 5, move up",
+       "on",
+       null,
+       147.3,
+       509.7,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 5, move down",
+       "off",
+       "true",
+       219.2,
+       509.7,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 5, remove",
+       "on",
+       null,
+       308.4,
+       509.7,
+       48.2,
+       44
+      ]
+     ]
+    }
+   }
+  ],
+  "heads": [],
+  "stops": [
+   "Step 1, edit this step",
+   "Step 1, move up",
+   "Step 1, move down",
+   "Step 1, remove",
+   "Step 2, edit this step",
+   "Step 2, move up",
+   "Step 2, move down",
+   "Step 2, remove",
+   "Step 3, edit this step",
+   "Step 3, move up",
+   "Step 3, move down",
+   "Step 3, remove",
+   "Step 4, edit this step",
+   "Step 4, move up",
+   "Step 4, move down",
+   "Step 4, remove",
+   "Step 5, edit this step",
+   "Step 5, move up",
+   "Step 5, move down",
+   "Step 5, remove"
+  ],
+  "tabWalkEqualsMarkup": true,
+  "walked": 20
+ },
+ "pm-once": {
+  "w": 576,
+  "h": 593,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 88,
+    "n": "1",
+    "nBox": [
+     24,
+     48.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Steep. Warm the cream with the beans and hold for ten minutes.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      77.9,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 1, edit this step",
+       "on",
+       null,
+       48,
+       77.9,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 1, move up",
+       "off",
+       "true",
+       147.3,
+       77.9,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 1, move down",
+       "on",
+       null,
+       219.2,
+       77.9,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 1, remove",
+       "on",
+       null,
+       308.4,
+       77.9,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "2",
+    "nBox": [
+     24,
+     156.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Strain. Strain out the beans.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      185.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 2, edit this step",
+       "on",
+       null,
+       48,
+       185.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 2, move up",
+       "on",
+       null,
+       147.3,
+       185.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 2, move down",
+       "on",
+       null,
+       219.2,
+       185.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 2, remove",
+       "on",
+       null,
+       308.4,
+       185.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 4",
+      350.8,
+      272.3,
+      80.8,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 88,
+    "n": "3",
+    "nBox": [
+     24,
+     264.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Sweeten. Stir in the dextrose and the salt. was step 4",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      293.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 3, edit this step",
+       "on",
+       null,
+       48,
+       293.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 3, move up",
+       "on",
+       null,
+       147.3,
+       293.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 3, move down",
+       "on",
+       null,
+       219.2,
+       293.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 3, remove",
+       "on",
+       null,
+       308.4,
+       293.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 3",
+      274.5,
+      380.2,
+      80.6,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 88,
+    "n": "4",
+    "nBox": [
+     24,
+     372.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Rest. Rest the base for an hour. was step 3",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      401.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 4, edit this step",
+       "on",
+       null,
+       48,
+       401.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 4, move up",
+       "on",
+       null,
+       147.3,
+       401.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 4, move down",
+       "on",
+       null,
+       219.2,
+       401.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 4, remove",
+       "on",
+       null,
+       308.4,
+       401.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "5",
+    "nBox": [
+     24,
+     480.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Churn. Chill the base, then churn.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      509.7,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 5, edit this step",
+       "on",
+       null,
+       48,
+       509.7,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 5, move up",
+       "on",
+       null,
+       147.3,
+       509.7,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 5, move down",
+       "off",
+       "true",
+       219.2,
+       509.7,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 5, remove",
+       "on",
+       null,
+       308.4,
+       509.7,
+       48.2,
+       44
+      ]
+     ]
+    }
+   }
+  ],
+  "heads": [],
+  "stops": [
+   "Step 1, edit this step",
+   "Step 1, move up",
+   "Step 1, move down",
+   "Step 1, remove",
+   "Step 2, edit this step",
+   "Step 2, move up",
+   "Step 2, move down",
+   "Step 2, remove",
+   "Step 3, edit this step",
+   "Step 3, move up",
+   "Step 3, move down",
+   "Step 3, remove",
+   "Step 4, edit this step",
+   "Step 4, move up",
+   "Step 4, move down",
+   "Step 4, remove",
+   "Step 5, edit this step",
+   "Step 5, move up",
+   "Step 5, move down",
+   "Step 5, remove"
+  ],
+  "tabWalkEqualsMarkup": true,
+  "walked": 20
+ },
+ "pm-twice": {
+  "w": 576,
+  "h": 593,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 88,
+    "n": "1",
+    "nBox": [
+     24,
+     48.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Steep. Warm the cream with the beans and hold for ten minutes.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      77.9,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 1, edit this step",
+       "on",
+       null,
+       48,
+       77.9,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 1, move up",
+       "off",
+       "true",
+       147.3,
+       77.9,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 1, move down",
+       "on",
+       null,
+       219.2,
+       77.9,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 1, remove",
+       "on",
+       null,
+       308.4,
+       77.9,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 4",
+      350.8,
+      164.3,
+      80.8,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 88,
+    "n": "2",
+    "nBox": [
+     24,
+     156.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Sweeten. Stir in the dextrose and the salt. was step 4",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      185.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 2, edit this step",
+       "on",
+       null,
+       48,
+       185.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 2, move up",
+       "on",
+       null,
+       147.3,
+       185.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 2, move down",
+       "on",
+       null,
+       219.2,
+       185.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 2, remove",
+       "on",
+       null,
+       308.4,
+       185.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 2",
+      254.6,
+      272.3,
+      80.3,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 88,
+    "n": "3",
+    "nBox": [
+     24,
+     264.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Strain. Strain out the beans. was step 2",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      293.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 3, edit this step",
+       "on",
+       null,
+       48,
+       293.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 3, move up",
+       "on",
+       null,
+       147.3,
+       293.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 3, move down",
+       "on",
+       null,
+       219.2,
+       293.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 3, remove",
+       "on",
+       null,
+       308.4,
+       293.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 3",
+      274.5,
+      380.2,
+      80.6,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 88,
+    "n": "4",
+    "nBox": [
+     24,
+     372.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Rest. Rest the base for an hour. was step 3",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      401.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 4, edit this step",
+       "on",
+       null,
+       48,
+       401.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 4, move up",
+       "on",
+       null,
+       147.3,
+       401.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 4, move down",
+       "on",
+       null,
+       219.2,
+       401.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 4, remove",
+       "on",
+       null,
+       308.4,
+       401.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "5",
+    "nBox": [
+     24,
+     480.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Churn. Chill the base, then churn.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      509.7,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 5, edit this step",
+       "on",
+       null,
+       48,
+       509.7,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 5, move up",
+       "on",
+       null,
+       147.3,
+       509.7,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 5, move down",
+       "off",
+       "true",
+       219.2,
+       509.7,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 5, remove",
+       "on",
+       null,
+       308.4,
+       509.7,
+       48.2,
+       44
+      ]
+     ]
+    }
+   }
+  ],
+  "heads": [],
+  "stops": [
+   "Step 1, edit this step",
+   "Step 1, move up",
+   "Step 1, move down",
+   "Step 1, remove",
+   "Step 2, edit this step",
+   "Step 2, move up",
+   "Step 2, move down",
+   "Step 2, remove",
+   "Step 3, edit this step",
+   "Step 3, move up",
+   "Step 3, move down",
+   "Step 3, remove",
+   "Step 4, edit this step",
+   "Step 4, move up",
+   "Step 4, move down",
+   "Step 4, remove",
+   "Step 5, edit this step",
+   "Step 5, move up",
+   "Step 5, move down",
+   "Step 5, remove"
+  ],
+  "tabWalkEqualsMarkup": true,
+  "walked": 20
+ },
+ "pm-removed": {
+  "w": 576,
+  "h": 589,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 88,
+    "n": "1",
+    "nBox": [
+     24,
+     48.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Steep. Warm the cream with the beans and hold for ten minutes.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      77.9,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 1, edit this step",
+       "on",
+       null,
+       48,
+       77.9,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 1, move up",
+       "off",
+       "true",
+       147.3,
+       77.9,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 1, move down",
+       "on",
+       null,
+       219.2,
+       77.9,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 1, remove",
+       "on",
+       null,
+       308.4,
+       77.9,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 4",
+      350.8,
+      164.3,
+      80.8,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 88,
+    "n": "2",
+    "nBox": [
+     24,
+     156.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Sweeten. Stir in the dextrose and the salt. was step 4",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      185.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 2, edit this step",
+       "on",
+       null,
+       48,
+       185.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 2, move up",
+       "on",
+       null,
+       147.3,
+       185.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 2, move down",
+       "on",
+       null,
+       219.2,
+       185.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 2, remove",
+       "on",
+       null,
+       308.4,
+       185.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 2",
+      254.6,
+      272.3,
+      80.3,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 88,
+    "n": "3",
+    "nBox": [
+     24,
+     264.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Strain. Strain out the beans. was step 2",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      293.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 3, edit this step",
+       "on",
+       null,
+       48,
+       293.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 3, move up",
+       "on",
+       null,
+       147.3,
+       293.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 3, move down",
+       "on",
+       null,
+       219.2,
+       293.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 3, remove",
+       "on",
+       null,
+       308.4,
+       293.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "removed",
+      262.4,
+      376.3,
+      66.4,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 84,
+    "n": "",
+    "nBox": [
+     24,
+     387.9,
+     0,
+     0
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 36,
+    "lead": {
+     "words": "Rest. Rest the base for an hour. removed",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      36,
+      397.8,
+      516,
+      44
+     ],
+     "rows": 1,
+     "right": 181.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Removed step 3, edit this step",
+       "on",
+       null,
+       36,
+       397.8,
+       79,
+       44
+      ],
+      [
+       "Restore",
+       "Removed step 3, restore",
+       "on",
+       null,
+       135.3,
+       397.8,
+       46.4,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 5",
+      295.2,
+      484.2,
+      80.5,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 88,
+    "n": "4",
+    "nBox": [
+     24,
+     476.8,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Churn. Chill the base, then churn. was step 5",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      505.8,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 4, edit this step",
+       "on",
+       null,
+       48,
+       505.8,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 4, move up",
+       "on",
+       null,
+       147.3,
+       505.8,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 4, move down",
+       "off",
+       "true",
+       219.2,
+       505.8,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 4, remove",
+       "on",
+       null,
+       308.4,
+       505.8,
+       48.2,
+       44
+      ]
+     ]
+    }
+   }
+  ],
+  "heads": [],
+  "stops": [
+   "Step 1, edit this step",
+   "Step 1, move up",
+   "Step 1, move down",
+   "Step 1, remove",
+   "Step 2, edit this step",
+   "Step 2, move up",
+   "Step 2, move down",
+   "Step 2, remove",
+   "Step 3, edit this step",
+   "Step 3, move up",
+   "Step 3, move down",
+   "Step 3, remove",
+   "Removed step 3, edit this step",
+   "Removed step 3, restore",
+   "Step 4, edit this step",
+   "Step 4, move up",
+   "Step 4, move down",
+   "Step 4, remove"
+  ],
+  "tabWalkEqualsMarkup": true,
+  "walked": 18
+ },
+ "pm-open": {
+  "w": 576,
+  "h": 790,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 88,
+    "n": "1",
+    "nBox": [
+     24,
+     48.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Steep. Warm the cream with the beans and hold for ten minutes.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      77.9,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 1, edit this step",
+       "on",
+       null,
+       48,
+       77.9,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 1, move up",
+       "off",
+       "true",
+       147.3,
+       77.9,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 1, move down",
+       "on",
+       null,
+       219.2,
+       77.9,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 1, remove",
+       "on",
+       null,
+       308.4,
+       77.9,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 4",
+      48,
+      257.3,
+      77,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 284.3,
+    "n": "2",
+    "nBox": [
+     24,
+     165.4,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": null,
+    "acts": null
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 2",
+      254.6,
+      468.6,
+      80.3,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 88,
+    "n": "3",
+    "nBox": [
+     24,
+     461.2,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Strain. Strain out the beans. was step 2",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      490.2,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 3, edit this step",
+       "on",
+       null,
+       48,
+       490.2,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 3, move up",
+       "on",
+       null,
+       147.3,
+       490.2,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 3, move down",
+       "on",
+       null,
+       219.2,
+       490.2,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 3, remove",
+       "on",
+       null,
+       308.4,
+       490.2,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 3",
+      274.5,
+      576.6,
+      80.6,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 88,
+    "n": "4",
+    "nBox": [
+     24,
+     569.2,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Rest. Rest the base for an hour. was step 3",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      598.1,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 4, edit this step",
+       "on",
+       null,
+       48,
+       598.1,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 4, move up",
+       "on",
+       null,
+       147.3,
+       598.1,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 4, move down",
+       "on",
+       null,
+       219.2,
+       598.1,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 4, remove",
+       "on",
+       null,
+       308.4,
+       598.1,
+       48.2,
+       44
+      ]
+     ]
+    }
+   },
+   {
+    "was": [],
+    "h": 88,
+    "n": "5",
+    "nBox": [
+     24,
+     677.1,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Churn. Chill the base, then churn.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": {
+     "box": [
+      48,
+      706.1,
+      504,
+      44
+     ],
+     "rows": 1,
+     "right": 356.7,
+     "kids": [
+      [
+       "Edit this step",
+       "Step 5, edit this step",
+       "on",
+       null,
+       48,
+       706.1,
+       79,
+       44
+      ],
+      [
+       "Move up",
+       "Step 5, move up",
+       "on",
+       null,
+       147.3,
+       706.1,
+       51.7,
+       44
+      ],
+      [
+       "Move down",
+       "Step 5, move down",
+       "off",
+       "true",
+       219.2,
+       706.1,
+       69,
+       44
+      ],
+      [
+       "Remove",
+       "Step 5, remove",
+       "on",
+       null,
+       308.4,
+       706.1,
+       48.2,
+       44
+      ]
+     ]
+    }
+   }
+  ],
+  "heads": [],
+  "stops": [
+   "Step 1, edit this step",
+   "Step 1, move up",
+   "Step 1, move down",
+   "Step 1, remove",
+   "Step 2, lead-in",
+   "Step 2, instruction",
+   "Step 2, Preview step",
+   "Step 2, change ingredients",
+   "Step 2, add purpose",
+   "Step 2, add aside",
+   "Cancel",
+   "Done",
+   "Step 3, edit this step",
+   "Step 3, move up",
+   "Step 3, move down",
+   "Step 3, remove",
+   "Step 4, edit this step",
+   "Step 4, move up",
+   "Step 4, move down",
+   "Step 4, remove",
+   "Step 5, edit this step",
+   "Step 5, move up",
+   "Step 5, move down",
+   "Step 5, remove"
+  ],
+  "tabWalkEqualsMarkup": true,
+  "walked": 24
+ },
+ "pm-table": {
+  "w": 576,
+  "h": 423,
+  "overflowX": 0,
+  "steps": [],
+  "heads": [
+   "Step 1Steep",
+   "Step 2Sweeten"
+  ],
+  "stops": [
+   "Heavy cream, 36% fat, grams",
+   "Remove",
+   "Coffee beans, grams",
+   "Remove",
+   "Dextrose, grams",
+   "Remove",
+   "Fine sea salt, grams",
+   "Remove"
+  ],
+  "tabWalkEqualsMarkup": true,
+  "walked": 8
+ },
+ "so-built": {
+  "w": 576,
+  "h": 268,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 23,
+    "n": "1",
+    "nBox": [
+     24,
+     48.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Steep. Warm the cream with the beans and hold for ten minutes.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [],
+    "h": 23,
+    "n": "2",
+    "nBox": [
+     24,
+     91.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Strain. Strain out the beans.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "removed",
+      274.5,
+      142.3,
+      66.4,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 23,
+    "n": "3",
+    "nBox": [
+     24,
+     134.9,
+     12,
+     23
+    ],
+    "struck": "line-through",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Rest. Rest the base for an hour. removed",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [],
+    "h": 23,
+    "n": "3",
+    "nBox": [
+     24,
+     177.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Sweeten. Stir in the dextrose and the salt.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [],
+    "h": 23,
+    "n": "4",
+    "nBox": [
+     24,
+     220.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Churn. Chill the base, then churn.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   }
+  ],
+  "heads": [],
+  "stops": [],
+  "tabWalkEqualsMarkup": true,
+  "walked": 0
+ },
+ "so-a": {
+  "w": 576,
+  "h": 268,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 23,
+    "n": "1",
+    "nBox": [
+     24,
+     48.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Steep. Warm the cream with the beans and hold for ten minutes.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 4",
+      350.8,
+      99.3,
+      80.8,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 23,
+    "n": "2",
+    "nBox": [
+     24,
+     91.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Sweeten. Stir in the dextrose and the salt. was step 4",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 2",
+      254.6,
+      142.3,
+      80.3,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 23,
+    "n": "3",
+    "nBox": [
+     24,
+     134.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Strain. Strain out the beans. was step 2",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "removed",
+      274.5,
+      185.3,
+      66.4,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 23,
+    "n": "3",
+    "nBox": [
+     24,
+     177.9,
+     12,
+     23
+    ],
+    "struck": "line-through",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Rest. Rest the base for an hour. removed",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "was step 5",
+      295.2,
+      228.3,
+      80.5,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 23,
+    "n": "4",
+    "nBox": [
+     24,
+     220.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Churn. Chill the base, then churn. was step 5",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   }
+  ],
+  "heads": [],
+  "stops": [],
+  "tabWalkEqualsMarkup": true,
+  "walked": 0
+ },
+ "so-b": {
+  "w": 576,
+  "h": 337,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 23,
+    "n": "1",
+    "nBox": [
+     24,
+     48.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Steep. Warm the cream with the beans and hold for ten minutes.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [
+     [
+      "visually-hidden",
+      "was step 4",
+      350.8,
+      95.9,
+      1,
+      1,
+      "16px"
+     ]
+    ],
+    "h": 46,
+    "n": "2",
+    "nBox": [
+     24,
+     91.9,
+     12,
+     46
+    ],
+    "struck": "none",
+    "from": {
+     "words": "4",
+     "box": [
+      24,
+      114.9,
+      12,
+      23
+     ],
+     "deco": "line-through",
+     "font": "20px"
+    },
+    "bodyX": 48,
+    "lead": {
+     "words": "Sweeten. Stir in the dextrose and the salt. was step 4",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [
+     [
+      "visually-hidden",
+      "was step 2",
+      254.6,
+      161.9,
+      1,
+      1,
+      "16px"
+     ]
+    ],
+    "h": 46,
+    "n": "3",
+    "nBox": [
+     24,
+     157.9,
+     12,
+     46
+    ],
+    "struck": "none",
+    "from": {
+     "words": "2",
+     "box": [
+      24,
+      180.9,
+      12,
+      23
+     ],
+     "deco": "line-through",
+     "font": "20px"
+    },
+    "bodyX": 48,
+    "lead": {
+     "words": "Strain. Strain out the beans. was step 2",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "removed",
+      274.5,
+      231.3,
+      66.4,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 23,
+    "n": "3",
+    "nBox": [
+     24,
+     223.9,
+     12,
+     23
+    ],
+    "struck": "line-through",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Rest. Rest the base for an hour. removed",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [
+     [
+      "visually-hidden",
+      "was step 5",
+      295.2,
+      270.9,
+      1,
+      1,
+      "16px"
+     ]
+    ],
+    "h": 46,
+    "n": "4",
+    "nBox": [
+     24,
+     266.9,
+     12,
+     46
+    ],
+    "struck": "none",
+    "from": {
+     "words": "5",
+     "box": [
+      24,
+      289.9,
+      12,
+      23
+     ],
+     "deco": "line-through",
+     "font": "20px"
+    },
+    "bodyX": 48,
+    "lead": {
+     "words": "Churn. Chill the base, then churn. was step 5",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   }
+  ],
+  "heads": [],
+  "stops": [],
+  "tabWalkEqualsMarkup": true,
+  "walked": 0
+ },
+ "so-c": {
+  "w": 576,
+  "h": 268,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 23,
+    "n": "1",
+    "nBox": [
+     24,
+     48.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Steep. Warm the cream with the beans and hold for ten minutes.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [],
+    "h": 23,
+    "n": "2",
+    "nBox": [
+     24,
+     91.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Sweeten. Stir in the dextrose and the salt.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [],
+    "h": 23,
+    "n": "3",
+    "nBox": [
+     24,
+     134.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Strain. Strain out the beans.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [
+     [
+      "method-step__skipped-label",
+      "removed",
+      274.5,
+      185.3,
+      66.4,
+      14.1,
+      "12px"
+     ]
+    ],
+    "h": 23,
+    "n": "3",
+    "nBox": [
+     24,
+     177.9,
+     12,
+     23
+    ],
+    "struck": "line-through",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Rest. Rest the base for an hour. removed",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [],
+    "h": 23,
+    "n": "4",
+    "nBox": [
+     24,
+     220.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Churn. Chill the base, then churn.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   }
+  ],
+  "heads": [],
+  "stops": [],
+  "tabWalkEqualsMarkup": true,
+  "walked": 0
+ },
+ "so-read": {
+  "w": 576,
+  "h": 225,
+  "overflowX": 0,
+  "steps": [
+   {
+    "was": [],
+    "h": 23,
+    "n": "1",
+    "nBox": [
+     24,
+     48.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Steep. Warm the cream with the beans and hold for ten minutes.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [],
+    "h": 23,
+    "n": "2",
+    "nBox": [
+     24,
+     91.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Sweeten. Stir in the dextrose and the salt.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [],
+    "h": 23,
+    "n": "3",
+    "nBox": [
+     24,
+     134.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Strain. Strain out the beans.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   },
+   {
+    "was": [],
+    "h": 23,
+    "n": "4",
+    "nBox": [
+     24,
+     177.9,
+     12,
+     23
+    ],
+    "struck": "none",
+    "from": null,
+    "bodyX": 48,
+    "lead": {
+     "words": "Churn. Chill the base, then churn.",
+     "lines": null,
+     "h": 19
+    },
+    "acts": null
+   }
+  ],
+  "heads": [],
+  "stops": [],
+  "tabWalkEqualsMarkup": true,
+  "walked": 0
+ },
+ "so-table": {
+  "w": 576,
+  "h": 325,
+  "overflowX": 0,
+  "steps": [],
+  "heads": [
+   "Step 1Steep",
+   "Step 2Sweeten"
+  ],
+  "stops": [],
+  "tabWalkEqualsMarkup": true,
+  "walked": 0
+ }
+}

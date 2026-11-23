@@ -130,7 +130,10 @@ async function press(tab, label) {
 }
 
 const stepItems = (tab) => [...region(tab).querySelectorAll('ol.method-steps > li')];
-const order = (tab) => stepItems(tab).map((li) => li.querySelector('.method-step__lead b').textContent.replace(/\.$/, ''));
+// An open step shows its lead-in in a field, a closed one in its line.
+const leadOf = (li) =>
+  li.querySelector('.method-step__lead b')?.textContent.replace(/\.$/, '') ?? li.querySelector('textarea[aria-label$=", lead-in"]').value;
+const order = (tab) => stepItems(tab).map(leadOf);
 const numbers = (tab) => stepItems(tab).map((li) => li.querySelector('.method-step__n').textContent);
 const stepHeads = (tab) => [...tab.container.querySelectorAll('tr.ingredient-table__step-head')].map((tr) => tr.textContent);
 
@@ -323,5 +326,168 @@ describe('the Next version pen draws and changes the order of the steps (sketch 
     expect(numbers(tab)).toEqual(['1', '2', '3', '4', '5']);
     expect(region(tab).querySelectorAll('button[aria-label$=", move up"], button[aria-label$=", move down"]')).toHaveLength(0);
     expect(unhandled).toEqual([]);
+  });
+});
+
+// Sketch 017 CONTRACT section 3 and README decisions 4 and 5: focus stays on the
+// pressed Move button of the moved step (the step's other one when it turned
+// grey), and "Step N of M" is said in a polite region. The words and the focus rule
+// are the creation editor's own, shared (app/src/ui/StepMoves.jsx), so these cases
+// and CreationStructure.test.jsx's hold one copy.
+describe('the pen keeps focus on the moved step and says where it went (sketch 017, slice 1)', () => {
+  // The animation frames the pen asked for and has not yet been given, by id.
+  let frames = new Map();
+  let nextFrame = 0;
+
+  beforeEach(() => {
+    frames = new Map();
+    nextFrame = 0;
+    vi.spyOn(globalThis, 'requestAnimationFrame').mockImplementation((callback) => {
+      nextFrame += 1;
+      frames.set(nextFrame, callback);
+      return nextFrame;
+    });
+    vi.spyOn(globalThis, 'cancelAnimationFrame').mockImplementation((id) => {
+      frames.delete(id);
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  // The page asked for frames since the last call: run them, as a browser would.
+  async function nextFrames() {
+    const due = [...frames.values()];
+    frames = new Map();
+    await act(async () => {
+      for (const callback of due) callback(0);
+    });
+  }
+
+  const wordOf = (tab) => {
+    const found = region(tab).querySelectorAll('.visually-hidden[role="status"][aria-live="polite"]');
+    expect(found).toHaveLength(1);
+    return found[0].textContent;
+  };
+  const focusedLabel = () => document.activeElement?.getAttribute('aria-label') ?? null;
+  const acts = (li) => [...li.querySelectorAll('p.method-step__acts button')].map((b) => b.textContent.trim());
+
+  it('F1: focus stays on the pressed button of the moved step, and the word is said on the next frame', async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+
+    await press(tab, 'Step 4, move up');
+    expect(focusedLabel()).toBe('Step 3, move up');
+    expect(stepItems(tab)[2].contains(document.activeElement)).toBe(true);
+    expect(wordOf(tab)).toBe('');
+    await nextFrames();
+    expect(wordOf(tab)).toBe('Step 3 of 5');
+
+    await press(tab, 'Step 3, move up');
+    expect(wordOf(tab)).toBe('');
+    expect(focusedLabel()).toBe('Step 2, move up');
+    await nextFrames();
+    expect(wordOf(tab)).toBe('Step 2 of 5');
+  });
+
+  it('F2: at an end the focus goes to the step\'s other Move button, and a grey press does nothing', async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+    await press(tab, 'Step 4, move up');
+    await press(tab, 'Step 3, move up');
+    await nextFrames();
+
+    await press(tab, 'Step 2, move up');
+    expect(order(tab)).toEqual(['Sweeten', 'Steep', 'Strain', 'Rest', 'Churn']);
+    expect(control(tab, 'Step 1, move up').classList.contains('mk-off')).toBe(true);
+    expect(focusedLabel()).toBe('Step 1, move down');
+    await nextFrames();
+    expect(wordOf(tab)).toBe('Step 1 of 5');
+
+    const asked = nextFrame;
+    await press(tab, 'Step 1, move up');
+    expect(order(tab)).toEqual(['Sweeten', 'Steep', 'Strain', 'Rest', 'Churn']);
+    expect(focusedLabel()).toBe('Step 1, move down');
+    expect(wordOf(tab)).toBe('Step 1 of 5');
+    expect(nextFrame).toBe(asked);
+
+    await press(tab, 'Step 4, move down');
+    expect(order(tab)).toEqual(['Sweeten', 'Steep', 'Strain', 'Churn', 'Rest']);
+    expect(control(tab, 'Step 5, move down').classList.contains('mk-off')).toBe(true);
+    expect(focusedLabel()).toBe('Step 5, move up');
+    await nextFrames();
+    expect(wordOf(tab)).toBe('Step 5 of 5');
+  });
+
+  it('F3: a removed step offers Edit this step and Restore, and one press passes it', async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+
+    await press(tab, 'Step 3, remove');
+    const rest = stepItems(tab)[2];
+    expect(acts(rest)).toEqual(['Edit this step', 'Restore']);
+    expect(control(tab, 'Step 2, move down').classList.contains('mk-off')).toBe(false);
+    expect(region(tab).querySelectorAll('button')).toHaveLength(18);
+
+    await press(tab, 'Step 3, move up');
+    expect(order(tab)).toEqual(['Steep', 'Sweeten', 'Strain', 'Rest', 'Churn']);
+    expect(numbers(tab)).toEqual(['1', '2', '3', '', '4']);
+    await nextFrames();
+    expect(wordOf(tab)).toBe('Step 2 of 4');
+
+    const restButton = [...stepItems(tab)[3].querySelectorAll('button')].find((b) => b.textContent.trim() === 'Restore');
+    await click(restButton);
+    expect(numbers(tab)).toEqual(['1', '2', '3', '4', '5']);
+    expect(order(tab)).toEqual(['Steep', 'Sweeten', 'Strain', 'Rest', 'Churn']);
+    expect(acts(stepItems(tab)[3])).toEqual(['Edit this step', 'Move up', 'Move down', 'Remove']);
+  });
+
+  it('F4: an open step has no Move and stays open while another step moves past it', async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+
+    await press(tab, 'Step 2, edit this step');
+    const open = () => region(tab).querySelector('#method-step-2');
+    expect(open().querySelector('[aria-label$=", move up"], [aria-label$=", move down"]')).toBeNull();
+    expect(open().querySelector('.method-step__body').lastElementChild.classList.contains('method-step__done-cancel')).toBe(true);
+    expect(region(tab).querySelectorAll('button[aria-label$=", move up"]')).toHaveLength(4);
+
+    await press(tab, 'Step 4, move up');
+    expect(order(tab)).toEqual(['Steep', 'Strain', 'Sweeten', 'Rest', 'Churn']);
+    expect(field(tab, 'Step 2, lead-in')).not.toBeNull();
+
+    await press(tab, 'Step 3, move up');
+    expect(order(tab)).toEqual(['Steep', 'Sweeten', 'Strain', 'Rest', 'Churn']);
+    const lead = field(tab, 'Step 3, lead-in');
+    expect(lead).not.toBeNull();
+    await type(lead, 'Strained');
+    const cancel = [...open().querySelectorAll('button')].find((b) => b.textContent.trim() === 'Cancel');
+    await click(cancel);
+    expect(order(tab)).toEqual(['Steep', 'Sweeten', 'Strain', 'Rest', 'Churn']);
+    expect(field(tab, 'Step 3, lead-in')).toBeNull();
+  });
+
+  it('F5: one live step has both Moves grey and doing nothing; none live has no Move', async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+    for (let i = 0; i < 4; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await press(tab, 'Step 1, remove');
+    }
+    for (const label of ['Step 1, move up', 'Step 1, move down']) {
+      const grey = control(tab, label);
+      expect(grey.classList.contains('mk-off')).toBe(true);
+      expect(grey.getAttribute('aria-disabled')).toBe('true');
+    }
+    const before = order(tab);
+    const asked = nextFrame;
+    await press(tab, 'Step 1, move up');
+    await press(tab, 'Step 1, move down');
+    expect(order(tab)).toEqual(before);
+    expect(nextFrame).toBe(asked);
+
+    await press(tab, 'Step 1, remove');
+    expect(region(tab).querySelectorAll('button[aria-label$=", move up"], button[aria-label$=", move down"]')).toHaveLength(0);
   });
 });

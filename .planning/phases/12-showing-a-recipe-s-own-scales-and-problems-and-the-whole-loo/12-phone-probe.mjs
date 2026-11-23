@@ -9,8 +9,11 @@
 // Mode `page` (the only mode so far), one browser context so IndexedDB lives across routes:
 //   1366  make and save a first version through the built editor, open its Edit and type a change so an
 //         edit is kept, then start a second recipe so a create draft is kept; dump the drafts store.
-//   393   /notebook/new and the saved version's /edit each show .list-page.place with its title and
-//         "Done at the desk or on the iPad.", no control in the page, and the drafts dump is unchanged.
+//   393   /notebook/new and the saved version's /edit each show .list-page.place with its title and the
+//         kept work's own sentence (CONTRACT section 12, quick 261123-brl): "Draft: Chocolate. Finish it in a
+//         wider window." and "Edit kept. Finish it in a wider window."; no control in the page, except the
+//         Edit page's one link in p.place__for ("Vanilla · Version 1", to the version's own address); and the
+//         drafts dump is unchanged, which is this probe's proof that the page writes nothing.
 //   724 and 1366  both addresses show the editor.
 //   crossing  at 1366 type, and before the 250 ms debounce passes narrow to 393: the page shows, the
 //         stored draft holds what was typed (awaited), and at 1366 again the field holds it. For the
@@ -72,7 +75,6 @@ if (!existsSync(PLAYWRIGHT_CORE)) {
 }
 const { webkit } = await import(PLAYWRIGHT_CORE);
 
-const LINE = 'Done at the desk or on the iPad.';
 const MILK = 'Whole milk, 3.5% fat';
 const SUGAR = 'Sucrose';
 const SAVE_BUTTON = '.notebook-ceremony__actions .notebook-action:not(.notebook-action--outline)';
@@ -210,14 +212,24 @@ try {
       ['/notebook/new', 'New recipe'],
       [editAddress, 'Edit'],
     ];
+    // What each address shows at 393 (the setup kept a create draft named Chocolate and an edit on Vanilla's
+    // version): its note, and the one link the Edit page holds.
+    const expected = {
+      '/notebook/new': { note: 'Draft: Chocolate. Finish it in a wider window.', link: null },
+      [editAddress]: {
+        note: 'Edit kept. Finish it in a wider window.',
+        link: { text: 'Vanilla · Version 1', href: editAddress.replace(/\/edit$/, '') },
+      },
+    };
 
-    // ---- 393: the one-line page, no control, the drafts store unchanged ----
+    // ---- 393: the one-line page, no control but the Edit page's link, the drafts store unchanged ----
     await page.setViewportSize({ width: 393, height: 852 });
     for (const [address, title] of addresses) {
-      await check(`${address} at 393 shows "${title}" and "${LINE}", no control, drafts unchanged`, async () => {
+      const want = expected[address];
+      await check(`${address} at 393 shows "${title}" and "${want.note}", ${want.link ? 'one link line' : 'no control'}, drafts unchanged`, async () => {
         const before = JSON.stringify(await dumpDrafts(page));
         await page.goto(servers.appUrl + address, { waitUntil: 'load' });
-        await page.waitForSelector('.list-page.place');
+        await page.waitForSelector('p.place__note');
         await settle();
         await page.waitForTimeout(600);
         const seen = await page.evaluate(
@@ -228,18 +240,31 @@ try {
               title: place?.querySelector('h1.place__title')?.textContent ?? null,
               note: place?.querySelector('p.place__note')?.textContent ?? null,
               controls: root ? [...root.querySelectorAll('button, textarea, input, select, a')].map((node) => node.tagName.toLowerCase()) : ['no main'],
+              links: [...document.querySelectorAll('.list-page.place a')].map((node) => ({
+                text: node.textContent,
+                href: new URL(node.href).pathname,
+                inFor: node.parentElement?.matches('p.place__for') ?? false,
+              })),
               editor: document.querySelectorAll('.ingredient-table-region, form[aria-label="Edit version"]').length,
             };
           },
           [MAIN],
         );
         if (seen.title !== title) throw new Error(`the title reads ${JSON.stringify(seen.title)}`);
-        if (seen.note !== LINE) throw new Error(`the line reads ${JSON.stringify(seen.note)}`);
-        if (seen.controls.length > 0) throw new Error(`the page holds controls: ${seen.controls.join(', ')}`);
+        if (seen.note !== want.note) throw new Error(`the line reads ${JSON.stringify(seen.note)}`);
+        if (want.link === null) {
+          if (seen.controls.length > 0) throw new Error(`the page holds controls: ${seen.controls.join(', ')}`);
+        } else {
+          if (seen.controls.length !== 1 || seen.controls[0] !== 'a') throw new Error(`the page holds ${JSON.stringify(seen.controls)}, not one link`);
+          const [link] = seen.links;
+          if (!link || !link.inFor) throw new Error('the one link is not inside p.place__for');
+          if (link.text !== want.link.text) throw new Error(`the link reads ${JSON.stringify(link.text)}`);
+          if (link.href !== want.link.href) throw new Error(`the link goes to ${link.href}, not ${want.link.href}`);
+        }
         if (seen.editor !== 0) throw new Error('an editor is mounted');
         const after = JSON.stringify(await dumpDrafts(page));
         if (after !== before) throw new Error('the drafts store changed');
-        return 'title, line, no control, drafts dump identical';
+        return 'title, line, controls as drawn, drafts dump identical';
       });
     }
 
@@ -299,7 +324,7 @@ try {
       for (const [address] of addresses) {
         await check(`${address} at ${width} has no sideways overflow`, async () => {
           await page.goto(servers.appUrl + address, { waitUntil: 'load' });
-          await page.waitForSelector('.list-page.place');
+          await page.waitForSelector('p.place__note');
           await settle();
           const sizes = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, inner: innerWidth }));
           if (sizes.scroll > sizes.inner) throw new Error(`scrollWidth ${sizes.scroll} is above innerWidth ${sizes.inner}`);

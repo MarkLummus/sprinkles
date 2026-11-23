@@ -2721,6 +2721,11 @@ describe('Add ingredient on a row lands the pick right after it (STRUCT-05, D-09
       names: [...tbody.querySelectorAll('td.ingredient-table__col-name')].map((cell) => cell.firstChild.textContent),
     }));
 
+  // A row of the table by its accessible name, and the one row the picker stands in (CONTRACT section 13).
+  const rowOf = (name) => [...root().querySelectorAll('.ingredient-table tbody tr')].find((tr) => (tr.getAttribute('aria-label') ?? '').startsWith(`${name},`));
+  const pickRow = () => root().querySelector('tr.ingredient-table__pick');
+  const pickLabel = () => root().querySelector('div.pick').getAttribute('aria-label');
+
   async function pickFromPicker(name) {
     const row = [...root().querySelectorAll('.pick__row')].find((node) => node.querySelector('.pick__name').textContent === name);
     await click(row);
@@ -2755,6 +2760,24 @@ describe('Add ingredient on a row lands the pick right after it (STRUCT-05, D-09
     expect(root().querySelector('.ingredient-table-region .pick')).not.toBeNull();
     expect(headingAdd()).toBeNull();
     expect(document.activeElement).toBe(pickerName());
+    // The picker is the next row of the table, inside the opener's step body (CONTRACT section 13).
+    expect(rowOf(SUGAR).nextElementSibling).toBe(pickRow());
+    expect(pickRow().closest('tbody').querySelector('tr.ingredient-table__step-head').textContent).toBe('Step 1');
+    expect(pickRow().children).toHaveLength(1);
+    expect(pickRow().firstElementChild.tagName).toBe('TD');
+    expect(pickRow().firstElementChild.colSpan).toBe(3);
+    expect(pickRow().firstElementChild.children).toHaveLength(1);
+    expect(pickRow().firstElementChild.firstElementChild).toBe(root().querySelector('div.pick'));
+    expect(pickRow().nextElementSibling).toBe(rowOf(MILK));
+    expect(root().querySelectorAll('.pick')).toHaveLength(1);
+    expect(root().querySelector('.ingredient-table-region > .pick')).toBeNull();
+    expect(pickLabel()).toBe('Add ingredient after Sucrose, in step 1');
+    expect([...root().querySelector('div.pick').children].map((node) => `${node.tagName.toLowerCase()}.${node.className}`)).toEqual([
+      'div.pick__head',
+      'form.ing__filters',
+      'div.ing__status',
+      'ul.pick__list',
+    ]);
     await pickFromPicker(DEXTROSE);
     expect(root().querySelector('.pick')).toBeNull();
     expect(groups()).toEqual([
@@ -2778,12 +2801,47 @@ describe('Add ingredient on a row lands the pick right after it (STRUCT-05, D-09
   it("an unplaced row's Add ingredient lands the pick right after it, in no step", async () => {
     await seed();
     await click(rowAdd(CREAM));
+    expect(rowOf(CREAM).nextElementSibling).toBe(pickRow());
+    expect(pickRow().nextElementSibling).toBe(rowOf(SALT));
+    expect(pickRow().closest('tbody').querySelector('tr.ingredient-table__step-head').textContent).toBe('Not in a step yet');
+    expect(pickLabel()).toBe('Add ingredient after Heavy cream, 36% fat, not in a step yet');
     await pickFromPicker(DEXTROSE);
     expect(groups()).toEqual([
       { head: 'Step 1', names: [SUGAR, MILK] },
       { head: 'Not in a step yet', names: [CREAM, DEXTROSE, SALT] },
     ]);
     expect(document.activeElement).toBe(gramsField(DEXTROSE));
+  });
+
+  it("a split row's line: the picker follows that line inside its own step, and the pick lands right after it", async () => {
+    await seed();
+    await click(field('Step 1, Add step after it'));
+    await click(field('Step 2, change ingredients'));
+    await click(usesBox(2, SUGAR));
+    await click(field('Step 2, done'));
+    await click(root().querySelector('button[aria-label="Add ingredient after Sucrose in step 2"]'));
+    const step2 = [...root().querySelectorAll('.ingredient-table tbody')].find(
+      (tbody) => tbody.querySelector('tr.ingredient-table__step-head')?.textContent.startsWith('Step 2'),
+    );
+    expect(pickRow().closest('tbody')).toBe(step2);
+    expect(pickRow().previousElementSibling.getAttribute('data-line').endsWith(':2')).toBe(true);
+    expect(pickLabel()).toBe('Add ingredient after Sucrose, in step 2');
+    await pickFromPicker(DEXTROSE);
+    expect(groups()[1].names).toEqual([SUGAR, DEXTROSE]);
+  });
+
+  it('a recipe with no step: the picker follows the row in the one body, named without step words', async () => {
+    await startVanilla();
+    await pickFromHeading(SUGAR);
+    await pickFromHeading(MILK);
+    await click(rowAdd(SUGAR));
+    expect(root().querySelectorAll('.ingredient-table tbody')).toHaveLength(1);
+    expect(pickRow().closest('tbody').querySelector('tr.ingredient-table__step-head')).toBeNull();
+    expect(rowOf(SUGAR).nextElementSibling).toBe(pickRow());
+    expect(pickRow().nextElementSibling).toBe(rowOf(MILK));
+    expect(pickLabel()).toBe('Add ingredient after Sucrose');
+    await pickFromPicker(DEXTROSE);
+    expect(groups()).toEqual([{ head: null, names: [SUGAR, DEXTROSE, MILK] }]);
   });
 
   it("the heading's Add ingredient still adds a row in no step, at the end", async () => {
@@ -2796,15 +2854,18 @@ describe('Add ingredient on a row lands the pick right after it (STRUCT-05, D-09
     expect(document.activeElement).toBe(gramsField(DEXTROSE));
   });
 
-  it("while the picker is open another row's Add ingredient moves the landing place, keeps the picker open and puts focus in Name", async () => {
+  it("while the picker is open another row's Add ingredient moves the picker after that row, keeps it open and puts focus in Name", async () => {
     await seed();
     await click(rowAdd(SUGAR));
-    const picker = root().querySelector('.pick');
     expect(rowAdd(MILK)).not.toBeNull();
     gramsField(SUGAR).focus();
     expect(document.activeElement).toBe(gramsField(SUGAR));
     await click(rowAdd(CREAM));
-    expect(root().querySelector('.pick')).toBe(picker);
+    // The picker moves to stand after the other row: one picker, drawn anew there (CONTRACT section 13).
+    expect(root().querySelectorAll('.pick')).toHaveLength(1);
+    expect(rowOf(CREAM).nextElementSibling).toBe(pickRow());
+    expect(rowOf(SUGAR).nextElementSibling).toBe(rowOf(MILK));
+    expect(pickLabel()).toBe('Add ingredient after Heavy cream, 36% fat, not in a step yet');
     expect(document.activeElement).toBe(pickerName());
     await pickFromPicker(DEXTROSE);
     expect(groups()).toEqual([
@@ -2818,6 +2879,11 @@ describe('Add ingredient on a row lands the pick right after it (STRUCT-05, D-09
     await click(rowAdd(MILK));
     await click(pickerCancel());
     expect(root().querySelector('.pick')).toBeNull();
+    expect(pickRow()).toBeNull();
+    expect(groups()).toEqual([
+      { head: 'Step 1', names: [SUGAR, MILK] },
+      { head: 'Not in a step yet', names: [CREAM, SALT] },
+    ]);
     expect(document.activeElement).toBe(rowAdd(MILK));
     await click(headingAdd());
     await click(pickerCancel());
@@ -2926,6 +2992,7 @@ describe('Add ingredient on a row lands the pick right after it (STRUCT-05, D-09
       });
       await keydown(gramsField(CREAM), { metaKey: true });
       expect(root().querySelector('.pick')).not.toBeNull();
+      expect(rowOf(CREAM).nextElementSibling).toBe(pickRow());
       expect(document.activeElement).toBe(pickerName());
       await click(root().querySelector('tr[aria-label^="Heavy cream,"] [data-act="add-to-step"]'));
       await click(root().querySelector('tr[aria-label^="Heavy cream,"] [data-act="choose-1"]'));

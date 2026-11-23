@@ -40,6 +40,15 @@ Authority: these boards, CSS included. Conformance is the board and the built ap
 | `decide-p12-desk-line-words` | Sid proposes new words and draws two states (work kept, nothing kept); a `/gsd-quick` follows his approval. |
 | `decide-p12-picker-says-where` | Sid draws the picker heading naming the landing place; a `/gsd-quick` follows his approval. |
 
+## Mark's answers on the round-two redraws (2026-11-23)
+
+| Where | Answer |
+|-------|--------|
+| `decide-p12-desk-line-closing-words` | B: the closing words are "in a wider window". No word against the Edit page naming its recipe as a link, so that stands as drawn. |
+| `decide-p12-pen-target-required-place` | Sid draws the refused target chip; a `/gsd-quick` follows his approval. |
+| `look-p12-home-held-draft` | Not approved yet. Mark's note: "1 & 2 - keep these open til I hear back on 3 & 4. 3. Opens version 4 for editing on the phone? 4. I want the sentence on the row too." |
+| `look-p12-picker-says-where` | Not approved. Mark's note: "I wanna push back on this. Why are we pushing the row off the screen? Why not insert the ingredient picker after the row and shift the non-needed rows off screen?" |
+
 ## What is here
 
 | File | Canvas board (page "Phase 12 entry points, pen preview and row controls (Gate 2)") | What it draws | Mark's List |

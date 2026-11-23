@@ -807,7 +807,7 @@ describe('VersionRow — below 724 the band holds the record act and Print sheet
     const markup = renderVersionRow({ below724: true, batches: [], editState: 'editing' });
     expect(actLabels(markup)).toEqual(['Print sheet']);
     expect(drafts(markup)).toEqual([
-      '<p class="notebook-version__draft">Edit kept. Finish it at the desk or on the iPad.</p>',
+      '<p class="notebook-version__draft">Edit kept. Finish it in a wider window.</p>',
     ]);
     expect(markup).toMatch(/<\/h2><p class="notebook-version__draft">Edit kept\./);
   });
@@ -823,7 +823,7 @@ describe('VersionRow — below 724 the band holds the record act and Print sheet
     const markup = renderVersionRow({ below724: true, batches: [augustSecondBatch], ownDraft, planHeld: true });
     expect(actLabels(markup)).toEqual(['Print sheet']);
     expect(drafts(markup)).toEqual([
-      '<p class="notebook-version__draft">Draft: Version 2 · less cream. Finish it at the desk or on the iPad.</p>',
+      '<p class="notebook-version__draft">Draft: Version 2 · less cream. Finish it in a wider window.</p>',
     ]);
     expect(markup).toMatch(/<\/h2><p class="notebook-version__draft">Draft: /);
   });
@@ -835,7 +835,7 @@ describe('VersionRow — below 724 the band holds the record act and Print sheet
       planHeld: true,
     });
     expect(drafts(blank)).toEqual([
-      '<p class="notebook-version__draft">Draft: Version 2. Finish it at the desk or on the iPad.</p>',
+      '<p class="notebook-version__draft">Draft: Version 2. Finish it in a wider window.</p>',
     ]);
     const hostile = renderVersionRow({
       below724: true,
@@ -856,7 +856,7 @@ describe('VersionRow — below 724 the band holds the record act and Print sheet
     const ownDraft = { versionId: oliveOilVersion.id, kind: 'plan', payload: { versionLabel: 'less cream' } };
     const markup = renderVersionRow({ below724: false, ownDraft });
     expect(markup).not.toContain('notebook-version__draft');
-    expect(markup).not.toContain('Finish it at the desk');
+    expect(markup).not.toContain('Finish it in a wider window');
   });
 
   it('another version\'s waiting draft keeps the record act and reads the linked sentence (Test R)', () => {
@@ -870,7 +870,7 @@ describe('VersionRow — below 724 the band holds the record act and Print sheet
     expect(actLabels(markup)).toEqual(['Record another', 'Print sheet']);
     const [line] = drafts(markup);
     expect(line).toMatch(
-      /^<p class="notebook-version__draft">Draft: <a [^>]*href="\/notebook\/olive-oil-ice-cream\/olive-oil-ice-cream-v2"[^>]*>Version 3 · 40 g oil<\/a>\. Finish it at the desk or on the iPad\.<\/p>$/,
+      /^<p class="notebook-version__draft">Draft: <a [^>]*href="\/notebook\/olive-oil-ice-cream\/olive-oil-ice-cream-v2"[^>]*>Version 3 · 40 g oil<\/a>\. Finish it in a wider window\.<\/p>$/,
     );
     expect(drafts(markup)).toHaveLength(1);
   });

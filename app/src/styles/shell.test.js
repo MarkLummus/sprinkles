@@ -410,7 +410,7 @@ describe('one App radius on every place, the active rail place in weight 600 (sk
     expect(rule.declarations).not.toMatch(/font-weight/);
   });
 
-  test("only the places' rails, name link, Clear filters and row heads (plan 09-03: the boards round them), .shell__sprinkle, .shell__place, the menu button and the wordmark link declare a border-radius (the last two on the App control radius so their focus rings follow it, decision 47 (8)), nothing in the phone block declares a radius, and the phone block's one weight is the active tab's", () => {
+  test("only the places' rails, name link, Clear filters and row heads (plan 09-03: the boards round them), the Edit page's link back, .shell__sprinkle, .shell__place, the menu button and the wordmark link declare a border-radius (the last two on the App control radius so their focus rings follow it, decision 47 (8)), nothing in the phone block declares a radius, and the phone block's one weight is the active tab's", () => {
     const radiused = rules.filter((r) => /(^|[\s;])border-radius\s*:/.test(r.declarations));
     expect(radiused.map((r) => r.selector).sort()).toEqual([
       '.place .ing__clear',
@@ -418,6 +418,7 @@ describe('one App radius on every place, the active rail place in weight 600 (sk
       '.place .ing__rail',
       '.place .nb__name a',
       '.place .nb__rail',
+      '.place__for a',
       '.shell__brand a',
       '.shell__import-errors',
       '.shell__menu',
@@ -430,6 +431,8 @@ describe('one App radius on every place, the active rail place in weight 600 (sk
     for (const selector of ['.place .ing__rail', '.place .nb__rail']) {
       expect(radiused.find((r) => r.selector === selector).declarations).toMatch(/border-radius:\s*var\(--app-radius-rail\)/);
     }
+    // The Edit page's link back (sketch 016 CONTRACT section 12): the control radius, so its focus ring follows it.
+    expect(radiused.find((r) => r.selector === '.place__for a').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
     expect(radiused.find((r) => r.selector === '.shell__import-errors').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
     expect(radiused.find((r) => r.selector === '.shell__brand a').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
     expect(radiused.find((r) => r.selector === '.shell__menu').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);

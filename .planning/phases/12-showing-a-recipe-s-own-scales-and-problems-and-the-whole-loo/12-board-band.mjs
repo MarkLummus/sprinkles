@@ -8,15 +8,22 @@
 //     matches nothing on any panel (the record act is `button.notebook-action`);
 //   - a version that can be edited reads as any not yet churned version does (no Edit);
 //   - a kept edit holds the Print sheet link alone under one line right after the identity heading,
-//     "Edit kept. Finish it at the desk or on the iPad."; a kept Next version draft the same, under
-//     "Draft: Version 2 · less cream. Finish it at the desk or on the iPad." (no record act, no button);
+//     "Edit kept. Finish it in a wider window."; a kept Next version draft the same, under
+//     "Draft: Version 2 · less cream. Finish it in a wider window." (no record act, no button);
 //   - the band does not scroll sideways at 393 or at 723 (extraWidths), 723 being the widest phone width.
 // Panels (the "Drawn" ones; the three "As built" panels are not targets): band-tasted, band-awaiting,
 // band-none and band-tasted-723 on the seed's own routes (the three standings, p12g2-capture.mjs), and
-// band-editable, band-editing and band-draft on a recipe the steps make through the built editor at 1366
+// band-editable on a recipe the steps make through the built editor at 1366
 // (Coffee, "Strong and cold.": the creation editor, Save; then Edit with a description typed, or Next
 // version with a version name typed, each kept for 1.3 s), the route then loaded again at the panel's own
-// width so RecipePage mounts below 724 with the draft in the store. The board's words are Sid's or the
+// width so RecipePage mounts below 724 with the draft in the store.
+//
+// Two boards (quick 261123-brl, Mark's answer to decide-p12-desk-line-closing-words, 2026-11-23): the
+// first five panels are held against recipe-head-below-724.html as before. band-editing and band-draft
+// drew the superseded closing words, so they leave that board; the decided
+// snapshot desk-line-words.html draws the same two states with the decided words as dl-head-edit and
+// dl-head-draft, and the second spec holds them there with the same checks (line, buttons absent). The
+// helpers the one-line page's Edit steps need (12-board-places.mjs) are exported. The board's words are Sid's or the
 // seed's and are read from the panels by the engine, never retyped here; only the words typed into the
 // built app (the recipe's name and description, the version name) are written here, as the board shows them.
 //
@@ -32,13 +39,14 @@
 // Every result is Playwright WebKit on a Mac: device-unverified.
 
 const BOARD = '.planning/sketches/016-entry-points-pen-preview-row-controls/recipe-head-below-724.html';
+const DECIDED_BOARD = '.planning/sketches/016-entry-points-pen-preview-row-controls/desk-line-words.html';
 
 const WIN = (pid, width = 393) => `.fp-win.g2w-${width}[data-pid="${pid}"]`;
 
 const SAVE_BUTTON = '.notebook-ceremony__actions .notebook-action:not(.notebook-action--outline)';
 const NAME_FIELD = 'textarea[aria-label="Version name"]';
-const KEEP_MS = 1300;
-const DESK = { width: 1366, height: 1024 };
+export const KEEP_MS = 1300;
+export const DESK = { width: 1366, height: 1024 };
 
 // The seed's own routes for the three standings (p12g2-capture.mjs's out.routes).
 const ROUTES = {
@@ -49,7 +57,7 @@ const ROUTES = {
 
 // A first version made and saved through the built editor at 1366, as p12g2-capture.mjs does. A first
 // click on a fresh route can miss, so a click is repeated until its outcome shows.
-async function clickUntil(page, locator, selector) {
+export async function clickUntil(page, locator, selector) {
   for (let attempt = 0; attempt < 6; attempt += 1) {
     await locator().first().click();
     try {
@@ -62,7 +70,7 @@ async function clickUntil(page, locator, selector) {
   throw new Error(`never appeared: ${selector}`);
 }
 
-async function visit(page, origin, route, selector) {
+export async function visit(page, origin, route, selector) {
   await page.goto(origin + route, { waitUntil: 'load' });
   await page.waitForSelector(selector);
   await page.evaluate(() => document.fonts.ready);
@@ -80,7 +88,7 @@ async function addIngredient(page, name, grams) {
 }
 
 // Coffee saved at 1366; returns the version's own address.
-async function makeCoffee(page, origin) {
+export async function makeCoffee(page, origin) {
   await visit(page, origin, '/notebook', '.nb__head');
   await clickUntil(page, () => page.locator('.nb__head .notebook-action'), '.nb__new textarea');
   await page.fill('.nb__new textarea', 'Coffee');
@@ -157,17 +165,24 @@ function bandPanel({ pid, width = 393, route, steps, line, buttonsAbsent }) {
   return panel;
 }
 
-export default {
-  board: BOARD,
-  panels: [
-    bandPanel({ pid: 'band-tasted', route: ROUTES.tasted }),
-    bandPanel({ pid: 'band-awaiting', route: ROUTES.awaiting }),
-    bandPanel({ pid: 'band-none', route: ROUTES.none }),
-    bandPanel({ pid: 'band-tasted-723', width: 723, route: ROUTES.tasted }),
-    // The three kept-work panels arrive at '/' and make their own state in steps (the version's address is
-    // known only once it is saved), then load that address again at the panel's width.
-    bandPanel({ pid: 'band-editable', route: '/', steps: keptSteps(null) }),
-    bandPanel({ pid: 'band-editing', route: '/', steps: keptSteps('edit'), line: true, buttonsAbsent: true }),
-    bandPanel({ pid: 'band-draft', route: '/', steps: keptSteps('plan'), line: true, buttonsAbsent: true }),
-  ],
-};
+export default [
+  {
+    board: BOARD,
+    panels: [
+      bandPanel({ pid: 'band-tasted', route: ROUTES.tasted }),
+      bandPanel({ pid: 'band-awaiting', route: ROUTES.awaiting }),
+      bandPanel({ pid: 'band-none', route: ROUTES.none }),
+      bandPanel({ pid: 'band-tasted-723', width: 723, route: ROUTES.tasted }),
+      // The kept-work panels arrive at '/' and make their own state in steps (the version's address is
+      // known only once it is saved), then load that address again at the panel's width.
+      bandPanel({ pid: 'band-editable', route: '/', steps: keptSteps(null) }),
+    ],
+  },
+  {
+    board: DECIDED_BOARD,
+    panels: [
+      bandPanel({ pid: 'dl-head-edit', route: '/', steps: keptSteps('edit'), line: true, buttonsAbsent: true }),
+      bandPanel({ pid: 'dl-head-draft', route: '/', steps: keptSteps('plan'), line: true, buttonsAbsent: true }),
+    ],
+  },
+];

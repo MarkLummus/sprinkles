@@ -317,6 +317,120 @@ describe('penSaveBlock', () => {
   });
 });
 
+// bug-pen-saves-blank-lead-in: the pen's gate refuses what the creation editor refuses,
+// a blank lead-in, a blank instruction and a target with one side blank, on live steps
+// only, with the same word.
+describe('penSaveBlock: the steps (bug-pen-saves-blank-lead-in)', () => {
+  function stepDraft() {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    const step = (n) => draft.method.find((s) => s.n === n);
+    return { version, draft, step };
+  }
+
+  it('D1: a blank lead-in is refused with Required', () => {
+    const { version, draft, step } = stepDraft();
+    step(1).leadIn = '';
+    expect(penSaveBlock(draft, version, [])).toEqual({
+      message: 'Required',
+      target: { kind: 'stepLeadIn', n: 1 },
+    });
+  });
+
+  it('D2: a lead-in of spaces is refused the same way', () => {
+    const { version, draft, step } = stepDraft();
+    step(1).leadIn = '   ';
+    expect(penSaveBlock(draft, version, [])).toEqual({
+      message: 'Required',
+      target: { kind: 'stepLeadIn', n: 1 },
+    });
+  });
+
+  it('D3: a blank instruction is refused with Required', () => {
+    const { version, draft, step } = stepDraft();
+    step(3).instruction = '';
+    expect(penSaveBlock(draft, version, [])).toEqual({
+      message: 'Required',
+      target: { kind: 'stepInstruction', n: 3 },
+    });
+  });
+
+  it('D4: a target with one side blank names that side', () => {
+    const first = stepDraft();
+    first.step(1).targets[0].value = '';
+    expect(penSaveBlock(first.draft, first.version, [])).toEqual({
+      message: 'Required',
+      target: { kind: 'stepTarget', n: 1, index: 0, side: 'value' },
+    });
+    const second = stepDraft();
+    second.step(2).targets[1].label = '';
+    expect(penSaveBlock(second.draft, second.version, [])).toEqual({
+      message: 'Required',
+      target: { kind: 'stepTarget', n: 2, index: 1, side: 'label' },
+    });
+  });
+
+  it('D5: a target with both sides blank is not refused, as the creation gate does not', () => {
+    const { version, draft, step } = stepDraft();
+    step(1).targets[0].label = '';
+    step(1).targets[0].value = '';
+    expect(penSaveBlock(draft, version, [])).toBe(null);
+  });
+
+  it('D6: a removed step is not checked, live steps only as in the creation gate', () => {
+    const { version, draft, step } = stepDraft();
+    step(1).leadIn = '';
+    step(1).removed = true;
+    expect(penSaveBlock(draft, version, [])).toBe(null);
+  });
+
+  describe('D7: one thing at a time, in page order', () => {
+    it('the version line comes before a step', () => {
+      const { version, draft, step } = stepDraft();
+      draft.versionLabel = '';
+      step(1).leadIn = '';
+      expect(penSaveBlock(draft, version, []).target).toEqual({ kind: 'versionLine' });
+    });
+
+    it('a row amount comes before a step', () => {
+      const { version, draft, step } = stepDraft();
+      const row = version.rows[1];
+      draft.rows[row.id].portions[0].grams = '';
+      step(1).leadIn = '';
+      expect(penSaveBlock(draft, version, []).target).toEqual({
+        kind: 'row',
+        rowId: row.id,
+        index: 0,
+      });
+    });
+
+    it('the first step in method order comes first, whatever the field', () => {
+      const { version, draft, step } = stepDraft();
+      step(3).leadIn = '';
+      step(1).instruction = '';
+      expect(penSaveBlock(draft, version, []).target).toEqual({ kind: 'stepInstruction', n: 1 });
+    });
+
+    it('within a step: lead-in, then instruction, then target', () => {
+      const { version, draft, step } = stepDraft();
+      step(2).leadIn = '';
+      step(2).instruction = '';
+      step(2).targets[1].value = '';
+      expect(penSaveBlock(draft, version, []).target).toEqual({ kind: 'stepLeadIn', n: 2 });
+      step(2).leadIn = 'Slurry';
+      expect(penSaveBlock(draft, version, []).target).toEqual({ kind: 'stepInstruction', n: 2 });
+      step(2).instruction = 'Whisk.';
+      expect(penSaveBlock(draft, version, []).target).toEqual({
+        kind: 'stepTarget',
+        n: 2,
+        index: 1,
+        side: 'value',
+      });
+    });
+  });
+});
+
 describe('penFieldsFromDraft', () => {
   it('stores a reason of only whitespace as null, and keeps any other reason as typed', () => {
     const version = clone();

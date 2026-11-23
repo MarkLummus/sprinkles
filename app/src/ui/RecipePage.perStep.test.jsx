@@ -1215,3 +1215,171 @@ describe("Edit this step puts focus in the step's lead-in (bug-edit-this-step-fo
     expect(document.activeElement).toBe(buttonByLabel('Step 1, edit this step'));
   });
 });
+
+// Mark's List row bug-pen-saves-blank-lead-in: the pen stored a step whose lead-in or
+// instruction was blank, which the creation editor refuses with Required (Phase 11 D-10).
+// A refused Save opens the step it names, marks the field, stands Required after it and
+// moves focus into it, exactly as a blank amount does on a row.
+describe('bug-pen-saves-blank-lead-in: a step field the pen refuses', () => {
+  const field = (label) => current.container.querySelector(`textarea[aria-label="${label}"]`);
+  const errors = () => [...current.container.querySelectorAll('.field-error')];
+  const statusText = () => [...current.container.querySelectorAll('.form-status')].map((el) => el.textContent).join('');
+
+  async function penWithVersionName() {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await setValue(field('Version name'), 'v2');
+    return container;
+  }
+
+  // Required stands directly after the field, inside the field's own label, wired to it.
+  function expectRequiredAfter(label) {
+    const input = field(label);
+    expect(input).not.toBeNull();
+    expect(document.activeElement).toBe(input);
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    const found = errors();
+    expect(found).toHaveLength(1);
+    expect(found[0].textContent).toBe('Required');
+    expect(found[0].id).not.toBe('');
+    expect(input.getAttribute('aria-describedby')).toBe(found[0].id);
+    expect(input.nextElementSibling).toBe(found[0]);
+    expect(found[0].parentElement).toBe(input.closest('label'));
+  }
+
+  function expectNothingStored() {
+    expect(store.createVersion).not.toHaveBeenCalled();
+    expect(store.saveVersion).not.toHaveBeenCalled();
+  }
+
+  it('U1: a blank lead-in on a closed step opens the step, marks the field and stands Required after it', async () => {
+    const container = await penWithVersionName();
+    await click(buttonByLabel('Step 1, edit this step'));
+    const li = field('Step 1, lead-in').closest('li');
+    await setValue(field('Step 1, lead-in'), '');
+    await click(buttonByText(li, 'Done'));
+    expect(field('Step 1, lead-in')).toBeNull();
+
+    await click(buttonByText(container, 'Save as new version'));
+
+    expectNothingStored();
+    expectRequiredAfter('Step 1, lead-in');
+    expect(statusText()).toBe('');
+    expect(container.querySelector('#version-field-error')).toBeNull();
+  });
+
+  it('U2: Save over this version refuses a lead-in of spaces the same way', async () => {
+    const container = await penWithVersionName();
+    await click(buttonByLabel('Step 1, edit this step'));
+    await setValue(field('Step 1, lead-in'), '   ');
+
+    await click(buttonByText(container, 'Save over this version'));
+
+    expectNothingStored();
+    expectRequiredAfter('Step 1, lead-in');
+  });
+
+  it('U3: a blank instruction is refused, with Required after the instruction', async () => {
+    const container = await penWithVersionName();
+    await click(buttonByLabel('Step 1, edit this step'));
+    await setValue(field('Step 1, instruction'), '');
+
+    await click(buttonByText(container, 'Save as new version'));
+
+    expectNothingStored();
+    expectRequiredAfter('Step 1, instruction');
+  });
+
+  it('U4: a refused Save opens the step it names and closes the step that was open', async () => {
+    const container = await penWithVersionName();
+    await click(buttonByLabel('Step 1, edit this step'));
+    await setValue(field('Step 1, lead-in'), '');
+    await click(buttonByLabel('Step 3, edit this step'));
+    expect(field('Step 1, lead-in')).toBeNull();
+    expect(field('Step 3, lead-in')).not.toBeNull();
+
+    await click(buttonByText(container, 'Save as new version'));
+
+    expect(field('Step 3, lead-in')).toBeNull();
+    expectNothingStored();
+    expectRequiredAfter('Step 1, lead-in');
+  });
+
+  it('U5: typing one character removes Required, and the next Save stores what was typed', async () => {
+    const container = await penWithVersionName();
+    await click(buttonByLabel('Step 1, edit this step'));
+    await setValue(field('Step 1, lead-in'), '');
+    await click(buttonByText(container, 'Save as new version'));
+    expectRequiredAfter('Step 1, lead-in');
+
+    await setValue(field('Step 1, lead-in'), 'L');
+
+    expect(errors()).toHaveLength(0);
+    expect(field('Step 1, lead-in').hasAttribute('aria-invalid')).toBe(false);
+    expect(field('Step 1, lead-in').hasAttribute('aria-describedby')).toBe(false);
+
+    await click(buttonByText(current.container, 'Save as new version'));
+    await flush(() => store.createVersion.mock.calls.length > 0);
+
+    expect(store.createVersion).toHaveBeenCalledTimes(1);
+    const child = store.createVersion.mock.calls[0][0];
+    expect(child.method.find((step) => step.n === 1).leadIn).toBe('L');
+  });
+
+  it('U6: the pen still tells one thing at a time, the version name, then an amount, then a step', async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await click(buttonByLabel('Step 1, edit this step'));
+    await setValue(field('Step 1, lead-in'), '');
+
+    await click(buttonByText(container, 'Save as new version'));
+    expect(errors()).toHaveLength(1);
+    expect(container.querySelector('#version-field-error').textContent).toBe('Enter a version.');
+    expect(field('Step 1, lead-in').hasAttribute('aria-invalid')).toBe(false);
+
+    await setValue(field('Version name'), 'v2');
+    await setValue(field('Heavy cream, grams'), '');
+    await click(buttonByText(container, 'Save as new version'));
+    expect(errors()).toHaveLength(1);
+    expect(errors()[0].textContent).toBe('Heavy cream needs an amount, or remove it');
+    expect(field('Step 1, lead-in').hasAttribute('aria-invalid')).toBe(false);
+
+    expectNothingStored();
+  });
+});
+
+// The same row, for a target with one side blank. The word Required drawn under the blank
+// side turns the pen's one-line chip into two rows and no board draws that, so that held
+// part is not asserted here; what is asserted is that the save is refused and focus lands
+// in the blank field.
+describe('bug-pen-saves-blank-lead-in: a target with one side blank', () => {
+  const field = (label) => current.container.querySelector(`textarea[aria-label="${label}"]`);
+
+  async function refuseTargetSide(side) {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await setValue(field('Version name'), 'v2');
+    await click(buttonByLabel('Step 1, edit this step'));
+    await setValue(field(`Step 1, target 1, ${side}`), '');
+    await click(buttonByText(container, 'Save as new version'));
+  }
+
+  it('U7: a blank value is refused, nothing is stored, and focus is in the value field', async () => {
+    await refuseTargetSide('value');
+
+    expect(store.createVersion).not.toHaveBeenCalled();
+    expect(store.saveVersion).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(field('Step 1, target 1, value'));
+  });
+
+  it('U8: a blank label is refused, nothing is stored, and focus is in the label field', async () => {
+    await refuseTargetSide('label');
+
+    expect(store.createVersion).not.toHaveBeenCalled();
+    expect(store.saveVersion).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(field('Step 1, target 1, label'));
+  });
+});

@@ -5,7 +5,12 @@ import { displayNumberOf } from '../domain/stepNumbers.js';
 import { Button } from './Button.jsx';
 import { holdReturn, stripNewlines } from './oneLineField.js';
 import { Checkbox } from './Checkbox.jsx';
+import { FieldFeedback } from './FieldFeedback.jsx';
 import { StepAside, StepPurpose, StepReading, StepTargets } from './StepReading.jsx';
+
+// The id of a blocked step field's Required: one blocked step field at a time, as the
+// version line has 'version-field-error' and the table has 'ingredient-field-error'.
+const STEP_FIELD_ERROR_ID = 'step-field-error';
 
 function joinWithAnd(items) {
   if (items.length <= 1) return items[0] ?? '';
@@ -117,6 +122,10 @@ export function StepPenBody({
   onChangePenStepTarget,
   onTogglePenStepUses,
   onTogglePenStepRemoved,
+  // The refused Save's block when it names a field of this step, else null
+  // (bug-pen-saves-blank-lead-in), with its message.
+  blocked = null,
+  blockedMessage = null,
 }) {
   const showStruckBeneath = stepDiff.leadInChanged || stepDiff.instructionChanged;
   const showPurposeStruck = stepDiff.purposeChanged && stepDiff.textFrom.purpose !== '';
@@ -154,6 +163,27 @@ export function StepPenBody({
   useEffect(() => {
     if (isOpen) leadInRef.current?.focus();
   }, [isOpen]);
+  // A refused Save moves focus into the field it names. The step may open in the render after the
+  // refusal (Method's effect), so the attempt alone cannot key the focus: this runs when the step
+  // opens too, after the open effect above, and records the attempt it handled so a later Done and
+  // Edit this step keep the focus the open effect gives, in the lead-in. The target fields sit in a
+  // Map, never a bare object keyed by text (T-02-32), as IngredientTable's gramsInputsRef.
+  const instructionRef = useRef(null);
+  const targetFieldsRef = useRef(new Map());
+  const handledAttemptRef = useRef(null);
+  useEffect(() => {
+    if (!isOpen || !blocked || blocked.attempt === handledAttemptRef.current) return;
+    handledAttemptRef.current = blocked.attempt;
+    if (blocked.kind === 'stepLeadIn') leadInRef.current?.focus();
+    else if (blocked.kind === 'stepInstruction') instructionRef.current?.focus();
+    else if (blocked.kind === 'stepTarget') targetFieldsRef.current.get(`${blocked.index}:${blocked.side}`)?.focus();
+  }, [isOpen, blocked?.attempt]);
+  const leadError = blocked?.kind === 'stepLeadIn' ? blockedMessage : null;
+  const instructionError = blocked?.kind === 'stepInstruction' ? blockedMessage : null;
+  function registerTargetField(index, side, element) {
+    if (element) targetFieldsRef.current.set(`${index}:${side}`, element);
+    else targetFieldsRef.current.delete(`${index}:${side}`);
+  }
   const usesNames = rows.filter((row) => (draftStep.uses ?? []).includes(row.id)).sort((a, b) => draftStep.uses.indexOf(a.id) - draftStep.uses.indexOf(b.id)).map((row) => row.ingredientName);
 
   function handleUsesKeyDown(event) {
@@ -193,18 +223,25 @@ export function StepPenBody({
             ref={leadInRef}
             value={draftStep.leadIn}
             aria-label={fieldLabel(step, draftStep.removed, 'lead-in')}
+            aria-invalid={leadError ? 'true' : undefined}
+            aria-describedby={leadError ? STEP_FIELD_ERROR_ID : undefined}
             onChange={(event) => onChangePenStepField(step.n, 'leadIn', stripNewlines(event.target.value))}
             onKeyDown={holdReturn}
           />
+          <FieldFeedback error={leadError} errorId={STEP_FIELD_ERROR_ID} />
         </label>
         <label className="method-step__field">
           <textarea
             className="prose-field"
             rows="2"
+            ref={instructionRef}
             value={draftStep.instruction}
             aria-label={fieldLabel(step, draftStep.removed, 'instruction')}
+            aria-invalid={instructionError ? 'true' : undefined}
+            aria-describedby={instructionError ? STEP_FIELD_ERROR_ID : undefined}
             onChange={(event) => onChangePenStepField(step.n, 'instruction', event.target.value)}
           />
+          <FieldFeedback error={instructionError} errorId={STEP_FIELD_ERROR_ID} />
         </label>
         {/* The one place the strike sits below rather than beside
             the field, because a paragraph has no room beside
@@ -232,6 +269,7 @@ export function StepPenBody({
                     rows="1"
                     cols="20"
                     className="ink-field target-chip__label-field"
+                    ref={(element) => registerTargetField(index, 'label', element)}
                     value={target.label}
                     aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, label`)}
                     onChange={(event) => onChangePenStepTarget(step.n, index, 'label', stripNewlines(event.target.value))}
@@ -241,6 +279,7 @@ export function StepPenBody({
                     rows="1"
                     cols="20"
                     className="ink-field target-chip__value-field"
+                    ref={(element) => registerTargetField(index, 'value', element)}
                     value={target.value}
                     aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, value`)}
                     onChange={(event) => onChangePenStepTarget(step.n, index, 'value', stripNewlines(event.target.value))}
@@ -642,6 +681,11 @@ export function Method({
   // RecipePage.jsx's own restoreStepFromVersion, called with the stored
   // step key Method passes here.
   onRestorePenStep = () => {},
+  // A refused Save that names a step field (bug-pen-saves-blank-lead-in): the block
+  // { kind, n, index?, side?, attempt } and its message, or null. RecipeSheet passes
+  // them as it passes a row block to IngredientTable.
+  blockedStepTarget = null,
+  blockedStepMessage = null,
   // The two maps RecipePage computes once through domain/stepNumbers.js
   // (03-10): currentStepNumbers from the method this component is showing
   // (the draft's while developing, the version's own otherwise);
@@ -665,6 +709,12 @@ export function Method({
   useEffect(() => {
     if (!isDeveloping) setOpenStepN(null);
   }, [isDeveloping]);
+  // A refused Save opens the step it names, so its field can be marked and focused (the pen's
+  // D-21). A closed step draws no field. Opening closes any other open step with its edits kept,
+  // as Edit this step does.
+  useEffect(() => {
+    if (blockedStepTarget) setOpenStepN(blockedStepTarget.n);
+  }, [blockedStepTarget?.attempt]);
 
   function handleOpenStep(stepN) {
     setOpenStepN(stepN);
@@ -759,6 +809,8 @@ export function Method({
                   onChangePenStepTarget={onChangePenStepTarget}
                   onTogglePenStepUses={onTogglePenStepUses}
                   onTogglePenStepRemoved={onTogglePenStepRemoved}
+                  blocked={blockedStepTarget?.n === step.n ? blockedStepTarget : null}
+                  blockedMessage={blockedStepMessage}
                 />
               </li>
             );

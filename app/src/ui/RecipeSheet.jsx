@@ -82,6 +82,9 @@ export function RecipeSheet({
     comparisonBatchLabel,
   } = view;
   const { markedRowIds, markedFigureLabel, markedAnnouncement } = markedFigure(view, focusedFigureKey);
+  // A refused Save that names a step field goes to Method, as a row block goes to the table.
+  const isStepBlock =
+    blockedTarget?.kind === 'stepLeadIn' || blockedTarget?.kind === 'stepInstruction' || blockedTarget?.kind === 'stepTarget';
 
   // The values the two sections read, held once so each guard and its section
   // never read different ones (261003-9bz). Before you start is a section of its
@@ -215,6 +218,8 @@ export function RecipeSheet({
               onTogglePenStepUses={onTogglePenStepUses}
               onTogglePenStepRemoved={onTogglePenStepRemoved}
               onRestorePenStep={onRestorePenStep}
+              blockedStepTarget={isStepBlock ? blockedTarget : null}
+              blockedStepMessage={isStepBlock ? blockedMessage : null}
             />
           )}
         </section>

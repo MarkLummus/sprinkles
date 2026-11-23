@@ -235,6 +235,54 @@ export function gramsDraftMessage(ingredientName, raw) {
   return null;
 }
 
+// The one word a step's blank required field earns, in both editors (Phase 11
+// D-10): the creation gate (creationSaveBlock) and the version pen's gate
+// (blockedSaveMessage) read it here, so they cannot word it differently, as they
+// cannot word the grams sentences differently (gramsDraftMessage, D-08).
+export const REQUIRED = 'Required';
+
+function hasWords(value) {
+  return typeof value === 'string' && value.trim() !== '';
+}
+
+/**
+ * stepRequiredFields(step) -> the fields of one live step that hold no words,
+ * the one step rule both editors read (Phase 11 D-10). In this order: the
+ * lead-in as { kind: 'stepLeadIn', n }; the instruction as { kind:
+ * 'stepInstruction', n }; then, for each target by index where exactly one side
+ * has words, { kind: 'stepTarget', n, index, side } naming the blank side. A
+ * field has words when it is a string whose trimmed text is not empty, so a
+ * field of spaces is blank. A target with both sides blank is not listed: the
+ * creation editor drops it at Save instead of refusing it. It does not read
+ * `removed`; the caller passes live steps.
+ */
+export function stepRequiredFields(step) {
+  const { n } = step;
+  const fields = [];
+  if (!hasWords(step.leadIn)) fields.push({ kind: 'stepLeadIn', n });
+  if (!hasWords(step.instruction)) fields.push({ kind: 'stepInstruction', n });
+  (step.targets ?? []).forEach((target, index) => {
+    const labelBlank = !hasWords(target.label);
+    const valueBlank = !hasWords(target.value);
+    if (labelBlank === valueBlank) return;
+    fields.push({ kind: 'stepTarget', n, index, side: labelBlank ? 'label' : 'value' });
+  });
+  return fields;
+}
+
+// The first required step field that is blank, walking penFields.method in
+// order and skipping a step whose removed flag is exactly true (findBlockedRow's
+// rule for a removed step); null when none is. The one traversal
+// blockedSaveMessage and blockedSaveStepField read.
+function findBlockedStep(penFields) {
+  for (const step of penFields.method ?? []) {
+    if (step.removed === true) continue;
+    const [first] = stepRequiredFields(step);
+    if (first) return first;
+  }
+  return null;
+}
+
 /**
  * findBlockedRow(penFields, version) -> { row, index, message } for the first
  * row (in the version's own authored order) with a line in whose grams
@@ -277,7 +325,10 @@ function findBlockedRow(penFields, version) {
  * versionLineUnique; then, for the first row (in the version's own
  * authored order) that blocks — a blank grams field, or a grams field
  * holding anything that is not a non-negative number with up to two
- * decimals (critique P1 #3). `penFields` carries `versionLabel` (a
+ * decimals (critique P1 #3); then the first step field, in method order, that
+ * holds no words: a lead-in, an instruction, or a target with one side blank
+ * (REQUIRED). A removed step is not checked, as the creation gate checks live
+ * steps only. `penFields` carries `versionLabel` (a
  * string) and `rows` (a map keyed by row id holding { portions } — the
  * pen draft's own shape, `portions` an array of { grams, removed }
  * parallel to the stored row's own portions); a line the draft marks
@@ -295,7 +346,23 @@ export function blockedSaveMessage(penFields, version, versions) {
     return 'This version already exists. Enter a different version.';
   }
   const blocked = findBlockedRow(penFields, version);
-  return blocked ? blocked.message : null;
+  if (blocked) return blocked.message;
+  return findBlockedStep(penFields) ? REQUIRED : null;
+}
+
+/**
+ * blockedSaveStepField(penFields, version, versions) -> the step field
+ * blockedSaveMessage's own REQUIRED names, as a stepRequiredFields entry, or
+ * `null` when nothing blocks, when the version line blocks, or when a row does
+ * (the sentence then names that row, not a step). Reads the same findBlockedStep
+ * traversal blockedSaveMessage does, so the field this names can never disagree
+ * with the sentence beside it (T-03.1-21).
+ */
+export function blockedSaveStepField(penFields, version, versions) {
+  if (penFields.versionLabel.trim() === '') return null;
+  if (!versionLineUnique(versions, penFields.versionLabel, null)) return null;
+  if (findBlockedRow(penFields, version)) return null;
+  return findBlockedStep(penFields);
 }
 
 /**

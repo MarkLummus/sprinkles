@@ -949,6 +949,33 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
     expect(removedEntry.marked).toBe(false);
   });
 
+  // bug-pen-removed-step-words-shift-left (Mark, 2026-11-23): app.css gives an EMPTY number cell one hidden
+  // figure (.method-step__n:empty::before), so the cell must reach the page with no child at all — a placeholder
+  // child would still be written here as a child, and :empty would stop matching it.
+  it("renders a removed step's number cell with no child at all, whether it was removed in the pen or before the pen opened, and a live cell keeps its numeral (bug-pen-removed-step-words-shift-left)", () => {
+    const baselineVersion = { rows: [], method: makeTenStepMethod() };
+    baselineVersion.method[4].removed = true; // step 5, removed before the pen opened
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[1].removed = true; // step 2, removed in the pen
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
+        rows={baselineVersion.rows}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(baselineVersion.method)}
+      />,
+    );
+
+    expect(markup).toContain('<li id="method-step-2" class="method-step"><span class="method-step__n" aria-hidden="true"></span>');
+    expect(markup).toContain('<li id="method-step-5" class="method-step"><span class="method-step__n" aria-hidden="true"></span>');
+    expect(markup).toContain('<li id="method-step-1" class="method-step"><span class="method-step__n" aria-hidden="true">1</span>');
+  });
+
   it("names a live step's field by the same number the margin prints, not the stored key, once a removal has shifted its position", () => {
     const baselineVersion = { rows: [], method: makeTenStepMethod() };
     const draftVersion = structuredClone(baselineVersion);

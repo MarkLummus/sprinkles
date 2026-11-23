@@ -1308,6 +1308,22 @@ describe("every step sets its number on its lead's text baseline (sketch 014 dec
   });
 });
 
+// Each step li is its own grid, so its auto number column takes the width of its own number. The pen leaves a
+// removed step's number empty (D-UAT-5), which made that column 0 wide and set the words 12 px left of every other
+// step's (92 against 104 at 1366). The rule holds one hidden figure in the empty cell.
+describe("a removed step's empty number cell keeps one figure's width (bug-pen-removed-step-words-shift-left, Mark 2026-11-23)", () => {
+  test('.method-step__n:empty::before generates one hidden figure and carries no px literal', () => {
+    const rule = ruleFor('.method-step__n:empty::before');
+    expect(rule, 'expected a top-level .method-step__n:empty::before rule').toBeTruthy();
+    const declarations = rule.declarations
+      .split(';')
+      .map((d) => d.trim().replace(/\s+/g, ' '))
+      .filter(Boolean);
+    expect(declarations).toEqual(['content: "0"', 'visibility: hidden']);
+    expect(rule.declarations).not.toMatch(/\d\s*px/);
+  });
+});
+
 describe('the editing note draws its own dot (bug-p11-bys-note-dot-on-right, quick 261101-mbe)', () => {
   test('.authored__notes--editing > li is a positioned block, so no engine generates a list marker for it', () => {
     const rule = ruleFor('.authored__notes--editing > li');

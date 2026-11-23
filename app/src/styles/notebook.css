@@ -353,6 +353,30 @@
   margin-left: var(--gap-xs);
 }
 
+/* The version pen's open-step chip is the creation editor's two-row grid (sketch 016 CONTRACT
+   section 13, pen-target-required.html, approved by Mark 2026-11-23, look-p12-pen-target-required).
+   Its columns flow in markup order, so the parent's struck value keeps its place before the label
+   and stays on one line, and Required stands on the second row under the field it follows (Phase 11
+   D-10). It applies to every open-step chip, refused or not (README decision 44). */
+.notebook .method-step__open-fields .target-chip {
+  display: inline-grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  column-gap: var(--gap-hair);
+}
+
+.notebook .method-step__open-fields .target-chip > * {
+  grid-row: 1;
+}
+
+.notebook .method-step__open-fields .target-chip > .struck-value {
+  align-self: center;
+}
+
+.notebook .method-step__open-fields .target-chip > .field-error {
+  grid-row: 2;
+}
+
 /* The target fields are one-row textareas too
    (bug-ipad-tab-lost-from-single-line-fields, duty 4). app.css gives them width
    auto, so the input took the browser's 20-character width. A fixed-size

@@ -7,7 +7,7 @@
 // in-memory stand-in for the repository; every write that is not a drafts
 // write is a spy the cases prove is never called.
 import { StrictMode, act } from 'react';
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { createRoot } from 'react-dom/client';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -2898,6 +2898,171 @@ describe('Add ingredient on a row lands the pick right after it (STRUCT-05, D-09
     await click(pickerCancel());
     expect(root().querySelector('.pick')).toBeNull();
     expect(document.activeElement).toBe(root().querySelector('tr[aria-label^="Heavy cream,"] [data-act="cancel"]'));
+  });
+
+  describe("the picker from the heading, its kept filters and its scroll (CONTRACT section 13, README decisions 36, 38 and 41)", () => {
+    const lastBody = () => [...root().querySelectorAll('.ingredient-table tbody')].at(-1);
+    const placeIntoStepOne = async (name) => {
+      await click(root().querySelector(`tr[aria-label^="${name},"] [data-act="add-to-step"]`));
+      await click(root().querySelector(`tr[aria-label^="${name},"] [data-act="choose-1"]`));
+    };
+    async function choose(select, value) {
+      await act(async () => {
+        Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(select, value);
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    }
+
+    it("E1: from the heading, with rows under Not in a step yet, the picker is the last row of the last body, before the Total", async () => {
+      await seed();
+      await click(headingAdd());
+      expect(pickRow().closest('tbody')).toBe(lastBody());
+      expect(lastBody().lastElementChild).toBe(pickRow());
+      expect(lastBody().nextElementSibling.tagName).toBe('TFOOT');
+      expect(lastBody().querySelector('tr.ingredient-table__step-head').textContent).toBe('Not in a step yet');
+      expect(pickLabel()).toBe('Add ingredient at the end, not in a step yet');
+      expect(document.activeElement).toBe(pickerName());
+      await pickFromPicker(DEXTROSE);
+      expect(groups()[1].names).toEqual([CREAM, SALT, DEXTROSE]);
+      expect(document.activeElement).toBe(gramsField(DEXTROSE));
+    });
+
+    it('E2: from the heading, with every row in a step, the picker stands in a body of its own under a Not in a step yet head, there only while it is open', async () => {
+      await seed();
+      await placeIntoStepOne(CREAM);
+      await placeIntoStepOne(SALT);
+      expect(groups()).toEqual([{ head: 'Step 1', names: [SUGAR, MILK, CREAM, SALT] }]);
+      await click(headingAdd());
+      expect(root().querySelectorAll('.ingredient-table tbody')).toHaveLength(2);
+      expect(lastBody().children).toHaveLength(2);
+      expect(lastBody().firstElementChild.className).toBe('ingredient-table__step-head');
+      expect(lastBody().firstElementChild.textContent).toBe('Not in a step yet');
+      expect(lastBody().lastElementChild).toBe(pickRow());
+      expect(lastBody().nextElementSibling.tagName).toBe('TFOOT');
+      expect(pickLabel()).toBe('Add ingredient at the end, not in a step yet');
+      await click(pickerCancel());
+      expect(root().querySelectorAll('.ingredient-table tbody')).toHaveLength(1);
+      expect(groups().some((group) => group.head === 'Not in a step yet')).toBe(false);
+      await pickFromHeading(DEXTROSE);
+      expect(groups()).toEqual([
+        { head: 'Step 1', names: [SUGAR, MILK, CREAM, SALT] },
+        { head: 'Not in a step yet', names: [DEXTROSE] },
+      ]);
+      expect(document.activeElement).toBe(gramsField(DEXTROSE));
+    });
+
+    it('E3: from the heading, with no step, the picker is the last row of the one body, named at the end', async () => {
+      await startVanilla();
+      await pickFromHeading(SUGAR);
+      await pickFromHeading(MILK);
+      await click(headingAdd());
+      expect(root().querySelectorAll('.ingredient-table tbody')).toHaveLength(1);
+      expect(lastBody().querySelector('tr.ingredient-table__step-head')).toBeNull();
+      expect(lastBody().lastElementChild).toBe(pickRow());
+      expect(pickLabel()).toBe('Add ingredient at the end');
+    });
+
+    it('E4: with no row at all the picker stands where it is built, named Add ingredient', async () => {
+      await startVanilla();
+      await click(headingAdd());
+      expect(root().querySelector('.ingredient-table-region > .pick')).not.toBeNull();
+      expect(pickRow()).toBeNull();
+      expect(pickLabel()).toBe('Add ingredient');
+    });
+
+    it("E5: another row's Add ingredient keeps Name and Category, and Cancel then a fresh open starts clear", async () => {
+      await seed();
+      await click(rowAdd(SUGAR));
+      await type(pickerName(), 'dex');
+      await choose(root().querySelector('.pick select'), 'sugar');
+      await click(rowAdd(CREAM));
+      expect(rowOf(CREAM).nextElementSibling).toBe(pickRow());
+      expect(pickerName().value).toBe('dex');
+      expect(root().querySelector('.pick select').value).toBe('sugar');
+      expect([...root().querySelectorAll('.pick__name')].map((node) => node.textContent)).toContain(DEXTROSE);
+      expect(document.activeElement).toBe(pickerName());
+      await click(pickerCancel());
+      await click(rowAdd(CREAM));
+      expect(pickerName().value).toBe('');
+      expect(root().querySelector('.pick select').value).toBe('All');
+    });
+
+    it("E6: the picker takes no focus when it moves because its row left the group", async () => {
+      await seed();
+      await click(rowAdd(SUGAR));
+      await click(field('Step 1, change ingredients'));
+      const box = usesBox(1, SUGAR);
+      await act(async () => {
+        box.focus();
+      });
+      await click(box);
+      expect(lastBody().lastElementChild).toBe(pickRow());
+      expect(lastBody().querySelector('tr.ingredient-table__step-head').textContent).toBe('Not in a step yet');
+      expect(pickLabel()).toBe('Add ingredient at the end, not in a step yet');
+      expect(document.activeElement).toBe(usesBox(1, SUGAR));
+    });
+
+    describe('E7: the page scrolls only as far as the picker needs and never moves the row above it under the header', () => {
+      let scrollBy;
+      let rects;
+      let originalRect;
+      let originalHeight;
+      let originalScrollBy;
+      beforeEach(() => {
+        scrollBy = vi.fn();
+        rects = { aboveTop: 0, pickBottom: 0 };
+        originalRect = Element.prototype.getBoundingClientRect;
+        originalHeight = window.innerHeight;
+        originalScrollBy = window.scrollBy;
+        const zero = { top: 0, bottom: 0, left: 0, right: 0, width: 0, height: 0, x: 0, y: 0 };
+        Element.prototype.getBoundingClientRect = function rect() {
+          if (this.matches?.('tr.ingredient-table__pick')) return { ...zero, bottom: rects.pickBottom };
+          if (this.nextElementSibling?.matches?.('tr.ingredient-table__pick')) return { ...zero, top: rects.aboveTop };
+          return zero;
+        };
+        window.innerHeight = 1024;
+        window.scrollBy = scrollBy;
+      });
+      afterEach(() => {
+        Element.prototype.getBoundingClientRect = originalRect;
+        window.innerHeight = originalHeight;
+        window.scrollBy = originalScrollBy;
+      });
+
+      async function openFromSugar(aboveTop, pickBottom) {
+        rects = { aboveTop, pickBottom };
+        scrollBy.mockClear();
+        await click(rowAdd(SUGAR));
+        const calls = scrollBy.mock.calls.map((call) => [...call]);
+        await click(pickerCancel());
+        return calls;
+      }
+
+      it('(a) scrolls the picker into the window: the part of it below the window', async () => {
+        await seed();
+        expect(await openFromSugar(811, 1427)).toEqual([[0, 403]]);
+      });
+      it('(b) stops with the row at the top when the picker is taller than the room', async () => {
+        await seed();
+        expect(await openFromSugar(200, 1500)).toEqual([[0, 200]]);
+      });
+      it('(c) does not scroll when the picker already fits', async () => {
+        await seed();
+        expect(await openFromSugar(200, 1000)).toEqual([]);
+      });
+      it('(d) brings a row above the top back down to it', async () => {
+        await seed();
+        expect(await openFromSugar(-20, 600)).toEqual([[0, -20]]);
+      });
+      it('(e) moving the picker to another row follows the same rule', async () => {
+        await seed();
+        rects = { aboveTop: 811, pickBottom: 1427 };
+        await click(rowAdd(SUGAR));
+        scrollBy.mockClear();
+        await click(rowAdd(CREAM));
+        expect(scrollBy.mock.calls.map((call) => [...call])).toEqual([[0, 403]]);
+      });
+    });
   });
 
   describe('an anchor that left its group while the picker was open: the pick lands as the heading would, in no step at the end, and nothing throws', () => {

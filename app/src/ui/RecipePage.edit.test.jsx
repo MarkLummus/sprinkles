@@ -426,7 +426,7 @@ describe('Resume editing while an edit draft is kept (D-04, D-23)', () => {
     expect(buttonByText('Record batch')).toBeNull();
     expect(buttonByText('Resume editing')).toBeNull();
     const lines = [...root_().querySelectorAll('.notebook-version__draft')].map((node) => node.textContent);
-    expect(lines).toEqual(['Edit kept. Finish it at the desk or on the iPad.']);
+    expect(lines).toEqual(['Edit kept. Finish it in a wider window.']);
   });
 
   it('opens no pen for a startNextVersion route intent', async () => {

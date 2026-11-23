@@ -2543,7 +2543,7 @@ describe("Below 724 the editor's addresses show the desk page (PHONE-01, CONTRAC
     const page = root().querySelector('.list-page.place');
     expect(page).not.toBeNull();
     expect(page.querySelector('h1.place__title').textContent).toBe(title);
-    expect(page.querySelector('p.place__note').textContent).toBe('Done at the desk or on the iPad.');
+    expect(page.querySelector('p.place__note').textContent).toBe('Done in a wider window.');
     expect(page.querySelector('button, textarea, input, a')).toBeNull();
     expect(root().querySelector('[aria-label="Recipe name"]')).toBeNull();
   }

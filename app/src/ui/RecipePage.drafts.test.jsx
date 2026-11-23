@@ -1055,7 +1055,7 @@ describe('below 724 a kept Next version draft (PHONE-01, Mark’s B)', () => {
     ).toEqual(['Print sheet']);
     expect(
       [...current.container.querySelectorAll('.notebook-version__draft')].map((node) => node.textContent),
-    ).toEqual(['Draft: Version 2 · less milk. Finish it at the desk or on the iPad.']);
+    ).toEqual(['Draft: Version 2 · less milk. Finish it in a wider window.']);
     // The held draft gets no node on the History rail either (Pitfall 6): a lone version still reads as one plain line.
     expect(current.container.querySelector('.notebook-history__only')).not.toBeNull();
     expect(noPenOpen()).toBe(true);

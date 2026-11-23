@@ -6,10 +6,10 @@ current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
 status: executing
 stopped_at: Completed 12-14-PLAN.md
-last_updated: "2026-11-23T14:02:57.974Z"
+last_updated: "2026-11-23T19:05:18.848Z"
 last_activity: 2026-11-23
 last_activity_desc: Phase 12 execution started
-state_head: 09d71f261fd2233b5f2c7381359010f7b8c8c9c1
+state_head: 2d99d3ec8993bab3b4f34209f1e3917166837777
 progress:
   total_phases: 5
   completed_phases: 4
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-11-15)
 Phase: 12 (Showing a recipe's own scales and problems, and the whole loop) — EXECUTING
 Plan: 11 of 16
 Status: Ready to execute
-Last activity: 2026-11-23 - Completed quick task 261123-brl: desk line closing words "in a wider window"
+Last activity: 2026-11-23 - Completed quick task 261123-iqe: a moved step says "was step N" in the Next version pen
 
 Progress: [████████░░] 80%
 
@@ -508,6 +508,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261123-ghh | Pen refused target says Required (Mark approved look-p12-pen-target-required; closes bug-pen-saves-blank-lead-in): build sketch 016 CONTRACT section 13 "The pen's refused target" and snapshot pen-target-required.html: the open step's target chip becomes the creation editor's inline grid, Required under the blank side with aria-invalid and aria-describedby, the grid applies to a chip that is not refused too so a changed value's struck value keeps one line; this is the held Task 3 of quick 261122-tqn (app/src/ui/Method.jsx, notebook stylesheet). | 2026-11-23 | 8ed16c3f | .planning/quick/261123-ghh-pen-refused-target-says-required-mark-approved-look-p12-pen |
 | 261123-ghi | Ingredient picker opens after its row (Mark approved look-p12-picker-after-row): build sketch 016 CONTRACT section 13 "The picker stands after its row" and snapshot picker-after-row.html in the creation editor at 1366: the picker is a table row directly after the row that opened it (at the end, before the total, from the heading's Add ingredient), it moves when another row's Add ingredient is pressed keeping Name and Category, Cancel returns focus to the opener, a pick lands where the picker stood, the opener row stays in view, the picker's aria-label names the place, no pick__where line (app/src/ui/CreationPage.jsx, IngredientTable.jsx and their stylesheets). | 2026-11-23 | 5e3232d2 | .planning/quick/261123-ghi-ingredient-picker-opens-after-its-row-mark-approved-look-p12 |
 | 261123-ghk | Step order in the Next version pen (Mark answered bug-p11-pen-steps-no-reorder = fix, decide-p12-pen-order-scope = order only, decide-p12-pen-order-mark = the words "was step 4", look-p12-pen-step-order = approved): build sketch 017 (.planning/sketches/017-pen-step-order/ CONTRACT.md and both snapshots): Move up and Move down on each closed live step with the creation editor's words, focus and announcement, a removed step and an open step have no Move, the pen and the Ingredients table follow the draft's order, a changed order counts as an unsaved change, Show changes and the pen mark each live step whose number changed with "was step N", the saved page read plain and the printed sheet carry no mark; no stored shape change, no DB_VERSION change, no move keys, no Add step (app/src/ui/Method.jsx, RecipeSheet.jsx, app/src/domain/penDraft.js, lineage.js buildDiff). | 2026-11-23 | 2e030ce6 | .planning/quick/261123-ghk-step-order-in-the-next-version-pen-mark-answered-bug-p11-pen |
+| 261123-iqe | Next version pen step order, slice 2: a moved step says "was step N" in the pen and in Show changes | 2026-11-23 | 2d99d3ec | [261123-iqe-next-version-pen-step-order-slice-2-a-mo](./quick/261123-iqe-next-version-pen-step-order-slice-2-a-mo/) |
 
 ### Roadmap Evolution
 

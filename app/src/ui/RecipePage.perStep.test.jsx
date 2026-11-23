@@ -1383,3 +1383,73 @@ describe('bug-pen-saves-blank-lead-in: a target with one side blank', () => {
     expect(document.activeElement).toBe(field('Step 1, target 1, label'));
   });
 });
+
+// bug-pen-step-done-drops-focus: Done's button has no partner in the closed step (a span stands in its
+// place), so React removes it, and Remove this step is drawn only while the step is live, so the press
+// removes the focused button. Either way focus fell to the page body.
+describe('Done and Remove this step keep focus on a drawn control (bug-pen-step-done-drops-focus)', () => {
+  async function penOpen() {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    return container;
+  }
+  const leadIn = (label) => current.container.querySelector(`textarea[aria-label="${label}"]`);
+  const doneOf = (li) => buttonByText(li.querySelector('.method-step__done-cancel'), 'Done');
+
+  it('A: Done pressed from the keyboard lands focus on that step\'s Edit this step', async () => {
+    await penOpen();
+    const edit = buttonByLabel('Step 1, edit this step');
+    await act(async () => edit.focus());
+    await click(edit);
+    const li = leadIn('Step 1, lead-in').closest('li');
+    const done = doneOf(li);
+    await act(async () => done.focus());
+    await click(done);
+    expect(leadIn('Step 1, lead-in')).toBeNull();
+    expect(document.activeElement).toBe(buttonByLabel('Step 1, edit this step'));
+  });
+
+  it('B: Done pressed by a pointer, with focus left in the lead-in, lands focus on Edit this step', async () => {
+    await penOpen();
+    await click(buttonByLabel('Step 2, edit this step'));
+    expect(document.activeElement).toBe(leadIn('Step 2, lead-in'));
+    await click(doneOf(leadIn('Step 2, lead-in').closest('li')));
+    expect(leadIn('Step 2, lead-in')).toBeNull();
+    expect(document.activeElement).toBe(buttonByLabel('Step 2, edit this step'));
+  });
+
+  it("C: Remove this step keeps the step open and lands focus on its Done, and Done then lands on the step's Edit this step", async () => {
+    const container = await penOpen();
+    const allulose = [...container.querySelectorAll('.ingredient-table tr')].find((tr) =>
+      (tr.getAttribute('aria-label') ?? '').startsWith('Allulose'),
+    );
+    await click(buttonByText(allulose, 'Remove'));
+    await click(buttonByLabel('Step 6, edit this step'));
+    const li = leadIn('Step 6, lead-in').closest('li');
+    expect(li.querySelector('.method-step__flag').textContent).toContain('uses Allulose, which is removed');
+    const remove = buttonByText(li, 'Remove this step');
+    await act(async () => remove.focus());
+    await click(remove);
+    expect(leadIn('Removed step 6, lead-in')).not.toBeNull();
+    expect(buttonByText(li, 'Remove this step')).toBeNull();
+    expect(document.activeElement).toBe(doneOf(li));
+    await click(doneOf(li));
+    expect(document.activeElement).toBe(buttonByLabel('Removed step 6, edit this step'));
+  });
+
+  // 261122-tqn put its refusal at Save, not at a step's Done, so Done is never refused and a request
+  // written by Done cannot be left behind by a refusal. What can go wrong is a request that outlives
+  // the Done: a refused Save afterwards must still put focus in the refused field.
+  it('D: a refused Save after Done leaves focus in the refused field, not on Edit this step', async () => {
+    await penOpen();
+    await setValue(leadIn('Version name'), 'v2');
+    await click(buttonByLabel('Step 3, edit this step'));
+    await setValue(leadIn('Step 3, lead-in'), '');
+    await click(doneOf(leadIn('Step 3, lead-in').closest('li')));
+    expect(leadIn('Step 3, lead-in')).toBeNull();
+    await click(buttonByText(current.container, 'Save as new version'));
+    expect(store.createVersion).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(leadIn('Step 3, lead-in'));
+  });
+});

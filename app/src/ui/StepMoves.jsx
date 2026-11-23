@@ -51,3 +51,19 @@ export function stepMoveWord(draft, n, direction) {
   if (to < 0 || to >= live.length) return null;
   return `Step ${to + 1} of ${live.length}`;
 }
+
+/**
+ * moveFocusTarget(acts, act) -> the button focus goes to after a move: the act's own
+ * Move button of the moved step, or the step's other Move button when that one turned
+ * grey (D-16), or null when acts is null. `acts` is the step's p.method-step__acts,
+ * found after the render that reordered the steps, never trusted to a DOM node a
+ * keyed reorder moved. `act` is always 'move-up' or 'move-down', never built from a
+ * stored value.
+ */
+export function moveFocusTarget(acts, act) {
+  if (!acts) return null;
+  const target = acts.querySelector(`[data-act="${act}"]`);
+  if (target?.getAttribute('aria-disabled') !== 'true') return target;
+  const other = act === 'move-up' ? 'move-down' : 'move-up';
+  return acts.querySelector(`[data-act="${other}"]`);
+}

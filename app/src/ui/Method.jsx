@@ -4,7 +4,8 @@ import { removedRowsUsedBy, coveredRowsFor } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
 import { liveSteps } from '../domain/creationSteps.js';
 import { Button } from './Button.jsx';
-import { StepMoveButtons, stepMoveWord } from './StepMoves.jsx';
+import { StepMoveButtons, moveFocusTarget, stepMoveWord } from './StepMoves.jsx';
+import { useStructureWord } from './useAnnouncer.js';
 import { holdReturn, stripNewlines } from './oneLineField.js';
 import { Checkbox } from './Checkbox.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
@@ -784,10 +785,28 @@ export function Method({
   }
   // A press on Move up or Move down. stepMoveWord is null for a step that is not live or a move
   // past an end, so a stale press does nothing and moveStep never throws inside a state update.
+  // Focus stays on the same Move button of the moved step (sketch 017 CONTRACT section 3,
+  // D-16): the press leaves a request, and the effect below acts on it after the render that
+  // reordered the steps, never on a DOM node a keyed reorder moved.
+  const { structureWord, announceStructure } = useStructureWord();
+  const stepListRef = useRef(null);
+  const moveRequestRef = useRef(null);
   function handleMoveStep(stepN, direction) {
-    if (stepMoveWord(draftVersion, stepN, direction) === null) return;
+    const word = stepMoveWord(draftVersion, stepN, direction);
+    if (word === null) return;
     onMovePenStep(stepN, direction);
+    moveRequestRef.current = { n: stepN, act: direction === 'up' ? 'move-up' : 'move-down' };
+    announceStructure(word);
   }
+  useEffect(() => {
+    const request = moveRequestRef.current;
+    if (!request) return;
+    moveRequestRef.current = null;
+    // The li is found by comparing ids among the list's own children, not by a selector built
+    // from a stored key.
+    const li = [...(stepListRef.current?.children ?? [])].find((child) => child.id === `method-step-${request.n}`);
+    moveFocusTarget(li?.querySelector(':scope > .method-step__body > .method-step__acts') ?? null, request.act)?.focus();
+  });
   const liveDraftSteps = isDeveloping ? liveSteps(draftVersion) : [];
 
   // The one place a step's displayed number is resolved (D-UAT-4,
@@ -827,7 +846,7 @@ export function Method({
       <h2 className="region-name">Instructions</h2>
       {/* role="list": Safari drops list semantics from a list-style none list
           (D-20; research C6), so the role is stated. */}
-      <ol className="method-steps" role="list">
+      <ol className="method-steps" role="list" ref={stepListRef}>
         {(isDeveloping ? draftVersion.method : steps).map((step) => {
           if (isDeveloping) {
             const draftStep = draftVersion.method.find((candidate) => candidate.n === step.n);
@@ -1012,6 +1031,14 @@ export function Method({
           );
         })}
       </ol>
+      {/* The pen's polite word (sketch 017 CONTRACT section 3): the place among the live
+          steps, of their count. A div, not the creation editor's p: an empty p adds a
+          paragraph break to the page's innerText, which the Phase 11 walk hashes. */}
+      {isDeveloping && (
+        <div className="visually-hidden" role="status" aria-live="polite">
+          {structureWord}
+        </div>
+      )}
     </>
   );
 }

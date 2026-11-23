@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // The page's three live regions (Phase 8, EDIT-05, cut 1).
 //
@@ -70,4 +70,23 @@ export function useAnnouncer() {
   }
 
   return { formStatus, setFormStatus, tastingStatus, setTastingStatus, recordStatus, setRecordStatus, announce };
+}
+
+// The polite word for every structure change (D-14 to D-16): the region's text is
+// the latest sentence. Every structure change is heard, a repeat included: the
+// region is emptied and the sentence written on the next frame (SheetCodeSearch's
+// pattern), so two moves that both end at "Step 2 of 3" are two changes to a polite
+// region. The creation editor and the Next version pen's step moves share it
+// (sketch 017 CONTRACT section 3); each draws its own region from structureWord.
+export function useStructureWord() {
+  const [structureWord, setStructureWord] = useState('');
+  const structureFrameRef = useRef(0);
+  // A pending announcement frame goes with the page.
+  useEffect(() => () => cancelAnimationFrame(structureFrameRef.current), []);
+  const announceStructure = (sentence) => {
+    cancelAnimationFrame(structureFrameRef.current);
+    setStructureWord('');
+    structureFrameRef.current = requestAnimationFrame(() => setStructureWord(sentence));
+  };
+  return { structureWord, announceStructure };
 }

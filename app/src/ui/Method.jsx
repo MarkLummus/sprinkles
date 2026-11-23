@@ -118,6 +118,7 @@ export function StepPenBody({
   onOpen,
   onDone,
   onCancel,
+  takeEditFocus = () => false,
   onChangePenStepField,
   onChangePenStepTarget,
   onTogglePenStepUses,
@@ -150,6 +151,8 @@ export function StepPenBody({
   const [usesOpen, setUsesOpen] = useState(false);
   const usesControlRef = useRef(null);
   const leadInRef = useRef(null);
+  const editButtonRef = useRef(null);
+  const doneButtonRef = useRef(null);
   // Preview step (CONTRACT section 7; bug-p11-pen-step-no-preview): the open step read as it will read.
   // Done and Cancel close the step without remounting this component, so the preview is put away when
   // the step closes, never carried to the next time it opens.
@@ -163,6 +166,20 @@ export function StepPenBody({
   useEffect(() => {
     if (isOpen) leadInRef.current?.focus();
   }, [isOpen]);
+  // bug-pen-step-done-drops-focus: Done's button has no partner in the closed step (a span stands in its
+  // place), so its node is removed and focus would fall to the page. This asks Method whether this close
+  // was this step's Done, so Cancel's landing (the reused node) and every other close are left alone.
+  useEffect(() => {
+    if (!isOpen && takeEditFocus()) editButtonRef.current?.focus();
+  }, [isOpen]);
+  // bug-pen-step-done-drops-focus: Remove this step is drawn only while the step is live, so the press
+  // removes the focused button. The step stays open, so focus goes to its own Done in the line below,
+  // which is drawn before and after the render. Done keeps the step's edits, where the step's Cancel
+  // would put the whole step back.
+  function handleRemoveThisStep() {
+    onTogglePenStepRemoved(step.n);
+    doneButtonRef.current?.focus();
+  }
   // A refused Save moves focus into the field it names. The step may open in the render after the
   // refusal (Method's effect), so the attempt alone cannot key the focus: this runs when the step
   // opens too, after the open effect above, and records the attempt it handled so a later Done and
@@ -442,7 +459,7 @@ export function StepPenBody({
           {`uses ${flaggedRows.map((row) => row.ingredientName).join(', ')}, which ${
             flaggedRows.length > 1 ? 'are' : 'is'
           } removed`}{' '}
-          <Button onClick={() => onTogglePenStepRemoved(step.n)}>
+          <Button onClick={handleRemoveThisStep}>
             Remove this step
           </Button>
         </p>
@@ -470,7 +487,7 @@ export function StepPenBody({
         <Button className="text-control" onClick={onCancel}>
           Cancel
         </Button>
-        <Button onClick={onDone}>
+        <Button ref={doneButtonRef} onClick={onDone}>
           Done
         </Button>
       </p>
@@ -528,6 +545,7 @@ export function StepPenBody({
       <p className="method-step__acts">
         <Button
           className="text-control"
+          ref={editButtonRef}
           aria-label={fieldLabel(step, draftStep.removed, 'edit this step')}
           onClick={handleOpen}
         >
@@ -719,7 +737,18 @@ export function Method({
   function handleOpenStep(stepN) {
     setOpenStepN(stepN);
   }
-  function handleDoneStep() {
+  // bug-pen-step-done-drops-focus: Done closes the step and its own button goes with it, so focus fell
+  // to the page. Done therefore leaves a request naming its step, and that step acts on it after the
+  // render that drew its Edit this step again (the request pattern CreationPage's focusRequestRef uses).
+  // Written only on the path that closes the step, so a refusal added here later leaves none behind.
+  const editFocusRef = useRef(null);
+  function takeEditFocus(stepN) {
+    if (editFocusRef.current !== stepN) return false;
+    editFocusRef.current = null;
+    return true;
+  }
+  function handleDoneStep(stepN) {
+    editFocusRef.current = stepN;
     setOpenStepN(null);
   }
   function handleCancelStep(stepN) {
@@ -803,8 +832,9 @@ export function Method({
                   number={marginInfo.frame === 'current' ? marginInfo.number : null}
                   isOpen={openStepN === step.n}
                   onOpen={() => handleOpenStep(step.n)}
-                  onDone={handleDoneStep}
+                  onDone={() => handleDoneStep(step.n)}
                   onCancel={() => handleCancelStep(step.n)}
+                  takeEditFocus={() => takeEditFocus(step.n)}
                   onChangePenStepField={onChangePenStepField}
                   onChangePenStepTarget={onChangePenStepTarget}
                   onTogglePenStepUses={onTogglePenStepUses}

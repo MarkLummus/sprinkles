@@ -6,10 +6,10 @@ current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
 status: executing
 stopped_at: Completed 12-14-PLAN.md
-last_updated: "2026-11-22T22:43:04.644Z"
+last_updated: "2026-11-23T13:25:59.752Z"
 last_activity: 2026-11-22
 last_activity_desc: Phase 12 execution started
-state_head: e04a1bfe319cf9480be0aae7e208a991d80d9814
+state_head: f7ba9532a74cbccdca6736c56a39b48ac9043863
 progress:
   total_phases: 5
   completed_phases: 4
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-11-15)
 Phase: 12 (Showing a recipe's own scales and problems, and the whole loop) — EXECUTING
 Plan: 11 of 16
 Status: Ready to execute
-Last activity: 2026-11-22 — Phase 12 execution started
+Last activity: 2026-11-23 - Completed quick task 261123-bdk: Next version pen never saves a step that makes a backup refuse to import
 
 Progress: [████████░░] 80%
 
@@ -500,6 +500,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261122-tql | bug-p12-focus-lost-across-724: Cancel leaves nothing focused when the button it returns to is not drawn at the current width. Case one: the Notebook New recipe entry after narrowing below 724 (NotebookPlace.jsx:195-197, :230). Case two: Record batch or Record tasting pens opened in the recipe head below 724, then widened to 724 or more, then Cancel (VersionRow.jsx:142-150, :477). Return focus to a control that is drawn at the current width. The Next version pen closing below 724 is decided leave-as-built (decide-p12-phone-focus-after-pen-close) and is not part of this. Test first; reproduce in Playwright WebKit and Chromium against a scratch build. | 2026-11-23 | c7e9d3e5 | .planning/quick/261122-tql-bug-p12-focus-lost-across-724-cancel-leaves-nothing-focused |
 | 261122-tqm | bug-p12-picker-cancel-focus-heading: the ingredient picker's Cancel sends focus to the heading's Add ingredient when the row that opened it has since moved into a step (also when unticked through Change ingredients, and when Cmd+Return in the grams opened the picker); resolve the row's current line at Cancel time and keep the heading as the fallback only when the row is gone (app/src/ui/CreationPage.jsx:334-342, :449-455). Test first. | 2026-11-23 | b8b928c1 | .planning/quick/261122-tqm-bug-p12-picker-cancel-focus-heading-the-ingredient-picker-s |
 | 261122-tqo | bug-pen-step-done-drops-focus: in Next version, Done and Remove this step on an open step leave nothing focused; Cancel already returns focus to Edit this step. Done returns focus to Edit this step, and Remove this step lands on a drawn neighbour (app/src/ui/Method.jsx). Cause not traced: trace it first, then a test that reproduces it, then the fix. | 2026-11-23 | be6c238b | .planning/quick/261122-tqo-bug-pen-step-done-drops-focus-in-next-version-done-and-remov |
+| 261123-bdk | Next version pen: a saved step never makes a backup refuse to import (both-blank target dropped; a removed step's blank fields fall back) | 2026-11-23 | f7ba9532 | [261123-bdk-next-version-pen-never-save-a-step-that-](./quick/261123-bdk-next-version-pen-never-save-a-step-that-/) |
 
 ### Roadmap Evolution
 

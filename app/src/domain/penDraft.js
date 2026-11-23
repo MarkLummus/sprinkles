@@ -2,6 +2,7 @@
 // The version pen's draft, read and changed by pure functions, which
 // RecipePage drives through usePenDraft (Phase 5, D-01).
 import { isLineRemoved } from './rows.js';
+import { keptOrderChanged } from './stepNumbers.js';
 import {
   blockedSaveMessage,
   blockedSaveRowId,
@@ -84,6 +85,10 @@ function isAuthoredListDirty(draftList, baseList) {
 // portion's own value, in order. A stored older whole-row flag reads as
 // every line out (isLineRemoved), the same rule the draft is seeded by.
 //
+// The order of the steps is ink too (sketch 017 CONTRACT section 4): an order that
+// differs from the opened version's, compared over the steps live in both, counts,
+// and moving the steps back to it does not.
+//
 // Extended (03-07, T-03-42) to the three fields the pen spends most of its
 // time editing — method, the Sheet title/description, authored — which
 // this check omitted entirely: a maker who rewrote a step's prose or an
@@ -112,6 +117,7 @@ export function isPenDraftDirty(mode, penDraft, version) {
     return isStepDirty(draftStep, step);
   });
   if (methodDirty) return true;
+  if (keptOrderChanged(penDraft.method, version.method)) return true;
   if (isAuthoredListDirty(penDraft.authored.beforeYouStart, version.authored.beforeYouStart)) return true;
   return false;
 }

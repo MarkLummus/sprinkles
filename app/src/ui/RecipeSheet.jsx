@@ -52,6 +52,7 @@ export function RecipeSheet({
   onChangePenStepTarget,
   onTogglePenStepUses,
   onTogglePenStepRemoved,
+  onMovePenStep,
   onRestorePenStep,
 }) {
   // The signature trace (route-recipe.md § 3, § 5): focusing a balance
@@ -217,6 +218,7 @@ export function RecipeSheet({
               onChangePenStepTarget={onChangePenStepTarget}
               onTogglePenStepUses={onTogglePenStepUses}
               onTogglePenStepRemoved={onTogglePenStepRemoved}
+              onMovePenStep={onMovePenStep}
               onRestorePenStep={onRestorePenStep}
               blockedStepTarget={isStepBlock ? blockedTarget : null}
               blockedStepMessage={isStepBlock ? blockedMessage : null}

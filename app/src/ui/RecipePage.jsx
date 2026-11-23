@@ -182,6 +182,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     handleChangePenStepTarget,
     handleTogglePenStepUses,
     handleTogglePenStepRemoved,
+    handleMovePenStep,
     handleRestorePenStep,
     handleChangePenNoteText,
     handleRemovePenNote,
@@ -540,6 +541,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
             onChangePenStepTarget={handleChangePenStepTarget}
             onTogglePenStepUses={handleTogglePenStepUses}
             onTogglePenStepRemoved={handleTogglePenStepRemoved}
+            onMovePenStep={handleMovePenStep}
             onRestorePenStep={handleRestorePenStep}
           />
         </div>

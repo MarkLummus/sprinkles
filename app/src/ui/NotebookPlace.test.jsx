@@ -911,6 +911,39 @@ describe('NotebookPlace starting a recipe', () => {
       expect(container.querySelector('form.nb__new')).not.toBeNull();
       expect(document.activeElement).toBe(nameField(container));
     });
+
+    // bug-p12-focus-lost-across-724: the entry's Cancel is drawn only from 724 up (above), where New recipe is
+    // drawn again as soon as the entry closes. Guards, passing before and after the fix: NotebookPlace.jsx is not changed.
+    describe('the entry\'s Cancel across the 724 cut (bug-p12-focus-lost-across-724)', () => {
+      it('C1: at a desk width Cancel closes the entry and returns focus to New recipe', async () => {
+        installWidth(1366);
+        const container = await mount();
+        await open(container);
+        expect(document.activeElement).toBe(nameField(container));
+
+        await press(container, 'Cancel');
+
+        expect(container.querySelector('form.nb__new')).toBeNull();
+        expect(document.activeElement).toBe(button(container, 'New recipe'));
+      });
+
+      it('C2: after the window narrowed below 724 and widened again, Cancel still returns focus to New recipe', async () => {
+        installWidth(1366);
+        const container = await mount();
+        await open(container);
+        await type(container, 'Vanilla');
+        await setWidth(393);
+        expect(container.querySelector('form.nb__new')).toBeNull();
+        expect(button(container, 'Cancel')).toBeUndefined();
+
+        await setWidth(1366);
+        expect(container.querySelector('form.nb__new')).not.toBeNull();
+        await press(container, 'Cancel');
+
+        expect(container.querySelector('form.nb__new')).toBeNull();
+        expect(document.activeElement).toBe(button(container, 'New recipe'));
+      });
+    });
   });
 });
 

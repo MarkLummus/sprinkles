@@ -6,10 +6,10 @@ current_phase: 12
 current_phase_name: Showing a recipe's own scales and problems, and the whole loop
 status: executing
 stopped_at: Completed 12-14-PLAN.md
-last_updated: "2026-11-23T13:25:59.752Z"
-last_activity: 2026-11-22
+last_updated: "2026-11-23T14:02:57.974Z"
+last_activity: 2026-11-23
 last_activity_desc: Phase 12 execution started
-state_head: f7ba9532a74cbccdca6736c56a39b48ac9043863
+state_head: 09d71f261fd2233b5f2c7381359010f7b8c8c9c1
 progress:
   total_phases: 5
   completed_phases: 4
@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-11-15)
 Phase: 12 (Showing a recipe's own scales and problems, and the whole loop) — EXECUTING
 Plan: 11 of 16
 Status: Ready to execute
-Last activity: 2026-11-23 - Completed quick task 261123-bdk: Next version pen never saves a step that makes a backup refuse to import
+Last activity: 2026-11-23 - Completed quick task 261123-brl: desk line closing words "in a wider window"
 
 Progress: [████████░░] 80%
 
@@ -501,6 +501,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261122-tqm | bug-p12-picker-cancel-focus-heading: the ingredient picker's Cancel sends focus to the heading's Add ingredient when the row that opened it has since moved into a step (also when unticked through Change ingredients, and when Cmd+Return in the grams opened the picker); resolve the row's current line at Cancel time and keep the heading as the fallback only when the row is gone (app/src/ui/CreationPage.jsx:334-342, :449-455). Test first. | 2026-11-23 | b8b928c1 | .planning/quick/261122-tqm-bug-p12-picker-cancel-focus-heading-the-ingredient-picker-s |
 | 261122-tqo | bug-pen-step-done-drops-focus: in Next version, Done and Remove this step on an open step leave nothing focused; Cancel already returns focus to Edit this step. Done returns focus to Edit this step, and Remove this step lands on a drawn neighbour (app/src/ui/Method.jsx). Cause not traced: trace it first, then a test that reproduces it, then the fix. | 2026-11-23 | be6c238b | .planning/quick/261122-tqo-bug-pen-step-done-drops-focus-in-next-version-done-and-remov |
 | 261123-bdk | Next version pen: a saved step never makes a backup refuse to import (both-blank target dropped; a removed step's blank fields fall back) | 2026-11-23 | f7ba9532 | [261123-bdk-next-version-pen-never-save-a-step-that-](./quick/261123-bdk-next-version-pen-never-save-a-step-that-/) |
+| 261123-brl | Desk line: "in a wider window" on the one-line page and the recipe head; the one-line page says what is kept and Edit names its recipe | 2026-11-23 | 09d71f26 | [261123-brl-desk-line-closing-words-in-a-wider-windo](./quick/261123-brl-desk-line-closing-words-in-a-wider-windo/) |
 
 ### Roadmap Evolution
 

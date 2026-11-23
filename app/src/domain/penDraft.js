@@ -213,7 +213,9 @@ export function penDraftFromVersion(version) {
 // The version's rows with the draft's portions applied. Each portion's grams
 // string goes through parseGramsDraft, falling back to that portion's own
 // stored amount when the string is blank or does not parse — never 0 or NaN,
-// applied per portion. Shared by the draft version (the pen's live figures)
+// applied per portion. The fallback also applies when the typed amount
+// reads as a number that is not finite (a whole number of 309 digits reads as
+// Infinity), because a backup holding one would not import. Shared by the draft version (the pen's live figures)
 // and the fields a save hands the domain constructors.
 function penDraftRows(version, penDraft) {
   return version.rows.map((row) => {
@@ -222,9 +224,10 @@ function penDraftRows(version, penDraft) {
       ...row,
       portions: row.portions.map((portion, i) => {
         const draftPortion = draftRow.portions[i];
+        const typed = parseGramsDraft(draftPortion.grams);
         return {
           step: draftPortion.step,
-          grams: parseGramsDraft(draftPortion.grams) ?? portion.grams,
+          grams: Number.isFinite(typed) ? typed : portion.grams,
           removed: Boolean(draftPortion.removed),
         };
       }),

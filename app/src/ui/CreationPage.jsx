@@ -59,6 +59,18 @@ function anchorHolds(draft, afterRowId, group) {
   return groupRows(draft, group).includes(afterRowId);
 }
 
+// The line the picker's opener stands on now. It is the line it was pressed on
+// while the row still sits there. Otherwise it is the row's first line, because
+// the row moved into or out of a step while the picker was open. When the row is
+// gone it is the line as pressed, which is not drawn, so focus falls to the
+// heading's Add ingredient. rowLines throws for a row that is not on the draft,
+// so the row is checked first.
+function openerLine(draft, rowId, group) {
+  if (!draft.rows.some((row) => row.id === rowId)) return `${rowId}:${group}`;
+  const steps = rowLines(draft, rowId).map((line) => line.step);
+  return `${rowId}:${steps.includes(group) ? group : steps[0]}`;
+}
+
 // The refused Save's line under the Ingredients heading row, which Add ingredient
 // and the picker's Name field are described by while it stands.
 const NO_ROWS_ERROR_ID = 'create-no-rows-error';
@@ -334,7 +346,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
     } else if (typeof request === 'object' && request.kind === 'picker-opener') {
       // The picker closed unpicked: back to the row's Add ingredient that opened
       // it; its Add to step chooser's Cancel when the chooser has replaced the
-      // acts; the heading's Add ingredient when the line is gone (review item 10).
+      // acts; the heading's Add ingredient when the row is gone (review item 10).
       const line = page.querySelector(`tr[data-line="${CSS.escape(request.line)}"]`);
       target =
         line?.querySelector('[data-act="add-ingredient"]') ??
@@ -342,7 +354,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
         page.querySelector('.ingredient-table-region .mk-head-act');
     } else if (typeof request === 'object' && request.kind === 'row-grams') {
       // The picker a key opened closed unpicked: back to that row's grams; the
-      // heading's Add ingredient when the line is gone.
+      // heading's Add ingredient when the row is gone.
       target =
         page.querySelector(`tr[data-line="${CSS.escape(request.line)}"] textarea`) ??
         page.querySelector('.ingredient-table-region .mk-head-act');
@@ -446,13 +458,16 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
 
   // Cancel returns focus to what opened the picker (CONTRACT section 11, 9a): the
   // row's Add ingredient, the row's grams when the key opened it, or the heading's.
+  // The row's line is read when Cancel is pressed, so a row that moved into or out
+  // of a step while the picker was open is found where it stands.
   const handleCancelPicker = () => {
     const opener = picking;
     setPicking(null);
-    const line = `${opener?.afterRowId}:${opener?.group}`;
-    if (opener?.opener === 'row') focusRequestRef.current = { kind: 'picker-opener', line };
-    else if (opener?.opener === 'grams') focusRequestRef.current = { kind: 'row-grams', line };
-    else focusRequestRef.current = 'ingredient-target';
+    if (opener?.opener === 'row') {
+      focusRequestRef.current = { kind: 'picker-opener', line: openerLine(createDraft, opener.afterRowId, opener.group) };
+    } else if (opener?.opener === 'grams') {
+      focusRequestRef.current = { kind: 'row-grams', line: openerLine(createDraft, opener.afterRowId, opener.group) };
+    } else focusRequestRef.current = 'ingredient-target';
   };
 
   const rowName = (rowId) => version.rows.find((row) => row.id === rowId)?.ingredientName ?? '';

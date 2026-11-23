@@ -272,7 +272,7 @@ describe('IngredientTable, creating: a row in two steps reads one line per step'
     expect(note('sucrose-row:0')).toBeNull();
   });
 
-  it("names each line's Move controls and grams field by its step, so no two share a name", () => {
+  it("names each line's Add ingredient, Move controls and grams field by its step, so no two share a name", () => {
     mount(splitDraft);
     const move = (key, direction) => line(key).querySelector(`[data-act="move-${direction}"]`).getAttribute('aria-label');
     expect(move('milk-row:1', 'up')).toBe(`Move up, ${WHOLE_MILK} in step 1`);
@@ -280,11 +280,11 @@ describe('IngredientTable, creating: a row in two steps reads one line per step'
     // A row with one line names no step.
     expect(move('sucrose-row:0', 'up')).toBe('Move up, Sucrose');
     // Every line-specific control on the table has a name of its own: each Move
-    // button and each grams field. The removes are left out: each removes the row.
-    const names = [...current.container.querySelectorAll('tbody [data-act^="move-"], tbody textarea')].map((control) =>
-      control.getAttribute('aria-label'),
-    );
-    expect(names).toHaveLength(3 * 2 + 3);
+    // button, each Add ingredient and each grams field. The removes are left out: each removes the row.
+    const names = [
+      ...current.container.querySelectorAll('tbody [data-act^="move-"], tbody [data-act="add-ingredient"], tbody textarea'),
+    ].map((control) => control.getAttribute('aria-label'));
+    expect(names).toHaveLength(3 * 3 + 3);
     expect(new Set(names).size).toBe(names.length);
   });
 
@@ -408,12 +408,15 @@ describe('IngredientTable, creating: the acts line (STRUCT-01 to STRUCT-03, D-15
     expect(actsText('sucrose-row:0')).toBe('Add ingredient · Move up · Move down · Remove');
   });
 
-  it("Add ingredient asks for the pressed line's row and group, never takes the heading's class, and is on each line of a split row (D-09, STRUCT-05)", () => {
+  it("Add ingredient asks for the pressed line's row and group, never takes the heading's class, and is on each line of a split row, each named by its step (bug-p12-add-ingredient-same-name) (D-09, STRUCT-05)", () => {
     mount(() => toggleStepUses(threeRows(), 2, 'milk-row'));
     const first = control('milk-row:1', 'add-ingredient');
     const second = control('milk-row:2', 'add-ingredient');
-    expect(first.getAttribute('aria-label')).toBe(`Add ingredient after ${WHOLE_MILK}`);
-    expect(second.getAttribute('aria-label')).toBe(`Add ingredient after ${WHOLE_MILK}`);
+    expect(first.getAttribute('aria-label')).toBe(`Add ingredient after ${WHOLE_MILK} in step 1`);
+    expect(second.getAttribute('aria-label')).toBe(`Add ingredient after ${WHOLE_MILK} in step 2`);
+    expect(control('cream-row:0', 'add-ingredient').getAttribute('aria-label')).toBe(
+      'Add ingredient after Heavy cream, 36% fat',
+    );
     expect(first.textContent).toBe('Add ingredient');
     for (const button of current.container.querySelectorAll('[data-act="add-ingredient"]')) {
       expect(button.classList.contains('mk-head-act')).toBe(false);

@@ -243,8 +243,8 @@ function RemoveRowControl({ removed, onToggle, lineName }) {
 // ingredient · Move up · Move down · Remove. A Move that cannot act (the group's
 // first row's up, its last row's down) is .mk-off and aria-disabled, stays in
 // the tab order and does nothing. Every line of a split row carries remove,
-// since each removes the whole row, and names its Move controls by step so no
-// two share a name. Add ingredient opens the picker and lands the pick right
+// since each removes the whole row, and names its Add ingredient and Move
+// controls by step so no two share a name. Add ingredient opens the picker and lands the pick right
 // after this line's row (D-09); its class is never the heading control's.
 // Pressed, Add to step turns the span into the chooser: Cancel, then one
 // control per step.
@@ -307,7 +307,7 @@ function RowActs({
       <Button
         className="text-control"
         data-act="add-ingredient"
-        aria-label={`Add ingredient after ${name}`}
+        aria-label={`Add ingredient after ${name}${inStep}`}
         aria-keyshortcuts="Meta+Enter Control+Enter"
         onClick={onAddAfter}
       >

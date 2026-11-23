@@ -222,10 +222,11 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // projection (D-07). null until loaded; libraryFailed when the read rejects.
   const [library, setLibrary] = useState(null);
   const [libraryFailed, setLibraryFailed] = useState(false);
-  // The picker is open in the place of Add ingredient, and the row just added
-  // holds focus in its grams field until it is left. null is closed; open, it
-  // names the row the pick lands after and the group that row was pressed in
-  // (null for the heading's, which adds at the end), and what opened it.
+  // The picker is open, and the row just added holds focus in its grams field
+  // until it is left. null is closed; open, it names the row the pick lands after
+  // and the group that row was pressed in (null for the heading's, which adds at
+  // the end), and what opened it. The picker stands as the next row of the table
+  // after the line it names, or in its built place (sketch 016 CONTRACT section 13).
   const [picking, setPicking] = useState(null);
   const [focusRowId, setFocusRowId] = useState(null);
   const { draftRestoreDone } = useKeptDraft({
@@ -659,6 +660,29 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   const saveMessages = saveAttempts > 0 ? new Map(refusals.map((block) => [block.id, block.message])) : null;
   const lineMessages = saveAttempts > 0 ? lineSaveMessages(refusals) : null;
   const noRowsMessage = saveMessages?.get('no-rows') ?? null;
+
+  // Where the picker stands: after the line its opener names while that row is still
+  // in its group, which is the rule handlePick lands the pick by, so the picker stands
+  // where the pick will land. Otherwise there is no line and it keeps its built place.
+  const pickerLine =
+    picking && anchorHolds(createDraft, picking.afterRowId, picking.group) ? `${picking.afterRowId}:${picking.group}` : null;
+  // Its accessible name says the place, to a screen reader only (CONTRACT section 13).
+  let pickerLabel = 'Add ingredient';
+  if (pickerLine) {
+    pickerLabel = `Add ingredient after ${rowName(picking.afterRowId)}`;
+    if (picking.group !== UNPLACED_STEP) pickerLabel += `, in step ${displayNumbers(createDraft.method).get(picking.group)}`;
+    else if (liveSteps(createDraft).length > 0) pickerLabel += ', not in a step yet';
+  }
+  const pickerElement = picking ? (
+    <IngredientPicker
+      records={library}
+      addedIds={addedIds}
+      onPick={handlePick}
+      onCancel={handleCancelPicker}
+      describedBy={noRowsMessage ? NO_ROWS_ERROR_ID : undefined}
+      label={pickerLabel}
+    />
+  ) : null;
   const formRefusal = refusals.find((block) => block.target.kind === 'form')?.message ?? null;
   const underSave = saveFailed ? (editing ? EDIT_SAVE_ERROR : RECIPE_CREATE_ERROR) : (editRefusalLine(editRefusal) ?? formRefusal);
 
@@ -858,6 +882,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                   onMoveRow: handleMoveRow,
                   onPlaceRow: handlePlaceRow,
                   onAddRowAfter: handleAddRowAfter,
+                  picker: pickerLine ? { line: pickerLine, element: pickerElement } : null,
                 }}
                 onChangePenNoteText={handleChangeNote}
                 onRemovePenNote={handleRemoveNote}
@@ -878,17 +903,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                     </Button>
                   )
                 }
-                ingredientsFoot={
-                  picking ? (
-                    <IngredientPicker
-                      records={library}
-                      addedIds={addedIds}
-                      onPick={handlePick}
-                      onCancel={handleCancelPicker}
-                      describedBy={noRowsMessage ? NO_ROWS_ERROR_ID : undefined}
-                    />
-                  ) : null
-                }
+                ingredientsFoot={pickerLine ? null : pickerElement}
                 creationMethod={
                   <CreationSteps
                     draft={createDraft}

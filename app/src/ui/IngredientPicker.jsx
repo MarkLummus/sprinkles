@@ -23,7 +23,7 @@ function rowSummary(entry) {
   return [category, summaryText(entry)].filter((part) => part !== '').join(' · ');
 }
 
-export function IngredientPicker({ records, addedIds, onPick, onCancel, describedBy }) {
+export function IngredientPicker({ records, addedIds, onPick, onCancel, describedBy, label = 'Add ingredient' }) {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState(ALL);
   const nameRef = useRef(null);
@@ -46,7 +46,7 @@ export function IngredientPicker({ records, addedIds, onPick, onCancel, describe
   }
 
   return (
-    <div className="pick" role="group" aria-label="Add ingredient">
+    <div className="pick" role="group" aria-label={label}>
       <div className="pick__head">
         <span className="pen-caption">Add ingredient</span>
         <Button className="text-control" onClick={onCancel}>

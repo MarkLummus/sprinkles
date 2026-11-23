@@ -591,7 +591,9 @@ export function IngredientTable({
   // { gramsByLine, focusLine, onChangeGrams(rowId, step, value),
   // onBlurGrams(rowId, step), onRemoveRow(rowId) }, present only while
   // creating. A line's key is `${rowId}:${step}`, the step being the
-  // projection's (a live step's key, or UNPLACED_STEP).
+  // projection's (a live step's key, or UNPLACED_STEP). `picker` is
+  // { line, element } or null: the line key the ingredient picker stands after
+  // and the picker to draw there (sketch 016 CONTRACT section 13).
   creationRows = null,
   draft = null,
   penDraft = null,
@@ -917,6 +919,15 @@ export function IngredientTable({
     );
   }
 
+  // The picker's row: one cell across the table holding the picker as built.
+  function renderPickerRow() {
+    return (
+      <tr key="pick" className="ingredient-table__pick">
+        <td colSpan={columnCount}>{creationRows.picker.element}</td>
+      </tr>
+    );
+  }
+
   function renderShowChangesEntry(row, portion, portionIndex) {
     const rowDiff = diff.rows.find((entry) => entry.id === row.id);
     const line = rowDiff.lines[portionIndex];
@@ -1167,7 +1178,14 @@ export function IngredientTable({
                 </td>
               </tr>
             )}
-            {group.entries.map((entry, index) => renderEntry(entry, { index, size: group.entries.length }))}
+            {group.entries.flatMap((entry, index) => {
+              const line = renderEntry(entry, { index, size: group.entries.length });
+              // The picker stands as the next row of the table after the line it names,
+              // inside that line's body (sketch 016 CONTRACT section 13).
+              return isCreating && creationRows.picker?.line === `${entry.row.id}:${entry.portion.step}`
+                ? [line, renderPickerRow()]
+                : [line];
+            })}
           </tbody>
         ))}
         <tfoot>

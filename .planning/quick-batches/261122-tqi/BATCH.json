@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "batch_id": "261122-tqi",
+  "created_at": "2026-11-23T02:24:37.384Z",
+  "options": {},
+  "base_revision": "b06add6fa929a6e65de92e9b7063cbaba3423fc1",
+  "head_revision": "e66eb28ec741f89f1b629d708482bdf976393c76",
+  "items": [
+    {
+      "quick_id": "261122-tqj",
+      "client_id": null,
+      "description": "bug-p12-add-ingredient-same-name: on an ingredient split across steps both \"Add ingredient after <name>\" buttons are announced with the same name; add the step to the label, as the Move buttons on the same line do (app/src/ui/IngredientTable.jsx:309-316). Test first.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/IngredientTable.jsx",
+        "app/src/ui/IngredientTable.creating.test.jsx",
+        ".planning/quick/261122-tqj-bug-p12-add-ingredient-same-name-on-an-ingredient-split-acro/261122-tqj-SUMMARY.md"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "fd95ddcc",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261122-tqk",
+      "client_id": null,
+      "description": "bug-p12-start-after-narrowing-strands-draft: the Notebook New recipe entry stays open when the window narrows below 724, and Start then lands on the one-line desk page with a draft that cannot be opened. Mark decided the editor is a desk job (decide-p12-narrowing-closes-editor: leave as built), so the entry follows the same width rule as its New recipe button and is not offered below 724 (app/src/ui/NotebookPlace.jsx:144-147 and :236). Test first; reproduce in Playwright WebKit and Chromium against a scratch build.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/NotebookPlace.jsx",
+        "app/src/ui/NotebookPlace.test.jsx",
+        ".planning/quick/261122-tqk-bug-p12-start-after-narrowing-strands-draft-the-notebook-new/261122-tqk-SUMMARY.md"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "460e7c56",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261122-tql",
+      "client_id": null,
+      "description": "bug-p12-focus-lost-across-724: Cancel leaves nothing focused when the button it returns to is not drawn at the current width. Case one: the Notebook New recipe entry after narrowing below 724 (NotebookPlace.jsx:195-197, :230). Case two: Record batch or Record tasting pens opened in the recipe head below 724, then widened to 724 or more, then Cancel (VersionRow.jsx:142-150, :477). Return focus to a control that is drawn at the current width. The Next version pen closing below 724 is decided leave-as-built (decide-p12-phone-focus-after-pen-close) and is not part of this. Test first; reproduce in Playwright WebKit and Chromium against a scratch build.",
+      "status": "complete",
+      "depends_on": [
+        "261122-tqk"
+      ],
+      "planned_files": [
+        "app/src/ui/BatchRow.jsx",
+        "app/src/ui/RecipePage.recordTasting.test.jsx",
+        "app/src/ui/NotebookPlace.test.jsx",
+        ".planning/quick/261122-tql-bug-p12-focus-lost-across-724-cancel-leaves-nothing-focused/261122-tql-SUMMARY.md"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 1,
+      "commit": "c7e9d3e5",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261122-tqm",
+      "client_id": null,
+      "description": "bug-p12-picker-cancel-focus-heading: the ingredient picker's Cancel sends focus to the heading's Add ingredient when the row that opened it has since moved into a step (also when unticked through Change ingredients, and when Cmd+Return in the grams opened the picker); resolve the row's current line at Cancel time and keep the heading as the fallback only when the row is gone (app/src/ui/CreationPage.jsx:334-342, :449-455). Test first.",
+      "status": "complete",
+      "depends_on": [
+        "261122-tqj"
+      ],
+      "planned_files": [
+        "app/src/ui/CreationPage.jsx",
+        "app/src/ui/CreationFlow.test.jsx",
+        ".planning/quick/261122-tqm-bug-p12-picker-cancel-focus-heading-the-ingredient-picker-s/261122-tqm-SUMMARY.md"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 1,
+      "commit": "b8b928c1",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261122-tqn",
+      "client_id": null,
+      "description": "bug-pen-saves-blank-lead-in: Next version saves a step with a blank lead-in or a one-sided target; the creation editor refuses both with Required. The version pen applies the same checks, with the same words (app/src/ui/Method.jsx). Cause not traced: trace it first, then a test that reproduces it, then the fix.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/domain/penDraft.test.js",
+        "app/src/ui/RecipePage.perStep.test.jsx",
+        "app/src/domain/lineage.js",
+        "app/src/domain/penDraft.js",
+        "app/src/domain/creationSave.js",
+        "app/src/ui/RecipeSheet.jsx",
+        "app/src/ui/Method.jsx",
+        "app/src/styles/notebook.css"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "cad72d3f",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261122-tqo",
+      "client_id": null,
+      "description": "bug-pen-step-done-drops-focus: in Next version, Done and Remove this step on an open step leave nothing focused; Cancel already returns focus to Edit this step. Done returns focus to Edit this step, and Remove this step lands on a drawn neighbour (app/src/ui/Method.jsx). Cause not traced: trace it first, then a test that reproduces it, then the fix.",
+      "status": "complete",
+      "depends_on": [
+        "261122-tqn"
+      ],
+      "planned_files": [
+        "app/src/ui/Method.jsx",
+        "app/src/ui/RecipePage.perStep.test.jsx",
+        ".planning/quick/261122-tqo-bug-pen-step-done-drops-focus-in-next-version-done-and-remov/261122-tqo-SUMMARY.md"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 1,
+      "commit": "be6c238b",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261122-tqp",
+      "client_id": null,
+      "description": "bug-p12-probes-accept-app-dist: copy the PROBE_DIST=app/dist refusal block from 12-phone-probe.mjs:44-59 into 12-tab-probe.mjs (:49-57) and 12-keys-probe.mjs (:42-52) in .planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/, and show each refuses app/dist. No app/ change.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        ".planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-refusal-check.sh",
+        ".planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-tab-probe.mjs",
+        ".planning/phases/12-showing-a-recipe-s-own-scales-and-problems-and-the-whole-loo/12-keys-probe.mjs",
+        ".planning/quick/261122-tqp-bug-p12-probes-accept-app-dist-copy-the-probe-dist-app-dist/261122-tqp-SUMMARY.md"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "00e96385",
+      "failure_reason": null
+    }
+  ]
+}

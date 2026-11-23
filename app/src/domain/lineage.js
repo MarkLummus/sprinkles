@@ -241,7 +241,7 @@ export function gramsDraftMessage(ingredientName, raw) {
 // cannot word the grams sentences differently (gramsDraftMessage, D-08).
 export const REQUIRED = 'Required';
 
-function hasWords(value) {
+export function hasWords(value) {
   return typeof value === 'string' && value.trim() !== '';
 }
 

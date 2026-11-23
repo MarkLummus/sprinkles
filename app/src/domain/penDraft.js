@@ -7,6 +7,7 @@ import {
   blockedSaveRowId,
   blockedSaveLineIndex,
   blockedSaveStepField,
+  hasWords,
   parseGramsDraft,
 } from './lineage.js';
 
@@ -270,17 +271,29 @@ export function penSaveBlock(penDraft, version, scopedVersions) {
   return { message, target: { kind: 'versionLine' } };
 }
 
+// The method as the pen saves it: a step's target whose label and value both
+// hold no words is dropped, as the creation editor drops it (buildCreation in
+// creationSave.js). The store file check refuses such a target, and a backup
+// holding it would not import. Every other part of a step saves as typed.
+function savedMethod(penDraft) {
+  return penDraft.method.map((step) => ({
+    ...step,
+    targets: (step.targets ?? []).filter((target) => hasWords(target.label) || hasWords(target.value)),
+  }));
+}
+
 // The pen's fields coerced for the domain constructor (createChildVersion,
 // saveOverVersion): rows' grams strings are parsed here, at save time, never
 // on keystroke (Pitfall 5). A reason of nothing but whitespace is treated as
-// blank and stored as null, exactly as an empty reason already was.
+// blank and stored as null, exactly as an empty reason already was. The method
+// is the draft's with a both-blank target dropped (savedMethod).
 export function penFieldsFromDraft(penDraft, version) {
   return {
     versionLabel: penDraft.versionLabel,
     reason: penDraft.reason.trim() === '' ? null : penDraft.reason,
     citedBatchId: penDraft.citedBatchId,
     rows: penDraftRows(version, penDraft),
-    method: penDraft.method,
+    method: savedMethod(penDraft),
     sheetTitle: penDraft.sheetTitle,
     sheetDescription: penDraft.sheetDescription,
     authored: penDraft.authored,

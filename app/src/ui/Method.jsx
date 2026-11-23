@@ -803,8 +803,11 @@ export function Method({
             const staleEntry = activeStaleSteps.find((entry) => entry.n === step.n);
             // The margin (D-UAT-5, G-03-14): a number that came from the
             // BASELINE frame — a removed step — is not printed here. The
-            // span still renders so the two-column grid never shifts, but
-            // stays empty, which is what the pen already does for a step
+            // span still renders, empty, and app.css's :empty rule on the
+            // number gives it one figure's width, so a removed step's words
+            // start where the live steps' words start
+            // (bug-pen-removed-step-words-shift-left). Empty is what the
+            // pen already does for a step
             // removed before it opened; that treatment stops being one of
             // two side by side and becomes the pen's single rule. The pen
             // suppresses where show-changes marks (below) because in the

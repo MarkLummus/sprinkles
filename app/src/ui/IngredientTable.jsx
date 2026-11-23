@@ -593,7 +593,8 @@ export function IngredientTable({
   // creating. A line's key is `${rowId}:${step}`, the step being the
   // projection's (a live step's key, or UNPLACED_STEP). `picker` is
   // { line, element } or null: the line key the ingredient picker stands after
-  // and the picker to draw there (sketch 016 CONTRACT section 13).
+  // and the picker to draw there, the line null for the end of the table (sketch 016
+  // CONTRACT section 13).
   creationRows = null,
   draft = null,
   penDraft = null,
@@ -1126,6 +1127,9 @@ export function IngredientTable({
     );
   }
 
+  // The picker the heading's Add ingredient opened: it names no line, so it stands at the end.
+  const endPicker = isCreating && creationRows.picker != null && creationRows.picker.line === null;
+
   function renderEntry({ row, portion, portionIndex, displayNumber, stepRemoved }, place) {
     if (isCreating) return renderCreatingEntry(row, portion, portionIndex, displayNumber, place);
     if (isShowingChanges) return renderShowChangesEntry(row, portion, portionIndex);
@@ -1162,7 +1166,7 @@ export function IngredientTable({
             decision 45). A flat table is one group, one tbody; no group at all keeps
             today's single empty tbody. */}
         {groups.length === 0 && <tbody />}
-        {groups.map((group) => (
+        {groups.map((group, groupIndex) => (
           <tbody key={group.kind === 'removed' ? `removed:${group.n}` : (group.displayNumber ?? 'unallocated')}>
             {showStepHeads && (
               <tr className="ingredient-table__step-head">
@@ -1186,8 +1190,20 @@ export function IngredientTable({
                 ? [line, renderPickerRow()]
                 : [line];
             })}
+            {isCreating && endPicker && groupIndex === groups.length - 1 && group.kind === 'unallocated' && renderPickerRow()}
           </tbody>
         ))}
+        {/* The picker from the heading stands at the end. When the last body is a step's, it
+            stands in a body of its own under a 'Not in a step yet' head, present only while
+            the picker is open, because that is the group the new row starts (CONTRACT section 13). */}
+        {isCreating && endPicker && !(groups.length > 0 && groups[groups.length - 1].kind === 'unallocated') && (
+          <tbody key="pick">
+            <tr className="ingredient-table__step-head">
+              <td colSpan={columnCount}>Not in a step yet</td>
+            </tr>
+            {renderPickerRow()}
+          </tbody>
+        )}
         <tfoot>
           <tr aria-label={totalAriaLabel}>
             <td className="ingredient-table__col-grams">

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Button } from './Button.jsx';
 import { filterLibrary, libraryCategories } from '../domain/ingredientSearch.js';
 import { ingredientCountWords } from './countWords.js';
@@ -11,9 +11,13 @@ import { holdReturn, stripNewlines } from './oneLineField.js';
 // each row showing the name, the category and the place's summary. Only a
 // library record's own row adds: an entry already on the recipe reads Added and
 // does nothing, and a name that matches nothing says it is not in the library
-// and adds nothing (decisions 4 and 7). Every entry's text renders as text.
+// and adds nothing (decisions 4 and 7). Every entry's text renders as text. The
+// page names the group by where the picker stands (sketch 016 CONTRACT section 13).
+// The page holds the filters, so a picker drawn anew in another row keeps them; the
+// page, not the picker, puts focus in Name when it opens or moves the picker.
 
 const ALL = 'All';
+export const NO_FILTERS = { query: '', category: ALL };
 
 // A category word only when the entry holds a non-blank string; the summary
 // joins only the parts it has, so an entry with no non-zero figure reads its
@@ -23,23 +27,16 @@ function rowSummary(entry) {
   return [category, summaryText(entry)].filter((part) => part !== '').join(' · ');
 }
 
-export function IngredientPicker({ records, addedIds, onPick, onCancel, describedBy, label = 'Add ingredient' }) {
-  const [query, setQuery] = useState('');
-  const [category, setCategory] = useState(ALL);
+export function IngredientPicker({ records, addedIds, onPick, onCancel, describedBy, label = 'Add ingredient', filters, onChangeFilters }) {
+  const { query, category } = filters;
   const nameRef = useRef(null);
-
-  // Opening the picker moves focus to Name.
-  useEffect(() => {
-    nameRef.current?.focus();
-  }, []);
 
   const categories = libraryCategories(records);
   const shown = filterLibrary(records, query, category);
   const filtered = query.trim() !== '' || category !== ALL;
 
   function clearFilters() {
-    setQuery('');
-    setCategory(ALL);
+    onChangeFilters(NO_FILTERS);
     // The button leaves the page with the filters; focus goes to the field the
     // maker types in rather than to nothing.
     nameRef.current?.focus();
@@ -65,7 +62,7 @@ export function IngredientPicker({ records, addedIds, onPick, onCancel, describe
             rows="1"
             aria-describedby={describedBy}
             value={query}
-            onChange={(event) => setQuery(stripNewlines(event.target.value))}
+            onChange={(event) => onChangeFilters({ ...filters, query: stripNewlines(event.target.value) })}
             onKeyDown={holdReturn}
             autoComplete="off"
             spellCheck={false}
@@ -77,7 +74,7 @@ export function IngredientPicker({ records, addedIds, onPick, onCancel, describe
           {/* The tabindex scan cannot see a select, and WebKit without Safari's
               tab-to-highlight preference Tabs only into controls that carry an
               explicit tabindex (D-15). */}
-          <select className="ink-field" value={category} onChange={(event) => setCategory(event.target.value)} tabIndex={0}>
+          <select className="ink-field" value={category} onChange={(event) => onChangeFilters({ ...filters, category: event.target.value })} tabIndex={0}>
             <option value={ALL}>{ALL}</option>
             {categories.map((word) => (
               <option key={word} value={word}>

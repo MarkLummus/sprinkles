@@ -8,7 +8,7 @@ import { DRAFT_KEPT_STATUS, useDraftWriter, useKeptDraft } from './useKeptDraft.
 import { PageNotice, usePageNotice } from './PageNotice.jsx';
 import { PAGE_LOAD_ERROR } from './RecipePage.jsx';
 import { useCatalog } from './CatalogContext.jsx';
-import { IngredientPicker } from './IngredientPicker.jsx';
+import { IngredientPicker, NO_FILTERS } from './IngredientPicker.jsx';
 import { CreationSetup } from './CreationSetup.jsx';
 import { CreationSteps } from './CreationSteps.jsx';
 import { holdReturn, stripNewlines } from './oneLineField.js';
@@ -57,6 +57,20 @@ function anchorHolds(draft, afterRowId, group) {
   if (afterRowId === null) return false;
   if (group !== UNPLACED_STEP && !liveSteps(draft).some((step) => step.n === group)) return false;
   return groupRows(draft, group).includes(afterRowId);
+}
+
+// Opening or moving the picker scrolls the page only as far as the picker needs, and
+// never moves the row above the picker out from under the sticky header: the row
+// directly above the picker is what stays in view (CONTRACT section 13; README
+// decision 41). The top is the header's height, which the page reads as the
+// root's scroll padding from 724 up.
+function scrollPickerIntoView(name) {
+  const place = name.closest('tr.ingredient-table__pick') ?? name.closest('.pick');
+  const above = place?.previousElementSibling;
+  if (!above) return;
+  const top = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+  const by = Math.min(Math.max(0, place.getBoundingClientRect().bottom - window.innerHeight), above.getBoundingClientRect().top - top);
+  if (by !== 0) window.scrollBy(0, by);
 }
 
 // The line the picker's opener stands on now. It is the line it was pressed on
@@ -225,8 +239,10 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // The picker is open, and the row just added holds focus in its grams field
   // until it is left. null is closed; open, it names the row the pick lands after
   // and the group that row was pressed in (null for the heading's, which adds at
-  // the end), and what opened it. The picker stands as the next row of the table
-  // after the line it names, or in its built place (sketch 016 CONTRACT section 13).
+  // the end), what opened it, and the Name and Category the maker has typed, which
+  // live here so a picker drawn anew in another row keeps them. The picker stands as
+  // the next row of the table after the line it names, at the end of the table, or in
+  // its built place with no row (sketch 016 CONTRACT section 13).
   const [picking, setPicking] = useState(null);
   const [focusRowId, setFocusRowId] = useState(null);
   const { draftRestoreDone } = useKeptDraft({
@@ -379,9 +395,13 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
       target = page.querySelector(`textarea[aria-label="beforeYouStart note ${createDraft.beforeYouStart.length}"]`);
     } else if (request === 'add-note') {
       target = page.querySelector('.before-region .mk-head-act');
-    } else if (request === 'picker-name') {
-      // The picker focuses Name only when it mounts; one already open is moved.
+    } else if (request === 'picker-place') {
+      // The picker takes no focus by itself: the page puts focus in Name when it opens or
+      // moves the picker, and scrolls only as far as the picker needs.
       target = page.querySelector('.ingredient-table-region .pick .ing__filters textarea');
+      target?.focus({ preventScroll: true });
+      if (target) scrollPickerIntoView(target);
+      return;
     } else {
       // The table region's add control: Add ingredient, or, while the picker is
       // open in its place, the picker's Cancel.
@@ -452,9 +472,20 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   // The opener is 'row' (the row's Add ingredient button) or 'grams' (Cmd+Return or
   // Ctrl+Return in the row's grams, section 11, 9c): the same landing, and Cancel
   // goes back to whichever one it was.
+  // The picker moves to stand after that row and keeps what was typed in it.
   const handleAddRowAfter = (rowId, group, { opener = 'row' } = {}) => {
-    if (picking) focusRequestRef.current = 'picker-name';
-    setPicking({ afterRowId: rowId, group, opener });
+    focusRequestRef.current = 'picker-place';
+    setPicking((prev) => ({ afterRowId: rowId, group, opener, filters: prev?.filters ?? NO_FILTERS }));
+  };
+
+  // The heading's Add ingredient opens the picker at the end of the table.
+  const handleAddIngredientAtEnd = () => {
+    focusRequestRef.current = 'picker-place';
+    setPicking({ afterRowId: null, group: null, opener: 'heading', filters: NO_FILTERS });
+  };
+
+  const handleChangeFilters = (filters) => {
+    setPicking((prev) => (prev ? { ...prev, filters } : prev));
   };
 
   // Cancel returns focus to what opened the picker (CONTRACT section 11, 9a): the
@@ -663,15 +694,19 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
 
   // Where the picker stands: after the line its opener names while that row is still
   // in its group, which is the rule handlePick lands the pick by, so the picker stands
-  // where the pick will land. Otherwise there is no line and it keeps its built place.
+  // where the pick will land. Otherwise it stands at the end of the table.
   const pickerLine =
     picking && anchorHolds(createDraft, picking.afterRowId, picking.group) ? `${picking.afterRowId}:${picking.group}` : null;
   // Its accessible name says the place, to a screen reader only (CONTRACT section 13).
+  // With no row at all it keeps the built name.
   let pickerLabel = 'Add ingredient';
   if (pickerLine) {
     pickerLabel = `Add ingredient after ${rowName(picking.afterRowId)}`;
     if (picking.group !== UNPLACED_STEP) pickerLabel += `, in step ${displayNumbers(createDraft.method).get(picking.group)}`;
     else if (liveSteps(createDraft).length > 0) pickerLabel += ', not in a step yet';
+  } else if (createDraft.rows.length > 0) {
+    pickerLabel = 'Add ingredient at the end';
+    if (liveSteps(createDraft).length > 0) pickerLabel += ', not in a step yet';
   }
   const pickerElement = picking ? (
     <IngredientPicker
@@ -681,6 +716,8 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
       onCancel={handleCancelPicker}
       describedBy={noRowsMessage ? NO_ROWS_ERROR_ID : undefined}
       label={pickerLabel}
+      filters={picking.filters}
+      onChangeFilters={handleChangeFilters}
     />
   ) : null;
   const formRefusal = refusals.find((block) => block.target.kind === 'form')?.message ?? null;
@@ -882,7 +919,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                   onMoveRow: handleMoveRow,
                   onPlaceRow: handlePlaceRow,
                   onAddRowAfter: handleAddRowAfter,
-                  picker: pickerLine ? { line: pickerLine, element: pickerElement } : null,
+                  picker: pickerElement && createDraft.rows.length > 0 ? { line: pickerLine, element: pickerElement } : null,
                 }}
                 onChangePenNoteText={handleChangeNote}
                 onRemovePenNote={handleRemoveNote}
@@ -897,13 +934,13 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
                     <Button
                       className="text-control mk-head-act"
                       aria-describedby={noRowsMessage ? NO_ROWS_ERROR_ID : undefined}
-                      onClick={() => setPicking({ afterRowId: null, group: null, opener: 'heading' })}
+                      onClick={handleAddIngredientAtEnd}
                     >
                       Add ingredient
                     </Button>
                   )
                 }
-                ingredientsFoot={pickerLine ? null : pickerElement}
+                ingredientsFoot={createDraft.rows.length > 0 ? null : pickerElement}
                 creationMethod={
                   <CreationSteps
                     draft={createDraft}

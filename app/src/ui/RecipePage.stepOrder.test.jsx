@@ -4,7 +4,7 @@
 // pen: changing the order of steps; Mark's answers of 2026-11-23 on
 // bug-p11-pen-steps-no-reorder, decide-p12-pen-order-scope and
 // look-p12-pen-step-order). Slice 1: the pen moves a step and saves the order. The
-// "was step N" mark is slice 2's and is not asserted here.
+// "was step N" mark is slice 2's: the last describe below asserts it.
 //
 // One real fake-indexeddb store, the page built as the app builds it
 // (RecipePage.stalePen.test.jsx's setup): no repository mock, so the kept draft,
@@ -489,5 +489,122 @@ describe('the pen keeps focus on the moved step and says where it went (sketch 0
 
     await press(tab, 'Step 1, remove');
     expect(region(tab).querySelectorAll('button[aria-label$=", move up"], button[aria-label$=", move down"]')).toHaveLength(0);
+  });
+});
+
+// Sketch 017 CONTRACT section 5, choice A (decide-p12-pen-order-mark = A): once the order
+// of the live steps differs from the version the pen opened on, every live step whose
+// number changed reads " was step N" after its words, N being its number on that
+// version. Moving back clears every mark; a removal alone marks nothing new.
+describe('the pen marks a step whose number changed with its number on the opened version (sketch 017 CONTRACT section 5, slice 2)', () => {
+  const SKIPPED = 'span.method-step__skipped-label';
+  // Per step in document order: the joined text of the marks in its lead, or ''.
+  const marks = (tab) =>
+    stepItems(tab).map((li) => [...li.querySelectorAll(`.method-step__lead ${SKIPPED}`)].map((span) => span.textContent).join(''));
+  const markCount = (tab) => region(tab).querySelectorAll(SKIPPED).length;
+
+  it("W1: the pen says 'was step N' as the steps are moved, and moving back clears it", async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+    expect(markCount(tab)).toBe(0);
+
+    await press(tab, 'Step 4, move up');
+    expect(marks(tab)).toEqual(['', '', ' was step 4', ' was step 3', '']);
+    const lead = stepItems(tab)[2].querySelector('p.method-step__lead');
+    const span = lead.lastElementChild;
+    expect(span.matches(SKIPPED)).toBe(true);
+    expect(span.previousElementSibling.querySelector('b').textContent).toBe('Sweeten.');
+
+    await press(tab, 'Step 3, move up');
+    expect(marks(tab)).toEqual(['', ' was step 4', ' was step 2', ' was step 3', '']);
+
+    await press(tab, 'Step 2, move down');
+    await press(tab, 'Step 3, move down');
+    expect(order(tab)).toEqual(STEEP_ORDER);
+    expect(markCount(tab)).toBe(0);
+  });
+
+  it('W2(a): a removal alone marks nothing new', async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+    await press(tab, 'Step 3, remove');
+    // Bound: a removal alone passes before the change as well.
+    expect(marks(tab)).toEqual(['', '', ' removed', '', '']);
+  });
+
+  it('W2(b): with a move every changed number is marked, and Restore brings pm-twice back', async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+    await press(tab, 'Step 4, move up');
+    await press(tab, 'Step 3, move up');
+    await press(tab, 'Step 4, remove');
+    expect(marks(tab)).toEqual(['', ' was step 4', ' was step 2', ' removed', ' was step 5']);
+    expect(numbers(tab)).toEqual(['1', '2', '3', '', '4']);
+
+    const restore = stepItems(tab)[3].querySelector('[aria-label$=", restore"]');
+    expect(restore).not.toBeNull();
+    await click(restore);
+    expect(marks(tab)).toEqual(['', ' was step 4', ' was step 2', ' was step 3', '']);
+  });
+
+  it("W3: an open step says 'was step N' last in its fields, Preview step does not, and Cancel closes it", async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+    await press(tab, 'Step 4, move up');
+    await press(tab, 'Step 3, move up');
+    await press(tab, 'Step 2, edit this step');
+
+    const li = stepItems(tab)[1];
+    expect(li.querySelector('p.method-step__lead')).toBeNull();
+    const fields = li.querySelector('.method-step__open-fields');
+    const span = fields.lastElementChild;
+    expect(span.matches(SKIPPED)).toBe(true);
+    expect(span.textContent).toBe(' was step 4');
+    expect(span.previousElementSibling.querySelector('textarea[aria-label="Step 2, instruction"]')).not.toBeNull();
+    expect(marks(tab)).toEqual(['', '', ' was step 2', ' was step 3', '']);
+
+    await press(tab, 'Step 2, Preview step');
+    const preview = region(tab).querySelector('.mk-preview');
+    expect(preview).not.toBeNull();
+    expect(preview.textContent).not.toMatch(/was step/i);
+
+    await click([...li.querySelectorAll('button')].find((button) => button.textContent.trim() === 'Cancel'));
+    expect(marks(tab)).toEqual(['', ' was step 4', ' was step 2', ' was step 3', '']);
+  });
+
+  it("W4: the saved version reads unmarked, Show changes marks it against its parent, the pen opened on it marks nothing", async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+    await press(tab, 'Step 4, move up');
+    await press(tab, 'Step 3, move up');
+    await press(tab, 'Step 4, remove');
+    await type(field(tab, 'Version name'), 'sweeten warm');
+    await click(buttonByText(tab, 'Save as new version'));
+    await settle(() => tab.location.pathname !== PAGE_PATH);
+    expect(tab.location.pathname).not.toBe(PAGE_PATH);
+    await settle(() => region(tab) !== null && penOf(tab) === null && order(tab).length === 4);
+
+    expect(order(tab)).toEqual(['Steep', 'Sweeten', 'Strain', 'Churn']);
+    expect(numbers(tab)).toEqual(['1', '2', '3', '4']);
+    expect(region(tab).textContent).not.toMatch(/was step/i);
+    expect(stepHeads(tab)).toEqual(['Step 1Steep', 'Step 2Sweeten']);
+
+    await click(buttonByText(tab, 'Show changes'));
+    expect(order(tab)).toEqual(['Steep', 'Sweeten', 'Strain', 'Rest', 'Churn']);
+    expect(numbers(tab)).toEqual(['1', '2', '3', '3', '4']);
+    expect(stepItems(tab)[3].querySelector('.method-step__n').classList.contains('method-step__n--struck')).toBe(true);
+    expect(marks(tab)).toEqual(['', ' was step 4', ' was step 2', ' removed', ' was step 5']);
+    expect(stepHeads(tab)).toEqual(['Step 1Steep', 'Step 2Sweeten']);
+    expect(tab.container.querySelectorAll(`.ingredient-table-region ${SKIPPED}`)).toHaveLength(0);
+
+    await click(buttonByText(tab, 'Hide changes'));
+    expect(region(tab).textContent).not.toMatch(/was step/i);
+
+    // Undrawn state 5: the pen compares with the version it opened on, so a pen on the reordered child marks nothing.
+    await click(buttonByText(tab, 'Next version'));
+    await settle(() => penOf(tab) !== null);
+    expect(penOf(tab)).not.toBeNull();
+    // Rest stays " removed" as it was saved; nothing says "was step".
+    expect(region(tab).textContent).not.toMatch(/was step/i);
   });
 });

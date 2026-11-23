@@ -52,10 +52,11 @@ function baselineVersion() {
 
 let current = null;
 
-function mount({ removeStep3 = false } = {}) {
+function mount({ removeStep3 = false, swapFirstTwo = false } = {}) {
   const baseline = baselineVersion();
   const initial = structuredClone(baseline);
   if (removeStep3) initial.method[2].removed = true;
+  if (swapFirstTwo) initial.method = [initial.method[1], initial.method[0], initial.method[2]];
 
   function Page() {
     const [draft, setDraft] = useState(initial);
@@ -280,5 +281,42 @@ describe('Method — Preview step on the version pen\'s open step (CONTRACT sect
     press(container, 'Step 2, edit this step');
     press(container, 'Step 2, Preview step');
     expect(container.querySelector('.mk-preview .method-step__n').textContent).toBe('2');
+  });
+});
+
+// Sketch 017 CONTRACT section 5, choice A: the open step says "was step N" last in its fields, where
+// " removed" stands, before the line of target chips (undrawn state 1: the board draws no step with
+// targets), and Preview step, which reads the step as it will read, carries no mark.
+describe("Method - the 'was step N' mark on the pen's open step (sketch 017 CONTRACT section 5)", () => {
+  const SKIPPED = 'span.method-step__skipped-label';
+
+  it('P1: an open step with targets says was step N after its fields and before the target chips', () => {
+    const container = mount({ swapFirstTwo: true });
+    press(container, 'Step 2, edit this step');
+    const fields = container.querySelector('#method-step-1 .method-step__open-fields');
+    const marks = fields.querySelectorAll(SKIPPED);
+    expect(marks).toHaveLength(1);
+    expect(marks[0].textContent).toBe(' was step 1');
+    const instruction = byLabel(container, 'Step 2, instruction').closest('label');
+    const chips = fields.querySelector('p.method-step__targets');
+    expect(chips.querySelector('.target-chip')).not.toBeNull();
+    expect(instruction.compareDocumentPosition(marks[0]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(marks[0].compareDocumentPosition(chips) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(container.querySelector(`#method-step-2 p.method-step__lead ${SKIPPED}`).textContent).toBe(' was step 2');
+  });
+
+  it('P2: Preview step on that open step carries no mark', () => {
+    const container = mount({ swapFirstTwo: true });
+    press(container, 'Step 2, edit this step');
+    press(container, 'Step 2, Preview step');
+    const preview = container.querySelector('.mk-preview');
+    expect(preview).not.toBeNull();
+    expect(preview.textContent).not.toMatch(/was step/i);
+  });
+
+  it('P3: in the opened order, an open step draws no mark', () => {
+    const container = mount();
+    press(container, 'Step 1, edit this step');
+    expect(container.querySelectorAll(SKIPPED)).toHaveLength(0);
   });
 });

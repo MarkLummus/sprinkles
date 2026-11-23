@@ -52,8 +52,8 @@ export function displayNumberOf(map, n) {
  * Each array is read in its own order. A removal alone is no change of order,
  * and passing a removed step is not a move: only the live-in-both steps are
  * compared (sketch 017 CONTRACT section 5). The pen's dirty check reads this
- * one rule, and so does slice 2's "was step N" mark. Never mutates, never
- * sorts either array.
+ * one rule, and so does movedFromNumbers, which says "was step N". Never
+ * mutates, never sorts either array.
  */
 export function keptOrderChanged(method, baseMethod) {
   const liveIn = (steps) => new Set(steps.filter((step) => !step.removed).map((step) => step.n));
@@ -64,4 +64,26 @@ export function keptOrderChanged(method, baseMethod) {
   const own = keptKeys(method);
   const base = keptKeys(baseMethod);
   return own.length !== base.length || own.some((n, index) => n !== base[index]);
+}
+
+/**
+ * movedFromNumbers(method, baseMethod) -> a Map from a stored key (n) to that
+ * step's number on baseMethod, for the "was step N" words (sketch 017 CONTRACT
+ * section 5, choice A). It is empty unless keptOrderChanged(method, baseMethod):
+ * a removal alone marks nothing. When the order differs it holds every step that
+ * is live in method, has a number on baseMethod, and has a number in method that
+ * differs from it; a step with no number on baseMethod is never in it. Entries
+ * come in method's own order. Never mutates, never sorts either array.
+ */
+export function movedFromNumbers(method, baseMethod) {
+  const moved = new Map();
+  if (!keptOrderChanged(method, baseMethod)) return moved;
+  const own = displayNumbers(method);
+  const base = displayNumbers(baseMethod);
+  for (const step of method) {
+    const ownNumber = displayNumberOf(own, step.n);
+    const baseNumber = displayNumberOf(base, step.n);
+    if (ownNumber !== null && baseNumber !== null && ownNumber !== baseNumber) moved.set(step.n, baseNumber);
+  }
+  return moved;
 }

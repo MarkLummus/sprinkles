@@ -868,3 +868,77 @@ describe('buildDiff — row-level figures read the lines still in (WR-01)', () =
     expect(lecithin.removed).toBe(true);
   });
 });
+
+// Sketch 017 CONTRACT sections 5 and 7: buildDiff reports whether the order of the
+// steps live in both versions differs (stepOrderChanged) and, per step descriptor,
+// the number the step held on the baseline when the order differs (movedFrom).
+describe('buildDiff — step order (sketch 017 CONTRACT sections 5 and 7)', () => {
+  function swapped() {
+    const current = clone();
+    const [a, b] = [current.method[3], current.method[4]];
+    current.method[3] = b;
+    current.method[4] = a;
+    return current;
+  }
+
+  it('D1: identity reports no order change and no movedFrom', () => {
+    const version = clone();
+    const diff = buildDiff(version, version);
+    expect(diff.stepOrderChanged).toBe(false);
+    expect(diff.steps.every((step) => step.movedFrom === null)).toBe(true);
+  });
+
+  it('D2: swapping two steps follows the current method order and marks only those two', () => {
+    const baseline = clone();
+    const current = swapped();
+    const diff = buildDiff(current, baseline);
+    const identity = buildDiff(baseline, baseline);
+    expect(diff.stepOrderChanged).toBe(true);
+    expect(diff.steps.map((step) => step.n)).toEqual([1, 2, 3, 5, 4, 6, 7, 8, 9, 10]);
+    const byN = (n) => diff.steps.find((step) => step.n === n);
+    expect(byN(5).movedFrom).toBe(5);
+    expect(byN(4).movedFrom).toBe(4);
+    for (const step of diff.steps.filter((candidate) => candidate.n !== 4 && candidate.n !== 5)) expect(step.movedFrom).toBeNull();
+    for (const step of diff.steps) {
+      expect(step.textChanged).toBe(false);
+      expect(step.usesChanged).toBe(false);
+      expect(step.removedChanged).toBe(false);
+    }
+    expect(diff.rows).toEqual(identity.rows);
+  });
+
+  it('D3: a removal alone changes no order and marks nothing', () => {
+    const baseline = clone();
+    const current = clone();
+    findStep(current, 3).removed = true;
+    const diff = buildDiff(current, baseline);
+    expect(diff.stepOrderChanged).toBe(false);
+    expect(diff.steps.every((step) => step.movedFrom === null)).toBe(true);
+  });
+
+  it('D4: a removal and a move: the cancelling steps are not marked', () => {
+    const baseline = clone();
+    const current = clone();
+    findStep(current, 3).removed = true;
+    const last = current.method.pop();
+    current.method.unshift(last);
+    const diff = buildDiff(current, baseline);
+    const byN = (n) => diff.steps.find((step) => step.n === n);
+    expect(diff.stepOrderChanged).toBe(true);
+    expect(byN(10).movedFrom).toBe(10);
+    expect(byN(1).movedFrom).toBe(1);
+    expect(byN(2).movedFrom).toBe(2);
+    expect(byN(3).movedFrom).toBeNull();
+    for (const n of [4, 5, 6, 7, 8, 9]) expect(byN(n).movedFrom).toBeNull();
+  });
+
+  it('D5: leaves both versions deep-equal to their clones', () => {
+    const baseline = clone();
+    const current = swapped();
+    const baselineBefore = structuredClone(baseline);
+    const currentBefore = structuredClone(current);
+    buildDiff(current, baseline);
+    expect(baseline).toEqual(baselineBefore);
+    expect(current).toEqual(currentBefore);
+  });
+});

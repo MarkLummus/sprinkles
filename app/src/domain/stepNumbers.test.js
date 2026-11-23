@@ -2,7 +2,7 @@
 // Vitest's default node environment — imports no store, no component, and
 // no framework.
 import { describe, it, expect } from 'vitest';
-import { displayNumbers, displayNumberOf, keptOrderChanged } from './stepNumbers.js';
+import { displayNumbers, displayNumberOf, keptOrderChanged, movedFromNumbers } from './stepNumbers.js';
 
 function makeMethod(count) {
   const method = [];
@@ -155,6 +155,69 @@ describe('keptOrderChanged (sketch 017 CONTRACT section 5)', () => {
     const aCopy = structuredClone(a);
     const bCopy = structuredClone(b);
     keptOrderChanged(a, b);
+    expect(a).toEqual(aCopy);
+    expect(b).toEqual(bCopy);
+  });
+});
+
+// Sketch 017 CONTRACT section 5, choice A (decide-p12-pen-order-mark): once the order
+// of the steps live in both arrays differs, every live step whose number differs
+// from its number on the base is mapped to that base number: the "was step N" words.
+describe('movedFromNumbers (sketch 017 CONTRACT section 5)', () => {
+  // A number is a live step; a string such as '4r' is that key, removed.
+  const method = (...keys) =>
+    keys.map((key) => (typeof key === 'string' ? { n: Number.parseInt(key, 10), removed: true } : { n: key, removed: false }));
+  const moved = (a, b) => Array.from(movedFromNumbers(a, b).entries());
+
+  it('M1: is empty for equal arrays and for a step removed in both and passed over and back', () => {
+    expect(moved(method(1, 2, 3), method(1, 2, 3))).toEqual([]);
+    expect(moved(method(1, 2, 3, 5, '4r'), method(1, 2, 3, '4r', 5))).toEqual([]);
+  });
+
+  it('M2: is empty for a removal alone, although later numbers changed', () => {
+    expect(moved(method(1, 2, '4r', 3, 5), method(1, 2, 4, 3, 5))).toEqual([]);
+  });
+
+  it('M3: pm-once, one move up, marks the two steps that swapped', () => {
+    expect(moved(method(1, 2, 3, 4, 5), method(1, 2, 4, 3, 5))).toEqual([
+      [3, 4],
+      [4, 3],
+    ]);
+  });
+
+  it('M4: pm-twice marks the three steps whose number changed, in the method own order', () => {
+    expect(moved(method(1, 3, 2, 4, 5), method(1, 2, 4, 3, 5))).toEqual([
+      [3, 4],
+      [2, 2],
+      [4, 3],
+    ]);
+  });
+
+  it('M5: pm-removed marks every changed number, including the one the removal shifted', () => {
+    expect(moved(method(1, 3, 2, '4r', 5), method(1, 2, 4, 3, 5))).toEqual([
+      [3, 4],
+      [2, 2],
+      [5, 5],
+    ]);
+  });
+
+  it('M6: a step live here and removed in the base has no base number, so it is never marked', () => {
+    expect(moved(method(3, 1, 2), method(1, '2r', 3))).toEqual([
+      [3, 2],
+      [1, 1],
+    ]);
+  });
+
+  it('M7: a step the base does not hold is never marked', () => {
+    expect(moved(method(9, 2, 1), method(1, 2))).toEqual([[1, 1]]);
+  });
+
+  it('M8: never mutates or sorts either argument', () => {
+    const a = method(1, 3, 2, '4r', 5);
+    const b = method(1, 2, 4, 3, 5);
+    const aCopy = structuredClone(a);
+    const bCopy = structuredClone(b);
+    movedFromNumbers(a, b);
     expect(a).toEqual(aCopy);
     expect(b).toEqual(bCopy);
   });

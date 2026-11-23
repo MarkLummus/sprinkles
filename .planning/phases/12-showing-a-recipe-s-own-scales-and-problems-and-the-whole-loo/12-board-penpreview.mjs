@@ -37,12 +37,20 @@
 //     decisions 2 to 7 and 11, CONTRACT sections 2 and 3): pm-moves (every closed step's acts line,
 //     margin numbers, lead lines and the controls' names), pm-once and pm-twice (focus after one and
 //     two presses of Move up, the moved step's Move up), pm-table (the Ingredients table's step heads
-//     and lines follow the draft's order). pm-removed and pm-open are not held here: their leads carry
-//     the words "was step N" (slice 2), and pm-removed's removed step is drawn before 261123-ghg's fix.
-//     The flow replays p12pm-capture.mjs steps 1 to 3: Coffee, Rest moved up once, Save, Next version.
+//     and lines follow the draft's order). The flow replays p12pm-capture.mjs steps 1 to 3: Coffee,
+//     Rest moved up once, Save, Next version.
+// Quick 261123-iqe (slice 2, choice A: the words " was step N", CONTRACT section 5) holds, with every
+// check kind kept: the leads and the skipped-label spans of pm-once and pm-twice, pm-removed (with one
+// stated allowance), pm-open, and step-order-shown.html's so-a, so-read and so-table (a third spec).
+// The allowance on pm-removed is the removed step's number cell: the board draws it 0 wide, the app
+// gives it one figure's width since 261123-ghg (dc03ad5c). So the removed step's body stands 12 px
+// right (11.1 in Chrome), its li is 4 px taller, and Churn under it sits 4 px lower. Boxes are held
+// on the three steps above the removed one only; every count, text, font, aria and size check stays
+// on every step.
 
 const BOARD = '.planning/sketches/016-entry-points-pen-preview-row-controls/pen-preview-step.html';
 const STEP_ORDER_BOARD = '.planning/sketches/017-pen-step-order/pen-step-order.html';
+const STEP_ORDER_SHOWN_BOARD = '.planning/sketches/017-pen-step-order/step-order-shown.html';
 
 const WIN = (pid) => `.fp-win.g2w-1366[data-pid="${pid}"]`;
 
@@ -215,6 +223,20 @@ const stepOrderPressed = (...presses) => async (page) => {
   }
 };
 
+// The pm-open state: the same, with a step's Edit this step pressed after the moves.
+const openedStep = (opener) => async (page) => {
+  await stepOrderPressed('Step 4, move up', 'Step 3, move up')(page);
+  await page.locator(`[aria-label="${opener}"]`).click();
+  await page.waitForSelector('.method-step__open-fields');
+  await page.waitForTimeout(300);
+};
+
+// Sketch 017 CONTRACT section 5, choice A (slice 2): the leads and their " was step N" spans.
+const MARKED_LEADS = [
+  { selector: 'p.method-step__lead', checks: ['count', 'text', 'box', 'font'] },
+  { selector: 'span.method-step__skipped-label', checks: ['count', 'text', 'box', 'font'] },
+];
+
 const penOnSteps = async (page) => {
   await openPen(page);
   await page.locator('[aria-label="Step 1, Preview step"]').click();
@@ -307,12 +329,58 @@ const stepOrderSpec = {
     }),
     // pm-once and pm-twice: after Sweeten's Move up is pressed once and twice, focus stays on that
     // button of the moved step (README decision 5). The board's purple note sits inside the button,
-    // so its text is not compared; the "was step" words in the lead are slice 2's.
+    // so its text is not compared. Slice 2: the leads carry " was step N" in a skipped-label span.
     penPanel('pm-once', 'steporder-pm-once-focus', stepOrderPressed('Step 4, move up'), {
-      elements: [{ selector: '[aria-label="Step 3, move up"]', checks: ['count', 'focus', 'box'] }],
+      elements: [
+        { selector: '[aria-label="Step 3, move up"]', checks: ['count', 'focus', 'box'] },
+        ...MARKED_LEADS,
+      ],
     }),
     penPanel('pm-twice', 'steporder-pm-twice-focus', stepOrderPressed('Step 4, move up', 'Step 3, move up'), {
-      elements: [{ selector: '[aria-label="Step 2, move up"]', checks: ['count', 'focus', 'box'] }],
+      elements: [
+        { selector: '[aria-label="Step 2, move up"]', checks: ['count', 'focus', 'box'] },
+        ...MARKED_LEADS,
+      ],
+    }),
+    // pm-removed: Rest removed after two moves. Rest reads " removed" with no number, Churn "was step
+    // 5". Boxes stand on the three steps above the removed one only (the allowance in the header).
+    penPanel('pm-removed', 'steporder-pm-removed', stepOrderPressed('Step 4, move up', 'Step 3, move up', 'Step 4, remove'), {
+      elements: [
+        { selector: 'li.method-step', checks: ['count'] },
+        { selector: 'li.method-step:nth-child(-n+3)', checks: ['count', 'box'] },
+        { selector: '.method-step__n', checks: ['count', 'text'] },
+        { selector: 'li.method-step:nth-child(-n+3) .method-step__n', checks: ['count', 'box'] },
+        { selector: 'p.method-step__lead', checks: ['count', 'text', 'font'] },
+        { selector: 'li.method-step:nth-child(-n+3) p.method-step__lead', checks: ['count', 'box'] },
+        { selector: 'span.method-step__skipped-label', checks: ['count', 'text', 'font', 'size'] },
+        {
+          selector: 'p.method-step__acts button',
+          checks: ['count', 'text', { attr: 'aria-label' }, { attr: 'aria-disabled' }],
+        },
+        { selector: 'li.method-step:nth-child(-n+3) p.method-step__acts button', checks: ['count', 'box'] },
+      ],
+      absent: ['[aria-keyshortcuts]', '.mk-keys'],
+    }),
+    // pm-open: pm-twice with Sweeten open: " was step 4" last inside its open fields, under the two
+    // fields; Strain and Rest closed and marked as in pm-twice.
+    penPanel('pm-open', 'steporder-pm-open', openedStep('Step 2, edit this step'), {
+      elements: [
+        { selector: 'li.method-step', checks: ['count', 'box'] },
+        { selector: '.method-step__n', checks: ['count', 'text', 'box'] },
+        { selector: 'p.method-step__lead', checks: ['count', 'text', 'box', 'font'] },
+        { selector: 'span.method-step__skipped-label', checks: ['count', 'text', 'box', 'font'] },
+        {
+          selector: '.method-step__open-fields textarea',
+          checks: ['count', 'value', { attr: 'aria-label' }, 'box'],
+        },
+        {
+          selector: 'p.method-step__acts button',
+          checks: ['count', 'text', { attr: 'aria-label' }, { attr: 'aria-disabled' }, 'box'],
+        },
+        { selector: 'p.method-step__uses-line', checks: ['count', 'text', 'box'] },
+        { selector: 'p.method-step__done-cancel', checks: ['count', 'box'] },
+      ],
+      absent: ['[aria-keyshortcuts]', '.mk-keys', '.mk-preview'],
     }),
     // pm-table: the Ingredients table's step heads and lines follow the draft's order (CONTRACT
     // section 3).
@@ -326,4 +394,59 @@ const stepOrderSpec = {
   ],
 };
 
-export default [penPreviewSpec, stepOrderSpec];
+// The state step-order-shown.html draws: pm-removed saved as a new version (so-a with Show changes on,
+// so-read and so-table with it off). The flow notes the address, saves, and waits until the address
+// differs and the saved page is drawn (p12pm-capture.mjs step 4).
+const savedStepOrder = (showChanges) => async (page) => {
+  await stepOrderPressed('Step 4, move up', 'Step 3, move up', 'Step 4, remove')(page);
+  const before = new URL(page.url()).pathname;
+  await page.locator('.notebook-ceremony__actions button', { hasText: /^Save as new version$/ }).click();
+  await page.waitForFunction((from) => location.pathname !== from, before);
+  await page.waitForSelector('.notebook-version');
+  await page.waitForFunction(() => !document.querySelector('.notebook-ceremony'));
+  await page.waitForTimeout(900);
+  if (showChanges) {
+    await page.locator('button', { hasText: /^Show changes$/ }).first().click();
+    await page.waitForSelector('.method-step__n--struck');
+    await page.waitForTimeout(500);
+  }
+};
+
+// Sketch 017 CONTRACT sections 5 and 6, slice 2: the saved version, with Show changes on and off.
+const stepOrderShownSpec = {
+  board: STEP_ORDER_SHOWN_BOARD,
+  panels: [
+    // so-a: Steep 1, Sweeten 2 " was step 4", Strain 3 " was step 2", Rest struck 3 " removed", Churn
+    // 4 " was step 5".
+    penPanel('so-a', 'steporder-so-a', savedStepOrder(true), {
+      elements: [
+        { selector: 'li.method-step', checks: ['count', 'box'] },
+        { selector: '.method-step__n', checks: ['count', 'text', { attr: 'class' }, 'box'] },
+        { selector: 'p.method-step__lead', checks: ['count', 'text', 'box', 'font'] },
+        { selector: 'span.method-step__skipped-label', checks: ['count', 'text', 'box', 'font'] },
+        { selector: '.method-step__prose--struck', checks: ['count', 'text', 'box'] },
+      ],
+      absent: ['.method-step__n-from'],
+    }),
+    // so-read: Show changes off: four steps numbered 1 to 4, no mark and no removed step.
+    penPanel('so-read', 'steporder-so-read', savedStepOrder(false), {
+      elements: [
+        { selector: 'li.method-step', checks: ['count', 'box'] },
+        { selector: '.method-step__n', checks: ['count', 'text', 'box'] },
+        { selector: 'p.method-step__lead', checks: ['count', 'text', 'box', 'font'] },
+      ],
+      absent: ['.method-step__skipped-label', '.method-step__prose--struck', '.method-step__n-from'],
+    }),
+    // so-table: its Ingredients, step heads "Step 1 Steep" and "Step 2 Sweeten", no mark.
+    penPanel('so-table', 'steporder-so-table', savedStepOrder(false), {
+      anchor: '.ingredient-table-region',
+      elements: [
+        { selector: 'tr.ingredient-table__step-head', checks: ['count', 'text', 'box'] },
+        { selector: 'tbody tr[aria-label]', checks: ['count', { attr: 'aria-label' }, 'box'] },
+      ],
+      absent: ['.method-step__skipped-label'],
+    }),
+  ],
+};
+
+export default [penPreviewSpec, stepOrderSpec, stepOrderShownSpec];

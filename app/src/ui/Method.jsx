@@ -93,6 +93,15 @@ export function useOnDemandField(initialOpen, onCollapse) {
   return { isOpen, openField, fieldRef, handleBlur, seedOpen };
 }
 
+// The words " was step N" after a step whose number changed with the order
+// (sketch 017 CONTRACT section 5, choice A, decide-p12-pen-order-mark): the type
+// of " removed", no new rule, and the same words for the eye and a screen
+// reader. Null when the step carries no movedFrom (a hand-built stepDiff too).
+function wasStepMark(stepDiff) {
+  if (stepDiff.movedFrom == null) return null;
+  return <span className="method-step__skipped-label">{` was step ${stepDiff.movedFrom}`}</span>;
+}
+
 // A step's body while the plan's pen is open (D-23, D-24, D-28; sketch 011
 // decisions_recorded 5, Task 3): pulled out of the steps.map() loop below
 // so each step can own its own on-demand state (purpose, aside, the uses
@@ -278,6 +287,10 @@ export function StepPenBody({
           </p>
         )}
         {draftStep.removed && <span className="method-step__skipped-label"> removed</span>}
+        {/* Sketch 017 CONTRACT section 5: under the two fields, where " removed"
+            stands on an open removed step. With targets it stands before the
+            chips line, the nearest precedent (the board draws no step with targets). */}
+        {wasStepMark(stepDiff)}
 
         {draftStep.targets?.length > 0 && (
           <p className="method-step__targets">
@@ -524,6 +537,7 @@ export function StepPenBody({
           <b>{draftStep.leadIn}.</b> {draftStep.instruction}
         </span>
         {draftStep.removed && <span className="method-step__skipped-label"> removed</span>}
+        {wasStepMark(stepDiff)}
       </p>
       {showStruckBeneath && (
         <p className="prose-struck-beneath">
@@ -960,6 +974,7 @@ export function Method({
                       <b>{step.leadIn}.</b> {step.instruction}
                     </span>
                     {step.removed && <span className="method-step__skipped-label"> removed</span>}
+                    {wasStepMark(stepDiff)}
                   </p>
                   {showStruckBeneath && (
                     <p className="prose-struck-beneath">

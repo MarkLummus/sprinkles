@@ -1701,3 +1701,70 @@ describe('Method — targets in the tag row on every read-only branch (D-18, D-2
     }
   });
 });
+
+// Sketch 017 CONTRACT section 5, choice A (decide-p12-pen-order-mark): a step whose number changed
+// with the order reads " was step N" after its words, in Show changes and in the pen's closed step,
+// and nowhere else (CONTRACT section 6). Undrawn state 2: a moved step whose words also changed.
+describe("Method — the 'was step N' mark (sketch 017 CONTRACT section 5, choice A)", () => {
+  function movedChild() {
+    const parent = makeThreeStepVersion();
+    const child = structuredClone(parent);
+    child.method = [child.method[1], child.method[0], child.method[2]];
+    child.method[0].instruction = 'Do two again.';
+    return { parent, child };
+  }
+  const MARK = (n) => `<span class="method-step__skipped-label"> was step ${n}</span>`;
+
+  it('S1: Show changes marks both moved steps, the rewritten one with its struck words beneath', () => {
+    const { parent, child } = movedChild();
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={child.method}
+        mode="reading"
+        showingChanges
+        changeDiff={buildDiff(child, parent)}
+        staleSteps={[]}
+        staleFlagVisible={false}
+        rows={child.rows}
+        currentStepNumbers={displayNumbers(child.method)}
+        baselineStepNumbers={displayNumbers(parent.method)}
+      />,
+    );
+    expect(markup).toContain(
+      `<p class="method-step__lead"><span><b>Lead two.</b> Do two again.</span>${MARK(2)}</p><p class="prose-struck-beneath"><b>Lead two.</b> Do two.</p>`,
+    );
+    expect(markup).toContain(`${MARK(1)}</p>`);
+    expect(markup.split(' was step').length - 1).toBe(2);
+  });
+
+  it('S2: the reading state and the recording state carry no mark', () => {
+    const { child } = movedChild();
+    const reading = renderToStaticMarkup(<Method steps={child.method} mode="reading" rows={child.rows} />);
+    const recording = renderToStaticMarkup(
+      <Method steps={child.method} stepChanges={{}} mode="recording" onChangeStepChange={() => {}} rows={child.rows} />,
+    );
+    expect(reading).not.toContain('was step');
+    expect(recording).not.toContain('was step');
+  });
+
+  it('S3: the pen closed step says the same, then its struck words beneath', () => {
+    const { parent, child } = movedChild();
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={parent.method}
+        mode="developing"
+        draftVersion={child}
+        baselineVersion={parent}
+        penDiff={buildDiff(child, parent)}
+        penStaleSteps={[]}
+        rows={parent.rows}
+        staleFlagVisible={false}
+        currentStepNumbers={displayNumbers(child.method)}
+        baselineStepNumbers={displayNumbers(parent.method)}
+      />,
+    );
+    expect(markup).toContain(
+      `<p class="method-step__lead"><span><b>Lead two.</b> Do two again.</span>${MARK(2)}</p><p class="prose-struck-beneath"><b>Lead two.</b> Do two.</p>`,
+    );
+  });
+});

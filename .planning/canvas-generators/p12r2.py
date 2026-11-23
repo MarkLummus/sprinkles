@@ -10,6 +10,14 @@
 # Every panel is the built app's own markup (p12r2-capture.mjs: WebKit, coarse, a build of commit b06add6f, the round-two build) under the app's own stylesheets, with only the redraw
 # drawn over it. The head lines on P12R2_DeskLine start from p12g2-capture.json (Sid's Coffee recipe), as the approved head board does. Purple tags are notes, not in the app.
 #   node p12r2-capture.mjs <dist> ; python3 p12r2.py measure <out> ; node p12r2-measure.mjs <out>/measure.html [chromium] [shots] ; python3 p12r2.py <canvas.json read from the artifact root> <out>
+# ROUND THREE (Sid, 2026-11-23, after Mark's answers on Mark's List the same day; sketch 016 README "Round-three redraws"). Recaptured from a scratch build of main at 990076a0.
+#   P12R2_DeskLine        REDRAWN: decide-p12-desk-line-closing-words = B. The closing words are "in a wider window" on every panel; the candidate row is gone. Approved by his answer.
+#   P12R2_HomeDraft       REDRAWN: look-p12-home-held-draft, his note "I want the sentence on the row too": a row whose action is left out reads the lead's own sentence. A second
+#                         drawn panel leaves Keep developing out of the lead below 724, for him to choose (his question 3: it opens the latest version's page and edits nothing).
+#   P12R3_PickerAfterRow  NEW, replaces P12R2_PickerWhere (not approved; its board is retitled, its snapshot kept): look-p12-picker-says-where, his pushback "Why not insert the
+#                         ingredient picker after the row": the picker opens inside the table, directly after the row that opened it; at the end for the heading's. 1366 only.
+#   P12R3_PenTarget       NEW: decide-p12-pen-target-required-place = Sid draws. The version pen's refused target chip with Required under the blank side. 1366 only.
+#   SPRINKLES_STYLES=<the same build's src/styles> node p12r2-capture.mjs <dist> ; python3 p12r2.py measure <out> ; node p12r2-measure.mjs <out>/measure.html [chromium] [shots] ; python3 p12r2.py <canvas.json> <out>
 import json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 import p12g2 as G
@@ -20,44 +28,56 @@ G.M = json.load(open(HERE + '/p12r2-measure.json')) if os.path.exists(HERE + '/p
 G.SIZES[393] = 852
 
 # ---- words -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# The closing words say where the job is finished. Built: "at the desk or on the iPad" (Mark, decide-p12-desk-page-words, A, 2026-11-21). It is shown in every window under 724,
-# a narrow iPad window included, so the iPad is told to use the iPad. Three candidates; A is drawn on every panel that is not a candidate panel.
-CLOSE = {'A': 'at the desk or on the iPad, in a wide window', 'B': 'in a wider window', 'C': 'at the desk, or on the iPad full screen'}
+# The closing words say where the job is finished. Built: "at the desk or on the iPad" (Mark, decide-p12-desk-page-words, A, 2026-11-21). DECIDED by Mark 2026-11-23
+# (decide-p12-desk-line-closing-words, B): "in a wider window", in every sentence that sends work to the desk.
+CLOSING = 'in a wider window'
 BUILT = 'at the desk or on the iPad'
-PICK = 'A'
-done = lambda c: f'Done {c}.'                                         # the page with nothing kept: the title names the job (New recipe, Edit)
-edit_kept = lambda c: f'Edit kept. Finish it {c}.'                   # the head's own sentence (VersionRow.jsx EDIT_KEPT_LINE), on the Edit page when an edit is kept
-draft_line = lambda name, c: f'Draft: {name}. Finish it {c}.'        # the head's own sentence for a Next version draft; on the New recipe page the name is the draft recipe's
-WHERE = {'step': 'After Heavy cream, 36% fat · in step 1', 'unplaced': 'After Fine sea salt · not in a step yet', 'heading': 'At the end · not in a step yet'}
+done = lambda c=CLOSING: f'Done {c}.'                                         # the page with nothing kept: the title names the job (New recipe, Edit)
+edit_kept = lambda c=CLOSING: f'Edit kept. Finish it {c}.'                   # the head's own sentence (VersionRow.jsx EDIT_KEPT_LINE), on the Edit page when an edit is kept
+draft_line = lambda name, c=CLOSING: f'Draft: {name}. Finish it {c}.'        # the head's own sentence for a Next version draft; on the New recipe page the name is the draft recipe's
 
 # ---- 1. Home with a held draft ------------------------------------------------------------------------------------------------------------------------------------------------------
 HOME = CAP['home_draft_393']['html']
-HEAD_LINE = re.search(r'<p class="notebook-version__draft">([^<]*)</p>', CAP['recipe_draft_awaiting_393']['html']).group(1)      # the version page's own built sentence, whole
-DRAFT_NAME = re.match(r'Draft: (.*)\. Finish it ', HEAD_LINE).group(1)
-HELD = [re.search(r'href="([^"]*)"[^>]*>Go to draft', HOME).group(1), CAP['routes']['none']]      # the two versions that hold a kept draft in the capture
-def home_held(h, close=BUILT):
-    """Home below 724 with a draft kept: the lead's line is the version page's sentence, plain; an action whose version holds the kept draft is not in the markup."""
-    h, k = re.subn(r'<p class="home__lead-draft">.*?</p>', f'<p class="home__lead-draft">{esc(draft_line(DRAFT_NAME, close))}</p>', h); assert k == 1
-    a = h.index('<section class="home__lead">'); b = h.index('</section>', a); lead = h[a:b]
-    for v in HELD: lead = re.sub(r'<a class="home__action" tabindex="0" href="%s(?:/batch/[^"]*)?"[^>]*>Record (?:batch|tasting)</a>' % re.escape(v), '', lead)
-    assert 'Record' not in lead and 'Keep developing' in lead; h = h[:a] + lead + h[b:]
+built_line = lambda key: re.search(r'<p class="notebook-version__draft">([^<]*)</p>', CAP[key]['html']).group(1)      # the version page's own built sentence, whole
+draft_name = lambda key: re.match(r'Draft: (.*)\. Finish it ', built_line(key)).group(1)
+DRAFTS = {CAP['routes']['awaiting']: draft_name('recipe_draft_awaiting_393'), CAP['routes']['none']: draft_name('recipe_draft_393')}      # the version that holds a kept draft -> the draft's name
+LEAD_V = re.search(r'href="([^"]*)"[^>]*>Go to draft', HOME).group(1); assert LEAD_V in DRAFTS
+ACT = r'<a class="home__action" tabindex="0" href="(%s)(?:/batch/[^"]*)?"[^>]*>Record (?:batch|tasting)</a>' % '|'.join(re.escape(v) for v in DRAFTS)
+def home_held(h, keep=True):
+    """Home below 724 with a draft kept. The lead's line is the version page's sentence, plain. An action whose version holds the kept draft is not in the markup; a row that
+    loses its action reads the same sentence in the action's place (Mark, 2026-11-23: "I want the sentence on the row too"). keep=False also leaves Keep developing out of the lead."""
+    h, k = re.subn(r'<p class="home__lead-draft">.*?</p>', f'<p class="home__lead-draft">{esc(draft_line(DRAFTS[LEAD_V]))}</p>', h); assert k == 1
+    a = h.index('<section class="home__lead">'); b = h.index('</section>', a); lead = re.sub(ACT, '', h[a:b]); assert 'Record' not in lead and 'Keep developing' in lead
+    if not keep: lead, k = re.subn(r'<span class="home__actions"><a class="home__action home__action--secondary"[^>]*>Keep developing</a></span>', '', lead); assert k == 1
     def row(m):
-        return '' if any(re.search(r'<a class="home__action" tabindex="0" href="%s(?:/batch/[^"]*)?"' % re.escape(v), m.group(0)) for v in HELD) else m.group(0)
-    h2, k = re.subn(r'<span class="home__actions">.*?</span>', row, h); assert h2.count('home__actions') == h.count('home__actions') - 2; assert '>Go to draft<' not in h2
-    return h2
+        v = re.search(ACT, m.group(0)); return f'<p class="home__row-draft">{esc(draft_line(DRAFTS[v.group(1)]))}</p>' if v else m.group(0)
+    rest = h[b:]
+    rest2 = re.sub(r'<span class="home__actions">.*?</span>', row, rest); assert rest2.count('home__row-draft') == 2 and '>Go to draft<' not in lead
+    return h[:a] + lead + rest2
 def build_home():
-    r = [cell(P('hd-built', 393, HOME, 'As built · Home with two drafts kept', 'A draft is kept on Mexican Chocolate, Version 3 (its batch awaits a tasting) and on Underbelly Light Base, Version 2 (not yet churned). The lead says "Draft open on this version · Go to draft" and offers Record tasting; Underbelly\'s row offers Record batch. Each lands on the page at the right, which refuses it.', h=1180)),
-         cell(P('hd-drawn', 393, home_held(HOME), 'Drawn · the same Home', f'The lead reads the version page\'s own sentence, plain text, no link: "{HEAD_LINE}" Record tasting is left out of the lead and of Mexican Chocolate\'s row; Record batch is left out of Underbelly\'s row. Keep developing stays: it opens Version 4, which holds no draft. A row gives no reason; its page does.', h=1180)),
-         cell(P('hd-page', 393, cut_sheet(CAP['recipe_draft_awaiting_393']['html']), 'As built · the page they lead to', 'Mexican Chocolate, Version 3, below 724 with its draft kept: the line and Print sheet, no record act (Mark, decide-p12-record-with-draft-held, B). Home now says the same thing in the same words.', h=1180)),
-         cell(P('hd-page-none', 393, cut_sheet(CAP['recipe_draft_393']['html']), 'As built · Underbelly Light Base, Version 2', 'The page Underbelly\'s Record batch leads to today: the same line, Print sheet alone.', h=1180))]
-    return flow('Home below 724 · a Next version draft kept · Home follows the version page', 'Phase 12 round two, redraw 1 (decide-p12-phone-home-held-draft: "Home follows the same rule as the version page"). Built markup at 393 (a build of b06add6f); only the lead\'s line and the left-out record acts are drawn. From 724 up nothing changes. The closing words are the built ones; the desk line board proposes new ones.',
+    L, U = draft_line(DRAFTS[LEAD_V]), draft_line(DRAFTS[CAP['routes']['none']])
+    r = [cell(P('hd-built', 393, HOME, 'As built · Home with two drafts kept', 'A draft is kept on Mexican Chocolate, Version 3 (its batch awaits a tasting) and on Underbelly Light Base, Version 2 (not yet churned). The lead says "Draft open on this version · Go to draft" and offers Record tasting; the two rows offer Record tasting and Record batch. Each lands on a page that refuses it.', h=1180)),
+         cell(P('hd-drawn', 393, home_held(HOME), 'Drawn · the sentence on the row too', f'The lead reads the version page\'s sentence, plain text, no link: "{L}" A row whose action is left out reads the same sentence in the action\'s place: Mexican Chocolate\'s row, and Underbelly\'s ("{U}"). Keep developing stays in the lead: it opens Version 4\'s page, at the right.', h=1180)),
+         cell(P('hd-nokeep', 393, home_held(HOME, keep=False), 'Drawn · the other choice: no Keep developing below 724', 'The same Home with Keep developing left out of the lead too. The recipe\'s name already opens the same page, and nothing on that page develops the recipe at this width. For Mark to choose on Mark\'s List.', h=1180)),
+         cell(P('hd-latest', 393, cut_sheet(CAP['recipe_latest_393']['html']), 'As built · where Keep developing goes', 'Mexican Chocolate, Version 4, the latest version. Keep developing is a plain link to this page; it opens no pen and edits nothing. Below 724 the page has no Next version: Record batch, Print sheet, and the Draft line naming the draft kept on Version 3.', h=1180)),
+         cell(P('hd-page', 393, cut_sheet(CAP['recipe_draft_awaiting_393']['html']), 'As built · the version that holds the draft', 'Mexican Chocolate, Version 3: the Draft line and Print sheet, no record act (Mark, decide-p12-record-with-draft-held, B). Its closing words are the built ones here; they become "in a wider window" with the desk line build.', h=1180))]
+    return flow('Home below 724 · a Next version draft kept · the sentence on the row too', 'Phase 12 round three, redrawn 2026-11-23 (look-p12-home-held-draft; Mark: "I want the sentence on the row too"). Built markup at 393 (a build of 990076a0); only the lead\'s line, the rows\' sentence and the left-out record acts are drawn. Closing words: "in a wider window" (Mark, decide-p12-desk-line-closing-words, B). From 724 up nothing changes.',
                 [('', '', r)], LABH=150)
 
 # ---- 2. The desk line ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-PLACE_CSS = '''.place__for{margin:0;font-size:var(--app-size-meta)}
+PLACE_CSS = """.place__for{margin:0;font-size:var(--app-size-meta)}
 .place__for a{display:inline-flex;align-items:center;min-height:var(--touch-min);color:var(--app-blue-text);text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline);border-radius:var(--app-radius-control)}
-.pick__where{font-family:var(--face-grotesk);font-size:var(--app-size-meta);margin:0 0 var(--gap-s)}
-'''      # two proposed classes, existing tokens only: place__for is Home's own text link (home__code-link) on the place page; pick__where is the picker's own small type (its count line's size), in ink
+.home__row-draft{grid-area:actions;margin:0;font-family:var(--face-grotesk);font-size:var(--app-size-meta);color:var(--app-text)}
+.fp-win .ingredient-table tr.ingredient-table__pick{display:block;padding:0 0 var(--gap-s)}
+.fp-win .ingredient-table tr.ingredient-table__pick > td{display:block;padding:0;border:0}
+.r3-chip .method-step__open-fields .target-chip{display:inline-grid;grid-auto-flow:column;justify-content:start;column-gap:var(--gap-hair)}
+.r3-chip .method-step__open-fields .target-chip > *{grid-row:1}
+.r3-chip .method-step__open-fields .target-chip > .struck-value{align-self:center}
+.r3-chip .method-step__open-fields .target-chip > .field-error{grid-row:2}
+.dl-flag.dl-flag--r{left:auto;right:0}
+"""      # proposed classes and rules, existing tokens only. place__for: Home's own text link (home__code-link) on the place page. home__row-draft: the lead's draft line (home__lead-draft) in a row's
+         # actions area. ingredient-table__pick: the table row that holds the picker, a block like the table's own body. The pen's refused target chip: the creation editor's own
+         # two-row chip (notebook.css, "stands Required under the empty one"), with the columns flowing so the parent's struck value keeps its place before the label.
 def desk(key, title, note, back=None):
     """The one-line page: the built page's own markup with its line reworded; Edit gains one line naming the recipe and version, a link back to the version's page."""
     h = CAP[key]['html']; a = h.index('<div class="list-page place">'); b = h.index('</main>')
@@ -66,53 +86,87 @@ def desk(key, title, note, back=None):
 BACK = 'Coffee · Version 1'
 R = lambda k: cut_sheet(G.CAP[k]['html'])
 def build_desk():
-    c = CLOSE[PICK]
-    r0 = [cell(P('dl-built-new', 393, CAP['new_393']['html'], 'As built · New recipe', 'The same page with a draft kept and with none.', h=340)),
+    r0 = [cell(P('dl-built-new', 393, CAP['new_393']['html'], 'As built · New recipe', f'"{done(BUILT)}" The same page with a draft kept and with none.', h=340)),
           cell(P('dl-built-edit', 393, CAP['edit_393']['html'], 'As built · Edit', 'Names no recipe and has no way back to the version, whose page works at this width.', h=340)),
           cell(P('dl-built-edit-723', 723, CAP['edit_723']['html'], 'As built · Edit at 723, a narrow iPad window', 'An iPad in Split View is told to use the iPad.', h=340))]
-    r1 = [cell(P('dl-new', 393, desk('new_393', 'New recipe', done(c)), 'New recipe · nothing kept', f'"{done(c)}" True on the phone, in a narrow iPad window and in a narrow desk window.', h=340)),
-          cell(P('dl-edit', 393, desk('edit_393', 'Edit', done(c), BACK), 'Edit · nothing kept', f'One line under the title names the recipe and version; it is a link back to that version\'s page (44 high). Then the same line as New recipe.', h=340)),
-          cell(P('dl-edit-723', 723, desk('edit_723', 'Edit', done(c), BACK), 'Edit at 723, a narrow iPad window · nothing kept', 'The sentence now says what to do on the iPad itself: give the app a wide window.', h=340))]
-    r2 = [cell(P('dl-new-kept', 393, desk('new_393', 'New recipe', draft_line('Coffee', c)), 'New recipe · a draft kept', f'"{draft_line("Coffee", c)}" The head\'s Draft sentence with the draft recipe\'s name, plain text. Its row is in the Notebook, one tab away.', h=340)),
-          cell(P('dl-edit-kept', 393, desk('edit_393', 'Edit', edit_kept(c), BACK), 'Edit · an edit kept', f'"{edit_kept(c)}" The head\'s own sentence, so the page and the head say the same thing.', h=340)),
-          cell(P('dl-edit-kept-723', 723, desk('edit_723', 'Edit', edit_kept(c), BACK), 'Edit at 723 · an edit kept', 'One line at this width.', h=340))]
-    r3 = [cell(P('dl-head-edit', 393, band(R('recipe_editing_393'), edit_kept(c)), 'Recipe head · an edit kept', 'The approved head (sketch 016, set A) with the new closing words. Nothing else changes.', h=420)),
-          cell(P('dl-head-draft', 393, band(R('recipe_editable_393'), draft_line('Version 2 · less cream', c), record=False), 'Recipe head · a Next version draft kept', 'The same head line with the new closing words.', h=420)),
-          cell(P('dl-home', 393, home_held(HOME, c), 'Home\'s lead · a draft kept', 'The Home board\'s lead (redraw 1) with the new closing words: one phrase, used in every one of these sentences.', h=600))]
-    for k in ('B', 'C'):      # measured, not placed: the longest sentence in each other candidate
-        P(f'dl-head-draft-{k}', 393, band(R('recipe_editable_393'), draft_line('Version 2 · less cream', CLOSE[k]), record=False), '', '', h=420); P(f'dl-new-{k}', 393, desk('new_393', 'New recipe', done(CLOSE[k])), '', '', h=340)
-    why = {'A': 'Recommended. Keeps the words Mark chose and adds the one condition they missed. True on the phone (go to the desk or the iPad), in a narrow iPad window and in a narrow desk window (make it wide).',
-           'B': 'Shortest, and true everywhere, but it names no device: on the phone there is no wider window to make.',
-           'C': 'Names the iPad\'s own fix. Says more than is needed (a two-thirds Split View window is wide enough) and tells a narrow desk window to go to the desk.'}
-    r4 = [cell(P(f'dl-cand-{k}', 393, desk('edit_393', 'Edit', edit_kept(CLOSE[k]), BACK), f'{k} · "{CLOSE[k]}"', f'{why[k]} Nothing kept: "{done(CLOSE[k])}"', h=340)) for k in ('A', 'B', 'C')]
-    return flow('The desk line · new closing words, and two states', 'Phase 12 round two, redraw 2 (decide-p12-desk-line-words: "Sid proposes new words and draws two states"). Built markup at 393 and 723 (a build of b06add6f). Drawn in candidate A; Mark picks the closing words on Mark\'s List.',
-                [('As built today', '"Done at the desk or on the iPad." in every window under 724.', r0), ('Drawn · nothing kept', 'The title names the job. Edit also names what it would edit, as a link back.', r1),
-                 ('Drawn · work kept', 'The page reads the kept draft and says it is kept, in the head\'s own sentences. It never writes the draft.', r2),
-                 ('The same closing words elsewhere', 'One phrase ends the two recipe-head lines and Home\'s lead line. Whatever Mark picks goes to all of them.', r3),
-                 ('Three candidates for the closing words', 'Each on the Edit page with an edit kept.', r4)], LABH=136)
+    r1 = [cell(P('dl-new', 393, desk('new_393', 'New recipe', done()), 'New recipe · nothing kept', f'"{done()}" The title names the job.', h=340)),
+          cell(P('dl-edit', 393, desk('edit_393', 'Edit', done(), BACK), 'Edit · nothing kept', 'One line under the title names the recipe and version; it is a link back to that version\'s page (44 high). Then the same line as New recipe.', h=340)),
+          cell(P('dl-edit-723', 723, desk('edit_723', 'Edit', done(), BACK), 'Edit at 723, a narrow iPad window · nothing kept', 'The sentence says what to do on the iPad itself: give the app a wider window.', h=340))]
+    r2 = [cell(P('dl-new-kept', 393, desk('new_393', 'New recipe', draft_line('Coffee')), 'New recipe · a draft kept', f'"{draft_line("Coffee")}" The head\'s Draft sentence with the draft recipe\'s name, plain text. Its row is in the Notebook, one tab away.', h=340)),
+          cell(P('dl-edit-kept', 393, desk('edit_393', 'Edit', edit_kept(), BACK), 'Edit · an edit kept', f'"{edit_kept()}" The head\'s own sentence, so the page and the head say the same thing.', h=340)),
+          cell(P('dl-edit-kept-723', 723, desk('edit_723', 'Edit', edit_kept(), BACK), 'Edit at 723 · an edit kept', 'The same two lines.', h=340))]
+    r3 = [cell(P('dl-head-edit', 393, band(R('recipe_editing_393'), edit_kept()), 'Recipe head · an edit kept', f'"{edit_kept()}" The approved head (sketch 016, set A) with the decided closing words. Nothing else changes.', h=420)),
+          cell(P('dl-head-draft', 393, band(R('recipe_editable_393'), draft_line('Version 2 · less cream'), record=False), 'Recipe head · a Next version draft kept', f'"{draft_line("Version 2 · less cream")}"', h=420)),
+          cell(P('dl-home', 393, home_held(HOME), 'Home\'s lead and rows · a draft kept', f'"{draft_line(DRAFTS[LEAD_V])}" in the lead, and on a row whose action is left out (the Home board).', h=600))]
+    return flow('The desk line · "in a wider window" · nothing kept and work kept', 'Phase 12 round three, redrawn 2026-11-23. DECIDED by Mark (decide-p12-desk-line-closing-words, B): the closing words are "in a wider window" in every sentence that sends work to the desk. Built markup at 393 and 723 (a build of 990076a0). Edit names its recipe as a link back; he raised nothing against it.',
+                [('As built today', '"Done at the desk or on the iPad." in every window under 724.', r0), ('Decided · nothing kept', 'The title names the job. Edit also names what it would edit, as a link back.', r1),
+                 ('Decided · work kept', 'The page reads the kept draft and says it is kept, in the head\'s own sentences. It never writes the draft.', r2),
+                 ('The same closing words elsewhere', 'One phrase ends the two recipe-head lines and Home\'s sentence, lead and row.', r3)], LABH=136)
 
-# ---- 3. The picker says where -------------------------------------------------------------------------------------------------------------------------------------------------------
-def picker(key, where=None, marks=()):
+# ---- 3. The picker stands after its row --------------------------------------------------------------------------------------------------------------------------------------------
+HEAD_NONE = '<tr class="ingredient-table__step-head"><td colspan="3">Not in a step yet</td></tr>'      # the table's own group heading, as built
+def picker(key='pk_step', after=None, where=None, marks=(), built=False, tail=None):
+    """The Ingredients region with the picker. built: under the table's Total, as captured. Else the picker is one row of the table body, directly after the row named `after`;
+    with no `after`, at the end of the last group; tail='new group' gives it a group of its own under the table's "Not in a step yet" heading (the heading's Add ingredient when every
+    row is in a step). The list is cut short; the visible picker is the built one, word for word. `where` goes to the group's accessible name only."""
     ing = CAP[key]['ing']; a = ing.index('<ul class="pick__list">'); ing = ing[:ing.index('</li>', a + 2600) + 5] + '</ul></div></section>'      # the first rows of the built list; the rest is left out
-    if where:
-        full = 'Add ingredient ' + where[0].lower() + where[1:].replace(' · ', ', ')
-        ing = ing.replace('<div class="pick" role="group" aria-label="Add ingredient">', f'<div class="pick" role="group" aria-label="{esc(full)}">'); i = ing.index('</div>', ing.index('<div class="pick__head">')) + 6
-        ing = ing[:i] + f'<p class="pick__where">{esc(where)}</p>' + ing[i:]
+    if not built:
+        a = ing.index('<div class="pick"'); pick = ing[a:-len('</section>')]; ing = ing[:a] + '</section>'
+        assert pick.count('aria-label="Add ingredient"') == 1; pick = pick.replace('aria-label="Add ingredient"', f'aria-label="Add ingredient {esc(where)}"')
+        tr = f'<tr class="ingredient-table__pick"><td colspan="3">{pick}</td></tr>'
+        if after: i = ing.index('</tr>', ing.index(f'<tr data-line="', ing.index(f'aria-label="{after}, ') - 80)) + 5
+        else: i = ing.index('</tbody><tfoot')
+        if tail == 'new group': i = ing.index('<tfoot'); tr = f'<tbody>{HEAD_NONE}{tr}</tbody>'
+        ing = ing[:i] + tr + ing[i:]
+    for label, words in marks: ing = mark(ing, label, words)
+    return sheet(ing, tabs=True)
+def plain(key, marks=()):
+    ing = CAP[key]['ing']
     for label, words in marks: ing = mark(ing, label, words)
     return sheet(ing, tabs=True)
 def build_picker():
-    S = CAP['pk_step']; gap = round(S['pickTop'] - S['rowButtonTop'])
-    r = [cell(P('pw-built', 1366, picker('pk_step', marks=[('Add ingredient after Heavy cream, 36% fat', 'pressed here')]), 'As built · Add ingredient pressed on Heavy cream', f'The picker opens under the table\'s Total, {gap} px below the button, and the page scrolls the row out of view. Its heading reads "Add ingredient" from every row and from the heading.', natural=True, w=576)),
-         cell(P('pw-step', 1366, picker('pk_step', WHERE['step'], [('Add ingredient after Heavy cream, 36% fat', 'pressed here')]), 'Drawn · from a row in a step', f'One line under the picker\'s heading, in the picker\'s own small type: "{WHERE["step"]}". The step is named by its number, as the build already says it aloud ("row 2 of 2 in step 1").', natural=True, w=576)),
-         cell(P('pw-unplaced', 1366, picker('pk_unplaced', WHERE['unplaced'], [('Add ingredient after Fine sea salt', 'pressed here')]), 'Drawn · from a row in no step', f'"{WHERE["unplaced"]}": the table\'s own words for that group. Pressing another row\'s Add ingredient while the picker is open changes this line.', natural=True, w=576)),
-         cell(P('pw-heading', 1366, picker('pk_heading', WHERE['heading']), 'Drawn · from the heading\'s Add ingredient', f'"{WHERE["heading"]}": the heading\'s button adds the row last, in no step, as built. (The button is away while the picker is open, as built.)', natural=True, w=576))]
-    return flow('Creation editor · the picker says where the pick lands', 'Phase 12 round two, redraw 3 (decide-p12-picker-says-where: "Sid draws the picker heading naming the landing place"). 1366 only. Built markup (a build of b06add6f), the list cut short; only the one line is drawn. The picker stays where it is built (look-p12-row-controls-r3, point 4). Purple tags are notes.',
-                [('', '', r)], LABH=150)
+    g = CAP['pk_step']['geo']; row = next(r for r in g['rows'] if r['label'].startswith('Heavy cream')); gap = g['pick']['top'] - row['bottom']; under = g['pick']['bottom'] - g['innerH']
+    HC, DX = 'Heavy cream, 36% fat', 'Dextrose'
+    r1 = [cell(P('pa-built', 1366, picker(built=True, marks=[(f'Add ingredient after {HC}', 'pressed here')]), 'As built · Add ingredient pressed on Heavy cream', f'The picker opens under the table\'s Total, {gap} px below the row on this four-row table (532 on a seven-row one). In a window 1024 high its list starts {g["list"]["top"] - g["innerH"]} px below the bottom edge: to reach the list the page is scrolled and the row leaves the top.', natural=True, w=576)),
+          cell(P('pa-step', 1366, picker(after=HC, where=f'after {HC}, in step 1', marks=[(f'Add ingredient after {HC}', 'pressed here')]), 'Drawn · the picker opens after the row', 'The picker is the next row of the table, inside step 1\'s group, right under Heavy cream. Coffee beans and the rows after it move down. Focus goes to Name, as built. The picker is the built one, word for word: its place says where the pick lands, so no line is added.', natural=True, w=576)),
+          cell(P('pa-other', 1366, picker(after=DX, where=f'after {DX}, in step 2', marks=[(f'Add ingredient after {DX}', 'pressed here, with the picker open')]), 'Drawn · another row\'s Add ingredient pressed while it is open', 'The picker moves to stand after that row (Dextrose, in step 2); Coffee beans goes back up. One picker at a time. What was typed in Name and the Category stay; focus goes to Name, as built.', natural=True, w=576)),
+          cell(P('pa-cancel', 1366, plain('ing_base', marks=[(f'Add ingredient after {HC}', 'focus returns here')]), 'Drawn · Cancel', 'The picker\'s row leaves the table and the rows below move back up. The row that opened it has not moved. Focus returns to what opened the picker, as built (its Add ingredient, or its grams when Cmd+Return opened it).', natural=True, w=576))]
+    r2 = [cell(P('pa-picked', 1366, plain('ing_picked', marks=[('Egg yolk (fresh), grams', 'focus lands here')]), 'As built · Egg yolk picked', 'Built markup of the state after a pick from Heavy cream\'s row. The new row stands exactly where the picker stood, and focus is in its grams. Nothing here changes.', natural=True, w=576)),
+          cell(P('pa-heading', 1366, picker('pk_heading', where='at the end, not in a step yet'), 'Drawn · from the heading\'s Add ingredient', 'At the end of the table, above the Total, after the last row under "Not in a step yet": where the new row lands. (The heading\'s button is away while the picker is open, as built.)', natural=True, w=576)),
+          cell(P('pa-allplaced', 1366, picker('pk_allplaced', where='at the end, not in a step yet', tail='new group'), 'Drawn · from the heading, every row in a step', 'The new row will start the "Not in a step yet" group, so the picker stands under that heading, which shows while the picker is open. Without it the picker would read as part of step 2.', natural=True, w=576))]
+    return flow('Creation editor · the picker opens after the row that asked for it', 'Phase 12 round three, drawn 2026-11-23 for Mark\'s pushback on look-p12-picker-says-where ("Why not insert the ingredient picker after the row and shift the non-needed rows off screen?"). 1366 only. Built markup (a build of 990076a0), the list cut short; only the picker\'s place is drawn. Replaces P12R2_PickerWhere. Purple tags are notes. Not approved yet.',
+                [('From a row', 'The table is a real table whose body rows are laid out one under another; a group heading is already one cell across the three columns, and the picker\'s row is the same kind of row.', r1),
+                 ('The pick, and the heading\'s Add ingredient', '', r2)], LABH=176)
 
-TITLES = {'P12R2_HomeDraft': 'Home below 724 · a Next version draft kept · no refused record act, the version page\'s own sentence · 393 (2026-11-22; round two, for Mark to approve)',
-          'P12R2_DeskLine': 'The desk line · new closing words (A, B, C) · nothing kept and work kept · 393 and 723 (2026-11-22; round two, for Mark to decide)',
-          'P12R2_PickerWhere': 'Creation editor · the picker names where the pick lands · 1366 (2026-11-22; round two, for Mark to approve)'}
-BUILD = (('P12R2_HomeDraft', build_home), ('P12R2_DeskLine', build_desk), ('P12R2_PickerWhere', build_picker))
+# ---- 4. The pen's refused target ----------------------------------------------------------------------------------------------------------------------------------------------------
+def refused(method, side):
+    """The pen's open step with its target refused: Required after the blank side, inside the chip, wired as the pen's refused lead-in is (aria-invalid, aria-describedby step-field-error)."""
+    f = re.search(r'<textarea rows="1" cols="20" class="ink-field target-chip__%s-field" aria-label="[^"]*"></textarea>' % side, method); assert f, side
+    return method[:f.start()] + f.group(0).replace('></textarea>', ' aria-invalid="true" aria-describedby="step-field-error"></textarea>') + '<span id="step-field-error" class="field-error">Required</span>' + method[f.end():]
+def build_target():
+    def penp(key, side=None, marks=(), drawn=False):
+        m = CAP[key]['method']
+        if side: m = refused(m, side)
+        for label, words in marks:
+            m = mark(m, label, words)
+            if label.endswith('value'): m = m.replace(f'<i class="dl-flag" aria-hidden="true">{esc(words)}</i>', f'<i class="dl-flag dl-flag--r" aria-hidden="true">{esc(words)}</i>')
+        return sheet(m, page='notebook r3-chip' if drawn else 'notebook', tabs=True)
+    ct = CAP['ct_refused']['method']
+    r1 = [cell(P('pt-create', 1366, sheet(mark(ct, 'Step 1, target value', 'focus lands here'), tabs=True), 'As built · creating a recipe, Save refused', 'A target with a label and no value. The chip grows a second row and Required stands under the empty side, inside the chip. This is the pattern.', natural=True, w=576)),
+          cell(P('pt-built-value', 1366, penp('pen_refused_value', marks=[('Step 1, target 1, value', 'focus lands here; no word')]), 'As built · Next version, Save as new version refused', 'The value was cleared. The step is open and focus is in the blank side. Nothing says why: no word, and nothing for a screen reader beyond the field\'s name.', natural=True, w=576)),
+          cell(P('pt-built-changed', 1366, penp('pen_changed'), 'As built · the chip when a value changed, not refused', 'The parent\'s struck value first, then the two fields, on one line. The line has no room for all three, so the struck value is squeezed to 34 px and breaks into three lines.', natural=True, w=576))]
+    r2 = [cell(P('pt-value', 1366, penp('pen_refused_value', 'value', [('Step 1, target 1, value', 'focus lands here')], drawn=True), 'Drawn · the value blank', 'A blank value differs from the parent\'s, so the struck value stands first, as built. Required stands under the blank value, inside the chip, as in the creation editor. The chip is the creation editor\'s two-row grid, so the struck value keeps one line.', natural=True, w=576)),
+          cell(P('pt-label', 1366, penp('pen_refused_label', 'label', [('Step 1, target 1, label', 'focus lands here')], drawn=True), 'Drawn · the label blank, the value unchanged', 'No struck value: the pen pairs a target with its parent by label, so with the label blank none is drawn, whether or not the value changed. Required stands under the blank label. The two fields stand where they do today.', natural=True, w=576)),
+          cell(P('pt-changed', 1366, penp('pen_changed', drawn=True), 'Drawn · a value changed, not refused', 'The same grid with no second row. One line, as built, but the struck value is no longer squeezed into three lines (as built it gets 34 px). For Mark to confirm with the board.', natural=True, w=576))]
+    return flow('Version pen (Next version) · a refused target says Required', 'Phase 12 round three, drawn 2026-11-23 (decide-p12-pen-target-required-place: Sid draws). 1366 only. Built markup (a build of 990076a0, after cad72d3f); only the word and the chip\'s second row are drawn. A target with both sides blank is not refused and not drawn (it is dropped at Save: bug-pen-saves-step-backup-refuses). Purple tags are notes. Not approved yet.',
+                [('As built', 'Save as new version is refused when a target has one side blank; the step opens and focus goes to the blank side.', r1), ('Drawn', 'One word, in the creation editor\'s place and style. The word goes at the next edit anywhere in the pen, as the pen\'s refused lead-in\'s does, and the chip is one row again.', r2)], LABH=150)
+
+TITLES = {'P12R2_HomeDraft': 'Home below 724 · a Next version draft kept · the sentence on the row too · 393 (2026-11-23; round three, for Mark to answer)',
+          'P12R2_DeskLine': 'The desk line · "in a wider window" (Mark picked B) · nothing kept and work kept · 393 and 723 (2026-11-23; decided)',
+          'P12R3_PickerAfterRow': 'Creation editor · the picker opens after the row that asked for it · 1366 (2026-11-23; round three, for Mark to approve)',
+          'P12R3_PenTarget': 'Version pen · a refused target says Required · 1366 (2026-11-23; round three, for Mark to approve)'}
+RETIRED = {'P12R2_PickerWhere.dc.html': 'Replaced 2026-11-23 by P12R3_PickerAfterRow · not approved · '}
+BUILD = (('P12R2_HomeDraft', build_home), ('P12R2_DeskLine', build_desk), ('P12R3_PickerAfterRow', build_picker), ('P12R3_PenTarget', build_target))
 
 def build_boards(out):
     sizes = {}; css = G.panel_css() + '[hidden]{display:none !important}' + PLACE_CSS + G.FLAG_CSS
@@ -132,11 +186,17 @@ if __name__ == '__main__':
     else:
         c = json.load(open(sys.argv[1])); sizes = build_boards(out); B = c['boards']; N = c['notes']; PAGE = sys.argv[3] if len(sys.argv) > 3 else 'page-27'
         assert any(p['id'] == PAGE for p in c['pages']), 'the Gate 2 page is not on the canvas'
-        mine = [k + '.dc.html' for k in sizes]; others = [b for fn, b in B.items() if b.get('page') == PAGE and fn not in mine]
-        y0 = max(b['y'] + b['h'] for b in others) + 700; x = min(b['x'] for b in others)      # a second row under the approved boards, wherever Mark has them
-        N['p12r2-title'] = {**dict(x=x, y=y0 - 300, maxW=6000), **N.get('p12r2-title', {}), **dict(text='Phase 12 round two: Home with a held draft, the desk line\'s words, the picker says where (redraws after the build, 2026-11-22)', kind='title1', page=PAGE)}
-        for key, (w, h) in sizes.items():
-            fn = key + '.dc.html'; B[fn] = {**dict(x=x, y=y0, page=PAGE), **B.get(fn, {}), 'w': w, 'h': h, 'title': TITLES[key]}      # a board Mark has moved keeps its place
+        others = [b for fn, b in B.items() if b.get('page') == PAGE and not fn.startswith('P12R')]
+        row = ['P12R2_HomeDraft', 'P12R2_DeskLine', 'P12R2_PickerWhere', 'P12R3_PickerAfterRow', 'P12R3_PenTarget']      # one row under the approved boards; a redrawn board that grew shifts the ones after it along
+        y0 = B.get('P12R2_HomeDraft.dc.html', {}).get('y', max(b['y'] + b['h'] for b in others) + 700); x = B.get('P12R2_HomeDraft.dc.html', {}).get('x', min(b['x'] for b in others))
+        N['p12r2-title'] = {**dict(x=x, y=y0 - 300, maxW=6000), **N.get('p12r2-title', {}), **dict(text='Phase 12 rounds two and three: Home with a held draft, the desk line\'s words, the picker after its row, the pen\'s refused target (redraws after the build, 2026-11-22 and 2026-11-23)', kind='title1', page=PAGE)}
+        for key in row:
+            fn = key + '.dc.html'
+            if key in sizes: w, h = sizes[key]; B[fn] = {**dict(page=PAGE), **B.get(fn, {}), 'x': x, 'y': y0, 'w': w, 'h': h, 'title': TITLES[key]}
+            elif fn in B: B[fn] = {**B[fn], 'x': x, 'y': y0}
+            else: continue
             if fn not in c['order']: c['order'].append(fn)
-            x = B[fn]['x'] + w + 240
+            x = B[fn]['x'] + B[fn]['w'] + 240
+        for fn, pre in RETIRED.items():
+            if fn in B and not B[fn].get('title', '').startswith('Replaced'): B[fn]['title'] = pre + B[fn].get('title', fn)
         json.dump(c, open(out + '/project/canvas.json', 'w'), indent=1, ensure_ascii=False); print(sizes)

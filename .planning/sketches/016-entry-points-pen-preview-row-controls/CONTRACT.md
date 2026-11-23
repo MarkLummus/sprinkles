@@ -122,24 +122,44 @@ The round-two research (`12-RESEARCH.md`, "Open Questions") found eleven gaps. Q
 
 What the research settled from the code, with no decision needed (section 9): the caret after a keyed move (mechanism from the code, result on the iPad), what the open preview shows for a written step (the build's own reading of the step, targets, purpose and aside included), the Uses checklist's place and Tab order (after the uses line; Change ingredients, then the ticks, then the aside), and where the page goes when the picker opens from a row (to the picker's Name, then back to the new row's grams).
 
-## 12. Round-two redraws (drawn 2026-11-22; NOT approved until Mark answers the three rows)
+## 12. Round-two redraws (drawn 2026-11-22; the one-line page's words DECIDED and approved by Mark's answer 2026-11-23; Home and the picker replaced by section 13)
 
-Files: `home-held-draft-393.html`, `desk-line-words.html`, `picker-says-where.html` (canvas boards `P12R2_HomeDraft`, `P12R2_DeskLine`, `P12R2_PickerWhere`). On each, the "As built" panels are for comparison. `<closing>` is the closing words Mark picks on `decide-p12-desk-line-closing-words`; until then it is the built "at the desk or on the iPad".
+Files: `home-held-draft-393.html`, `desk-line-words.html` (both retaken 2026-11-23), `picker-says-where.html` (not approved; replaced by `picker-after-row.html`). On each, the "As built" panels are for comparison. `<closing>` is **"in a wider window"** (Mark, `decide-p12-desk-line-closing-words`, B, 2026-11-23).
 
-**Home below 724 with a Next version draft kept** (`look-p12-home-held-draft`):
-- The lead's draft line (`p.home__lead-draft`) reads "Draft: <draft name>. Finish it <closing>.", the draft's name as the version page words it; plain text, no link. No "Draft open on this version", no Go to draft.
-- An action whose version holds a kept Next version draft is not in the markup: Record batch (the latest version holds it), Record tasting (the awaiting batch's version holds it). The lead keeps its other action; a row whose filled action goes has no `span.home__actions`.
-- Rows carry no reason. From 724 up Home is as built.
+**Home below 724 with a Next version draft kept** (not approved as first drawn; see section 13 for the row):
+- The lead's draft line (`p.home__lead-draft`) reads "Draft: <draft name>. Finish it in a wider window.", the draft's name as the version page words it; plain text, no link. No "Draft open on this version", no Go to draft.
+- An action whose version holds a kept Next version draft is not in the markup: Record batch (the latest version holds it), Record tasting (the awaiting batch's version holds it).
+- From 724 up Home is as built.
 
-**The one-line page** (`decide-p12-desk-line-closing-words`):
-- Nothing kept: `h1.place__title` (New recipe, Edit), then `p.place__note` "Done <closing>."
-- An edit kept (Edit): the note reads "Edit kept. Finish it <closing>." A new-recipe draft kept (New recipe): "Draft: <draft recipe's name>. Finish it <closing>." The page reads the draft and never writes it.
+**The one-line page** (APPROVED by Mark's answer, `decide-p12-desk-line-closing-words` = B):
+- Nothing kept: `h1.place__title` (New recipe, Edit), then `p.place__note` "Done in a wider window."
+- An edit kept (Edit): the note reads "Edit kept. Finish it in a wider window." A new-recipe draft kept (New recipe): "Draft: <draft recipe's name>. Finish it in a wider window." The page reads the draft and never writes it.
 - Edit, both states: between the title and the note, `p.place__for` holding one link, "<recipe name> · <version identity>", to the version's page; 44 high.
-- The same `<closing>` ends the recipe head's two lines (section 2) and Home's lead line.
+- The same closing words end the recipe head's two lines (section 2: "Edit kept. Finish it in a wider window."; "Draft: <draft name>. Finish it in a wider window.") and Home's sentence. Sections 2, 8 and 11 quote the earlier words "at the desk or on the iPad"; read "in a wider window" there.
 
-**The picker** (`look-p12-picker-says-where`; 1366):
-- `p.pick__where` after `div.pick__head`, before the Name field: "After <row> · in step <n>", "After <row> · not in a step yet", or "At the end · not in a step yet" (the heading's Add ingredient). The heading (`span.pen-caption`) stays "Add ingredient".
-- The picker group's `aria-label` is "Add ingredient after <row>, in step <n>" and its like.
-- The line follows the landing place when another row's Add ingredient is pressed with the picker open.
+**The picker**: the line `p.pick__where` is NOT approved and not to be built. See section 13.
 
-Words added: Draft: <name>. Finish it <closing>. (Home's lead; the New recipe page) · After <row> · in step <n> · After <row> · not in a step yet · At the end · not in a step yet · the candidates for <closing>.
+Words: Done in a wider window. · Edit kept. Finish it in a wider window. · Draft: <name>. Finish it in a wider window.
+
+## 13. Round-three redraws (drawn 2026-11-23; NOT approved until Mark answers the three rows)
+
+Files: `home-held-draft-393.html` (`P12R2_HomeDraft`), `picker-after-row.html` (`P12R3_PickerAfterRow`), `pen-target-required.html` (`P12R3_PenTarget`). "As built" panels are for comparison (a build of 990076a0).
+
+**Home's rows below 724** (`decide-p12-home-row-sentence`):
+- A row whose filled action is left out (section 12) holds, in place of `span.home__actions`, `p.home__row-draft`: "Draft: <draft name>. Finish it in a wider window.", plain text. Type as `home__lead-draft`; it stands in the row's `actions` area.
+- Keep developing in the lead: kept (the board's "Drawn" panel) or left out below 724 (the "other choice" panel), as Mark answers. Left out, a lead whose only other action was the left-out record act has no `span.home__actions`.
+
+**The picker stands after its row** (`look-p12-picker-after-row`; 1366):
+- `tr.ingredient-table__pick > td[colspan=3] > div.pick`, directly after the opener row inside its `tbody`. The row is a block (not the three-column grid), with no cell padding and `--gap-s` under the picker; the picker keeps its own top margin.
+- From the heading: before `tfoot`, as the last row of the last `tbody`; when every row is in a step (and there is a step), in a `tbody` of its own after the table's "Not in a step yet" heading row, both present only while the picker is open.
+- `div.pick` is the built picker, word for word; no `pick__where` line. Its `aria-label` is "Add ingredient after <row>, in step <n>", "Add ingredient after <row>, not in a step yet" or "Add ingredient at the end, not in a step yet".
+- Pressing another row's Add ingredient moves the picker's row after that row; Name's text and the Category are kept; focus goes to Name. Cancel removes the row and returns focus to the opener; a pick puts the new row where the picker stood (all three as built, apart from the place).
+- The opener row stays in view when the picker opens.
+
+**The pen's refused target** (`look-p12-pen-target-required`; 1366):
+- In the open step, `span.target-chip` is an inline grid whose columns flow: `span.struck-value` (when drawn, centred on the row), the label field, the value field on row 1; `span#step-field-error.field-error` "Required" on row 2, directly after the blank field in the markup and under it on screen.
+- The blank field carries `aria-invalid="true"` and `aria-describedby="step-field-error"`; the other side carries neither.
+- A chip that is not refused has no second row. The grid applies to it too (the struck value on one line), if Mark confirms that part.
+- Not drawn and not refused: both sides blank.
+
+Words added: none. Required, Draft: <name>. Finish it in a wider window. and Not in a step yet are the build's or decided above.

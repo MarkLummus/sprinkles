@@ -1,6 +1,7 @@
 // Sid, 2026-11-22 (Phase 12 round two, the three redraws): measures p12r2.py's panels in WebKit with a coarse pointer (or Chromium) and writes p12r2-measure.json; prints each
 // panel's facts. Its own file, so p12g2-measure.json stays as it is.
 //   node p12r2-measure.mjs <out>/measure.html [chromium] [shots dir]
+// Round three (2026-11-23): also each target chip's children (where Required stands against its field) and each picker's place against the table and the row before it.
 // Per panel: its natural height, sideways overflow, the words and box of every control a person can see, and every line the redraws add or reword (its words, width, height, line
 // count and type size).
 import { writeFile, mkdir } from 'node:fs/promises';
@@ -21,11 +22,14 @@ for (const pid of await page.$$eval('[data-pid]', (els) => els.map((e) => e.getA
     const seen = [...root.querySelectorAll('.shell__main button, .shell__main a, .shell__main summary, .recipe-page button')].filter((e) => { const b = e.getBoundingClientRect(); return e.getClientRects().length && getComputedStyle(e).visibility !== 'hidden' && b.bottom > R.top && b.top < R.bottom; });
     return { w: Math.round(R.width), h: Math.ceil(root.firstElementChild.getBoundingClientRect().height), overflowX: Math.max(0, Math.round(root.scrollWidth - R.width)),
       controls: seen.map((e) => { const b = e.getBoundingClientRect(); return [words(e).slice(0, 40), r1(b.width), r1(b.height)]; }),
-      lines: [...root.querySelectorAll('.home__lead-draft, .notebook-version__draft, .place__note, .place__for, .pick__where, .pick__head .pen-caption')].map((e) => { const b = e.getBoundingClientRect(); const s = getComputedStyle(e); const lh = parseFloat(s.lineHeight) || parseFloat(s.fontSize) * 1.2; const range = document.createRange(); range.selectNodeContents(e); const tops = new Set([...range.getClientRects()].map((c) => Math.round(c.top)));
+      chips: [...root.querySelectorAll('.method-step__targets > .target-chip')].map((c) => ({ display: getComputedStyle(c).display, w: r1(c.getBoundingClientRect().width), h: r1(c.getBoundingClientRect().height), kids: [...c.children].map((k) => { const b = k.getBoundingClientRect(); const cb = c.getBoundingClientRect(); return [k.className.split(' ').pop(), k.tagName === 'TEXTAREA' ? k.value : k.textContent, r1(b.left - cb.left), r1(b.top - cb.top), r1(b.width), r1(b.height)]; }) })),
+      pick: [...root.querySelectorAll('.pick')].map((k) => { const b = k.getBoundingClientRect(); const t = root.querySelector('.ingredient-table').getBoundingClientRect(); const prev = k.closest('tr')?.previousElementSibling?.getBoundingClientRect(); return { label: k.getAttribute('aria-label'), w: r1(b.width), h: r1(b.height), left: r1(b.left - t.left), inTable: !!k.closest('table'), belowPrev: prev ? r1(b.top - prev.bottom) : null, belowTable: r1(b.top - t.bottom), tabs: [...root.querySelectorAll('button, textarea, select')].map((e) => e.closest('.pick') ? 'P' : 'r').join('').replace(/P+/g, (m) => `[picker ${m.length}]`).replace(/r+/g, (m) => `(${m.length})`) }; }),
+      lines: [...root.querySelectorAll('.home__lead-draft, .home__row-draft, .notebook-version__draft, .place__note, .place__for, .field-error, .field-requirement')].map((e) => { const b = e.getBoundingClientRect(); const s = getComputedStyle(e); const lh = parseFloat(s.lineHeight) || parseFloat(s.fontSize) * 1.2; const range = document.createRange(); range.selectNodeContents(e); const tops = new Set([...range.getClientRects()].map((c) => Math.round(c.top)));
         return { cls: e.className, words: e.textContent, w: r1(b.width), h: r1(b.height), lines: tops.size, font: `${s.fontSize}/${s.fontWeight}`, color: s.color, lh: r1(lh) }; }) };
   }, pid);
   if (SHOTS) await page.locator(`[data-pid="${pid}"]`).screenshot({ path: path.join(SHOTS, pid + (useChromium ? '-chromium' : '') + '.png') });
   out[pid] = m;
+  if (m.chips.length) rows.push(`   chips ${JSON.stringify(m.chips)}`); if (m.pick.length) rows.push(`   pick ${JSON.stringify(m.pick)}`);
   rows.push(`${pid}: ${m.w} x ${m.h}; ovx ${m.overflowX}; lines ${m.lines.map((l) => `[${l.cls}] "${l.words}" ${l.w} x ${l.h}, ${l.lines} line(s), ${l.font}`).join(' ; ')}; controls ${m.controls.map((c) => c.join(' ')).join(' | ')}`);
 }
 await br.close();

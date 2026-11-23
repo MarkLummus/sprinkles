@@ -80,6 +80,8 @@
     44
    ]
   ],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "home__lead-draft",
@@ -95,7 +97,7 @@
  },
  "hd-drawn": {
   "w": 393,
-  "h": 1426,
+  "h": 1474,
   "overflowX": 0,
   "controls": [
    [
@@ -152,6 +154,97 @@
     "Record tasting",
     353,
     44
+   ]
+  ],
+  "chips": [],
+  "pick": [],
+  "lines": [
+   {
+    "cls": "home__lead-draft",
+    "words": "Draft: Version 5 · more cinnamon. Finish it in a wider window.",
+    "w": 327,
+    "h": 32,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   },
+   {
+    "cls": "home__row-draft",
+    "words": "Draft: Version 5 · more cinnamon. Finish it in a wider window.",
+    "w": 353,
+    "h": 32,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   },
+   {
+    "cls": "home__row-draft",
+    "words": "Draft: Version 3 · less cream. Finish it in a wider window.",
+    "w": 353,
+    "h": 16,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "hd-nokeep": {
+  "w": 393,
+  "h": 1418,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Mexican Chocolate",
+    247.6,
+    44
+   ],
+   [
+    "Enter Sheet code",
+    108.4,
+    44
+   ],
+   [
+    "Mexican Chocolate",
+    212.2,
+    44
+   ],
+   [
+    "Olive Oil Ice Cream, circulator",
+    288.9,
+    58
+   ],
+   [
+    "Pineapple",
+    109,
+    44
+   ],
+   [
+    "Underbelly Light Base",
+    225.9,
+    58
+   ],
+   [
+    "Coconut",
+    94.5,
+    44
+   ],
+   [
+    "Record tasting",
+    353,
+    44
+   ],
+   [
+    "Mocha",
+    75.8,
+    44
+   ],
+   [
+    "Record tasting",
+    353,
+    44
    ],
    [
     "Standard Base",
@@ -159,15 +252,93 @@
     44
    ]
   ],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "home__lead-draft",
-    "words": "Draft: Version 5 · more cinnamon. Finish it at the desk or on the iPad.",
+    "words": "Draft: Version 5 · more cinnamon. Finish it in a wider window.",
     "w": 327,
     "h": 32,
     "lines": 2,
     "font": "14px/400",
     "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   },
+   {
+    "cls": "home__row-draft",
+    "words": "Draft: Version 5 · more cinnamon. Finish it in a wider window.",
+    "w": 353,
+    "h": 32,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   },
+   {
+    "cls": "home__row-draft",
+    "words": "Draft: Version 3 · less cream. Finish it in a wider window.",
+    "w": 353,
+    "h": 16,
+    "lines": 1,
+    "font": "14px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 16.8
+   }
+  ]
+ },
+ "hd-latest": {
+  "w": 393,
+  "h": 852,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Rename",
+    55.2,
+    44
+   ],
+   [
+    "VersionShow details",
+    353,
+    44
+   ],
+   [
+    "Version 5 · more cinnamon",
+    166.5,
+    16
+   ],
+   [
+    "Record batch",
+    132.2,
+    44
+   ],
+   [
+    "Print sheet",
+    72.3,
+    44
+   ],
+   [
+    "Go to batchNot yet churned",
+    353,
+    44
+   ],
+   [
+    "HistoryShow5 versions",
+    353,
+    44
+   ]
+  ],
+  "chips": [],
+  "pick": [],
+  "lines": [
+   {
+    "cls": "notebook-version__draft",
+    "words": "Draft: Version 5 · more cinnamon. Finish it at the desk or on the iPad.",
+    "w": 353,
+    "h": 32,
+    "lines": 2,
+    "font": "14px/400",
+    "color": "rgb(89, 89, 89)",
     "lh": 16.8
    }
   ]
@@ -203,54 +374,12 @@
     44
    ]
   ],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "notebook-version__draft",
     "words": "Draft: Version 5 · more cinnamon. Finish it at the desk or on the iPad.",
-    "w": 353,
-    "h": 32,
-    "lines": 2,
-    "font": "14px/400",
-    "color": "rgb(89, 89, 89)",
-    "lh": 16.8
-   }
-  ]
- },
- "hd-page-none": {
-  "w": 393,
-  "h": 852,
-  "overflowX": 0,
-  "controls": [
-   [
-    "Rename",
-    55.2,
-    44
-   ],
-   [
-    "VersionShow details",
-    353,
-    44
-   ],
-   [
-    "Print sheet",
-    72.3,
-    44
-   ],
-   [
-    "Go to batchNot yet churned",
-    353,
-    44
-   ],
-   [
-    "HistoryShow2 versions",
-    353,
-    44
-   ]
-  ],
-  "lines": [
-   {
-    "cls": "notebook-version__draft",
-    "words": "Draft: Version 3 · less cream. Finish it at the desk or on the iPad.",
     "w": 353,
     "h": 32,
     "lines": 2,
@@ -265,6 +394,8 @@
   "h": 852,
   "overflowX": 0,
   "controls": [],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "place__note",
@@ -283,6 +414,8 @@
   "h": 852,
   "overflowX": 0,
   "controls": [],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "place__note",
@@ -301,6 +434,8 @@
   "h": 620,
   "overflowX": 0,
   "controls": [],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "place__note",
@@ -319,10 +454,12 @@
   "h": 852,
   "overflowX": 0,
   "controls": [],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "place__note",
-    "words": "Done at the desk or on the iPad, in a wide window.",
+    "words": "Done in a wider window.",
     "w": 353,
     "h": 16,
     "lines": 1,
@@ -343,6 +480,8 @@
     44
    ]
   ],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "place__for",
@@ -356,7 +495,7 @@
    },
    {
     "cls": "place__note",
-    "words": "Done at the desk or on the iPad, in a wide window.",
+    "words": "Done in a wider window.",
     "w": 353,
     "h": 16,
     "lines": 1,
@@ -377,6 +516,8 @@
     44
    ]
   ],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "place__for",
@@ -390,7 +531,7 @@
    },
    {
     "cls": "place__note",
-    "words": "Done at the desk or on the iPad, in a wide window.",
+    "words": "Done in a wider window.",
     "w": 506,
     "h": 16,
     "lines": 1,
@@ -405,13 +546,15 @@
   "h": 852,
   "overflowX": 0,
   "controls": [],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "place__note",
-    "words": "Draft: Coffee. Finish it at the desk or on the iPad, in a wide window.",
+    "words": "Draft: Coffee. Finish it in a wider window.",
     "w": 353,
-    "h": 32,
-    "lines": 2,
+    "h": 16,
+    "lines": 1,
     "font": "14px/400",
     "color": "rgb(89, 89, 89)",
     "lh": 16.8
@@ -429,6 +572,8 @@
     44
    ]
   ],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "place__for",
@@ -442,10 +587,10 @@
    },
    {
     "cls": "place__note",
-    "words": "Edit kept. Finish it at the desk or on the iPad, in a wide window.",
+    "words": "Edit kept. Finish it in a wider window.",
     "w": 353,
-    "h": 32,
-    "lines": 2,
+    "h": 16,
+    "lines": 1,
     "font": "14px/400",
     "color": "rgb(89, 89, 89)",
     "lh": 16.8
@@ -463,6 +608,8 @@
     44
    ]
   ],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "place__for",
@@ -476,7 +623,7 @@
    },
    {
     "cls": "place__note",
-    "words": "Edit kept. Finish it at the desk or on the iPad, in a wide window.",
+    "words": "Edit kept. Finish it in a wider window.",
     "w": 506,
     "h": 16,
     "lines": 1,
@@ -512,13 +659,15 @@
     44
    ]
   ],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "notebook-version__draft",
-    "words": "Edit kept. Finish it at the desk or on the iPad, in a wide window.",
+    "words": "Edit kept. Finish it in a wider window.",
     "w": 353,
-    "h": 32,
-    "lines": 2,
+    "h": 16,
+    "lines": 1,
     "font": "14px/400",
     "color": "rgb(89, 89, 89)",
     "lh": 16.8
@@ -551,13 +700,15 @@
     44
    ]
   ],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "notebook-version__draft",
-    "words": "Draft: Version 2 · less cream. Finish it at the desk or on the iPad, in a wide window.",
+    "words": "Draft: Version 2 · less cream. Finish it in a wider window.",
     "w": 353,
-    "h": 32,
-    "lines": 2,
+    "h": 16,
+    "lines": 1,
     "font": "14px/400",
     "color": "rgb(89, 89, 89)",
     "lh": 16.8
@@ -566,7 +717,7 @@
  },
  "dl-home": {
   "w": 393,
-  "h": 1426,
+  "h": 1474,
   "overflowX": 0,
   "controls": [
    [
@@ -590,236 +741,42 @@
     44
    ]
   ],
+  "chips": [],
+  "pick": [],
   "lines": [
    {
     "cls": "home__lead-draft",
-    "words": "Draft: Version 5 · more cinnamon. Finish it at the desk or on the iPad, in a wide window.",
+    "words": "Draft: Version 5 · more cinnamon. Finish it in a wider window.",
     "w": 327,
     "h": 32,
     "lines": 2,
     "font": "14px/400",
     "color": "rgb(20, 20, 20)",
     "lh": 16.8
-   }
-  ]
- },
- "dl-head-draft-B": {
-  "w": 393,
-  "h": 852,
-  "overflowX": 0,
-  "controls": [
-   [
-    "Rename",
-    55.2,
-    44
-   ],
-   [
-    "VersionShow details",
-    353,
-    44
-   ],
-   [
-    "Print sheet",
-    72.3,
-    44
-   ],
-   [
-    "Go to batchNot yet churned",
-    353,
-    44
-   ]
-  ],
-  "lines": [
+   },
    {
-    "cls": "notebook-version__draft",
-    "words": "Draft: Version 2 · less cream. Finish it in a wider window.",
-    "w": 353,
-    "h": 16,
-    "lines": 1,
-    "font": "14px/400",
-    "color": "rgb(89, 89, 89)",
-    "lh": 16.8
-   }
-  ]
- },
- "dl-new-B": {
-  "w": 393,
-  "h": 852,
-  "overflowX": 0,
-  "controls": [],
-  "lines": [
-   {
-    "cls": "place__note",
-    "words": "Done in a wider window.",
-    "w": 353,
-    "h": 16,
-    "lines": 1,
-    "font": "14px/400",
-    "color": "rgb(89, 89, 89)",
-    "lh": 16.8
-   }
-  ]
- },
- "dl-head-draft-C": {
-  "w": 393,
-  "h": 852,
-  "overflowX": 0,
-  "controls": [
-   [
-    "Rename",
-    55.2,
-    44
-   ],
-   [
-    "VersionShow details",
-    353,
-    44
-   ],
-   [
-    "Print sheet",
-    72.3,
-    44
-   ],
-   [
-    "Go to batchNot yet churned",
-    353,
-    44
-   ]
-  ],
-  "lines": [
-   {
-    "cls": "notebook-version__draft",
-    "words": "Draft: Version 2 · less cream. Finish it at the desk, or on the iPad full screen.",
+    "cls": "home__row-draft",
+    "words": "Draft: Version 5 · more cinnamon. Finish it in a wider window.",
     "w": 353,
     "h": 32,
     "lines": 2,
     "font": "14px/400",
-    "color": "rgb(89, 89, 89)",
-    "lh": 16.8
-   }
-  ]
- },
- "dl-new-C": {
-  "w": 393,
-  "h": 852,
-  "overflowX": 0,
-  "controls": [],
-  "lines": [
-   {
-    "cls": "place__note",
-    "words": "Done at the desk, or on the iPad full screen.",
-    "w": 353,
-    "h": 16,
-    "lines": 1,
-    "font": "14px/400",
-    "color": "rgb(89, 89, 89)",
-    "lh": 16.8
-   }
-  ]
- },
- "dl-cand-A": {
-  "w": 393,
-  "h": 852,
-  "overflowX": 0,
-  "controls": [
-   [
-    "Coffee · Version 1",
-    110.5,
-    44
-   ]
-  ],
-  "lines": [
-   {
-    "cls": "place__for",
-    "words": "Coffee · Version 1",
-    "w": 353,
-    "h": 44,
-    "lines": 2,
-    "font": "14px/400",
     "color": "rgb(20, 20, 20)",
     "lh": 16.8
    },
    {
-    "cls": "place__note",
-    "words": "Edit kept. Finish it at the desk or on the iPad, in a wide window.",
-    "w": 353,
-    "h": 32,
-    "lines": 2,
-    "font": "14px/400",
-    "color": "rgb(89, 89, 89)",
-    "lh": 16.8
-   }
-  ]
- },
- "dl-cand-B": {
-  "w": 393,
-  "h": 852,
-  "overflowX": 0,
-  "controls": [
-   [
-    "Coffee · Version 1",
-    110.5,
-    44
-   ]
-  ],
-  "lines": [
-   {
-    "cls": "place__for",
-    "words": "Coffee · Version 1",
-    "w": 353,
-    "h": 44,
-    "lines": 2,
-    "font": "14px/400",
-    "color": "rgb(20, 20, 20)",
-    "lh": 16.8
-   },
-   {
-    "cls": "place__note",
-    "words": "Edit kept. Finish it in a wider window.",
+    "cls": "home__row-draft",
+    "words": "Draft: Version 3 · less cream. Finish it in a wider window.",
     "w": 353,
     "h": 16,
     "lines": 1,
     "font": "14px/400",
-    "color": "rgb(89, 89, 89)",
-    "lh": 16.8
-   }
-  ]
- },
- "dl-cand-C": {
-  "w": 393,
-  "h": 852,
-  "overflowX": 0,
-  "controls": [
-   [
-    "Coffee · Version 1",
-    110.5,
-    44
-   ]
-  ],
-  "lines": [
-   {
-    "cls": "place__for",
-    "words": "Coffee · Version 1",
-    "w": 353,
-    "h": 44,
-    "lines": 2,
-    "font": "14px/400",
     "color": "rgb(20, 20, 20)",
     "lh": 16.8
-   },
-   {
-    "cls": "place__note",
-    "words": "Edit kept. Finish it at the desk, or on the iPad full screen.",
-    "w": 353,
-    "h": 16,
-    "lines": 1,
-    "font": "14px/400",
-    "color": "rgb(89, 89, 89)",
-    "lh": 16.8
    }
   ]
  },
- "pw-built": {
+ "pa-built": {
   "w": 576,
   "h": 1053,
   "overflowX": 0,
@@ -945,22 +902,556 @@
     47
    ]
   ],
-  "lines": [
+  "chips": [],
+  "pick": [
    {
-    "cls": "pen-caption",
-    "words": "Add ingredient",
-    "w": 107.9,
-    "h": 16.2,
-    "lines": 1,
-    "font": "12px/500",
-    "color": "rgb(20, 20, 20)",
-    "lh": 16.2
+    "label": "Add ingredient",
+    "w": 528,
+    "h": 507,
+    "left": 0,
+    "inTable": false,
+    "belowPrev": null,
+    "belowTable": 12,
+    "tabs": "(21)[picke(1) 14]"
    }
-  ]
+  ],
+  "lines": []
  },
- "pw-step": {
+ "pa-step": {
   "w": 576,
-  "h": 1081,
+  "h": 1066,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Cancel",
+    40.5,
+    44
+   ],
+   [
+    "Alcohol 40%Other · Freezing 297Add",
+    502,
+    47
+   ],
+   [
+    "AlluloseSugar · Sugar 100% · Freezing 19",
+    502,
+    47
+   ],
+   [
+    "Almond Paste (pure)Flavor · Fat 49.93% ·",
+    502,
+    63
+   ],
+   [
+    "AppleFruit · Fat 0.17% · Sugar 10.39% · ",
+    502,
+    63
+   ],
+   [
+    "ApricotFruit · Fat 0.39% · Sugar 9.24% ·",
+    502,
+    63
+   ],
+   [
+    "Atomized glucose 40 DE (dried)Sugar · Su",
+    502,
+    47
+   ],
+   [
+    "BananaFruit · Fat 0.33% · Sugar 12.23% ·",
+    502,
+    63
+   ],
+   [
+    "Black CherryFruit · Fat 0.2% · Sugar 12.",
+    502,
+    63
+   ],
+   [
+    "BlackberriesFruit · Fat 0.49% · Sugar 4.",
+    502,
+    63
+   ],
+   [
+    "BlueberriesFruit · Fat 0.33% · Sugar 9.9",
+    502,
+    63
+   ],
+   [
+    "Buffalo MilkDairy · Fat 6.89% · Milk sol",
+    502,
+    63
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add to step",
+    67.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ]
+  ],
+  "chips": [],
+  "pick": [
+   {
+    "label": "Add ingredient after Heavy cream, 36% fat, in step 1",
+    "w": 528,
+    "h": 506.6,
+    "left": 0,
+    "inTable": true,
+    "belowPrev": 12,
+    "belowTable": -828.2,
+    "tabs": "(5)[picke(1) 14](16)"
+   }
+  ],
+  "lines": []
+ },
+ "pa-other": {
+  "w": 576,
+  "h": 1066,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Cancel",
+    40.5,
+    44
+   ],
+   [
+    "Alcohol 40%Other · Freezing 297Add",
+    502,
+    47
+   ],
+   [
+    "AlluloseSugar · Sugar 100% · Freezing 19",
+    502,
+    47
+   ],
+   [
+    "Almond Paste (pure)Flavor · Fat 49.93% ·",
+    502,
+    63
+   ],
+   [
+    "AppleFruit · Fat 0.17% · Sugar 10.39% · ",
+    502,
+    63
+   ],
+   [
+    "ApricotFruit · Fat 0.39% · Sugar 9.24% ·",
+    502,
+    63
+   ],
+   [
+    "Atomized glucose 40 DE (dried)Sugar · Su",
+    502,
+    47
+   ],
+   [
+    "BananaFruit · Fat 0.33% · Sugar 12.23% ·",
+    502,
+    63
+   ],
+   [
+    "Black CherryFruit · Fat 0.2% · Sugar 12.",
+    502,
+    63
+   ],
+   [
+    "Add to step",
+    67.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ]
+  ],
+  "chips": [],
+  "pick": [
+   {
+    "label": "Add ingredient after Dextrose, in step 2",
+    "w": 528,
+    "h": 506.6,
+    "left": 0,
+    "inTable": true,
+    "belowPrev": 12,
+    "belowTable": -660.3,
+    "tabs": "(15)[picke(1) 14](6)"
+   }
+  ],
+  "lines": []
+ },
+ "pa-cancel": {
+  "w": 576,
+  "h": 559,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add to step",
+    67.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ]
+  ],
+  "chips": [],
+  "pick": [],
+  "lines": []
+ },
+ "pa-picked": {
+  "w": 576,
+  "h": 602,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add ingredient",
+    85,
+    44
+   ],
+   [
+    "Move up",
+    50.8,
+    44
+   ],
+   [
+    "Move down",
+    68.1,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ]
+  ],
+  "chips": [],
+  "pick": [],
+  "lines": []
+ },
+ "pa-heading": {
+  "w": 576,
+  "h": 1066,
   "overflowX": 0,
   "controls": [
    [
@@ -1082,34 +1573,31 @@
     "Atomized glucose 40 DE (dried)Sugar · Su",
     502,
     47
+   ],
+   [
+    "BananaFruit · Fat 0.33% · Sugar 12.23% ·",
+    502,
+    63
    ]
   ],
-  "lines": [
+  "chips": [],
+  "pick": [
    {
-    "cls": "pen-caption",
-    "words": "Add ingredient",
-    "w": 107.9,
-    "h": 16.2,
-    "lines": 1,
-    "font": "12px/500",
-    "color": "rgb(20, 20, 20)",
-    "lh": 16.2
-   },
-   {
-    "cls": "pick__where",
-    "words": "After Heavy cream, 36% fat · in step 1",
-    "w": 502,
-    "h": 16,
-    "lines": 1,
-    "font": "14px/400",
-    "color": "rgb(20, 20, 20)",
-    "lh": 16.8
+    "label": "Add ingredient at the end, not in a step yet",
+    "w": 528,
+    "h": 506.6,
+    "left": 0,
+    "inTable": true,
+    "belowPrev": 12,
+    "belowTable": -550.6,
+    "tabs": "(21)[picke(1) 14]"
    }
-  ]
+  ],
+  "lines": []
  },
- "pw-unplaced": {
+ "pa-allplaced": {
   "w": 576,
-  "h": 1081,
+  "h": 1066,
   "overflowX": 0,
   "controls": [
    [
@@ -1173,11 +1661,6 @@
     44
    ],
    [
-    "Add to step",
-    67.9,
-    44
-   ],
-   [
     "Add ingredient",
     85,
     44
@@ -1231,39 +1714,71 @@
     "Atomized glucose 40 DE (dried)Sugar · Su",
     502,
     47
+   ],
+   [
+    "BananaFruit · Fat 0.33% · Sugar 12.23% ·",
+    502,
+    63
    ]
   ],
-  "lines": [
+  "chips": [],
+  "pick": [
    {
-    "cls": "pen-caption",
-    "words": "Add ingredient",
-    "w": 107.9,
-    "h": 16.2,
-    "lines": 1,
-    "font": "12px/500",
-    "color": "rgb(20, 20, 20)",
-    "lh": 16.2
-   },
-   {
-    "cls": "pick__where",
-    "words": "After Fine sea salt · not in a step yet",
-    "w": 502,
-    "h": 16,
-    "lines": 1,
-    "font": "14px/400",
-    "color": "rgb(20, 20, 20)",
-    "lh": 16.8
+    "label": "Add ingredient at the end, not in a step yet",
+    "w": 528,
+    "h": 506.6,
+    "left": 0,
+    "inTable": true,
+    "belowPrev": 12.5,
+    "belowTable": -550.6,
+    "tabs": "(20)[picke(1) 14]"
    }
-  ]
+  ],
+  "lines": []
  },
- "pw-heading": {
+ "pt-create": {
   "w": 576,
-  "h": 1081,
+  "h": 832,
   "overflowX": 0,
   "controls": [
    [
-    "Add ingredient",
-    85,
+    "Add step",
+    52.8,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ],
+   [
+    "Add target",
+    61,
+    44
+   ],
+   [
+    "Add purpose",
+    75.4,
+    44
+   ],
+   [
+    "Change ingredients",
+    112.9,
+    44
+   ],
+   [
+    "Add aside",
+    58.5,
+    44
+   ],
+   [
+    "Preview step",
+    74.6,
+    44
+   ],
+   [
+    "Add step",
+    52.8,
     44
    ],
    [
@@ -1282,8 +1797,33 @@
     44
    ],
    [
-    "Add ingredient",
-    85,
+    "Add target",
+    61,
+    44
+   ],
+   [
+    "Add purpose",
+    75.4,
+    44
+   ],
+   [
+    "Change ingredients",
+    112.9,
+    44
+   ],
+   [
+    "Add aside",
+    58.5,
+    44
+   ],
+   [
+    "Preview step",
+    74.6,
+    44
+   ],
+   [
+    "Add step",
+    52.8,
     44
    ],
    [
@@ -1300,50 +1840,94 @@
     "Remove",
     47.9,
     44
-   ],
+   ]
+  ],
+  "chips": [
+   {
+    "display": "grid",
+    "w": 431.9,
+    "h": 64,
+    "kids": [
+     [
+      "target-chip__label-field",
+      "Heat to",
+      7,
+      1,
+      180,
+      44
+     ],
+     [
+      "dl-flag",
+      "focus lands here",
+      1,
+      -14,
+      98.8,
+      16
+     ],
+     [
+      "target-chip__value-field",
+      "",
+      189,
+      1,
+      180,
+      44
+     ],
+     [
+      "field-error",
+      "Required",
+      189,
+      49,
+      180,
+      14
+     ],
+     [
+      "text-control",
+      "Remove",
+      377,
+      1,
+      47.9,
+      44
+     ]
+    ]
+   }
+  ],
+  "pick": [],
+  "lines": [
+   {
+    "cls": "field-error",
+    "words": "Required",
+    "w": 180,
+    "h": 14,
+    "lines": 1,
+    "font": "12px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 14.4
+   }
+  ]
+ },
+ "pt-built-value": {
+  "w": 576,
+  "h": 551,
+  "overflowX": 0,
+  "controls": [
    [
-    "Add ingredient",
-    85,
+    "Preview step",
+    74.6,
     44
    ],
    [
-    "Move up",
-    50.8,
+    "Change ingredients",
+    112.9,
     44
    ],
    [
-    "Move down",
-    68.1,
+    "Add purpose",
+    75.4,
     44
    ],
    [
-    "Remove",
-    47.9,
-    44
-   ],
-   [
-    "Add to step",
-    67.9,
-    44
-   ],
-   [
-    "Add ingredient",
-    85,
-    44
-   ],
-   [
-    "Move up",
-    50.8,
-    44
-   ],
-   [
-    "Move down",
-    68.1,
-    44
-   ],
-   [
-    "Remove",
-    47.9,
+    "Add aside",
+    58.5,
     44
    ],
    [
@@ -1352,57 +1936,437 @@
     44
    ],
    [
-    "Alcohol 40%Other · Freezing 297Add",
-    502,
-    47
+    "Done",
+    51.6,
+    44
    ],
    [
-    "AlluloseSugar · Sugar 100% · Freezing 19",
-    502,
-    47
+    "Edit this step",
+    75.9,
+    44
    ],
    [
-    "Almond Paste (pure)Flavor · Fat 49.93% ·",
-    502,
-    63
-   ],
-   [
-    "AppleFruit · Fat 0.17% · Sugar 10.39% · ",
-    502,
-    63
-   ],
-   [
-    "ApricotFruit · Fat 0.39% · Sugar 9.24% ·",
-    502,
-    63
-   ],
-   [
-    "Atomized glucose 40 DE (dried)Sugar · Su",
-    502,
-    47
+    "Remove",
+    47.9,
+    44
    ]
   ],
+  "chips": [
+   {
+    "display": "flex",
+    "w": 452.8,
+    "h": 46,
+    "kids": [
+     [
+      "struck-value",
+      "Heat to 82 °C",
+      7,
+      1,
+      32,
+      44
+     ],
+     [
+      "target-chip__label-field",
+      "Heat to",
+      43,
+      1,
+      200.4,
+      44
+     ],
+     [
+      "dl-flag--r",
+      "focus lands here; no word",
+      304.1,
+      -14,
+      147.7,
+      16
+     ],
+     [
+      "target-chip__value-field",
+      "",
+      245.4,
+      1,
+      200.4,
+      44
+     ]
+    ]
+   }
+  ],
+  "pick": [],
+  "lines": []
+ },
+ "pt-built-changed": {
+  "w": 576,
+  "h": 551,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Preview step",
+    74.6,
+    44
+   ],
+   [
+    "Change ingredients",
+    112.9,
+    44
+   ],
+   [
+    "Add purpose",
+    75.4,
+    44
+   ],
+   [
+    "Add aside",
+    58.5,
+    44
+   ],
+   [
+    "Cancel",
+    40.5,
+    44
+   ],
+   [
+    "Done",
+    51.6,
+    44
+   ],
+   [
+    "Edit this step",
+    75.9,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ]
+  ],
+  "chips": [
+   {
+    "display": "flex",
+    "w": 452.8,
+    "h": 46,
+    "kids": [
+     [
+      "struck-value",
+      "Heat to 82 °C",
+      7,
+      1,
+      32,
+      44
+     ],
+     [
+      "target-chip__label-field",
+      "Heat to",
+      43,
+      1,
+      200.4,
+      44
+     ],
+     [
+      "target-chip__value-field",
+      "85 °C",
+      245.4,
+      1,
+      200.4,
+      44
+     ]
+    ]
+   }
+  ],
+  "pick": [],
+  "lines": []
+ },
+ "pt-value": {
+  "w": 576,
+  "h": 569,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Preview step",
+    74.6,
+    44
+   ],
+   [
+    "Change ingredients",
+    112.9,
+    44
+   ],
+   [
+    "Add purpose",
+    75.4,
+    44
+   ],
+   [
+    "Add aside",
+    58.5,
+    44
+   ],
+   [
+    "Cancel",
+    40.5,
+    44
+   ],
+   [
+    "Done",
+    51.6,
+    44
+   ],
+   [
+    "Edit this step",
+    75.9,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ]
+  ],
+  "chips": [
+   {
+    "display": "grid",
+    "w": 452.8,
+    "h": 64,
+    "kids": [
+     [
+      "struck-value",
+      "Heat to 82 °C",
+      7,
+      16,
+      72.8,
+      14
+     ],
+     [
+      "target-chip__label-field",
+      "Heat to",
+      83.8,
+      1,
+      180,
+      44
+     ],
+     [
+      "dl-flag--r",
+      "focus lands here",
+      353,
+      -14,
+      98.8,
+      16
+     ],
+     [
+      "target-chip__value-field",
+      "",
+      265.8,
+      1,
+      180,
+      44
+     ],
+     [
+      "field-error",
+      "Required",
+      265.8,
+      49,
+      180,
+      14
+     ]
+    ]
+   }
+  ],
+  "pick": [],
   "lines": [
    {
-    "cls": "pen-caption",
-    "words": "Add ingredient",
-    "w": 107.9,
-    "h": 16.2,
+    "cls": "field-error",
+    "words": "Required",
+    "w": 180,
+    "h": 14,
     "lines": 1,
-    "font": "12px/500",
+    "font": "12px/400",
     "color": "rgb(20, 20, 20)",
-    "lh": 16.2
-   },
-   {
-    "cls": "pick__where",
-    "words": "At the end · not in a step yet",
-    "w": 502,
-    "h": 16,
-    "lines": 1,
-    "font": "14px/400",
-    "color": "rgb(20, 20, 20)",
-    "lh": 16.8
+    "lh": 14.4
    }
   ]
+ },
+ "pt-label": {
+  "w": 576,
+  "h": 569,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Preview step",
+    74.6,
+    44
+   ],
+   [
+    "Change ingredients",
+    112.9,
+    44
+   ],
+   [
+    "Add purpose",
+    75.4,
+    44
+   ],
+   [
+    "Add aside",
+    58.5,
+    44
+   ],
+   [
+    "Cancel",
+    40.5,
+    44
+   ],
+   [
+    "Done",
+    51.6,
+    44
+   ],
+   [
+    "Edit this step",
+    75.9,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ]
+  ],
+  "chips": [
+   {
+    "display": "grid",
+    "w": 376,
+    "h": 64,
+    "kids": [
+     [
+      "dl-flag",
+      "focus lands here",
+      1,
+      -14,
+      98.8,
+      16
+     ],
+     [
+      "target-chip__label-field",
+      "",
+      7,
+      1,
+      180,
+      44
+     ],
+     [
+      "field-error",
+      "Required",
+      7,
+      49,
+      180,
+      14
+     ],
+     [
+      "target-chip__value-field",
+      "82 °C",
+      189,
+      1,
+      180,
+      44
+     ]
+    ]
+   }
+  ],
+  "pick": [],
+  "lines": [
+   {
+    "cls": "field-error",
+    "words": "Required",
+    "w": 180,
+    "h": 14,
+    "lines": 1,
+    "font": "12px/400",
+    "color": "rgb(20, 20, 20)",
+    "lh": 14.4
+   }
+  ]
+ },
+ "pt-changed": {
+  "w": 576,
+  "h": 551,
+  "overflowX": 0,
+  "controls": [
+   [
+    "Preview step",
+    74.6,
+    44
+   ],
+   [
+    "Change ingredients",
+    112.9,
+    44
+   ],
+   [
+    "Add purpose",
+    75.4,
+    44
+   ],
+   [
+    "Add aside",
+    58.5,
+    44
+   ],
+   [
+    "Cancel",
+    40.5,
+    44
+   ],
+   [
+    "Done",
+    51.6,
+    44
+   ],
+   [
+    "Edit this step",
+    75.9,
+    44
+   ],
+   [
+    "Remove",
+    47.9,
+    44
+   ]
+  ],
+  "chips": [
+   {
+    "display": "grid",
+    "w": 452.8,
+    "h": 46,
+    "kids": [
+     [
+      "struck-value",
+      "Heat to 82 °C",
+      7,
+      16,
+      72.8,
+      14
+     ],
+     [
+      "target-chip__label-field",
+      "Heat to",
+      83.8,
+      1,
+      180,
+      44
+     ],
+     [
+      "target-chip__value-field",
+      "85 °C",
+      265.8,
+      1,
+      180,
+      44
+     ]
+    ]
+   }
+  ],
+  "pick": [],
+  "lines": []
  }
 }

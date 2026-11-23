@@ -1,0 +1,421 @@
+{
+ "adderr_Whole milk": "locator.click: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.pick__row').filter({",
+ "struct": {
+  "tag": "TABLE",
+  "cls": "ingredient-table is-developing",
+  "display": "block",
+  "w": 528,
+  "parent": "SECTION.ingredient-table-region",
+  "sections": [
+   {
+    "tag": "THEAD",
+    "cls": "",
+    "display": "block",
+    "rows": [
+     {
+      "tag": "TR",
+      "cls": "",
+      "role": null,
+      "label": null,
+      "display": "grid",
+      "n": 2,
+      "cells": [
+       "TH.ingredient-table__col-name[2] block 425",
+       "TH.ingredient-table__col-numeric[1] block 81"
+      ],
+      "gtc": "64px 351.391px 80.6094px"
+     }
+    ]
+   },
+   {
+    "tag": "TBODY",
+    "cls": "",
+    "display": "block",
+    "rows": [
+     {
+      "tag": "TR",
+      "cls": "ingredient-table__step-head",
+      "role": null,
+      "label": null,
+      "display": "table-row",
+      "n": 1,
+      "cells": [
+       "TD.[3] table-cell 98"
+      ],
+      "gtc": "none"
+     },
+     {
+      "tag": "TR",
+      "cls": "",
+      "role": null,
+      "label": "Heavy cream, 36% fat, 400 g, estimated",
+      "display": "grid",
+      "n": 3,
+      "cells": [
+       "TD.ingredient-table__col-grams[1] block 64",
+       "TD.ingredient-table__col-name[1] block 388",
+       "TD.ingredient-table__col-numeric[1] block 44"
+      ],
+      "gtc": "64px 387.797px 44.2031px"
+     },
+     {
+      "tag": "TR",
+      "cls": "",
+      "role": null,
+      "label": "Coffee beans, 40 g, estimated",
+      "display": "grid",
+      "n": 3,
+      "cells": [
+       "TD.ingredient-table__col-grams[1] block 64",
+       "TD.ingredient-table__col-name[1] block 396",
+       "TD.ingredient-table__col-numeric[1] block 36"
+      ],
+      "gtc": "64px 396.141px 35.8594px"
+     }
+    ]
+   },
+   {
+    "tag": "TBODY",
+    "cls": "",
+    "display": "block",
+    "rows": [
+     {
+      "tag": "TR",
+      "cls": "ingredient-table__step-head",
+      "role": null,
+      "label": null,
+      "display": "table-row",
+      "n": 1,
+      "cells": [
+       "TD.[3] table-cell 130"
+      ],
+      "gtc": "none"
+     },
+     {
+      "tag": "TR",
+      "cls": "",
+      "role": null,
+      "label": "Dextrose, 120 g",
+      "display": "grid",
+      "n": 3,
+      "cells": [
+       "TD.ingredient-table__col-grams[1] block 64",
+       "TD.ingredient-table__col-name[1] block 388",
+       "TD.ingredient-table__col-numeric[1] block 44"
+      ],
+      "gtc": "64px 387.797px 44.2031px"
+     },
+     {
+      "tag": "TR",
+      "cls": "",
+      "role": null,
+      "label": "Fine sea salt, 1 g, estimated",
+      "display": "grid",
+      "n": 3,
+      "cells": [
+       "TD.ingredient-table__col-grams[1] block 64",
+       "TD.ingredient-table__col-name[1] block 396",
+       "TD.ingredient-table__col-numeric[1] block 36"
+      ],
+      "gtc": "64px 396.141px 35.8594px"
+     },
+     {
+      "tag": "TR",
+      "cls": "",
+      "role": null,
+      "label": "Sucrose, 90 g",
+      "display": "grid",
+      "n": 3,
+      "cells": [
+       "TD.ingredient-table__col-grams[1] block 64",
+       "TD.ingredient-table__col-name[1] block 388",
+       "TD.ingredient-table__col-numeric[1] block 44"
+      ],
+      "gtc": "64px 387.797px 44.2031px"
+     },
+     {
+      "tag": "TR",
+      "cls": "",
+      "role": null,
+      "label": "Skim milk powder, 30 g",
+      "display": "grid",
+      "n": 3,
+      "cells": [
+       "TD.ingredient-table__col-grams[1] block 64",
+       "TD.ingredient-table__col-name[1] block 396",
+       "TD.ingredient-table__col-numeric[1] block 36"
+      ],
+      "gtc": "64px 396.141px 35.8594px"
+     },
+     {
+      "tag": "TR",
+      "cls": "",
+      "role": null,
+      "label": "Egg yolk (fresh), 40 g, unreviewed",
+      "display": "grid",
+      "n": 3,
+      "cells": [
+       "TD.ingredient-table__col-grams[1] block 64",
+       "TD.ingredient-table__col-name[1] block 396",
+       "TD.ingredient-table__col-numeric[1] block 36"
+      ],
+      "gtc": "64px 396.141px 35.8594px"
+     }
+    ]
+   },
+   {
+    "tag": "TFOOT",
+    "cls": "",
+    "display": "block",
+    "rows": [
+     {
+      "tag": "TR",
+      "cls": "",
+      "role": null,
+      "label": "Total, plan 721.0 grams",
+      "display": "grid",
+      "n": 3,
+      "cells": [
+       "TD.ingredient-table__col-grams[1] block 64",
+       "TD.ingredient-table__col-name[1] block 432",
+       "TD.ingredient-table__col-numeric[1] none 0"
+      ],
+      "gtc": "64px 432px 0px"
+     }
+    ]
+   }
+  ],
+  "regionKids": [
+   "DIV.mk-head-row",
+   "P.mk-keys",
+   "TABLE.ingredient-table is-developing"
+  ]
+ },
+ "docH": 1778,
+ "before": {
+  "scrollY": 649,
+  "innerH": 1024,
+  "row": {
+   "top": -8,
+   "bottom": 68,
+   "left": 80,
+   "w": 528,
+   "h": 76
+  },
+  "btn": {
+   "top": 17,
+   "bottom": 61,
+   "left": 160,
+   "w": 85,
+   "h": 44
+  },
+  "pick": null,
+  "name": null,
+  "list": null,
+  "table": {
+   "top": -64,
+   "bottom": 587,
+   "left": 80,
+   "w": 528,
+   "h": 651
+  },
+  "total": {
+   "top": 555,
+   "bottom": 587,
+   "left": 80,
+   "w": 528,
+   "h": 32
+  },
+  "focus": "Step 1, change ingredients",
+  "nrows": 0
+ },
+ "open": {
+  "scrollY": 584,
+  "innerH": 1024,
+  "row": {
+   "top": 32,
+   "bottom": 108,
+   "left": 80,
+   "w": 528,
+   "h": 76
+  },
+  "btn": {
+   "top": 57,
+   "bottom": 101,
+   "left": 160,
+   "w": 85,
+   "h": 44
+  },
+  "pick": {
+   "top": 639,
+   "bottom": 1146,
+   "left": 80,
+   "w": 528,
+   "h": 507
+  },
+  "name": {
+   "top": 715,
+   "bottom": 759,
+   "left": 93,
+   "w": 502,
+   "h": 44
+  },
+  "list": {
+   "top": 868,
+   "bottom": 1133,
+   "left": 93,
+   "w": 502,
+   "h": 265
+  },
+  "table": {
+   "top": -24,
+   "bottom": 627,
+   "left": 80,
+   "w": 528,
+   "h": 651
+  },
+  "total": {
+   "top": 595,
+   "bottom": 627,
+   "left": 80,
+   "w": 528,
+   "h": 32
+  },
+  "focus": "ink-field",
+  "nrows": 112
+ },
+ "walkBuilt": [
+  "AllDairyEggEmulsifierFatFiberF [pick]",
+  "Alcohol 40%Other · Freezing 29 [pick]",
+  "AlluloseSugar · Sugar 100% · F [pick]",
+  "Almond Paste (pure)Flavor · Fa [pick]",
+  "AppleFruit · Fat 0.17% · Sugar [pick]",
+  "ApricotFruit · Fat 0.39% · Sug [pick]",
+  "Atomized glucose 40 DE (dried) [pick]",
+  "BananaFruit · Fat 0.33% · Suga [pick]"
+ ],
+ "cand": {
+  "cols": 3,
+  "trDisplay": "grid",
+  "tdDisplay": "block",
+  "tr": {
+   "top": -533,
+   "bottom": -1,
+   "left": 80,
+   "w": 528,
+   "h": 532
+  },
+  "td": {
+   "top": -527,
+   "bottom": -8,
+   "left": 86,
+   "w": 516,
+   "h": 519
+  },
+  "pick": {
+   "top": -515,
+   "bottom": -8,
+   "left": 86,
+   "w": 516,
+   "h": 507
+  },
+  "row": {
+   "top": -609,
+   "bottom": -533,
+   "left": 80,
+   "w": 528,
+   "h": 76
+  },
+  "table": {
+   "top": -665,
+   "bottom": 517,
+   "left": 80,
+   "w": 528,
+   "h": 1182
+  },
+  "next": {
+   "top": -1,
+   "bottom": 75,
+   "left": 80,
+   "w": 528,
+   "h": 76
+  },
+  "nextLabel": "40 gCoffee beansestimated Add ",
+  "scrollY": 1225,
+  "docW": 1366,
+  "pickMargin": "12px"
+ },
+ "walkCand": [
+  "Move up, Heavy cream, 36% fat",
+  "Move down, Heavy cream, 36% fat",
+  "remove Heavy cream, 36% fat",
+  "Cancel [pick]",
+  "TEXTAREA [pick]",
+  "AllDairyEggEmulsifierFatFiberF [pick]",
+  "Alcohol 40%Other · Freezing 29 [pick]",
+  "AlluloseSugar · Sugar 100% · F [pick]",
+  "Almond Paste (pure)Flavor · Fa [pick]",
+  "AppleFruit · Fat 0.17% · Sugar [pick]",
+  "ApricotFruit · Fat 0.39% · Sug [pick]",
+  "Atomized glucose 40 DE (dried) [pick]",
+  "BananaFruit · Fat 0.33% · Suga [pick]",
+  "Black CherryFruit · Fat 0.2% · [pick]",
+  "BlackberriesFruit · Fat 0.49%  [pick]",
+  "BlueberriesFruit · Fat 0.33% · [pick]"
+ ],
+ "candTop": {
+  "scrollY": 458,
+  "innerH": 1024,
+  "row": {
+   "top": 152,
+   "bottom": 208,
+   "left": 80,
+   "w": 528,
+   "h": 56
+  },
+  "btn": {
+   "top": 177,
+   "bottom": 201,
+   "left": 160,
+   "w": 85,
+   "h": 24
+  },
+  "pick": {
+   "top": 226,
+   "bottom": 722,
+   "left": 86,
+   "w": 516,
+   "h": 495
+  },
+  "name": {
+   "top": 302,
+   "bottom": 340,
+   "left": 99,
+   "w": 490,
+   "h": 38
+  },
+  "list": {
+   "top": 444,
+   "bottom": 709,
+   "left": 99,
+   "w": 490,
+   "h": 265
+  },
+  "table": {
+   "top": 96,
+   "bottom": 1127,
+   "left": 80,
+   "w": 528,
+   "h": 1031
+  },
+  "total": {
+   "top": 1095,
+   "bottom": 1127,
+   "left": 80,
+   "w": 528,
+   "h": 32
+  },
+  "focus": "pick__row",
+  "nrows": 112
+ }
+}

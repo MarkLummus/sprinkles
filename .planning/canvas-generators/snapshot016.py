@@ -15,13 +15,17 @@
 # app's own copy of Caveat. Nothing else in the markup or the inlined CSS changes. The canvas wins.
 # Round two redraws (Sid, 2026-11-22; decide-p12-phone-home-held-draft, decide-p12-desk-line-words, decide-p12-picker-says-where): three more boards, made by p12r2.py, snapshotted
 # as served (canvas version 587, 1795401178-8f0f) before Mark's answer, so the build can cite them; a board not in <dir> is skipped, so the six approved files are not retaken.
+# Round three redraws (Sid, 2026-11-23, after Mark's answers of that day): P12R2_DeskLine (decided: "in a wider window") and P12R2_HomeDraft (the sentence on the row too) retaken,
+# and two new boards, P12R3_PickerAfterRow and P12R3_PenTarget, all as served (canvas version 589, 1795440182-78f9; P12R3_PenTarget again at version 590, 1795440296-854e, one caption corrected). picker-says-where.html is not retaken: its board is replaced
+# by P12R3_PickerAfterRow and kept on the canvas under a "Replaced" title.
 import sys, os
 SRC, DEST = sys.argv[1], sys.argv[2]
 FONT_BLOB = '/_blob/37ac467ba5558024f5fb5a2e5c22a7bc'
 FONT_LOCAL = '../../../app/public/fonts/caveat-regular.woff2'
 SERVED = {'P12G2_Band': 'recipe-head-below-724.html', 'P12G2_Places': 'notebook-home-more-393.html', 'P12G2_DeskPage': 'one-line-page.html', 'P12G2_PenPreview': 'pen-preview-step.html',
           'P12G2_RowControls': 'row-controls.html', 'P12G2_StepOrder': 'add-step-place.html',
-          'P12R2_HomeDraft': 'home-held-draft-393.html', 'P12R2_DeskLine': 'desk-line-words.html', 'P12R2_PickerWhere': 'picker-says-where.html'}
+          'P12R2_HomeDraft': 'home-held-draft-393.html', 'P12R2_DeskLine': 'desk-line-words.html', 'P12R2_PickerWhere': 'picker-says-where.html',
+          'P12R3_PickerAfterRow': 'picker-after-row.html', 'P12R3_PenTarget': 'pen-target-required.html'}
 os.makedirs(DEST, exist_ok=True)
 for k, out in SERVED.items():
     if not os.path.exists(os.path.join(SRC, 'project', k + '.dc.html')): continue

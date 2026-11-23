@@ -29,6 +29,17 @@ Authority: these boards, CSS included. Conformance is the board and the built ap
 
 `look-p12-row-controls` and `look-p12-row-controls-r2` were superseded by r3 before he answered.
 
+## Mark's answers after the round-two build (2026-11-22)
+
+| Where | Answer |
+|-------|--------|
+| `decide-p12-phone-focus-after-pen-close` | Leave as built: below 724, when a Next version pen closes, focus goes where the browser puts it. Not drawn. |
+| `decide-p12-phone-two-kept-lines` | Leave as built: one line, the kept edit first. Not drawn. |
+| `decide-p12-narrowing-closes-editor` | Leave as built: the editor is a desk job, and the draft is kept. Narrowing below 724 shows the one-line page. |
+| `decide-p12-phone-home-held-draft` | Home follows the same rule as the version page. Sid draws Home with a held draft at 393; a `/gsd-quick` on `RecipeList.jsx` follows his approval. |
+| `decide-p12-desk-line-words` | Sid proposes new words and draws two states (work kept, nothing kept); a `/gsd-quick` follows his approval. |
+| `decide-p12-picker-says-where` | Sid draws the picker heading naming the landing place; a `/gsd-quick` follows his approval. |
+
 ## What is here
 
 | File | Canvas board (page "Phase 12 entry points, pen preview and row controls (Gate 2)") | What it draws | Mark's List |

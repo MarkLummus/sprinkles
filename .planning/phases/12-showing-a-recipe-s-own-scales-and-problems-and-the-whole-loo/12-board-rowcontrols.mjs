@@ -294,9 +294,14 @@ async function pickerCancelled(page) {
   await page.waitForTimeout(300);
 }
 
-// A pick: Egg yolk lands right after Heavy cream and focus lands in its grams.
+// A pick: Egg yolk lands right after Heavy cream and focus lands in its grams. The board draws this
+// state with Fine sea salt already placed in Step 2 (no Not in a step yet body), so the flow places it first.
 async function pickerPicked(page) {
-  await pickerFromRow(page);
+  await coffeeBase(page);
+  await label(page, 'Add to step, Fine sea salt').click();
+  await label(page, 'Step 2, Churn: add Fine sea salt').click();
+  await page.waitForTimeout(300);
+  await clickUntil(page, () => label(page, 'Add ingredient after Heavy cream, 36% fat'), '.pick');
   await pickRow(page, 'Egg yolk (fresh)').click();
   await page.waitForSelector('.pick', { state: 'detached' });
   await page.waitForTimeout(300);

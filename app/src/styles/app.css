@@ -1152,6 +1152,17 @@ textarea {
   text-decoration-thickness: var(--rule-strike);
 }
 
+/* The pen leaves a removed step's number empty (D-UAT-5), and each step li sizes its own auto
+   column, so an empty cell gave that column no width and the words started 12 px left of the
+   other steps' (bug-pen-removed-step-words-shift-left, Mark 2026-11-23). One hidden figure,
+   set in the cell's own face and tabular figures, gives the column a live number's width and
+   the cell a live number's baseline. It is never shown or read: it is hidden and the cell is
+   aria-hidden. A keyword and a content string, so it reads no token and adds none. */
+.method-step__n:empty::before {
+  content: "0";
+  visibility: hidden;
+}
+
 .method-step__lead {
   font-family: var(--face-text);
   font-size: var(--sheet-size-headnote-prose);

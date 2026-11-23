@@ -1,6 +1,6 @@
 // 11-01: the strict before/after WebKit walk for Phase 11 (D-19), re-recorded at the
 // base commit cf64aa70 (copied from 10-walk.mjs; the twelve scenario bodies are unchanged).
-// The baseline was re-recorded at e37db11a by plan 12-08, after the trace in 12-08-walk-trace.md.
+// The baseline was re-recorded at e37db11a by plan 12-08, after the trace in 12-08-walk-trace.md, and at 2e030ce6 by quick 261123-ghk (the pen's Move up and Move down).
 //
 // The compare allows no difference at all in an existing scenario: every leaf of every
 // snapshot and of every store dump must be equal, and every difference, under `stores.`

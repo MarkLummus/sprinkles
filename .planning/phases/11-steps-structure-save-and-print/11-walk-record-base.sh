@@ -11,6 +11,14 @@
 # every difference to the app commit that made it before moving BASE
 # (12-08-walk-trace.md). The cf64aa70 recording stays in git history at 4d3b44f7.
 #
+# The baseline moves to 2e030ce6, the last commit of quick 261123-ghk that touches app/: the Next
+# version pen's closed steps gained Move up and Move down (sketch 017, slice 1). The start compare
+# proved every app commit between e37db11a and that quick's start walk-neutral ("MATCH 94
+# snapshots" of a build of the quick's start commit against the e37db11a baseline), and the trace in
+# the quick's SUMMARY attributes every difference between the walk before and after the quick to the
+# inserted Move up and Move down pairs: 32 snapshots, in version-pen-kept-draft, version-pen-blocked
+# and version-pen-notice-edits.
+#
 # The script refuses to record (FAIL, exit 1, nothing written) when a commit after BASE
 # touches app/ and is none of: a Phase 12 plan's commit (matched by
 # [a-z]+\(12(-[0-9]+)?\):), an executor worktree merge, or a commit in NEUTRAL below. Such a
@@ -44,7 +52,7 @@ cd "$(git rev-parse --show-toplevel)"
 ROOT=$(pwd)
 
 PHASE=.planning/phases/11-steps-structure-save-and-print
-BASE=e37db11a
+BASE=2e030ce6
 OUT="${WALK_OUT:-$PHASE/11-walk-before.json}"
 SCRATCH="${TMPDIR:-/tmp}/sprinkles-11"
 

@@ -2539,53 +2539,131 @@ describe("Below 724 the editor's addresses show the desk page (PHONE-01, CONTRAC
     });
   }
 
-  function expectDeskPage(title) {
+  // The page, element by element: the title, then (Edit only) the one link line,
+  // then the note; no control, no field. The one a, when there is one, is the
+  // link line's own (CONTRACT section 12).
+  function expectDeskPage(title, note, forLine = null) {
     const page = root().querySelector('.list-page.place');
     expect(page).not.toBeNull();
-    expect(page.querySelector('h1.place__title').textContent).toBe(title);
-    expect(page.querySelector('p.place__note').textContent).toBe('Done in a wider window.');
-    expect(page.querySelector('button, textarea, input, a')).toBeNull();
+    const kids = [...page.children];
+    expect(kids[0].matches('h1.place__title')).toBe(true);
+    expect(kids[0].textContent).toBe(title);
+    if (forLine === null) {
+      expect(kids.map((kid) => kid.tagName)).toEqual(['H1', 'P']);
+      expect(page.querySelector('p.place__for')).toBeNull();
+      expect(page.querySelector('a')).toBeNull();
+    } else {
+      expect(kids.map((kid) => kid.tagName)).toEqual(['H1', 'P', 'P']);
+      expect(kids[1].matches('p.place__for')).toBe(true);
+      const links = kids[1].querySelectorAll('a');
+      expect(links).toHaveLength(1);
+      expect(kids[1].children).toHaveLength(1);
+      expect(links[0].textContent).toBe(forLine.text);
+      expect(links[0].getAttribute('href')).toBe(forLine.href);
+      expect(links[0].getAttribute('tabindex')).toBe('0');
+      expect(page.querySelectorAll('a')).toHaveLength(1);
+    }
+    expect(kids[kids.length - 1].matches('p.place__note')).toBe(true);
+    expect(kids[kids.length - 1].textContent).toBe(note);
+    expect(page.querySelector('button, textarea, input')).toBeNull();
     expect(root().querySelector('[aria-label="Recipe name"]')).toBeNull();
   }
 
-  function expectDraftStoreUntouched() {
-    for (const name of ['listDrafts', 'getDraft', 'saveDraft', 'deleteDraft']) {
-      expect(repository[name]).not.toHaveBeenCalled();
-    }
+  // The page reads and never writes: neither write was called and the drafts
+  // are deep-equal to the copy taken before the mount.
+  function expectDraftsNotWritten(before) {
+    expect(repository.saveDraft).not.toHaveBeenCalled();
+    expect(repository.deleteDraft).not.toHaveBeenCalled();
+    expect([...store.drafts.entries()]).toEqual(before);
   }
 
-  it('a cold visit at 393 to /notebook/new shows the line and leaves a kept create draft alone', async () => {
+  const EDIT_LINK = { text: 'Coffee · Version 1', href: '/notebook/r-edit/v-edit' };
+
+  function storeCoffee() {
+    store.recipes.push({ id: 'r-edit', name: 'Coffee' });
+    store.versions.push({
+      id: 'v-edit',
+      recipeId: 'r-edit',
+      versionLabel: 'Version 1',
+      createdAt: '2026-10-20T08:00:00.000Z',
+    });
+  }
+
+  it('D1: New recipe with nothing kept reads Done in a wider window and holds no link line', async () => {
+    await mountDesk('/notebook/new', 393);
+    expectDeskPage('New recipe', 'Done in a wider window.');
+    expectDraftsNotWritten([]);
+  });
+
+  it('D2: a cold visit at 393 to /notebook/new names a kept create draft in plain text and leaves it alone', async () => {
     store.drafts.set('v-kept', createDraftRecord('Vanilla'));
     const before = structuredClone([...store.drafts.entries()]);
     await mountDesk('/notebook/new', 393);
 
-    expectDeskPage('New recipe');
+    expectDeskPage('New recipe', 'Draft: Vanilla. Finish it in a wider window.');
     expect(location.pathname).toBe('/notebook/new');
-    expect([...store.drafts.entries()]).toEqual(before);
-    expectDraftStoreUntouched();
+    expect(repository.listDrafts).toHaveBeenCalled();
+    expectDraftsNotWritten(before);
   });
 
-  it('a cold visit at 393 to the edit address shows the line and leaves a kept edit draft alone', async () => {
+  it('D3: a blank name reads Untitled and a name with markup stays text', async () => {
+    store.drafts.set('v-kept', createDraftRecord(''));
+    await mountDesk('/notebook/new', 393);
+    expectDeskPage('New recipe', 'Draft: Untitled. Finish it in a wider window.');
+    await act(async () => current.root.unmount());
+    current.container.remove();
+    current = null;
+
+    store.drafts.set('v-kept', createDraftRecord('<b>x</b>'));
+    await mountDesk('/notebook/new', 393);
+    expectDeskPage('New recipe', 'Draft: <b>x</b>. Finish it in a wider window.');
+    expect(root().querySelector('.list-page.place b')).toBeNull();
+  });
+
+  it('D4: only a kept edit on the New recipe address names nothing', async () => {
+    store.drafts.set('v-edit', editDraftRecord());
+    await mountDesk('/notebook/new', 393);
+    expectDeskPage('New recipe', 'Done in a wider window.');
+  });
+
+  it('D5: the Edit address with nothing kept holds the one link line to its version and writes nothing', async () => {
+    storeCoffee();
+    await mountDesk('/notebook/r-edit/v-edit/edit', 393);
+    expectDeskPage('Edit', 'Done in a wider window.', EDIT_LINK);
+    expect(location.pathname).toBe('/notebook/r-edit/v-edit/edit');
+    expectDraftsNotWritten([]);
+  });
+
+  it('D6: a cold visit at 393 to the edit address says the edit is kept, keeps the link line and leaves the draft alone', async () => {
+    storeCoffee();
     store.drafts.set('v-edit', editDraftRecord());
     const before = structuredClone([...store.drafts.entries()]);
     await mountDesk('/notebook/r-edit/v-edit/edit', 393);
 
-    expectDeskPage('Edit');
+    expectDeskPage('Edit', 'Edit kept. Finish it in a wider window.', EDIT_LINK);
     expect(location.pathname).toBe('/notebook/r-edit/v-edit/edit');
-    expect([...store.drafts.entries()]).toEqual(before);
-    expectDraftStoreUntouched();
+    expect(repository.getDraft).toHaveBeenCalledWith('v-edit');
+    expectDraftsNotWritten(before);
   });
 
-  it('the cut is 724: 723 shows the line and 724 shows the editor', async () => {
+  it('D7: an Edit address naming no stored version reads Done in a wider window with no link line', async () => {
+    store.drafts.set('v-edit', editDraftRecord());
+    const before = structuredClone([...store.drafts.entries()]);
+    await mountDesk('/notebook/r-edit/v-edit/edit', 393);
+    expectDeskPage('Edit', 'Done in a wider window.');
+    expectDraftsNotWritten(before);
+  });
+
+  it('D8: the cut is 724: 723 names the kept draft and 724 shows the editor', async () => {
     store.drafts.set('v-kept', createDraftRecord('Vanilla'));
     await mountDesk('/notebook/new', 723);
-    expectDeskPage('New recipe');
+    expectDeskPage('New recipe', 'Draft: Vanilla. Finish it in a wider window.');
     await setWidth(724);
     expect(field('Recipe name')).not.toBeNull();
     expect(root().querySelector('.list-page.place')).toBeNull();
   });
 
-  it('narrowing an open editor writes what was typed inside the 250 ms window, and widening restores it', async () => {
+  it('D9: narrowing an open editor writes what was typed inside the 250 ms window, the page names it, and widening restores it', async () => {
     store.drafts.set('v-kept', createDraftRecord('Vanilla'));
     await mountDesk('/notebook/new', 1024);
     await flush(() => field('Recipe name') !== null);
@@ -2595,13 +2673,15 @@ describe("Below 724 the editor's addresses show the desk page (PHONE-01, CONTRAC
     expect(repository.saveDraft).not.toHaveBeenCalled();
 
     await setWidth(393);
-    expectDeskPage('New recipe');
     // The unmount flush started the write; await it, not just the page showing.
     await flush(() => repository.saveDraft.mock.calls.length > 0);
     await expect(repository.saveDraft.mock.results[0].value).resolves.toBeUndefined();
     expect(repository.saveDraft).toHaveBeenCalledTimes(1);
     expect(store.drafts.get('v-kept').payload.name).toBe('Fresh mint');
     expect(repository.deleteDraft).not.toHaveBeenCalled();
+    // The page reads after that write, so it names what was typed.
+    await flush(() => root().querySelector('p.place__note')?.textContent.startsWith('Draft: Fresh mint'));
+    expectDeskPage('New recipe', 'Draft: Fresh mint. Finish it in a wider window.');
 
     await setWidth(1024);
     await flush(() => field('Recipe name') !== null);

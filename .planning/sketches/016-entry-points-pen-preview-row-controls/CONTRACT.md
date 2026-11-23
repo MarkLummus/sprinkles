@@ -27,7 +27,7 @@ Figures are Playwright WebKit with a coarse pointer, checked in Chrome. Every pa
 - Notebook: no New recipe beside the title (`div.nb__head` holds the title alone). The count and the list are as built.
 - Notebook with a kept new-recipe draft: the draft's row (`li.nb__draft`: rail, name as `h2.nb__name`, "draft") stands first, above the count, as built, without its Resume (`span.nb__draft-act` is not in the markup). Its name is not a link, as built.
 - Home, a row: a tasted recipe's row has no action below 724: its whole `span.home__actions` is not in the markup, Next version and Adapt both (the approved board draws it so; the build already hides a row's second action, Adapt, at this width, so Next version is the only thing a maker sees go). The row reads place, name, standing. Rows whose action is Record tasting or Record batch are as built.
-- Home, the lead block: the board draws the seed's lead, which awaits a tasting (Record tasting, Keep developing), as built. A tasted lead is not drawn; the approved board's caption says it loses Next version the same way and keeps Adapt, which only opens the recipe page, so a tasted lead below 724 holds Adapt alone. (Corrected 2026-11-21 after the round-two research, question 3: this bullet first said "Keep developing and Adapt … are as built" for rows and lead alike, which disagreed with the drawn row.)
+- Home, the lead block: the board draws the seed's lead, which awaits a tasting (Record tasting, Keep developing), as built. A tasted lead is not drawn; the approved board's caption says it loses Next version the same way and keeps Adapt, which only opens the recipe page, so a tasted lead below 724 holds Adapt alone. (Corrected 2026-11-21 after the round-two research, question 3: this bullet first said "Keep developing and Adapt … are as built" for rows and lead alike, which disagreed with the drawn row.) (Reversed in part on 2026-11-23 by Mark's answer to decide-p12-home-row-sentence: below 724 Keep developing is left out of Home's lead, so the seed's lead holds Record tasting alone; see section 13.)
 - More, open: Ingredients, Kitchen, the hairline, Search. No Import, no Export. The panel still sits on the tab row, as built.
 
 ## 4. The one-line page (`one-line-page.html`)
@@ -147,7 +147,7 @@ Files: `home-held-draft-393.html` (`P12R2_HomeDraft`), `picker-after-row.html` (
 
 **Home's rows below 724** (`decide-p12-home-row-sentence`):
 - A row whose filled action is left out (section 12) holds, in place of `span.home__actions`, `p.home__row-draft`: "Draft: <draft name>. Finish it in a wider window.", plain text. Type as `home__lead-draft`; it stands in the row's `actions` area.
-- Keep developing in the lead: kept (the board's "Drawn" panel) or left out below 724 (the "other choice" panel), as Mark answers. Left out, a lead whose only other action was the left-out record act has no `span.home__actions`.
+- Keep developing in the lead: kept (the board's "Drawn" panel) or left out below 724 (the "other choice" panel), as Mark answers. Left out, a lead whose only other action was the left-out record act has no `span.home__actions`. Mark answered on 2026-11-23 (decide-p12-home-row-sentence): left out below 724, in every lead.
 
 **The picker stands after its row** (`look-p12-picker-after-row`; 1366):
 - `tr.ingredient-table__pick > td[colspan=3] > div.pick`, directly after the opener row inside its `tbody`. The row is a block (not the three-column grid), with no cell padding and `--gap-s` under the picker; the picker keeps its own top margin.

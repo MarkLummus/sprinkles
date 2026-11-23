@@ -153,7 +153,9 @@ describe('Method — Preview step on the version pen\'s open step (CONTRACT sect
     press(container, 'Step 1, edit this step');
     const words = [...container.querySelectorAll('button')].map((button) => button.textContent);
     expect(words.some((text) => /add target/i.test(text))).toBe(false);
-    expect(container.querySelector('[aria-label*="move up" i], [aria-label*="move down" i]')).toBeNull();
+    // The open step has no Move (sketch 017 README decision 7); the closed steps beside it keep theirs.
+    expect(container.querySelector('#method-step-1 [aria-label*="move up" i], #method-step-1 [aria-label*="move down" i]')).toBeNull();
+    expect(container.querySelector('#method-step-2 [aria-label="Step 2, move up"]')).not.toBeNull();
   });
 
   it('Tab order: the instruction, the purpose and aside fields, Preview step, then Change ingredients', () => {

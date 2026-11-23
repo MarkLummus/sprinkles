@@ -4,6 +4,7 @@ import { Checkbox } from './Checkbox.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { useOnDemandField } from './Method.jsx';
 import { StepReading } from './StepReading.jsx';
+import { StepMoveButtons } from './StepMoves.jsx';
 import { editorKeyDown } from './editorKeys.js';
 import { holdReturn, stripNewlines } from './oneLineField.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
@@ -272,27 +273,7 @@ function CreationStep({
             Add step
           </Button>
           <span aria-hidden="true">·</span>
-          <Button
-            className={isFirst ? 'text-control mk-off' : 'text-control'}
-            data-act="move-up"
-            aria-label={`Step ${number}, move up`}
-            aria-keyshortcuts="Control+Meta+ArrowUp"
-            aria-disabled={isFirst ? 'true' : undefined}
-            onClick={isFirst ? undefined : () => onMoveStep(step.n, 'up')}
-          >
-            Move up
-          </Button>
-          <span aria-hidden="true">·</span>
-          <Button
-            className={isLast ? 'text-control mk-off' : 'text-control'}
-            data-act="move-down"
-            aria-label={`Step ${number}, move down`}
-            aria-keyshortcuts="Control+Meta+ArrowDown"
-            aria-disabled={isLast ? 'true' : undefined}
-            onClick={isLast ? undefined : () => onMoveStep(step.n, 'down')}
-          >
-            Move down
-          </Button>
+          <StepMoveButtons number={number} isFirst={isFirst} isLast={isLast} keys onMove={(direction) => onMoveStep(step.n, direction)} />
           <span aria-hidden="true">·</span>
           <Button className="text-control" data-act="remove" aria-label={`Step ${number}, remove`} onClick={() => onRemoveStep(step.n)}>
             Remove

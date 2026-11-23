@@ -1488,7 +1488,7 @@ describe('Method — show changes over the seeded lineage (G-03.5-2a)', () => {
 describe('Method — every button and checkbox carries an explicit tabindex (quick task 261001-doi)', () => {
   const buttonTags = (markup) => markup.match(/<button\b[^>]*>/g) ?? [];
 
-  it('a closed step in the plan pen renders its two buttons (edit this step, remove), each tabindex="0"', () => {
+  it('a closed step in the plan pen renders its four buttons (edit this step, move up, move down, remove), each tabindex="0"', () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
     const markup = renderToStaticMarkup(
@@ -1502,7 +1502,8 @@ describe('Method — every button and checkbox carries an explicit tabindex (qui
       />,
     );
     const tags = buttonTags(markup);
-    expect(tags).toHaveLength(2);
+    // Sketch 017 CONTRACT section 2: Move up and Move down join the closed live step's line.
+    expect(tags).toHaveLength(4);
     for (const tag of tags) {
       expect(tag).toContain('tabindex="0"');
     }

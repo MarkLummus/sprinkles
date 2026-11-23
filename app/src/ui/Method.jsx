@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { isStruck, changedLineFor, stepChangeFor } from '../domain/batch.js';
 import { removedRowsUsedBy, coveredRowsFor } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
+import { liveSteps } from '../domain/creationSteps.js';
 import { Button } from './Button.jsx';
+import { StepMoveButtons, moveFocusTarget, stepMoveWord } from './StepMoves.jsx';
+import { useStructureWord } from './useAnnouncer.js';
 import { holdReturn, stripNewlines } from './oneLineField.js';
 import { Checkbox } from './Checkbox.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
@@ -94,9 +97,9 @@ export function useOnDemandField(initialOpen, onCollapse) {
 // decisions_recorded 5, Task 3): pulled out of the steps.map() loop below
 // so each step can own its own on-demand state (purpose, aside, the uses
 // checklist) via ordinary component-local useState — this component is
-// called once per step, in the same order every render, since the
-// method's own step count does not change within a session. Whether THIS
-// step is the one open is Method's own state now, not this component's —
+// called once per step, and its li is keyed by the step's stored key, so the
+// step's own state moves with it when the pen changes the order (sketch 017).
+// Whether THIS step is the one open is Method's own state now, not this component's —
 // isOpen/onOpen/onDone/onCancel are all Method's, so opening one step can
 // close whichever other step was open (Done keeps its edits, matching
 // Cancel's own restore-and-close). Exported for its own direct test —
@@ -123,6 +126,9 @@ export function StepPenBody({
   onChangePenStepTarget,
   onTogglePenStepUses,
   onTogglePenStepRemoved,
+  // The step among the live steps (sketch 017 CONTRACT section 2): { isFirst, isLast,
+  // onMove } for a live step, null for a removed one, which offers no Move.
+  moves = null,
   // The refused Save's block when it names a field of this step, else null
   // (bug-pen-saves-blank-lead-in), with its message.
   blocked = null,
@@ -563,6 +569,12 @@ export function StepPenBody({
           Edit this step
         </Button>
         <span aria-hidden="true">·</span>
+        {moves && (
+          <>
+            <StepMoveButtons number={number} isFirst={moves.isFirst} isLast={moves.isLast} onMove={moves.onMove} />
+            <span aria-hidden="true">·</span>
+          </>
+        )}
         <Button
           className="text-control"
           aria-label={fieldLabel(step, draftStep.removed, draftStep.removed ? 'restore' : 'remove')}
@@ -671,9 +683,11 @@ export function showsMethodRegion({ mode, steps }) {
 // "uses" checkbox list over the version's rows, a remove/restore control,
 // the removed-row cross-flag, and the stale-amount flag — all read through
 // uses.js and diff.js, never assembled by hand here (route-recipe-version.md
-// § 3). `steps` is the baseline (unfiltered) method in that mode, so a
-// removed step still renders, struck, in its original place; `draftVersion`
-// carries the maker's current edits and `baselineVersion` is the record the
+// § 3). The pen draws the draft's own order (sketch 017 CONTRACT section 3):
+// `draftVersion.method`, so a step the maker moved stands where they put it, and
+// a removed step still renders, struck, in the place the draft holds it.
+// `steps` is the baseline (unfiltered) method in every other mode.
+// `draftVersion` carries the maker's current edits and `baselineVersion` is the record the
 // pen opened on (D-03) — `penDiff` is RecipePage's own one
 // buildDiff(draftVersion, baselineVersion), computed once on the page and
 // passed down here and to FormulationNote, never re-derived per field
@@ -705,6 +719,9 @@ export function Method({
   onChangePenStepTarget = () => {},
   onTogglePenStepUses = () => {},
   onTogglePenStepRemoved = () => {},
+  // A step moved one place among the live steps (sketch 017 CONTRACT section 3):
+  // RecipePage's handleMovePenStep, called with the step's stored key and 'up' or 'down'.
+  onMovePenStep = () => {},
   // Cancel on an open step (sketch 011 decisions_recorded 5, decision 1;
   // Task 3): restores that ONE step from the version the pen opened on —
   // RecipePage.jsx's own restoreStepFromVersion, called with the stored
@@ -766,6 +783,31 @@ export function Method({
     onRestorePenStep(stepN);
     setOpenStepN(null);
   }
+  // A press on Move up or Move down. stepMoveWord is null for a step that is not live or a move
+  // past an end, so a stale press does nothing and moveStep never throws inside a state update.
+  // Focus stays on the same Move button of the moved step (sketch 017 CONTRACT section 3,
+  // D-16): the press leaves a request, and the effect below acts on it after the render that
+  // reordered the steps, never on a DOM node a keyed reorder moved.
+  const { structureWord, announceStructure } = useStructureWord();
+  const stepListRef = useRef(null);
+  const moveRequestRef = useRef(null);
+  function handleMoveStep(stepN, direction) {
+    const word = stepMoveWord(draftVersion, stepN, direction);
+    if (word === null) return;
+    onMovePenStep(stepN, direction);
+    moveRequestRef.current = { n: stepN, act: direction === 'up' ? 'move-up' : 'move-down' };
+    announceStructure(word);
+  }
+  useEffect(() => {
+    const request = moveRequestRef.current;
+    if (!request) return;
+    moveRequestRef.current = null;
+    // The li is found by comparing ids among the list's own children, not by a selector built
+    // from a stored key.
+    const li = [...(stepListRef.current?.children ?? [])].find((child) => child.id === `method-step-${request.n}`);
+    moveFocusTarget(li?.querySelector(':scope > .method-step__body > .method-step__acts') ?? null, request.act)?.focus();
+  });
+  const liveDraftSteps = isDeveloping ? liveSteps(draftVersion) : [];
 
   // The one place a step's displayed number is resolved (D-UAT-4,
   // D-UAT-5, G-03-14): its position in the current map if it has one,
@@ -804,10 +846,11 @@ export function Method({
       <h2 className="region-name">Instructions</h2>
       {/* role="list": Safari drops list semantics from a list-style none list
           (D-20; research C6), so the role is stated. */}
-      <ol className="method-steps" role="list">
-        {steps.map((step) => {
+      <ol className="method-steps" role="list" ref={stepListRef}>
+        {(isDeveloping ? draftVersion.method : steps).map((step) => {
           if (isDeveloping) {
             const draftStep = draftVersion.method.find((candidate) => candidate.n === step.n);
+            const livePlace = liveDraftSteps.findIndex((candidate) => candidate.n === step.n);
             const stepDiff = activeDiff.steps.find((candidate) => candidate.n === step.n);
             const flaggedRows = removedRowsUsedBy(draftVersion, draftStep);
             const coveredRows = coveredRowsFor(draftVersion, draftStep);
@@ -853,6 +896,15 @@ export function Method({
                   onChangePenStepTarget={onChangePenStepTarget}
                   onTogglePenStepUses={onTogglePenStepUses}
                   onTogglePenStepRemoved={onTogglePenStepRemoved}
+                  moves={
+                    livePlace === -1
+                      ? null
+                      : {
+                          isFirst: livePlace === 0,
+                          isLast: livePlace === liveDraftSteps.length - 1,
+                          onMove: (direction) => handleMoveStep(step.n, direction),
+                        }
+                  }
                   blocked={blockedStepTarget?.n === step.n ? blockedStepTarget : null}
                   blockedMessage={blockedStepMessage}
                 />
@@ -979,6 +1031,14 @@ export function Method({
           );
         })}
       </ol>
+      {/* The pen's polite word (sketch 017 CONTRACT section 3): the place among the live
+          steps, of their count. A div, not the creation editor's p: an empty p adds a
+          paragraph break to the page's innerText, which the Phase 11 walk hashes. */}
+      {isDeveloping && (
+        <div className="visually-hidden" role="status" aria-live="polite">
+          {structureWord}
+        </div>
+      )}
     </>
   );
 }

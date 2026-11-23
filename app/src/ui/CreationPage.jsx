@@ -11,6 +11,8 @@ import { useCatalog } from './CatalogContext.jsx';
 import { IngredientPicker, NO_FILTERS } from './IngredientPicker.jsx';
 import { CreationSetup } from './CreationSetup.jsx';
 import { CreationSteps } from './CreationSteps.jsx';
+import { moveFocusTarget, stepMoveWord } from './StepMoves.jsx';
+import { useStructureWord } from './useAnnouncer.js';
 import { holdReturn, stripNewlines } from './oneLineField.js';
 import { repository } from '../store/repository.js';
 import { draftMatchesCreate } from '../domain/draft.js';
@@ -230,8 +232,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
   const focusRequestRef = useRef(null);
   // The polite word for every structure change (D-14 to D-16): the region's
   // text is the latest sentence, form-scoped.
-  const [structureWord, setStructureWord] = useState('');
-  const structureFrameRef = useRef(0);
+  const { structureWord, announceStructure } = useStructureWord();
   // The library is read once and shared by the picker and the Sheet's
   // projection (D-07). null until loaded; libraryFailed when the read rejects.
   const [library, setLibrary] = useState(null);
@@ -331,9 +332,6 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
     };
   }, []);
 
-  // A pending announcement frame goes with the page.
-  useEffect(() => () => cancelAnimationFrame(structureFrameRef.current), []);
-
   useEffect(() => {
     const request = focusRequestRef.current;
     const page = pageRef.current;
@@ -351,11 +349,7 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
       // button when that one is now off (D-16). Found after the render that
       // reordered the steps, never trusted to a DOM node a keyed reorder moved.
       const step = page.querySelector(`li.mk-step[data-step="${request.n}"]`);
-      target = step?.querySelector(`:scope > .method-step__body > .method-step__acts [data-act="${request.act}"]`);
-      if (target?.getAttribute('aria-disabled') === 'true') {
-        const other = request.act === 'move-up' ? 'move-down' : 'move-up';
-        target = step.querySelector(`:scope > .method-step__body > .method-step__acts [data-act="${other}"]`);
-      }
+      target = moveFocusTarget(step?.querySelector(':scope > .method-step__body > .method-step__acts') ?? null, request.act);
     } else if (typeof request === 'object' && request.kind === 'step-field') {
       target = page.querySelector(`li.mk-step[data-step="${request.n}"] [data-field="${request.field}"]`);
     } else if (typeof request === 'object' && request.kind === 'add-step-head') {
@@ -572,26 +566,16 @@ export function CreationPage({ record, justStarted = false, mode = 'create', cle
     focusRequestRef.current = { kind: 'lead-in', position };
   };
 
-  // Every structure change is heard, a repeat included: the region is emptied
-  // and the sentence written on the next frame (SheetCodeSearch's pattern), so
-  // two moves that both end at "Step 2 of 3" are two changes to a polite region.
-  const announceStructure = (sentence) => {
-    cancelAnimationFrame(structureFrameRef.current);
-    setStructureWord('');
-    structureFrameRef.current = requestAnimationFrame(() => setStructureWord(sentence));
-  };
-
   // Move a step (STRUCT-02): the stored keys stay as they are and the numbers on
   // screen follow the order. Focus stays on the same Move button of the moved
   // step (D-16). An off button never gets here; the guard is for a stale press.
   // A keyed move (Ctrl+Cmd+Up or Down in a step's field) asks for no focus.
   const handleMoveStep = (n, direction, { keyed = false } = {}) => {
-    const live = liveSteps(createDraft);
-    const target = live.findIndex((step) => step.n === n) + (direction === 'up' ? -1 : 1);
-    if (target < 0 || target >= live.length) return;
+    const word = stepMoveWord(createDraft, n, direction);
+    if (word === null) return;
     setCreateDraft((prev) => moveStep(prev, n, direction));
     if (!keyed) focusRequestRef.current = { kind: 'step-act', n, act: direction === 'up' ? 'move-up' : 'move-down' };
-    announceStructure(`Step ${target + 1} of ${live.length}`);
+    announceStructure(word);
   };
 
   // Remove a step outright, no strike and no restore (STRUCT-01, D-14): its rows

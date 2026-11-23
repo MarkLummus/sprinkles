@@ -3,6 +3,7 @@ import { repository } from '../store/repository.js';
 import { freshId } from '../domain/id.js';
 import { createChildVersion, saveOverVersion, versionsForRecipe } from '../domain/lineage.js';
 import { VersionChangedError } from '../domain/firstVersion.js';
+import { moveStep } from '../domain/creationSteps.js';
 import {
   removePenNote,
   restoreStepFromVersion,
@@ -135,6 +136,13 @@ export function useVersionPen({ version, versions, batches, setMode, setVersion,
   // control.
   function handleTogglePenStepRemoved(stepN) {
     versionPen.edit(togglePenStepRemoved, stepN);
+  }
+
+  // A step one place earlier or later among the live steps (sketch 017 CONTRACT
+  // section 3): the creation editor's own moveStep, which reads and writes the
+  // draft's method only, so no stored step key changes.
+  function handleMovePenStep(stepN, direction) {
+    versionPen.edit(moveStep, stepN, direction);
   }
 
   // Cancel on an open step (sketch 011 decisions_recorded 5, decision 1;
@@ -297,6 +305,7 @@ export function useVersionPen({ version, versions, batches, setMode, setVersion,
     handleChangePenStepTarget,
     handleTogglePenStepUses,
     handleTogglePenStepRemoved,
+    handleMovePenStep,
     handleRestorePenStep,
     handleChangePenNoteText,
     handleRemovePenNote,

@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { buildDraftRecord, draftMatchesVersion } from './draft.js';
+import { moveStep } from './creationSteps.js';
 import { createChildVersion } from './lineage.js';
 import { isLineRemoved } from './rows.js';
 import { nextStepKey } from './stepKeys.js';
@@ -801,6 +802,41 @@ describe('a note removed before another is edited', () => {
       text: textA,
       inheritedFrom: 'v-a',
     });
+  });
+});
+
+// Sketch 017 CONTRACT section 4: a changed order is ink, and moving back is not.
+describe('isPenDraftDirty: the order of the steps (sketch 017 CONTRACT section 4)', () => {
+  it('is true for a draft whose only change is one step moved, and false once it is moved back', () => {
+    const version = clone();
+    const draft = penDraftFromVersion(version);
+    const n = version.method[2].n;
+    const moved = moveStep(draft, n, 'up');
+    expect(isPenDraftDirty('developing', moved, version)).toBe(true);
+    expect(isPenDraftDirty('developing', moveStep(moved, n, 'down'), version)).toBe(false);
+  });
+
+  it('moveStep over a seeded draft keeps every other key and every step as the opened version holds them (pin)', () => {
+    const version = clone();
+    const draft = penDraftFromVersion(version);
+    const n = version.method[2].n;
+    const moved = moveStep(draft, n, 'up');
+    const { method: movedMethod, ...movedRest } = moved;
+    const { method: draftMethod, ...draftRest } = draft;
+    expect(movedRest).toEqual(draftRest);
+    expect(movedMethod).toHaveLength(draftMethod.length);
+    for (const step of movedMethod) {
+      expect(step).toEqual(version.method.find((candidate) => candidate.n === step.n));
+    }
+    expect(movedMethod.map((step) => step.n).slice(0, 3)).toEqual([version.method[0].n, version.method[2].n, version.method[1].n]);
+  });
+
+  it('moveStep passes a removed step in one press and takes its live neighbour\'s place (pin)', () => {
+    const version = clone();
+    const [a, b, c] = version.method;
+    const draft = togglePenStepRemoved(penDraftFromVersion(version), b.n);
+    const moved = moveStep(draft, c.n, 'up');
+    expect(moved.method.map((step) => step.n).slice(0, 3)).toEqual([c.n, a.n, b.n]);
   });
 });
 

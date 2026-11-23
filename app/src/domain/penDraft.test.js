@@ -250,6 +250,21 @@ describe('penDraftVersion', () => {
     expect(penDraftVersion(version, draft).rows[1].portions[0].grams).toBe(second.portions[0].grams);
   });
 
+  it('reads the stored amount for a live line holding a whole number of 309 digits, and the gate still refuses Save', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    const row = version.rows.find((candidate) => candidate.id === 'row-02');
+    draft.rows['row-02'].portions[0].grams = '9'.repeat(309);
+    expect(penDraftVersion(version, draft).rows.find((candidate) => candidate.id === 'row-02').portions[0].grams).toBe(
+      row.portions[0].grams,
+    );
+    draft.versionLabel = 'v-next';
+    expect(penSaveBlock(draft, version, [])).toEqual({
+      message: "Heavy cream's amount is not a number",
+      target: { kind: 'row', rowId: 'row-02', index: 0 },
+    });
+  });
+
   it("takes the draft's method, titles and authored, and clears every row's own removed flag", () => {
     const version = clone();
     const draft = cleanDraftFor(version);
@@ -440,6 +455,30 @@ describe('penFieldsFromDraft', () => {
     expect(penFieldsFromDraft(draft, version).reason).toBe(null);
     draft.reason = ' Less sugar ';
     expect(penFieldsFromDraft(draft, version).reason).toBe(' Less sugar ');
+  });
+
+  it('saves a removed line, and a line in a removed step, holding 309 digits as the stored amount', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    const cream = version.rows.find((row) => row.id === 'row-02');
+    const drizzle = version.rows.find((row) => row.id === 'row-03');
+    const huge = '9'.repeat(309);
+    const lineOut = togglePenLine(setPenGrams(draft, 'row-02', 0, huge), 'row-02', 0);
+    const stepOut = togglePenStepRemoved(setPenGrams(draft, 'row-03', 0, huge), 8);
+    const savedLine = penFieldsFromDraft(lineOut, version).rows;
+    const savedStep = penFieldsFromDraft(stepOut, version).rows;
+    expect(savedLine.find((row) => row.id === 'row-02').portions[0].grams).toBe(cream.portions[0].grams);
+    expect(savedStep.find((row) => row.id === 'row-03').portions[0].grams).toBe(drizzle.portions[0].grams);
+  });
+
+  it('saves a removed line holding 308 digits as typed, so the fallback is the finite test and not a digit count', () => {
+    const version = clone();
+    const draft = cleanDraftFor(version);
+    draft.versionLabel = 'v-next';
+    const lineOut = togglePenLine(setPenGrams(draft, 'row-02', 0, '9'.repeat(308)), 'row-02', 0);
+    const saved = penFieldsFromDraft(lineOut, version).rows.find((row) => row.id === 'row-02');
+    expect(saved.portions[0].grams).toBe(Number('9'.repeat(308)));
   });
 
   it("carries the draft's own version line, citation, method, titles and authored", () => {

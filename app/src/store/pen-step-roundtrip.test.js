@@ -2,7 +2,8 @@
 // IndexedDB round trip: a version saved through the pen (Save as new version
 // and Save over this version) is exported, checked by validateStoreFile and
 // imported into a fresh store. The pen must never store a step that check
-// refuses. fake-indexeddb/auto installs indexedDB and every IDB constructor on
+// refuses. It also pins the second bug, bug-pen-huge-grams-on-removed-line-backup-refuses:
+// a whole number of 309 digits typed into a removed line's amount. fake-indexeddb/auto installs indexedDB and every IDB constructor on
 // the global before repository.js loads (its module-level singleton opens the
 // store on import), so it must be the first import.
 import 'fake-indexeddb/auto';
@@ -18,8 +19,10 @@ import {
   penFieldsFromDraft,
   penSaveBlock,
   setPenField,
+  setPenGrams,
   setPenStepField,
   setPenStepTarget,
+  togglePenLine,
   togglePenStepRemoved,
   togglePenStepUses,
 } from '../domain/penDraft.js';
@@ -78,6 +81,9 @@ async function setUp(kind) {
 }
 
 const SAVES = [['new'], ['over']];
+
+// Number() reads this many 9s as Infinity; JSON writes Infinity as null.
+const HUGE_AMOUNT = '9'.repeat(309);
 
 function blankTarget0(draft) {
   return setPenStepTarget(setPenStepTarget(draft, 1, 0, 'label', ''), 1, 0, 'value', '');
@@ -143,5 +149,33 @@ describe('a removed step with a blank field, saved through the pen', () => {
     expect(saved.removed).toBe(true);
     expect(saved.instruction).toBe('Warm the milk first');
     expect(saved.uses).toEqual(was.uses.includes(rowId) ? was.uses.filter((u) => u !== rowId) : was.uses.concat(rowId));
+  });
+});
+
+describe('a 309-digit amount on a line that is out, saved through the pen', () => {
+  it.each(SAVES)('a removed line saves the amount the opened version holds (%s)', async (kind) => {
+    const { repository, opened } = await setUp(kind);
+    const id = await savedThroughPen(repository, opened, kind, (draft) =>
+      togglePenLine(setPenGrams(draft, 'row-02', 0, HUGE_AMOUNT), 'row-02', 0),
+    );
+
+    const second = await roundTrip(repository);
+    const line = (await second.getVersion(id)).rows.find((row) => row.id === 'row-02').portions[0];
+    expect(line.removed).toBe(true);
+    expect(line.grams).toBe(opened.rows.find((row) => row.id === 'row-02').portions[0].grams);
+  });
+
+  it.each(SAVES)('a line in a removed step saves the amount the opened version holds (%s)', async (kind) => {
+    const { repository, opened } = await setUp(kind);
+    const id = await savedThroughPen(repository, opened, kind, (draft) =>
+      togglePenStepRemoved(setPenGrams(draft, 'row-03', 0, HUGE_AMOUNT), 8),
+    );
+
+    const second = await roundTrip(repository);
+    const imported = await second.getVersion(id);
+    expect(imported.method.find((step) => step.n === 8).removed).toBe(true);
+    expect(imported.rows.find((row) => row.id === 'row-03').portions[0].grams).toBe(
+      opened.rows.find((row) => row.id === 'row-03').portions[0].grams,
+    );
   });
 });

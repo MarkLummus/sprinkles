@@ -86,19 +86,47 @@ function Where() {
 // Element.scrollIntoView, which the band's focus return calls (Playwright
 // WebKit's focus() alone left the band 2.7 screens off; see VersionRow.jsx),
 // so this file stubs it and reads the calls.
+//
+// The window can be resized while a pen is open (bug-p12-focus-lost-across-724):
+// resizeTo fires the change listeners the width hooks registered, and each
+// returned object's matches reads the current width.
+let viewportWidth = 393;
+let mediaListeners = [];
+
+function matchesAt(query, width) {
+  const max = query.match(/max-width:\s*([\d.]+)px/);
+  const min = query.match(/min-width:\s*([\d.]+)px/);
+  if (max) return width <= Number(max[1]);
+  if (min) return width >= Number(min[1]);
+  return query.includes('pointer: coarse');
+}
+
 function installMatchMedia(width = 393) {
   scrollIntoView = vi.fn();
   Element.prototype.scrollIntoView = scrollIntoView;
   originalMatchMedia = window.matchMedia;
-  window.matchMedia = (query) => {
-    const max = query.match(/max-width:\s*([\d.]+)px/);
-    const min = query.match(/min-width:\s*([\d.]+)px/);
-    let matches = false;
-    if (max) matches = width <= Number(max[1]);
-    else if (min) matches = width >= Number(min[1]);
-    else if (query.includes('pointer: coarse')) matches = true;
-    return { matches, media: query, addEventListener() {}, removeEventListener() {} };
-  };
+  viewportWidth = width;
+  mediaListeners = [];
+  window.matchMedia = (query) => ({
+    get matches() {
+      return matchesAt(query, viewportWidth);
+    },
+    media: query,
+    addEventListener(type, listener) {
+      mediaListeners.push({ query, listener });
+    },
+    removeEventListener(type, listener) {
+      mediaListeners = mediaListeners.filter((entry) => entry.listener !== listener);
+    },
+  });
+}
+
+async function resizeTo(width) {
+  viewportWidth = width;
+  await act(async () => {
+    for (const { query, listener } of [...mediaListeners]) listener({ matches: matchesAt(query, width) });
+  });
+  await flush(() => false);
 }
 
 async function flush(until) {
@@ -411,6 +439,102 @@ describe('Cancel on a new record returns focus to the button that opened it', ()
     await click(logRecordButton());
     await click(buttonByText(pen(), 'Cancel'));
     expect(document.activeElement).toBe(logRecordButton());
+  });
+});
+
+// bug-p12-focus-lost-across-724 (state machine audit 2026-11-22, items 2 and
+// 17). Below 724 the band's record act opens the pen and takes focus back at
+// Cancel. From 724 up the band draws no record act, so a pen the band opened
+// and a window then widened (or Home's Record tasting at a desk width) left
+// focus on the page body. The log's own opener for the same pen takes it then.
+describe('Cancel after the window crosses 724 returns focus to a control drawn at that width (bug-p12-focus-lost-across-724)', () => {
+  const log = () => current.container.querySelector('.notebook-log');
+  const awaitingPath = { pathname: `${VERSION_PATH}/batch/${awaiting.id}`, state: { startTasting: true } };
+
+  it('W1: the band\'s Record batch below 724, the window widened, Cancel returns to the log\'s Record batch', async () => {
+    installMatchMedia(393);
+    await mountAt(VERSION_PATH, []);
+    expect(band().textContent).toBe('Record batch');
+    await click(band());
+    expect(pen()).not.toBeNull();
+
+    await resizeTo(1366);
+    expect(pen()).not.toBeNull();
+    await click(buttonByText(pen(), 'Cancel'));
+
+    expect(pen()).toBeNull();
+    expect(document.activeElement).toBe(buttonByText(log(), 'Record batch'));
+    expect(document.activeElement).not.toBe(document.body);
+  });
+
+  it('W2: the band\'s Record another below 724, the window widened, Escape on the untouched pen returns to the log\'s Record another', async () => {
+    installMatchMedia(393);
+    await mountAt(VERSION_PATH, [augustSecondBatch]);
+    expect(band().textContent).toBe('Record another');
+    await click(band());
+    await resizeTo(1366);
+
+    await pressEscape();
+
+    expect(pen()).toBeNull();
+    expect(document.activeElement).toBe(buttonByText(log(), 'Record another'));
+  });
+
+  it('W3: the band\'s Record tasting below 724, the window widened, Cancel returns to Correct', async () => {
+    installMatchMedia(393);
+    await mountAt(VERSION_PATH, [awaiting]);
+    expect(band().textContent).toBe('Record tasting');
+    await click(band());
+    expect(document.activeElement).toBe(tastedInput());
+
+    await resizeTo(1366);
+    await click(buttonByText(pen(), 'Cancel'));
+
+    expect(pen()).toBeNull();
+    expect(document.activeElement).toBe(current.container.querySelector('.batch-row__correct'));
+  });
+
+  it('W4: Home\'s Record tasting at a desk width opens the tasting pen, and Cancel returns to Correct', async () => {
+    installMatchMedia(1366);
+    await mountAt(awaitingPath, [awaiting]);
+    await flush(() => pen() !== null);
+    expect(pen()).not.toBeNull();
+    expect(document.activeElement).toBe(tastedInput());
+
+    await click(buttonByText(pen(), 'Cancel'));
+
+    expect(pen()).toBeNull();
+    expect(document.activeElement).toBe(current.container.querySelector('.batch-row__correct'));
+  });
+
+  // Guards: as built, passing before and after the fix.
+  it('G1: widened and narrowed again before Cancel, focus still returns to the band and scrolls it into view', async () => {
+    installMatchMedia(393);
+    await mountAt(VERSION_PATH, [awaiting]);
+    await click(band());
+
+    await resizeTo(1366);
+    await resizeTo(393);
+    await click(buttonByText(pen(), 'Cancel'));
+
+    expect(pen()).toBeNull();
+    expect(document.activeElement).toBe(band());
+    expect(scrollIntoView.mock.contexts).toContain(band());
+  });
+
+  it('G2: Home\'s Record tasting at a desk width, then Save, still lands on the Batch heading', async () => {
+    installMatchMedia(1366);
+    await mountAt(awaitingPath, [awaiting]);
+    await flush(() => pen() !== null);
+    await setValue(pen().querySelector('textarea[aria-label="How did it turn out?"]'), 'Soft, not greasy.');
+    await setValue(pen().querySelector('textarea[aria-label^="Tempering"]'), '10');
+
+    await click(buttonByText(pen(), 'Save batch'));
+    await flush(() => pen() === null);
+
+    expect(store.saveBatch).toHaveBeenCalledTimes(1);
+    expect(pen()).toBeNull();
+    expect(document.activeElement).toBe(current.container.querySelector('h2#batch'));
   });
 });
 

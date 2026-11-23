@@ -538,20 +538,32 @@ export function BatchRow({
   // keeps Correct at every width, as built (Mark, 2026-11-22).
   correctHeld = false,
 }) {
+  // The axes' own arrangement (contract "Keyboard and tab order") — see
+  // useBelow724's own header comment for the node-environment guard. The same
+  // cut decides, at Cancel, whether a pen the band opened returns here: the
+  // band's record act (VersionRow.jsx) is drawn only below 724.
+  const below724 = useBelow724();
+
   // Focus-return for the Correct opener this row owns — closing the pen
   // returns focus to the control that opened it. Must sit above the
   // conditional render below — hooks cannot be called conditionally.
+  // The band's Record tasting opens the same pen (sketch 011 decision 30) and
+  // takes the return below 724, where it draws its record act (VersionRow.jsx).
+  // From 724 up the band draws no record act, so Correct, which opens the
+  // tasting pen on this same batch, takes it. That covers a pen opened below
+  // 724 before the window widened, and one opened at a desk width with the
+  // band's opener, from Home's Record tasting or a restored tasting draft
+  // (bug-p12-focus-lost-across-724). The width is read at Cancel, not at open.
   const amendButtonRef = useRef(null);
-  const wasAmendingRef = useRef(false);
+  const amendOpenedByRef = useRef(null);
   useEffect(() => {
     if (openPen === 'amend') {
-      // Only Correct gets focus back: a pen the band's Record tasting
-      // opened returns to the band (VersionRow.jsx), sketch 011 decision 30.
-      wasAmendingRef.current = amendOpener === 'correct';
+      amendOpenedByRef.current = amendOpener;
       return;
     }
-    if (wasAmendingRef.current) {
-      wasAmendingRef.current = false;
+    const openedBy = amendOpenedByRef.current;
+    amendOpenedByRef.current = null;
+    if (openedBy === 'correct' || (openedBy === 'record-a-tasting' && !below724)) {
       amendButtonRef.current?.focus();
     }
   }, [openPen]);
@@ -560,18 +572,21 @@ export function BatchRow({
   // verbatim (03.5-07 Task 1, decisions_recorded 1) — this row now owns
   // the button beside Batches/Correct. Shared by both the head's "Record
   // another" (a batch is in view) and the no-batch state's "Record
-  // batch" below, since exactly one of the two ever mounts. Only the log's
-  // own opener gets focus back: a pen the band's Record another or Record
-  // batch opened returns to the band (VersionRow.jsx).
+  // batch" below, since exactly one of the two ever mounts. A pen the band's
+  // Record another or Record batch opened returns to the band below 724, where
+  // it draws its record act (VersionRow.jsx). From 724 up the band draws no
+  // record act, so this row's own opener for the same pen takes the return
+  // (bug-p12-focus-lost-across-724). The width is read at Cancel, not at open.
   const recordButtonRef = useRef(null);
-  const wasRecordingRef = useRef(false);
+  const recordOpenedByRef = useRef(null);
   useEffect(() => {
     if (openPen === 'record') {
-      wasRecordingRef.current = recordOpener === 'log';
+      recordOpenedByRef.current = recordOpener;
       return;
     }
-    if (wasRecordingRef.current) {
-      wasRecordingRef.current = false;
+    const openedBy = recordOpenedByRef.current;
+    recordOpenedByRef.current = null;
+    if (openedBy === 'log' || (openedBy === 'band' && !below724)) {
       recordButtonRef.current?.focus();
     }
   }, [openPen]);
@@ -649,10 +664,6 @@ export function BatchRow({
     if (pendingUndo) restoreRef.current?.focus();
     else addTastingRef.current?.focus();
   }, [removeTastingAttempt]);
-
-  // The axes' own arrangement (contract "Keyboard and tab order") — see
-  // useBelow724's own header comment for the node-environment guard.
-  const below724 = useBelow724();
 
   // Option A (03.5-07 Task 2 answer, decisions_recorded 4): the record
   // pen's own frame now lives in the log column whenever the log sits

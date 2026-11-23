@@ -810,6 +810,108 @@ describe('NotebookPlace starting a recipe', () => {
     });
   });
 
+  // bug-p12-start-after-narrowing-strands-draft: the entry follows New recipe's own width rule, so Start cannot be
+  // pressed where the editor cannot open. The stub is mutable and fires its change listeners, as in CreationFlow.test.jsx.
+  describe('an entry open as the window crosses 724 (bug-p12-start-after-narrowing-strands-draft)', () => {
+    let width = 1024;
+    let lists = [];
+    let originalMatchMedia;
+
+    function evaluate(query) {
+      const max = query.match(/max-width:\s*([\d.]+)px/);
+      const min = query.match(/min-width:\s*([\d.]+)px/);
+      if (max) return width <= Number(max[1]);
+      if (min) return width >= Number(min[1]);
+      return false;
+    }
+
+    function installWidth(initialWidth) {
+      width = initialWidth;
+      lists = [];
+      originalMatchMedia = window.matchMedia;
+      window.matchMedia = (query) => {
+        const list = {
+          media: query,
+          listeners: new Set(),
+          last: evaluate(query),
+          get matches() {
+            return evaluate(query);
+          },
+          addEventListener(type, fn) {
+            if (type === 'change') list.listeners.add(fn);
+          },
+          removeEventListener(type, fn) {
+            if (type === 'change') list.listeners.delete(fn);
+          },
+        };
+        lists.push(list);
+        return list;
+      };
+    }
+
+    async function setWidth(next) {
+      width = next;
+      await act(async () => {
+        for (const list of lists) {
+          const now = evaluate(list.media);
+          if (now !== list.last) {
+            list.last = now;
+            for (const fn of [...list.listeners]) fn({ matches: now, media: list.media });
+          }
+        }
+      });
+    }
+
+    afterEach(() => {
+      window.matchMedia = originalMatchMedia;
+    });
+
+    it('takes the entry off the page when the window narrows, with nothing written and the address unchanged', async () => {
+      installWidth(1024);
+      repository.saveDraft = vi.fn().mockResolvedValue(undefined);
+      const container = await mount();
+      await open(container);
+      await type(container, 'Pistachio');
+      expect(nameField(container).value).toBe('Pistachio');
+      await setWidth(393);
+      expect(container.querySelector('form.nb__new')).toBeNull();
+      expect(container.querySelector('textarea')).toBeNull();
+      expect(buttonTexts(container)).toEqual([]);
+      expect(container.querySelector('div.nb__head').children).toHaveLength(1);
+      expect(repository.saveDraft).not.toHaveBeenCalled();
+      expect(path).toBe('/notebook');
+    });
+
+    it('draws the entry again at 724 with the typed name, and Start then opens the editor', async () => {
+      installWidth(1024);
+      repository.saveDraft = vi.fn().mockResolvedValue(undefined);
+      const container = await mount();
+      await open(container);
+      await type(container, 'Pistachio');
+      await setWidth(723);
+      expect(container.querySelector('form.nb__new')).toBeNull();
+      await setWidth(724);
+      expect(container.querySelector('form.nb__new')).not.toBeNull();
+      expect(nameField(container).value).toBe('Pistachio');
+      expect(buttonTexts(container)).toEqual(['Cancel', 'Start']);
+      await press(container, 'Start');
+      expect(repository.saveDraft).toHaveBeenCalledTimes(1);
+      expect(repository.saveDraft.mock.calls[0][0].payload.name).toBe('Pistachio');
+      expect(path).toBe('/notebook/new');
+    });
+
+    it('offers New recipe once a Notebook opened narrow is widened, and the entry opens with focus in Name', async () => {
+      installWidth(393);
+      const container = await mount();
+      expect(container.querySelector('form.nb__new')).toBeNull();
+      expect(buttonTexts(container)).toEqual([]);
+      await setWidth(1024);
+      expect(buttonTexts(container)).toEqual(['New recipe']);
+      await open(container);
+      expect(container.querySelector('form.nb__new')).not.toBeNull();
+      expect(document.activeElement).toBe(nameField(container));
+    });
+  });
 });
 
 // PHONE-01 (sketch 016 CONTRACT section 3 and section 11 number 4): below 724

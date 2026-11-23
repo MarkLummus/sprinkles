@@ -546,4 +546,64 @@ describe('the pen marks a step whose number changed with its number on the opene
     await click(restore);
     expect(marks(tab)).toEqual(['', ' was step 4', ' was step 2', ' was step 3', '']);
   });
+
+  it("W3: an open step says 'was step N' last in its fields, Preview step does not, and Cancel closes it", async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+    await press(tab, 'Step 4, move up');
+    await press(tab, 'Step 3, move up');
+    await press(tab, 'Step 2, edit this step');
+
+    const li = stepItems(tab)[1];
+    expect(li.querySelector('p.method-step__lead')).toBeNull();
+    const fields = li.querySelector('.method-step__open-fields');
+    const span = fields.lastElementChild;
+    expect(span.matches(SKIPPED)).toBe(true);
+    expect(span.textContent).toBe(' was step 4');
+    expect(span.previousElementSibling.querySelector('textarea[aria-label="Step 2, instruction"]')).not.toBeNull();
+    expect(marks(tab)).toEqual(['', '', ' was step 2', ' was step 3', '']);
+
+    await press(tab, 'Step 2, Preview step');
+    const preview = region(tab).querySelector('.mk-preview');
+    expect(preview).not.toBeNull();
+    expect(preview.textContent).not.toMatch(/was step/i);
+
+    await click([...li.querySelectorAll('button')].find((button) => button.textContent.trim() === 'Cancel'));
+    expect(marks(tab)).toEqual(['', ' was step 4', ' was step 2', ' was step 3', '']);
+  });
+
+  it("W4: the saved version reads unmarked, Show changes marks it against its parent, the pen opened on it marks nothing", async () => {
+    await storeCoffee();
+    const tab = await openPen(catalog);
+    await press(tab, 'Step 4, move up');
+    await press(tab, 'Step 3, move up');
+    await press(tab, 'Step 4, remove');
+    await type(field(tab, 'Version name'), 'sweeten warm');
+    await click(buttonByText(tab, 'Save as new version'));
+    await settle(() => tab.location.pathname !== PAGE_PATH);
+    expect(tab.location.pathname).not.toBe(PAGE_PATH);
+    await settle(() => region(tab) !== null && penOf(tab) === null && order(tab).length === 4);
+
+    expect(order(tab)).toEqual(['Steep', 'Sweeten', 'Strain', 'Churn']);
+    expect(numbers(tab)).toEqual(['1', '2', '3', '4']);
+    expect(region(tab).textContent).not.toMatch(/was step/i);
+    expect(stepHeads(tab)).toEqual(['Step 1Steep', 'Step 2Sweeten']);
+
+    await click(buttonByText(tab, 'Show changes'));
+    expect(order(tab)).toEqual(['Steep', 'Sweeten', 'Strain', 'Rest', 'Churn']);
+    expect(numbers(tab)).toEqual(['1', '2', '3', '3', '4']);
+    expect(stepItems(tab)[3].querySelector('.method-step__n').classList.contains('method-step__n--struck')).toBe(true);
+    expect(marks(tab)).toEqual(['', ' was step 4', ' was step 2', ' removed', ' was step 5']);
+    expect(stepHeads(tab)).toEqual(['Step 1Steep', 'Step 2Sweeten']);
+    expect(tab.container.querySelectorAll(`.ingredient-table-region ${SKIPPED}`)).toHaveLength(0);
+
+    await click(buttonByText(tab, 'Hide changes'));
+    expect(region(tab).textContent).not.toMatch(/was step/i);
+
+    // Undrawn state 5: the pen compares with the version it opened on, so a pen on the reordered child marks nothing.
+    await click(buttonByText(tab, 'Next version'));
+    await settle(() => penOf(tab) !== null);
+    expect(penOf(tab)).not.toBeNull();
+    expect(markCount(tab)).toBe(0);
+  });
 });

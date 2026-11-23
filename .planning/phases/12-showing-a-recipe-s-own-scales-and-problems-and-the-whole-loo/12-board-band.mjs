@@ -23,7 +23,8 @@
 // drew the superseded closing words, so they leave that board; the decided
 // snapshot desk-line-words.html draws the same two states with the decided words as dl-head-edit and
 // dl-head-draft, and the second spec holds them there with the same checks (line, buttons absent). The
-// helpers the one-line page's Edit steps need (12-board-places.mjs) are exported. The board's words are Sid's or the
+// helpers the one-line page's Edit steps need (12-board-places.mjs), and ROUTES (the seed's three routes,
+// which Home's held-draft steps there reuse), are exported. The board's words are Sid's or the
 // seed's and are read from the panels by the engine, never retyped here; only the words typed into the
 // built app (the recipe's name and description, the version name) are written here, as the board shows them.
 //
@@ -49,7 +50,7 @@ export const KEEP_MS = 1300;
 export const DESK = { width: 1366, height: 1024 };
 
 // The seed's own routes for the three standings (p12g2-capture.mjs's out.routes).
-const ROUTES = {
+export const ROUTES = {
   tasted: '/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1',
   awaiting: '/notebook/mexican-chocolate/mexican-chocolate-v3',
   none: '/notebook/underbelly-light-base/underbelly-light-base-v2',

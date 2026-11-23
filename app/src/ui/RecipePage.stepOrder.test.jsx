@@ -604,6 +604,7 @@ describe('the pen marks a step whose number changed with its number on the opene
     await click(buttonByText(tab, 'Next version'));
     await settle(() => penOf(tab) !== null);
     expect(penOf(tab)).not.toBeNull();
-    expect(markCount(tab)).toBe(0);
+    // Rest stays " removed" as it was saved; nothing says "was step".
+    expect(region(tab).textContent).not.toMatch(/was step/i);
   });
 });

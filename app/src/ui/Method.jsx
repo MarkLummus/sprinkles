@@ -287,6 +287,10 @@ export function StepPenBody({
           </p>
         )}
         {draftStep.removed && <span className="method-step__skipped-label"> removed</span>}
+        {/* Sketch 017 CONTRACT section 5: under the two fields, where " removed"
+            stands on an open removed step. With targets it stands before the
+            chips line, the nearest precedent (the board draws no step with targets). */}
+        {wasStepMark(stepDiff)}
 
         {draftStep.targets?.length > 0 && (
           <p className="method-step__targets">
@@ -970,6 +974,7 @@ export function Method({
                       <b>{step.leadIn}.</b> {step.instruction}
                     </span>
                     {step.removed && <span className="method-step__skipped-label"> removed</span>}
+                    {wasStepMark(stepDiff)}
                   </p>
                   {showStruckBeneath && (
                     <p className="prose-struck-beneath">
